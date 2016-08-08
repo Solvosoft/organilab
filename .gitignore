@@ -46,8 +46,8 @@ coverage.xml
 .hypothesis/
 
 # Translations
-*.mo
-*.pot
+#*.mo
+#*.pot
 
 # Django stuff:
 *.log
@@ -90,3 +90,9 @@ ENV/
 
 # Pycharm project settings
 .idea/
+
+# aptana 
+.project
+.pydevproject
+.settings
+
