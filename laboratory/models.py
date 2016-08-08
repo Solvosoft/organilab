@@ -54,6 +54,7 @@ class Shelf(models.Model):
     def __str__(self):
         return '%s' % (self.furniture,)
 
+
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
@@ -87,4 +88,28 @@ class ObjectFeatures(models.Model):
         verbose_name_plural = 'Object features'
 
     def __str__(self):
-        return '%s' % self.CHOICES[int(self.name)][1]
+        return '%s' % (self.CHOICES[int(self.name)][1],)
+
+
+class Object(models.Model):
+    REACTIVE = '0'
+    MATERIAL = '1'
+    EQUIPMENT = '2'
+    TYPE_CHOICES = (
+        (REACTIVE, 'Reactive'),
+        (MATERIAL, 'Material'),
+        (EQUIPMENT, 'Equipment')
+    )
+    shelf = models.ForeignKey('Shelf')
+    type = models.CharField('Type', max_length=2, choices=TYPE_CHOICES)
+    code = models.CharField('Code', max_length=255)
+    description = models.TextField('Description')
+    name = models.CharField('Name', max_length=255)
+    feature = models.ManyToManyField('ObjectFeatures')
+
+    class Meta:
+        verbose_name = 'Object'
+        verbose_name_plural = 'Objects'
+
+    def __str__(self):
+        return '%s' % (self.name,)
