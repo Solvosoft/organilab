@@ -4,3 +4,4 @@ from laboratory import models
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
+admin.site.register(models.ObjectFeatures)

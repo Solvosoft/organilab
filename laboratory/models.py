@@ -53,3 +53,38 @@ class Shelf(models.Model):
 
     def __str__(self):
         return '%s' % (self.furniture,)
+
+@python_2_unicode_compatible
+class ObjectFeatures(models.Model):
+    GENERAL_USE = "0"
+    SECURITY_EQUIPMENT = "1"
+    ANALYTIC_CHEMISTRY = "2"
+    ORGANIC_CHEMISTRY = "3"
+    PHYSICAL_CHEMISTRY = "4"
+    CHEMICAL_BIOLOGICAL_PROCESS = "5"
+    INDUSTRIAL_BIOTECHNOLOGY = "6"
+    BIOCHEMISTRY = "7"
+    WATER_CHEMISTRY = "8"
+    OTHER = "9"
+    CHOICES = (
+        (GENERAL_USE, 'General use'),
+        (SECURITY_EQUIPMENT, 'Security equipment'),
+        (ANALYTIC_CHEMISTRY, 'Analytic Chemistry'),
+        (ORGANIC_CHEMISTRY, 'Organic Chemistry'),
+        (PHYSICAL_CHEMISTRY, 'Physical Chemistry'),
+        (CHEMICAL_BIOLOGICAL_PROCESS, 'Chemical and Biological process'),
+        (INDUSTRIAL_BIOTECHNOLOGY, 'Industrial Biotechnology'),
+        (BIOCHEMISTRY, 'Biochemistry'),
+        (WATER_CHEMISTRY, 'Water Chemistry'),
+        (OTHER, 'Other')
+    )
+
+    name = models.CharField('Name', max_length=2, choices=CHOICES)
+    description = models.TextField('Description')
+
+    class Meta:
+        verbose_name = 'Object feature'
+        verbose_name_plural = 'Object features'
+
+    def __str__(self):
+        return '%s' % self.CHOICES[int(self.name)][1]
