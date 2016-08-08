@@ -1,6 +1,10 @@
 # organilab
 Simple laboratory organizer
 
+# Documentation
+
+Documentation will be available in [read the docs](http://organilab.readthedocs.io/en/latest/)
+
 # Installation 
 
 Clone this repository 
@@ -18,7 +22,7 @@ Install requirements
 
 	$ pip install -r requirements.txt
 	
-# run in development
+# Run in development
 
 Check your database configuration and sync your models
 
