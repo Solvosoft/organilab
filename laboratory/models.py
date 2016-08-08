@@ -26,6 +26,7 @@ class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom')
     name = models.CharField('Name', max_length=255)
     type = models.CharField('Type', max_length=2, choices=TYPE_CHOICES)
+    dataconfig = models.TextField('Data configuration')
 
     class Meta:
         verbose_name = 'Piece of furniture'
