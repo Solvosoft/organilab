@@ -113,3 +113,28 @@ class Object(models.Model):
 
     def __str__(self):
         return '%s' % (self.name,)
+
+
+class ShelfObject(models.Model):
+    M = '0'
+    MM = '1'
+    CM = '2'
+    L = '3'
+    ML = '4'
+    CHOICES = (
+        (M, 'Meters'),
+        (MM, 'Milimeters'),
+        (CM, 'Centimeters'),
+        (L, 'Liters'),
+        (ML, 'Mililiters')
+    )
+    object = models.ForeignKey('Object')
+    quantity = models.FloatField('Material quantity')
+    measurement_unit = models.CharField('Measurement unit', max_length=2, choices=CHOICES)
+
+    class Meta:
+        verbose_name = 'Shelf object'
+        verbose_name_plural = 'Shelf objects'
+
+    def __str__(self):
+        return '%s - %s %s' % (self.object, self.quantity, self.CHOICES[int(self.measurement_unit)][1])
