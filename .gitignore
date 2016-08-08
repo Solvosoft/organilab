@@ -90,3 +90,9 @@ ENV/
 
 # Pycharm project settings
 .idea/
+
+# aptana 
+.project
+.pydevproject
+.settings
+
