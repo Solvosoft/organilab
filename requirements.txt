@@ -1,2 +1,5 @@
 Django==1.10
 psycopg2==2.6.2
+sphinx 
+sphinx-autobuild
+sphinx_rtd_theme
