@@ -1,3 +1,6 @@
 from django.contrib import admin
+from laboratory import models
 
-# Register your models here.
+admin.site.register(models.LaboratoryRoom)
+admin.site.register(models.Furniture)
+admin.site.register(models.Shelf)
