@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from laboratory import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^reportbuilding/', views.ReportBuilding, name="report_building"),
 ]
