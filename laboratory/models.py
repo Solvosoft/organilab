@@ -46,7 +46,7 @@ class Shelf(models.Model):
         (DRAWER, _('Drawer'))
     )
     furniture = models.ForeignKey('Furniture')
-    container_shelf = models.ForeignKey(_('Shelf'), null=True, blank=True)
+    container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
 
     class Meta:
