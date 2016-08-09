@@ -107,7 +107,7 @@ class Object(models.Model):
     code = models.CharField(_('Code'), max_length=255)
     description = models.TextField(_('Description'))
     name = models.CharField(_('Name'), max_length=255)
-    feature = models.ManyToManyField('ObjectFeatures')
+    features = models.ManyToManyField(ObjectFeatures)
 
     class Meta:
         verbose_name = _('Object')
