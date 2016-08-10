@@ -12,6 +12,8 @@ Contents:
    :maxdepth: 2
 
    installation
+   database_configuration
+   internationalization
 
 
 Indices and tables
