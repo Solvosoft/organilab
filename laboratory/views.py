@@ -3,40 +3,24 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.utils import timezone
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
-from io import BytesIO
+from laboratory.models import LaboratoryRoom
+from django.template.loader import get_template
+from django.template.context import Context
+from weasyprint import HTML
 
-
-
-# Create your views here.
-def ReportBuilding(request):
-    # Create the HttpResponse with PDF.
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Report-Building.pdf"'
-
-    # Create the PDF object, using the BytesIO object as its "file."
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=A4)
-
-    # Draw things on the PDF. Here's where the PDF generation happens.
+class LaboratoryRoomListView(ListView):
+    model = LaboratoryRoom
     
-    #PDF Header
-    hora = timezone.now()
-    p.setLineWidth(.3)
-    p.setFont('Helvetica', 18)
-    p.drawString(30, 750, "Report Building")
-    p.setFont('Helvetica', 12)
-    p.drawString(460, 750, hora.strftime('%d/%m/%Y - %H:%M'))
-    p.line(30, 747, 560, 747)
+def report_building(request):
+    laboratoryroom = LaboratoryRoom.objects.all()
 
-    # Close the PDF object cleanly.
-    p.showPage()
-    p.save()
+    template = get_template('laboratory/laboratoryroom_list.html')
+    html = template.render(
+                             Context({'object_list': laboratoryroom})).encode("UTF-8")
 
-    # Get the value of the BytesIO buffer and write it to the response.
-    pdf = buffer.getvalue()
-    buffer.close()
-    response.write(pdf)
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+    #pisaStatus = pisa.CreatePDF(html, dest=response)
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+              'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
     return response
-    
