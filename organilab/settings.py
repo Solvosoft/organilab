@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'organilab.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sistema_practica',
-        'USER': 'sistema_practica',
-        'PASSWORD': 'pr4ct1c4',
+        'NAME': 'organilab',
+        'USER': 'organilab_user',
+        'PASSWORD': '0rg4n1l4b',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
