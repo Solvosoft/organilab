@@ -1,0 +1,26 @@
+{% block content %}
+
+<div>
+	
+	<ul>
+		{% for LaboratoryRoom in object_list %}
+			LaboratoryRoom: {{ LaboratoryRoom.name }}
+			<br />
+			{% for furniture in LaboratoryRoom.furniture.all %}
+			<li>
+			 	{{ furniture}}
+			</li>
+			{% endfor %}
+			<br />
+		{% endfor %}
+	</ul>
+	
+</div>
+
+<div>
+	
+	<a href="{% url 'report_building' %}"> PDF </a>
+	
+</div>
+
+{% endblock %}
