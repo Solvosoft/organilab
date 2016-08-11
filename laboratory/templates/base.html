@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {# METADATA  #}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {# TITLE #}
+    <title>Organilab | {% block title %}Index{% endblock %}</title>
+
+    {# CSS #}
+    <link href="{% static 'laboratory/css/bootstrap.min.css' %}"/>
+    {% block css %}{% endblock %}
+</head>
+<body>
+    {# CONTENT #}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {# JS #}
+    <script src="{% static 'laboratory/js/bootstrap.min.js' %}"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>
