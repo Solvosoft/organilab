@@ -1,20 +1,25 @@
 {% block content %}
 
 <div>
-	
-	<ul>
-		{% for LaboratoryRoom in object_list %}
-			LaboratoryRoom: {{ LaboratoryRoom.name }}
-			<br />
-			{% for furniture in LaboratoryRoom.furniture.all %}
-			<li>
-			 	{{ furniture}}
-			</li>
+		{% for laboratory_room in object_list %}
+            <h2>Laboratory room: {{ laboratory_room.name }}</h2>
+			{% for furniture in laboratory_room.furniture_set.all %}
+			 	<h5>{{ furniture }}</h5>
+                <ul>
+                    {% for shelf in furniture.shelf_set.all %}
+                        <li>{{ shelf }}</li>
+                        <ul>
+                            {% for obj in shelf.object_set.all %}
+                                <li>{{ obj }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% empty %}
+                        No shelf elements
+                    {% endfor %}
+                </ul>
 			{% endfor %}
 			<br />
 		{% endfor %}
-	</ul>
-	
 </div>
 
 <div>
