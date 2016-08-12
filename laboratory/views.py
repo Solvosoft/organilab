@@ -11,6 +11,11 @@ from weasyprint import HTML
 class LaboratoryRoomListView(ListView):
     model = LaboratoryRoom
     
+    def get_context_data(self, **kwargs):
+        contex = ListView.get_context_data(self, **kwargs)
+        contex['datetime'] = timezone.now()
+        return contex
+    
 def report_building(request):
     laboratoryroom = LaboratoryRoom.objects.all()
 
