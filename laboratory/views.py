@@ -20,8 +20,15 @@ def report_building(request):
     laboratoryroom = LaboratoryRoom.objects.all()
 
     template = get_template('laboratory/laboratoryroom_list.html')
+    
+    context = {
+               'object_list': laboratoryroom,
+               'datetime': timezone.now(),
+               'request': request
+               }
+    
     html = template.render(
-                             Context({'object_list': laboratoryroom})).encode("UTF-8")
+                            Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
     #pisaStatus = pisa.CreatePDF(html, dest=response)
