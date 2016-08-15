@@ -16,6 +16,7 @@ class ShelfCreate(CreateView):
 class ShelfDelete(DeleteView):
     model = Shelf
     fields = '__all__'
+    success_url = reverse_lazy('shelf_list.html')
     
 class GalletaListView(ListView):
     model = Shelf
