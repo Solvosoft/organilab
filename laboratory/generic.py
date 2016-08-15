@@ -18,7 +18,7 @@ class ShelfDelete(DeleteView):
     fields = '__all__'
     success_url = reverse_lazy('shelf_list.html')
     
-class GalletaListView(ListView):
+class ShelfListView(ListView):
     model = Shelf
     
     def get_queryset(self):
