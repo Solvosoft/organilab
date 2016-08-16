@@ -1,0 +1,60 @@
+<html>
+<head>
+<style>
+@page {
+    margin: 3cm 2cm; padding-left: 1.5cm;
+    @top-left {
+        content: "Organilab Summary Furniture Report";
+	}
+    @top-right {
+        content: "Date: {{ datetime }}";
+	}
+
+    @bottom-right {
+        content: "Page " counter(page)
+                 " of " counter(pages) ;
+	}
+
+    @bottom-left {
+        content:  "User: {{ request.user }}";
+		color: red;
+	}
+
+}
+body { text-align: justify }
+
+</style>
+</head>
+
+<body>
+
+	{% for furniture in object_list %}
+		<h3 style="margin-right: 150px">
+        	Furniture: {{ furniture.name }}
+        </h3>
+		{% for shelf in furniture.shelf_set.all %}
+			<h5 style="border: solid; background: gainsboro; margin-right: 150px">
+				Shelf: {{ shelf }}
+			</h5>
+            <ul>
+            	{% for obj in shelf.object_set.all %}
+                	<li>Code: {{ obj.code }}</li>
+                    <ul>
+                    	<li>Name: {{ obj.name }}</li>
+                    	<li>Quantity: {{ shelf.type }}</li>
+                    </ul>
+               	{% empty %}
+                	No Object Elements
+                {% endfor %}
+            </ul>
+        {% empty %}
+        	No Shelf Elements
+		{% endfor %}
+		<br />
+	{% endfor %}
+	
+	<a style="background-color: lawngreen; color: black"
+	href="{% url 'summary_report' %}"> Generar PDF </a>
+
+</body>
+</html>
