@@ -31,5 +31,5 @@ urlpatterns += [
     url(r"^report/building$", views.report_building,
         name="report_building"),
     url(r"^report/summaryfurniture$", views.summary_report,
-        name="summary_report"),
+        name="report_summaryfurniture"),
 ]

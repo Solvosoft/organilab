@@ -25,7 +25,7 @@ class SummaryFurnitureListView(miContexto, ListView):
 def report_building(request):
     laboratoryroom = LaboratoryRoom.objects.all()
 
-    template = get_template('laboratory/laboratoryroom_list.html')
+    template = get_template('pdf/laboratoryroom_pdf.html')
     
     context = {
                'object_list': laboratoryroom,
@@ -45,7 +45,7 @@ def report_building(request):
 def summary_report(request):
     furniture = Furniture.objects.all()
 
-    template = get_template('laboratory/furniture_list.html')
+    template = get_template('pdf/summaryfurniture_pdf.html')
     
     context = {
                'object_list': furniture,

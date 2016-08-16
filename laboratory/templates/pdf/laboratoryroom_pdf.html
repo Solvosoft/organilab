@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<style>
+			@page {
+				margin: 3cm 2cm; padding-left: 1.5cm;
+				@top-left {
+					content: "Organilab Build Report";
+				}
+				@top-right {
+					content: "Date: {{ datetime }}";
+				}
+
+				@bottom-right {
+					content: "Page " counter(page)
+					" of " counter(pages) ;
+				}
+
+				@bottom-left {
+					content:  "User: {{ request.user }}";
+					color: red;
+				}
+
+			}
+			body {
+				text-align: justify
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		{% for laboratory_room in object_list %}
+		<h3 style="background: gainsboro; margin-right: 150px"> Laboratory Room: {{ laboratory_room.name }} </h3>
+		{% for furniture in laboratory_room.furniture_set.all %}
+		<h5 style="background: gainsboro; margin-right: 150px"> Furniture: {{ furniture }} </h5>
+		<ul>
+			{% for shelf in furniture.shelf_set.all %}
+			<li>
+				Shelf: {{ shelf }}
+			</li>
+			<ul>
+				{% for obj in shelf.object_set.all %}
+				<li>
+					Object: {{ obj }}
+				</li>
+				{% endfor %}
+			</ul>
+			{% empty %}
+			No shelf elements
+			{% endfor %}
+		</ul>
+		{% endfor %}
+		<br />
+		{% endfor %}
+
+	</body>
+</html>
