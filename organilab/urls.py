@@ -16,12 +16,20 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from laboratory import views
-from laboratory.views import LaboratoryRoomListView
+from laboratory.views import LaboratoryRoomListView, SummaryFurnitureListView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r"^list$", LaboratoryRoomListView.as_view(),
+    
+    url(r"^laboratorylist$", LaboratoryRoomListView.as_view(),
         name="laboratoryroom_list"),
+    url(r"^summaryfurniturelist$", SummaryFurnitureListView.as_view(),
+        name="summaryfurniture_list"),
+]
+
+urlpatterns += [              
     url(r"^report/building$", views.report_building,
         name="report_building"),
+    url(r"^report/summaryfurniture$", views.summary_report,
+        name="summary_report"),
 ]

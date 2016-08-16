@@ -11,12 +11,6 @@
 		<title>Organilab | {% block title %}Index{% endblock %}</title>
 
 		{# CSS #}
-		<style>
-			#myPageNumber::after {
-				display: inline;
-				content: "Page " counter(page) " of " counter(pages);
-			}
-		</style>
 		<link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
 		{% block css %}{% endblock %}
 	</head>
