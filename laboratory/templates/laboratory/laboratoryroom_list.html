@@ -1,32 +1,14 @@
-<html>
-<head>
-<style>
-@page {
-    margin: 3cm 2cm; padding-left: 1.5cm;
-    @top-left {
-        content: "Organilab Build Report";
-	}
-    @top-right {
-        content: "Date: {{ datetime }}";
-	}
+{% extends 'base.html' %}
 
-    @bottom-right {
-        content: "Page " counter(page)
-                 " of " counter(pages) ;
-	}
+{% block content %}
 
-    @bottom-left {
-        content:  "User: {{ request.user }}";
-		color: red;
-	}
+<div>
 
-}
-body { text-align: justify }
-
-</style>
-</head>
-
-<body>
+<pre style="background-color: gainsboro; border: solid" >
+<h3>	
+ LABORATORYROOM INFORMATION
+</h3>	
+</pre>
 
 	{% for laboratory_room in object_list %}
 		<h3 style="background: gainsboro; margin-right: 150px">
@@ -51,9 +33,13 @@ body { text-align: justify }
 		{% endfor %}
 		<br />
 	{% endfor %}
+</div>
+
+<div>
 	
 	<a style="background-color: lawngreen; color: black"
 	href="{% url 'report_building' %}"> Generar PDF </a>
+	
+</div>
 
-</body>
-</html>
+{% endblock %}
