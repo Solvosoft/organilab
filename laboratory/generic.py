@@ -1,3 +1,9 @@
+'''
+Created on 1/8/2016
+
+@author: nashyra
+'''
+
 from __future__ import unicode_literals
 
 from django.views.generic.edit import CreateView, DeleteView
