@@ -2,20 +2,20 @@
 
 {% block content %}
 
-<div id="myPageNumber">
+<div>
 
-<pre style="background-color: gainsboro; border: solid" >
+<pre id="pre01" >
 <h3>	
  SUMMARY FURNITURE					
 </h3>	
 </pre>
 
 	{% for furniture in object_list %}
-		<h3 style="margin-right: 150px">
+		<h3 id="h3-2">
         	Furniture: {{ furniture.name }}
         </h3>
 		{% for shelf in furniture.shelf_set.all %}
-			<h5 style="background: gainsboro; margin-right: 150px">
+			<h5 id="h5-1">
 				Shelf: {{ shelf }}
 			</h5>
             <ul>
@@ -58,8 +58,8 @@
 
 <div>
 	
-	<a style="background-color: lawngreen; color: black"
-	href="{% url 'report_summaryfurniture' %}"> Generar PDF </a>
+	<a id="a01" class="btn btn-default"
+	href="{% url 'report_summaryfurniture' %}"> Download PDF </a>
 	
 </div>
 
