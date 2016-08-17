@@ -17,7 +17,7 @@ class LaboratoryRoom(models.Model):
 
 @python_2_unicode_compatible
 class Furniture(models.Model):
-    labroom = models.ForeignKey('LaboratoryRoom')
+    labroom = models.ForeignKey(LaboratoryRoom)
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=2)
 
@@ -26,7 +26,7 @@ class Furniture(models.Model):
 
 @python_2_unicode_compatible
 class Shelf(models.Model):
-    furniture = models.ForeignKey('Furniture')
+    furniture = models.ForeignKey(Furniture)
     container_shelf = models.ForeignKey(null=True, blank=True)
     type = models.CharField(max_length=2)
     
@@ -44,7 +44,7 @@ class ObjectFeatures(models.Model):
 
 
 class Object(models.Model):
-    shelf = models.ForeignKey('Shelf')
+    shelf = models.ForeignKey(Shelf)
     type = models.CharField(max_length=2)
     code = models.CharField(max_length=255)
     description = models.TextField()
