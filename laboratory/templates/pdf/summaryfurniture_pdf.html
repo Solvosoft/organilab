@@ -17,11 +17,17 @@
 					content:  "User: {{ request.user }}";
 					color: red;
 				}
-
 			}
 			
 			body {
 				text-align: justify
+			}
+			h3 {
+				margin-right: 150px;
+			}
+			h5 {
+				background: gainsboro; 
+				margin-right: 150px;
 			}
 
 		</style>
@@ -30,11 +36,11 @@
 	<body>
 
 	{% for furniture in object_list %}
-		<h3 style="margin-right: 150px">
+		<h3>
         	Furniture: {{ furniture.name }}
         </h3>
 		{% for shelf in furniture.shelf_set.all %}
-			<h5 style="background: gainsboro; margin-right: 150px">
+			<h5>
 				Shelf: {{ shelf }}
 			</h5>
             <ul>

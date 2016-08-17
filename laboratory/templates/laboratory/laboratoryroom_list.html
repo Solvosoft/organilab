@@ -4,18 +4,18 @@
 
 <div>
 
-<pre style="background-color: gainsboro; border: solid" >
+<pre id="pre01">
 <h3>	
  LABORATORYROOM INFORMATION
 </h3>	
 </pre>
 
 	{% for laboratory_room in object_list %}
-		<h3 style="background: gainsboro; margin-right: 150px">
+		<h3 id="h3-1">
         	Laboratory Room: {{ laboratory_room.name }}
         </h3>
 		{% for furniture in laboratory_room.furniture_set.all %}
-			<h5 style="background: gainsboro; margin-right: 150px">
+			<h5 id="h5-1">
 				Furniture: {{ furniture }}
 			</h5>
             <ul>
@@ -37,8 +37,8 @@
 
 <div>
 	
-	<a style="background-color: lawngreen; color: black"
-	href="{% url 'report_building' %}"> Generar PDF </a>
+	<a id="a01" class="btn btn-default"
+	href="{% url 'report_building' %}"> Download PDF </a>
 	
 </div>
 

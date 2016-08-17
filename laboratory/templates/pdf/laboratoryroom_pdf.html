@@ -24,6 +24,15 @@
 			body {
 				text-align: justify
 			}
+			
+			h3 {
+				background: gainsboro; 
+				margin-right: 150px;
+			}
+			h5{
+				background: gainsboro; 
+				margin-right: 150px;
+			}
 
 		</style>
 	</head>
@@ -31,9 +40,9 @@
 	<body>
 
 		{% for laboratory_room in object_list %}
-		<h3 style="background: gainsboro; margin-right: 150px"> Laboratory Room: {{ laboratory_room.name }} </h3>
+		<h3> Laboratory Room: {{ laboratory_room.name }} </h3>
 		{% for furniture in laboratory_room.furniture_set.all %}
-		<h5 style="background: gainsboro; margin-right: 150px"> Furniture: {{ furniture }} </h5>
+		<h5> Furniture: {{ furniture }} </h5>
 		<ul>
 			{% for shelf in furniture.shelf_set.all %}
 			<li>
