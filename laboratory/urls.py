@@ -11,9 +11,9 @@ from laboratory.generic import ShelfCreate, ShelfDelete, ShelfListView
 
 urlpatterns = [
                url(r"^create$", ShelfCreate.as_view(),
-                   name="galleta_create"),
+                   name="shelf_create"),
                url(r"^list$", ShelfListView.as_view(),
                    name="shelf_list"),
                url(r"^delete/(?P<pk>\d+)$", ShelfDelete.as_view(),
-                   name="galletas_confirm_delete")
+                   name="shelf_confirm_delete")
 ]
