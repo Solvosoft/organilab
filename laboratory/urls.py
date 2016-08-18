@@ -13,7 +13,7 @@ urlpatterns = [
                url(r"^create$", ShelfCreate.as_view(),
                    name="shelf_create"),
                url(r"^list$", ShelfListView.as_view(),
-                   name="shelf_list"),
+                   name="shelf_list_view"),
                url(r"^delete/(?P<pk>\d+)$", ShelfDelete.as_view(),
                    name="shelf_confirm_delete")
 ]
