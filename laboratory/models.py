@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 @python_2_unicode_compatible
 class LaboratoryRoom(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.TextField()
 
     class Meta:
         verbose_name = _('Laboratory Room')
@@ -25,7 +25,7 @@ class Furniture(models.Model):
         (DRAWER, _('Drawer'))
     )
     labroom = models.ForeignKey('LaboratoryRoom')
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.TextField()
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     dataconfig = models.TextField(_('Data configuration'))
 
@@ -82,7 +82,7 @@ class ObjectFeatures(models.Model):
         (OTHER, _('Other'))
     )
 
-    name = models.CharField(_('Name'), max_length=2, choices=CHOICES)
+    name = models.TextField()
     description = models.TextField(_('Description'))
 
     class Meta:
@@ -106,7 +106,7 @@ class Object(models.Model):
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     code = models.CharField(_('Code'), max_length=255)
     description = models.TextField(_('Description'))
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.TextField()
     features = models.ManyToManyField(ObjectFeatures)
 
     class Meta:
