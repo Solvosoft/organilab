@@ -9,7 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class LaboratoryRoom(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.TextField()
 
     def __str__(self):
         return '%s' % (self.name,)
@@ -18,7 +18,7 @@ class LaboratoryRoom(models.Model):
 @python_2_unicode_compatible
 class Furniture(models.Model):
     labroom = models.ForeignKey(LaboratoryRoom)
-    name = models.CharField(max_length=255)
+    name = models.TextField()
     type = models.CharField(max_length=2)
 
     def __str__(self):
@@ -36,7 +36,7 @@ class Shelf(models.Model):
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
-    name = models.CharField(max_length=2)
+    name = models.TextField()
     description = models.TextField()
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Object(models.Model):
     type = models.CharField(max_length=2)
     code = models.CharField(max_length=255)
     description = models.TextField()
-    name = models.CharField(max_length=255)
+    name = models.TextField()
     features = models.ManyToManyField(ObjectFeatures)
 
     def __str__(self):
