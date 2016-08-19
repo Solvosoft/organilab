@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.conf.urls import url
 from laboratory.generic import ShelfCreate, ShelfDelete, ShelfListView
-#from reporter.ajax_view import list_proveedor, ProveedorCreate
+#from laboratory.ajax_view import list_shelf, ShelvesCreate
 
 urlpatterns = [
                url(r"^create$", ShelfCreate.as_view(),
