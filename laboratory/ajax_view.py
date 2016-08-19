@@ -28,7 +28,7 @@ def list_shelf(request):
         },
     }
     
-class ShelfCreate(AJAXMixin, CreateView):
+class ShelvesCreate(AJAXMixin, CreateView):
     model = Shelf
     fields = "__all__"
     success_url = reverse_lazy('shelf_list')
