@@ -21,9 +21,9 @@ from laboratory.views import LaboratoryRoomListView, SummaryFurnitureListView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     
-    url(r"^labslist$", LaboratoryRoomListView.as_view(),
+    url(r"^labs$", LaboratoryRoomListView.as_view(),
         name="laboratoryroom_list"),
-    url(r"^summaryfurniturelist$", SummaryFurnitureListView.as_view(),
+    url(r"^furniture$", SummaryFurnitureListView.as_view(),
         name="summaryfurniture_list"),
 ]
 
