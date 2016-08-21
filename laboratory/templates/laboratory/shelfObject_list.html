@@ -1,0 +1,40 @@
+  <!-- PRUEBA: asi se verian los muebles en la lista -->
+
+
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+  	<button>
+  		    <a data-ajax="true" data-success="processResponseshelfobject"
+            href="{% url 'shelfobject_create' %}">
+	        Agregar
+            </a>
+    </button>
+    
+  		<button>Ver/Ocultar</button>
+  </div>
+  <div class="list-group">
+{% for shelfobject in object_list %}
+  
+  <li class="list-group-item" > 
+  
+  	<a 
+  	class="btn btn-danger btn-sm" 
+  	data-ajax="true" data-success="processResponseshelfobject"
+	href="{% url 'shelfobject_delete' shelfobject.pk %} "> 
+	Eliminar
+	</a>
+	
+  	<a href="#"  >
+  	{{shelfobject.object}}({{shelfobject.quantity}}, {{shelfobject.measurement_unit}} )
+  	</a>
+  	</li>
+{% endfor %}
+</div>
+    </div>
+
+    
+ 
+
+
+
