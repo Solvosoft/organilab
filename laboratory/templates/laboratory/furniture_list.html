@@ -1,0 +1,21 @@
+
+          
+   <!-- PRUEBA: asi se verian los muebles en la lista -->
+ 
+   <div class="panel panel-default">
+  <div class="panel-heading">FURNITURE</div>
+ 
+ <div class="list-group">
+ 	
+  		{% for furniture in object_list %}
+  		<form action="{% url 'laboratoryRooms_list' %}" method="GET" >
+  <a href="#" class="list-group-item">{{furniture.name}}
+  	 <input type="submit" name="submitShelf" value="ok" id="submitShel" />
+  	 </a>
+   <input type="hidden" name="furniture" value="{{furniture.name}}" id="furniture" />
+</form>
+  {% endfor %}
+
+  </div>
+
+</div>

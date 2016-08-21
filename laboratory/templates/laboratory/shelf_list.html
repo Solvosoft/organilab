@@ -1,0 +1,14 @@
+  <!-- PRUEBA: asi se verian los muebles en la lista -->
+ 
+   <div class="panel panel-default">
+  <div class="panel-heading"> SHELVES
+</div>
+
+  <div class="list-group">
+  		{% for shelf in object_list %}
+  <a href="#" class="list-group-item">{{shelf.type}}</a>
+{% endfor %}
+  </div>
+  
+</div>
+
