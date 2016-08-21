@@ -11,15 +11,14 @@ from django.db.models.query import QuerySet
 from laboratory.models import Object, LaboratoryRoom
 
 
-
 class ObjectDeleteFromShelf(DeleteView):
-    model= Object
+    model = Object
     success_url = reverse_lazy('object-list')
+
 
 class ObjectList(ListView):
     model = Object
 
+
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
-    
-    
