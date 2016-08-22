@@ -12,12 +12,12 @@ from django.urls.base import reverse_lazy
 from django.http.response import HttpResponseRedirect
 
 def list_furniture_render(request):   
-    var= request.GET.get('namelaboratoryRoom');
+    var=request.GET.get("namelaboratoryRoom")
     print(' imprimiendo GET NAME laboratoryRoom')
     print(var)
     
     if var:
-     furnitures= Furniture.objects.filter(labroom='ap1')
+     furnitures= Furniture.objects.filter(labroom=var)
     else: 
      furnitures= Furniture.objects.all()
     return render_to_string(
