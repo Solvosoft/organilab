@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='Furniture',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.TextField(verbose_name='Name')),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
                 ('type', models.CharField(choices=[('F', 'Furniture'), ('D', 'Drawer')], max_length=2, verbose_name='Type')),
             ],
             options={
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             name='LaboratoryRoom',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.TextField(verbose_name='Name')),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
             ],
             options={
                 'verbose_name': 'Laboratory Room',
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(choices=[('0', 'Reactive'), ('1', 'Material'), ('2', 'Equipment')], max_length=2, verbose_name='Type')),
                 ('code', models.CharField(max_length=255, verbose_name='Code')),
                 ('description', models.TextField(verbose_name='Description')),
-                ('name', models.TextField(verbose_name='Name')),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
             ],
             options={
                 'verbose_name': 'Object',
