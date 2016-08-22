@@ -4,7 +4,7 @@
 			@page {
 				margin: 3cm 2cm; padding-left: 1.5cm;
 				@top-left {
-					content: "Organilab Summary Furniture Report";
+					content: "Organilab Furniture Report";
 				}
 				@top-right {
 					content: "Date: {{ datetime }}";
@@ -23,6 +23,7 @@
 				text-align: justify
 			}
 			h3 {
+				background: gainsboro; 
 				margin-right: 150px;
 			}
 			h5 {
@@ -34,21 +35,51 @@
 	</head>
 
 	<body>
-
+		
 	{% for furniture in object_list %}
 		<h3>
-        	Furniture: {{ furniture.name }}
+        	{{ furniture.name }}
         </h3>
-		{% for shelf in furniture.shelf_set.all %}
-			<h5>
-				Shelf: {{ shelf }}
-			</h5>
-            <ul>
-            	{% for obj in shelf.object_set.all %}
+        <ul>
+        	<li>LaboratoryRoom: {{ furniture.labroom }}</li>
+        	<li>Type:
+        		{% ifequal furniture.type "F" %}
+    				Furniture
+				{% endifequal %}
+				{% ifequal furniture.type "D" %}
+    				Drawer
+				{% endifequal %}
+        	</li>
+          	{% for shelf in furniture.shelf_set.all %}
+          	<li>
+				<h5>
+					Shelf: {{ shelf }}
+				</h5>
+           		<ul>
+           			<li>Type:
+           				{% ifequal shelf.type "C" %}
+    						Crate
+						{% endifequal %}
+						{% ifequal shelf.type "D" %}
+    						Drawer
+						{% endifequal %}
+           			</li>
+            		{% for obj in shelf.object_set.all %}
                 	<li>Object Code: {{ obj.code }}</li>
                 	<ul>
                 		<li>Name : {{ obj.name }}</li>
-                		
+						<li>Type:
+							{% ifequal obj.type "0" %}
+								Reactive
+							{% endifequal %}
+							{% ifequal obj.type "1" %}
+								Material
+							{% endifequal %}
+							{% ifequal obj.type "2" %}
+								Equipment
+							{% endifequal %}
+						</li>
+               			
         				<li>Quantity: 
         					{% for shelfobj in obj.shelfobject_set.all %}
         					<ul>
@@ -74,17 +105,19 @@
 								No Data
         	    			{% endfor %}
             			</li>
-                    	
-                    </ul>
-               	{% empty %}
-                	No Object Elements
-                {% endfor %}
-            </ul>
-        {% empty %}
-        	No Shelf Elements
-		{% endfor %}
-		<br />
+                   	
+                   	</ul>
+          			{% empty %}
+               			No Object Elements
+               		{% endfor %}
+            	</ul>
+            </li>	
+        	{% empty %}
+        		No Shelf Elements
+			{% endfor %}	
+       	</ul>
 	{% endfor %}
+
 
 	</body>
 </html>

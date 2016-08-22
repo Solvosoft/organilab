@@ -1,0 +1,129 @@
+<html>
+	<head>
+		<style>
+			@page {
+				margin: 3cm 2cm;
+				padding-left: 1.5cm;
+				@top-left {
+					content: "Organilab Object Report";
+				}
+				@top-right {
+					content: "Date: {{ datetime }}";
+				}
+				@bottom-right {
+					content: "Page " counter(page)
+					" of " counter(pages) ;
+				}
+				@bottom-left {
+					content:  "User: {{ request.user }}";
+					color: red;
+				}
+			}
+
+			body {
+				text-align: justify
+			}
+			h3 {
+				background: gainsboro; 
+				margin-right: 150px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		{% for obj in object_list %}
+			<h3> 
+				Object Code: {{ obj.code }} 
+			</h3>
+			<ul>
+				<li>Name: {{ obj.name }}</li>
+				<li>Shelf: {{ obj.shelf }}</li>
+				<li>Type:
+					{% ifequal obj.type "0" %}
+						Reactive
+					{% endifequal %}
+					{% ifequal obj.type "1" %}
+						Material
+					{% endifequal %}
+					{% ifequal obj.type "2" %}
+						Equipment
+					{% endifequal %}
+				</li>
+				
+        		<li>Features:
+        			{% for features in obj.features.all %}
+        			<ul>
+        				<li>
+        				{% ifequal features.name "0" %}
+        					General Use
+        				{% endifequal%}
+        				{% ifequal features.name "1" %}
+        					Security Equipment
+        				{% endifequal%}
+        				{% ifequal features.name "2" %}
+        					Analytic Chemistry
+        				{% endifequal%}
+        				{% ifequal features.name "3" %}
+        					Organic Chemistry
+        				{% endifequal%}
+        				{% ifequal features.name "4" %}
+        					Physical Chemistry
+        				{% endifequal%}
+        				{% ifequal features.name "5" %}
+        					Chemical and Biological Process
+        				{% endifequal%}
+        				{% ifequal features.name "6" %}
+        					Industrial Biotechnology
+        				{% endifequal%}
+        				{% ifequal features.name "7" %}
+        					Biochemistry
+        				{% endifequal%}
+        				{% ifequal features.name "8" %}
+        					Water Chemistry
+        				{% endifequal%}
+        				{% ifequal features.name "9" %}
+        					Other
+        				{% endifequal%}
+        				</li>
+        			</ul>	
+        			{% empty %}
+        				No Object Features
+        			{% endfor %}
+        		</li>
+        		
+        		<li>Quantity: 
+        			{% for shelfobj in obj.shelfobject_set.all %}
+        			<ul>
+            			<li>{{ shelfobj.quantity }} 
+               				{% ifequal shelfobj.measurement_unit "0" %}
+   								M
+							{% endifequal %}
+							{% ifequal shelfobj.measurement_unit "1" %}
+    							MM
+							{% endifequal %}
+							{% ifequal shelfobj.measurement_unit "2" %}
+   								CM
+							{% endifequal %}
+							{% ifequal shelfobj.measurement_unit "3" %}
+    							L
+							{% endifequal %}
+							{% ifequal shelfobj.measurement_unit "4" %}
+								ML
+							{% endifequal %}
+						</li>	
+					</ul>
+					{% empty %}
+						No Data
+        	    	{% endfor %}
+            	</li>
+
+				<li>Description: {{ obj.description }}</li>
+			</ul>
+		{% empty %}
+			No Objects Elements
+		{% endfor %}
+
+	</body>
+</html>
