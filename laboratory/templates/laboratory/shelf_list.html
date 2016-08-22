@@ -1,0 +1,12 @@
+<a data-ajax="true" data-success="processResponse"
+ href="{% url 'shelf_create' %}">
+	Add Shelf
+</a>
+
+<ul>
+	{% for shelf in object_list %}
+	<li>
+		{{shelf}}
+	</li>
+	{% endfor %}
+</ul>
