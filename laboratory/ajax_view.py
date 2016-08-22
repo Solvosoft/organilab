@@ -4,13 +4,19 @@ Created on 17/8/2016
 @author: nashyra
 '''
 from django_ajax.decorators import ajax
-from laboratory.nashyra_model import Shelf
+from laboratory.models import Shelf, Furniture, Object, ObjectFeatures, LaboratoryRoom
 from django.template.loader import render_to_string
 from django_ajax.mixin import AJAXMixin
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseRedirect
 from django.template.context_processors import request
+
+class FurnitureCreate(CreateView):
+    model = Furniture
+    fields = '__all__'
+    success_url = "/"
+
 
 def list_shelf_render(request):
     shelves = Shelf.objects.all()

@@ -6,14 +6,16 @@ Created on 1/8/2016
 from __future__ import unicode_literals
 from django.conf.urls import url
 from laboratory.generic import ShelfCreate, ShelfDelete, ShelfListView
-from laboratory.views import FurnitureCreateView
+from laboratory.ajax_view import FurnitureCreate,list_shelf, list_shelf_render, ShelvesCreate
 
 urlpatterns = [
-    url(r"^create$", ShelfCreate.as_view(),
-        name="shelf_create"),
-    url(r"^list$", ShelfListView.as_view(),
-        name="shelf_list_view"),
-    url(r"^delete/(?P<pk>\d+)$", ShelfDelete.as_view(),
-        name="shelf_confirm_delete"),
-    url(r'^furniture/create$', FurnitureCreateView.as_view())
+    url(r"^create$", FurnitureCreate.as_view(),
+        name="furniture_create"),
+]
+
+urlpatterns += [
+    url(r"^shelf/list$", list_shelf, 
+        name="shelf_list"),
+    url(r"^shelf/create$", ShelfCreate.as_view(), 
+        name="shelf_create")
 ]
