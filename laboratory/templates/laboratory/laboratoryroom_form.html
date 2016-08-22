@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+<h1 align="center">Laboratory Room Management</h1>
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+</form>
+</div>
+{% endblock %}
