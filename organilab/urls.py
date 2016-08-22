@@ -16,20 +16,27 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from laboratory import views
-from laboratory.views import LaboratoryRoomListView, SummaryFurnitureListView
+from laboratory.views import LaboratoryRoomListView, FurnitureListView,\
+    ObjectListView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     
     url(r"^labs$", LaboratoryRoomListView.as_view(),
         name="laboratoryroom_list"),
-    url(r"^furniture$", SummaryFurnitureListView.as_view(),
-        name="summaryfurniture_list"),
+    url(r"^objects$", ObjectListView.as_view(),
+        name="object_list"),           
+    url(r"^furniture$", FurnitureListView.as_view(),
+        name="furniture_list"),
 ]
 
 urlpatterns += [              
     url(r"^report/building$", views.report_building,
         name="report_building"),
-    url(r"^report/summaryfurniture$", views.summary_report,
+    url(r"^report/objects$", views.report_objects,
+        name="report_objects"),
+    url(r"^report/furniture$", views.report_furniture,
+        name="report_furniture"),                
+    url(r"^report/summaryfurniture$", views.report_sumfurniture,
         name="report_summaryfurniture"),
 ]
