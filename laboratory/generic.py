@@ -7,11 +7,16 @@ Created on 1/8/2016
 from __future__ import unicode_literals
 
 from django.views.generic.edit import CreateView, DeleteView
-from laboratory.models import Shelf, LaboratoryRoom, Furniture, Object
+from laboratory.models import Shelf, LaboratoryRoom, Object, LaboratoryRoom
 from django.contrib.messages.api import success
 from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse_lazy
 from django.db.models.query import QuerySet   
+
+class LabroomCreate(CreateView):
+    model = LaboratoryRoom
+    fields = '__all__'
+    success_url = "/"
 
 class ObjectCreate(CreateView):
     model = Object
