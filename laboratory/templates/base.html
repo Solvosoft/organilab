@@ -29,9 +29,9 @@
     <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="#">{{ request.user.get_username }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Log out</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">Log out</a></li>
         {% else %}
-            <li class="nav-item"><a class="nav-link" href="#">Log in</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">Log in</a></li>
         {% endif %}
     </ul>
 </nav>
