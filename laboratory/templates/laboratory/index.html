@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div>
+                <div class="jumbotron">
+                    <h1>ORGANILAB</h1>
+                    <p class="lead">Welcome to the Simple laboratory organizer</p>
+                    <br/>
+                    <p class="text-center"><a class="btn btn-lg btn-success" href="{% url 'laboratory:login' %}" role="button">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

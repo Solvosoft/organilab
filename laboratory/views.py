@@ -107,3 +107,6 @@ def report_sumfurniture(request):
     response[
               'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
     return response
+
+def index(request):
+    return render(request, 'laboratory/index.html')
