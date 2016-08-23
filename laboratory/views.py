@@ -39,7 +39,7 @@ def report_building(request):
     html = template.render(Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
@@ -91,7 +91,7 @@ def report_furniture(request):
                             Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+ 
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_furniture.pdf"'
@@ -117,7 +117,7 @@ def report_sumfurniture(request):
                             Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
