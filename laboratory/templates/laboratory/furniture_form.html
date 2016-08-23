@@ -91,13 +91,13 @@
 	});
 
 </script>
-{% endblock %}
-<!-- el block y el end block van entre los script
+<!-- 
+	
+-->
 <script>
 function processResponse(data){
 $('#shelves').html(data);
 }
-
-ajaxGet('{% url "shelf_list" %}', function(content){});
+ajaxGet('{% url "laboratory:shelf_list" %}', function(content){});
 </script>
--->
+{% endblock %}
