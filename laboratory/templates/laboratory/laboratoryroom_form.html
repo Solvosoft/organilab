@@ -5,7 +5,8 @@
 <h1 align="center">Laboratory Room Management</h1>
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
+    <input type="submit" value="Save">
 </form>
-<a href="{% url furniture_create %}"> Crear a las </a>
+<a href="{% url 'laboratory:furniture_create' %}"> Furniture Management </a>
 </div>
 {% endblock %}

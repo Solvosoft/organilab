@@ -16,7 +16,7 @@ from django.db.models.query import QuerySet
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
-    success_url = "/"
+    success_url = reverse_lazy('object-list')
 
 class ObjectCreate(CreateView):
     model = Object

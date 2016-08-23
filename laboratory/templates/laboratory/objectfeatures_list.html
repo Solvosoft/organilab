@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	
+	<h1>Object Features</h1>
+	<ul>
+	{% for objects in object_list %} 
+	{% for feature in object.features.all %}
+		<li> Feature:
+			{{feature.name}}
+			{{feature.description}}
+			</li>
+	{% endfor %}
+	</ul>
+	
+{% endblock %}
