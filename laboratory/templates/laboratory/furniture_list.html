@@ -13,6 +13,10 @@
 	{% for furniture in object_list %}
 		<h3 id="h3-1">
         	{{ furniture.name }}
+			<a id="a02" class="btn btn-default"
+			href="{% url 'report_summaryfurniture' %}?pk={{ furniture.pk }}"> Summary Furniture PDF </a>
+			<a id="a01" class="btn btn-default"
+			href="{% url 'report_furniture' %}?pk={{ furniture.pk }}"> Furniture PDF </a>
         </h3>
         <ul>
         	<li>LaboratoryRoom: {{ furniture.labroom }}</li>
