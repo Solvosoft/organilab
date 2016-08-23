@@ -39,14 +39,19 @@ def report_building(request):
     html = template.render(Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
     return response
 
 def report_objects(request):
-    objects = Object.objects.all()
+    
+    var = request.GET.get('pk')
+    if var is None:
+        objects = Object.objects.all()
+    else:
+        objects = Object.objects.filter(pk = var)
 
     template = get_template('pdf/object_pdf.html')
     
@@ -60,14 +65,19 @@ def report_objects(request):
                             Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+    
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
     return response
 
 def report_furniture(request):
-    furniture = Furniture.objects.all()
+    
+    var = request.GET.get('pk')
+    if var is None:
+        furniture = Furniture.objects.all()
+    else:
+        furniture = Furniture.objects.filter(pk = var)
 
     template = get_template('pdf/furniture_pdf.html')
     
@@ -81,14 +91,19 @@ def report_furniture(request):
                             Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+ 
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_furniture.pdf"'
     return response
 
 def report_sumfurniture(request):
-    sumfurniture = Furniture.objects.all()
+    
+    var = request.GET.get('pk')
+    if var is None:
+        sumfurniture = Furniture.objects.all()
+    else:
+        sumfurniture = Furniture.objects.filter(pk = var)
 
     template = get_template('pdf/summaryfurniture_pdf.html')
     
@@ -102,7 +117,7 @@ def report_sumfurniture(request):
                             Context(context)).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
-    #pisaStatus = pisa.CreatePDF(html, dest=response)
+
     response = HttpResponse(page, content_type='application/pdf')
     response[
               'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
