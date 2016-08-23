@@ -14,7 +14,7 @@ from django.template.context_processors import request
 
 class FurnitureCreate(CreateView):
     model = Furniture
-    fields = '__all__'
+    fields = ('labroom','name','type',)
     success_url = reverse_lazy('object-list')
 
 
