@@ -11,18 +11,47 @@
     <title>Organilab | {% block title %}Index{% endblock %}</title>
 
     {# CSS #}
+    <link href="{% static 'laboratory/css/organilab.css' %}" rel="stylesheet">
     <link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
     {% block css %}{% endblock %}
 </head>
 <body>
-    {# CONTENT #}
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+{# NAV #}
+<nav class="navbar navbar-dark bg-inverse">
+    <a class="navbar-brand" href="{% url 'laboratory:index' %}"><strong>ORGANILAB</strong></a>
+    <ul class="nav navbar-nav">
+        {% if request.user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="#">Laboratory Rooms</a></li>
+        {% else %}
+            {# TODO #}
+        {% endif %}
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        {% if request.user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="#">{{ request.user.get_username }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Log out</a></li>
+        {% else %}
+            <li class="nav-item"><a class="nav-link" href="#">Log in</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
-    {# JS #}
-    <script src="{% static 'laboratory/js/jquery.min.js' %}"></script>
-    <script src="{% static 'laboratory/js/bootstrap.min.js' %}"></script>
-    {% block js %}{% endblock %}
+{# CONTENT #}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+{# FOOTER #}
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted"><strong>Solvo</strong> {% now 'Y' %}
+    </div>
+</footer>
+
+{# JS #}
+<script src="{% static 'laboratory/js/jquery.min.js' %}"></script>
+<script src="{% static 'laboratory/js/bootstrap.min.js' %}"></script>
+{% block js %}{% endblock %}
 </body>
 </html>
