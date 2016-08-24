@@ -14,7 +14,7 @@
 		<h3 id="h3-1">
         	Object Code: {{ obj.code }}
         	<a id="a02" class="btn btn-default" 
-        	href="{% url 'report_objects' %}?pk={{ obj.pk }}"> Download Object PDF</a>
+        	href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}"> Download Object PDF</a>
         </h3>
         <ul>
         	<li>Name: {{ obj.name }}</li>

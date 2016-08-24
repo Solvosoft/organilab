@@ -21,7 +21,12 @@
 	color: black;
 }
 
-<<<<<<< HEAD
+#a02{
+	background-color: gainsboro;
+	color: black;
+	margin-left: 450px;
+}
+
 /* STICKY FOOTER */
 html {
     position: relative;
@@ -49,10 +54,3 @@ body {
 .container .text-muted {
     margin: 20px 0;
 }
-=======
-#a02{
-	background-color: gainsboro;
-	color: black;
-	margin-left: 450px;
-}
->>>>>>> 0815b4870dabab9c34dc0594adf21746bc8f7c43
