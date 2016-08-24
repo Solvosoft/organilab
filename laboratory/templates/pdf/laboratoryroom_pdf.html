@@ -6,19 +6,19 @@
 			@page {
 				margin: 3cm 2cm; padding-left: 1.5cm;
 				@top-left {
-					content: "Organilab Build Report";
+					content: "{% trans "Organilab Build Report" %}";
 				}
 				@top-right {
-					content: "Date: {{ datetime }}";
+					content: "{% trans "Date:" %} {{ datetime }}";
 				}
 
 				@bottom-right {
-					content: "Page " counter(page)
-					" of " counter(pages) ;
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
 				}
 
 				@bottom-left {
-					content:  "User: {{ request.user }}";
+					content:  "{% trans "User:" %} {{ request.user }}";
 					color: red;
 				}
 
@@ -42,23 +42,23 @@
 	<body>
 
 		{% for laboratory_room in object_list %}
-		<h3> Laboratory Room: {{ laboratory_room.name }} </h3>
+		<h3>{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }} </h3>
 		{% for furniture in laboratory_room.furniture_set.all %}
-		<h5> Furniture: {{ furniture }} </h5>
+		<h5>{% trans "Furniture:" %} {{ furniture }} </h5>
 		<ul>
 			{% for shelf in furniture.shelf_set.all %}
 			<li>
-				Shelf: {{ shelf }}
+				{% trans "Shelf:" %} {{ shelf }}
 			</li>
 			<ul>
 				{% for obj in shelf.object_set.all %}
 				<li>
-					Object: {{ obj }}
+					{% trans "Object:" %} {{ obj }}
 				</li>
 				{% endfor %}
 			</ul>
 			{% empty %}
-			No shelf elements
+				{% trans "No Shelf Elements" %}
 			{% endfor %}
 		</ul>
 		{% endfor %}

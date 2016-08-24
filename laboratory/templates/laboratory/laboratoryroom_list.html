@@ -7,28 +7,28 @@
 
 <pre id="pre01">
 <h3>	
- LABORATORYROOM INFORMATION
+ {% trans "LABORATORYROOM INFORMATION" %}
 </h3>	
 </pre>
 
 	{% for laboratory_room in object_list %}
 		<h3 id="h3-1">
-        	Laboratory Room: {{ laboratory_room.name }}
+        	{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }}
         </h3>
 		{% for furniture in laboratory_room.furniture_set.all %}
 			<h5 id="h5-1">
-				Furniture: {{ furniture }}
+				{% trans "Furniture:" %} {{ furniture }}
 			</h5>
             <ul>
             	{% for shelf in furniture.shelf_set.all %}
-                	<li>Shelf: {{ shelf }}</li>
+                	<li>{% trans "Shelf:" %} {{ shelf }}</li>
                     <ul>
                     	{% for obj in shelf.object_set.all %}
-                        	<li>Object: {{ obj }}</li>
+                        	<li>{% trans "Object:" %} {{ obj }}</li>
                         {% endfor %}
                     </ul>
                	{% empty %}
-                 	No shelf elements
+                 	{% trans "No Shelf Elements" %}
                 {% endfor %}
             </ul>
 		{% endfor %}
@@ -39,7 +39,7 @@
 <div>
 	
 	<a id="a01" class="btn btn-default"
-	href="{% url 'laboratory:report_building' %}"> Download PDF </a>
+	href="{% url 'laboratory:report_building' %}">{% trans "Download PDF" %}</a>
 	
 </div>
 
