@@ -56,16 +56,12 @@ To specify an standard translation, use the ``ugettext_lazy`` function:
 .. code-block:: bash
 
 	{% load i18n %} 
-
 	<html>
 		<head>
 			<title> {% trans "This is the title." %} </title>
 		</head>
-
 		<body>
-			
 			<h1> {% trans "Hello World!!" %} </h1>
-	
 		</body>
 	</html>
 
@@ -94,17 +90,13 @@ To specify an standard translation, use the ``ugettext_lazy`` function:
 						color: red;
 					}
 				}
-			
 				body {
 					text-align: justify
 				}
 			</style>
 		</head>
-
 		<body>
-			
 			<h1> {% trans "Hello World!!" %} </h1>
-	
 		</body>
 	</html>
 	

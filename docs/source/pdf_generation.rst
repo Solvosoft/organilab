@@ -63,17 +63,15 @@ Code
 			</style>
 		</head>
 		<body>
-
 			<h3>
 				Hello, this is my report!!
 			</h3>
-
 		</body>
 	</html>
 
 * Define de PDF generator method.
 
-.. code-block:: bash
+.. code-block:: python
 
 	def report_example(request):
     	varModel = Model.objects.all()
@@ -97,7 +95,7 @@ Code
 
 * Create the URL.
 
-.. code-block:: bash
+.. code-block:: python
 
     url(r"^report/example$", views.report_example,
         name="report_example"),
