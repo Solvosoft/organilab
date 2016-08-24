@@ -1,20 +1,22 @@
+{% load i18n %} 
+
 <html>
 	<head>
 		<style>
 			@page {
 				margin: 3cm 2cm; padding-left: 1.5cm;
 				@top-left {
-					content: "Organilab Furniture Report";
+					content: "{% trans "Organilab Furniture Report" %}";
 				}
 				@top-right {
-					content: "Date: {{ datetime }}";
+					content: "{% trans "Date:" %} {{ datetime }}";
 				}
 				@bottom-right {
-					content: "Page " counter(page)
-					" of " counter(pages) ;
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
 				}
 				@bottom-left {
-					content:  "User: {{ request.user }}";
+					content:  "{% trans "User:" %} {{ request.user }}";
 					color: red;
 				}
 			}
@@ -41,46 +43,46 @@
         	{{ furniture.name }}
         </h3>
         <ul>
-        	<li>LaboratoryRoom: {{ furniture.labroom }}</li>
-        	<li>Type:
+        	<li>{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}</li>
+        	<li>{% trans "Type:" %}
         		{% ifequal furniture.type "F" %}
-    				Furniture
+    				{% trans "Furniture" %}
 				{% endifequal %}
 				{% ifequal furniture.type "D" %}
-    				Drawer
+    				{% trans "Drawer" %}
 				{% endifequal %}
         	</li>
           	{% for shelf in furniture.shelf_set.all %}
           	<li>
 				<h5>
-					Shelf: {{ shelf }}
+					{% trans "Shelf:" %} {{ shelf }}
 				</h5>
            		<ul>
-           			<li>Type:
+           			<li>{% trans "Type:" %}
            				{% ifequal shelf.type "C" %}
-    						Crate
+    						{% trans "Crate" %}
 						{% endifequal %}
 						{% ifequal shelf.type "D" %}
-    						Drawer
+    						{% trans "Drawer" %}
 						{% endifequal %}
            			</li>
             		{% for obj in shelf.object_set.all %}
-                	<li>Object Code: {{ obj.code }}</li>
+                	<li>{% trans "Object Code:" %} {{ obj.code }}</li>
                 	<ul>
-                		<li>Name : {{ obj.name }}</li>
-						<li>Type:
+                		<li>{% trans "Name:" %} {{ obj.name }}</li>
+						<li>{% trans "Type:" %}
 							{% ifequal obj.type "0" %}
-								Reactive
+								{% trans "Reactive" %}
 							{% endifequal %}
 							{% ifequal obj.type "1" %}
-								Material
+								{% trans "Material" %}
 							{% endifequal %}
 							{% ifequal obj.type "2" %}
-								Equipment
+								{% trans "Equipment" %}
 							{% endifequal %}
 						</li>
                			
-        				<li>Quantity: 
+        				<li>{% trans "Quantity:" %} 
         					{% for shelfobj in obj.shelfobject_set.all %}
         					<ul>
             					<li>{{ shelfobj.quantity }} 
@@ -102,18 +104,18 @@
 								</li>	
 							</ul>
 							{% empty %}
-								No Data
+								{% trans "No Data" %}
         	    			{% endfor %}
             			</li>
                    	
                    	</ul>
           			{% empty %}
-               			No Object Elements
+               			{% trans "No Object Elements" %}
                		{% endfor %}
             	</ul>
             </li>	
         	{% empty %}
-        		No Shelf Elements
+        		{% trans "No Shelf Elements" %}
 			{% endfor %}	
        	</ul>
 	{% endfor %}

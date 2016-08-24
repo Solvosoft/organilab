@@ -1,3 +1,5 @@
+{% load i18n %} 
+
 <html>
 	<head>
 		<style>
@@ -5,17 +7,17 @@
 				margin: 3cm 2cm;
 				padding-left: 1.5cm;
 				@top-left {
-					content: "Organilab Object Report";
+					content: "{% trans "Organilab Object Report" %}";
 				}
 				@top-right {
-					content: "Date: {{ datetime }}";
+					content: "{% trans "Date:" %} {{ datetime }}";
 				}
 				@bottom-right {
-					content: "Page " counter(page)
-					" of " counter(pages) ;
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
 				}
 				@bottom-left {
-					content:  "User: {{ request.user }}";
+					content:  "{% trans "User:" %} {{ request.user }}";
 					color: red;
 				}
 			}
@@ -35,65 +37,65 @@
 
 		{% for obj in object_list %}
 			<h3> 
-				Object Code: {{ obj.code }} 
+				{% trans "Object Code:" %} {{ obj.code }} 
 			</h3>
 			<ul>
-				<li>Name: {{ obj.name }}</li>
-				<li>Shelf: {{ obj.shelf }}</li>
-				<li>Type:
+				<li>{% trans "Name:" %} {{ obj.name }}</li>
+				<li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
+				<li>{% trans "Type:" %}
 					{% ifequal obj.type "0" %}
-						Reactive
+						{% trans "Reactive" %}
 					{% endifequal %}
 					{% ifequal obj.type "1" %}
-						Material
+						{% trans "Material" %}
 					{% endifequal %}
 					{% ifequal obj.type "2" %}
-						Equipment
+						{% trans "Equipment" %}
 					{% endifequal %}
 				</li>
 				
-        		<li>Features:
+        		<li>{% trans "Features:" %}
         			{% for features in obj.features.all %}
         			<ul>
         				<li>
         				{% ifequal features.name "0" %}
-        					General Use
+        					{% trans "General Use" %}
         				{% endifequal%}
         				{% ifequal features.name "1" %}
-        					Security Equipment
+        					{% trans "Security Equipment" %}
         				{% endifequal%}
         				{% ifequal features.name "2" %}
-        					Analytic Chemistry
+        					{% trans "Analytic Chemistry" %}
         				{% endifequal%}
         				{% ifequal features.name "3" %}
-        					Organic Chemistry
+        					{% trans "Organic Chemistry" %}
         				{% endifequal%}
         				{% ifequal features.name "4" %}
-        					Physical Chemistry
+        					{% trans "Physical Chemistry" %}
         				{% endifequal%}
         				{% ifequal features.name "5" %}
-        					Chemical and Biological Process
+        					{% trans "Chemical and Biological Process" %}
         				{% endifequal%}
         				{% ifequal features.name "6" %}
-        					Industrial Biotechnology
+        					{% trans "Industrial Biotechnology" %}
         				{% endifequal%}
         				{% ifequal features.name "7" %}
-        					Biochemistry
+        					{% trans "Biochemistry" %}
         				{% endifequal%}
         				{% ifequal features.name "8" %}
-        					Water Chemistry
+        					{% trans "Water Chemistry" %}
         				{% endifequal%}
         				{% ifequal features.name "9" %}
-        					Other
+        					{% trans "Other" %}
         				{% endifequal%}
         				</li>
         			</ul>	
         			{% empty %}
-        				No Object Features
+        				{% trans "No Object Features" %}
         			{% endfor %}
         		</li>
         		
-        		<li>Quantity: 
+        		<li>{% trans "Quantity:" %} 
         			{% for shelfobj in obj.shelfobject_set.all %}
         			<ul>
             			<li>{{ shelfobj.quantity }} 
@@ -115,14 +117,14 @@
 						</li>	
 					</ul>
 					{% empty %}
-						No Data
+						{% trans "No Data" %}
         	    	{% endfor %}
             	</li>
 
-				<li>Description: {{ obj.description }}</li>
+				<li>{% trans "Description:" %} {{ obj.description }}</li>
 			</ul>
 		{% empty %}
-			No Objects Elements
+			{% trans "No Objects Elements" %}
 		{% endfor %}
 
 	</body>

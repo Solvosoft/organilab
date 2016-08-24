@@ -1,20 +1,22 @@
+{% load i18n %} 
+
 <html>
 	<head>
 		<style>
 			@page {
 				margin: 3cm 2cm; padding-left: 1.5cm;
 				@top-left {
-					content: "Organilab Summary Furniture Report";
+					content: "{% trans "Organilab Summary Furniture Report" %}";
 				}
 				@top-right {
-					content: "Date: {{ datetime }}";
+					content: "{% trans "Date:" %} {{ datetime }}";
 				}
 				@bottom-right {
-					content: "Page " counter(page)
-					" of " counter(pages) ;
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
 				}
 				@bottom-left {
-					content:  "User: {{ request.user }}";
+					content:  "{% trans "User:" %} {{ request.user }}";
 					color: red;
 				}
 			}
@@ -37,19 +39,19 @@
 
 	{% for furniture in object_list %}
 		<h3>
-        	Furniture: {{ furniture.name }}
+        	{% trans "Furniture:" %} {{ furniture.name }}
         </h3>
 		{% for shelf in furniture.shelf_set.all %}
 			<h5>
-				Shelf: {{ shelf }}
+				{% trans "Shelf:" %} {{ shelf }}
 			</h5>
             <ul>
             	{% for obj in shelf.object_set.all %}
-                	<li>Object Code: {{ obj.code }}</li>
+                	<li>{% trans "Object Code:" %} {{ obj.code }}</li>
                 	<ul>
-                		<li>Name : {{ obj.name }}</li>
+                		<li>{% trans "Name:" %} {{ obj.name }}</li>
                 		
-        				<li>Quantity: 
+        				<li>{% trans "Quantity:" %} 
         					{% for shelfobj in obj.shelfobject_set.all %}
         					<ul>
             					<li>{{ shelfobj.quantity }} 
@@ -71,17 +73,17 @@
 								</li>	
 							</ul>
 							{% empty %}
-								No Data
+								{% trans "No Data" %}
         	    			{% endfor %}
             			</li>
                     	
                     </ul>
                	{% empty %}
-                	No Object Elements
+                	{% trans "No Object Elements" %}
                 {% endfor %}
             </ul>
         {% empty %}
-        	No Shelf Elements
+        	{% trans "No Shelf Elements" %}
 		{% endfor %}
 		<br />
 	{% endfor %}
