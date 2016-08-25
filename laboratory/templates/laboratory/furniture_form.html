@@ -8,6 +8,12 @@
 		{{ form.as_p }}
 		<!-- aqui va lo de la tabla-->
 		<div>
+			<button>
+				<a style="color: black" data-ajax="true" data-success="processResponse"
+				href="{% url 'laboratory:shelf_create' %}"> 
+					Add Shelf 
+				</a>
+			</button>
 			<table id="mytab">
 				<tr>
 					<td>
@@ -33,9 +39,7 @@
 				<input type="button" value="Delete Column" onclick="deleteColumns()">
 			</div>
 		</div>
-		<div class="col-md-5" style="padding-top: 10%">
-			<div id="ShelvesCreate"></div>
-		</div>
+		<div class="col-md-5" style="padding-top: 10%"></div>
 		<!--	-->
 		<input type="submit" value="Save">
 	</form>
@@ -43,22 +47,12 @@
 {% endblock %}
 
 {% block js%}
-<!--
--->
-<script type="text/javascript">
-	$(function() {
-		$('#mytab').bootstrapTable({
-			data : data
-		});
-	});
-
-	function processResponseshelf(dat) {
-		$('#shelves').html(dat);
+<script>
+	function processResponse(data) {
+		$('#shelves').html(data);
 	}
 
-	function processResponseshelfCreate(dat) {
-		$('#ShelvesCreate').html(dat);
-	}
-
+	ajaxGet('{% url "laboratory:shelf_list" %}', function(content) {
+	}); 
 </script>
 {% endblock %}

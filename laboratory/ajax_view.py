@@ -13,11 +13,11 @@ from django.http.response import HttpResponseRedirect
 from django.template.context_processors import request
 
 
-class FurnitureCreate(CreateView):
-    model = Furniture
-    fields = '__all__'
-    success_url = reverse_lazy('furniture-list')
-
+#class FurnitureCreate(CreateView):
+ #   model = Furniture
+  #  fields = '__all__'
+   # success_url = reverse_lazy('furniture-list')
+    
 
 def list_shelf_render(request):
     shelves = Shelf.objects.all()
