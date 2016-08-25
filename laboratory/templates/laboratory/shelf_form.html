@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <div id="hidemodaladd" class="alert">
 	<div class="panel panel-default">
@@ -6,7 +8,7 @@
 		</div>
 		<div class="panel-body">
 			<form data-ajax-submit="" onsubmit="return false;"
-			data-success="processResponseshelf" action="{% url 'laboratory/shelf_create' %}"
+			data-success="processResponseshelf" action="{% url 'laboratory:shelf_create' %}"
 			method="post">
 				{% csrf_token %}
 				<p>
@@ -22,3 +24,4 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
