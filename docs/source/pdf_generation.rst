@@ -35,67 +35,65 @@ Code
 
 .. code-block:: bash
 
-	<html>
-		<head>
-			<style>
-				@page {
-					margin: 3cm 2cm; padding-left: 1.5cm;
-					@top-left {
-						content: "Example Report";
-					}
-					@top-right {
-						content: "Date: {{ datetime }}";
-					}
-	
-					@bottom-right {
-						content: "Page " counter(page)
-						" of " counter(pages) ;
-					}
-	
-					@bottom-left {
-						content:  "User: {{ request.user }}";
-						color: red;
-					}
-				}
-				body {
-					text-align: justify
-				}
-			</style>
-		</head>
-		<body>
-			<h3>
-				Hello, this is my report!!
-			</h3>
-		</body>
-	</html>
+    <html>
+        <head>
+            <style>
+                @page {
+                    margin: 3cm 2cm; padding-left: 1.5cm;
+
+                    @top-left {
+                        content: "Example Report";
+                    }
+                    @top-right {
+                        content: "Date: {{ datetime }}";
+                    }
+                    @bottom-right {
+                        content: "Page " counter(page) " of " counter(pages) ;
+                    }
+                    @bottom-left {
+                        content:  "User: {{ request.user }}";
+                        color: red;
+                    }
+                }
+                body {
+                    text-align: justify
+                }
+            </style>
+        </head>
+        <body>
+            <h3>
+                Hello, this is my report!!
+            </h3>
+        </body>
+    </html>
 
 * Define de PDF generator method.
 
 .. code-block:: python
 
-	def report_example(request):
-    	varModel = Model.objects.all()
+    def report_example(request):
+        varModel = Model.objects.all()
 
-	    template = get_template('pdf/example_pdf.html')
+        template = get_template('pdf/example_pdf.html')
+
+        context = {
+                   'object_list': varModel,
+                   'datetime': timezone.now(),
+                   'request': request
+                   }
     
-	    context = {
-	               'object_list': varModel,
-	               'datetime': timezone.now(),
-	               'request': request
-	               }
-    
-    	html = template.render(Context(context)).encode("UTF-8")
+        html = template.render(Context(context)).encode("UTF-8")
 
-    	page = HTML(string=html, encoding='utf-8').write_pdf()
+        page = HTML(string=html, encoding='utf-8').write_pdf()
 
-    	response = HttpResponse(page, content_type='application/pdf')
-    	response[
-    	          'Content-Disposition'] = 'attachment; filename="report_example.pdf"'
-    	return response
+        response = HttpResponse(page, content_type='application/pdf')
+
+        response[
+                  'Content-Disposition'] = 'attachment; filename="report_example.pdf"'
+        return response
 
 * Create the URL.
 
 .. code-block:: python
 
-    url(r"^report/example$", views.report_example,
-        name="report_example"),
+    url(r"^report/example$", views.report_example, name="report_example"),
