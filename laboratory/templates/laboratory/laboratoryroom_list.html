@@ -1,115 +1,169 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div class="row">
+<div class="row">
+	<div class="col-md-7">
 
-        <h1 style="color: red; padding-bottom: 5%">Vista Edificio</h1>
-        <div class="col-md-7">
+		<div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
 
+			<form>
+				<div class="col-md-10">
+					<input type="search" class="form-control" id="search">
+				</div>
+				<div  class="col-md-2">
+					<button type="submit" class="btn btn-default">
+						search
+					</button>
+				</div>
+			</form>
+		</div>
 
-            <div class="col-md-12">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    {% for LaboratoryRoom in object_list %}
-                        <li role="presentation"><a href=#{{ LaboratoryRoom.name }}
-                                                   aria-controls={{ LaboratoryRoom.name }} role="tab"
-                                                   data-toggle="tab">{{ LaboratoryRoom.name }}</a></li>
+		<div class="col-md-12" style="padding-bottom: 3%">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				{% for LaboratoryRoom in object_list %}
+				<li role="presentation">
+					<!-- agregarle ajax-->
+					<a href="#idlab"
+					onclick="function_name_furniture({{LaboratoryRoom.id }})"
+					aria-controls={{ LaboratoryRoom.id }} role="tab"
+					data-toggle="tab">{{ LaboratoryRoom.name }}</a>
+				</li>
 
-                        <!-- submit codigo de aposento  -->
+				<!-- submit codigo de aposento
 
-                        <li role="presentation">
-                            <form action="{% url 'laboratoryRooms_list' %}" method="GET">
-                                <input type="hidden" name="namelaboratoryRoom" value="{{ LaboratoryRoom.name }}"
-                                       id="namelaboratoryRoom"/>
-                                <input type="submit" name="submitFurniture" value="ok" id="submitFurniture"/>
-                            </form>
-                        </li>
+				<li role="presentation">
+				<form action="{% url 'laboratoryRooms_list' %}" method="GET">
+				<input type="hidden" name="namelaboratoryRoom" value="{{ LaboratoryRoom.name.id }}"
+				id="namelaboratoryRoom"/>
+				<input type="submit" name="submitFurniture" value="ok" id="submitFurniture"/>
+				</form>
+				</li>
+				<!-- END submit codigo de aposento  -->
 
-                        <!-- Nav tabs -->
-                    {% endfor %}
+				<!-- Nav tabs -->
+				{% endfor %}
 
+			</ul>
 
-                </ul>
+		</div>
 
-            </div>
-            <div class="col-md-12" style="padding-top: 5%; padding-bottom: 5%">
+		<div class="col-md-12">
 
-                <form action="{% url 'laboratoryRooms_list' %}" method="GET">
-                    <input type="hidden" name="namelaboratoryRoom" value="ap1" id="namelaboratoryRoom"/>
-                    <input type="submit" name="submitFurniture" value="submit Labory Name" id="submitFurniture"/>
-                </form>
+			<!-- Tab panes -->
+			<div class="tab-content">
+				{% for LaboratoryRoom in object_list %}
 
-            </div>
+				<div role=" tab-panel" class="tab-pane" id="idlab">
 
+					<div class="col-md-6">
+						<!-- traer lista de muebles -->
+						<div id="furnitures">
+						
+						</div>
+					</div>
 
-            <div class="col-md-12">
+					<div class="col-md-6">
+						<!-- traer lista de estantes -->
+						<div id="shelf">
+							
+						</div>
+					</div>
+				</div>
+				{% endfor %}
 
+			</div>
 
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    {% for LaboratoryRoom in object_list %}
+		</div>
+		<div class="col-md-12">
+			<div id="shelfobject"></div>
+		</div>
+	</div>
+	<div class="col-md-5" style="padding-top: 10%">
+		<div id="shelfobjectCreate"></div>
+		<div id="shelfobjectDelete"></div>
 
-                        <div role=" tab-panel" class="tab-pane" id={{ LaboratoryRoom.name }}>
-
-                            <div class="col-md-6">
-                                <!-- traer lista de muebles -->
-                                <div id="furnitures">muebles de {{ LaboratoryRoom.name }}  </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- traer lista de muebles -->
-                                <div id="shelf">estantes de {{ LaboratoryRoom.name }} </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-
-                </div>
-
-            </div>
-            <div class="col-md-12">
-                <div class="col-md-5"> hola 1</div>
-                <div class="col-md-5">
-                    <div id="shelfobject"></div>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-md-5">
-            Aqui van los modales
-
-            {% for LaboratoryRoom in object_list %}
-                {{ LaboratoryRoom.name }}
-            {% endfor %}
-
-        </div>
-    </div>
+	</div>
+</div>
 
 {% endblock %}
-
-
 
 {% block js %}
-    <script>
-        function processResponsefurniture(dat) {
-            $('#furnitures').html(dat);
-        }
-        ajaxGet('{% url "list_furniture" %}', function () {
-        });
+<script>
+	function function_name_furniture(argument) {
+		ajax({
+			url : '{% url "list_furniture" %}',
+			data : {
+				"namelaboratoryRoom" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponsefurniture(dat) {
+				$('#furnitures').html(dat);
+			}
+		});
+	}
 
-        function processResponseshelf(dat) {
-            $('#shelf').html(dat);
-        }
-        ajaxGet('{% url "list_shelf" %}', function () {
-        });
+	function function_name_shelf(argument) {
+		ajax({
+			url : '{% url "list_shelf" %}',
+			data : {
+				"furniture" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponseshelf(dat) {
+				$('#shelf').html(dat);
+			}
+		});
 
+	}
 
-        function processResponseshelfobject(dat) {
-            $('#shelfobject').html(dat);
-        }
-        ajaxGet('{% url "list_shelfobject" %}', function () {
-        });
+	function function_name_shelfobject(argument) {
+		ajax({
+			url : '{% url "list_shelfobject" %}',
+			data : {
+				"shelf" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponseshelfobject(dat) {
+				$('#shelfobject').html(dat);
+			}
+		});
 
-    </script>
+	}
+
+	ajax({
+		url : '{% url "list_shelfobject" %}',
+		data : {
+			"shelf" : argument
+		},
+		cache : false,
+		type : "GET",
+		success : function processResponseshelfobjectCreate(dat) {
+			$('#shelfobjectCreate').html(dat);
+		}
+	});
+	function processResponseshelfobjectCreate(dat) {
+		$('#shelfobjectCreate').html(dat);
+	}
+
+	ajax({
+		url : '{% url "list_shelfobject" %}',
+		data : {
+			"shelf" : argument
+		},
+		cache : false,
+		type : "GET",
+		success : function processResponseshelfobjectDelete(dat) {
+			$('#shelfobjectDelete').html(dat);
+		}
+	});
+
+	function processResponseshelfobjectDelete(dat) {
+		$('#shelfobjectDelete').html(dat);
+	}
+</script>
 {% endblock %}
-
 
