@@ -74,9 +74,6 @@
 </div>
 
 
-
-
-
 <div id="object_create" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -89,9 +86,18 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<div id="shelfobjectDelete"></div>
 
-
+<div id="object_delete" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Are you sure? </h4>
+      </div>
+	<div id="shelfobjectDelete"></div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 {% endblock %}
 
@@ -152,20 +158,9 @@ function showAddObject(selve){
 		$("#object_create").modal('show');
 	}
 
-	ajax({
-		url : '{% url "list_shelfobject" %}',
-		data : {
-			"shelf" : argument
-		},
-		cache : false,
-		type : "GET",
-		success : function processResponseshelfobjectDelete(dat) {
-			$('#shelfobjectDelete').html(dat);
-		}
-	});
-
 	function processResponseshelfobjectDelete(dat) {
 		$('#shelfobjectDelete').html(dat);
+		$("#object_delete").modal('show');
 	}
 </script>
 {% endblock %}
