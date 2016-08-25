@@ -35,3 +35,6 @@ tornado==4.4.1
 watchdog==0.8.3
 WeasyPrint==0.30
 webencodings==0.5
+simplejson==3.8.2
+django-jsonfield==1.0.1
+django-json-rpc==0.6.1

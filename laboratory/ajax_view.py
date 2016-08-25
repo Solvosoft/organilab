@@ -4,7 +4,7 @@ Created on 17/8/2016
 @author: nashyra
 '''
 from django_ajax.decorators import ajax
-from laboratory.models import Shelf, Furniture, ObjectFeatures
+from laboratory.models import Shelf, Furniture, ObjectFeatures,ShelfObject
 from django.template.loader import render_to_string
 from django_ajax.mixin import AJAXMixin
 from django.views.generic.edit import CreateView, DeleteView
@@ -12,11 +12,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseRedirect
 from django.template.context_processors import request
 
+
 class FurnitureCreate(CreateView):
     model = Furniture
-    fields = ('labroom','name','type',)
-    success_url = reverse_lazy('object-list')
- 
+    fields = '__all__'
+    success_url = reverse_lazy('furniture-list')
+
 
 def list_shelf_render(request):
     shelves = Shelf.objects.all()
@@ -37,7 +38,7 @@ def list_shelf(request):
 class ShelvesCreate(AJAXMixin, CreateView):
     model = Shelf
     fields = "__all__"
-    success_url = reverse_lazy('shelf_list')
+    success_url = reverse_lazy('list_shelf')
     
     def post(self, request, *args, **kwargs):
         response = CreateView.post(self, request, *args, **kwargs)
