@@ -53,11 +53,13 @@ To specify an standard translation, use the ``ugettext_lazy`` function:
 
 * In a template:
 
+You need to put ``{% load i18n %}`` in the begining of the template, always after ``{% extends 'base.html' %}``:
+
 .. code-block:: bash
 
 	{% load i18n %} 
 	<html>
-		<head>
+		<head> 
 			<title> {% trans "This is the title." %} </title>
 		</head>
 		<body>
@@ -100,4 +102,12 @@ To specify an standard translation, use the ``ugettext_lazy`` function:
 		</body>
 	</html>
 	
+Then, create a folder with the name of ``locale`` in your project (laboratory/locale), and execute the next command:
 
+.. code-block:: bash
+
+	$ python manage.py makemessages  -l es
+
+-l es : indicates the translation lenguage.
+
+Edit the .po file. 
