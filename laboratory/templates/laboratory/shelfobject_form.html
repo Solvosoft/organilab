@@ -1,40 +1,29 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<div id="hidemodaladd"class="alert">
+ <form data-ajax-submit="" onsubmit="return false;"
+	data-success="processResponseshelfobject"
+	action="{% url 'shelfobject_create' %}" method="post"
+>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			Add <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-
-		<div class="panel-body">
-
-			<form data-ajax-submit="" onsubmit="return false;"
-			data-success="processResponseshelfobject"
-			action="{% url 'shelfobject_create' %}" method="post"
-			>
+<div class="modal-body">
 				{% csrf_token %}
 				<p>
 					{{form.as_p}}
 				</p>
-				<button id="save" style="color: black " type="submit" >
-					Save
-				</button>
-				<script>
-					$(document).ready(function() {
-						$("#save").click(function() {
-							$("#hidemodaladd").hide();
-						});
-						
-					});
-				</script>
-
-				<button  data-dismiss="alert"  style="color: black " type="submit" >
-					Cancel
-				</button>
-			</form>
-		</div>
-
-	</div>
-
 </div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	<button type="submit" class="btn btn-primary">Save changes</button>
+</div>
+
+</form>
+  
+  
+
+
+
+
+
+ 
+
+
 
