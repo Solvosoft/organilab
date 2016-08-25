@@ -1,40 +1,42 @@
-{% extends 'base.html' %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<div id="hidemodaldelete" class="alert">
 
-{% block content %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Eliminar
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
 
+		<div class="panel-body">
+			
+			<form data-ajax-submit="" onsubmit="return false;"
+			data-success="processResponseshelfobject"
+			action="{% url 'shelfobject_delete' object.pk %}" method="post"
+			>
+				{% csrf_token %}
+				<p>
+					Are you sure that do you want delete this object
+					<br />
+					{{object}} ?
+				</p>
 
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+				<button id="delete" href="{% url 'laboratoryRooms_list' %}" style="color: black "  type="submit" >
+					Delete
+				</button>
+				<script>
+					$(document).ready(function() {
+						$("#delete").click(function() {
+							$("#hidemodaldelete").hide();
+						});
+						
+					});
+				</script>
+				<button  data-dismiss="alert"  style="color: black " type="submit" >
+					Cancel
+				</button>
+			</form>
 
-
-
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-    		<form data-ajax-submit="" onsubmit="return false;"
-              data-success="processResponseshelfobject" 
-              action="{% url 'shelfobject_delete' object.pk %}" method="post" 
-            >{% csrf_token %}
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">**DELETE OBJECT FROM SHELF **</h4>
-        <p> Are you sure that do you wnat delete<br /> {{object}} ?  </p>
-      </div>
-      <div class="modal-body">
-      
-        <button href="{% url 'laboratoryRooms_list' %}" style="color: black "  type="submit" >Save</button>
-       
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-       </form>
-      
-      
-    </div>
-  </div>
+		</div>
+	</div>
 </div>
 
-{% endblock %}
