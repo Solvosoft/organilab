@@ -1,14 +1,22 @@
-  <!-- PRUEBA: asi se verian los muebles en la lista -->
- 
-   <div class="panel panel-default">
-  <div class="panel-heading"> SHELVES
-</div>
+<!-- PRUEBA: asi se verian los muebles en la lista -->
 
-  <div class="list-group">
-  		{% for shelf in object_list %}
-  <a href="#" class="list-group-item">{{shelf.type}}</a>
-{% endfor %}
-  </div>
-  
-</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		SHELVES
+	</div>
 
+	<div class="list-group">
+		{% for shelf in object_list %}
+		<form
+		data-ajax-submit="" onsubmit="return false;"
+		data-success="processResponseshelfobject"
+		action="{% url 'list_shelf' %}" method="GET" >
+
+			<a onclick="function_name_shelfobject({{shelf.id}})" href="#" class="list-group-item"> {{shelf.id}}</a>
+			<input type="hidden" name="shelf" value="{{shelf.id}}" id="shelf" />
+		</form>
+
+		{% endfor %}
+	</div>
+
+</div>
