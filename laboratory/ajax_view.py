@@ -16,7 +16,7 @@ class FurnitureCreate(CreateView):
     model = Furniture
     fields = ('labroom','name','type',)
     success_url = reverse_lazy('object-list')
-
+ 
 
 def list_shelf_render(request):
     shelves = Shelf.objects.all()
