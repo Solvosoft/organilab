@@ -11,14 +11,15 @@ from django.views.generic.edit import CreateView, DeleteView
 from django.urls.base import reverse_lazy
 from django.http.response import HttpResponseRedirect
 
-def list_furniture_render(request):   
-    var=request.GET.get("namelaboratoryRoom")
-    print(' imprimiendo GET NAME laboratoryRoom')
-    print(var)
+def list_furniture_render(request):  
+    
+    var=request.GET.get('namelaboratoryRoom','0')
+    print(' _________________   '+var+'   __________namelaboratoryRoom' )
+   
     
     if var:
      furnitures= Furniture.objects.filter(labroom=var)
-    else: 
+    else:   
      furnitures= Furniture.objects.all()
     return render_to_string(
                     'laboratory/furniture_list.html',
@@ -27,7 +28,7 @@ def list_furniture_render(request):
                        })
 @ajax 
 def list_furniture(request):
-    print("Entro al ajax_view labory furniture")
+   # print("Entro al ajax_view labory furniture")
     return {
            'inner-fragments':{
                 '#furnitures': list_furniture_render(request)
@@ -39,9 +40,8 @@ def list_furniture(request):
     
     
 def list_shelf_render(request):   
-    var=request.GET.get("furniture")
-    print(' imprimiendo GET furniture')
-    print(var)
+    var=request.GET.get('furniture','0')
+    print(' _________________   '+var+'   __________furniture' )
     
     if var:
      shelf = Shelf.objects.filter(furniture=var)
@@ -64,12 +64,12 @@ def list_shelf(request):
     
     
 def list_shelfobject_render(request):   
-    var=request.GET.get("furniture")
-    print(' imprimiendo GET furniture')
-    print(var)
+    var=request.GET.get('shelf','0')
+    
+    print(' _________________   '+var+'   __________shelf' )
     
     if var:
-     shelfobject = ShelfObject.objects.filter(furniture=var)
+     shelfobject = ShelfObject.objects.filter(object=var)
     else: 
      shelfobject= ShelfObject.objects.all()
     return render_to_string(
@@ -82,8 +82,10 @@ def list_shelfobject(request):
     print("Entro al ajax_view laboryyyyyyyyyyyyyyyyy shelfObject")
     return {
            'inner-fragments':{
-                '#shelfobject': list_shelfobject_render(request)
-                                   
+                '#shelfobject': list_shelfobject_render(request),
+                '#shelfposition': request.GET.get('shelf','0'),
+                '#shelfposition1': request.GET.get('shelf','0')          
+            
             },
     }
     
