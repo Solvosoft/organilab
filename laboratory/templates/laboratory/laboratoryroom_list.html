@@ -17,7 +17,8 @@
 				</div>
 			</form>
 		</div>
-
+</div>
+<div class="row">
 		<div class="col-md-12" style="padding-bottom: 3%">
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" role="tablist">
@@ -30,16 +31,6 @@
 					data-toggle="tab">{{ LaboratoryRoom.name }}</a>
 				</li>
 
-				<!-- submit codigo de aposento
-
-				<li role="presentation">
-				<form action="{% url 'laboratoryRooms_list' %}" method="GET">
-				<input type="hidden" name="namelaboratoryRoom" value="{{ LaboratoryRoom.name.id }}"
-				id="namelaboratoryRoom"/>
-				<input type="submit" name="submitFurniture" value="ok" id="submitFurniture"/>
-				</form>
-				</li>
-				<!-- END submit codigo de aposento  -->
 
 				<!-- Nav tabs -->
 				{% endfor %}
@@ -47,7 +38,8 @@
 			</ul>
 
 		</div>
-
+</div>
+<div class="row">
 		<div class="col-md-12">
 
 			<!-- Tab panes -->
@@ -56,14 +48,14 @@
 
 				<div role=" tab-panel" class="tab-pane" id="idlab">
 
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<!-- traer lista de muebles -->
 						<div id="furnitures">
 						
 						</div>
 					</div>
 
-					<div class="col-md-6">
+					<div class="col-md-8">
 						<!-- traer lista de estantes -->
 						<div id="shelf">
 							
@@ -79,17 +71,37 @@
 			<div id="shelfobject"></div>
 		</div>
 	</div>
-	<div class="col-md-5" style="padding-top: 10%">
-		<div id="shelfobjectCreate"></div>
-		<div id="shelfobjectDelete"></div>
-
-	</div>
 </div>
+
+
+
+
+
+<div id="object_create" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add Object</h4>
+      </div>
+	<div id="shelfobjectCreate"></div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="shelfobjectDelete"></div>
+
+
 
 {% endblock %}
 
 {% block js %}
 <script>
+
+function showAddObject(selve){
+
+}
+
 	function function_name_furniture(argument) {
 		ajax({
 			url : '{% url "list_furniture" %}',
@@ -134,19 +146,10 @@
 
 	}
 
-	ajax({
-		url : '{% url "list_shelfobject" %}',
-		data : {
-			"shelf" : argument
-		},
-		cache : false,
-		type : "GET",
-		success : function processResponseshelfobjectCreate(dat) {
-			$('#shelfobjectCreate').html(dat);
-		}
-	});
 	function processResponseshelfobjectCreate(dat) {
 		$('#shelfobjectCreate').html(dat);
+		// clean the form
+		$("#object_create").modal('show');
 	}
 
 	ajax({
