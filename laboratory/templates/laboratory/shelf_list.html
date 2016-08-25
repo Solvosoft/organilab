@@ -1,14 +1,29 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<button id="hideadd">
-			<a style="color: black" data-ajax="true" data-success="processResponseshelfCreate"
-			href="{% url 'laboratory/shelf_create' %}"> 
-				Add Shelf </a>
-		</button>
-		
-		<button id="showhide">
-			Show/Hide
-		</button>
+<a data-ajax="true" data-success="processResponse"
+href="{% url 'laboratory:shelf_create' %}"> Add Shelf </a>
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					&times;
+				</button>
+				<h4 class="modal-title">Add Shelf</h4>
+			</div>
+			<div class="modal-body">
+				<p>
+					{% for shelves in object_list %}
+					<li>
+						{{shelves.type}}
+					</li>
+					{% endfor %}
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					Close
+				</button>
+			</div>
+		</div>
 	</div>
+</div>
 </div>

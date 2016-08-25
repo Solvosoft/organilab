@@ -4,8 +4,8 @@ Created on 1/8/2016
 @author: nashyra
 '''
 from __future__ import unicode_literals
-from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate
-from laboratory.ajax_view import FurnitureCreate, list_shelf, list_objectfeatures
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,FurnitureCreate
+from laboratory.ajax_view import list_shelf, list_objectfeatures
 from django.conf.urls import url
 from django.urls import reverse_lazy
 
