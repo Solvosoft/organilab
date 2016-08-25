@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-24 14:30-0600\n"
+"POT-Creation-Date: 2016-08-25 11:34-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "Nombre"
 msgid "Laboratory Room"
 msgstr "Sala de Laboratorio"
 
-#: laboratory/models.py:13
+#: laboratory/models.py:13 laboratory/templates/base.html:25
 msgid "Laboratory Rooms"
 msgstr "Salas de Laboratorio"
 
@@ -79,17 +79,17 @@ msgstr "Uso General"
 msgid "Security equipment"
 msgstr "Equipo de Seguridad"
 
-#: laboratory/models.py:75 laboratory/templates/laboratory/object_list.html:45
+#: laboratory/models.py:75 laboratory/templates/laboratory/object_list.html:46
 #: laboratory/templates/pdf/object_pdf.html:68
 msgid "Analytic Chemistry"
 msgstr "Química Analítica"
 
-#: laboratory/models.py:76 laboratory/templates/laboratory/object_list.html:48
+#: laboratory/models.py:76 laboratory/templates/laboratory/object_list.html:49
 #: laboratory/templates/pdf/object_pdf.html:71
 msgid "Organic Chemistry"
 msgstr "Química Orgánica"
 
-#: laboratory/models.py:77 laboratory/templates/laboratory/object_list.html:51
+#: laboratory/models.py:77 laboratory/templates/laboratory/object_list.html:52
 #: laboratory/templates/pdf/object_pdf.html:74
 msgid "Physical Chemistry"
 msgstr "Química Física"
@@ -98,22 +98,22 @@ msgstr "Química Física"
 msgid "Chemical and Biological process"
 msgstr "Proceso Biológico y Químico"
 
-#: laboratory/models.py:79 laboratory/templates/laboratory/object_list.html:57
+#: laboratory/models.py:79 laboratory/templates/laboratory/object_list.html:58
 #: laboratory/templates/pdf/object_pdf.html:80
 msgid "Industrial Biotechnology"
 msgstr "Biotecnología Industrial"
 
-#: laboratory/models.py:80 laboratory/templates/laboratory/object_list.html:60
+#: laboratory/models.py:80 laboratory/templates/laboratory/object_list.html:61
 #: laboratory/templates/pdf/object_pdf.html:83
 msgid "Biochemistry"
 msgstr "Bioquímica"
 
-#: laboratory/models.py:81 laboratory/templates/laboratory/object_list.html:63
+#: laboratory/models.py:81 laboratory/templates/laboratory/object_list.html:64
 #: laboratory/templates/pdf/object_pdf.html:86
 msgid "Water Chemistry"
 msgstr "Química del Agua"
 
-#: laboratory/models.py:82 laboratory/templates/laboratory/object_list.html:66
+#: laboratory/models.py:82 laboratory/templates/laboratory/object_list.html:67
 #: laboratory/templates/pdf/object_pdf.html:89
 msgid "Other"
 msgstr "Otro"
@@ -132,7 +132,7 @@ msgstr "Características del objeto"
 
 #: laboratory/models.py:101
 #: laboratory/templates/laboratory/furniture_list.html:56
-#: laboratory/templates/laboratory/object_list.html:24
+#: laboratory/templates/laboratory/object_list.html:25
 #: laboratory/templates/pdf/furniture_pdf.html:75
 #: laboratory/templates/pdf/object_pdf.html:47
 msgid "Reactive"
@@ -140,7 +140,7 @@ msgstr "Reactivo"
 
 #: laboratory/models.py:102
 #: laboratory/templates/laboratory/furniture_list.html:59
-#: laboratory/templates/laboratory/object_list.html:27
+#: laboratory/templates/laboratory/object_list.html:28
 #: laboratory/templates/pdf/furniture_pdf.html:78
 #: laboratory/templates/pdf/object_pdf.html:50
 msgid "Material"
@@ -148,7 +148,7 @@ msgstr "Material"
 
 #: laboratory/models.py:103
 #: laboratory/templates/laboratory/furniture_list.html:62
-#: laboratory/templates/laboratory/object_list.html:30
+#: laboratory/templates/laboratory/object_list.html:31
 #: laboratory/templates/pdf/furniture_pdf.html:81
 #: laboratory/templates/pdf/object_pdf.html:53
 msgid "Equipment"
@@ -202,6 +202,15 @@ msgstr "Estante del objeto"
 msgid "Shelf objects"
 msgstr "Estante de los objetos"
 
+#: laboratory/templates/base.html:33
+msgid "Log out"
+msgstr "Cerrar Sesión"
+
+#: laboratory/templates/base.html:35
+#: laboratory/templates/laboratory/login.html:6
+msgid "Log in"
+msgstr "Iniciar Sesión"
+
 #: laboratory/templates/laboratory/furniture_list.html:10
 msgid "FURNITURE INFORMATION"
 msgstr "INFORMACIÓN DE MUEBLE"
@@ -224,7 +233,7 @@ msgstr "Sala de Laboratorio:"
 #: laboratory/templates/laboratory/furniture_list.html:28
 #: laboratory/templates/laboratory/furniture_list.html:42
 #: laboratory/templates/laboratory/furniture_list.html:54
-#: laboratory/templates/laboratory/object_list.html:22
+#: laboratory/templates/laboratory/object_list.html:23
 #: laboratory/templates/pdf/furniture_pdf.html:47
 #: laboratory/templates/pdf/furniture_pdf.html:61
 #: laboratory/templates/pdf/furniture_pdf.html:73
@@ -234,7 +243,7 @@ msgstr "Tipo:"
 
 #: laboratory/templates/laboratory/furniture_list.html:39
 #: laboratory/templates/laboratory/laboratoryroom_list.html:24
-#: laboratory/templates/laboratory/object_list.html:21
+#: laboratory/templates/laboratory/object_list.html:22
 #: laboratory/templates/pdf/furniture_pdf.html:58
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:51
 #: laboratory/templates/pdf/object_pdf.html:44
@@ -243,7 +252,7 @@ msgid "Shelf:"
 msgstr "Estante:"
 
 #: laboratory/templates/laboratory/furniture_list.html:51
-#: laboratory/templates/laboratory/object_list.html:15
+#: laboratory/templates/laboratory/object_list.html:16
 #: laboratory/templates/pdf/furniture_pdf.html:70
 #: laboratory/templates/pdf/object_pdf.html:40
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:50
@@ -251,7 +260,7 @@ msgid "Object Code:"
 msgstr "Código de objeto:"
 
 #: laboratory/templates/laboratory/furniture_list.html:53
-#: laboratory/templates/laboratory/object_list.html:20
+#: laboratory/templates/laboratory/object_list.html:21
 #: laboratory/templates/pdf/furniture_pdf.html:72
 #: laboratory/templates/pdf/object_pdf.html:43
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:52
@@ -259,7 +268,7 @@ msgid "Name:"
 msgstr "Nombre:"
 
 #: laboratory/templates/laboratory/furniture_list.html:66
-#: laboratory/templates/laboratory/object_list.html:75
+#: laboratory/templates/laboratory/object_list.html:76
 #: laboratory/templates/pdf/furniture_pdf.html:85
 #: laboratory/templates/pdf/object_pdf.html:98
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:54
@@ -267,7 +276,7 @@ msgid "Quantity:"
 msgstr "Cantidad:"
 
 #: laboratory/templates/laboratory/furniture_list.html:88
-#: laboratory/templates/laboratory/object_list.html:97
+#: laboratory/templates/laboratory/object_list.html:98
 #: laboratory/templates/pdf/furniture_pdf.html:107
 #: laboratory/templates/pdf/object_pdf.html:120
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:76
@@ -290,13 +299,22 @@ msgstr "No hay estantes"
 
 #: laboratory/templates/laboratory/furniture_list.html:109
 #: laboratory/templates/laboratory/laboratoryroom_list.html:42
-#: laboratory/templates/laboratory/object_list.html:112
+#: laboratory/templates/laboratory/object_list.html:113
 msgid "Download PDF"
 msgstr "Descargar PDF"
 
 #: laboratory/templates/laboratory/furniture_list.html:112
 msgid "Download Summary PDF"
 msgstr "Descargar PDF Resumido"
+
+#: laboratory/templates/laboratory/index.html:10
+msgid "Welcome to the Simple laboratory organizer"
+msgstr "Bienvenido al organizador de laboratorio"
+
+#: laboratory/templates/laboratory/index.html:12
+#: laboratory/templates/laboratory/login.html:21
+msgid "Sign in"
+msgstr "Registrarse"
 
 #: laboratory/templates/laboratory/laboratoryroom_list.html:10
 #, fuzzy
@@ -319,59 +337,59 @@ msgstr "Mueble:"
 msgid "Object:"
 msgstr "Objeto:"
 
-#: laboratory/templates/laboratory/object_list.html:9
+#: laboratory/templates/laboratory/object_list.html:10
 #, fuzzy
 #| msgid "FURNITURE INFORMATION"
 msgid "OBJECTS INFORMATION"
 msgstr "INFORMACIÓN DE OBJETOS"
 
-#: laboratory/templates/laboratory/object_list.html:17
+#: laboratory/templates/laboratory/object_list.html:18
 #, fuzzy
 #| msgid "Download PDF"
 msgid "Download Object PDF"
 msgstr "Descargar Objeto PDF"
 
-#: laboratory/templates/laboratory/object_list.html:34
+#: laboratory/templates/laboratory/object_list.html:35
 #: laboratory/templates/pdf/object_pdf.html:57
 msgid "Features:"
 msgstr "Características:"
 
-#: laboratory/templates/laboratory/object_list.html:39
+#: laboratory/templates/laboratory/object_list.html:40
 #: laboratory/templates/pdf/object_pdf.html:62
 #, fuzzy
 #| msgid "General use"
 msgid "General Use"
 msgstr "Uso General"
 
-#: laboratory/templates/laboratory/object_list.html:42
+#: laboratory/templates/laboratory/object_list.html:43
 #: laboratory/templates/pdf/object_pdf.html:65
 #, fuzzy
 #| msgid "Security equipment"
 msgid "Security Equipment"
 msgstr "Equipo de Seguridad"
 
-#: laboratory/templates/laboratory/object_list.html:54
+#: laboratory/templates/laboratory/object_list.html:55
 #: laboratory/templates/pdf/object_pdf.html:77
 #, fuzzy
 #| msgid "Chemical and Biological process"
 msgid "Chemical and Biological Process"
 msgstr "Proceso Biológico y Químico"
 
-#: laboratory/templates/laboratory/object_list.html:71
+#: laboratory/templates/laboratory/object_list.html:72
 #: laboratory/templates/pdf/object_pdf.html:94
 #, fuzzy
 #| msgid "Object features"
 msgid "No Object Features"
 msgstr "No hay características"
 
-#: laboratory/templates/laboratory/object_list.html:101
+#: laboratory/templates/laboratory/object_list.html:102
 #: laboratory/templates/pdf/object_pdf.html:124
 #, fuzzy
 #| msgid "Description"
 msgid "Description:"
 msgstr "Descripción:"
 
-#: laboratory/templates/laboratory/object_list.html:104
+#: laboratory/templates/laboratory/object_list.html:105
 #: laboratory/templates/pdf/object_pdf.html:127
 #, fuzzy
 #| msgid "No Object Elements"

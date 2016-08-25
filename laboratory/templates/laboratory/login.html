@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row">
         <div class="col-md-offset-4 col-md-4">
-            <div class="page-header"><h1>Log in</h1></div>
+            <div class="page-header"><h1>{% trans "Log in" %}</h1></div>
             <form class="form-signin" method="post" action="{% url 'laboratory:login' %}">
                 {% csrf_token %}
                 {{ form.username.errors }}
@@ -18,7 +18,7 @@
                 <input type="password" id="{{ form.password.id_for_label }}" class="form-control" placeholder="Password"
                        name="{{ form.password.name }}" />
                 <br/>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Sign in" %}</button>
             </form>
         </div>
     </div>
