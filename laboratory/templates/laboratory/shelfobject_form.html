@@ -1,30 +1,40 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<div id="hidemodaladd"class="alert">
 
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Add <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
 
+		<div class="panel-body">
 
+			<form data-ajax-submit="" onsubmit="return false;"
+			data-success="processResponseshelfobject"
+			action="{% url 'shelfobject_create' %}" method="post"
+			>
+				{% csrf_token %}
+				<p>
+					{{form.as_p}}
+				</p>
+				<button id="save" style="color: black " type="submit" >
+					Save
+				</button>
+				<script>
+					$(document).ready(function() {
+						$("#save").click(function() {
+							$("#hidemodaladd").hide();
+						});
+						
+					});
+				</script>
 
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+				<button  data-dismiss="alert"  style="color: black " type="submit" >
+					Cancel
+				</button>
+			</form>
+		</div>
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">**CREAR OBJECT**</h4>
-      </div>
-      <div class="modal-body">
-      	<form data-ajax-submit="" onsubmit="return false;"
-              data-success="processResponseshelfobject" 
-              action="{% url 'shelfobject_create' %}" method="post" 
-        >{% csrf_token %}
-        <p>{{form.as_p}}</p>
-        <button style="color: black " type="submit" >Save</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
+	</div>
+
 </div>
+
