@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^login$', auth_views.login, {'template_name': 'laboratory/login.html'}, name='login'),
     url(r'^logout$', auth_views.logout, {'next_page': reverse_lazy('laboratory:index')}, name='logout')
-]
+] 
 
 urlpatterns += [
     url(r"^create$", FurnitureCreate.as_view(),
