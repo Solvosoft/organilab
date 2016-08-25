@@ -1,102 +1,64 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
+<div>
 	<h1 align="center"> Furniture Management</h1>
 	<form action="" method="post">
 		{% csrf_token %}
 		{{ form.as_p }}
-		<div class="table">
-			<table id="table1">
-				<!-- Cabecera de la tabla -->
-				<thead>
-					<tr>
-						<th>1</th>
-						<th>_</th>
-						<th>_</th>
-						<th>&nbsp;</th>
-					</tr>
-				</thead>
-
-				<!-- Cuerpo de la tabla con los campos -->
-				<tbody>
-					<!-- fila base para clonar y agregar al final -->
-					<tr class="fila-base">
-						<td>
-						<input type="text" class="row1" />
-						</td>
-						<td>
-						<input type="text" class="row2" />
-						</td>
-						<td>
-						<input type="text" class="row3" />
-						<td class="delete">Delete</td>
-					</tr>
-					<!-- fin de código: fila base -->
-					<tr>
-						<td>
-						<input type="text" class="row1" />
-						</td>
-						<td>
-						<input type="text" class="row2" />
-						</td>
-						<td>
-						<input type="text" class="row3" />
-						<td class="delete">Delete</td>
-					</tr>
-				</tbody>
+		<!-- aqui va lo de la tabla-->
+		<div>
+			<table id="mytab">
+				<tr>
+					<td>
+					<input type="text"/>
+					</td>
+					<td>
+					<input type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<input type="text"/>
+					</td>
+					<td>
+					<input type="text"/>
+					</td>
+				</tr>
 			</table>
-			<!-- Botón para agregar filas -->
-			<input type="button" id="add" value="Add row" />
-			<style type="text/css">
-				#table1 {
-					border: solid 1px #333;
-					width: 300px;
-				}
-				#table1 tbody tr {
-					background: #999;
-				}
-				.fila-base {
-					display: none;
-				}
-				.delete {
-					cursor: pointer;
-					color: #000;
-				}
-				input[type="text"] {
-					width: 80px;
-				} 
-			</style>
-
+			<div>
+				<input type="button" value="Add Row" onclick="addRow()">
+				<input type="button" value="Add Column" onclick="addColumn()">
+				<input type="button" value="Delete Row" onclick="deleteRows()">
+				<input type="button" value="Delete Column" onclick="deleteColumns()">
+			</div>
 		</div>
+		<div class="col-md-5" style="padding-top: 10%">
+			<div id="ShelvesCreate"></div>
+		</div>
+		<!--	-->
 		<input type="submit" value="Save">
 	</form>
 </div>
 {% endblock %}
 
 {% block js%}
+<!--
+-->
 <script type="text/javascript">
 	$(function() {
-		// Clona la fila oculta que tiene los campos base, y la agrega al final de la tabla
-		$("#add").on('click', function() {
-			$("#table1 tbody tr:eq(0)").clone().removeClass('fila-base').appendTo("#table1 tbody");
-		});
-
-		// Evento que selecciona la fila y la elimina
-		$(document).on("click", ".delete", function() {
-			var parent = $(this).parents().get(0);
-			$(parent).remove();
+		$('#mytab').bootstrapTable({
+			data : data
 		});
 	});
 
-</script>
-<!-- 
-	
--->
-<script>
-function processResponse(data){
-$('#shelves').html(data);
-}
-ajaxGet('{% url "laboratory:shelf_list" %}', function(content){});
+	function processResponseshelf(dat) {
+		$('#shelves').html(dat);
+	}
+
+	function processResponseshelfCreate(dat) {
+		$('#ShelvesCreate').html(dat);
+	}
+
 </script>
 {% endblock %}

@@ -1,10 +1,24 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="row">
-<h1 align="center">Shelf Management</h1>
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<div id="hidemodaladd" class="alert">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Add Shelf <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+		<div class="panel-body">
+			<form data-ajax-submit="" onsubmit="return false;"
+			data-success="processResponseshelf" action="{% url 'laboratory/shelf_create' %}"
+			method="post">
+				{% csrf_token %}
+				<p>
+					{{ form.as_p}}
+				</p>
+				<button id="save" style="color: black" type="submit">
+					Save
+				</button>
+				<button data-dismiss="alert" style="color: black" type="submit">
+					Cancel
+				</button>
+			</form>
+		</div>
+	</div>
 </div>
-{% endblock %} 
