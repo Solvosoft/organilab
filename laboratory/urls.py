@@ -19,7 +19,7 @@ urlpatterns = [
 ] 
 
 urlpatterns += [
-    url(r"^create$", FurnitureCreate.as_view(),
+    url(r"^furniture/create$", FurnitureCreate.as_view(),
         name="furniture_create"),
 ]
 
