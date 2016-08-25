@@ -15,7 +15,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r"^furniture/list$", list_furniture, name="list_furniture"),
+    url(r"^furniture/list/$", list_furniture, name="list_furniture"),
     url(r"^shelf/list$", list_shelf, name="list_shelf"),
     url(r"^shelfObject/list$", list_shelfobject, name="list_shelfobject"),
     url(r"^shelfObject/create$", ShelfObjectCreate.as_view(), name="shelfobject_create"),
