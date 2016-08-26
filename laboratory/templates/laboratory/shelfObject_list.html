@@ -1,5 +1,4 @@
 <!-- PRUEBA: asi se verian los muebles en la lista -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
 <div class="panels">
 	<div class="col-md-5">
@@ -7,7 +6,7 @@
 			<div class="panel-heading">
 				<button id="hideadd">
 					<a style="color: black" data-ajax="true" data-success="processResponseshelfobjectCreate"
-					href="{% url 'shelfobject_create' %}"> Add</a>
+					href="{% url 'laboratory:shelfobject_create' %}"> Add</a>
 				</button>
 
 				<button id="showhidepanel" >
@@ -47,7 +46,7 @@
 			<div class="panel-heading">
 				<button id="hideadd">
 					<a style="color: black" data-ajax="true" data-success="processResponseshelfobjectCreate"
-					href="{% url 'shelfobject_create' %}"> Add</a>
+					href="{% url 'laboratory:shelfobject_create' %}"> Add</a>
 				</button>
 
 				<button id="showhide" >
@@ -75,7 +74,7 @@
 					<a
 					class="btn btn-danger btn-sm"
 					data-ajax="true" data-success="processResponseshelfobjectDelete"
-					href="{% url 'shelfobject_delete' shelfobject.pk %} "> x </a>
+					href="{% url 'laboratory:shelfobject_delete' shelfobject.pk %} "> x </a>
 				</li>
 				{% endfor %}
 			</div>

@@ -111,7 +111,7 @@ function showAddObject(selve){
 
 	function function_name_furniture(argument) {
 		ajax({
-			url : '{% url "list_furniture" %}',
+			url : '{% url "laboratory:list_furniture" %}',
 			data : {
 				"namelaboratoryRoom" : argument
 			},
@@ -125,7 +125,7 @@ function showAddObject(selve){
 
 	function function_name_shelf(argument) {
 		ajax({
-			url : '{% url "list_shelf" %}',
+			url : '{% url "laboratory:list_shelf" %}',
 			data : {
 				"furniture" : argument
 			},
@@ -140,7 +140,7 @@ function showAddObject(selve){
 
 	function function_name_shelfobject(argument) {
 		ajax({
-			url : '{% url "list_shelfobject" %}',
+			url : '{% url "laboratory:list_shelfobject" %}',
 			data : {
 				"shelf" : argument
 			},

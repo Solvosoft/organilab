@@ -11,7 +11,7 @@
 			
 			<form data-ajax-submit="" onsubmit="return false;"
 			data-success="processResponseshelfobject"
-			action="{% url 'shelfobject_delete' object.pk %}" method="post"
+			action="{% url 'laboratory:shelfobject_delete' object.pk %}" method="post"
 			>
 				{% csrf_token %}
 				<p>
@@ -20,7 +20,7 @@
 					{{object}} ?
 				</p>
 
-				<button id="delete" href="{% url 'laboratoryRooms_list' %}" style="color: black "  type="submit" >
+				<button id="delete" href="{% url 'laboratory:laboratoryRooms_list' %}" style="color: black "  type="submit" >
 					Delete
 				</button>
 				<script>
