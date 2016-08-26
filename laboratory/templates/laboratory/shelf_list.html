@@ -1,0 +1,42 @@
+<!-- PRUEBA: asi se verian los muebles en la lista -->
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		SHELVES
+	</div>
+
+	<div class="panel-body">
+		<table class="table table-bordered">
+		{% for column in object_list %}
+			<tr>
+				{% for row in column%}
+			<td>
+				{% if row%}			
+<a class="btn btn-success" 
+	data-ajax="true" data-success="processResponseshelfobjectCreate"
+	href="{% url 'shelfobject_create' %}?shelf={{row}}"> 
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	Add
+</a>
+	
+<a class="btn btn-primary" role="button" 
+data-toggle="collapse" href="#body_{{row}}" aria-expanded="false" aria-controls="collapseExample">
+  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+  Show/hide
+</a>	
+	
+<div class="collapse" id="body_{{row}}">
+	ESTO ES LO QUE SE MUESTRA
+</div>
+	
+				
+				
+				{% endif %}
+				</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+
+</div>
