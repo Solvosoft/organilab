@@ -14,7 +14,8 @@
     {# CSS #}
     <link href="{% static 'laboratory/css/organilab.css' %}" rel="stylesheet">
     <link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
-    
+    <link href="{% static 'laboratory/css/furniture-table-css.css' %}" rel="stylesheet">
+
     {% block css %}{% endblock %}
 </head>
 <body>
@@ -51,11 +52,12 @@
     </div>
 </footer>
 
-    {# JS #}
-    <script src="{% static 'laboratory/js/jquery.min.js' %}"></script>
-    <script src="{% static 'laboratory/js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-    {% block js %}{% endblock %}
+{# JS #}
+<script src="{% static 'laboratory/js/jquery.min.js' %}"></script>
+<script src="{% static 'laboratory/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% block js %}{% endblock %}
 </body>
 </html>

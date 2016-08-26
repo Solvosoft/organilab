@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+	<h1 align="center"> Furniture Management</h1>
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<!-- aqui va lo de la tabla-->
+		<div>
+			<button>
+				<a style="color: black" data-ajax="true" data-success="processResponse"
+				href="{% url 'laboratory:shelf_create' %}"> 
+					Add Shelf 
+				</a>
+			</button>
+			<table id="mytab">
+				<tr>
+					<td>
+					<input type="text"/>
+					</td>
+					<td>
+					<input type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<input type="text"/>
+					</td>
+					<td>
+					<input type="text"/>
+					</td>
+				</tr>
+			</table>
+			<div>
+				<input type="button" value="Add Row" onclick="addRow()">
+				<input type="button" value="Add Column" onclick="addColumn()">
+				<input type="button" value="Delete Row" onclick="deleteRows()">
+				<input type="button" value="Delete Column" onclick="deleteColumns()">
+			</div>
+		</div>
+		<div class="col-md-5" style="padding-top: 10%"></div>
+		<!--	-->
+		<input type="submit" value="Save">
+	</form>
+</div>
+{% endblock %}
+
+{% block js%}
+<script>
+	function processResponse(data) {
+		$('#shelves').html(data);
+	}
+
+	ajaxGet('{% url "laboratory:shelf_list" %}', function(content) {
+	}); 
+</script>
+{% endblock %}

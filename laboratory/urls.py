@@ -1,6 +1,17 @@
+'''
+Created on 1/8/2016
+
+@author: nashyra
+'''
+from __future__ import unicode_literals
+
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate
+from laboratory.ajax_view import list_shelf, list_objectfeatures,\
+    admin_list_shelf
 from django.conf.urls import url
 from django.urls import reverse_lazy
-from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView
+from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
+    FurnitureCreateView
 from django.contrib.auth import views as auth_views
 from laboratory.generic import ObjectDeleteFromShelf, \
     ObjectList, \
@@ -25,7 +36,7 @@ urlpatterns = [
 
 urlpatterns += [
     url(r"^furniture/list/$", list_furniture, name="list_furniture"),
-    url(r"^shelf/list$", list_shelf, name="list_shelf"),
+    url(r"^shelf/list$", admin_list_shelf, name="list_shelf"),
     url(r"^shelfObject/list$", list_shelfobject, name="list_shelfobject"),
     url(r"^shelfObject/create$", ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
@@ -51,5 +62,29 @@ urlpatterns += [
     url(r"^report/furniture$", views.report_furniture,
         name="report_furniture"),
     url(r"^report/summaryfurniture$", views.report_sumfurniture,
-        name="report_summaryfurniture")
+        name="report_summaryfurniture"),
+    url(r"^furniture/create$", FurnitureCreateView.as_view(),
+        name="furniture_create"),
+]
+
+urlpatterns += [
+    url(r"^shelf/list$", list_shelf,
+        name="shelf_list"),
+    url(r"^shelf/create$", ShelfCreate.as_view(),
+        name="shelf_create")
+]
+
+urlpatterns += [
+    url(r"^object/create$", ObjectCreate.as_view(),
+        name="object_create"),
+    url(r"^objectfeatures/list$", list_objectfeatures,
+        name="objectfeatures_list"),
+
+]
+
+urlpatterns += [
+    url(r"^laboratoryroom/create$", LabroomCreate.as_view(),
+        name="laboratoryroom_create"),
+    url(r"^objectfeatures/list$", list_objectfeatures,
+        name="objectfeatures_list"),
 ]

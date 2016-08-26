@@ -3,13 +3,14 @@ Created on /8/2016
 
 @author: natalia
 '''
-from laboratory.models import Furniture, Shelf, ShelfObject
+from laboratory.models import Furniture, Shelf, ShelfObject, ObjectFeatures
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from django.views.generic.edit import CreateView, DeleteView
 from django.urls.base import reverse_lazy
 from django.http.response import HttpResponseRedirect
+from django.template.context_processors import request
 
 
 def get_shelves(furniture):
@@ -126,5 +127,69 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 
         if type(response) == HttpResponseRedirect:
             return list_shelfobject_render(request)
+
+        return response
+
+
+def admin_list_shelf_render(request):
+    shelves = Shelf.objects.all()
+    return render_to_string(
+        'laboratory/admin_shelf_list.html',
+        context={
+            'object_list': shelves
+        })
+
+
+@ajax
+def admin_list_shelf(request):
+    return {
+        'inner-fragments': {
+            '#shelves': list_shelf_render(request)
+        },
+    }
+
+
+class ShelvesCreate(AJAXMixin, CreateView):
+    model = Shelf
+    fields = "__all__"
+    success_url = reverse_lazy('list_shelf')
+
+    def post(self, request, *args, **kwargs):
+        response = CreateView.post(self, request, *args, **kwargs)
+
+        if type(response) == HttpResponseRedirect:
+            return list_shelf_render(request)
+
+        return response
+
+
+def list_objectfeatures_render(request):
+    objectfeatures = ObjectFeatures.objects.all()
+    return render_to_string(
+        'laboratory/objectfeatures_list.html',
+        context={
+            'object_list': objectfeatures
+        })
+
+
+@ajax
+def list_objectfeatures(request):
+    return {
+        'inner-fragments': {
+            '#objectfeatures': list_objectfeatures_render(request)
+        },
+    }
+
+
+class ObjectFeaturesCreate(AJAXMixin, CreateView):
+    model = ObjectFeatures
+    fields = "__all__"
+    success_url = reverse_lazy('objectfeatures_list')
+
+    def post(self, request, *args, **kwargs):
+        response = CreateView.post(self, request, *args, **kwargs)
+
+        if type(response) == HttpResponseRedirect:
+            return list_objectfeatures_render(request)
 
         return response

@@ -1,0 +1,6 @@
+<form data-ajax-submit="" onsubmit="return false;" data-success="processResponse"
+action="{% url 'laboratory:shelf_create'%}" method="post">
+	{% csrf_token %}
+	{{ form.as_p}}
+	<input type="submit" value="Save">
+</form>
