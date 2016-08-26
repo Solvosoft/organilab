@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +23,7 @@
     <a class="navbar-brand" href="{% url 'laboratory:index' %}"><strong>ORGANILAB</strong></a>
     <ul class="nav navbar-nav">
         {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="#">Laboratory Rooms</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">{% trans "Laboratory Rooms" %}</a></li>
         {% else %}
             {# TODO #}
         {% endif %}
@@ -30,9 +31,9 @@
     <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="#">{{ request.user.get_username }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">Log out</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">{% trans "Log out" %}</a></li>
         {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">Log in</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">{% trans "Log in" %}</a></li>
         {% endif %}
     </ul>
 </nav>
