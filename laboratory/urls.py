@@ -34,9 +34,11 @@ urlpatterns = [
         name='laboratoryRooms_list')
 ]
 
+# Natalia Ajax
 urlpatterns += [
-    url(r"^furniture/list/$", list_furniture, name="list_furniture"),
-    url(r"^shelf/list$", admin_list_shelf, name="list_shelf"),
+    url(r"^furniture/list/$",
+        list_furniture, name="list_furniture"),
+    url(r"^shelf/list$", list_shelf, name="list_shelf"),
     url(r"^shelfObject/list$", list_shelfobject, name="list_shelfobject"),
     url(r"^shelfObject/create$", ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
@@ -46,7 +48,7 @@ urlpatterns += [
 
 # URLS Adolfo
 urlpatterns += [
-    url(r"^labs$", LaboratoryRoomListView.as_view(),
+    url(r"^reports/laboratory$", LaboratoryRoomListView.as_view(),
         name="laboratoryroom_list"),
     url(r"^objects$", ObjectListView.as_view(),
         name="object_list"),
@@ -68,7 +70,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r"^shelf/list$", list_shelf,
+    url(r"^adm/shelf/list$", admin_list_shelf,
         name="shelf_list"),
     url(r"^shelf/create$", ShelfCreate.as_view(),
         name="shelf_create")

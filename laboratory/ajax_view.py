@@ -107,7 +107,7 @@ def list_shelfobject(request):
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     fields = "__all__"
-    success_url = reverse_lazy('list_shelf')
+    success_url = reverse_lazy('laboratory:list_shelf')
 
     def post(self, request, *args, **kwargs):
         response = CreateView.post(self, request, *args, **kwargs)
@@ -120,7 +120,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
-    success_url = reverse_lazy('list_shelf')
+    success_url = reverse_lazy('laboratory:list_shelf')
 
     def post(self, request, *args, **kwargs):
         response = DeleteView.post(self, request, *args, **kwargs)
@@ -152,7 +152,7 @@ def admin_list_shelf(request):
 class ShelvesCreate(AJAXMixin, CreateView):
     model = Shelf
     fields = "__all__"
-    success_url = reverse_lazy('list_shelf')
+    success_url = reverse_lazy('laboratory:list_shelf')
 
     def post(self, request, *args, **kwargs):
         response = CreateView.post(self, request, *args, **kwargs)
@@ -184,7 +184,7 @@ def list_objectfeatures(request):
 class ObjectFeaturesCreate(AJAXMixin, CreateView):
     model = ObjectFeatures
     fields = "__all__"
-    success_url = reverse_lazy('objectfeatures_list')
+    success_url = reverse_lazy('laboratory:objectfeatures_list')
 
     def post(self, request, *args, **kwargs):
         response = CreateView.post(self, request, *args, **kwargs)

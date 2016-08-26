@@ -13,7 +13,7 @@ from django.core.urlresolvers import reverse_lazy
 
 class ObjectDeleteFromShelf(DeleteView):
     model = Object
-    success_url = reverse_lazy('object-list')
+    success_url = reverse_lazy('laboratory:object-list')
 
 
 class ObjectList(ListView):
@@ -27,7 +27,7 @@ class LaboratoryRoomsList(ListView):
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
-    success_url = reverse_lazy('object-list')
+    success_url = reverse_lazy('laboratory:object-list')
 
 
 class ObjectCreate(CreateView):
@@ -44,7 +44,7 @@ class ShelfCreate(CreateView):
 
 class ShelfDelete(DeleteView):
     model = Shelf
-    success_url = reverse_lazy('object-list')
+    success_url = reverse_lazy('laboratory:object-list')
 
 
 class LabRoomList(ListView):
