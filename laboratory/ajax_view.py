@@ -7,7 +7,7 @@ from laboratory.models import Furniture, Shelf, ShelfObject, ObjectFeatures
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls.base import reverse_lazy
 from django.http.response import HttpResponseRedirect
 from django.template.context_processors import request
@@ -116,6 +116,42 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
             return list_shelfobject_render(request)
 
         return response
+
+
+class ShelfObjectEdit(AJAXMixin, UpdateView):
+    model = ShelfObject
+    fields = ['quantity', 'measurement_unit']
+    success_url = reverse_lazy('laboratory:list_shelf')
+
+    def get(self, request, *args, **kwargs):
+        response = UpdateView.get(self, request, *args, **kwargs)
+        response.render()
+
+        # def _ajaxf():
+        return {
+            'inner-fragments': {
+                '#o%d' % self.object.pk: response.content
+            },
+        }
+
+        # return ajax(_ajaxf())
+
+    def post(self, request, *args, **kwargs):
+        response = UpdateView.post(self, request, *args, **kwargs)
+
+        if type(response) == HttpResponseRedirect:
+            return {
+                'inner-fragments': {
+                    '#o%d' % self.object.pk: render_to_string(
+                        'laboratory/shelfObject.html', {'object': self.object})
+                },
+            }
+
+        return {
+            'inner-fragments': {
+                '#o%d' % self.object.pk: response.content
+            },
+        }
 
 
 class ShelfObjectDelete(AJAXMixin, DeleteView):
