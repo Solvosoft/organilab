@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 
 from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
-    admin_list_shelf
+    admin_list_shelf, ShelfObjectEdit
 from django.conf.urls import url
 from django.urls import reverse_lazy
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
@@ -18,6 +18,7 @@ from laboratory.generic import ObjectDeleteFromShelf, \
     LaboratoryRoomsList
 from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory import views
+from laboratory.search import SearchObject
 
 
 urlpatterns = [
@@ -44,6 +45,8 @@ urlpatterns += [
         name="shelfobject_create"),
     url(r"^shelfObject/delete/(?P<pk>\d+)$",
         ShelfObjectDelete.as_view(), name="shelfobject_delete"),
+    url(r"^shelfObject/edit/(?P<pk>\d+)$",
+        ShelfObjectEdit.as_view(), name="shelfobject_edit")
 ]
 
 # URLS Adolfo
@@ -89,4 +92,6 @@ urlpatterns += [
         name="laboratoryroom_create"),
     url(r"^objectfeatures/list$", list_objectfeatures,
         name="objectfeatures_list"),
+    url(r"^search$", SearchObject.as_view(),
+        name="search"),
 ]

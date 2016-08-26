@@ -102,7 +102,6 @@ class Object(models.Model):
         (MATERIAL, _('Material')),
         (EQUIPMENT, _('Equipment'))
     )
-    shelf = models.ForeignKey('Shelf')
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     code = models.CharField(_('Code'), max_length=255)
     description = models.TextField(_('Description'))
@@ -130,9 +129,11 @@ class ShelfObject(models.Model):
         (L, _('Liters')),
         (ML, _('Mililiters'))
     )
+    shelf = models.ForeignKey('Shelf')
     object = models.ForeignKey('Object')
     quantity = models.FloatField(_('Material quantity'))
-    measurement_unit = models.CharField(_('Measurement unit'), max_length=2, choices=CHOICES)
+    measurement_unit = models.CharField(
+        _('Measurement unit'), max_length=2, choices=CHOICES)
 
     class Meta:
         verbose_name = _('Shelf object')

@@ -2,23 +2,8 @@
 
 {% block content %}
 
-<div class="row">
-	<div class="col-md-7">
+{% include 'laboratory/search_widget.html' %}
 
-		<div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
-
-			<form>
-				<div class="col-md-10">
-					<input type="search" class="form-control" id="search">
-				</div>
-				<div  class="col-md-2">
-					<button type="submit" class="btn btn-default">
-						search
-					</button>
-				</div>
-			</form>
-		</div>
-</div>
 <div class="row">
 		<div class="col-md-12" style="padding-bottom: 3%">
 			<!-- Nav tabs -->
@@ -72,7 +57,7 @@
 			<div id="shelfobject"></div>
 		</div>
 	</div>
-</div>
+
 
 
 <div id="object_create" class="modal fade" tabindex="-1" role="dialog">

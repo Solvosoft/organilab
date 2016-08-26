@@ -1,6 +1,6 @@
  <form data-ajax-submit="" onsubmit="return false;"
 	data-success="processResponseshelfobject"
-	action="{% url 'laboratory:shelfobject_create' %}" method="post"
+	action="{%if form.instance.pk %}{% url 'laboratory:shelfobject_edit' object.pk %}{%else%}{% url 'laboratory:shelfobject_create' %}{% endif %}" method="post"
 >
 
 <div class="modal-body">
@@ -11,7 +11,7 @@
 </div>
 
 <div class="modal-footer">
-	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>{%endif%}
 	<button type="submit" class="btn btn-primary">Save changes</button>
 </div>
 
