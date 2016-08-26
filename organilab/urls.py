@@ -16,10 +16,9 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from laboratory import urls as laboratory_urls
-from laboratory.views import vistaEdificio
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-      url(r'^laboratory/', include(laboratory_urls))
-]
+    url(r'^', include(laboratory_urls, namespace='laboratory'))
 
+]
