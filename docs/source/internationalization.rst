@@ -50,3 +50,64 @@ To specify an standard translation, use the ``ugettext_lazy`` function:
         description = models.TextField(_('Description'))
         name = models.CharField(_('Name'), max_length=255)
         feature = models.ManyToManyField('ObjectFeatures')
+
+* In a template:
+
+You need to put ``{% load i18n %}`` in the begining of the template, always after ``{% extends 'base.html' %}``:
+
+.. code-block:: bash
+
+	{% load i18n %} 
+	<html>
+		<head> 
+			<title> {% trans "This is the title." %} </title>
+		</head>
+		<body>
+			<h1> {% trans "Hello World!!" %} </h1>
+		</body>
+	</html>
+
+* In a template with CSS:
+
+.. code-block:: bash
+
+	<html>
+		<head>
+			<title> {% trans "This is the title." %} </title>
+			<style>
+				@page {
+					margin: 3cm 2cm; padding-left: 1.5cm;
+					@top-left {
+						content: "{% trans "Organilab Report" %}";
+					}
+					@top-right {
+						content: "{% trans "Date:" %} {{ datetime }}";
+					}
+					@bottom-right {
+						content: "{% trans "Page" %} " counter(page)
+						" {% trans "of" %} " counter(pages) ;
+					}
+					@bottom-left {
+						content:  "{% trans "User:" %} {{ request.user }}";
+						color: red;
+					}
+				}
+				body {
+					text-align: justify
+				}
+			</style>
+		</head>
+		<body>
+			<h1> {% trans "Hello World!!" %} </h1>
+		</body>
+	</html>
+	
+Then, create a folder with the name of ``locale`` in your project (laboratory/locale), and execute the next command:
+
+.. code-block:: bash
+
+	$ python manage.py makemessages  -l es
+
+-l es : indicates the translation lenguage.
+
+Edit the .po file. 

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load i18n %} 
+{% block content %}
+
+<div>
+
+<pre id="pre01">
+<h3>	
+ {% trans "LABORATORYROOM INFORMATION" %}
+</h3>	
+</pre>
+
+	{% for laboratory_room in object_list %}
+		<h3 id="h3-1">
+        	{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }}
+        </h3>
+		{% for furniture in laboratory_room.furniture_set.all %}
+			<h5 id="h5-1">
+				{% trans "Furniture:" %} {{ furniture }}
+			</h5>
+            <ul>
+            	{% for shelf in furniture.shelf_set.all %}
+                	<li>{% trans "Shelf:" %} {{ shelf }}</li>
+                    <ul>
+                    	{% for obj in shelf.object_set.all %}
+                        	<li>{% trans "Object:" %} {{ obj }}</li>
+                        {% endfor %}
+                    </ul>
+               	{% empty %}
+                 	{% trans "No Shelf Elements" %}
+                {% endfor %}
+            </ul>
+		{% endfor %}
+		<br />
+	{% endfor %}
+</div>
+
+<div>
+	
+	<a id="a01" class="btn btn-default"
+	href="{% url 'laboratory:report_building' %}">{% trans "Download PDF" %}</a>
+	
+</div>
+
+{% endblock %}
