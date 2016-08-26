@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+	<div class="col-md-7">
+
+		<div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
+
+			<form>
+				<div class="col-md-10">
+					<input type="search" class="form-control" id="search">
+				</div>
+				<div  class="col-md-2">
+					<button type="submit" class="btn btn-default">
+						search
+					</button>
+				</div>
+			</form>
+		</div>
+</div>
+<div class="row">
+		<div class="col-md-12" style="padding-bottom: 3%">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				{% for LaboratoryRoom in object_list %}
+				<li role="presentation">
+					<!-- agregarle ajax-->
+					<a href="#idlab"
+					onclick="function_name_furniture({{LaboratoryRoom.id }})"
+					aria-controls={{ LaboratoryRoom.id }} role="tab"
+					data-toggle="tab">{{ LaboratoryRoom.name }}</a>
+				</li>
+
+
+				<!-- Nav tabs -->
+				{% endfor %}
+
+			</ul>
+
+		</div>
+</div>
+<div class="row">
+		<div class="col-md-12">
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+				{% for LaboratoryRoom in object_list %}
+
+				<div role=" tab-panel" class="tab-pane" id="idlab">
+
+					<div class="col-md-4">
+						<!-- traer lista de muebles -->
+						<div id="furnitures">
+						
+						</div>
+					</div>
+
+					<div class="col-md-8">
+						<!-- traer lista de estantes -->
+						<div id="shelf">
+							
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+
+			</div>
+
+		</div>
+		<div class="col-md-12">
+			<div id="shelfobject"></div>
+		</div>
+	</div>
+</div>
+
+
+<div id="object_create" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add Object</h4>
+      </div>
+	<div id="shelfobjectCreate"></div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="object_delete" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Are you sure? </h4>
+      </div>
+	<div id="shelfobjectDelete"></div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+function showAddObject(selve){
+
+}
+
+	function function_name_furniture(argument) {
+		ajax({
+			url : '{% url "list_furniture" %}',
+			data : {
+				"namelaboratoryRoom" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponsefurniture(dat) {
+				$('#furnitures').html(dat);
+			}
+		});
+	}
+
+	function function_name_shelf(argument) {
+		ajax({
+			url : '{% url "list_shelf" %}',
+			data : {
+				"furniture" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponseshelf(dat) {
+				$('#shelf').html(dat);
+			}
+		});
+
+	}
+
+	function function_name_shelfobject(argument) {
+		ajax({
+			url : '{% url "list_shelfobject" %}',
+			data : {
+				"shelf" : argument
+			},
+			cache : false,
+			type : "GET",
+			success : function processResponseshelfobject(dat) {
+				$('#shelfobject').html(dat);
+			}
+		});
+
+	}
+
+	function processResponseshelfobjectCreate(dat) {
+		$('#shelfobjectCreate').html(dat);
+		// clean the form
+		$("#object_create").modal('show');
+	}
+
+	function processResponseshelfobjectDelete(dat) {
+		$('#shelfobjectDelete').html(dat);
+		$("#object_delete").modal('show');
+	}
+</script>
+{% endblock %}
+
