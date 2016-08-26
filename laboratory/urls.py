@@ -4,22 +4,24 @@ Created on 1/8/2016
 @author: nashyra
 '''
 from __future__ import unicode_literals
-from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,FurnitureCreate
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate
 from laboratory.ajax_view import list_shelf, list_objectfeatures
 from django.conf.urls import url
 from django.urls import reverse_lazy
 
-from laboratory.views import index
+from laboratory.views import index, FurnitureCreateView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^$', index, name='index'),
-    url(r'^login$', auth_views.login, {'template_name': 'laboratory/login.html'}, name='login'),
-    url(r'^logout$', auth_views.logout, {'next_page': reverse_lazy('laboratory:index')}, name='logout')
-] 
+    url(r'^login$', auth_views.login, {
+        'template_name': 'laboratory/login.html'}, name='login'),
+    url(r'^logout$', auth_views.logout, {
+        'next_page': reverse_lazy('laboratory:index')}, name='logout')
+]
 
 urlpatterns += [
-    url(r"^furniture/create$", FurnitureCreate.as_view(),
+    url(r"^furniture/create$", FurnitureCreateView.as_view(),
         name="furniture_create"),
 ]
 
