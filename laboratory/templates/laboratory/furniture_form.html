@@ -8,27 +8,14 @@
 		{{ form.as_p }}
 		<!-- aqui va lo de la tabla-->
 		<div>
-			<button>
-				<a style="color: black" data-ajax="true" data-success="processResponse"
-				href="{% url 'laboratory:shelf_create' %}"> 
-					Add Shelf 
-				</a>
-			</button>
 			<table id="mytab">
 				<tr>
 					<td>
-					<input type="text"/>
-					</td>
-					<td>
-					<input type="text"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					<input type="text"/>
-					</td>
-					<td>
-					<input type="text"/>
+<a class="btn btn-info" style="margin: 3px;" data-ajax="true" data-success="processResponse"
+				href="{% url 'laboratory:shelf_create' %}"> 
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					Add Shelf 
+				</a>
 					</td>
 				</tr>
 			</table>
@@ -44,12 +31,37 @@
 		<input type="submit" value="Save">
 	</form>
 </div>
+
+<div class="hidden" id="addshelfproto">
+	<a class="btn btn-success" style="margin: 3px;" data-ajax="true" data-success="processResponse"
+				href="{% url 'laboratory:shelf_create' %}"> 
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					Add Shelf 
+				</a>
+</div>
+
+
+<div id="createshelfmodal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create shelf</h4>
+      </div>
+      <div id="shelfmodalbody">
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
 {% endblock %}
 
 {% block js%}
 <script>
+
+
 	function processResponse(data) {
-		$('#shelves').html(data);
+		$("#shelfmodalbody").html(data);
+		$("#createshelfmodal").modal('show');
 	}
 
 	ajaxGet('{% url "laboratory:shelf_list" %}', function(content) {
