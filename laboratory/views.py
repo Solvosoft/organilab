@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.list import ListView
@@ -7,6 +6,8 @@ from laboratory.models import LaboratoryRoom, Furniture, Object
 from django.template.loader import get_template
 from django.template.context import Context
 from weasyprint import HTML
+
+from django.views.generic.edit import CreateView
 
 
 class miContexto(object):
@@ -135,3 +136,9 @@ def report_sumfurniture(request):
 
 def index(request):
     return render(request, 'laboratory/index.html')
+
+
+class FurnitureCreateView(CreateView):
+    model = Furniture
+    success_url = '/'
+    fields = '__all__'
