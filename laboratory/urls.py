@@ -19,7 +19,9 @@ from laboratory.generic import ObjectDeleteFromShelf, \
 from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory import views
 from laboratory.search import SearchObject
+from laboratory.ObjectViews import ObjectView
 
+objviews = ObjectView()
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -95,3 +97,5 @@ urlpatterns += [
     url(r"^search$", SearchObject.as_view(),
         name="search"),
 ]
+
+urlpatterns += objviews.get_urls()

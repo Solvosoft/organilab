@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+<a class="btn btn-info" 
+  	href="{% url 'laboratory:objectview_create'  %}"> {% trans 'Add' %} </a>
+ 
+ <br> <br>
+{% for object in object_list %}
+<div class="row" style="margin:5px">
+  <div class="col-md-8"> {{object}}</div>
+  <div class="col-md-4">
+  	<a class="btn btn-info" 
+  	href="{% url 'laboratory:objectview_update' object.pk %}"> {% trans 'Edit' %}</a>
+  	<a class="btn btn-danger" 
+  	href="{% url 'laboratory:objectview_delete' object.pk %}"> {% trans 'Delete' %}</a>
+  	
+  </div>
+</div>
+{% endfor %}
+
+{% if is_paginated %}
+	<nav aria-label="...">
+		<ul class="pager">
+			{% if page_obj.has_previous %}
+			<li>
+				<a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+			</li>
+			{% endif %}
+	
+			<li>
+				{% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
+			</li>
+	
+			{% if page_obj.has_next %}
+			<li>
+				<a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+			</li>
+			{% endif %}
+		</ul>
+	</nav>
+
+{% endif %}
+
+{% endblock %}
