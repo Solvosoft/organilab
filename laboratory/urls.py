@@ -23,9 +23,9 @@ from laboratory.search import SearchObject
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^login$', auth_views.login, {
+    url(r'^accounts/login/$', auth_views.login, {
         'template_name': 'laboratory/login.html'}, name='login'),
-    url(r'^logout$', auth_views.logout, {
+    url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
     url(r"^delete/(?P<pk>\d+)$",
