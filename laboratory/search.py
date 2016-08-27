@@ -10,8 +10,11 @@ from __future__ import unicode_literals
 from django.views.generic.list import ListView
 from laboratory.models import ShelfObject
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
+@method_decorator(login_required, name='dispatch')
 class SearchObject(ListView):
     model = ShelfObject
     search_fields = ['object__code', 'object__name', 'object__description']

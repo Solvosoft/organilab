@@ -12,6 +12,9 @@ from django.urls.base import reverse_lazy
 from django.http.response import HttpResponseRedirect
 from django.template.context_processors import request
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 
 def get_shelves(furniture):
     # import json
@@ -118,6 +121,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return response
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
     fields = ['quantity', 'measurement_unit']
@@ -154,6 +158,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         }
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = reverse_lazy('laboratory:list_shelf')
