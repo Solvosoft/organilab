@@ -39,5 +39,4 @@ class SearchObject(ListView):
             query = query.filter(params)
         else:
             query = query.none()
-        print(query.query)
         return query
