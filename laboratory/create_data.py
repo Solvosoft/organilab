@@ -46,6 +46,7 @@ LABORATORY_OBJECTS_LIST = [
     'Ring stand'
 ]
 
+
 def create_laboratory_rooms():
     names = [
         'Information Window',
@@ -56,7 +57,7 @@ def create_laboratory_rooms():
         LaboratoryRoom.objects.create(name=name)
 
 
-def create_furniture(max=10):
+def create_furniture(max=3):
     for i in range(0, max):
         Furniture.objects.create(
             labroom=random_model_object(LaboratoryRoom),
@@ -84,14 +85,13 @@ def create_object_features(max=10):
 def create_objects(max=10):
     for i in range(0, max):
         obj = Object.objects.create(
-            shelf=random_model_object(Shelf),
             type=random_choice(Object.TYPE_CHOICES)[0],
             code='object_number_%d' % (i + 1),
             description='Object description',
             name=random_choice(LABORATORY_OBJECTS_LIST)
         )
 
-        times = random.randint(0,3)
+        times = random.randint(0, 3)
         for time in range(0, times):
             obj.features.add(random_model_object(ObjectFeatures))
         obj.save()
@@ -100,10 +100,12 @@ def create_objects(max=10):
 def create_shelf_objects(max=10):
     for i in range(0, max):
         ShelfObject.objects.create(
+            shelf=random_model_object(Shelf),
             object=random_model_object(Object),
             quantity=random.random() * 100,
             measurement_unit=random_choice((ShelfObject.CHOICES))[0]
         )
+
 
 def create_data(max=100):
     clean_models()

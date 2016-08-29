@@ -1,0 +1,23 @@
+<!-- PRUEBA: asi se verian los muebles en la lista -->
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		FURNITURE
+	</div>
+
+	<div class="list-group">
+
+		{% for furniture in object_list %}
+		<form
+		data-ajax-submit="" onsubmit="return false;"
+		data-success="processResponsefurniture"
+		action="{% url 'laboratory:list_furniture' %}" method="GET" >
+			
+			<a onclick="function_name_shelf({{furniture.id}})"href="#" class="list-group-item">
+				{{furniture.name}} 
+				<!--  <input type="submit" name="submitShelf" value=object.pk id="submitShel" />  --> </a>
+			<input type="hidden" name="furniture" value="{{furniture.name}}" id="furniture" />
+		</form>
+		{% endfor %}
+
+	</div>

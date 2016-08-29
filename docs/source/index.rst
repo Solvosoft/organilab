@@ -14,6 +14,7 @@ Contents:
    installation
    database_configuration
    internationalization
+   pdf_generation
 
 
 Indices and tables
