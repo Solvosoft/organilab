@@ -1,0 +1,83 @@
+<!-- PRUEBA: asi se verian los muebles en la lista -->
+
+<div class="panels">
+	<div class="col-md-5">
+			<div class="panel panel-default">
+			<div class="panel-heading">
+				<button id="hideadd">
+					<a style="color: black" data-ajax="true" data-success="processResponseshelfobjectCreate"
+					href="{% url 'laboratory:shelfobject_create' %}"> Add</a>
+				</button>
+
+				<button id="showhidepanel" >
+					Show/Hide
+				</button>
+				
+				<script>
+					$(document).ready(function() {
+						$("#showhidepanel").click(function() {
+							if ($("#hide_show_add_delete_list").is(":visible")) {
+								$("#hide_show_add_delete_list").hide();
+							} else {
+								$("#hide_show_add_delete_list").show();
+							}
+						});
+					});
+				</script>
+			</div>
+			<div style="padding-bottom: 10%; padding-top: 10%; padding-left: 40%">
+			<span
+			id="shelfposition" name="shelfposition" value="shelfposition"></span>	
+			</div>
+			
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="col-md-5">
+		<div class="panel panel-default" id="hide_show_add_delete_list">
+			<div class="panel-heading">
+				<button id="hideadd">
+					<a style="color: black" data-ajax="true" data-success="processResponseshelfobjectCreate"
+					href="{% url 'laboratory:shelfobject_create' %}"> Add</a>
+				</button>
+
+				<button id="showhide" >
+					Show/Hide
+				</button>
+				<span style="padding-left: 10%" id="shelfposition1" name="shelfposition1" value="shelfposition1"></span>
+				<script>
+					$(document).ready(function() {
+						$("#showhide").click(function() {
+							if ($("#listshelfobject_hide_show").is(":visible")) {
+								$("#listshelfobject_hide_show").hide();
+							} else {
+								$("#listshelfobject_hide_show").show();
+							}
+						});
+					});
+				</script>
+			</div>
+			<div id="listshelfobject_hide_show" class="list-group">
+				{% for shelfobject in object_list %}
+
+				<li class="list-group-item" >
+
+					<a href="#"  > {{shelfobject.object}}( {{shelfobject.quantity}}, {{shelfobject.measurement_unit}} ) </a>
+					<a
+					class="btn btn-danger btn-sm"
+					data-ajax="true" data-success="processResponseshelfobjectDelete"
+					href="{% url 'laboratory:shelfobject_delete' shelfobject.pk %} "> x </a>
+				</li>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>

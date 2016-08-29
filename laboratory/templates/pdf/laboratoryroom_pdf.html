@@ -1,0 +1,69 @@
+{% load i18n %} 
+
+<html>
+	<head>
+		<style>
+			@page {
+				margin: 3cm 2cm; padding-left: 1.5cm;
+				@top-left {
+					content: "{% trans "Organilab Build Report" %}";
+				}
+				@top-right {
+					content: "{% trans "Date:" %} {{ datetime }}";
+				}
+
+				@bottom-right {
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
+				}
+
+				@bottom-left {
+					content:  "{% trans "User:" %} {{ request.user }}";
+					color: red;
+				}
+
+			}
+			body {
+				text-align: justify
+			}
+			
+			h3 {
+				background: gainsboro; 
+				margin-right: 150px;
+			}
+			h5{
+				background: gainsboro; 
+				margin-right: 150px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		{% for laboratory_room in object_list %}
+		<h3>{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }} </h3>
+		{% for furniture in laboratory_room.furniture_set.all %}
+		<h5>{% trans "Furniture:" %} {{ furniture }} </h5>
+		<ul>
+			{% for shelf in furniture.shelf_set.all %}
+			<li>
+				{% trans "Shelf:" %} {{ shelf }}
+			</li>
+			<ul>
+				{% for obj in shelf.object_set.all %}
+				<li>
+					{% trans "Object:" %} {{ obj }}
+				</li>
+				{% endfor %}
+			</ul>
+			{% empty %}
+				{% trans "No Shelf Elements" %}
+			{% endfor %}
+		</ul>
+		{% endfor %}
+		<br />
+		{% endfor %}
+
+	</body>
+</html>

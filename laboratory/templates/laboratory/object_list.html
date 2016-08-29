@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% load i18n %} 
+{% block content %}
+
+<div>
+
+<pre id="pre01" >
+<h3>	
+ {% trans "OBJECTS INFORMATION" %}					
+</h3>	
+</pre>
+
+	{% for obj in object_list %}
+		<h3 id="h3-1">
+        	{% trans "Object Code:" %} {{ obj.code }}
+        	<a id="a02" class="btn btn-default" 
+        	href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}">{% trans "Download Object PDF" %}</a>
+        </h3>
+        <ul>
+        	<li>{% trans "Name:" %} {{ obj.name }}</li>
+        	<li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
+        	<li>{% trans "Type:" %}
+        		{% ifequal obj.type "0" %}
+    				{% trans "Reactive" %}
+				{% endifequal %}
+				{% ifequal obj.type "1" %}
+    				{% trans "Material" %}
+				{% endifequal %}
+				{% ifequal obj.type "2" %}
+    				{% trans "Equipment" %}
+				{% endifequal %}
+        	</li>
+        	
+        	<li>{% trans "Features:" %}
+        		{% for features in obj.features.all %}
+        		<ul>
+        			<li>
+        			{% ifequal features.name "0" %}
+        				{% trans "General Use" %}
+        			{% endifequal%}
+        			{% ifequal features.name "1" %}
+        				{% trans "Security Equipment" %}
+        			{% endifequal%}
+        			{% ifequal features.name "2" %}
+        				{% trans "Analytic Chemistry" %}
+        			{% endifequal%}
+        			{% ifequal features.name "3" %}
+        				{% trans "Organic Chemistry" %}
+        			{% endifequal%}
+        			{% ifequal features.name "4" %}
+        				{% trans "Physical Chemistry" %}
+        			{% endifequal%}
+        			{% ifequal features.name "5" %}
+        				{% trans "Chemical and Biological Process" %}
+        			{% endifequal%}
+        			{% ifequal features.name "6" %}
+        				{% trans "Industrial Biotechnology" %}
+        			{% endifequal%}
+        			{% ifequal features.name "7" %}
+        				{% trans "Biochemistry" %}
+        			{% endifequal%}
+        			{% ifequal features.name "8" %}
+        				{% trans "Water Chemistry" %}
+        			{% endifequal%}
+        			{% ifequal features.name "9" %}
+        				{% trans "Other" %}
+        			{% endifequal%}
+        			</li>
+        		</ul>	
+        		{% empty %}
+        			{% trans "No Object Features" %}
+        		{% endfor %}
+        	</li>
+        	
+        	<li>{% trans "Quantity:" %} 
+        		{% for shelfobj in obj.shelfobject_set.all %}
+        		<ul>
+            		<li>{{ shelfobj.quantity }} 
+               			{% ifequal shelfobj.measurement_unit "0" %}
+   							M
+						{% endifequal %}
+						{% ifequal shelfobj.measurement_unit "1" %}
+    						MM
+						{% endifequal %}
+						{% ifequal shelfobj.measurement_unit "2" %}
+   							CM
+						{% endifequal %}
+						{% ifequal shelfobj.measurement_unit "3" %}
+    						L
+						{% endifequal %}
+						{% ifequal shelfobj.measurement_unit "4" %}
+							ML
+						{% endifequal %}
+					</li>	
+				</ul>
+				{% empty %}
+					{% trans "No Data" %}
+        	    {% endfor %}
+            </li>
+        			
+        	<li>{% trans "Description:" %} {{ obj.description }}</li>
+        </ul>
+    {% empty %}
+    	{% trans "No Objects Elements" %}
+    {% endfor %}	    
+
+</div>
+
+<div>
+	
+	<a id="a01" class="btn btn-default"
+	href="{% url 'laboratory:report_objects' %}">{% trans "Download PDF" %} </a>
+	
+</div>
+
+{% endblock %}

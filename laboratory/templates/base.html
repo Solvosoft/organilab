@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +15,7 @@
     <link href="{% static 'laboratory/css/organilab.css' %}" rel="stylesheet">
     <link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'laboratory/css/furniture-table-css.css' %}" rel="stylesheet">
+
     {% block css %}{% endblock %}
 </head>
 <body>
@@ -22,17 +24,37 @@
     <a class="navbar-brand" href="{% url 'laboratory:index' %}"><strong>ORGANILAB</strong></a>
     <ul class="nav navbar-nav">
         {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="#">Laboratory Rooms</a></li>
+        <li><a href="{% url 'laboratory:laboratoryRooms_list'%}"><strong>Laboratory view</strong></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administration<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'laboratory:laboratoryroom_create' %}">Laboratory management</a></li>
+            <li><a href="{% url 'laboratory:furniture_create' %}">Furniture management</a></li>
+            <li><a href="{% url 'laboratory:objectview_list' %}">Object management</a></li>
+          </ul>
+        </li>
+        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'laboratory:laboratoryroom_list' %}">Laboratory</a></li>
+            <li><a href="{% url 'laboratory:furniture_list' %}">Furnitures</a></li>
+            <li><a href="{% url 'laboratory:object_list'%}">Objects</a></li>
+          </ul>
+        </li>
+        
+        
+   
         {% else %}
             {# TODO #}
         {% endif %}
     </ul>
     <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="#">{{ request.user.get_username }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">Log out</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">{% trans 'user:' %} {{ request.user.get_username }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">{% trans "Log out" %}</a></li>
         {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">Log in</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">{% trans "Log in" %}</a></li>
         {% endif %}
     </ul>
 </nav>

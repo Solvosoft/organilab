@@ -1,29 +1,42 @@
-<a data-ajax="true" data-success="processResponse"
-href="{% url 'laboratory:shelf_create' %}"> Add Shelf </a>
-<div class="modal fade" id="myModal" role="dialog">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
-					&times;
-				</button>
-				<h4 class="modal-title">Add Shelf</h4>
-			</div>
-			<div class="modal-body">
-				<p>
-					{% for shelves in object_list %}
-					<li>
-						{{shelves.type}}
-					</li>
-					{% endfor %}
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">
-					Close
-				</button>
-			</div>
-		</div>
+<!-- PRUEBA: asi se verian los muebles en la lista -->
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		SHELVES
 	</div>
+
+	<div class="panel-body">
+		<table class="table table-bordered">
+		{% for column in object_list %}
+			<tr>
+				{% for row in column%}
+			<td>
+				{% if row%}			
+<a class="btn btn-success" 
+	data-ajax="true" data-success="processResponseshelfobjectCreate"
+	href="{% url 'laboratory:shelfobject_create' %}?shelf={{row}}"> 
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	Add
+</a>
+	
+<a class="btn btn-primary" role="button" 
+data-toggle="collapse" href="#body_{{row}}" aria-expanded="false" aria-controls="collapseExample">
+  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+  Show/hide
+</a>	
+	
+<div class="collapse" id="body_{{row}}">
+	ESTO ES LO QUE SE MUESTRA
 </div>
+	
+				
+				
+				{% endif %}
+				</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+
 </div>

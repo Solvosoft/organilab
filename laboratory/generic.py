@@ -1,24 +1,35 @@
 '''
-Created on 1/8/2016
+Created on 11/8/2016
 
-@author: nashyra
+@author: natalia
 '''
-
 from __future__ import unicode_literals
 
 from django.views.generic.edit import CreateView, DeleteView
-from laboratory.models import Shelf, LaboratoryRoom, Object, LaboratoryRoom
-from django.contrib.messages.api import success
+from laboratory.models import Shelf, Object, LaboratoryRoom
 from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse_lazy
 from django.db.models.query import QuerySet
 from django_ajax.mixin import AJAXMixin
 
 
+class ObjectDeleteFromShelf(DeleteView):
+    model = Object
+    success_url = reverse_lazy('laboratory:object-list')
+
+
+class ObjectList(ListView):
+    model = Object
+
+
+class LaboratoryRoomsList(ListView):
+    model = LaboratoryRoom
+
+
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
-    success_url = reverse_lazy('object-list')
+    success_url = reverse_lazy('laboratory:object-list')
 
 
 class ObjectCreate(CreateView):
@@ -35,7 +46,7 @@ class ShelfCreate(AJAXMixin, CreateView):
 
 class ShelfDelete(DeleteView):
     model = Shelf
-    success_url = reverse_lazy('object-list')
+    success_url = reverse_lazy('laboratory:object-list')
 
 
 class LabRoomList(ListView):
