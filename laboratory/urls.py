@@ -4,13 +4,14 @@ Created on 1/8/2016
 @author: nashyra
 '''
 from __future__ import unicode_literals
-from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
+    ShelfDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from django.conf.urls import url
 from django.urls import reverse_lazy
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
-    FurnitureCreateView
+    FurnitureCreateView, FurnitureUpdateView
 from django.contrib.auth import views as auth_views
 from laboratory.generic import ObjectDeleteFromShelf, \
     ObjectList, \
@@ -47,7 +48,9 @@ urlpatterns += [
     url(r"^shelfObject/delete/(?P<pk>\d+)$",
         ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     url(r"^shelfObject/edit/(?P<pk>\d+)$",
-        ShelfObjectEdit.as_view(), name="shelfobject_edit")
+        ShelfObjectEdit.as_view(), name="shelfobject_edit"),
+    url(r"^shelf/delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
+        ShelfDelete, name="shelf_delete")
 ]
 
 # URLS Adolfo
@@ -71,6 +74,8 @@ urlpatterns += [
         name="report_summaryfurniture"),
     url(r"^furniture/create$", FurnitureCreateView.as_view(),
         name="furniture_create"),
+    url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
+        name="furniture_update"),
 ]
 
 urlpatterns += [

@@ -54,7 +54,7 @@ class Shelf(models.Model):
         verbose_name_plural = _('Shelves')
 
     def __str__(self):
-        return '%s' % (self.furniture,)
+        return '%s %s' % (self.furniture, self.get_type_display())
 
 
 @python_2_unicode_compatible
