@@ -168,7 +168,7 @@ class LabRoomList(ListView):
 class ShelfListView(ListView):
     model = Shelf
 
-    def get_queryset(self):
-        queryset = ListView.get_queryset(self)
-        queryset = queryset.filter(container_shelf__gte=5)
-        return queryset
+#     def get_queryset(self):
+#         queryset = ListView.get_queryset(self)
+#         queryset = queryset.filter(container_shelf__gte=5)
+#         return queryset

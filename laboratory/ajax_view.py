@@ -14,22 +14,32 @@ from django.template.context_processors import request
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+import json
+from django.db.models.query import QuerySet
+from django import forms
 
 
 def get_shelves(furniture):
-    # import json
-    # dev =  json.loads(furniture.dataconfig)
-    # hacer algo para pasar de num a shelf
-    return [["", 3, ""],
-            [1, "", ""],
-            ["", 5, ""]
-            ]
+
+    if type(furniture) == QuerySet:
+        furniture = furniture[0]
+
+    if furniture.dataconfig:
+        dataconfig = json.loads(furniture.dataconfig)
+        # hacer algo para pasar de num a shelf
+        for crow, row in enumerate(dataconfig):
+            for ccol, col in enumerate(row):
+                if dataconfig[crow][ccol]:
+                    dataconfig[crow][ccol] = Shelf.objects.filter(
+                        pk__in=col.split(","))
+
+        return dataconfig
+    return []
 
 
 def list_furniture_render(request):
 
     var = request.GET.get('namelaboratoryRoom', '0')
-    print(' _________________   ' + var + '   __________namelaboratoryRoom')
 
     if var:
         furnitures = Furniture.objects.filter(labroom=var)
@@ -55,8 +65,6 @@ def list_furniture(request):
 
 def list_shelf_render(request):
     var = request.GET.get('furniture', '0')
-    print(' _________________   ' + var + '   __________furniture')
-
     furniture = Furniture.objects.filter(pk=var)
     shelf = get_shelves(furniture)
 
@@ -69,7 +77,6 @@ def list_shelf_render(request):
 
 @ajax
 def list_shelf(request):
-    print("Entro al ajax_view laboryyyyyyyyyyyyyyyyy shelf")
     return {
         'inner-fragments': {
             '#shelf': list_shelf_render(request)
@@ -78,11 +85,11 @@ def list_shelf(request):
     }
 
 
-def list_shelfobject_render(request):
-    var = request.GET.get('shelf', '0')
-
-    print(' _________________   ' + var + '   __________shelf')
-
+def list_shelfobject_render(request, shelf=0):
+    if shelf == 0:
+        var = request.GET.get('shelf', '0')
+    else:
+        var = shelf
     if var:
         shelfobject = ShelfObject.objects.filter(object=var)
     else:
@@ -90,13 +97,13 @@ def list_shelfobject_render(request):
     return render_to_string(
         'laboratory/shelfObject_list.html',
         context={
-            'object_list': shelfobject
+            'object_list': shelfobject,
+            'data':  Shelf.objects.get(pk=shelf)
         })
 
 
 @ajax
 def list_shelfobject(request):
-    print("Entro al ajax_view laboryyyyyyyyyyyyyyyyy shelfObject")
     return {
         'inner-fragments': {
             '#shelfobject': list_shelfobject_render(request),
@@ -107,18 +114,41 @@ def list_shelfobject(request):
     }
 
 
+class ShelfObjectForm(forms.ModelForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+        widgets = {
+            'shelf': forms.HiddenInput,
+        }
+
+
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
-    fields = "__all__"
+    form_class = ShelfObjectForm
     success_url = reverse_lazy('laboratory:list_shelf')
 
-    def post(self, request, *args, **kwargs):
-        response = CreateView.post(self, request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save()
+        row = form.cleaned_data['row']
+        col = form.cleaned_data['col']
+        return {
+            'inner-fragments': {
+                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
+                    request, self.object.shelf.pk),
+                "#closemodal": '<script>$("#object_create").modal("hide");</script>'
+            },
+        }
 
-        if type(response) == HttpResponseRedirect:
-            return list_shelfobject_render(request)
-
-        return response
+    def get_form_kwargs(self):
+        kwargs = CreateView.get_form_kwargs(self)
+        kwargs['initial']['shelf'] = self.request.GET.get('shelf')
+        kwargs['initial']['row'] = self.request.GET.get('row')
+        kwargs['initial']['col'] = self.request.GET.get('col')
+        return kwargs
 
 
 @method_decorator(login_required, name='dispatch')
