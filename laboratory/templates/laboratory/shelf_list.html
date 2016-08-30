@@ -7,36 +7,28 @@
 
 	<div class="panel-body">
 		<table class="table table-bordered">
-		{% for column in object_list %}
+			{% for row in object_list %}
 			<tr>
-				{% for row in column%}
-			<td>
-				{% if row%}			
-<a class="btn btn-success" 
-	data-ajax="true" data-success="processResponseshelfobjectCreate"
-	href="{% url 'laboratory:shelfobject_create' %}?shelf={{row}}"> 
-	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-	Add
-</a>
-	
-<a class="btn btn-primary" role="button" 
-data-toggle="collapse" href="#body_{{row}}" aria-expanded="false" aria-controls="collapseExample">
-  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-  Show/hide
-</a>	
-	
-<div class="collapse" id="body_{{row}}">
-	ESTO ES LO QUE SE MUESTRA
-</div>
-	
+				{% for col in row%}
+				<td> {% if col%}
+				{% for data in col %} <a class="btn btn-success"
+				data-ajax="true" data-success="processResponseshelfobjectCreate"
+				href="{% url 'laboratory:shelfobject_create' %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </a>
+				<a class="btn btn-primary" role="button"
+				data-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </a>
 				
-				
-				{% endif %}
-				</td>
+				<div class="collapse" id="body_{{data.pk}}">
+					<div id="row_{{forloop.parentloop.parentloop.counter0}}_col_{{forloop.parentloop.counter0}}_shelf_{{data.pk}}">
+						{% include 'laboratory/shelfObject_list.html' %}
+					</div>
+
+				</div> {%endfor%}
+				{% endif %} </td>
 				{% endfor %}
 			</tr>
-		{% endfor %}
+			{% endfor %}
 		</table>
 	</div>
 
 </div>
+<div id="closemodal"></div>
