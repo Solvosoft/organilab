@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
+{% load bootstrap  i18n %}
+
 {% block content %}
 <div class="row">
-<h1 align="center">Objects Management</h1>
+	<div class="col-md-6 col-md-offset-4">
+<h1 align="center">{% trans 'Objects Management' %}</h1>
 <form action="{%if form.instance.pk %}{% url 'laboratory:objectview_update' form.instance.pk %}{%else%}{% url 'laboratory:objectview_create' %} {% endif %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-info" type="submit" value="Save">
+    {{ form|bootstrap  }}
+    <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
 </form>
-</div>
+</div></div>
+<br> <br>
 {% endblock %}

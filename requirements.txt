@@ -39,3 +39,4 @@ webencodings==0.5
 simplejson==3.8.2
 django-jsonfield==1.0.1
 django-json-rpc==0.6.1
+django-bootstrap-form

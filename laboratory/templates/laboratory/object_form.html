@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 
+{% load bootstrap i18n %}
 {% block content %}
 <div class="row">
-<h1 align="center">Objects Management</h1>
+<h1 align="center">{% trans 'Objects Management' %}</h1>
 <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+    {{ form|bootstrap  }}
     <input type="submit" value="Save">
 </form>
 </div>

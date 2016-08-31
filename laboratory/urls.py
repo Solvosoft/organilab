@@ -5,13 +5,13 @@ Created on 1/8/2016
 '''
 from __future__ import unicode_literals
 from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
-    ShelfDelete
+    ShelfDelete, LaboratoryRoomDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from django.conf.urls import url
 from django.urls import reverse_lazy
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
-    FurnitureCreateView, FurnitureUpdateView
+    FurnitureCreateView, FurnitureUpdateView, FurnitureDelete
 from django.contrib.auth import views as auth_views
 from laboratory.generic import ObjectDeleteFromShelf, \
     ObjectList, \
@@ -76,6 +76,8 @@ urlpatterns += [
         name="furniture_create"),
     url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
         name="furniture_update"),
+    url(r"furniture/delete/(?P<pk>\d+)$", FurnitureDelete.as_view(),
+        name="furniture_delete")
 ]
 
 urlpatterns += [
@@ -96,6 +98,9 @@ urlpatterns += [
 urlpatterns += [
     url(r"^laboratoryroom/create$", LabroomCreate.as_view(),
         name="laboratoryroom_create"),
+    url(r"^laboratoryroom/delete/(?P<pk>\d+)$",
+        LaboratoryRoomDelete.as_view(),
+        name="laboratoryroom_delete"),
     url(r"^objectfeatures/list$", list_objectfeatures,
         name="objectfeatures_list"),
     url(r"^search$", SearchObject.as_view(),

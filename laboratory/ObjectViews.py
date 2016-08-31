@@ -13,6 +13,7 @@ from laboratory.models import Object
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls.base import reverse_lazy
+from django.utils.decorators import method_decorator
 
 
 class ObjectView(object):

@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 
+{% load bootstrap  i18n %}
 {% block content %}
 <div>
-	<h1 align="center"> Furniture Management</h1>
-	<form action="" method="post">
+	<h1 align="center"> {% trans 'Furniture Management' %}</h1>
+	<form class="form-horizontal" action="" method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
+		<div class="row">
+			<div class="col-md-4 col-md-offset-2">
+				{{ form|bootstrap_horizontal  }}
+			</div>
+			<div class="col-md-1" >
+				<button class="btn btn-success" type="submit" >
+					<span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+				</button>
+			</div>
+		</div>
 		<!-- aqui va lo de la tabla-->
 		{% if form.instance.pk %}
 		<div>
@@ -14,27 +24,48 @@
 			</table>
 			<div class="btn-toolbar" role="toolbar" aria-label="...">
 				<div class="btn-group" role="group" aria-label="...">
-					<button type="button"  onclick="addRow()">
+					<button class="btn btn-success" type="button"  onclick="addRow()">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Row
 					</button>
-					<button type="button" onclick="addColumn()">
+					<button class="btn btn-info" type="button" onclick="addColumn()">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Column
 					</button>
 				</div>
 				<div class="btn-group" role="group" aria-label="...">
-					<button type="button"  onclick="deleteRows()">
+					<button class="btn btn-warning" type="button"  onclick="deleteRows()">
 						<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Row
 					</button>
-					<button type="button" onclick="deleteColumns()">
+					<button class="btn btn-danger" type="button" onclick="deleteColumns()">
 						<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Column
 					</button>
 				</div>
+				
+				<div class="btn-group" role="group" aria-label="...">
+				<button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+				</div>
 			</div>
 			</div>
+			
+		{% else %}
+<div class="list-group">
+{% for object in object_list %}
+	<li class="row list-group-item"> 
+		<div class="col-md-9">
+		{{object}}
+		</div>
+		<div class="col-md-3"> 
+			<div class="btn-group" role="group" aria-label="...">
+			  <a href="{% url 'laboratory:furniture_update' object.pk %}" class="btn btn-info"> 
+			  	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
+			  <a href="{% url 'laboratory:furniture_delete' object.pk%}" class="btn btn-danger">
+			  	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+			</div>	
+		</div>
+	</li>
+{% endfor %}
+</div>
+
 		{% endif %}
-		<div class="col-md-5" style="padding-top: 10%"></div>
-		<!--	-->
-		<input  class="btn btn-success" type="submit" value="Save">
 	</form>
 </div>
 
@@ -42,7 +73,7 @@
 	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
 				href="{% url 'laboratory:shelf_create' %}?row=ROW&col=COL&furniture={{form.instance.pk}}"> 
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					Add Shelf 
+					{% trans 'Add Shelf' %} 
 	</a>
 	<div class="" id="row_ROW_col_COL"></div>
 </div>
@@ -54,7 +85,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         	<span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Create shelf</h4>
+        <h4 class="modal-title">{% trans 'Create shelf' %}</h4>
       </div>
       <div id="shelfmodalbody">
     </div><!-- /.modal-content -->

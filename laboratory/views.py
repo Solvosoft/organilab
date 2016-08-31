@@ -7,8 +7,10 @@ from django.template.loader import get_template, render_to_string
 from django.template.context import Context
 from weasyprint import HTML
 import json
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls.base import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class miContexto(object):
@@ -19,20 +21,24 @@ class miContexto(object):
         return contex
 
 
+@method_decorator(login_required, name='dispatch')
 class LaboratoryRoomListView(miContexto, ListView):
     model = LaboratoryRoom
     template_name = "laboratory/report_laboratoryroom_list.html"
 
 
+@method_decorator(login_required, name='dispatch')
 class ObjectListView(miContexto, ListView):
     model = Object
 
 
+@method_decorator(login_required, name='dispatch')
 class FurnitureListView(miContexto, ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
 
 
+@login_required
 def report_building(request):
     laboratoryroom = LaboratoryRoom.objects.all()
 
@@ -54,6 +60,7 @@ def report_building(request):
     return response
 
 
+@login_required
 def report_objects(request):
 
     var = request.GET.get('pk')
@@ -81,6 +88,7 @@ def report_objects(request):
     return response
 
 
+@login_required
 def report_furniture(request):
 
     var = request.GET.get('pk')
@@ -108,6 +116,7 @@ def report_furniture(request):
     return response
 
 
+@login_required
 def report_sumfurniture(request):
 
     var = request.GET.get('pk')
@@ -139,19 +148,25 @@ def index(request):
     return render(request, 'laboratory/index.html')
 
 
+@method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
     success_url = '/'
     fields = ("labroom", "name", "type")
 
     def get_success_url(self):
-
         return reverse_lazy("laboratory:furniture_update", kwargs={'pk': self.object.pk})
 
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
+        context['object_list'] = self.model.objects.all()
+        return context
 
+
+@method_decorator(login_required, name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
-    success_url = '/'
+    success_url = reverse_lazy("laboratory:furniture_create")
     fields = ("labroom", "name", "type")
 
     def get_context_data(self, **kwargs):
@@ -183,3 +198,9 @@ class FurnitureUpdateView(UpdateView):
                                  'obj': self.object,
                                  'col': col,
                                  'row': row})
+
+
+@method_decorator(login_required, name='dispatch')
+class FurnitureDelete(DeleteView):
+    model = Furniture
+    success_url = reverse_lazy("laboratory:furniture_create")

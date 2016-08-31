@@ -1,12 +1,14 @@
+{% load bootstrap  i18n %}
+
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
 action="{% url 'laboratory:shelf_create'%}" method="post">
 	<div class="modal-body">
 	{% csrf_token %}
-	{{ form.as_p}}
+	{{ form|bootstrap }}
 	</div>
 	
 	 <div class="modal-footer">
-        <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" >Saves</button>
+        <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="submit" class="btn btn-primary" > {% trans 'Save' %}</button>
       </div>
 </form>

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load i18n %}
+
 {% block content %}
 
 {% include 'laboratory/search_widget.html' %}
@@ -65,7 +67,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Add Object</h4>
+        <h4 class="modal-title">{% trans 'Add Object' %}</h4>
       </div>
 	<div id="shelfobjectCreate"></div>
 
@@ -78,7 +80,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Are you sure? </h4>
+        <h4 class="modal-title">{% trans 'Are you sure?' %} </h4>
       </div>
 	<div id="shelfobjectDelete"></div>
     </div><!-- /.modal-content -->

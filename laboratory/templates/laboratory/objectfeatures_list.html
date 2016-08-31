@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
+{% load i18n %}
 {% block content %}
 	
-	<h1>Object Features</h1>
+	<h1>{% trans 'Object Features' %}</h1>
 	<ul>
 	{% for objects in object_list %} 
 	{% for feature in object.features.all %}
-		<li> Feature:
+		<li> {% trans 'Feature' %}:
 			{{feature.name}}
 			{{feature.description}}
 			</li>
