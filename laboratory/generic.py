@@ -15,6 +15,8 @@ from django import forms
 import json
 from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class ObjectDeleteFromShelf(DeleteView):
@@ -22,20 +24,35 @@ class ObjectDeleteFromShelf(DeleteView):
     success_url = reverse_lazy('laboratory:object-list')
 
 
+@method_decorator(login_required, name='dispatch')
 class ObjectList(ListView):
     model = Object
 
 
+@method_decorator(login_required, name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
 
+@method_decorator(login_required, name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
     success_url = reverse_lazy('laboratory:object-list')
 
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
 
+        context['object_list'] = self.model.objects.all()
+        return context
+
+
+class LaboratoryRoomDelete(DeleteView):
+    model = LaboratoryRoom
+    success_url = reverse_lazy('laboratory:laboratoryroom_create')
+
+
+@method_decorator(login_required, name='dispatch')
 class ObjectCreate(CreateView):
     model = Object
     fields = '__all__'
@@ -54,6 +71,7 @@ class ShelfForm(forms.ModelForm):
         }
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
@@ -133,6 +151,7 @@ class ShelfCreate(AJAXMixin, CreateView):
         return dataconfig
 
 
+@login_required
 @ajax
 def ShelfDelete(request, pk, row, col):
     row, col = int(row), int(col)
@@ -161,14 +180,11 @@ def ShelfDelete(request, pk, row, col):
     }, }
 
 
+@method_decorator(login_required, name='dispatch')
 class LabRoomList(ListView):
     model = LaboratoryRoom
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelfListView(ListView):
     model = Shelf
-
-#     def get_queryset(self):
-#         queryset = ListView.get_queryset(self)
-#         queryset = queryset.filter(container_shelf__gte=5)
-#         return queryset

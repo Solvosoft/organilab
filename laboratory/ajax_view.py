@@ -37,6 +37,7 @@ def get_shelves(furniture):
     return []
 
 
+@login_required
 def list_furniture_render(request):
 
     var = request.GET.get('namelaboratoryRoom', '0')
@@ -52,9 +53,9 @@ def list_furniture_render(request):
         })
 
 
+@login_required
 @ajax
 def list_furniture(request):
-   # print("Entro al ajax_view labory furniture")
     return {
         'inner-fragments': {
             '#furnitures': list_furniture_render(request)
@@ -63,6 +64,7 @@ def list_furniture(request):
     }
 
 
+@login_required
 def list_shelf_render(request):
     var = request.GET.get('furniture', '0')
     furniture = Furniture.objects.filter(pk=var)
@@ -75,6 +77,7 @@ def list_shelf_render(request):
         })
 
 
+@login_required
 @ajax
 def list_shelf(request):
     return {
@@ -85,6 +88,7 @@ def list_shelf(request):
     }
 
 
+@login_required
 def list_shelfobject_render(request, shelf=0):
     if shelf == 0:
         var = request.GET.get('shelf', '0')
@@ -102,6 +106,7 @@ def list_shelfobject_render(request, shelf=0):
         })
 
 
+@login_required
 @ajax
 def list_shelfobject(request):
     return {
@@ -126,6 +131,7 @@ class ShelfObjectForm(forms.ModelForm):
         }
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     form_class = ShelfObjectForm
@@ -202,6 +208,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return response
 
 
+@login_required
 def admin_list_shelf_render(request):
     shelves = Shelf.objects.all()
     return render_to_string(
@@ -211,6 +218,7 @@ def admin_list_shelf_render(request):
         })
 
 
+@login_required
 @ajax
 def admin_list_shelf(request):
     return {
@@ -220,6 +228,7 @@ def admin_list_shelf(request):
     }
 
 
+@method_decorator(login_required, name='dispatch')
 class ShelvesCreate(AJAXMixin, CreateView):
     model = Shelf
     fields = "__all__"
@@ -234,6 +243,7 @@ class ShelvesCreate(AJAXMixin, CreateView):
         return response
 
 
+@login_required
 def list_objectfeatures_render(request):
     objectfeatures = ObjectFeatures.objects.all()
     return render_to_string(
@@ -243,6 +253,7 @@ def list_objectfeatures_render(request):
         })
 
 
+@login_required
 @ajax
 def list_objectfeatures(request):
     return {
@@ -252,6 +263,7 @@ def list_objectfeatures(request):
     }
 
 
+@method_decorator(login_required, name='dispatch')
 class ObjectFeaturesCreate(AJAXMixin, CreateView):
     model = ObjectFeatures
     fields = "__all__"

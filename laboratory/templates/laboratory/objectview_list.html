@@ -4,21 +4,25 @@
 {% block content %}
 
 <a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_create'  %}"> {% trans 'Add' %} </a>
+  	href="{% url 'laboratory:objectview_create'  %}">
+  	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %} </a>
  
  <br> <br>
+ <ul class="list-group">
 {% for object in object_list %}
-<div class="row" style="margin:5px">
-  <div class="col-md-8"> {{object}}</div>
-  <div class="col-md-4">
+<li class="row list-group-item">
+  <div class="col-md-9"> {{object}}</div>
+  <div class="col-md-3">
   	<a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_update' object.pk %}"> {% trans 'Edit' %}</a>
+  	href="{% url 'laboratory:objectview_update' object.pk %}">
+  	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
   	<a class="btn btn-danger" 
-  	href="{% url 'laboratory:objectview_delete' object.pk %}"> {% trans 'Delete' %}</a>
-  	
+  	href="{% url 'laboratory:objectview_delete' object.pk %}"> 
+  	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
   </div>
-</div>
+</li>
 {% endfor %}
+</ul>
 
 {% if is_paginated %}
 	<nav aria-label="...">

@@ -7,7 +7,7 @@
 
 <pre id="pre01" >
 <h3>	
- {% trans "FURNITURE INFORMATION" %}					
+ {% trans "Furniture information" %}					
 </h3>	
 </pre>
 
@@ -26,6 +26,7 @@
         <ul>
         	<li>{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}</li>
         	<li>{% trans "Type:" %}
+        		
         		{% ifequal furniture.type "F" %}
     				{% trans "Furniture" %}
 				{% endifequal %}

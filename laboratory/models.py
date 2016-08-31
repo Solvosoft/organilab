@@ -102,10 +102,11 @@ class Object(models.Model):
         (MATERIAL, _('Material')),
         (EQUIPMENT, _('Equipment'))
     )
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     code = models.CharField(_('Code'), max_length=255)
-    description = models.TextField(_('Description'))
     name = models.CharField(_('Name'), max_length=255)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    description = models.TextField(_('Description'))
+
     features = models.ManyToManyField(ObjectFeatures)
 
     class Meta:
