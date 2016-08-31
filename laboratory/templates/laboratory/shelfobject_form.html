@@ -1,4 +1,4 @@
- {% load bootstrap %}
+ {% load bootstrap i18n %}
  <form data-ajax-submit="" onsubmit="return false;"
 	data-success="processResponseshelfobject"
 	action="{%if form.instance.pk %}{% url 'laboratory:shelfobject_edit' object.pk %}{%else%}{% url 'laboratory:shelfobject_create' %}{% endif %}" method="post"

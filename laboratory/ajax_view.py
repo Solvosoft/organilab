@@ -144,7 +144,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    request, self.object.shelf.pk),
+                    self.request, self.object.shelf.pk),
                 "#closemodal": '<script>$("#object_create").modal("hide");</script>'
             },
         }
