@@ -42,7 +42,7 @@ class Shelf(models.Model):
     CRATE = 'C'
     DRAWER = 'D'
     TYPE_CHOICES = (
-        (CRATE, _('Crate')),
+        (CRATE, _('Space')),
         (DRAWER, _('Drawer'))
     )
     furniture = models.ForeignKey('Furniture')
@@ -123,12 +123,14 @@ class ShelfObject(models.Model):
     CM = '2'
     L = '3'
     ML = '4'
+    U = "5"
     CHOICES = (
         (M, _('Meters')),
         (MM, _('Milimeters')),
         (CM, _('Centimeters')),
         (L, _('Liters')),
-        (ML, _('Mililiters'))
+        (ML, _('Mililiters')),
+        (U, _('Unit'))
     )
     shelf = models.ForeignKey('Shelf')
     object = models.ForeignKey('Object')
