@@ -38,7 +38,7 @@ class LaboratoryRoomsList(ListView):
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
-    success_url = reverse_lazy('laboratory:object-list')
+    success_url = reverse_lazy('laboratory:laboratoryroom_create')
 
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
