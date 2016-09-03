@@ -43,8 +43,13 @@
           </ul>
         </li>
         
-        
-   
+        <li>        
+        {% if request.reservation %}
+        	<a href="{% url 'finish_reservation' %}"> Finish reservation </a>
+        	{%else%}
+        	<a href="{% url 'add_user_reservation' %}"> Create a reservation </a>
+   		{% endif%}
+   		</li>
         {% else %}
             {# TODO #}
         {% endif %}

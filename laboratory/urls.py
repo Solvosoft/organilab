@@ -20,6 +20,7 @@ from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, S
 from laboratory import views
 from laboratory.search import SearchObject
 from laboratory.ObjectViews import ObjectView
+from laboratory.reservation import ShelfObjectReservation
 
 objviews = ObjectView()
 
@@ -105,6 +106,11 @@ urlpatterns += [
         name="objectfeatures_list"),
     url(r"^search$", SearchObject.as_view(),
         name="search"),
+
+    url(r"reserve_object/(?P<modelpk>\d+)$",
+        ShelfObjectReservation.as_view(),
+        name="object_reservation")
 ]
+
 
 urlpatterns += objviews.get_urls()

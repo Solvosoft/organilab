@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from laboratory import urls as laboratory_urls
-
+from djreservation import urls as djreservation_urls
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory'))
 
 ]
+
+urlpatterns += djreservation_urls.urlpatterns
