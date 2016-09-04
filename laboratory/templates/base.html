@@ -43,6 +43,7 @@
           </ul>
         </li>
         
+        <li><a href="{% url 'reservation_list' %}"> My reservations </a> </li>
         <li>        
         {% if request.reservation %}
         	<a href="{% url 'finish_reservation' %}"> Finish reservation </a>
