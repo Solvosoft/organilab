@@ -85,6 +85,19 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="object_update" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Update Object</h4>
+      </div>
+	<div id="shelfobjectUpdate"></div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 {% endblock %}
 
 {% block js %}
@@ -147,6 +160,11 @@ function showAddObject(selve){
 	function processResponseshelfobjectDelete(dat) {
 		$('#shelfobjectDelete').html(dat);
 		$("#object_delete").modal('show');
+	}
+	function processResponseshelfobjectUpdate(dat) {
+		$('#shelfobjectUpdate').html(dat);
+		// clean the form
+		$("#object_update").modal('show');
 	}
 </script>
 {% endblock %}
