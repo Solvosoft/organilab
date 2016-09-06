@@ -131,6 +131,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     form_class = ShelfObjectForm
     success_url = reverse_lazy('laboratory:list_shelf')
 
+    
     def form_valid(self, form):
         self.object = form.save()
         row = form.cleaned_data['row']
@@ -154,52 +155,50 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 @method_decorator(login_required, name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
-    fields = ['quantity', 'measurement_unit']
+    form_class = ShelfObjectForm
     success_url = reverse_lazy('laboratory:list_shelf')
 
-    def get(self, request, *args, **kwargs):
-        response = UpdateView.get(self, request, *args, **kwargs)
-        response.render()
-
-        # def _ajaxf():
-        return {
+    def form_valid(self, form):
+     self.object = form.save()
+     row = form.cleaned_data['row']
+     col = form.cleaned_data['col']
+     return {
             'inner-fragments': {
-                '#o%d' % self.object.pk: response.content
-            },
-        }
-
-        # return ajax(_ajaxf())
-
-    def post(self, request, *args, **kwargs):
-        response = UpdateView.post(self, request, *args, **kwargs)
-
-        if type(response) == HttpResponseRedirect:
-            return {
-                'inner-fragments': {
-                    '#o%d' % self.object.pk: render_to_string(
-                        'laboratory/shelfObject.html', {'object': self.object})
-                },
-            }
-
-        return {
-            'inner-fragments': {
-                '#o%d' % self.object.pk: response.content
+                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
+                    request, self.object.shelf.pk),
+                "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }
 
 
+ 
 @method_decorator(login_required, name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = reverse_lazy('laboratory:list_shelf')
+    
+    
+    
+    def get(self, request, *args, **kwargs):
+         
+     shelf= request.GET.get("shelf")
+     row= request.GET.get("row")
+     col=request.GET.get("col")
+     return DeleteView.get(self, request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        response = DeleteView.post(self, request, *args, **kwargs)
 
-        if type(response) == HttpResponseRedirect:
-            return list_shelfobject_render(request)
-
+    def post(self,request,*args,**kwargs):
+        response = DeleteView.post(self,request, *args, **kwargs)
+        return {
+            'inner-fragments': {
+                '#row_%d_col_%d_shelf_%d' % (0,0,self.object.shelf.pk): list_shelfobject_render(
+                    request, self.object.shelf.pk),
+                "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
+            },
+        }
         return response
+
+
 
 
 def admin_list_shelf_render(request):
