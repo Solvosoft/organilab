@@ -20,7 +20,6 @@ from django import forms
 
 
 def get_shelves(furniture):
-
     if type(furniture) == QuerySet:
         furniture = furniture[0]
 
@@ -38,7 +37,6 @@ def get_shelves(furniture):
 
 
 def list_furniture_render(request):
-
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
@@ -54,7 +52,7 @@ def list_furniture_render(request):
 
 @ajax
 def list_furniture(request):
-   # print("Entro al ajax_view labory furniture")
+    # print("Entro al ajax_view labory furniture")
     return {
         'inner-fragments': {
             '#furnitures': list_furniture_render(request)
@@ -98,7 +96,7 @@ def list_shelfobject_render(request, shelf=0):
         'laboratory/shelfObject_list.html',
         context={
             'object_list': shelfobject,
-            'data':  Shelf.objects.get(pk=shelf)
+            'data': Shelf.objects.get(pk=shelf)
         })
 
 
@@ -131,7 +129,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     form_class = ShelfObjectForm
     success_url = reverse_lazy('laboratory:list_shelf')
 
-    
     def form_valid(self, form):
         self.object = form.save()
         row = form.cleaned_data['row']
@@ -159,10 +156,10 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     success_url = reverse_lazy('laboratory:list_shelf')
 
     def form_valid(self, form):
-     self.object = form.save()
-     row = form.cleaned_data['row']
-     col = form.cleaned_data['col']
-     return {
+        self.object = form.save()
+        row = form.cleaned_data['row']
+        col = form.cleaned_data['col']
+        return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
                     request, self.object.shelf.pk),
@@ -171,34 +168,26 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         }
 
 
- 
 @method_decorator(login_required, name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = reverse_lazy('laboratory:list_shelf')
-    
-    
-    
+
     def get(self, request, *args, **kwargs):
-         
-     shelf= request.GET.get("shelf")
-     row= request.GET.get("row")
-     col=request.GET.get("col")
-     return DeleteView.get(self, request, *args, **kwargs)
+        row = request.GET.get("row")
+        col = request.GET.get("col")
+        return DeleteView.get(self, request, *args, **kwargs)
 
-
-    def post(self,request,*args,**kwargs):
-        response = DeleteView.post(self,request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        response = DeleteView.post(self, request, *args, **kwargs)
         return {
             'inner-fragments': {
-                '#row_%d_col_%d_shelf_%d' % (0,0,self.object.shelf.pk): list_shelfobject_render(
+                '#row_%d_col_%d_shelf_%d' % (0, 0, self.object.shelf.pk): list_shelfobject_render(
                     request, self.object.shelf.pk),
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
         }
         return response
-
-
 
 
 def admin_list_shelf_render(request):
