@@ -45,10 +45,13 @@ urlpatterns += [
     url(r"^shelfObject/list$", list_shelfobject, name="list_shelfobject"),
     url(r"^shelfObject/create$", ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
+                
     url(r"^shelfObject/delete/(?P<pk>\d+)$",
         ShelfObjectDelete.as_view(), name="shelfobject_delete"),
+                
     url(r"^shelfObject/edit/(?P<pk>\d+)$",
         ShelfObjectEdit.as_view(), name="shelfobject_edit"),
+                
     url(r"^shelf/delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
         ShelfDelete, name="shelf_delete")
 ]
