@@ -28,6 +28,12 @@ class ObjectDeleteFromShelf(DeleteView):
 class ObjectList(ListView):
     model = Object
 
+@method_decorator(login_required, name='dispatch')
+class ObjectCreate(CreateView):
+    model = Object
+    fields = '__all__'
+    success_url = "/"
+
 
 @method_decorator(login_required, name='dispatch')
 class LaboratoryRoomsList(ListView):
@@ -50,13 +56,11 @@ class LabroomCreate(CreateView):
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = reverse_lazy('laboratory:laboratoryroom_create')
-
-
+    
+    
 @method_decorator(login_required, name='dispatch')
-class ObjectCreate(CreateView):
-    model = Object
-    fields = '__all__'
-    success_url = "/"
+class LabRoomList(ListView):
+    model = LaboratoryRoom
 
 
 class ShelfForm(forms.ModelForm):
@@ -181,10 +185,6 @@ def ShelfDelete(request, pk, row, col):
 
 
 @method_decorator(login_required, name='dispatch')
-class LabRoomList(ListView):
-    model = LaboratoryRoom
-
-
-@method_decorator(login_required, name='dispatch')
 class ShelfListView(ListView):
     model = Shelf
+    
