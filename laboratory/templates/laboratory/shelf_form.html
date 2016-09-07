@@ -1,8 +1,13 @@
+{% load bootstrap shelf_position i18n %}
+
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
 action="{% url 'laboratory:shelf_create'%}" method="post">
 	<div class="modal-body">
 	{% csrf_token %}
-	{{ form.as_p}}
+	{{ form|bootstrap }}
+	<p>
+		{% trans 'Position:' %} {% print_shelf form.row.value form.col.value %}
+	</p>
 	</div>
 	
 	 <div class="modal-footer">
