@@ -41,7 +41,6 @@
 			</h3>
 			<ul>
 				<li>{% trans "Name:" %} {{ obj.name }}</li>
-				<li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
 				<li>{% trans "Type:" %}
 					{{ obj.get_type_display }}
 				</li>
@@ -61,7 +60,9 @@
         		<li>{% trans "Quantity:" %} 
         			{% for shelfobj in obj.shelfobject_set.all %}
         			<ul>
-            			<li>{{ shelfobj.quantity }} 
+            			<li>
+            				{{ shelfobj.shelf }}:
+            				{{ shelfobj.quantity }} 
                				{{ shelfobj.get_measurement_unit_display }}
 						</li>	
 					</ul>
