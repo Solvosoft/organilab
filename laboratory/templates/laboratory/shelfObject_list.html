@@ -5,7 +5,7 @@
 		{{shelfobject.object.name }}
 		{{shelfobject.quantity}}
 		{{shelfobject.get_measurement_unit_display}}
-		<a class="btn btn-success"
+		<a class="pull-right" style="margin-left: 10px; color:red"
 		data-ajax="true"
 		data-success="processResponseshelfobjectDelete"
 		href="{% url 'laboratory:shelfobject_delete' shelfobject.pk %}
@@ -14,7 +14,7 @@
 		"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
 
 
-       	<a class="btn btn-info" 
+       	<a class="pull-right" 
        	data-ajax="true"
 		data-success="processResponseshelfobjectUpdate"
          	href="{% url 'laboratory:shelfobject_edit' shelfobject.pk %}"> 
