@@ -1,9 +1,10 @@
-{% load i18n %}
+{% load shelf_position i18n %}
 {% if col%}
 <ul class="list-group">
 	{% for data in col %}
 	  <li class="list-group-item">
 	  	{{data.get_type_display}} 
+	  	<p>{% trans 'Position:' %} {% print_position crow ccol forloop.counter0 col.count %}</p>
 	  	<a class="btn btn-xs btn-warning" data-ajax="true"
 	  	href="{% url 'laboratory:shelf_delete' data.pk crow ccol %}"> {% trans 'Delete' %}</a>
 	  </li>				
