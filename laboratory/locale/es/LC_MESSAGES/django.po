@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-04 12:26-0600\n"
+"POT-Creation-Date: 2016-09-07 11:06-0600\n"
 "PO-Revision-Date: 2016-08-31 19:55-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -205,7 +205,7 @@ msgid "Add Shelf"
 msgstr "Agregar estante"
 
 #: laboratory/templates/laboratory/admin_shelf_list.html:24
-#: laboratory/templates/laboratory/shelf_form.html:11
+#: laboratory/templates/laboratory/shelf_form.html:14
 #: laboratory/templates/laboratory/shelfobject_form.html:11
 msgid "Close"
 msgstr "Cerrar"
@@ -223,7 +223,7 @@ msgstr "Administración de muebles"
 #: laboratory/templates/laboratory/furniture_form.html:15
 #: laboratory/templates/laboratory/furniture_form.html:44
 #: laboratory/templates/laboratory/objectview_form.html:11
-#: laboratory/templates/laboratory/shelf_form.html:12
+#: laboratory/templates/laboratory/shelf_form.html:15
 msgid "Save"
 msgstr "Guardar"
 
@@ -236,7 +236,7 @@ msgstr "Editar"
 #: laboratory/templates/laboratory/furniture_form.html:61
 #: laboratory/templates/laboratory/laboratoryroom_form.html:30
 #: laboratory/templates/laboratory/objectview_list.html:21
-#: laboratory/templates/laboratory/shelf_rows.html:8
+#: laboratory/templates/laboratory/shelf_rows.html:9
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -451,7 +451,7 @@ msgstr "No hay estantes"
 #, fuzzy
 #| msgid "Furniture Management"
 msgid "No Furniture Elements"
-msgstr "Administración de muebles"
+msgstr "No hay muebles"
 
 #: laboratory/templates/laboratory/report_furniture_list.html:82
 msgid "Download Summary PDF"
@@ -496,6 +496,13 @@ msgstr "Buscar"
 #: laboratory/templates/laboratory/shelfObject.html:2
 msgid "Quantity"
 msgstr "Cantidad"
+
+#: laboratory/templates/laboratory/shelf_form.html:9
+#: laboratory/templates/laboratory/shelf_rows.html:7
+#, fuzzy
+#| msgid "Description:"
+msgid "Position:"
+msgstr "Posición:"
 
 #: laboratory/templates/laboratory/shelfobject_form.html:12
 msgid "Save changes"
