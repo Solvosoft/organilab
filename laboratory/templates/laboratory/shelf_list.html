@@ -19,7 +19,7 @@
 				data-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </a>
 				<div class="collapse" id="body_{{data.pk}}">
 					<div id="row_{{forloop.parentloop.parentloop.counter0}}_col_{{forloop.parentloop.counter0}}_shelf_{{data.pk}}">
-						{% include 'laboratory/shelfObject_list.html' %}
+						{% include 'laboratory/shelfObject_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 %}
 					</div>
 
 				</div> {%endfor%}
