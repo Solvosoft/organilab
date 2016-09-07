@@ -2,6 +2,7 @@
 
 {% load i18n %}
 
+{% block container%}container-fluid{%endblock%}
 {% block content %}
 
 {% include 'laboratory/search_widget.html' %}
@@ -9,7 +10,7 @@
 <div class="row">
 		<div class="col-md-12" style="padding-bottom: 3%">
 			<!-- Nav tabs -->
-			<ul class="nav nav-tabs" role="tablist">
+			<ul id="labmenues" class="nav nav-tabs" role="tablist">
 				{% for LaboratoryRoom in object_list %}
 				<li role="presentation">
 					<!-- agregarle ajax-->
@@ -28,36 +29,40 @@
 		</div>
 </div>
 <div class="row">
-		<div class="col-md-12">
-
-			<!-- Tab panes -->
-			<div class="tab-content">
-				{% for LaboratoryRoom in object_list %}
-
-				<div role=" tab-panel" class="tab-pane" id="idlab">
-
-					<div class="col-md-4">
-						<!-- traer lista de muebles -->
-						<div id="furnitures">
-						
-						</div>
-					</div>
-
-					<div class="col-md-8">
-						<!-- traer lista de estantes -->
-						<div id="shelf">
-							
-						</div>
+	<div class="col-md-12">
+	
+		<!-- Tab panes -->
+		<div class="tab-content">
+			{% for LaboratoryRoom in object_list %}
+	
+			<div role=" tab-panel" class="tab-pane" id="idlab">
+	
+				<div class="col-md-3">
+					<!-- traer lista de muebles -->
+					<div id="furnitures">
+					
 					</div>
 				</div>
-				{% endfor %}
+	
+				<div class="col-md-9">
+					<!-- traer lista de estantes -->
+					<div id="shelf">
 
+					</div>
+					
+					<div id="prototype_shelf_field" class="hidden">
+									<center><h2>{% trans 'Please click over furniture items'%}<br>
+							<small> {% trans 'Shelves will be displayed here'%} </small>
+						</h2></center>
+					</div>
+					
+				</div>
 			</div>
-
+			{% endfor %}
+	
 		</div>
-		<div class="col-md-12">
-			<div id="shelfobject"></div>
-		</div>
+	
+	</div>
 	</div>
 
 
@@ -100,15 +105,11 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
 {% endblock %}
 
 {% block js %}
 <script>
-
-function showAddObject(selve){
-
-}
-
 	function function_name_furniture(argument) {
 		ajax({
 			url : '{% url "laboratory:list_furniture" %}',
@@ -119,6 +120,7 @@ function showAddObject(selve){
 			type : "GET",
 			success : function processResponsefurniture(dat) {
 				$('#furnitures').html(dat);
+
 			}
 		});
 	}
@@ -168,5 +170,13 @@ function showAddObject(selve){
 		// clean the form
 		$("#object_update").modal('show');
 	}
+	function see_prototype_shelf_field(){
+		$("#shelf").html($("#prototype_shelf_field").html());
+	}
+	(function(){
+		$("#labmenues a").first().click();	
+		see_prototype_shelf_field();
+	})();
+
 </script>
 {% endblock %}

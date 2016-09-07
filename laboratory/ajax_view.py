@@ -56,7 +56,8 @@ def list_furniture_render(request):
 def list_furniture(request):
     return {
         'inner-fragments': {
-            '#furnitures': list_furniture_render(request)
+            '#furnitures': list_furniture_render(request),
+            '.jsmessage': "<script>see_prototype_shelf_field();</script>"
 
         },
     }
