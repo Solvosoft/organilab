@@ -20,7 +20,6 @@ from django import forms
 
 
 def get_shelves(furniture):
-
     if type(furniture) == QuerySet:
         furniture = furniture[0]
 
@@ -39,7 +38,6 @@ def get_shelves(furniture):
 
 @login_required
 def list_furniture_render(request):
-
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
@@ -102,7 +100,7 @@ def list_shelfobject_render(request, shelf=0):
         'laboratory/shelfObject_list.html',
         context={
             'object_list': shelfobject,
-            'data':  Shelf.objects.get(pk=shelf)
+            'data': Shelf.objects.get(pk=shelf)
         })
 
 
@@ -128,6 +126,19 @@ class ShelfObjectForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             'shelf': forms.HiddenInput,
+        }
+
+
+class ShelfObjectEditForm(forms.ModelForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'object': forms.HiddenInput
         }
 
 
@@ -160,36 +171,18 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 @method_decorator(login_required, name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
-    fields = ['quantity', 'measurement_unit']
+    form_class = ShelfObjectEditForm
     success_url = reverse_lazy('laboratory:list_shelf')
 
-    def get(self, request, *args, **kwargs):
-        response = UpdateView.get(self, request, *args, **kwargs)
-        response.render()
-
-        # def _ajaxf():
+    def form_valid(self, form):
+        self.object = form.save()
+        row = form.cleaned_data['row']
+        col = form.cleaned_data['col']
         return {
             'inner-fragments': {
-                '#o%d' % self.object.pk: response.content
-            },
-        }
-
-        # return ajax(_ajaxf())
-
-    def post(self, request, *args, **kwargs):
-        response = UpdateView.post(self, request, *args, **kwargs)
-
-        if type(response) == HttpResponseRedirect:
-            return {
-                'inner-fragments': {
-                    '#o%d' % self.object.pk: render_to_string(
-                        'laboratory/shelfObject.html', {'object': self.object})
-                },
-            }
-
-        return {
-            'inner-fragments': {
-                '#o%d' % self.object.pk: response.content
+                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
+                    request, self.object.shelf.pk),
+                "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }
 
@@ -199,12 +192,20 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = reverse_lazy('laboratory:list_shelf')
 
+    def get(self, request, *args, **kwargs):
+        row = request.GET.get("row")
+        col = request.GET.get("col")
+        return DeleteView.get(self, request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         response = DeleteView.post(self, request, *args, **kwargs)
-
-        if type(response) == HttpResponseRedirect:
-            return list_shelfobject_render(request)
-
+        return {
+            'inner-fragments': {
+                '#row_%d_col_%d_shelf_%d' % (0, 0, self.object.shelf.pk): list_shelfobject_render(
+                    request, self.object.shelf.pk),
+                "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
+            },
+        }
         return response
 
 
