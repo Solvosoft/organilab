@@ -6,6 +6,7 @@
 	</div>
 
 	<div class="panel-body">
+		<div class="table-responsive">
 		<table class="table table-bordered">
 			{% for row in object_list %}
 			<tr>
@@ -22,12 +23,18 @@
 						{% include 'laboratory/shelfObject_list.html' %}
 					</div>
 
-				</div> {%endfor%}
+				</div> 
+				{% if not forloop.last %}
+<hr>
+				{%endif%}
+				
+				{%endfor%}
 				{% endif %} </td>
 				{% endfor %}
 			</tr>
 			{% endfor %}
 		</table>
+		</div>
 	</div>
 
 </div>
