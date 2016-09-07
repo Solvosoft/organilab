@@ -20,6 +20,7 @@ from django import forms
 
 
 def get_shelves(furniture):
+
     if type(furniture) == QuerySet:
         furniture = furniture[0]
 
@@ -38,6 +39,7 @@ def get_shelves(furniture):
 
 @login_required
 def list_furniture_render(request):
+
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
@@ -88,7 +90,7 @@ def list_shelf(request):
 
 
 @login_required
-def list_shelfobject_render(request, shelf=0):
+def list_shelfobject_render(request, shelf=0, row=0, col=0):
     if shelf == 0:
         var = request.GET.get('shelf', '0')
     else:
@@ -101,7 +103,9 @@ def list_shelfobject_render(request, shelf=0):
         'laboratory/shelfObject_list.html',
         context={
             'object_list': shelfobject,
-            'data': Shelf.objects.get(pk=shelf)
+            'data':  Shelf.objects.get(pk=shelf),
+            'row': row,
+            'col': col
         })
 
 
@@ -130,16 +134,15 @@ class ShelfObjectForm(forms.ModelForm):
         }
 
 
-class ShelfObjectEditForm(forms.ModelForm):
+class ShelfObjectFormUpdate(forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
     class Meta:
         model = ShelfObject
-        fields = "__all__"
+        fields = ['shelf', 'quantity', 'measurement_unit']
         widgets = {
             'shelf': forms.HiddenInput,
-            'object': forms.HiddenInput
         }
 
 
@@ -156,7 +159,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    self.request, self.object.shelf.pk),
+                    self.request, self.object.shelf.pk, row, col),
                 "#closemodal": '<script>$("#object_create").modal("hide");</script>'
             },
         }
@@ -172,7 +175,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 @method_decorator(login_required, name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
-    form_class = ShelfObjectEditForm
+    form_class = ShelfObjectFormUpdate
     success_url = reverse_lazy('laboratory:list_shelf')
 
     def form_valid(self, form):
@@ -182,10 +185,19 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    request, self.object.shelf.pk),
+                    request, self.object.shelf.pk, row, col),
                 "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }
+
+    def get_form_kwargs(self):
+        kwargs = CreateView.get_form_kwargs(self)
+        kwargs['initial']['shelf'] = self.request.GET.get('shelf')
+        kwargs['initial']['row'] = self.request.GET.get('row')
+        kwargs['initial']['col'] = self.request.GET.get('col')
+        print('---kwargs')
+        print(kwargs)
+        return kwargs
 
 
 @method_decorator(login_required, name='dispatch')
@@ -193,16 +205,25 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = reverse_lazy('laboratory:list_shelf')
 
+    def get_context_data(self, **kwargs):
+        context = DeleteView.get_context_data(self, **kwargs)
+        context['row'] = self.row
+        context['col'] = self.col
+        return context
+
     def get(self, request, *args, **kwargs):
-        row = request.GET.get("row")
-        col = request.GET.get("col")
+        self.row = request.GET.get("row")
+        self.col = request.GET.get("col")
         return DeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        self.row = request.POST.get("row")
+        self.col = request.POST.get("col")
         response = DeleteView.post(self, request, *args, **kwargs)
+
         return {
             'inner-fragments': {
-                '#row_%d_col_%d_shelf_%d' % (0, 0, self.object.shelf.pk): list_shelfobject_render(
+                '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
                     request, self.object.shelf.pk),
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
