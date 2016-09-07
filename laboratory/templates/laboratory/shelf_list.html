@@ -11,11 +11,11 @@
 			<tr>
 				{% for col in row%}
 				<td> {% if col%}
-				{% for data in col %} <a class="btn btn-success"
+				{% for data in col %} <a 
 				data-ajax="true" data-success="processResponseshelfobjectCreate"
 				href="{% url 'laboratory:shelfobject_create' %}?
 				shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}
-				&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </a><a class="btn btn-primary" role="button"
+				&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </a><a  role="button"
 				data-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </a>
 				<div class="collapse" id="body_{{data.pk}}">
 					<div id="row_{{forloop.parentloop.parentloop.counter0}}_col_{{forloop.parentloop.counter0}}_shelf_{{data.pk}}">
