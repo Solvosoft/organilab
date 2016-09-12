@@ -37,24 +37,16 @@
            			<li>{% trans "Type:" %}
            				{{ shelf.get_type_display }}
            			</li>
-            		{% for obj in shelf.object_set.all %}
-                	<li>{% trans "Object Code:" %} {{ obj.code }}</li>
+            		{% for obj in shelf.shelfobject_set.all %}
+                	<li>{% trans "Object Code:" %} {{ obj.object.code }}</li>
                 	<ul>
-                		<li>{% trans "Name:" %} {{ obj.name }}</li>
+                		<li>{% trans "Name:" %} {{ obj.object.name }}</li>
 						<li>{% trans "Type:" %}
-							{{ obj.get_type_display }}
+							{{ obj.object.get_type_display }}
 						</li>
                			
         				<li>{% trans "Quantity:" %} 
-        					{% for shelfobj in obj.shelfobject_set.all %}
-        					<ul>
-            					<li>{{ shelfobj.quantity }} 
-               						{{ shelfobj.get_measurement_unit_display }}
-								</li>	
-							</ul>
-							{% empty %}
-								{% trans "No Data" %}
-        	    			{% endfor %}
+        					{{ obj.quantity }} {{ obj.get_measurement_unit_display }}
             			</li>
             			
                    	</ul>
