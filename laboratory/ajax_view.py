@@ -19,24 +19,6 @@ from django.db.models.query import QuerySet
 from django import forms
 
 
-def get_shelves(furniture):
-
-    if type(furniture) == QuerySet:
-        furniture = furniture[0]
-
-    if furniture.dataconfig:
-        dataconfig = json.loads(furniture.dataconfig)
-        # hacer algo para pasar de num a shelf
-        for crow, row in enumerate(dataconfig):
-            for ccol, col in enumerate(row):
-                if dataconfig[crow][ccol]:
-                    dataconfig[crow][ccol] = Shelf.objects.filter(
-                        pk__in=col.split(","))
-
-        return dataconfig
-    return []
-
-
 @login_required
 def list_furniture_render(request):
 
@@ -63,6 +45,24 @@ def list_furniture(request):
 
         },
     }
+    
+
+def get_shelves(furniture):
+
+    if type(furniture) == QuerySet:
+        furniture = furniture[0]
+
+    if furniture.dataconfig:
+        dataconfig = json.loads(furniture.dataconfig)
+        # hacer algo para pasar de num a shelf
+        for crow, row in enumerate(dataconfig):
+            for ccol, col in enumerate(row):
+                if dataconfig[crow][ccol]:
+                    dataconfig[crow][ccol] = Shelf.objects.filter(
+                        pk__in=col.split(","))
+
+        return dataconfig
+    return []
 
 
 @login_required

@@ -32,12 +32,6 @@ class ObjectListView(miContexto, ListView):
     model = Object
 
 
-@method_decorator(login_required, name='dispatch')
-class FurnitureListView(miContexto, ListView):
-    model = Furniture
-    template_name = "laboratory/report_furniture_list.html"
-
-
 @login_required
 def report_building(request):
     laboratoryroom = LaboratoryRoom.objects.all()
@@ -147,6 +141,12 @@ def report_sumfurniture(request):
 def index(request):
     return render(request, 'laboratory/index.html')
 
+
+@method_decorator(login_required, name='dispatch')
+class FurnitureListView(miContexto, ListView):
+    model = Furniture
+    template_name = "laboratory/report_furniture_list.html"
+    
 
 @method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
