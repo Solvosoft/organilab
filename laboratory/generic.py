@@ -28,6 +28,7 @@ class ObjectDeleteFromShelf(DeleteView):
 class ObjectList(ListView):
     model = Object
 
+
 @method_decorator(login_required, name='dispatch')
 class ObjectCreate(CreateView):
     model = Object
@@ -56,8 +57,8 @@ class LabroomCreate(CreateView):
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = reverse_lazy('laboratory:laboratoryroom_create')
-    
-    
+
+
 @method_decorator(login_required, name='dispatch')
 class LabRoomList(ListView):
     model = LaboratoryRoom
@@ -140,13 +141,11 @@ class ShelfCreate(AJAXMixin, CreateView):
             col2 = len(dataconfig[0]) - 1
             if row2 < row:
                 row_less = row - row2
-                print(row_less, row, row2)
                 for x in range(row_less):
                     dataconfig.append([''] * (col2 + 1))
             # Work with columns
             if col2 < col:
                 col_less = col - col2
-                print(col_less, col, row)
                 for i, x in enumerate(dataconfig):
                     dataconfig[i] = dataconfig[i] + [''] * col_less
         else:
@@ -187,4 +186,3 @@ def ShelfDelete(request, pk, row, col):
 @method_decorator(login_required, name='dispatch')
 class ShelfListView(ListView):
     model = Shelf
-    
