@@ -32,6 +32,7 @@ class Furniture(models.Model):
     class Meta:
         verbose_name = _('Piece of furniture')
         verbose_name_plural = _('Furniture')
+        ordering = ['name']
 
     def __str__(self):
         return '%s' % (self.name,)
@@ -46,6 +47,7 @@ class Shelf(models.Model):
         (DRAWER, _('Drawer'))
     )
     furniture = models.ForeignKey('Furniture')
+    name = models.CharField(max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
 
@@ -114,7 +116,7 @@ class Object(models.Model):
         verbose_name_plural = _('Objects')
 
     def __str__(self):
-        return '%s' % (self.name,)
+        return '%s %s' % (self.code, self.name,)
 
 
 class ShelfObject(models.Model):
