@@ -30,6 +30,13 @@ class ObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+class ObjectCreate(CreateView):
+    model = Object
+    fields = '__all__'
+    success_url = "/"
+
+
+@method_decorator(login_required, name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
@@ -53,10 +60,8 @@ class LaboratoryRoomDelete(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ObjectCreate(CreateView):
-    model = Object
-    fields = '__all__'
-    success_url = "/"
+class LabRoomList(ListView):
+    model = LaboratoryRoom
 
 
 class ShelfForm(forms.ModelForm):
@@ -136,13 +141,11 @@ class ShelfCreate(AJAXMixin, CreateView):
             col2 = len(dataconfig[0]) - 1
             if row2 < row:
                 row_less = row - row2
-                print(row_less, row, row2)
                 for x in range(row_less):
                     dataconfig.append([''] * (col2 + 1))
             # Work with columns
             if col2 < col:
                 col_less = col - col2
-                print(col_less, col, row)
                 for i, x in enumerate(dataconfig):
                     dataconfig[i] = dataconfig[i] + [''] * col_less
         else:
@@ -178,11 +181,6 @@ def ShelfDelete(request, pk, row, col):
     return {'inner-fragments': {
         '#row_%d_col_%d' % (row, col): dev
     }, }
-
-
-@method_decorator(login_required, name='dispatch')
-class LabRoomList(ListView):
-    model = LaboratoryRoom
 
 
 @method_decorator(login_required, name='dispatch')
