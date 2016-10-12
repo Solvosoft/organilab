@@ -70,7 +70,7 @@ class ShelfForm(forms.ModelForm):
 
     class Meta:
         model = Shelf
-        fields = ['type', 'furniture']
+        fields = ['name', 'type', 'furniture']
         widgets = {
             'furniture': forms.HiddenInput()
         }

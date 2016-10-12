@@ -2,8 +2,12 @@
 {% for row in dataconfig %}
 <tr>
 	{% for col in row%}
-	<td><a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
-	href="{% url 'laboratory:shelf_create' %}?row={{forloop.parentloop.counter0}}&col={{forloop.counter0}}&furniture={{obj.pk}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> {% trans 'Add Shelf' %} </a>
+	<td>
+	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" 
+	data-success="processResponse"
+	href="{% url 'laboratory:shelf_create' %}?row={{forloop.parentloop.counter0}}&col={{forloop.counter0}}&furniture={{obj.pk}}"> 
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> {% trans 'Add Shelf' %} </a>
+	
 	<div class="" id="row_{{forloop.parentloop.counter0}}_col_{{forloop.counter0}}">
 		{% include 'laboratory/shelf_rows.html' with crow=forloop.parentloop.counter0 ccol=forloop.counter0 %}
 	</div></td>
