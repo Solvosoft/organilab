@@ -4,6 +4,7 @@
 {% block content %}
 <div>
 	<h1 align="center"> {% trans 'Furniture Management' %}</h1>
+	{{ form.errors}}
 	<form class="form-horizontal" action="" method="post">
 		{% csrf_token %}
 		<div class="row">
@@ -75,7 +76,7 @@
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					{% trans 'Add Shelf' %} 
 	</a>
-	<div class="" id="row_ROW_col_COL"></div>
+	<div class="" id="row_ROW_col_COL"><ul class='list-group  sortableself'></ul></div>
 </div>
 
 
@@ -93,5 +94,41 @@
 </div>
 </div>
 <div id="modalclose"></div>
+
+
+
+{% endblock %}
+
+{% block css %}
+<style>
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ul.sortableself{
+	list-style: none;
+}
+ul.sortableself li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ul.sortableself li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
+</style>
+
+{% endblock %}
+
+
+{% block js%}
+    <script src="{% static 'laboratory/js/jquery-sortable-min.js'%}"></script>
+	<script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
 
 {% endblock %}

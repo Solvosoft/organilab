@@ -11,6 +11,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls.base import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
+from django import forms
 
 
 class miContexto(object):
@@ -146,7 +149,7 @@ def index(request):
 class FurnitureListView(miContexto, ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
-    
+
 
 @method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
@@ -163,11 +166,24 @@ class FurnitureCreateView(CreateView):
         return context
 
 
+class FurnitureForm(forms.ModelForm):
+    dataconfig = forms.CharField(
+        widget=forms.HiddenInput,
+        validators=[RegexValidator(
+            r'^[\[\],\s"\d]*$',
+            message=_("Invalid format in shelf dataconfig "),
+            code='invalid_format')])
+
+    class Meta:
+        model = Furniture
+        fields = ("labroom", "name", "type", 'dataconfig')
+
+
 @method_decorator(login_required, name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = reverse_lazy("laboratory:furniture_create")
-    fields = ("labroom", "name", "type")
+    form_class = FurnitureForm
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
@@ -182,8 +198,17 @@ class FurnitureUpdateView(UpdateView):
         for irow, row in enumerate(dataconfig):
             for icol, col in enumerate(row):
                 if col:
+                    val = None
+                    if type(col) == str:
+                        val = col.split(",")
+                    elif type(col) == int:
+                        val = [col]
+                    elif type(col) == list:
+                        val = col
+                    else:
+                        continue
                     dataconfig[irow][icol] = Shelf.objects.filter(
-                        pk__in=col.split(","))
+                        pk__in=val)
         return dataconfig
 
     def build_configdata(self):
