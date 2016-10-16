@@ -5,10 +5,10 @@ Created on 11/8/2016
 '''
 from __future__ import unicode_literals
 
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture
 from django.views.generic.list import ListView
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models.query import QuerySet
 from django_ajax.mixin import AJAXMixin
 from django import forms
@@ -17,6 +17,7 @@ from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
 
 
 class ObjectDeleteFromShelf(DeleteView):
@@ -70,7 +71,7 @@ class ShelfForm(forms.ModelForm):
 
     class Meta:
         model = Shelf
-        fields = ['type', 'furniture']
+        fields = ['name', 'type', 'furniture']
         widgets = {
             'furniture': forms.HiddenInput()
         }
@@ -103,83 +104,105 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
-        dataconfig = self.set_dataconfig(furniture,
-                                         col, row,
-                                         self.object.pk)
 
         dev = render_to_string(
-            "laboratory/shelf_rows.html",
+            "laboratory/shelf_details.html",
             {"crow": row,
              "ccol": col,
-             "col": Shelf.objects.filter(
-                 pk__in=dataconfig[row][col].split(","))})
+             "data": self.object})
+        return {
+            'inner-fragments': {
+                "#modalclose": "<script>closeModal();</script>"
+            },
+            'append-fragments': {
+                '#row_%d_col_%d ul' % (row, col): dev,
+            }
+        }
+
+    def form_invalid(self, form):
+        response = CreateView.form_invalid(self, form)
+        response.render()
+        return{
+            'inner-fragments': {
+                '#shelfmodalbody': response.content
+            }
+        }
+
+
+@method_decorator(login_required, name='dispatch')
+class ShelfEdit(AJAXMixin, UpdateView):
+    model = Shelf
+    success_url = "/"
+    form_class = ShelfForm
+
+    def get(self, request, *args, **kwargs):
+        self.row = kwargs.pop('row')
+        self.col = kwargs.pop('col')
+        return UpdateView.get(self, request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.row = kwargs.pop('row')
+        self.col = kwargs.pop('col')
+        return UpdateView.post(self, request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(ShelfEdit, self).get_form_kwargs()
+        kwargs['initial']['furniture'] = self.request.GET.get('furniture')
+        kwargs['initial']['col'] = self.col
+        kwargs['initial']['row'] = self.row
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        furniture = form.cleaned_data['furniture']
+        col = self.col or form.cleaned_data['col']
+        row = self.row or form.cleaned_data['row']
+        if furniture is None or col is None or row is None:
+            return self.form_invalid(form)
+        try:
+            col, row = int(col), int(row)
+        except:
+            return self.form_invalid(form)
+
+        self.object.furniture = furniture
+        self.object.save()
+
+        dev = render_to_string(
+            "laboratory/shelf_details.html",
+            {"crow": row,
+             "ccol": col,
+             "data": self.object})
 
         return {
             'inner-fragments': {
-                '#row_%d_col_%d' % (row, col): dev,
                 "#modalclose": "<script>closeModal();</script>"
             },
+            'fragments': {
+                '#shelf_%s' % (self.object.pk): dev,
+            }
         }
 
-    def set_dataconfig(self, furniture, col, row, value):
-        dataconfig = self.build_dataconfig(furniture, col, row)
-        if dataconfig[row][col]:
-            dataconfig[row][col] += ","
-        dataconfig[row][col] += str(value)
-        furniture.dataconfig = json.dumps(dataconfig)
-        furniture.save()
-        return dataconfig
-
-    def build_dataconfig(self, furniture, col, row):
-        if furniture.dataconfig:
-            dataconfig = json.loads(furniture.dataconfig)
-        else:
-            dataconfig = []
-        if len(dataconfig) > 0:
-            # Work with rows
-            row2 = len(dataconfig) - 1
-            col2 = len(dataconfig[0]) - 1
-            if row2 < row:
-                row_less = row - row2
-                for x in range(row_less):
-                    dataconfig.append([''] * (col2 + 1))
-            # Work with columns
-            if col2 < col:
-                col_less = col - col2
-                for i, x in enumerate(dataconfig):
-                    dataconfig[i] = dataconfig[i] + [''] * col_less
-        else:
-            for x in range(row + 1):
-                dataconfig.append([''] * (col + 1))
-        return dataconfig
+    def form_invalid(self, form):
+        response = UpdateView.form_invalid(self, form)
+        response.render()
+        return{
+            'inner-fragments': {
+                '#shelfmodalbody': response.content
+            }
+        }
 
 
 @login_required
 @ajax
 def ShelfDelete(request, pk, row, col):
     row, col = int(row), int(col)
-    shelf = Shelf.objects.get(pk=pk)
-    furniture = shelf.furniture
-    dataconfig = json.loads(furniture.dataconfig)
-    dev = ""
-    if len(dataconfig) > 0 and len(dataconfig) > row and \
-            len(dataconfig[0]) > col:
-        data = dataconfig[row][col].split(",")
-        if str(pk) in data:
-            data.remove(str(pk))
-            dataconfig[row][col] = ",".join(data)
-
-            dev = render_to_string(
-                "laboratory/shelf_rows.html",
-                {"crow": row,
-                 "ccol": col,
-                 "col": Shelf.objects.filter(pk__in=data)})
-        furniture.dataconfig = json.dumps(dataconfig)
-        furniture.save()
-
+    shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
+    url = reverse('laboratory:shelf_delete', args=(pk, row, col))
+    #url = url.replace("/", "\\/")
+    print(url)
     return {'inner-fragments': {
-        '#row_%d_col_%d' % (row, col): dev
+        "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
     }, }
 
 

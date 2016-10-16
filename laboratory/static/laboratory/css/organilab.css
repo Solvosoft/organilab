@@ -54,3 +54,8 @@ body {
 .container .text-muted {
     margin: 20px 0;
 }
+
+#close{
+	color:red;
+	opacity: 1;
+}
