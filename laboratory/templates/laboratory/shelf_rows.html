@@ -2,13 +2,6 @@
 {% if col%}
 		
 	{% for data in col %}
-	  <li data-id="{{data.pk}}" class="list-group-item">
-	  	{{data.get_type_display}} 
-	  	<p>{% trans 'Position:' %} {{data.name}}</p>
-	  	<a class="btn btn-xs btn-warning" data-ajax="true"
-	  	href="{% url 'laboratory:shelf_delete' data.pk crow ccol %}"> {% trans 'Delete' %}</a>
-	  	
-	  
-	  </li>				
+			{% include 'laboratory/shelf_details.html' %}
 	{% endfor%}
 {%endif%}

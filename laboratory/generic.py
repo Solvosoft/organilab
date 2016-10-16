@@ -5,7 +5,7 @@ Created on 11/8/2016
 '''
 from __future__ import unicode_literals
 
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture
 from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -104,26 +104,92 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
-        dataconfig = self.set_dataconfig(furniture,
-                                         col, row,
-                                         self.object.pk)
 
         dev = render_to_string(
-            "laboratory/shelf_rows.html",
+            "laboratory/shelf_details.html",
             {"crow": row,
              "ccol": col,
-             "col": Shelf.objects.filter(
-                 pk__in=dataconfig[row][col] + [self.object.pk])})
+             "data": self.object})
+        return {
+            'inner-fragments': {
+                "#modalclose": "<script>closeModal();</script>"
+            },
+            'append-fragments': {
+                '#row_%d_col_%d ul' % (row, col): dev,
+            }
+        }
+
+    def form_invalid(self, form):
+        response = CreateView.form_invalid(self, form)
+        response.render()
+        return{
+            'inner-fragments': {
+                '#shelfmodalbody': response.content
+            }
+        }
+
+
+@method_decorator(login_required, name='dispatch')
+class ShelfEdit(AJAXMixin, UpdateView):
+    model = Shelf
+    success_url = "/"
+    form_class = ShelfForm
+
+    def get(self, request, *args, **kwargs):
+        self.row = kwargs.pop('row')
+        self.col = kwargs.pop('col')
+        return UpdateView.get(self, request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.row = kwargs.pop('row')
+        self.col = kwargs.pop('col')
+        return UpdateView.post(self, request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(ShelfEdit, self).get_form_kwargs()
+        kwargs['initial']['furniture'] = self.request.GET.get('furniture')
+        kwargs['initial']['col'] = self.col
+        kwargs['initial']['row'] = self.row
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        furniture = form.cleaned_data['furniture']
+        col = self.col or form.cleaned_data['col']
+        row = self.row or form.cleaned_data['row']
+        if furniture is None or col is None or row is None:
+            return self.form_invalid(form)
+        try:
+            col, row = int(col), int(row)
+        except:
+            return self.form_invalid(form)
+
+        self.object.furniture = furniture
+        self.object.save()
+
+        dev = render_to_string(
+            "laboratory/shelf_details.html",
+            {"crow": row,
+             "ccol": col,
+             "data": self.object})
 
         return {
             'inner-fragments': {
-                '#row_%d_col_%d' % (row, col): dev,
                 "#modalclose": "<script>closeModal();</script>"
             },
+            'fragments': {
+                '#shelf_%s' % (self.object.pk): dev,
+            }
         }
 
-    def set_dataconfig(self, furniture, col, row, value):
-        return json.loads(furniture.dataconfig)
+    def form_invalid(self, form):
+        response = UpdateView.form_invalid(self, form)
+        response.render()
+        return{
+            'inner-fragments': {
+                '#shelfmodalbody': response.content
+            }
+        }
 
 
 @login_required

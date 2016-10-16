@@ -5,7 +5,7 @@ Created on 1/8/2016
 '''
 from __future__ import unicode_literals
 from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
-    ShelfDelete, LaboratoryRoomDelete
+    ShelfDelete, LaboratoryRoomDelete, ShelfEdit
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from django.conf.urls import url
@@ -54,7 +54,9 @@ urlpatterns += [
     url(r"^adm/shelf/list$", admin_list_shelf,
         name="shelf_list"),
     url(r"^shelf/create$", ShelfCreate.as_view(),
-        name="shelf_create")
+        name="shelf_create"),
+    url(r'^shelf/edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
+        ShelfEdit.as_view(), name="shelf_edit")
 
 ]
 

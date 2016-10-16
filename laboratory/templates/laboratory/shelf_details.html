@@ -1,0 +1,16 @@
+{% load i18n %}
+<li id="shelf_{{data.pk}}" data-id="{{data.pk}}" class="list-group-item">
+<a id="close" class="close" aria-label="Close"  
+href="{% url 'laboratory:shelf_delete' data.pk crow ccol %}"
+data-ajax="true" ><span aria-hidden="true">&times;</span></a>
+{{data.get_type_display}} 
+<p>{% trans 'Position:' %} {{data.name}}</p>
+
+<a class="btn btn-xs btn-warning" data-ajax="true" data-success="processResponse"
+href="{% url 'laboratory:shelf_edit' data.pk crow ccol %}?furniture={{data.furniture.pk}}"> {% trans 'Edit' %}</a>
+
+
+
+
+
+</li>	
