@@ -1,17 +1,21 @@
 {% load bootstrap shelf_position i18n %}
 
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
-action="{% url 'laboratory:shelf_create'%}" method="post">
+action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create'%}{%else%}{% url 'laboratory:shelf_edit' form.instance.pk form.row.value form.col.value %}{%endif%}" method="post">
 	<div class="modal-body">
+	{% if form.errors %}
+	<div class="alert alert-warning">
+		{{form.errors}}
+	</div>
+	{% endif %}
+	
 	{% csrf_token %}
 	{{ form|bootstrap }}
-	<p>
-		{% trans 'Position:' %} {% print_shelf form.row.value form.col.value %}
-	</p>
+
 	</div>
 	
 	 <div class="modal-footer">
-        <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" >Saves</button>
+        <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="submit" class="btn btn-primary" > {% trans 'Save' %} </button>
       </div>
 </form>

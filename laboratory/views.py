@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 from django import forms
+from laboratory.shelf_utils import get_dataconfig
 
 
 class miContexto(object):
@@ -192,24 +193,7 @@ class FurnitureUpdateView(UpdateView):
 
     def get_dataconfig(self):
         dataconfig = self.object.dataconfig
-        if dataconfig:
-            dataconfig = json.loads(dataconfig)
-
-        for irow, row in enumerate(dataconfig):
-            for icol, col in enumerate(row):
-                if col:
-                    val = None
-                    if type(col) == str:
-                        val = col.split(",")
-                    elif type(col) == int:
-                        val = [col]
-                    elif type(col) == list:
-                        val = col
-                    else:
-                        continue
-                    dataconfig[irow][icol] = Shelf.objects.filter(
-                        pk__in=val)
-        return dataconfig
+        return get_dataconfig(dataconfig)
 
     def build_configdata(self):
         dataconfig = self.get_dataconfig()
