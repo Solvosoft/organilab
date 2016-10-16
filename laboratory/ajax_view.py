@@ -14,9 +14,9 @@ from django.template.context_processors import request
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-import json
 from django.db.models.query import QuerySet
 from django import forms
+from laboratory.shelf_utils import get_dataconfig
 
 
 @login_required
@@ -45,7 +45,7 @@ def list_furniture(request):
 
         },
     }
-    
+
 
 def get_shelves(furniture):
 
@@ -53,16 +53,7 @@ def get_shelves(furniture):
         furniture = furniture[0]
 
     if furniture.dataconfig:
-        dataconfig = json.loads(furniture.dataconfig)
-        # hacer algo para pasar de num a shelf
-        for crow, row in enumerate(dataconfig):
-            for ccol, col in enumerate(row):
-                if dataconfig[crow][ccol]:
-                    dataconfig[crow][ccol] = Shelf.objects.filter(
-                        pk__in=col.split(","))
-
-        return dataconfig
-    return []
+        return get_dataconfig(furniture.dataconfig)
 
 
 @login_required
@@ -184,8 +175,9 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         col = form.cleaned_data['col']
         return {
             'inner-fragments': {
-                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    request, self.object.shelf.pk, row, col),
+                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk):
+                list_shelfobject_render(
+                    self.request, self.object.shelf.pk, row, col),
                 "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }
@@ -195,8 +187,6 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
-        print('---kwargs')
-        print(kwargs)
         return kwargs
 
 
