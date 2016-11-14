@@ -37,8 +37,6 @@ urlpatterns = [
 urlpatterns += [
     url(r"^furniture/list/$",
         list_furniture, name="list_furniture"),
-    url(r"^furniture$", FurnitureListView.as_view(),
-        name="furniture_list"),
     url(r"^furniture/create$", FurnitureCreateView.as_view(),
         name="furniture_create"),
     url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
@@ -86,6 +84,8 @@ urlpatterns += [
         name="report_furniture"),
     url(r"^report/summaryfurniture$", views.report_sumfurniture,
         name="report_summaryfurniture"),
+    url(r"^report/furniture_detail$", FurnitureListView.as_view(),
+        name="furniture_list"),
 
 ]
 
