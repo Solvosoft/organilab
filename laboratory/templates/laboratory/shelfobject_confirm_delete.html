@@ -1,42 +1,29 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<div id="hidemodaldelete" class="alert">
-
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			Eliminar
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-
-		<div class="panel-body">
-			
-			<form data-ajax-submit="" onsubmit="return false;"
-			data-success="processResponseshelfobject"
-			action="{% url 'laboratory:shelfobject_delete' object.pk %}" method="post"
-			>
-				{% csrf_token %}
-				<p>
-					Are you sure that do you want delete this object
-					<br />
-					{{object}} ?
-				</p>
-
-				<button id="delete" href="{% url 'laboratory:laboratoryRooms_list' %}" style="color: black "  type="submit" >
-					Delete
-				</button>
-				<script>
-					$(document).ready(function() {
-						$("#delete").click(function() {
-							$("#hidemodaldelete").hide();
-						});
-						
-					});
-				</script>
-				<button  data-dismiss="alert"  style="color: black " type="submit" >
-					Cancel
-				</button>
-			</form>
-
-		</div>
-	</div>
+<form data-ajax-submit="" onsubmit="return false;"
+data-success="processResponseshelfobject"
+action="{% url 'laboratory:shelfobject_delete' object.pk %}" method="post"
+>
+	{% csrf_token %}
+	
+	<div class="modal-body">
+	<p>
+		Are you sure that do you want delete this object
+		<br />
+		{{object}} ?
+	</p>
 </div>
+	<div class="modal-footer">
 
+		
+		<button type="submit" class="btn btn-primary">
+			Delete
+		</button>
+
+		{%if not form.instance.pk %}
+		<button type="button" class="btn btn-default" data-dismiss="modal">
+			Close
+		</button>{%endif%}
+		
+		<input name ="row" value="{{row}}" type="hidden" />
+		<input name ="col" value="{{col}}" type="hidden" />
+</div>
+</form>
