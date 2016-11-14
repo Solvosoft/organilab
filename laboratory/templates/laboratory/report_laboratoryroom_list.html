@@ -21,10 +21,10 @@
 			</h5>
             <ul>
             	{% for shelf in furniture.shelf_set.all %}
-                	<li>{% trans "Shelf:" %} {{ shelf }}</li>
+                	<li>{% trans "Shelf:" %} {{ shelf.name }}</li>
                     <ul>
-                    	{% for obj in shelf.object_set.all %}
-                        	<li>{% trans "Object:" %} {{ obj }}</li>
+                    	{% for obj in shelf.shelfobject_set.all %}
+                        	<li>{{ obj }}</li>
                         {% endfor %}
                     </ul>
                	{% empty %}

@@ -48,10 +48,10 @@
 		<ul>
 			{% for shelf in furniture.shelf_set.all %}
 			<li>
-				{% trans "Shelf:" %} {{ shelf }}
+				{% trans "Shelf:" %} {{ shelf.name }}
 			</li>
 			<ul>
-				{% for obj in shelf.object_set.all %}
+				{% for obj in shelf.shelfobject_set.all %}
 				<li>
 					{% trans "Object:" %} {{ obj }}
 				</li>
