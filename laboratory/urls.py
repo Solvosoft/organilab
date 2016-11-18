@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 
 from laboratory import views
 from laboratory.ObjectViews import ObjectView
-from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
+from laboratory.ajax_view import list_furniture, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from laboratory.generic import ObjectDeleteFromShelf, \
@@ -19,6 +19,7 @@ from laboratory.generic import ObjectDeleteFromShelf, \
     LaboratoryRoomsList
 from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
     ShelfDelete, LaboratoryRoomDelete, ShelfEdit
+
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
@@ -86,8 +87,6 @@ urlpatterns += [
         name="report_objects"),
     url(r"^report/furniture$", views.report_furniture,
         name="report_furniture"),
-    url(r"^report/summaryfurniture$", views.report_sumfurniture,
-        name="report_summaryfurniture"),
     url(r"^report/furniture_detail$", FurnitureListView.as_view(),
         name="furniture_list"),
 

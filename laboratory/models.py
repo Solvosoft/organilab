@@ -5,62 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 @python_2_unicode_compatible
-class LaboratoryRoom(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
-
-    class Meta:
-        verbose_name = _('Laboratory Room')
-        verbose_name_plural = _('Laboratory Rooms')
-
-    def __str__(self):
-        return '%s' % (self.name,)
-
-
-@python_2_unicode_compatible
-class Furniture(models.Model):
-    FURNITURE = 'F'
-    DRAWER = 'D'
-    TYPE_CHOICES = (
-        (FURNITURE, _('Furniture')),
-        (DRAWER, _('Drawer'))
-    )
-    labroom = models.ForeignKey('LaboratoryRoom')
-    name = models.CharField(_('Name'), max_length=255)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
-    dataconfig = models.TextField(_('Data configuration'))
-
-    class Meta:
-        verbose_name = _('Piece of furniture')
-        verbose_name_plural = _('Furniture')
-        ordering = ['name']
-
-    def __str__(self):
-        return '%s' % (self.name,)
-
-
-@python_2_unicode_compatible
-class Shelf(models.Model):
-    CRATE = 'C'
-    DRAWER = 'D'
-    TYPE_CHOICES = (
-        (CRATE, _('Space')),
-        (DRAWER, _('Drawer'))
-    )
-    furniture = models.ForeignKey('Furniture')
-    name = models.CharField(max_length=15, default="nd")
-    container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
-
-    class Meta:
-        verbose_name = _('Shelf')
-        verbose_name_plural = _('Shelves')
-
-    def __str__(self):
-        return '%s %s %s' % (self.furniture, self.get_type_display(),
-                             self.name)
-
-
-@python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
     SECURITY_EQUIPMENT = "1"
@@ -147,3 +91,68 @@ class ShelfObject(models.Model):
 
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, self.CHOICES[int(self.measurement_unit)][1])
+
+
+@python_2_unicode_compatible
+class LaboratoryRoom(models.Model):
+    name = models.CharField(_('Name'), max_length=255)
+
+    class Meta:
+        verbose_name = _('Laboratory Room')
+        verbose_name_plural = _('Laboratory Rooms')
+
+    def __str__(self):
+        return '%s' % (self.name,)
+
+
+@python_2_unicode_compatible
+class Shelf(models.Model):
+    CRATE = 'C'
+    DRAWER = 'D'
+    TYPE_CHOICES = (
+        (CRATE, _('Space')),
+        (DRAWER, _('Drawer'))
+    )
+    furniture = models.ForeignKey('Furniture')
+    name = models.CharField(max_length=15, default="nd")
+    container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+
+    def get_objects(self):
+        return ShelfObject.objects.filter(shelf=self)
+
+    def count_objects(self):
+        return ShelfObject.objects.filter(shelf=self).count()
+
+    class Meta:
+        verbose_name = _('Shelf')
+        verbose_name_plural = _('Shelves')
+
+    def __str__(self):
+        return '%s %s %s' % (self.furniture, self.get_type_display(),
+                             self.name)
+
+
+@python_2_unicode_compatible
+class Furniture(models.Model):
+    FURNITURE = 'F'
+    DRAWER = 'D'
+    TYPE_CHOICES = (
+        (FURNITURE, _('Furniture')),
+        (DRAWER, _('Drawer'))
+    )
+    labroom = models.ForeignKey('LaboratoryRoom')
+    name = models.CharField(_('Name'), max_length=255)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    dataconfig = models.TextField(_('Data configuration'))
+
+    class Meta:
+        verbose_name = _('Piece of furniture')
+        verbose_name_plural = _('Furniture')
+        ordering = ['name']
+
+    def get_objects(self):
+        return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
+
+    def __str__(self):
+        return '%s' % (self.name,)

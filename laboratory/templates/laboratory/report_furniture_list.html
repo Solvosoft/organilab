@@ -1,78 +1,81 @@
 {% extends 'base.html' %}
 
-{% load i18n %} 
+{% load i18n %}
 {% block content %}
 
 <div>
-
-<pre id="pre01" >
+	<pre id="pre01" >
 <h3>	
  {% trans "Furniture information" %}					
 </h3>	
-</pre>
-
-	{% for furniture in object_list %}
-		<h3 id="h3-1">
-        	{{ furniture.name }}
-			<a id="a02" class="btn btn-default"
-			href="{% url 'laboratory:report_summaryfurniture' %}?pk={{ furniture.pk }}">
-				{% trans "Summary Furniture PDF" %} 
-			</a>
-			<a id="a01" class="btn btn-default"
-			href="{% url 'laboratory:report_furniture' %}?pk={{ furniture.pk }}">
-				{% trans "Furniture PDF" %} 
-			</a>
-        </h3>
-        <ul>
-        	<li>{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}</li>
-        	<li>{% trans "Type:" %}
-        		{{ furniture.get_type_display }}
-        	</li>
-          	{% for shelf in furniture.shelf_set.all %}
-          	<li>
-				<h5 id="h5-1">
-					{% trans "Shelf:" %} {{ shelf }}
-				</h5>
-           		<ul>
-           			<li>{% trans "Type:" %}
-           				{{ shelf.get_type_display }}
-           			</li>
-            		{% for obj in shelf.shelfobject_set.all %}
-                	<li>{% trans "Object Code:" %} {{ obj.object.code }}</li>
-                	<ul>
-                		<li>{% trans "Name:" %} {{ obj.object.name }}</li>
-						<li>{% trans "Type:" %}
-							{{ obj.object.get_type_display }}
-						</li>
-               			
-        				<li>{% trans "Quantity:" %} 
-        					{{ obj.quantity }} {{ obj.get_measurement_unit_display }}
-            			</li>
-            			
-                   	</ul>
-          			{% empty %}
-               			{% trans "No Object Elements" %}
-               		{% endfor %}
-            	</ul>
-            </li>	
-        	{% empty %}
-        		{% trans "No Shelf Elements" %}
-			{% endfor %}	
-       	</ul>
-    {% empty %}
-    	{% trans "No Furniture Elements" %}   	
-	{% endfor %}
+</pre>	
 	
+
+{% for furniture in object_list %}
+ <h3 class="alert alert-info"> {{ furniture.name }} 
+	<a  class="btn btn-default pull-right"	
+	href="{% url 'laboratory:report_furniture' %}?pk={{ furniture.pk }}"> 
+	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	{% trans "PDF" %} 
+	
+	</a>
+	<br><br>
+</h3>
+
+		<div class="row text-center">
+			{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}<br>
+		
+			{% trans "Type:" %} {{ furniture.get_type_display }}
+			<hr>
+		</div>
+	<ul style="list-style-type: none;">
+		{% for shelf in furniture.shelf_set.all %}
+		<li>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					{% trans "Shelf:" %} {{ shelf.name }} <span class="badge pull-right"> {% trans 'Total' %}: {{shelf.count_objects}} {% trans 'objects' %}</span>
+				</div>
+				<div class="panel-body"> <p>
+						{% trans "Type:" %} {{ shelf.get_type_display }}
+				</p></div>
+
+				<ul class="list-group">
+				{% for obj in shelf.shelfobject_set.all %}
+				
+					<li class="list-group-item active">
+						{{ obj.object.code }} -- {{ obj.object.name }}
+					</li>
+					<li class="list-group-item">
+						{% trans "Type:" %}
+						{{ obj.object.get_type_display }}
+					</li>
+
+					<li class="list-group-item">
+						{% trans "Quantity:" %}
+						{{ obj.quantity }} {{ obj.get_measurement_unit_display }}
+					</li>
+
+					{% empty %}
+					<li class="list-group-item bg-success" >{% trans "No Object Elements" %}</li>
+					{% endfor %}
+				</ul>
+
+			</div>
+
+		</li>
+		{% empty %}
+		{% trans "No Shelf Elements" %}
+		{% endfor %}
+	</ul>
+{% empty %}
+		<div class="alert alert-info">{% trans "No Furniture Elements" %}</div>
+{% endfor %}
+
 </div>
 
-<div>
-	
-	<a id="a01" class="btn btn-default"
+<div class="pull-right">
+	<a id="a01" class="btn btn-info"
 	href="{% url 'laboratory:report_furniture' %}">{% trans "Download PDF" %} </a>
-	
-	<a id="a01" class="btn btn-default"
-	href="{% url 'laboratory:report_summaryfurniture' %}">{% trans "Download Summary PDF" %} </a>
-	
 </div>
 
 {% endblock %}
