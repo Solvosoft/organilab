@@ -1,20 +1,21 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.generic.list import ListView
-from django.utils import timezone
-from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf
-from django.template.loader import get_template, render_to_string
-from django.template.context import Context
-from weasyprint import HTML
-import json
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls.base import reverse_lazy
+from django import forms
 from django.contrib.auth.decorators import login_required
+from django.core.validators import RegexValidator
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template.context import Context
+from django.template.loader import get_template, render_to_string
+from django.urls.base import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import RegexValidator
-from django import forms
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.list import ListView
+import json
+
+from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf
 from laboratory.shelf_utils import get_dataconfig
+from weasyprint import HTML
 
 
 class miContexto(object):
@@ -88,34 +89,6 @@ def report_objects(request):
 
 @login_required
 def report_furniture(request):
-
-    var = request.GET.get('pk')
-    if var is None:
-        furniture = Furniture.objects.all()
-    else:
-        furniture = Furniture.objects.filter(pk=var)
-
-    template = get_template('pdf/furniture_pdf.html')
-
-    context = {
-        'object_list': furniture,
-        'datetime': timezone.now(),
-        'request': request
-    }
-
-    html = template.render(
-        Context(context)).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_furniture.pdf"'
-    return response
-
-
-@login_required
-def report_sumfurniture(request):
 
     var = request.GET.get('pk')
     if var is None:

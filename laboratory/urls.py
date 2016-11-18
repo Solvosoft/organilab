@@ -4,22 +4,25 @@ Created on 1/8/2016
 @author: nashyra
 '''
 from __future__ import unicode_literals
-from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
-    ShelfDelete, LaboratoryRoomDelete, ShelfEdit
+
+from django.conf.urls import url
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+
+from laboratory import views
+from laboratory.ObjectViews import ObjectView
+from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
-from django.conf.urls import url
-from django.urls import reverse_lazy
-from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
-    FurnitureCreateView, FurnitureUpdateView, FurnitureDelete
-from django.contrib.auth import views as auth_views
 from laboratory.generic import ObjectDeleteFromShelf, \
     ObjectList, \
     LaboratoryRoomsList
-from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
-from laboratory import views
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
+    ShelfDelete, LaboratoryRoomDelete, ShelfEdit
 from laboratory.search import SearchObject
-from laboratory.ObjectViews import ObjectView
+from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
+    FurnitureCreateView, FurnitureUpdateView, FurnitureDelete
+
 
 objviews = ObjectView()
 
@@ -37,8 +40,6 @@ urlpatterns = [
 urlpatterns += [
     url(r"^furniture/list/$",
         list_furniture, name="list_furniture"),
-    url(r"^furniture$", FurnitureListView.as_view(),
-        name="furniture_list"),
     url(r"^furniture/create$", FurnitureCreateView.as_view(),
         name="furniture_create"),
     url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
@@ -84,8 +85,8 @@ urlpatterns += [
         name="report_objects"),
     url(r"^report/furniture$", views.report_furniture,
         name="report_furniture"),
-    url(r"^report/summaryfurniture$", views.report_sumfurniture,
-        name="report_summaryfurniture"),
+    url(r"^report/furniture_detail$", FurnitureListView.as_view(),
+        name="furniture_list"),
 
 ]
 
