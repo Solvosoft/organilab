@@ -10,11 +10,16 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading{{object.pk}}">
       <h4 class="panel-title">
-        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{object.pk}}" aria-expanded="false" aria-controls="collapse{{object.pk}}">
+        <a class="collapsed" role="button" data-toggle="collapse" 
+        data-parent="#accordion" href="#collapse{{object.pk}}" 
+        aria-expanded="false" aria-controls="collapse{{object.pk}}">
+        
 
 <div class="row">
   <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
-  <div class="col-md-4"><p class="text-info">{{object.shelf.furniture.name}}</p></div>
+  <div class="col-md-4"><p class="text-info">{{object.shelf.furniture.name}}
+  -- {{object.shelf.name}}	
+  </p></div>
   <div class="col-md-4">{{object.object.name}} </div>
 </div>
 
