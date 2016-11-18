@@ -4,7 +4,7 @@
 	<head>
 		<style>
 			@page {
-				margin: 3cm 2cm; padding-left: 1.5cm;
+				margin: 1cm 1cm;
 				@top-left {
 					content: "{% trans "Organilab Build Report" %}";
 				}
@@ -41,31 +41,37 @@
 
 	<body>
 
-		{% for laboratory_room in object_list %}
-		<h3>{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }} </h3>
+			{% for laboratory_room in object_list %}
+		<h3 id="h3-1">
+        	{{ laboratory_room.name }}
+        </h3>
+            <table >
 		{% for furniture in laboratory_room.furniture_set.all %}
-		<h5>{% trans "Furniture:" %} {{ furniture }} </h5>
-		<ul>
-			{% for shelf in furniture.shelf_set.all %}
-			<li>
-				{% trans "Shelf:" %} {{ shelf }}
-			</li>
-			<ul>
-				{% for obj in shelf.object_set.all %}
-				<li>
-					{% trans "Object:" %} {{ obj }}
-				</li>
-				{% endfor %}
-			</ul>
-			{% empty %}
-				{% trans "No Shelf Elements" %}
-			{% endfor %}
-		</ul>
-		{% endfor %}
-		<br />
-		{% empty %}
-			{% trans "No Labs" %}
-		{% endfor %}
+			<tr id="h5-1" >
+				<th colspan="3" >{% trans "Furniture:" %} {{ furniture.name }}</th>
+			</tr>
+			<tr  >
+				<th >{% trans "Code" %} </th>
+				<th >{% trans "Furniture" %} </th>
+				<th >{% trans "Quantity" %} </th>
+				<th >{% trans "Shelf" %} </th>
+			</tr>
+            	{% for obj in furniture.get_objects %}
+                    	<tr>
+                    		<td>{{obj.object.code }}</td>
+                        	<td>{{obj.object.name }}</td>
+                    		<td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
+                    		<td>{{obj.shelf.name}}</td>
+                    	 </tr>
 
+               	{% empty %}
+                 	{% trans "No Shelf Elements" %}
+                {% endfor %}
+		{% endfor %}
+	</table>
+		<br />
+	{% empty %}	
+		{% trans "No Labs" %}	
+	{% endfor %}
 	</body>
 </html>

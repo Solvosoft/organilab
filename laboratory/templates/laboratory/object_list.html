@@ -11,12 +11,24 @@
 </h3>	
 </pre>
 
+<div>
+	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
+	href="{% url 'laboratory:report_objects' %}">
+	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	{% trans "All objects in PDF" %} </a>
+	<br> <br>
+</div>
+
 	{% for obj in object_list %}
-		<h3 id="h3-1">
-        	{% trans "Object Code:" %} {{ obj.code }}
-        	<a id="a02" class="btn btn-default" 
-        	href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}">{% trans "Download Object PDF" %}</a>
-        </h3>
+		<div class="alert alert-info">
+        	{{ obj.code }}
+        	<a class="btn btn-default pull-right" 
+        	alt="{% trans 'Object' %} {{obj.pk}}"
+        	title="{{ obj.name }}"
+        	href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}">
+        	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        	{% trans "PDF" %}</a>
+        </div>
         <ul>
         	<li>{% trans "Name:" %} {{ obj.name }}</li>
         	<li>{% trans "Type:" %}
@@ -58,10 +70,10 @@
 </div>
 
 <div>
-	
-	<a id="a01" class="btn btn-default"
-	href="{% url 'laboratory:report_objects' %}">{% trans "Download PDF" %} </a>
-	
+	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
+	href="{% url 'laboratory:report_objects' %}">
+	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	{% trans "All objects in PDF" %} </a>
 </div>
 
 {% endblock %}

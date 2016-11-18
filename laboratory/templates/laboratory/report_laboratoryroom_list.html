@@ -11,27 +11,42 @@
 </h3>	
 </pre>
 
+<div >
+	<a  class="btn btn-default pull-right" href="{% url 'laboratory:report_building' %}">
+		<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	{% trans "Download PDF" %}</a>
+	<br><br>
+	
+</div>
+
 	{% for laboratory_room in object_list %}
-		<h3 id="h3-1">
-        	{% trans "LaboratoryRoom:" %} {{ laboratory_room.name }}
-        </h3>
+		<div class="alert alert-info">
+        	{{ laboratory_room.name }}
+        </div>
+            <table class="table">
 		{% for furniture in laboratory_room.furniture_set.all %}
-			<h5 id="h5-1">
-				{% trans "Furniture:" %} {{ furniture }}
-			</h5>
-            <ul>
-            	{% for shelf in furniture.shelf_set.all %}
-                	<li>{% trans "Shelf:" %} {{ shelf }}</li>
-                    <ul>
-                    	{% for obj in shelf.object_set.all %}
-                        	<li>{% trans "Object:" %} {{ obj }}</li>
-                        {% endfor %}
-                    </ul>
+			<tr class="bg-success" >
+				<th colspan="4" >{% trans "Furniture:" %} {{ furniture.name }}</th>
+			</tr>
+			<tr  >
+				<th >{% trans "Code" %} </th>
+				<th >{% trans "Furniture" %} </th>
+				<th >{% trans "Quantity" %} </th>
+				<th >{% trans "Shelf" %} </th>
+			</tr>
+            	{% for obj in furniture.get_objects %}
+                    	<tr>
+                    		<td>{{obj.object.code }}</td>
+                        	<td>{{obj.object.name }}</td>
+                    		<td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
+                    		<td>{{obj.shelf.name}}</td>
+                    	 </tr>
+
                	{% empty %}
                  	{% trans "No Shelf Elements" %}
                 {% endfor %}
-            </ul>
 		{% endfor %}
+	</table>
 		<br />
 	{% empty %}	
 		{% trans "No Labs" %}	
@@ -39,10 +54,9 @@
 </div>
 
 <div>
-	
-	<a id="a01" class="btn btn-default"
-	href="{% url 'laboratory:report_building' %}">{% trans "Download PDF" %}</a>
-	
+	<a  class="btn btn-danger" href="{% url 'laboratory:report_building' %}">
+		<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	{% trans "Download PDF" %}</a>
 </div>
-
+<br><br>
 {% endblock %}
