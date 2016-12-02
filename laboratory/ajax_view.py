@@ -214,7 +214,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return {
             'inner-fragments': {
                 '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
-                    request, self.object.shelf.pk),
+                    request, row=self.row, col=self.col, shelf=self.object.shelf.pk),
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
         }
