@@ -127,3 +127,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
+
+# Emai development settings
+DEFAULT_FROM_EMAIL = "mail@example.com"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "1025"
