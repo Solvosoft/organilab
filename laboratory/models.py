@@ -97,6 +97,10 @@ class ShelfObject(models.Model):
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=CHOICES)
 
+    @property
+    def limit_reached(self):
+        return self.quantity < self.limit_quantity
+
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
