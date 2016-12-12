@@ -12,12 +12,13 @@ from django.urls import reverse_lazy
 from laboratory import views
 from laboratory.ObjectViews import ObjectView
 from laboratory.ajax_view import list_furniture, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
-from laboratory.ajax_view import list_shelf, list_objectfeatures, \
+from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from laboratory.generic import ObjectDeleteFromShelf, \
     LaboratoryRoomsList
 from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate, \
     ShelfDelete, LaboratoryRoomDelete, ShelfEdit
+from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView, \
     FurnitureCreateView, FurnitureUpdateView, FurnitureDelete, ReactivePrecursorObjectList
@@ -110,6 +111,13 @@ urlpatterns += [
     url(r"^laboratoryroom/delete/(?P<pk>\d+)$",
         LaboratoryRoomDelete.as_view(),
         name="laboratoryroom_delete"),
+    url(r"^objectfeatures/list$", list_objectfeatures,
+        name="objectfeatures_list"),
+    url(r"^search$", SearchObject.as_view(),
+        name="search"),
+    url(r"reserve_object/(?P<modelpk>\d+)$",
+        ShelfObjectReservation.as_view(),
+        name="object_reservation")
 ]
 
 urlpatterns += [
