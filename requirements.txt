@@ -41,3 +41,4 @@ django-json-rpc==0.6.1
 django-bootstrap-form
 pyEQL==0.4
 django-reservation==0.2.2
+celery==4.0.1
