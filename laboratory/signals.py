@@ -1,9 +1,8 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.template.loader import render_to_string
 
 from laboratory.models import ShelfObject
-from djreservation.models import Reservation
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
