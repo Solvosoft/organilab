@@ -93,6 +93,7 @@ class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf')
     object = models.ForeignKey('Object')
     quantity = models.FloatField(_('Material quantity'))
+    limit_quantity = models.FloatField(_('Limit material quantity'))
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=CHOICES)
 
