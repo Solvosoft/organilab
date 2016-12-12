@@ -172,3 +172,9 @@ class Furniture(models.Model):
 
     def __str__(self):
         return '%s' % (self.name,)
+
+
+@python_2_unicode_compatible
+class Laboratory(models.Model):
+    name = models.CharField(_('Laboratory name'), max_length=255)
+    rooms = models.ManyToManyField('LaboratoryRoom', blank=True)
