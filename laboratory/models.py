@@ -178,3 +178,10 @@ class Furniture(models.Model):
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     rooms = models.ManyToManyField('LaboratoryRoom', blank=True)
+
+    class Meta:
+        verbose_name = _('Laboratory')
+        verbose_name_plural = _('Laboratories')
+
+    def __str__(self):
+        return '%s' % (self.name,)
