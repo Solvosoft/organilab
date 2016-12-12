@@ -1,7 +1,7 @@
 from django.contrib import admin
 from laboratory import models
 
-
+admin.site.register(models.Laboratory)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
