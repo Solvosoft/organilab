@@ -22,7 +22,8 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
 def get_laboratory_users():
     lab_groups = [
         'laboratory_admin',
-        'laboratory_worker'
+        'laboratory_professor',
+        'laboratory_student'
     ]
     users_emails = []
 
