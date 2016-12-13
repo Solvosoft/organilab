@@ -13,7 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 import json
 
-from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf
+from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf, Laboratory
 from laboratory.shelf_utils import get_dataconfig
 from weasyprint import HTML
 
