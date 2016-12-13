@@ -59,7 +59,7 @@ class Object(models.Model):
                                           validators=[validate_molecular_formula], null=True, blank=True)
     cas_id_number = models.CharField(_('Cas ID Number'), max_length=255, null=True, blank=True)
     security_sheet = models.FileField(_('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
-    is_precursor = models.NullBooleanField(_('Is precursor'))
+    is_precursor = models.BooleanField(_('Is precursor'), default=False)
 
     features = models.ManyToManyField(ObjectFeatures)
 
