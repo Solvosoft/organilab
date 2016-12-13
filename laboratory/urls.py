@@ -5,14 +5,15 @@ Created on 1/8/2016
 '''
 from __future__ import unicode_literals
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 from laboratory import views
 from laboratory.ObjectViews import ObjectView
+from laboratory.laboratory_views import LaboratoryView
 from laboratory.ajax_view import list_furniture, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
-from laboratory.ajax_view import list_shelf, list_objectfeatures,\
+from laboratory.ajax_view import list_shelf, list_objectfeatures, \
     admin_list_shelf, ShelfObjectEdit
 from laboratory.generic import ObjectDeleteFromShelf, \
     LaboratoryRoomsList
@@ -24,6 +25,7 @@ from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureLi
     FurnitureCreateView, FurnitureUpdateView, FurnitureDelete, ReactivePrecursorObjectList
 
 objviews = ObjectView()
+labviews = LaboratoryView()
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -126,3 +128,6 @@ urlpatterns += [
 ]
 
 urlpatterns += objviews.get_urls()
+urlpatterns += [
+    url(r'^laboratory/', include(labviews.get_urls()))
+]

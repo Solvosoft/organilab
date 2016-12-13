@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap  i18n %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 col-md-offset-4">
+      <h1 align="center">{% trans 'Laboratory Management' %}</h1>
+      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' form.instance.pk %}{% else %}{% url 'laboratory:laboratory_create' %} {% endif %}"
+            method="post">{% csrf_token %}
+        {{ form|bootstrap }}
+        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+      </form>
+    </div>
+  </div>
+  <br> <br>
+{% endblock %}
