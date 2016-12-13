@@ -22,6 +22,7 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView, \
     FurnitureCreateView, FurnitureUpdateView, FurnitureDelete, ReactivePrecursorObjectList
+from laboratory.ObjectViews import get_extended_form
 
 objviews = ObjectView()
 
@@ -126,3 +127,6 @@ urlpatterns += [
 ]
 
 urlpatterns += objviews.get_urls()
+urlpatterns += [
+    url(r'^get_extended_form$', get_extended_form, name='get_extended_form')
+]
