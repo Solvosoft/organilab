@@ -6,7 +6,7 @@ Created on 11/8/2016
 from __future__ import unicode_literals
 
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture
+from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
 from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models.query import QuerySet
@@ -41,6 +41,17 @@ class ObjectCreate(CreateView):
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
+    def get_queryset(self):
+        if 'lab_pk' in self.kwargs:
+            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            return lab.rooms.all()
+        else:
+            return super(LaboratoryRoomsList, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(LaboratoryRoomsList, self).get_context_data(**kwargs)
+        return context
+
 
 @method_decorator(login_required, name='dispatch')
 class LabroomCreate(CreateView):
@@ -51,13 +62,37 @@ class LabroomCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
 
-        context['object_list'] = self.model.objects.all()
+        if 'lab_pk' in self.kwargs:
+            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            context['object_list'] = lab.rooms.all()
+        else:
+            context['object_list'] = self.model.objects.all()
         return context
+
+    def form_valid(self, form):
+        if 'lab_pk' in self.kwargs:
+            room = form.save()
+            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab.rooms.add(room)
+            lab.save()
+        return super(LabroomCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        if 'lab_pk' in self.kwargs:
+            return reverse_lazy('laboratory:laboratory_rooms_create', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+
+        return super(LabroomCreate, self).get_success_url()
 
 
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = reverse_lazy('laboratory:laboratoryroom_create')
+
+    def get_success_url(self):
+        if 'lab_pk' in self.kwargs:
+            return reverse_lazy('laboratory:laboratory_rooms_create', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+
+        return super(LaboratoryRoomDelete, self).get_success_url()
 
 
 @method_decorator(login_required, name='dispatch')
@@ -122,7 +157,7 @@ class ShelfCreate(AJAXMixin, CreateView):
     def form_invalid(self, form):
         response = CreateView.form_invalid(self, form)
         response.render()
-        return{
+        return {
             'inner-fragments': {
                 '#shelfmodalbody': response.content
             }
@@ -185,7 +220,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
     def form_invalid(self, form):
         response = UpdateView.form_invalid(self, form)
         response.render()
-        return{
+        return {
             'inner-fragments': {
                 '#shelfmodalbody': response.content
             }
@@ -199,11 +234,11 @@ def ShelfDelete(request, pk, row, col):
     shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
     url = reverse('laboratory:shelf_delete', args=(pk, row, col))
-    #url = url.replace("/", "\\/")
+    # url = url.replace("/", "\\/")
     print(url)
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
-    }, }
+    },}
 
 
 @method_decorator(login_required, name='dispatch')
