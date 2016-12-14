@@ -72,32 +72,13 @@ class ObjectForm(ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        extended = False
-        instance = kwargs.get('instance')
-        data_type = Object.REACTIVE
+        data_type = None
         if 'data' in kwargs:
             data_type = kwargs.get('data').get('type')
-        if 'extended' in kwargs:
-            extended = kwargs.pop('extended')
+
         super(ObjectForm, self).__init__(*args, **kwargs)
-        if not extended:
-            if not instance or instance.type != Object.REACTIVE or data_type != Object.REACTIVE:
-                del self.fields['molecular_formula']
-                del self.fields['cas_id_number']
-                del self.fields['security_sheet']
-                del self.fields['is_precursor']
-            else:
-                self.fields['molecular_formula'].required = True
-                self.fields['cas_id_number'].required = True
-                self.fields['security_sheet'].required = True
 
-
-@ajax
-@csrf_exempt
-def get_extended_form(request, *args, **kwargs):
-    extended = int(request.GET['extended'])
-    if request.method == 'POST' and request.is_ajax():
-        form = ObjectForm(request.POST, extended=bool(extended))
-        rendered_form = render_to_string('laboratory/objectview_extended_form.html', context={'form': form},
-                                         request=request)
-        return rendered_form
+        if data_type is not None and data_type == Object.REACTIVE:
+            self.fields['molecular_formula'].required = True
+            self.fields['cas_id_number'].required = True
+            self.fields['security_sheet'].required = True

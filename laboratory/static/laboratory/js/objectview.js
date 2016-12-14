@@ -4,6 +4,7 @@
 
 $(document).ready(function () {
     $('#id_type').change(update_form);
+    update_form();
 });
 
 function update_form() {
@@ -12,25 +13,27 @@ function update_form() {
     var form = $('#objectview_form');
 
     if (selected_option == '0') {
-        form.html(get_extended_form(1));
+        show_reactive_options();
     } else {
-        form.html(get_extended_form(0));
-        select_widget.find('option[value="' + selected_option + '"]').attr("selected", "selected");
-        select_widget.change(update_form);
+        hide_reactive_options();
     }
 }
 
-function get_extended_form(extended) {
-    var extended_form = '';
-    $.ajax({
-        url: '/get_extended_form?extended=' + extended,
-        data: $('#objectview_form').serialize(),
-        async: false,
-        method: 'post',
-        success: function (data) {
-            extended_form = data.content;
-        }
-    });
-    console.log(extended_form);
-    return extended_form;
+var ids = [
+    "id_molecular_formula",
+    "id_cas_id_number",
+    "id_security_sheet",
+    "id_is_precursor"
+];
+
+function show_reactive_options() {
+    for (var i = 0; i < ids.length; i++) {
+        $('#' + ids[i]).parents('.form-group').show();
+    }
+}
+
+function hide_reactive_options() {
+    for (var i = 0; i < ids.length; i++) {
+        $('#' + ids[i]).parents('.form-group').hide();
+    }
 }
