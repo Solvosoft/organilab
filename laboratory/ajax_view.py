@@ -131,7 +131,7 @@ class ShelfObjectFormUpdate(forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ['shelf', 'quantity', 'measurement_unit']
+        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
         widgets = {
             'shelf': forms.HiddenInput,
         }

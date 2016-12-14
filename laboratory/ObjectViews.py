@@ -7,13 +7,17 @@ Free as freedom will be 26/8/2016
 '''
 
 from __future__ import unicode_literals
+
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from laboratory.models import Object
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls.base import reverse_lazy
-from django.utils.decorators import method_decorator
+from django.forms import ModelForm
+from django_ajax.decorators import ajax
 
 
 class ObjectView(object):
@@ -23,14 +27,14 @@ class ObjectView(object):
     def __init__(self):
         self.create = login_required(CreateView.as_view(
             model=self.model,
-            fields="__all__",
+            form_class=ObjectForm,
             success_url=reverse_lazy('laboratory:objectview_list'),
             template_name=self.template_name_base + "_form.html"
         ))
 
         self.edit = login_required(UpdateView.as_view(
             model=self.model,
-            fields="__all__",
+            form_class=ObjectForm,
             success_url=reverse_lazy('laboratory:objectview_list'),
             template_name=self.template_name_base + "_form.html"
         ))
@@ -60,3 +64,21 @@ class ObjectView(object):
                 name="objectview_delete"),
 
         ]
+
+
+class ObjectForm(ModelForm):
+    class Meta:
+        model = Object
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        data_type = None
+        if 'data' in kwargs:
+            data_type = kwargs.get('data').get('type')
+
+        super(ObjectForm, self).__init__(*args, **kwargs)
+
+        if data_type is not None and data_type == Object.REACTIVE:
+            self.fields['molecular_formula'].required = True
+            self.fields['cas_id_number'].required = True
+            self.fields['security_sheet'].required = True

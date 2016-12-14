@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
+from laboratory.validators import validate_molecular_formula
+
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
@@ -53,6 +55,11 @@ class Object(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     description = models.TextField(_('Description'))
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
+                                          validators=[validate_molecular_formula], null=True, blank=True)
+    cas_id_number = models.CharField(_('Cas ID Number'), max_length=255, null=True, blank=True)
+    security_sheet = models.FileField(_('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+    is_precursor = models.BooleanField(_('Is precursor'), default=False)
 
     features = models.ManyToManyField(ObjectFeatures)
 
@@ -62,6 +69,10 @@ class Object(models.Model):
 
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(Object, self).save(*args, **kwargs)
 
 
 class ShelfObject(models.Model):
@@ -82,8 +93,13 @@ class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf')
     object = models.ForeignKey('Object')
     quantity = models.FloatField(_('Material quantity'))
+    limit_quantity = models.FloatField(_('Limit material quantity'))
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=CHOICES)
+
+    @property
+    def limit_reached(self):
+        return self.quantity < self.limit_quantity
 
     class Meta:
         verbose_name = _('Shelf object')

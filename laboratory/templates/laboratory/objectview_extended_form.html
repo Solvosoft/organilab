@@ -1,0 +1,6 @@
+{% load bootstrap i18n %}
+
+{% csrf_token %}
+{{ form | bootstrap }}
+
+<input class="btn btn-info" type="submit" value="{% trans 'Save' %}">

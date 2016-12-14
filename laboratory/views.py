@@ -19,7 +19,6 @@ from weasyprint import HTML
 
 
 class miContexto(object):
-
     def get_context_data(self, **kwargs):
         contex = ListView.get_context_data(self, **kwargs)
         contex['datetime'] = timezone.now()
@@ -61,7 +60,6 @@ def report_building(request):
 
 @login_required
 def report_objects(request):
-
     var = request.GET.get('pk')
     if var is None:
         objects = Object.objects.all()
@@ -89,7 +87,6 @@ def report_objects(request):
 
 @login_required
 def report_furniture(request):
-
     var = request.GET.get('pk')
     if var is None:
         sumfurniture = Furniture.objects.all()
@@ -112,6 +109,28 @@ def report_furniture(request):
     response = HttpResponse(page, content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
+    return response
+
+
+@login_required
+def report_reactive_precursor_objects(request):
+    template = get_template('pdf/reactive_precursor_objects_pdf.html')
+
+    # Reactive precursor objects
+    rpo = Object.objects.filter(type=Object.REACTIVE, is_precursor=True)
+
+    context = {
+        'rpo': rpo,
+        'datetime': timezone.now(),
+        'request': request
+    }
+
+    html = template.render(Context(context)).encode('UTF-8')
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
     return response
 
 
@@ -186,3 +205,12 @@ class FurnitureUpdateView(UpdateView):
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = reverse_lazy("laboratory:furniture_create")
+
+
+@method_decorator(login_required, name='dispatch')
+class ReactivePrecursorObjectList(ListView):
+    model = Object
+    template_name = 'laboratory/reactive_precursor_objects_list.html'
+
+    def get_queryset(self):
+        return Object.objects.filter(type=Object.REACTIVE, is_precursor=True)
