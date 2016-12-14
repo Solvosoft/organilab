@@ -41,7 +41,6 @@ def send_notification_email(shelf_object):
     }
 
     html_message = render_to_string('email/shelf_object_quantity_limit.html', context=context)
-    print(html_message)
 
     send_mail(
         subject=subject,
