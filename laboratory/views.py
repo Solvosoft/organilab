@@ -118,7 +118,6 @@ def report_reactive_precursor_objects(request):
 
     # Reactive precursor objects
     rpo = Object.objects.filter(type=Object.REACTIVE, is_precursor=True)
-    print(rpo.count())
 
     context = {
         'rpo': rpo,

@@ -200,7 +200,6 @@ def ShelfDelete(request, pk, row, col):
     shelf.delete()
     url = reverse('laboratory:shelf_delete', args=(pk, row, col))
     #url = url.replace("/", "\\/")
-    print(url)
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
     }, }
