@@ -147,14 +147,19 @@ class FurnitureListView(miContexto, ListView):
 @method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
-    success_url = '/'
     fields = ("labroom", "name", "type")
 
     def get_success_url(self):
+        if 'lab_pk' in self.kwargs:
+            return reverse_lazy('laboratory:laboratory_furniture_create',
+                                kwargs={'lab_pk': self.kwargs.get('lab_pk')})
         return reverse_lazy("laboratory:furniture_update", kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
+        if 'lab_pk' in self.kwargs:
+            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            context['object_list'] = lab.rooms.all()
         context['object_list'] = self.model.objects.all()
         return context
 
@@ -205,6 +210,11 @@ class FurnitureUpdateView(UpdateView):
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = reverse_lazy("laboratory:furniture_create")
+
+    def get_success_url(self):
+        if 'lab_pk' in self.kwargs:
+            return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+        return super(FurnitureDelete, self).get_success_url()
 
 
 @method_decorator(login_required, name='dispatch')

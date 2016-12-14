@@ -39,17 +39,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r"^furniture/list/$",
-        list_furniture, name="list_furniture"),
-    url(r"^furniture/create$", FurnitureCreateView.as_view(),
-        name="furniture_create"),
-    url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
-        name="furniture_update"),
-    url(r"furniture/delete/(?P<pk>\d+)$", FurnitureDelete.as_view(),
-        name="furniture_delete")
-]
-
-urlpatterns += [
     url(r"^shelf/list$", list_shelf, name="list_shelf"),
     url(r"^shelf/delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
         ShelfDelete, name="shelf_delete"),
@@ -123,11 +112,37 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    url(r"^furniture/list/$",
+        list_furniture, name="list_furniture"),
+    url(r"^furniture/create$", FurnitureCreateView.as_view(),
+        name="furniture_create"),
+    url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
+        name="furniture_update"),
+    url(r"furniture/delete/(?P<pk>\d+)$", FurnitureDelete.as_view(),
+        name="furniture_delete")
+]
+
+lab_rooms_urls = [
+    url(r'^$', LaboratoryRoomsList.as_view(), name='laboratory_rooms_list'),
+    url(r'^create$', LabroomCreate.as_view(), name='laboratory_rooms_create'),
+    url(r'^(?P<pk>\d+)/delete$', LaboratoryRoomDelete.as_view(), name='laboratory_rooms_delete'),
+]
+
+lab_furniture_urls = [
+    url(r'^$', list_furniture, name='laboratory_furniture_list'),
+    url(r'^create$', FurnitureCreateView.as_view(), name='laboratory_furniture_create'),
+    url(r'^edit/(?P<pk>\d+)$', FurnitureUpdateView.as_view(), name='laboratory_furniture_update'),
+    url(r'^delete/(?P<pk>\d+)$', FurnitureDelete.as_view(), name='laboratory_furniture_delete'),
+]
+
+urlpatterns += [
     url(r'^reactive_precursor_object_list', ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list')
 ]
 
 urlpatterns += objviews.get_urls()
 urlpatterns += [
-    url(r'^laboratory/', include(labviews.get_urls()))
+    url(r'^laboratory/', include(labviews.get_urls())),
+    url(r'^laboratory/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
+    url(r'^laboratory/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
 ]
