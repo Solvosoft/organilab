@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django_ajax',
     'laboratory',
     "bootstrapform",
+    "djreservation",
+    "celery",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'djreservation.middleware.ReservationMiddleware'
 ]
 
 ROOT_URLCONF = 'organilab.urls'
@@ -127,3 +130,16 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
+
+# Email development settings
+DEFAULT_FROM_EMAIL = "mail@example.com"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "1025"
+
+# Celery settings
+BROKER_URL = 'redis://localhost:6379'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

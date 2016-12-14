@@ -39,3 +39,7 @@ simplejson==3.8.2
 django-jsonfield==1.0.1
 django-json-rpc==0.6.1
 django-bootstrap-form
+pyEQL==0.4
+django-reservation==0.2.2
+celery==4.0.1
+redis==2.10.5

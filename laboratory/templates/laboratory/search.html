@@ -28,6 +28,14 @@
     </div>
     <div id="collapse{{object.pk}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{object.pk}}">
       <div class="panel-body">
+ {% if request.reservation %}
+ <div class="row">
+ 	 <div class="col-md-4">
+ 	<a href="{% url 'laboratory:object_reservation' modelpk=object.pk %}" 
+ 	class="btn btn-danger"> {% trans "Reserve object"%}</a>
+ 	</div>
+ </div>
+ {% endif %}
  <div class="row">
   <div class="col-md-4">
   	<h3> {% trans 'Information' %} </h3>

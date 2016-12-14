@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{% trans 'Reactive precursor objects' %}</h1>
+  <div>
+    <a class="btn btn-danger" title="{% trans 'All objects' %}"
+       href="{% url 'laboratory:report_reactive_precursor_objects' %}">
+      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+      {% trans "All objects in PDF" %} </a>
+    <br> <br>
+  </div>
+
+  {% for obj in object_list %}
+    <div class="alert alert-info">
+      {{ obj.code }}
+      <a class="btn btn-default pull-right"
+         title="{{ obj.name }}"
+         href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        {% trans "PDF" %}</a>
+    </div>
+    <ul>
+      <li>{% trans "Name:" %} {{ obj.name }}</li>
+      <li>{% trans "Type:" %}
+        {{ obj.get_type_display }}
+      </li>
+
+      <li>{% trans "Features:" %}
+        {% for features in obj.features.all %}
+          <ul>
+            <li>
+              {{ features.get_name_display }}
+            </li>
+          </ul>
+        {% empty %}
+          {% trans "No Object Features" %}
+        {% endfor %}
+      </li>
+
+      <li>{% trans "Quantity:" %}
+        {% for shelfobj in obj.shelfobject_set.all %}
+          <ul>
+            <li>
+              {{ shelfobj.shelf }}:
+              {{ shelfobj.quantity }}
+              {{ shelfobj.get_measurement_unit_display }}
+            </li>
+          </ul>
+        {% empty %}
+          {% trans "No Data" %}
+        {% endfor %}
+      </li>
+      <li>{% trans "Description:" %} {{ obj.description }}</li>
+      <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-'}}</code></li>
+      <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
+    </ul>
+  {% empty %}
+    {% trans "No Objects Elements" %}
+  {% endfor %}
+
+  <div>
+    <a class="btn btn-danger" title="{% trans 'All objects' %}"
+       href="{% url 'laboratory:report_reactive_precursor_objects' %}">
+      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+      {% trans "All objects in PDF" %} </a>
+    <br> <br>
+  </div>
+{% endblock %}

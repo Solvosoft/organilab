@@ -11,18 +11,17 @@ from django.urls import reverse_lazy
 
 from laboratory import views
 from laboratory.ObjectViews import ObjectView
-from laboratory.ajax_view import list_furniture, list_shelf, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
+from laboratory.ajax_view import list_furniture, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures,\
     admin_list_shelf, ShelfObjectEdit
 from laboratory.generic import ObjectDeleteFromShelf, \
-    ObjectList, \
     LaboratoryRoomsList
-from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate,\
+from laboratory.generic import ShelfCreate, ObjectCreate, LabroomCreate, \
     ShelfDelete, LaboratoryRoomDelete, ShelfEdit
+from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
-from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView,\
-    FurnitureCreateView, FurnitureUpdateView, FurnitureDelete
-
+from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView, \
+    FurnitureCreateView, FurnitureUpdateView, FurnitureDelete, ReactivePrecursorObjectList
 
 objviews = ObjectView()
 
@@ -64,7 +63,6 @@ urlpatterns += [
 # Natalia Ajax
 urlpatterns += [
 
-
     url(r"^shelfObject/list$", list_shelfobject, name="list_shelfobject"),
     url(r"^shelfObject/create$", ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
@@ -75,7 +73,6 @@ urlpatterns += [
 
 ]
 
-
 urlpatterns += [
     url(r"^reports/laboratory$", LaboratoryRoomListView.as_view(),
         name="laboratoryroom_list"),
@@ -83,6 +80,8 @@ urlpatterns += [
         name="report_building"),
     url(r"^report/objects$", views.report_objects,
         name="report_objects"),
+    url(r'^report/reactive_precursor_objects', views.report_reactive_precursor_objects,
+        name='report_reactive_precursor_objects'),
     url(r"^report/furniture$", views.report_furniture,
         name="report_furniture"),
     url(r"^report/furniture_detail$", FurnitureListView.as_view(),
@@ -112,6 +111,18 @@ urlpatterns += [
     url(r"^laboratoryroom/delete/(?P<pk>\d+)$",
         LaboratoryRoomDelete.as_view(),
         name="laboratoryroom_delete"),
+    url(r"^objectfeatures/list$", list_objectfeatures,
+        name="objectfeatures_list"),
+    url(r"^search$", SearchObject.as_view(),
+        name="search"),
+    url(r"reserve_object/(?P<modelpk>\d+)$",
+        ShelfObjectReservation.as_view(),
+        name="object_reservation")
+]
+
+urlpatterns += [
+    url(r'^reactive_precursor_object_list', ReactivePrecursorObjectList.as_view(),
+        name='reactive_precursor_object_list')
 ]
 
 urlpatterns += objviews.get_urls()

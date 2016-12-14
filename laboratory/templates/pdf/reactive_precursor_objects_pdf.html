@@ -1,0 +1,85 @@
+{% load i18n %}
+
+<html>
+<head>
+  <style>
+    @page {
+      margin: 3cm 2cm;
+      padding-left: 1.5cm;
+      @top-left {
+        content: "{% trans "Organilab Object Report" %}";
+      }
+      @top-right {
+        content: "{% trans "Date:" %} {{ datetime }}";
+      }
+      @bottom-right {
+        content: "{% trans "Page" %} " counter(page) " {% trans "of" %} " counter(pages) ;
+      }
+      @bottom-left {
+        content: "{% trans "User:" %} {{ request.user }}";
+        color: red;
+      }
+    }
+
+    body {
+      text-align: justify;
+      font-family: Arial, sans-serif;
+    }
+
+    h3 {
+      margin-right: 150px;
+    }
+
+    h5 {
+      background: gainsboro;
+      margin-right: 150px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+{% for obj in rpo %}
+  <h3>
+    {% trans "Object Code:" %} {{ obj.code }}
+  </h3>
+  <ul>
+    <li>{% trans "Name:" %} {{ obj.name }}</li>
+    <li>{% trans "Type:" %}
+      {{ obj.get_type_display }}
+    </li>
+    <li>{% trans "Features:" %}
+      {% for features in obj.features.all %}
+        <ul>
+          <li>
+            {{ features.get_name_display }}
+          </li>
+        </ul>
+      {% empty %}
+        {% trans "No Object Features" %}
+      {% endfor %}
+    </li>
+    <li>{% trans "Quantity:" %}
+      {% for shelfobj in obj.shelfobject_set.all %}
+        <ul>
+          <li>
+            {{ shelfobj.shelf }}:
+            {{ shelfobj.quantity }}
+            {{ shelfobj.get_measurement_unit_display }}
+          </li>
+        </ul>
+      {% empty %}
+        {% trans "No Data" %}
+      {% endfor %}
+    </li>
+    <li>{% trans "Description:" %} {{ obj.description }}</li>
+    <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
+    <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
+  </ul>
+{% empty %}
+  {% trans "No Objects Elements" %}
+{% endfor %}
+
+</body>
+</html>

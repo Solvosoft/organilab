@@ -51,11 +51,19 @@
             	{% trans 'Furnitures' %}</a></li>
             <li><a href="{% url 'laboratory:object_list'%}">
             	{% trans 'Objects' %}</a></li>
+            <li><a href="{% url 'laboratory:reactive_precursor_object_list'%}">
+            	{% trans 'Reactive precursor objects' %}</a></li>
           </ul>
         </li>
         
-        
-   
+        <li><a href="{% url 'reservation_list' %}"> My reservations </a> </li>
+        <li>        
+        {% if request.reservation %}
+        	<a href="{% url 'finish_reservation' %}"> Finish reservation </a>
+        	{%else%}
+        	<a href="{% url 'add_user_reservation' %}"> Create a reservation </a>
+   		{% endif%}
+   		</li>
         {% else %}
             {# TODO #}
         {% endif %}
