@@ -30,6 +30,12 @@ class LaboratoryRoomListView(miContexto, ListView):
     model = LaboratoryRoom
     template_name = "laboratory/report_laboratoryroom_list.html"
 
+    def get_queryset(self):
+        if 'lab_pk' in self.kwargs:
+            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            return lab.rooms.all()
+        return super(LaboratoryRoomListView, self).get_queryset()
+
 
 @method_decorator(login_required, name='dispatch')
 class ObjectListView(miContexto, ListView):
@@ -37,13 +43,16 @@ class ObjectListView(miContexto, ListView):
 
 
 @login_required
-def report_building(request):
-    laboratoryroom = LaboratoryRoom.objects.all()
+def report_building(request, *args, **kwargs):
+    if 'lab_pk' in kwargs:
+        rooms = Laboratory.objects.get(pk=kwargs.get('lab_pk')).rooms.all()
+    else:
+        rooms = LaboratoryRoom.objects.all()
 
     template = get_template('pdf/laboratoryroom_pdf.html')
 
     context = {
-        'object_list': laboratoryroom,
+        'object_list': rooms,
         'datetime': timezone.now(),
         'request': request
     }
@@ -59,10 +68,13 @@ def report_building(request):
 
 
 @login_required
-def report_objects(request):
+def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
-        objects = Object.objects.all()
+        if 'lab_pk' in kwargs:
+            objects = Object.objects.filter(shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+        else:
+            objects = Object.objects.all()
     else:
         objects = Object.objects.filter(pk=var)
 
@@ -86,17 +98,20 @@ def report_objects(request):
 
 
 @login_required
-def report_furniture(request):
+def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
-        sumfurniture = Furniture.objects.all()
+        if 'lab_pk' in kwargs:
+            furniture = Furniture.objects.filter(labroom__laboratory__pk=kwargs.get('lab_pk'))
+        else:
+            furniture = Furniture.objects.all()
     else:
-        sumfurniture = Furniture.objects.filter(pk=var)
+        furniture = Furniture.objects.filter(pk=var)
 
     template = get_template('pdf/summaryfurniture_pdf.html')
 
     context = {
-        'object_list': sumfurniture,
+        'object_list': furniture,
         'datetime': timezone.now(),
         'request': request
     }
@@ -113,11 +128,16 @@ def report_furniture(request):
 
 
 @login_required
-def report_reactive_precursor_objects(request):
+def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
 
+    if 'lab_pk' in kwargs:
+        rpo = Object.objects.filter(shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+    else:
+        rpo = Object.objects.all()
+
     # Reactive precursor objects
-    rpo = Object.objects.filter(type=Object.REACTIVE, is_precursor=True)
+    rpo = rpo.filter(type=Object.REACTIVE, is_precursor=True)
 
     context = {
         'rpo': rpo,
@@ -142,6 +162,11 @@ def index(request):
 class FurnitureListView(miContexto, ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
+
+    def get_queryset(self):
+        if 'lab_pk' in self.kwargs:
+            return Furniture.objects.filter(labroom__furniture=self.kwargs.get('lab_pk'))
+        return super(FurnitureListView, self).get_queryset()
 
 
 @method_decorator(login_required, name='dispatch')

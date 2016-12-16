@@ -72,7 +72,6 @@ urlpatterns += [
         name="report_furniture"),
     url(r"^report/furniture_detail$", FurnitureListView.as_view(),
         name="furniture_list"),
-
 ]
 
 urlpatterns += [
@@ -82,9 +81,6 @@ urlpatterns += [
         name="object_list"),
     url(r"^object/delete/(?P<pk>\d+)$",
         ObjectDeleteFromShelf.as_view(), name="object_Delete"),
-
-    url(r"^objectfeatures/list$", list_objectfeatures,
-        name="objectfeatures_list"),
     url(r"^objectfeatures/list$", list_objectfeatures,
         name="objectfeatures_list"),
 ]
@@ -130,7 +126,7 @@ urlpatterns += [
 
 ]
 
-
+'''MULTILAB'''
 
 lab_rooms_urls = [
     url(r'^$', LaboratoryRoomsList.as_view(), name='laboratory_rooms_list'),
@@ -167,16 +163,30 @@ lab_objects_urls = [
     url(r'^features/list', list_objectfeatures, name='laboratory_objects_features_list')
 ]
 
+lab_reports_urls = [
+    url(r'^lab$', LaboratoryRoomListView.as_view(), name='laboratory_reports_laboratory'),
+    url(r'^building$', views.report_building, name='laboratory_reports_building'),
+    url(r'^objects$', views.report_objects, name='laboratory_reports_objects'),
+    url(r'^reactive_precursor_objects$', views.report_reactive_precursor_objects,
+        name='laboratory_reports_reactive_precursor_objects'),
+    url(r'^furniture$', views.report_furniture, name='laboratory_reports_furniture'),
+    url(r'^furniture_detail$', FurnitureListView.as_view(), name='laboratory_reports_furniture_detail')
+]
+
 urlpatterns += [
     url(r'^reactive_precursor_object_list', ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list')
 ]
 
 urlpatterns += objviews.get_urls()
+
+'''MULTILAB'''
 urlpatterns += [
     url(r'^laboratory/', include(labviews.get_urls())),
     url(r'^laboratory/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
     url(r'^laboratory/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
     url(r'^laboratory/(?P<lab_pk>\d+)/shelves/', include(lab_shelves_urls)),
     url(r'^laboratory/(?P<lab_pk>\d+)/shelf_objects/', include(lab_shelf_objects_urls)),
+    url(r'^laboratory/(?P<lab_pk>\d+)/objects/', include(lab_objects_urls)),
+    url(r'^laboratory/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
 ]
