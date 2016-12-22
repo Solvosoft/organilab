@@ -185,6 +185,7 @@ class FurnitureCreateView(CreateView):
         if 'lab_pk' in self.kwargs:
             lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
             context['object_list'] = lab.rooms.all()
+            context['lab_pk'] = self.kwargs.get('lab_pk')
         context['object_list'] = self.model.objects.all()
         return context
 
@@ -230,6 +231,12 @@ class FurnitureUpdateView(UpdateView):
                                  'col': col,
                                  'row': row})
 
+    def get_success_url(self):
+        if 'lab_pk' in self.kwargs:
+            return reverse_lazy('laboratory:laboratory_furniture_create',
+                                kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+        return super(FurnitureUpdateView, self).get_success_url()
+
 
 @method_decorator(login_required, name='dispatch')
 class FurnitureDelete(DeleteView):
@@ -237,8 +244,10 @@ class FurnitureDelete(DeleteView):
     success_url = reverse_lazy("laboratory:furniture_create")
 
     def get_success_url(self):
-        if 'lab_pk' in self.kwargs:
-            return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+        lab_pk = self.object.labroom.laboratory_set.first().pk
+        if lab_pk is not None:
+            print('x')
+            return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': lab_pk})
         return super(FurnitureDelete, self).get_success_url()
 
 
