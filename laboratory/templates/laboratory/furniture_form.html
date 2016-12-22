@@ -56,9 +56,9 @@
 		</div>
 		<div class="col-md-3"> 
 			<div class="btn-group" role="group" aria-label="...">
-			  <a href="{% url 'laboratory:furniture_update' object.pk %}" class="btn btn-info"> 
+			  <a href="{% url 'laboratory:laboratory_furniture_update' lab_pk object.pk %}" class="btn btn-info">
 			  	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
-			  <a href="{% url 'laboratory:furniture_delete' object.pk%}" class="btn btn-danger">
+			  <a href="{% url 'laboratory:laboratory_furniture_delete' lab_pk object.pk%}" class="btn btn-danger">
 			  	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
 			</div>	
 		</div>

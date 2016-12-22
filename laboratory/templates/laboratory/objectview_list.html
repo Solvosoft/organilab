@@ -4,7 +4,7 @@
 {% block content %}
 
 <a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_create'  %}">
+  	href="{% url 'laboratory:objectview_create' lab_pk %}">
   	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %} </a>
  
  <br> <br>
@@ -14,10 +14,10 @@
   <div class="col-md-9"> {{object}}</div>
   <div class="col-md-3">
   	<a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_update' object.pk %}">
+  	href="{% url 'laboratory:objectview_update' lab_pk object.pk %}">
   	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
   	<a class="btn btn-danger" 
-  	href="{% url 'laboratory:objectview_delete' object.pk %}"> 
+  	href="{% url 'laboratory:objectview_delete' lab_pk object.pk %}">
   	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
   </div>
 </li>
