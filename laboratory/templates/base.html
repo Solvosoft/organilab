@@ -55,7 +55,7 @@
             	{% trans 'Furnitures' %}</a></li>
             <li><a href="{% url 'laboratory:laboratory_reports_objects' request.session.lab_pk %}">
             	{% trans 'Objects' %}</a></li>
-            <li><a href="{% url 'laboratory:laboratory_reports_reactive_precursor_objects' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reactive_precursor_object_list' request.session.lab_pk %}">
             	{% trans 'Reactive precursor objects' %}</a></li>
           </ul>
         </li>
