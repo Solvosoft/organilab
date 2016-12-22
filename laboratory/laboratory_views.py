@@ -54,8 +54,7 @@ class LaboratoryView(object):
         ]
 
 class SelectLaboratoryForm(forms.Form):
-    LAB_CHOICES = ((lab.pk, lab) for lab in Laboratory.objects.all())
-    laboratory = forms.ChoiceField(choices=LAB_CHOICES)
+    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all(), empty_label=None)
 
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
@@ -63,7 +62,7 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def form_valid(self, form):
-        lab_pk = form.cleaned_data.get('laboratory')
+        lab_pk = form.cleaned_data.get('laboratory').pk
         request = self.request
         request.session['lab_pk'] = lab_pk
         return super(SelectLaboratoryView, self).form_valid(form)
