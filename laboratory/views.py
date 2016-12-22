@@ -257,4 +257,11 @@ class ReactivePrecursorObjectList(ListView):
     template_name = 'laboratory/reactive_precursor_objects_list.html'
 
     def get_queryset(self):
-        return Object.objects.filter(type=Object.REACTIVE, is_precursor=True)
+        lab_pk = self.kwargs.get('lab_pk')
+        return Object.objects.filter(type=Object.REACTIVE, is_precursor=True, shelfobject__shelf__furniture__labroom__laboratory=lab_pk)
+
+    def get_context_data(self, **kwargs):
+        context = super(ReactivePrecursorObjectList, self).get_context_data(**kwargs)
+        if 'lab_pk' in self.kwargs:
+            context['lab_pk'] = self.kwargs.get('lab_pk')
+        return context

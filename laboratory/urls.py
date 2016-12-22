@@ -163,7 +163,7 @@ lab_reports_urls = [
 ]
 
 urlpatterns += [
-    url(r'^reactive_precursor_object_list', ReactivePrecursorObjectList.as_view(),
+    url(r'^laboratory/(?P<lab_pk>\d+)/reactive_precursor_objects', ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list')
 ]
 
