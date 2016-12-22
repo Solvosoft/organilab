@@ -5,19 +5,17 @@ Created on 11/8/2016
 '''
 from __future__ import unicode_literals
 
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
-from django.views.generic.list import ListView
-from django.core.urlresolvers import reverse_lazy, reverse
-from django.db.models.query import QuerySet
-from django_ajax.mixin import AJAXMixin
 from django import forms
-import json
-from django_ajax.decorators import ajax
-from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.list import ListView
+from django_ajax.decorators import ajax
+from django_ajax.mixin import AJAXMixin
+from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
 
 
 class ObjectDeleteFromShelf(DeleteView):
@@ -234,10 +232,9 @@ def ShelfDelete(request, pk, row, col):
     shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
     url = reverse('laboratory:shelf_delete', args=(pk, row, col))
-    # url = url.replace("/", "\\/")
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
-    },}
+    }, }
 
 
 @method_decorator(login_required, name='dispatch')
