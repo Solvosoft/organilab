@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 from laboratory import views
 from laboratory.ObjectViews import ObjectView
 from laboratory.laboratory_views import LaboratoryView
+from laboratory.laboratory_views import SelectLaboratoryView
 from laboratory.ajax_view import list_furniture, list_shelfobject, ShelfObjectCreate, ShelfObjectDelete
 from laboratory.ajax_view import list_shelf, list_objectfeatures, \
     admin_list_shelf, ShelfObjectEdit
@@ -36,6 +37,7 @@ urlpatterns = [
         name='logout'),
     url(r"^search$", SearchObject.as_view(),
         name="search"),
+    url(r'^select', SelectLaboratoryView.as_view(), name='select_lab')
 ]
 
 urlpatterns += [
@@ -123,7 +125,6 @@ urlpatterns += [
         name="shelf_create"),
     url(r'^shelf/edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
         ShelfEdit.as_view(), name="shelf_edit")
-
 ]
 
 '''MULTILAB'''

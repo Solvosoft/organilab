@@ -7,9 +7,10 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 from django.views.generic.edit import DeleteView
+from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-
 from laboratory.models import Laboratory
+from django import forms
 
 
 class LaboratoryView(object):
@@ -51,3 +52,18 @@ class LaboratoryView(object):
             url(r'^edit/(?P<pk>\d+)$', self.edit, name='laboratory_update'),
             url(r'^delete/(?P<pk>\d+)$', self.delete, name='laboratory_delete'),
         ]
+
+class SelectLaboratoryForm(forms.Form):
+    LAB_CHOICES = ((lab.pk, lab) for lab in Laboratory.objects.all())
+    laboratory = forms.ChoiceField(choices=LAB_CHOICES)
+
+class SelectLaboratoryView(FormView):
+    template_name = 'laboratory/select_lab.html'
+    form_class = SelectLaboratoryForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        lab_pk = form.cleaned_data.get('laboratory')
+        request = self.request
+        request.session['lab_pk'] = lab_pk
+        return super(SelectLaboratoryView, self).form_valid(form)

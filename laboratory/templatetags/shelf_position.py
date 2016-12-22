@@ -1,5 +1,8 @@
 
 from django import template
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
+from laboratory.models import Laboratory
 
 register = template.Library()
 
@@ -40,3 +43,13 @@ def print_shelf(*args,**kwargs):
     shelf = shelf + str(varcol+1)
     
     return shelf
+
+@register.simple_tag(takes_context=True)
+def get_laboratory_name(context):
+    request = context['request']
+    lab_pk = request.session.get('lab_pk')
+    if lab_pk is not None:
+        return Laboratory.objects.get(pk=lab_pk)
+    else:
+        # FIXME: find the way to redirect to select_lab
+        redirect(reverse('laboratory:select_lab'))
