@@ -25,7 +25,7 @@
     <a class="navbar-brand" href="{% url 'laboratory:index' %}"><strong>ORGANILAB</strong></a>
     <ul class="nav navbar-nav">
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span class="glyphicon glyphicon-cog"></span></strong></a></li>
+        <li><a href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span class="glyphicon glyphicon-cog"></span></a></li>
         <li><a href="{% url 'laboratory:laboratory_rooms_list' request.session.lab_pk %}">
           <strong>{% get_laboratory_name %}</strong>
         </a></li>
