@@ -3,19 +3,18 @@ Created on /8/2016
 
 @author: natalia
 '''
-from laboratory.models import Furniture, Shelf, ShelfObject, ObjectFeatures
+from django import forms
+from django.contrib.auth.decorators import login_required
+from django.db.models.query import QuerySet
+from django.http.response import HttpResponseRedirect
 from django.template.loader import render_to_string
+from django.urls.base import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.urls.base import reverse_lazy
-from django.http.response import HttpResponseRedirect
-from django.template.context_processors import request
-
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.db.models.query import QuerySet
-from django import forms
+from laboratory.models import Furniture, Shelf, ShelfObject, ObjectFeatures
 from laboratory.shelf_utils import get_dataconfig
 
 
@@ -131,7 +130,7 @@ class ShelfObjectFormUpdate(forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ['shelf', 'quantity', 'measurement_unit']
+        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
         widgets = {
             'shelf': forms.HiddenInput,
         }
