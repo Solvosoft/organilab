@@ -18,7 +18,7 @@
 				<img src="{% static 'images/laboratory.svg' %}"
 				alt="{% trans 'Laboratory view' %}"
 				class="img-rounded">
-	<a href="{% url 'laboratory:laboratoryRooms_list'%}">
+	<a href="{% url 'laboratory:laboratory_rooms_list' request.session.lab_pk %}">
 		<strong>{% trans 'Laboratory view' %}</strong></a>
 			</div>
 		</div>
@@ -30,8 +30,8 @@
 				<img src="{% static 'images/administration.svg' %}"
 				alt="{% trans 'Laboratory administration' %}"
 				class="img-rounded">
-    <a href="{% url 'laboratory:laboratoryroom_create' %}"><strong>{% trans 'Laboratory' %}</strong></a>
-    <a href="{% url 'laboratory:furniture_create' %}"><strong>{% trans 'Furniture' %}</strong></a>			
+    <a href="{% url 'laboratory:laboratory_rooms_create' request.session.lab_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
+    <a href="{% url 'laboratory:laboratory_furniture_create' request.session.lab_pk %}"><strong>{% trans 'Furniture' %}</strong></a>
 	
 			</div>
 		</div>
@@ -43,10 +43,9 @@
 				<img src="{% static 'images/reports.svg' %}"
 				alt="{% trans 'Reports' %}"
 				class="img-rounded">
-            <a href="{% url 'laboratory:laboratoryroom_list' %}"><strong>{% trans 'Laboratory' %}</strong></a>
-            <a href="{% url 'laboratory:furniture_list' %}"><strong>{% trans 'Furnitures' %}</strong></a>
-            <a href="{% url 'laboratory:object_list'%}"><strong>{% trans 'Objects' %}</strong></a>			
-
+            <a href="{% url 'laboratory:laboratory_reports_laboratory' request.session.lab_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
+            <a href="{% url 'laboratory:laboratory_reports_furniture' request.session.lab_pk %}"><strong>{% trans 'Furnitures' %}</strong></a>
+            <a href="{% url 'laboratory:laboratory_reports_objects' request.session.lab_pk %}"><strong>{% trans 'Objects' %}</strong></a>
 			</div>
 		</div>
 	</div>
