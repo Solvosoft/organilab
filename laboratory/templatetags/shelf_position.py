@@ -3,6 +3,7 @@ from django import template
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from laboratory.models import Laboratory
+from django.shortcuts import get_object_or_404
 
 register = template.Library()
 
@@ -49,7 +50,7 @@ def get_laboratory_name(context):
     request = context['request']
     lab_pk = request.session.get('lab_pk')
     if lab_pk is not None:
-        return Laboratory.objects.get(pk=lab_pk)
+        return get_object_or_404(Laboratory, pk=lab_pk)
     else:
         # FIXME: find the way to redirect to select_lab
-        redirect(reverse('laboratory:select_lab'))
+        return redirect(reverse('laboratory:select_lab'))

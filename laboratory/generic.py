@@ -16,6 +16,7 @@ from django.views.generic.list import ListView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
+from laboratory.decorators import verify_laboratory_session
 
 
 class ObjectDeleteFromShelf(DeleteView):
@@ -34,14 +35,14 @@ class ObjectCreate(CreateView):
     fields = '__all__'
     success_url = "/"
 
-
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
     def get_queryset(self):
         if 'lab_pk' in self.kwargs:
-            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
             return lab.rooms.all()
         else:
             return super(LaboratoryRoomsList, self).get_queryset()
@@ -51,6 +52,7 @@ class LaboratoryRoomsList(ListView):
         return context
 
 
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
@@ -61,7 +63,7 @@ class LabroomCreate(CreateView):
         context = CreateView.get_context_data(self, **kwargs)
 
         if 'lab_pk' in self.kwargs:
-            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
             context['object_list'] = lab.rooms.all()
         else:
             context['object_list'] = self.model.objects.all()
@@ -70,7 +72,7 @@ class LabroomCreate(CreateView):
     def form_valid(self, form):
         if 'lab_pk' in self.kwargs:
             room = form.save()
-            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
             lab.rooms.add(room)
             lab.save()
         return super(LabroomCreate, self).form_valid(form)
@@ -82,6 +84,8 @@ class LabroomCreate(CreateView):
         return super(LabroomCreate, self).get_success_url()
 
 
+@method_decorator(verify_laboratory_session, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = reverse_lazy('laboratory:laboratoryroom_create')

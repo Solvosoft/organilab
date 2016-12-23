@@ -38,7 +38,7 @@ urlpatterns = [
         name='logout'),
     url(r"^search$", SearchObject.as_view(),
         name="search"),
-    url(r'^select', SelectLaboratoryView.as_view(), name='select_lab')
+    url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab')
 ]
 
 urlpatterns += [
@@ -129,7 +129,6 @@ urlpatterns += [
 ]
 
 '''MULTILAB'''
-
 lab_rooms_urls = [
     url(r'^$', LaboratoryRoomsList.as_view(), name='laboratory_rooms_list'),
     url(r'^create$', LabroomCreate.as_view(), name='laboratory_rooms_create'),
