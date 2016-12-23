@@ -34,6 +34,8 @@ class SearchObject(ListView):
 
     def get_queryset(self):
         query = ListView.get_queryset(self)
+        if 'lab_pk' in self.kwargs:
+            query = query.filter(shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
         params = self.get_queryset_params()
         if params:
             query = query.filter(params)
