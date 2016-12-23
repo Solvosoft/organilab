@@ -254,7 +254,6 @@ class FurnitureDelete(DeleteView):
     def get_success_url(self):
         lab_pk = self.object.labroom.laboratory_set.first().pk
         if lab_pk is not None:
-            print('x')
             return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': lab_pk})
         return super(FurnitureDelete, self).get_success_url()
 

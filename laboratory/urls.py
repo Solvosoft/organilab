@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
-    url(r"^search$", SearchObject.as_view(),
+    url(r"^laboratory/(?P<lab_pk>\d+)/search$", SearchObject.as_view(),
         name="search"),
     url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab')
 ]
