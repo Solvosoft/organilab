@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
@@ -179,6 +180,9 @@ class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     rooms = models.ManyToManyField('LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
+    lab_admins = models.ManyToManyField(User, related_name='lab_admins', blank=True)
+    laboratorists = models.ManyToManyField(User, related_name='laboratorists', blank=True)
+    
 
     class Meta:
         verbose_name = _('Laboratory')
