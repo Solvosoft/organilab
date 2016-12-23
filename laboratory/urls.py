@@ -24,7 +24,7 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import LaboratoryRoomListView, ObjectListView, FurnitureListView, \
     FurnitureCreateView, FurnitureUpdateView, FurnitureDelete, ReactivePrecursorObjectList
-
+from laboratory.views import PermissionDeniedView
 
 objviews = ObjectView()
 labviews = LaboratoryView()
@@ -38,7 +38,8 @@ urlpatterns = [
         name='logout'),
     url(r"^laboratory/(?P<lab_pk>\d+)/search$", SearchObject.as_view(),
         name="search"),
-    url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab')
+    url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab'),
+    url(r'^permission_denied$', PermissionDeniedView.as_view(), name='permission_denied')
 ]
 
 urlpatterns += [

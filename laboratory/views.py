@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
+from django.views.generic import TemplateView
 import json
 
 from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf, Laboratory
@@ -161,6 +162,10 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
 @verify_laboratory_session
 def index(request):
     return render(request, 'laboratory/index.html')
+
+
+class PermissionDeniedView(TemplateView):
+   template_name = 'laboratory/permission_denied.html' 
 
 
 @method_decorator(login_required, name='dispatch')
