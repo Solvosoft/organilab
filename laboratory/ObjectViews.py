@@ -15,6 +15,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from laboratory.models import Object
+from laboratory.decorators import verify_laboratory_session
 
 
 class ObjectView(object):
@@ -35,12 +36,12 @@ class ObjectView(object):
                 if 'lab_pk' in self.kwargs:
                     return reverse_lazy('laboratory:objectview_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
 
-        self.create = login_required(ObjectCreateView.as_view(
+        self.create = verify_laboratory_session(login_required(ObjectCreateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             success_url=reverse_lazy('laboratory:objectview_list'),
             template_name=self.template_name_base + "_form.html"
-        ))
+        )))
 
         class ObjectUpdateView(UpdateView):
 
@@ -55,12 +56,12 @@ class ObjectView(object):
                 if 'lab_pk' in self.kwargs:
                     return reverse_lazy('laboratory:objectview_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
 
-        self.edit = login_required(ObjectUpdateView.as_view(
+        self.edit = verify_laboratory_session(login_required(ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             success_url=reverse_lazy('laboratory:objectview_list'),
             template_name=self.template_name_base + "_form.html"
-        ))
+        )))
 
         class ObjectDeleteView(DeleteView):
 
@@ -68,11 +69,11 @@ class ObjectView(object):
                 if 'lab_pk' in self.kwargs:
                     return reverse_lazy('laboratory:objectview_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
 
-        self.delete = login_required(ObjectDeleteView.as_view(
+        self.delete = verify_laboratory_session(login_required(ObjectDeleteView.as_view(
             model=self.model,
             success_url=reverse_lazy('laboratory:objectview_list'),
             template_name=self.template_name_base + "_delete.html"
-        ))
+        )))
 
         class ObjectListView(ListView):
 
@@ -89,12 +90,12 @@ class ObjectView(object):
                     return Object.objects.filter(shelfobject__shelf__furniture__labroom__laboratory=lab_pk)
                 return super(ObjectListView, self).get_queryset()
 
-        self.list = login_required(ObjectListView.as_view(
+        self.list = verify_laboratory_session(login_required(ObjectListView.as_view(
             model=self.model,
             paginate_by=10,
             ordering=['code'],
             template_name=self.template_name_base + "_list.html"
-        ))
+        )))
 
     def get_urls(self):
         return [

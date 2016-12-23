@@ -15,6 +15,7 @@ import json
 
 from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf, Laboratory
 from laboratory.shelf_utils import get_dataconfig
+from laboratory.decorators import verify_laboratory_session
 from weasyprint import HTML
 
 
@@ -24,7 +25,7 @@ class miContexto(object):
         contex['datetime'] = timezone.now()
         return contex
 
-
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class LaboratoryRoomListView(miContexto, ListView):
     model = LaboratoryRoom
@@ -32,7 +33,7 @@ class LaboratoryRoomListView(miContexto, ListView):
 
     def get_queryset(self):
         if 'lab_pk' in self.kwargs:
-            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
             return lab.rooms.all()
         return super(LaboratoryRoomListView, self).get_queryset()
 
@@ -42,10 +43,11 @@ class ObjectListView(miContexto, ListView):
     model = Object
 
 
+@verify_laboratory_session
 @login_required
 def report_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
-        rooms = Laboratory.objects.get(pk=kwargs.get('lab_pk')).rooms.all()
+        rooms = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk')).rooms.all()
     else:
         rooms = LaboratoryRoom.objects.all()
 
@@ -67,6 +69,7 @@ def report_building(request, *args, **kwargs):
     return response
 
 
+@verify_laboratory_session
 @login_required
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
@@ -97,6 +100,7 @@ def report_objects(request, *args, **kwargs):
     return response
 
 
+@verify_laboratory_session
 @login_required
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
@@ -126,7 +130,7 @@ def report_furniture(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
     return response
 
-
+@verify_laboratory_session
 @login_required
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
@@ -154,6 +158,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     return response
 
 
+@verify_laboratory_session
 def index(request):
     return render(request, 'laboratory/index.html')
 
@@ -169,6 +174,7 @@ class FurnitureListView(miContexto, ListView):
         return super(FurnitureListView, self).get_queryset()
 
 
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
@@ -183,7 +189,7 @@ class FurnitureCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
         if 'lab_pk' in self.kwargs:
-            lab = Laboratory.objects.get(pk=self.kwargs.get('lab_pk'))
+            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
             context['object_list'] = lab.rooms.all()
             context['lab_pk'] = self.kwargs.get('lab_pk')
         context['object_list'] = self.model.objects.all()
@@ -203,6 +209,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
@@ -238,6 +245,7 @@ class FurnitureUpdateView(UpdateView):
         return super(FurnitureUpdateView, self).get_success_url()
 
 
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
@@ -250,7 +258,7 @@ class FurnitureDelete(DeleteView):
             return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': lab_pk})
         return super(FurnitureDelete, self).get_success_url()
 
-
+@method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
