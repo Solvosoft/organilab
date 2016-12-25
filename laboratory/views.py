@@ -2,29 +2,31 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.validators import RegexValidator
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.context import Context
 from django.template.loader import get_template, render_to_string
 from django.urls.base import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.views.generic import TemplateView
 import json
 
+from laboratory.decorators import verify_laboratory_session
 from laboratory.models import LaboratoryRoom, Furniture, Object, Shelf, Laboratory
 from laboratory.shelf_utils import get_dataconfig
-from laboratory.decorators import verify_laboratory_session
 from weasyprint import HTML
 
 
 class miContexto(object):
+
     def get_context_data(self, **kwargs):
         contex = ListView.get_context_data(self, **kwargs)
         contex['datetime'] = timezone.now()
         return contex
+
 
 @method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
@@ -48,7 +50,8 @@ class ObjectListView(miContexto, ListView):
 @login_required
 def report_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
-        rooms = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk')).rooms.all()
+        rooms = get_object_or_404(
+            Laboratory, pk=self.kwargs.get('lab_pk')).rooms.all()
     else:
         rooms = LaboratoryRoom.objects.all()
 
@@ -76,7 +79,8 @@ def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
         if 'lab_pk' in kwargs:
-            objects = Object.objects.filter(shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+            objects = Object.objects.filter(
+                shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
         else:
             objects = Object.objects.all()
     else:
@@ -107,7 +111,8 @@ def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
         if 'lab_pk' in kwargs:
-            furniture = Furniture.objects.filter(labroom__laboratory__pk=kwargs.get('lab_pk'))
+            furniture = Furniture.objects.filter(
+                labroom__laboratory__pk=kwargs.get('lab_pk'))
         else:
             furniture = Furniture.objects.all()
     else:
@@ -131,13 +136,15 @@ def report_furniture(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
     return response
 
+
 @verify_laboratory_session
 @login_required
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
 
     if 'lab_pk' in kwargs:
-        rpo = Object.objects.filter(shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+        rpo = Object.objects.filter(
+            shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
     else:
         rpo = Object.objects.all()
 
@@ -155,7 +162,8 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
     response = HttpResponse(page, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
+    response[
+        'Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
     return response
 
 
@@ -165,7 +173,7 @@ def index(request):
 
 
 class PermissionDeniedView(TemplateView):
-   template_name = 'laboratory/permission_denied.html' 
+    template_name = 'laboratory/permission_denied.html'
 
 
 @method_decorator(login_required, name='dispatch')
@@ -262,6 +270,7 @@ class FurnitureDelete(DeleteView):
             return reverse_lazy('laboratory:laboratory_furniture_create', kwargs={'lab_pk': lab_pk})
         return super(FurnitureDelete, self).get_success_url()
 
+
 @method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class ReactivePrecursorObjectList(ListView):
@@ -273,7 +282,8 @@ class ReactivePrecursorObjectList(ListView):
         return Object.objects.filter(type=Object.REACTIVE, is_precursor=True, shelfobject__shelf__furniture__labroom__laboratory=lab_pk)
 
     def get_context_data(self, **kwargs):
-        context = super(ReactivePrecursorObjectList, self).get_context_data(**kwargs)
+        context = super(
+            ReactivePrecursorObjectList, self).get_context_data(**kwargs)
         if 'lab_pk' in self.kwargs:
             context['lab_pk'] = self.kwargs.get('lab_pk')
         return context
