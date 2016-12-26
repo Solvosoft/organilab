@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-25 17:27-0600\n"
-"PO-Revision-Date: 2016-12-25 17:53-0600\n"
+"POT-Creation-Date: 2016-12-25 19:29-0600\n"
+"PO-Revision-Date: 2016-12-25 19:43-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -260,6 +260,18 @@ msgstr "Muebles"
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:5
 msgid "Reactive precursor objects"
 msgstr "Objetos reactivos precursores"
+
+#: laboratory/templates/base.html:64
+msgid "My reservations"
+msgstr "Mis reservaciones"
+
+#: laboratory/templates/base.html:67
+msgid "Finish reservation"
+msgstr "Finalizar reservación"
+
+#: laboratory/templates/base.html:69
+msgid "Create a reservation"
+msgstr "Crear reservación"
 
 #: laboratory/templates/base.html:79
 #: laboratory/templates/pdf/furniture_pdf.html:19
