@@ -112,7 +112,7 @@
 <script>
 	function function_name_furniture(argument) {
 		ajax({
-			url : '{% url "laboratory:list_furniture" %}',
+			url : '{% url "laboratory:laboratory_furniture_list" laboratory.pk %}',
 			data : {
 				"namelaboratoryRoom" : argument
 			},

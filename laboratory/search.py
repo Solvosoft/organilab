@@ -7,11 +7,13 @@ Free as freedom will be 26/8/2016
 '''
 
 from __future__ import unicode_literals
-from django.views.generic.list import ListView
-from laboratory.models import ShelfObject
-from django.db.models import Q
+
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.utils.decorators import method_decorator
+from django.views.generic.list import ListView
+
+from laboratory.models import ShelfObject, Laboratory
 
 
 @method_decorator(login_required, name='dispatch')
@@ -35,10 +37,18 @@ class SearchObject(ListView):
     def get_queryset(self):
         query = ListView.get_queryset(self)
         if 'lab_pk' in self.kwargs:
-            query = query.filter(shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
+            query = query.filter(
+                shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
         params = self.get_queryset_params()
         if params:
             query = query.filter(params)
         else:
             query = query.none()
         return query
+
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        if 'lab_pk' in self.kwargs:
+            context['laboratory'] = Laboratory.objects.filter(
+                pk=self.kwargs.get('lab_pk')).first()
+        return context

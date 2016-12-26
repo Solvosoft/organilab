@@ -16,7 +16,7 @@
       {{ obj.code }}
       <a class="btn btn-default pull-right"
          title="{{ obj.name }}"
-         href="{% url 'laboratory:report_objects' %}?pk={{ obj.pk }}">
+         href="{% url 'laboratory:report_objects' request.session.lab_pk %}?pk={{ obj.pk }}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         {% trans "PDF" %}</a>
     </div>

@@ -57,9 +57,11 @@ class Object(models.Model):
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     description = models.TextField(_('Description'))
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
-                                          validators=[validate_molecular_formula], null=True, blank=True)
-    cas_id_number = models.CharField(_('Cas ID Number'), max_length=255, null=True, blank=True)
-    security_sheet = models.FileField(_('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+                                         validators=[validate_molecular_formula], null=True, blank=True)
+    cas_id_number = models.CharField(
+        _('Cas ID Number'), max_length=255, null=True, blank=True)
+    security_sheet = models.FileField(
+        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
 
     features = models.ManyToManyField(ObjectFeatures)
@@ -178,11 +180,13 @@ class Furniture(models.Model):
 @python_2_unicode_compatible
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
-    rooms = models.ManyToManyField('LaboratoryRoom', blank=True)
+    rooms = models.ManyToManyField(
+        'LaboratoryRoom', related_name="labrooms", blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
-    lab_admins = models.ManyToManyField(User, related_name='lab_admins', blank=True)
-    laboratorists = models.ManyToManyField(User, related_name='laboratorists', blank=True)
-    
+    lab_admins = models.ManyToManyField(
+        User, related_name='lab_admins', blank=True)
+    laboratorists = models.ManyToManyField(
+        User, related_name='laboratorists', blank=True)
 
     class Meta:
         verbose_name = _('Laboratory')
