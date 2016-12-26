@@ -3,7 +3,7 @@
 {% load i18n static %}
 {% block content %}
      
-            	{% if request.user.is_authenticated %}
+{% if request.user.is_authenticated %}
 {% include 'laboratory/search_widget.html' %}
 
 <div class="row"> 
@@ -18,7 +18,7 @@
 				<img src="{% static 'images/laboratory.svg' %}"
 				alt="{% trans 'Laboratory view' %}"
 				class="img-rounded">
-	<a href="{% url 'laboratory:laboratory_rooms_list' request.session.lab_pk %}">
+	<a href="{% url 'laboratory:rooms_list' laboratory %}">
 		<strong>{% trans 'Laboratory view' %}</strong></a>
 			</div>
 		</div>
@@ -30,8 +30,8 @@
 				<img src="{% static 'images/administration.svg' %}"
 				alt="{% trans 'Laboratory administration' %}"
 				class="img-rounded">
-    <a href="{% url 'laboratory:laboratory_rooms_create' request.session.lab_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
-    <a href="{% url 'laboratory:laboratory_furniture_create' request.session.lab_pk %}"><strong>{% trans 'Furniture' %}</strong></a>
+    <a href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
+    <a href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
 	
 			</div>
 		</div>
@@ -43,9 +43,9 @@
 				<img src="{% static 'images/reports.svg' %}"
 				alt="{% trans 'Reports' %}"
 				class="img-rounded">
-            <a href="{% url 'laboratory:laboratory_reports_laboratory' request.session.lab_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
-            <a href="{% url 'laboratory:laboratory_reports_furniture' request.session.lab_pk %}"><strong>{% trans 'Furnitures' %}</strong></a>
-            <a href="{% url 'laboratory:laboratory_reports_objects' request.session.lab_pk %}"><strong>{% trans 'Objects' %}</strong></a>
+            <a href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
+            <a href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
+            <a href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
 			</div>
 		</div>
 	</div>
@@ -62,7 +62,7 @@
 			</p>
 			<br/>
 			<p class="text-center">
-				<a class="btn btn-lg btn-success" href="{% url 'laboratory:login' %}" role="button">{% trans "Sign in" %}</a>
+				<a class="btn btn-lg btn-success" href="{% url 'laboratory:login' %}" role="button">{% trans "Login" %}</a>
 			</p>
 		</div>
 	</div>

@@ -3,21 +3,30 @@
 
 {% block content %}
 
-<a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_create' lab_pk %}">
+	<form class="form-inline" method="GET" action="">
+		<div class="form-group">
+		<input type="text" name="q" value="{{q}}" class="form-control" />
+		</div>
+		<button type="submit" class="btn btn-info" > {% trans 'Search' %} </button>
+	</form>  
+<a class="btn btn-info pull-right" 
+  	href="{% url 'laboratory:objectview_create' laboratory %}">
   	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %} </a>
- 
- <br> <br>
+
+<br><br>
+
+
+
  <ul class="list-group">
 {% for object in object_list %}
 <li class="row list-group-item">
   <div class="col-md-9"> {{object}}</div>
   <div class="col-md-3">
   	<a class="btn btn-info" 
-  	href="{% url 'laboratory:objectview_update' lab_pk object.pk %}">
+  	href="{% url 'laboratory:objectview_update' laboratory object.pk %}">
   	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
   	<a class="btn btn-danger" 
-  	href="{% url 'laboratory:objectview_delete' lab_pk object.pk %}">
+  	href="{% url 'laboratory:objectview_delete' laboratory object.pk %}">
   	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
   </div>
 </li>
@@ -29,7 +38,7 @@
 		<ul class="pager">
 			{% if page_obj.has_previous %}
 			<li>
-				<a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+				<a href="?page={{ page_obj.previous_page_number }}&q={{q}}">{% trans 'Previous' %}</a>
 			</li>
 			{% endif %}
 	
@@ -39,7 +48,7 @@
 	
 			{% if page_obj.has_next %}
 			<li>
-				<a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+				<a href="?page={{ page_obj.next_page_number }}&q={{q}}">{% trans 'Next' %}</a>
 			</li>
 			{% endif %}
 		</ul>

@@ -26,7 +26,7 @@
 			{{object}} 
 			</div><div class="col-md-2"> 
 			<div class="btn-group" role="group" aria-label="...">
-			<a href="{% url 'laboratory:laboratoryroom_delete' object.pk %}" class = "btn btn-danger">
+			<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class = "btn btn-danger">
 				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
 			</div>
 			</li>
