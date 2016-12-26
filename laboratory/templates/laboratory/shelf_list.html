@@ -14,7 +14,7 @@
 				<td> {% if col%}
 				{% for data in col %} <a 
 				data-ajax="true" data-success="processResponseshelfobjectCreate"
-				href="{% url 'laboratory:shelfobject_create' %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+				href="{% url 'laboratory:shelfobject_create' laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
 				
 				</a>
 

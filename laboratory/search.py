@@ -35,7 +35,15 @@ class SearchObject(ListView):
         return params
 
     def get_queryset(self):
-        query = ListView.get_queryset(self)
+        user = self.request.user
+
+        labs = Laboratory.objects.filter(
+            Q(lab_admins=user) | Q(laboratorists=user)
+        ).distinct()
+
+        query = self.model.objects.filter(
+            shelf__furniture__labroom__laboratory__in=labs)
+
         if 'lab_pk' in self.kwargs:
             query = query.filter(
                 shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
@@ -49,6 +57,5 @@ class SearchObject(ListView):
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         if 'lab_pk' in self.kwargs:
-            context['laboratory'] = Laboratory.objects.filter(
-                pk=self.kwargs.get('lab_pk')).first()
+            context['laboratory'] = self.kwargs.get('lab_pk')
         return context

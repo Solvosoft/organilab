@@ -14,7 +14,7 @@
 {% for furniture in object_list %}
  <h3 class="alert alert-info"> {{ furniture.name }} 
 	<a  class="btn btn-default pull-right"	
-	href="{% url 'laboratory:report_furniture' %}?pk={{ furniture.pk }}"> 
+	href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}"> 
 	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 	{% trans "PDF" %} 
 	
@@ -75,7 +75,7 @@
 
 <div class="pull-right">
 	<a id="a01" class="btn btn-info"
-	href="{% url 'laboratory:report_furniture' %}">{% trans "Download PDF" %} </a>
+	href="{% url 'laboratory:reports_furniture' laboratory %}">{% trans "Download PDF" %} </a>
 </div>
 
 {% endblock %}

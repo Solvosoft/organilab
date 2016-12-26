@@ -26,8 +26,8 @@
     <ul class="nav navbar-nav">
         {% if request.user.is_authenticated%}
         <li><a href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span class="glyphicon glyphicon-cog"></span></a></li>
-        {% if request.session.lab_pk != None %}
-        <li><a href="{% url 'laboratory:laboratory_rooms_list' request.session.lab_pk %}">
+        {% if laboratory %}
+        <li><a href="{% url 'laboratory:rooms_list' laboratory %}">
           <strong>{% get_laboratory_name %}</strong>
         </a></li>
 
@@ -36,11 +36,11 @@
           role="button" aria-haspopup="true" aria-expanded="false">
           {% trans 'Administration' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'laboratory:laboratory_rooms_create' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
             	{% trans 'Laboratory management' %} </a></li>
-            <li><a href="{% url 'laboratory:laboratory_furniture_create' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
             	{% trans 'Furniture management' %}</a></li>
-            <li><a href="{% url 'laboratory:objectview_list' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:objectview_list' laboratory %}">
             	{% trans 'Object management' %}</a></li>
           </ul>
         </li>
@@ -50,13 +50,13 @@
           role="button" aria-haspopup="true" aria-expanded="false">
           {% trans 'Reports' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'laboratory:laboratory_reports_laboratory' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
             	{% trans 'Laboratory' %}</a></li>
-            <li><a href="{% url 'laboratory:laboratory_reports_furniture' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
             	{% trans 'Furnitures' %}</a></li>
-            <li><a href="{% url 'laboratory:reports_objects' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reports_objects' laboratory %}">
             	{% trans 'Objects' %}</a></li>
-            <li><a href="{% url 'laboratory:reactive_precursor_object_list' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
             	{% trans 'Reactive precursor objects' %}</a></li>
           </ul>
         </li>

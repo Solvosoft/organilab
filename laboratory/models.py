@@ -181,7 +181,7 @@ class Furniture(models.Model):
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     rooms = models.ManyToManyField(
-        'LaboratoryRoom', related_name="labrooms", blank=True)
+        'LaboratoryRoom',  blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
     lab_admins = models.ManyToManyField(
         User, related_name='lab_admins', blank=True)

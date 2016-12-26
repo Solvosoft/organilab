@@ -1,12 +1,14 @@
+{% load i18n %}
+
 <form data-ajax-submit="" onsubmit="return false;"
 data-success="processResponseshelfobject"
-action="{% url 'laboratory:shelfobject_delete' object.pk %}" method="post"
+action="{% url 'laboratory:shelfobject_delete' laboratory object.pk %}" method="post"
 >
 	{% csrf_token %}
 	
 	<div class="modal-body">
 	<p>
-		Are you sure that do you want delete this object
+		{% trans 'Are you sure that do you want delete this object' %}
 		<br />
 		{{object}} ?
 	</p>
@@ -15,12 +17,12 @@ action="{% url 'laboratory:shelfobject_delete' object.pk %}" method="post"
 
 		
 		<button type="submit" class="btn btn-primary">
-			Delete
+			{% trans 'Delete' %}
 		</button>
 
 		{%if not form.instance.pk %}
 		<button type="button" class="btn btn-default" data-dismiss="modal">
-			Close
+			{% trans 'Close' %}
 		</button>{%endif%}
 		
 		<input name ="row" value="{{row}}" type="hidden" />
