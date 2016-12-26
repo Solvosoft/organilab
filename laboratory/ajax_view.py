@@ -19,27 +19,29 @@ from laboratory.shelf_utils import get_dataconfig
 
 
 @login_required
-def list_furniture_render(request):
+def list_furniture_render(request, lab_pk=None):
 
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
-        furnitures = Furniture.objects.filter(labroom=var)
+        furnitures = Furniture.objects.filter(
+            labroom__labrooms=lab_pk, labroom=var)
     else:
-        furnitures = Furniture.objects.all()
+        furnitures = Furniture.objects.filter(labroom__labrooms=lab_pk)
     return render_to_string(
         'laboratory/furniture_list.html',
         context={
-            'object_list': furnitures
+            'object_list': furnitures,
+            'laboratory': lab_pk
         })
 
 
 @login_required
 @ajax
-def list_furniture(request):
+def list_furniture(request, lab_pk):
     return {
         'inner-fragments': {
-            '#furnitures': list_furniture_render(request),
+            '#furnitures': list_furniture_render(request, lab_pk),
             '.jsmessage': "<script>see_prototype_shelf_field();</script>"
 
         },
@@ -172,6 +174,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         self.object = form.save()
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
+        print("###", row, col)
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk):

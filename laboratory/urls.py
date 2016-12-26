@@ -36,10 +36,9 @@ urlpatterns = [
     url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
-    url(r"^laboratory/(?P<lab_pk>\d+)/search$", SearchObject.as_view(),
-        name="search"),
     url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab'),
-    url(r'^permission_denied$', PermissionDeniedView.as_view(), name='permission_denied')
+    url(r'^permission_denied$', PermissionDeniedView.as_view(),
+        name='permission_denied')
 ]
 
 urlpatterns += [
@@ -50,72 +49,73 @@ urlpatterns += [
         ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     url(r"^shelfObject/edit/(?P<pk>\d+)$",
         ShelfObjectEdit.as_view(), name="shelfobject_edit"),
-]
-
-urlpatterns += [
-    url(r"^object/create$", ObjectCreate.as_view(),
-        name="object_create"),
-    url(r"^objects$", ObjectListView.as_view(),
-        name="object_list"),
-    url(r"^object/delete/(?P<pk>\d+)$",
-        ObjectDeleteFromShelf.as_view(), name="object_Delete"),
     url(r"^objectfeatures/list$", list_objectfeatures,
         name="objectfeatures_list"),
 ]
 
-urlpatterns += [
-    url(r"^reports/laboratory$", LaboratoryRoomListView.as_view(),
-        name="laboratoryroom_list"),
-    url(r"^report/building$", views.report_building,
-        name="report_building"),
-    url(r"^report/objects$", views.report_objects,
-        name="report_objects"),
-    url(r'^report/reactive_precursor_objects', views.report_reactive_precursor_objects,
-        name='report_reactive_precursor_objects'),
-    url(r"^report/furniture$", views.report_furniture,
-        name="report_furniture"),
-    url(r"^report/furniture_detail$", FurnitureListView.as_view(),
-        name="furniture_list"),
-]
+# urlpatterns += [
+#     url(r"^object/create$", ObjectCreate.as_view(),
+#         name="object_create"),
+#     url(r"^objects$", ObjectListView.as_view(),
+#         name="object_list"),
+#     url(r"^object/delete/(?P<pk>\d+)$",
+#         ObjectDeleteFromShelf.as_view(), name="object_Delete"),
+# ]
 
 urlpatterns += [
-    url(r"^object/create$", ObjectCreate.as_view(),
-        name="object_create"),
-    url(r"^objects$", ObjectListView.as_view(),
-        name="object_list"),
-    url(r"^object/delete/(?P<pk>\d+)$",
-        ObjectDeleteFromShelf.as_view(), name="object_Delete"),
-    url(r"^objectfeatures/list$", list_objectfeatures,
-        name="objectfeatures_list"),
+    #     url(r"^reports/laboratory$", LaboratoryRoomListView.as_view(),
+    #         name="laboratoryroom_list"),
+    #     url(r"^report/building$", views.report_building,
+    #         name="report_building"),
+    #     url(r"^report/objects$", views.report_objects,
+    #         name="report_objects"),
+    #     url(r'^report/reactive_precursor_objects', views.report_reactive_precursor_objects,
+    #         name='report_reactive_precursor_objects'),
+    #     url(r"^report/furniture$", views.report_furniture,
+    #         name="report_furniture"),
+    #     url(r"^report/furniture_detail$", FurnitureListView.as_view(),
+    #         name="furniture_list"),
 ]
 
+# urlpatterns += [
+#     url(r"^object/create$", ObjectCreate.as_view(),
+#         name="object_create"),
+#     url(r"^objects$", ObjectListView.as_view(),
+#         name="object_list"),
+#     url(r"^object/delete/(?P<pk>\d+)$",
+#         ObjectDeleteFromShelf.as_view(), name="object_Delete"),
+#     url(r"^objectfeatures/list$", list_objectfeatures,
+#         name="objectfeatures_list"),
+# ]
+
 urlpatterns += [
-    url(r"^listLaboratoryRooms$", LaboratoryRoomsList.as_view(),
-        name='laboratoryRooms_list'),
-    url(r"^laboratoryroom/create$", LabroomCreate.as_view(),
-        name="laboratoryroom_create"),
-    url(r"^laboratoryroom/delete/(?P<pk>\d+)$",
-        LaboratoryRoomDelete.as_view(),
-        name="laboratoryroom_delete"),
+    #     url(r"^listLaboratoryRooms$", LaboratoryRoomsList.as_view(),
+    #         name='laboratoryRooms_list'),
+    #     url(r"^laboratoryroom/create$", LabroomCreate.as_view(),
+    #         name="laboratoryroom_create"),
+    #     url(r"^laboratoryroom/delete/(?P<pk>\d+)$",
+    #         LaboratoryRoomDelete.as_view(),
+    #         name="laboratoryroom_delete"),
+    #     url(r"^search$", SearchObject.as_view(),
+    #         name="search"),
     url(r"^objectfeatures/list$", list_objectfeatures,
         name="objectfeatures_list"),
-    url(r"^search$", SearchObject.as_view(),
-        name="search"),
+
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
         name="object_reservation")
 ]
-
-urlpatterns += [
-    url(r"^furniture/list/$",
-        list_furniture, name="list_furniture"),
-    url(r"^furniture/create$", FurnitureCreateView.as_view(),
-        name="furniture_create"),
-    url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
-        name="furniture_update"),
-    url(r"furniture/delete/(?P<pk>\d+)$", FurnitureDelete.as_view(),
-        name="furniture_delete")
-]
+#
+# urlpatterns += [
+#     url(r"^furniture/list/$",
+#         list_furniture, name="list_furniture"),
+#     url(r"^furniture/create$", FurnitureCreateView.as_view(),
+#         name="furniture_create"),
+#     url(r"^furniture/edit/(?P<pk>\d+)$", FurnitureUpdateView.as_view(),
+#         name="furniture_update"),
+#     url(r"furniture/delete/(?P<pk>\d+)$", FurnitureDelete.as_view(),
+#         name="furniture_delete")
+# ]
 
 urlpatterns += [
     url(r"^shelf/list$", list_shelf, name="list_shelf"),
@@ -153,7 +153,7 @@ lab_reports_urls = [
         name='laboratory_reports_laboratory'),
     url(r'^building$', views.report_building,
         name='laboratory_reports_building'),
-    url(r'^objects$', views.report_objects, name='laboratory_reports_objects'),
+    url(r'^objects$', views.report_objects, name='reports_objects'),
     url(r'^reactive_precursor_objects$', views.report_reactive_precursor_objects,
         name='laboratory_reports_reactive_precursor_objects'),
     url(r'^furniture$', views.report_furniture,
@@ -170,11 +170,11 @@ urlpatterns += [
 '''MULTILAB'''
 urlpatterns += [
     url(r'^laboratory/', include(labviews.get_urls())),
+    url(r"^laboratory/(?P<lab_pk>\d+)/search$", SearchObject.as_view(),
+        name="search"),
     url(r'^laboratory/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
     url(r'^laboratory/(?P<lab_pk>\d+)/furniture/',
         include(lab_furniture_urls)),
     url(r'^laboratory/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^laboratory/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
 ]
-
-urlpatterns += objviews.get_urls()

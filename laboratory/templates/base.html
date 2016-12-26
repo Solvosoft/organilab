@@ -54,19 +54,19 @@
             	{% trans 'Laboratory' %}</a></li>
             <li><a href="{% url 'laboratory:laboratory_reports_furniture' request.session.lab_pk %}">
             	{% trans 'Furnitures' %}</a></li>
-            <li><a href="{% url 'laboratory:laboratory_reports_objects' request.session.lab_pk %}">
+            <li><a href="{% url 'laboratory:reports_objects' request.session.lab_pk %}">
             	{% trans 'Objects' %}</a></li>
             <li><a href="{% url 'laboratory:reactive_precursor_object_list' request.session.lab_pk %}">
             	{% trans 'Reactive precursor objects' %}</a></li>
           </ul>
         </li>
         
-        <li><a href="{% url 'reservation_list' %}"> My reservations </a> </li>
+        <li><a href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a> </li>
         <li>        
         {% if request.reservation %}
-        	<a href="{% url 'finish_reservation' %}"> Finish reservation </a>
+        	<a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %}  </a>
         	{%else%}
-        	<a href="{% url 'add_user_reservation' %}"> Create a reservation </a>
+        	<a href="{% url 'add_user_reservation' %}"> {% trans 'Create a reservation' %} </a>
    		{% endif %}
         {% endif %}
    		</li>
@@ -93,7 +93,7 @@
 {# FOOTER #}
 <footer class="footer">
     <div class="container">
-        <p class="text-muted"><strong>Solvo</strong> {% now 'Y' %}
+        <p class="text-muted"><a href="https://solvosoft.com"><strong>Solvo</strong> {% now 'Y' %}</a>
     </div>
 </footer>
 

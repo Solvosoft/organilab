@@ -13,10 +13,11 @@ from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
 from laboratory.decorators import verify_laboratory_session
+from laboratory.models import Shelf, Object, LaboratoryRoom, Furniture, Laboratory
 
 
 class ObjectDeleteFromShelf(DeleteView):
@@ -35,6 +36,7 @@ class ObjectCreate(CreateView):
     fields = '__all__'
     success_url = "/"
 
+
 @method_decorator(verify_laboratory_session, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class LaboratoryRoomsList(ListView):
@@ -42,13 +44,15 @@ class LaboratoryRoomsList(ListView):
 
     def get_queryset(self):
         if 'lab_pk' in self.kwargs:
-            lab = get_object_or_404(Laboratory, pk=self.kwargs.get('lab_pk'))
-            return lab.rooms.all()
+            self.lab = get_object_or_404(
+                Laboratory, pk=self.kwargs.get('lab_pk'))
+            return self.lab.rooms.all()
         else:
             return super(LaboratoryRoomsList, self).get_queryset()
 
     def get_context_data(self, **kwargs):
         context = super(LaboratoryRoomsList, self).get_context_data(**kwargs)
+        context['laboratory'] = self.lab
         return context
 
 

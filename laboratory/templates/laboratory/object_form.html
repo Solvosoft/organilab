@@ -6,7 +6,7 @@
 <h1 align="center">{% trans 'Objects Management' %}</h1>
 <form action="" method="post">{% csrf_token %}
     {{ form|bootstrap  }}
-    <input type="submit" value="Save">
+    <input type="submit" value="{% trans 'Save' %}">
 </form>
 </div>
 {% endblock %}

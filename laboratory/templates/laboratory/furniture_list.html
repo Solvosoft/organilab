@@ -13,7 +13,7 @@
 				{{furniture.name}}  
 			</a>
 			<a  class=" pull-right"	
-			href="{% url 'laboratory:report_furniture' %}?pk={{ furniture.pk }}"> 
+			href="{% url 'laboratory:laboratory_reports_furniture' laboratory %}?pk={{ furniture.pk }}"> 
 			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 			{% trans "PDF" %} 
 			</a>
