@@ -8,7 +8,7 @@
 				<form method="get" action="{% url 'laboratory:search' %}">
 			{%endif%}
 				<div class="col-md-10">
-					<input type="search" name="q" class="form-control" id="search">
+					<input type="search" value="{{q}}" name="q" class="form-control" id="search">
 				</div>
 				<div  class="col-md-2">
 					<button type="submit" class="btn btn-default">

@@ -10,13 +10,15 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.http.response import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
+
 from laboratory.models import ShelfObject, Shelf
+
 from .djgeneric import CreateView, UpdateView, DeleteView
 
 
@@ -67,8 +69,8 @@ class ShelfObjectForm(forms.ModelForm):
 
 
 class ShelfObjectFormUpdate(forms.ModelForm):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
+    col = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
     class Meta:
         model = ShelfObject
@@ -130,11 +132,56 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         }
 
     def get_form_kwargs(self):
-        kwargs = CreateView.get_form_kwargs(self)
+        kwargs = UpdateView.get_form_kwargs(self)
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
         return kwargs
+
+
+@method_decorator(login_required, name='dispatch')
+class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
+    model = ShelfObject
+    form_class = ShelfObjectFormUpdate
+    success_url = "/"
+
+    def get(self, request, *args, **kwargs):
+        response = UpdateView.get(self, request, *args, **kwargs)
+        response.render()
+        return {
+            'inner-fragments': {
+                '#o%d' % self.object.pk: response.content
+            },
+        }
+
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['insearch'] = True
+        return context
+
+    def form_valid(self, form):
+        self.fvalid = True
+        return UpdateView.form_valid(self, form)
+
+    def post(self, request, *args, **kwargs):
+        self.fvalid = False
+        response = UpdateView.post(self, request, *args, **kwargs)
+
+        if self.fvalid:
+            return {
+                'inner-fragments': {
+                    '#o%d' % self.object.pk: render_to_string(
+                        'laboratory/shelfObject.html',
+                        {'object': self.object,
+                         'laboratory': self.lab})
+                },
+            }
+        response.render()
+        return {
+            'inner-fragments': {
+                '#o%d' % self.object.pk: response.content
+            },
+        }
 
 
 @method_decorator(login_required, name='dispatch')

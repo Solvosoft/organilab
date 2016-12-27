@@ -73,7 +73,7 @@
 
 <div class="hidden" id="addshelfproto">
 	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
-				href="{% url 'laboratory:shelf_create' %}?row=ROW&col=COL&furniture={{form.instance.pk}}"> 
+				href="{% url 'laboratory:shelf_create' laboratory %}?row=ROW&col=COL&furniture={{form.instance.pk}}"> 
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					{% trans 'Add Shelf' %} 
 	</a>
