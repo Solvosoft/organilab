@@ -1,8 +1,13 @@
  {% load bootstrap i18n %}
- <form data-ajax-submit="" onsubmit="return false;"
+
+ <form data-ajax-submit="" onsubmit="return false;" method="post"
+ {% if insearch %}
+ action="{% url 'laboratory:shelfobject_searchupdate' laboratory form.instance.pk %}"
+ {%else%}
 	data-success="processResponseshelfobject"
-	action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' laboratory %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}" method="post"
->
+	action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' laboratory %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}" 
+{%endif%} >
+
 <div class="modal-body">
   {% csrf_token %}
   {{form|bootstrap }}</div>
@@ -11,6 +16,9 @@
 	{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
 	<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
 </div>
+{% if q %}
+	<input type="hidden" name="q" value="{{q}}" />
+{%endif%}
 
 </form>
   

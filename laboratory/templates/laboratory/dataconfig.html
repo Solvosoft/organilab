@@ -5,7 +5,7 @@
 	<td>
 	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" 
 	data-success="processResponse"
-	href="{% url 'laboratory:shelf_create' %}?row={{forloop.parentloop.counter0}}&col={{forloop.counter0}}&furniture={{obj.pk}}"> 
+	href="{% url 'laboratory:shelf_create' laboratory %}?row={{forloop.parentloop.counter0}}&col={{forloop.counter0}}&furniture={{obj.pk}}"> 
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> {% trans 'Add Shelf' %} </a>
 	
 	<div  id="row_{{forloop.parentloop.counter0}}_col_{{forloop.counter0}}">

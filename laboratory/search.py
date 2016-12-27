@@ -58,4 +58,5 @@ class SearchObject(ListView):
         context = ListView.get_context_data(self, **kwargs)
         if 'lab_pk' in self.kwargs:
             context['laboratory'] = self.kwargs.get('lab_pk')
+        context['q'] = self.request.GET.get('q', '')
         return context

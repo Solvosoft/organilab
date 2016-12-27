@@ -2,4 +2,4 @@
 <strong>{% trans 'Quantity' %}: </strong> 
 {{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}
 	<a class="btn btn-info" data-ajax=true 
-	href="{% url 'laboratory:shelfobject_edit' object.pk %}">{% trans 'Edit' %}</a>
+	href="{% url 'laboratory:shelfobject_searchupdate' laboratory object.pk %}">{% trans 'Edit' %}</a>

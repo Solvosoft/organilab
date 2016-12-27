@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block container%}container-fluid{%endblock%}
 {% block content %}
@@ -15,9 +15,10 @@
 				<li role="presentation">
 					<!-- agregarle ajax-->
 					<a href="#idlab"
-					onclick="function_name_furniture({{LaboratoryRoom.id }})"
+					data-argument="{{LaboratoryRoom.id }}"
+					onclick="function_name_furniture('{{LaboratoryRoom.id }}')"
 					aria-controls={{ LaboratoryRoom.id }} role="tab"
-					data-toggle="tab">{{ LaboratoryRoom.name }}</a>
+					data-toggle="tab" >{{ LaboratoryRoom.name }}</a>
 				</li>
 
 
@@ -65,118 +66,22 @@
 	</div>
 	</div>
 
-
-
-<div id="object_create" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{% trans 'Add Object' %}</h4>
-      </div>
-	<div id="shelfobjectCreate"></div>
-
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="object_delete" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{% trans 'Are you sure?' %} </h4>
-      </div>
-	<div id="shelfobjectDelete"></div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="object_update" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Update Object</h4>
-      </div>
-	<div id="shelfobjectUpdate"></div>
-
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
+{% include 'laboratory/shelfobjectUpdate_modal.html' %}
 {% endblock %}
 
 {% block js %}
 <script>
-	function function_name_furniture(argument) {
-		ajax({
-			url : '{% url "laboratory:furniture_list" laboratory %}',
-			data : {
-				"namelaboratoryRoom" : argument
-			},
-			cache : false,
-			type : "GET",
-			success : function processResponsefurniture(dat) {
-				$('#furnitures').html(dat);
-
-			}
-		});
-	}
-
-	function function_name_shelf(argument) {
-		ajax({
-			url : '{% url "laboratory:list_shelf" laboratory %}',
-			data : {
-				"furniture" : argument
-			},
-			cache : false,
-			type : "GET",
-			success : function processResponseshelf(dat) {
-				$('#shelf').html(dat);
-			}
-		});
-
-	}
-
-	function function_name_shelfobject(argument) {
-		ajax({
-			url : '{% url "laboratory:list_shelfobject" laboratory %}',
-			data : {
-				"shelf" : argument
-			},
-			cache : false,
-			type : "GET",
-			success : function processResponseshelfobject(dat) {
-				$('#shelfobject').html(dat);
-			}
-		});
-
-	}
-
-	function processResponseshelfobjectCreate(dat) {
-		$('#shelfobjectCreate').html(dat);
-		// clean the form
-		$("#object_create").modal('show');
-	}
-
-	function processResponseshelfobjectDelete(dat) {
-		$('#shelfobjectDelete').html(dat);
-		$("#object_delete").modal('show');
-	}
-	function processResponseshelfobjectUpdate(dat) {
-		$('#shelfobjectUpdate').html(dat);
-		// clean the form
-		$("#object_update").modal('show');
-	}
-	function see_prototype_shelf_field(){
-		$("#shelf").html($("#prototype_shelf_field").html());
-	}
-	(function(){
-		$("#labmenues a").first().click();	
-		see_prototype_shelf_field();
-	})();
-
+document.furniture_list='{% url "laboratory:furniture_list" laboratory %}';
+document.shelf_list='{% url "laboratory:list_shelf" laboratory %}';
+document.shelfobject_list='{% url "laboratory:list_shelfobject" laboratory %}';
 </script>
+<script src="{% static 'js/shelfobjectedit.js' %}"></script>
+
+<script>
+(function(){
+	$("#labmenues a").first().click();	
+	see_prototype_shelf_field();
+})();
+</script>
+
 {% endblock %}

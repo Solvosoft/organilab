@@ -10,16 +10,13 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 from laboratory import views
-from laboratory.ajax_view import list_shelf, list_objectfeatures, \
-    admin_list_shelf
-from laboratory.generic import ShelfCreate, \
-    ShelfDelete, ShelfEdit
+from laboratory.ajax_view import list_objectfeatures
 from laboratory.laboratory_views import LaboratoryView
 from laboratory.laboratory_views import SelectLaboratoryView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
-from laboratory.views import furniture, reports
+from laboratory.views import furniture, reports, shelfs
 from laboratory.views import labroom, shelfobject
 from laboratory.views.objects import ObjectView
 
@@ -48,19 +45,20 @@ urlpatterns += [
         name="object_reservation")
 ]
 
-urlpatterns += [
-    url(r"^(?P<lab_pk>\d+)/shelf/list$", list_shelf, name="list_shelf"),
-    url(r"^shelf/delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
-        ShelfDelete, name="shelf_delete"),
-    url(r"^adm/shelf/list$", admin_list_shelf,
-        name="shelf_list"),
-    url(r"^shelf/create$", ShelfCreate.as_view(),
-        name="shelf_create"),
-    url(r'^shelf/edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
-        ShelfEdit.as_view(), name="shelf_edit")
-]
 
 '''MULTILAB'''
+
+lab_shelf_urls = [
+    url(r"^list$", shelfs.list_shelf, name="list_shelf"),
+    url(r"^create$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
+    url(r"^delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
+        shelfs.ShelfDelete, name="shelf_delete"),
+    url(r'^edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
+        shelfs.ShelfEdit.as_view(), name="shelf_edit"),
+    url(r"^adm/list$", shelfs.admin_list_shelf,
+        name="shelf_list"),
+]
+
 lab_rooms_urls = [  # ok
     url(r'^$', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
     url(r'^create$', labroom.LabroomCreate.as_view(), name='rooms_create'),
@@ -87,6 +85,8 @@ shelf_object_urls = [  # ok
         shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     url(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
+    url(r"q/update/(?P<pk>\d+)$$", shelfobject.ShelfObjectSearchUpdate.as_view(),
+        name="shelfobject_searchupdate")
 ]
 
 
@@ -117,5 +117,6 @@ urlpatterns += [
         include(lab_furniture_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls))
+    url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls))
 ]

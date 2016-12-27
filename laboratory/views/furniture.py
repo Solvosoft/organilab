@@ -39,8 +39,8 @@ class FurnitureCreateView(CreateView):
     fields = ("labroom", "name", "type")
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:furniture_create',
-                            args=(self.lab,))
+        return reverse_lazy('laboratory:furniture_update',
+                            args=(self.lab, self.object.pk))
 
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
