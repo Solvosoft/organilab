@@ -1,0 +1,58 @@
+{% load i18n %}
+
+<html>
+	<head>
+		<style>
+			@page {
+				margin: 3cm 2cm;
+				padding-left: 1.5cm;
+				@top-left {
+					content: "{% trans "Organilab Shelf Object Report" %}";
+				}
+				@top-right {
+					content: "{% trans "Date:" %} {{ datetime }}";
+				}
+				@bottom-right {
+					content: "{% trans "Page" %} " counter(page)
+					" {% trans "of" %} " counter(pages) ;
+				}
+				@bottom-left {
+					content:  "{% trans "User:" %} {{ request.user }}";
+					color: red;
+				}
+			}
+
+			body {
+				text-align: justify
+			}
+			h3 {
+				background: gainsboro;
+				margin-right: 150px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		{% for obj in object_list %}
+			<h3>
+				{% trans "Object Code:" %} {{ obj }}
+			</h3>
+			<ul>
+				<li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
+				<li>{% trans "Object:" %}
+					{{ obj.object }}
+				</li>
+        <li>{% trans "Quantity:" %}
+					{{ obj.quantity }} {{ obj.measurement_unit}}
+				</li>
+        <li>{% trans "Limit quantity:" %}
+					{{ obj.limit_quantity }} {{ obj.measurement_unit}}
+				</li>
+		{% empty %}
+			{% trans "No Objects Elements" %}
+		{% endfor %}
+
+	</body>
+</html>
