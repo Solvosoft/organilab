@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% load i18n %} 
+{% load i18n %}
 {% block content %}
 
 <div>
 
 <pre id="pre01" >
-<h3>	
- {% trans "OBJECTS INFORMATION" %}					
-</h3>	
+<h3>
+ {% trans "OBJECTS INFORMATION" %}
+</h3>
 </pre>
 
 <div>
 	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
-	href="{% url 'laboratory:report_objects' request.session.lab_pk %}">
+	href="{% url 'laboratory:reports_objects' request.session.lab_pk %}">
 	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 	{% trans "All objects in PDF" %} </a>
 	<br> <br>
@@ -22,10 +22,10 @@
 	{% for obj in object_list %}
 		<div class="alert alert-info">
         	{{ obj.code }}
-        	<a class="btn btn-default pull-right" 
+        	<a class="btn btn-default pull-right"
         	alt="{% trans 'Object' %} {{obj.pk}}"
         	title="{{ obj.name }}"
-        	href="{% url 'laboratory:report_objects' request.session.lab_pk %}?pk={{ obj.pk }}">
+        	href="{% url 'laboratory:reports_objects' request.session.lab_pk %}?pk={{ obj.pk }}">
         	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         	{% trans "PDF" %}</a>
         </div>
@@ -34,44 +34,44 @@
         	<li>{% trans "Type:" %}
         		{{ obj.get_type_display }}
         	</li>
-        	
+
         	<li>{% trans "Features:" %}
         		{% for features in obj.features.all %}
         		<ul>
         			<li>
         				{{ features.get_name_display }}
         			</li>
-        		</ul>	
+        		</ul>
         		{% empty %}
         			{% trans "No Object Features" %}
         		{% endfor %}
         	</li>
-        	
-        	<li>{% trans "Quantity:" %} 
+
+        	<li>{% trans "Quantity:" %}
         		{% for shelfobj in obj.shelfobject_set.all %}
         		<ul>
             		<li>
             			{{ shelfobj.shelf }}:
-            			{{ shelfobj.quantity }} 
+            			{{ shelfobj.quantity }}
                			{{ shelfobj.get_measurement_unit_display }}
-					</li>	
+					</li>
 				</ul>
 				{% empty %}
 					{% trans "No Data" %}
         	    {% endfor %}
             </li>
-        			
+
         	<li>{% trans "Description:" %} {{ obj.description }}</li>
         </ul>
     {% empty %}
     	{% trans "No Objects Elements" %}
-    {% endfor %}	    
+    {% endfor %}
 
 </div>
 
 <div>
 	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
-	href="{% url 'laboratory:report_objects' request.session.lab_pk %}">
+	href="{% url 'laboratory:reports_objects' request.session.lab_pk %}">
 	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 	{% trans "All objects in PDF" %} </a>
 </div>
