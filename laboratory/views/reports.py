@@ -17,7 +17,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from weasyprint import HTML
 
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject
 from laboratory.views.djgeneric import ListView
 
 
@@ -147,11 +147,28 @@ class ObjectList(ListView):
 
     def get_queryset(self):
         query = super(ObjectList, self).get_queryset()
-        return query
+        return query.filter(shelfobject__shelf__furniture__labroom__laboratory=self.lab)
 
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class LimitedShelfObjectList(ListView):
+    model = ShelfObject
+    template_name = 'laboratory/shelfobject_report_list.html'
+
+    def get_queryset(self):
+        query = super(LimitedShelfObjectList, self).get_queryset()
+        query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
+        for shelf_object in query:
+            if shelf_object.limit_reached:
+                yield shelf_object
+
+    def get_context_data(self, **kwargs):
+        context = super(LimitedShelfObjectList, self).get_context_data(**kwargs)
         return context
 
 
