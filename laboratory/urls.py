@@ -103,7 +103,8 @@ lab_reports_urls = [
     url(r'^furniture/details$', furniture.FurnitureReportView.as_view(),
         name='reports_furniture_detail'),
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
-        name='reactive_precursor_object_list')
+        name='reactive_precursor_object_list'),
+    url(r'^list/objects$', reports.ObjectList.as_view(), name='reports_objects_list')
 ]
 
 

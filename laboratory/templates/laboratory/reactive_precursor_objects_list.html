@@ -10,13 +10,14 @@
       {% trans "All objects in PDF" %} </a>
     <br> <br>
   </div>
+  {{ lab }}
 
   {% for obj in object_list %}
     <div class="alert alert-info">
       {{ obj.code }}
       <a class="btn btn-default pull-right"
          title="{{ obj.name }}"
-         href="{% url 'laboratory:report_objects' request.session.lab_pk %}?pk={{ obj.pk }}">
+         href="{% url 'laboratory:reports_objects' 7 %}?pk={{ obj.pk }}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         {% trans "PDF" %}</a>
     </div>

@@ -141,6 +141,16 @@ def report_furniture(request, *args, **kwargs):
 
 
 @method_decorator(login_required, name='dispatch')
+class ObjectList(ListView):
+    model = Object
+    template_name = 'laboratory/object_list.html'
+
+    def get_queryset(self):
+        query = super(ObjectList, self).get_queryset()
+        print(self.lab)
+        return query
+
+@method_decorator(login_required, name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'

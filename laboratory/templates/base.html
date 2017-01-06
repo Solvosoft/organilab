@@ -44,9 +44,9 @@
             	{% trans 'Object management' %}</a></li>
           </ul>
         </li>
-        
+
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
           role="button" aria-haspopup="true" aria-expanded="false">
           {% trans 'Reports' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -54,15 +54,15 @@
             	{% trans 'Laboratory' %}</a></li>
             <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
             	{% trans 'Furnitures' %}</a></li>
-            <li><a href="{% url 'laboratory:reports_objects' laboratory %}">
+            <li><a href="{% url 'laboratory:reports_objects_list' laboratory %}">
             	{% trans 'Objects' %}</a></li>
             <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
             	{% trans 'Reactive precursor objects' %}</a></li>
           </ul>
         </li>
-        
+
         <li><a href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a> </li>
-        <li>        
+        <li>
         {% if request.reservation %}
         	<a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %}  </a>
         	{%else%}
