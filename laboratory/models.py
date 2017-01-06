@@ -194,3 +194,17 @@ class Laboratory(models.Model):
 
     def __str__(self):
         return '%s' % (self.name,)
+
+
+@python_2_unicode_compatible
+class FeedbackEntry(models.Model):
+    title = models.CharField(_('Title'), max_length=255)
+    explanation = models.TextField(blank=True)
+    related_file = models.FileField(upload_to='media/feedback_entries/', blank=True)
+
+    class Meta:
+        verbose_name = _('Feedback entry')
+        verbose_name_plural = _('Feedback entries')
+
+    def __str__(self):
+        return '%s' % (self.title,)

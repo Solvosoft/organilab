@@ -33,7 +33,8 @@ urlpatterns = [
         name='logout'),
     url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab'),
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
-        name='permission_denied')
+        name='permission_denied'),
+    url(r'^feedback$', views.FeedbackView.as_view(), name='feedback')
 ]
 
 
