@@ -47,6 +47,43 @@ def report_labroom_building(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
     return response
 
+@login_required
+def report_limited_shelf_objects(request, *args, **kwargs):
+    def get_limited_shelf_objects(query):
+        for shelf_object in query:
+            if shelf_object.limit_reached:
+                yield shelf_object
+
+    var = request.GET.get('pk')
+    if var is None:
+        if 'lab_pk' in kwargs:
+            shelf_objects = ShelfObject.objects.filter(
+                shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+        else:
+            shelf_objects = ShelfObject.objects.all()
+    else:
+        shelf_objects = ShelfObject.objects.filter(pk=var)
+
+    shelf_objects = get_limited_shelf_objects(shelf_objects)
+
+    template = get_template('pdf/shelf_object_pdf.html')
+
+    context = {
+        'object_list': shelf_objects,
+        'datetime': timezone.now(),
+        'request': request,
+        'laboratory': kwargs.get('lab_pk')
+    }
+
+    html = template.render(
+        Context(context)).encode("UTF-8")
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+    return response
 
 @login_required
 def report_objects(request, *args, **kwargs):
@@ -158,7 +195,7 @@ class ObjectList(ListView):
 @method_decorator(login_required, name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
-    template_name = 'laboratory/shelfobject_report_list.html'
+    template_name = 'laboratory/limited_shelfobject_report_list.html'
 
     def get_queryset(self):
         query = super(LimitedShelfObjectList, self).get_queryset()
