@@ -147,8 +147,13 @@ class ObjectList(ListView):
 
     def get_queryset(self):
         query = super(ObjectList, self).get_queryset()
-        print(self.lab)
         return query
+
+    def get_context_data(self, **kwargs):
+        context = super(ObjectList, self).get_context_data(**kwargs)
+        context['lab_pk'] = self.kwargs.get('lab_pk')
+        return context
+
 
 @method_decorator(login_required, name='dispatch')
 class ReactivePrecursorObjectList(ListView):
