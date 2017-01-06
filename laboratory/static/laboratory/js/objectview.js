@@ -13,8 +13,10 @@ function update_form() {
     var form = $('#objectview_form');
 
     if (selected_option == '0') {
+        console.log('show');
         show_reactive_options();
     } else {
+        console.log('hide');
         hide_reactive_options();
     }
 }
@@ -35,5 +37,6 @@ function show_reactive_options() {
 function hide_reactive_options() {
     for (var i = 0; i < ids.length; i++) {
         $('#' + ids[i]).parents('.form-group').hide();
+        document.getElementById(ids[i]).required = false;
     }
 }
