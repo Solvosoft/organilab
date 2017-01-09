@@ -10,7 +10,6 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 from laboratory import views
-from laboratory.laboratory_views import LaboratoryView
 from laboratory.laboratory_views import SelectLaboratoryView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
@@ -21,7 +20,6 @@ from laboratory.views.objects import ObjectView
 
 
 objviews = ObjectView()
-labviews = LaboratoryView()
 
 urlpatterns = [
     url(r'^(?P<lab_pk>\d)?$', views.index, name='index'),
@@ -113,7 +111,6 @@ lab_reports_urls = [
 
 '''MULTILAB'''
 urlpatterns += [
-    #url(r'^lab/', include(labviews.get_urls())),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(),
         name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
