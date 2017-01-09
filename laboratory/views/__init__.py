@@ -3,8 +3,9 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from laboratory.models import FeedbackEntry
+from laboratory.decorators import check_lab_permissions
 
-
+@check_lab_permissions()
 def index(request, lab_pk=None):
     if lab_pk is None:
         return redirect('laboratory:select_lab')
