@@ -10,13 +10,12 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 from laboratory import views
-from laboratory.ajax_view import list_objectfeatures
 from laboratory.laboratory_views import LaboratoryView
 from laboratory.laboratory_views import SelectLaboratoryView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
-from laboratory.views import furniture, reports, shelfs
+from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject
 from laboratory.views.objects import ObjectView
 
@@ -39,7 +38,7 @@ urlpatterns = [
 
 
 urlpatterns += [
-    url(r"^objectfeatures/list$", list_objectfeatures,
+    url(r"^objectfeatures/list$", objectfeature.list_objectfeatures,
         name="objectfeatures_list"),
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
