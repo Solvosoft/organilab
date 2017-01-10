@@ -12,6 +12,7 @@ from django.views.generic import UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
+from django.utils.translation import ugettext_lazy as _
 
 from laboratory.models import Laboratory
 
@@ -58,7 +59,7 @@ class LaboratoryView(object):
 
 
 class SelectLaboratoryForm(forms.Form):
-    laboratory = forms.ModelChoiceField(
+    laboratory = forms.ModelChoiceField(label=_('Laboratory'),
         queryset=Laboratory.objects.all(), empty_label=None)
 
     def __init__(self, *args, **kwargs):
