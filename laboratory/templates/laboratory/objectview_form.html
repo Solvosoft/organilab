@@ -2,16 +2,21 @@
 
 {% load bootstrap i18n static %}
 
+{% block title %}{% trans 'Object management' %}{% endblock %}
+
 {% block content %}
-<div class="row">
-	<div class="col-md-6 col-md-offset-4">
-<h1 align="center">{% trans 'Objects Management' %}</h1>
-<form action="{%if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{%else%}{% url 'laboratory:objectview_create' laboratory %} {% endif %}" method="post">{% csrf_token %}
-    {{ form|bootstrap  }}
-    <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
-</form>
-</div></div>
-<br> <br>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-4">
+      <h1 align="center">{% trans 'Object management' %}</h1>
+      <form action="
+        {% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
+            method="post">{% csrf_token %}
+        {{ form|bootstrap }}
+        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+      </form>
+    </div>
+  </div>
+  <br> <br>
 {% endblock %}
 
 {% block js %}

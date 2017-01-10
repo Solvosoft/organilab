@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load i18n shelf_position %}
+
+{% block title %}
+  {% if request.user.is_authenticated %}{% get_laboratory_name %}{% else %}{% trans 'Select laboratory' %}{% endif %}
+{% endblock %}
 
 {% load i18n static %}
 {% block content %}

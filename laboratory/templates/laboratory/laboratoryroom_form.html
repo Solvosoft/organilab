@@ -1,36 +1,39 @@
 {% extends 'base.html' %}
+{% load bootstrap i18n %}
 
-{% load bootstrap  i18n %}
+{% block title %}{% trans 'Laboratory room management' %}{% endblock %}
+
 {% block content %}
-<div class="row">
-<h1 align="center">{% trans 'Laboratory Room Management' %}</h1>
+  <div class="row">
+    <h1 align="center">{% trans 'Laboratory room management' %}</h1>
 
-<div class="col-md-8 col-md-offset-2">
-<form  class="form-horizontal" action="" method="post">{% csrf_token %}
-    {{ form|bootstrap_horizontal  }}
-    <div class="form-group">
-    	<div class="col-sm-10 col-sm-offset-2">
-    		<button class="btn btn-success" type="submit" >
- <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'New' %}  	</button>
-  </div>
+    <div class="col-md-8 col-md-offset-2">
+      <form class="form-horizontal" action="" method="post">{% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+        <div class="form-group">
+          <div class="col-sm-10 col-sm-offset-2">
+            <button class="btn btn-success" type="submit">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'New' %}    </button>
+          </div>
+        </div>
+      </form>
     </div>
-</form>
-</div>
-</div>
-<div class="row">
-	<ul class="list-group">
-	{% for object in object_list%}
-		<li class="row list-group-item"> 
+  </div>
+  <div class="row">
+    <ul class="list-group">
+      {% for object in object_list %}
+        <li class="row list-group-item">
 
-			<div class="col-md-10"> 
-			{{object}} 
-			</div><div class="col-md-2"> 
-			<div class="btn-group" role="group" aria-label="...">
-			<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class = "btn btn-danger">
-				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-			</div>
-			</li>
-	{% endfor %}
-	</ul>
-</div>
+          <div class="col-md-10">
+            {{ object }}
+          </div>
+          <div class="col-md-2">
+            <div class="btn-group" role="group" aria-label="...">
+              <a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+            </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %} 

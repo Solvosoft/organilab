@@ -1,135 +1,140 @@
 {% extends 'base.html' %}
-
 {% load bootstrap staticfiles i18n %}
+
+{% block title %}{% trans 'Furniture management' %}{% endblock %}
 {% block content %}
-<div>
-	<h1 align="center"> {% trans 'Furniture Management' %}</h1>
-	{{ form.errors}}
-	<form class="form-horizontal" action="" method="post">
-		{% csrf_token %}
-		<div class="row">
-			<div class="col-md-4 col-md-offset-2">
-				{{ form|bootstrap_horizontal  }}
-			</div>
-			<div class="col-md-1" >
-				<button class="btn btn-success" type="submit" >
-					<span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
-				</button>
-			</div>
-		</div>
-		<!-- aqui va lo de la tabla-->
-		{% if form.instance.pk %}
-		<div class="table-responsive">
-			<table class="table table-bordered" id="mytab">
-				{{dataconfig|safe}}
-			</table>
-			<div class="btn-toolbar" role="toolbar" aria-label="...">
-				<div class="btn-group" role="group" aria-label="...">
-					<button class="btn btn-success" type="button"  onclick="addRow()">
-						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Row
-					</button>
-					<button class="btn btn-info" type="button" onclick="addColumn()">
-						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Column
-					</button>
-				</div>
-				<div class="btn-group" role="group" aria-label="...">
-					<button class="btn btn-warning" type="button"  onclick="deleteRows()">
-						<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Row
-					</button>
-					<button class="btn btn-danger" type="button" onclick="deleteColumns()">
-						<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Column
-					</button>
-				</div>
-				
-				<div class="btn-group" role="group" aria-label="...">
-				<button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
-				</div>
-			</div>
-			</div>
-			
-		{% else %}
-<div class="list-group">
-{% for object in object_list %}
-	<li class="row list-group-item"> 
-		<div class="col-md-3 bg-info" >{{object.labroom}}</div>
-		<div class="col-md-6">
-		 {{object}}
-		</div>
-		<div class="col-md-3"> 
-			<div class="btn-group" role="group" aria-label="...">
-			  <a href="{% url 'laboratory:furniture_update' laboratory object.pk %}" class="btn btn-info">
-			  	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
-			  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk%}" class="btn btn-danger">
-			  	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-			</div>	
-		</div>
-	</li>
-{% endfor %}
-</div>
-
-		{% endif %}
-	</form>
-</div>
-
-<div class="hidden" id="addshelfproto">
-	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
-				href="{% url 'laboratory:shelf_create' laboratory %}?row=ROW&col=COL&furniture={{form.instance.pk}}"> 
-					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					{% trans 'Add Shelf' %} 
-	</a>
-	<div class="" id="row_ROW_col_COL"><ul class='list-group  sortableself'></ul></div>
-</div>
-
-
-<div id="createshelfmodal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        	<span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{% trans 'Create shelf' %}</h4>
+  <div>
+    <h1 align="center">{% trans 'Furniture management' %}</h1>
+    {{ form.errors }}
+    <form class="form-horizontal" action="" method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+          {{ form|bootstrap_horizontal }}
+        </div>
+        <div class="col-md-1">
+          <button class="btn btn-success" type="submit">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+          </button>
+        </div>
       </div>
-      <div id="shelfmodalbody">
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</div>
-<div id="modalclose"></div>
+      <!-- aqui va lo de la tabla-->
+      {% if form.instance.pk %}
+        <div class="table-responsive">
+          <table class="table table-bordered" id="mytab">
+            {{ dataconfig|safe }}
+          </table>
+          <div class="btn-toolbar" role="toolbar" aria-label="...">
+            <div class="btn-group" role="group" aria-label="...">
+              <button class="btn btn-success" type="button" onclick="addRow()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Row
+              </button>
+              <button class="btn btn-info" type="button" onclick="addColumn()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Column
+              </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="...">
+              <button class="btn btn-warning" type="button" onclick="deleteRows()">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Row
+              </button>
+              <button class="btn btn-danger" type="button" onclick="deleteColumns()">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Column
+              </button>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="...">
+              <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+            </div>
+          </div>
+        </div>
+
+      {% else %}
+        <div class="list-group">
+          {% for object in object_list %}
+            <li class="row list-group-item">
+              <div class="col-md-3 bg-info">{{ object.labroom }}</div>
+              <div class="col-md-6">
+                {{ object }}
+              </div>
+              <div class="col-md-3">
+                <div class="btn-group" role="group" aria-label="...">
+                  <a href="{% url 'laboratory:furniture_update' laboratory object.pk %}" class="btn btn-info">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
+                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </div>
+
+      {% endif %}
+    </form>
+  </div>
+
+  <div class="hidden" id="addshelfproto">
+    <a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
+       href="{% url 'laboratory:shelf_create' laboratory %}?row=ROW&col=COL&furniture={{ form.instance.pk }}">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+      {% trans 'Add Shelf' %}
+    </a>
+    <div class="" id="row_ROW_col_COL">
+      <ul class='list-group  sortableself'></ul>
+    </div>
+  </div>
+
+
+  <div id="createshelfmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">{% trans 'Create shelf' %}</h4>
+        </div>
+        <div id="shelfmodalbody">
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+  </div>
+  <div id="modalclose"></div>
 
 
 
 {% endblock %}
 
 {% block css %}
-<style>
-body.dragging, body.dragging * {
-  cursor: move !important;
-}
+  <style>
+    body.dragging, body.dragging * {
+      cursor: move !important;
+    }
 
-.dragged {
-  position: absolute;
-  opacity: 0.5;
-  z-index: 2000;
-}
+    .dragged {
+      position: absolute;
+      opacity: 0.5;
+      z-index: 2000;
+    }
 
-ul.sortableself{
-	list-style: none;
-}
-ul.sortableself li.placeholder {
-  position: relative;
-  /** More li styles **/
-}
-ul.sortableself li.placeholder:before {
-  position: absolute;
-  /** Define arrowhead **/
-}
-</style>
+    ul.sortableself {
+      list-style: none;
+    }
+
+    ul.sortableself li.placeholder {
+      position: relative;
+      /** More li styles **/
+    }
+
+    ul.sortableself li.placeholder:before {
+      position: absolute;
+      /** Define arrowhead **/
+    }
+  </style>
 
 {% endblock %}
 
 
-{% block js%}
-    <script src="{% static 'laboratory/js/jquery-sortable-min.js'%}"></script>
-	<script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
+{% block js %}
+  <script src="{% static 'laboratory/js/jquery-sortable-min.js' %}"></script>
+  <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
 
 {% endblock %}
