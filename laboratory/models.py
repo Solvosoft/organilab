@@ -199,8 +199,8 @@ class Laboratory(models.Model):
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
-    explanation = models.TextField(blank=True)
-    related_file = models.FileField(upload_to='media/feedback_entries/', blank=True)
+    explanation = models.TextField(_('Explanation'), blank=True)
+    related_file = models.FileField(_('Related file'), upload_to='media/feedback_entries/', blank=True)
 
     class Meta:
         verbose_name = _('Feedback entry')
