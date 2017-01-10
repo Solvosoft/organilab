@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-10 13:59-0600\n"
-"PO-Revision-Date: 2017-01-10 14:01-0600\n"
+"POT-Creation-Date: 2017-01-10 15:15-0600\n"
+"PO-Revision-Date: 2017-01-10 15:17-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -18,6 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+#: laboratory_views.py:62 models.py:192 templates/base.html:55
+#: templates/laboratory/index.html:41 templates/laboratory/index.html:53
+msgid "Laboratory"
+msgstr "Laboratorio"
 
 #: models.py:23
 msgid "General use"
@@ -87,7 +92,7 @@ msgstr "Material"
 msgid "Equipment"
 msgstr "Equipo"
 
-#: models.py:55 templates/laboratory/report_laboratoryroom_list.html:32
+#: models.py:55 templates/laboratory/report_laboratoryroom_list.html:26
 #: templates/laboratory/search.html:42
 #: templates/pdf/laboratoryroom_pdf.html:54
 msgid "Code"
@@ -114,11 +119,11 @@ msgstr "Hoja de seguridad"
 msgid "Is precursor"
 msgstr "¿Es precursor"
 
-#: models.py:70 templates/laboratory/object_list.html:26
+#: models.py:70
 msgid "Object"
 msgstr "Objeto"
 
-#: models.py:71 templates/base.html:59 templates/laboratory/index.html:50
+#: models.py:71 templates/base.html:59 templates/laboratory/index.html:55
 msgid "Objects"
 msgstr "Objetos"
 
@@ -158,7 +163,7 @@ msgstr "Cantidad límite de material"
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: models.py:108
+#: models.py:108 templates/laboratory/report_furniture_list.html:37
 msgid "Shelf object"
 msgstr "Estante del objeto"
 
@@ -168,11 +173,11 @@ msgstr "Estante de los objetos"
 
 #: models.py:120
 msgid "Laboratory Room"
-msgstr "Sala de Laboratorio"
+msgstr "Sala de laboratorio"
 
 #: models.py:121
 msgid "Laboratory Rooms"
-msgstr "Salas de Laboratorio"
+msgstr "Salas de laboratorio"
 
 #: models.py:132
 msgid "Space"
@@ -182,7 +187,7 @@ msgstr "Espacio"
 msgid "Drawer"
 msgstr "Cajón"
 
-#: models.py:147 templates/laboratory/report_laboratoryroom_list.html:35
+#: models.py:147 templates/laboratory/report_laboratoryroom_list.html:29
 #: templates/pdf/laboratoryroom_pdf.html:57
 msgid "Shelf"
 msgstr "Estante"
@@ -191,9 +196,9 @@ msgstr "Estante"
 msgid "Shelves"
 msgstr "Estantería"
 
-#: models.py:160 models.py:170 templates/laboratory/furniture_list.html:4
-#: templates/laboratory/index.html:37
-#: templates/laboratory/report_laboratoryroom_list.html:33
+#: models.py:160 models.py:170 templates/laboratory/furniture_list.html:6
+#: templates/laboratory/index.html:42
+#: templates/laboratory/report_laboratoryroom_list.html:27
 #: templates/pdf/laboratoryroom_pdf.html:55
 msgid "Furniture"
 msgstr "Mueble"
@@ -202,18 +207,13 @@ msgstr "Mueble"
 msgid "Data configuration"
 msgstr "Configuración de datos"
 
-#: models.py:169
+#: models.py:169 templates/laboratory/report_furniture_list.html:9
 msgid "Piece of furniture"
 msgstr "Pieza de mueble"
 
 #: models.py:182
 msgid "Laboratory name"
 msgstr "Nombre del laboratorio"
-
-#: models.py:192 templates/base.html:55 templates/laboratory/index.html:36
-#: templates/laboratory/index.html:48
-msgid "Laboratory"
-msgstr "Laboratorio"
 
 #: models.py:193
 msgid "Laboratories"
@@ -222,6 +222,14 @@ msgstr "Laboratorios"
 #: models.py:201
 msgid "Title"
 msgstr "Título"
+
+#: models.py:202
+msgid "Explanation"
+msgstr "Explicación"
+
+#: models.py:203
+msgid "Related file"
+msgstr "Archivo relacionado"
 
 #: models.py:206
 msgid "Feedback entry"
@@ -241,27 +249,32 @@ msgstr "Administración"
 
 #: templates/base.html:41
 msgid "Laboratory management"
-msgstr "Administración de sala de Laboratorio"
+msgstr "Administración de sala de laboratorio"
 
-#: templates/base.html:43
+#: templates/base.html:43 templates/laboratory/furniture_form.html:4
+#: templates/laboratory/furniture_form.html:7
 msgid "Furniture management"
 msgstr "Administración de muebles"
 
-#: templates/base.html:45
+#: templates/base.html:45 templates/laboratory/objectview_form.html:5
+#: templates/laboratory/objectview_form.html:10
+#: templates/laboratory/objectview_list.html:4
+#: templates/laboratory/objectview_list.html:7
 msgid "Object management"
 msgstr "Administración de objetos"
 
-#: templates/base.html:52 templates/laboratory/index.html:12
-#: templates/laboratory/index.html:43
+#: templates/base.html:52 templates/laboratory/index.html:17
+#: templates/laboratory/index.html:48
 msgid "Reports"
 msgstr "Reportes"
 
-#: templates/base.html:57 templates/laboratory/index.html:49
+#: templates/base.html:57 templates/laboratory/index.html:54
 msgid "Furnitures"
 msgstr "Muebles"
 
 #: templates/base.html:61
-#: templates/laboratory/reactive_precursor_objects_list.html:5
+#: templates/laboratory/reactive_precursor_objects_list.html:4
+#: templates/laboratory/reactive_precursor_objects_list.html:7
 msgid "Reactive precursor objects"
 msgstr "Objetos reactivos precursores"
 
@@ -282,7 +295,8 @@ msgstr "Finalizar reservación"
 msgid "Create a reservation"
 msgstr "Crear reservación"
 
-#: templates/base.html:84 templates/laboratory/feedbackentry_form.html:8
+#: templates/base.html:84 templates/laboratory/feedbackentry_form.html:4
+#: templates/laboratory/feedbackentry_form.html:10
 msgid "Feedback"
 msgstr "Retroalimentación"
 
@@ -298,7 +312,8 @@ msgstr "Usuario:"
 msgid "Log out"
 msgstr "Cerrar Sesión"
 
-#: templates/base.html:89 templates/laboratory/login.html:7
+#: templates/base.html:89 templates/laboratory/login.html:4
+#: templates/laboratory/login.html:9
 msgid "Log in"
 msgstr "Iniciar Sesión"
 
@@ -331,7 +346,7 @@ msgstr "Detalle de los productos"
 #: templates/email/object_list_reach_quantity_limit.html:10
 #: templates/email/shelf_object_quantity_limit.html:9
 #: templates/laboratory/limited_shelfobject_report_list.html:25
-#: templates/laboratory/report_furniture_list.html:36
+#: templates/laboratory/report_furniture_list.html:27
 #: templates/pdf/furniture_pdf.html:53 templates/pdf/shelf_object_pdf.html:43
 msgid "Shelf:"
 msgstr "Estante:"
@@ -378,7 +393,7 @@ msgstr "Gracias,"
 #: templates/email/object_list_reach_quantity_limit.html:24
 #: templates/email/shelf_object_quantity_limit.html:20
 msgid "Organilab system"
-msgstr "Organilab: Reporte de Objetos"
+msgstr "Organilab: Reporte de objetos"
 
 #: templates/email/shelf_object_quantity_limit.html:5
 msgid ""
@@ -395,7 +410,7 @@ msgstr "Detalle de productos"
 #: templates/laboratory/admin_shelf_list.html:3
 #: templates/laboratory/admin_shelf_list.html:11
 #: templates/laboratory/dataconfig.html:9
-#: templates/laboratory/furniture_form.html:78
+#: templates/laboratory/furniture_form.html:79
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
@@ -406,36 +421,36 @@ msgstr "Agregar estante"
 msgid "Close"
 msgstr "Cerrar"
 
-#: templates/laboratory/feedbackentry_form.html:9
+#: templates/laboratory/feedbackentry_form.html:11
 msgid "If you had some problem using Organilab, please let us know about it"
 msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
 
-#: templates/laboratory/furniture_confirm_delete.html:6
+#: templates/laboratory/furniture_confirm_delete.html:4
+msgid "Delete furniture"
+msgstr "Eliminar pieza de mueble"
+
+#: templates/laboratory/furniture_confirm_delete.html:8
 #: templates/laboratory/laboratory_delete.html:6
-#: templates/laboratory/laboratoryroom_confirm_delete.html:6
-#: templates/laboratory/objectview_delete.html:6
+#: templates/laboratory/laboratoryroom_confirm_delete.html:8
+#: templates/laboratory/objectview_delete.html:8
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro que desea eliminar "
 
-#: templates/laboratory/furniture_confirm_delete.html:7
-#: templates/laboratory/laboratoryroom_confirm_delete.html:7
+#: templates/laboratory/furniture_confirm_delete.html:9
+#: templates/laboratory/laboratoryroom_confirm_delete.html:9
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: templates/laboratory/furniture_form.html:6
-msgid "Furniture Management"
-msgstr "Administración de muebles"
-
-#: templates/laboratory/furniture_form.html:16
-#: templates/laboratory/furniture_form.html:45
+#: templates/laboratory/furniture_form.html:17
+#: templates/laboratory/furniture_form.html:46
 #: templates/laboratory/laboratory_form.html:11
 #: templates/laboratory/object_form.html:9
-#: templates/laboratory/objectview_form.html:11
+#: templates/laboratory/objectview_form.html:15
 #: templates/laboratory/shelf_form.html:19
 msgid "Save"
 msgstr "Guardar"
 
-#: templates/laboratory/furniture_form.html:61
+#: templates/laboratory/furniture_form.html:62
 #: templates/laboratory/laboratory_list.html:17
 #: templates/laboratory/objectview_list.html:27
 #: templates/laboratory/shelfObject.html:5
@@ -443,40 +458,44 @@ msgstr "Guardar"
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/laboratory/furniture_form.html:63
+#: templates/laboratory/furniture_form.html:64
 #: templates/laboratory/laboratory_list.html:20
-#: templates/laboratory/laboratoryroom_form.html:30
+#: templates/laboratory/laboratoryroom_form.html:33
 #: templates/laboratory/objectview_list.html:30
 #: templates/laboratory/shelfobject_confirm_delete.html:20
 msgid "Delete"
 msgstr "Eliminar"
 
-#: templates/laboratory/furniture_form.html:90
+#: templates/laboratory/furniture_form.html:93
 msgid "Create shelf"
 msgstr "Crear nuevo estante"
 
 #: templates/laboratory/furniture_list.html:18
 #: templates/laboratory/limited_shelfobject_report_list.html:22
-#: templates/laboratory/object_list.html:30
-#: templates/laboratory/reactive_precursor_objects_list.html:22
-#: templates/laboratory/report_furniture_list.html:19
+#: templates/laboratory/object_list.html:22
+#: templates/laboratory/reactive_precursor_objects_list.html:24
+#: templates/laboratory/report_furniture_list.html:13
 msgid "PDF"
 msgstr "PDF"
 
-#: templates/laboratory/index.html:10 templates/laboratory/index.html:19
-#: templates/laboratory/index.html:25
+#: templates/laboratory/index.html:5 templates/laboratory/select_lab.html:4
+msgid "Select laboratory"
+msgstr "Seleccione su laboratorio"
+
+#: templates/laboratory/index.html:15 templates/laboratory/index.html:24
+#: templates/laboratory/index.html:30
 msgid "Laboratory view"
-msgstr "Vista de Laboratorio"
+msgstr "Vista de laboratorio"
 
-#: templates/laboratory/index.html:11 templates/laboratory/index.html:31
+#: templates/laboratory/index.html:16 templates/laboratory/index.html:36
 msgid "Laboratory administration"
-msgstr "Administración del Laboratorio"
+msgstr "Administración del laboratorio"
 
-#: templates/laboratory/index.html:62
+#: templates/laboratory/index.html:67
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-#: templates/laboratory/index.html:66
+#: templates/laboratory/index.html:71
 msgid "Login"
 msgstr "Inicio de sesión"
 
@@ -485,7 +504,7 @@ msgid "Laboratory Management"
 msgstr "Administración de laboratorio"
 
 #: templates/laboratory/laboratory_list.html:7
-#: templates/laboratory/objectview_list.html:14
+#: templates/laboratory/objectview_list.html:17
 msgid "Add"
 msgstr "Agregar"
 
@@ -509,44 +528,53 @@ msgstr "Página"
 msgid "Next"
 msgstr "Siguiente"
 
-#: templates/laboratory/laboratoryroom_form.html:6
-msgid "Laboratory Room Management"
-msgstr "Administración de sala de Laboratorio"
+#: templates/laboratory/laboratoryroom_confirm_delete.html:4
+msgid "Delete laboratory room"
+msgstr "Eliminar sala de laboratorio"
 
-#: templates/laboratory/laboratoryroom_form.html:14
+#: templates/laboratory/laboratoryroom_form.html:4
+#: templates/laboratory/laboratoryroom_form.html:8
+msgid "Laboratory room management"
+msgstr "Administración de sala de laboratorio"
+
+#: templates/laboratory/laboratoryroom_form.html:16
 msgid "New"
 msgstr "Nuevo"
 
-#: templates/laboratory/laboratoryroom_list.html:55
+#: templates/laboratory/laboratoryroom_list.html:5
+msgid "Laboratory rooms"
+msgstr "Salas de laboratorio"
+
+#: templates/laboratory/laboratoryroom_list.html:58
 msgid "Please click over furniture items"
 msgstr "Por favor hacer clic sobre los muebles"
 
-#: templates/laboratory/laboratoryroom_list.html:56
+#: templates/laboratory/laboratoryroom_list.html:59
 msgid "Shelves will be displayed here"
 msgstr "Los muebles se mostrarán aquí"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:7
 #: templates/laboratory/limited_shelfobject_report_list.html:42
-#: templates/laboratory/object_list.html:15
-#: templates/laboratory/object_list.html:73
-#: templates/laboratory/reactive_precursor_objects_list.html:7
-#: templates/laboratory/reactive_precursor_objects_list.html:64
+#: templates/laboratory/object_list.html:8
+#: templates/laboratory/object_list.html:63
+#: templates/laboratory/reactive_precursor_objects_list.html:9
+#: templates/laboratory/reactive_precursor_objects_list.html:66
 msgid "All objects"
 msgstr "Todos los objetos"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:10
 #: templates/laboratory/limited_shelfobject_report_list.html:45
-#: templates/laboratory/object_list.html:18
-#: templates/laboratory/object_list.html:76
-#: templates/laboratory/reactive_precursor_objects_list.html:10
-#: templates/laboratory/reactive_precursor_objects_list.html:67
+#: templates/laboratory/object_list.html:11
+#: templates/laboratory/object_list.html:66
+#: templates/laboratory/reactive_precursor_objects_list.html:12
+#: templates/laboratory/reactive_precursor_objects_list.html:69
 msgid "All objects in PDF"
 msgstr "Todos los objetos en PDF"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:29
-#: templates/laboratory/object_list.html:50
-#: templates/laboratory/reactive_precursor_objects_list.html:42
-#: templates/laboratory/report_furniture_list.html:54
+#: templates/laboratory/object_list.html:42
+#: templates/laboratory/reactive_precursor_objects_list.html:44
+#: templates/laboratory/report_furniture_list.html:44
 #: templates/pdf/furniture_pdf.html:67 templates/pdf/object_pdf.html:60
 #: templates/pdf/reactive_precursor_objects_pdf.html:63
 #: templates/pdf/shelf_object_pdf.html:47
@@ -555,80 +583,73 @@ msgstr "Cantidad:"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:32
 #: templates/pdf/shelf_object_pdf.html:50
-#, fuzzy
-#| msgid "Limit material quantity:"
 msgid "Limit quantity:"
-msgstr "Cantidad límite de material:"
+msgstr "Cantidad límite:"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:37
-#: templates/laboratory/object_list.html:67
-#: templates/laboratory/reactive_precursor_objects_list.html:60
-#: templates/pdf/object_pdf.html:77
-#: templates/pdf/reactive_precursor_objects_pdf.html:81
-#: templates/pdf/shelf_object_pdf.html:54
-msgid "No Objects Elements"
-msgstr "No hay Objetos"
+#: templates/laboratory/object_list.html:59
+#: templates/laboratory/reactive_precursor_objects_list.html:62
+msgid "No objects"
+msgstr "No hay objetos"
 
-#: templates/laboratory/login.html:22
+#: templates/laboratory/login.html:24
 msgid "Sign in"
 msgstr "Registrarse"
 
 #: templates/laboratory/object_form.html:6
-#: templates/laboratory/objectview_form.html:8
 msgid "Objects Management"
-msgstr "Manejo de Objetos"
+msgstr "Manejo de objetos"
 
-#: templates/laboratory/object_list.html:10
-msgid "OBJECTS INFORMATION"
-msgstr "Información de objetos"
+#: templates/laboratory/object_list.html:6
+msgid "Objects report"
+msgstr "Reporte de objetos"
 
-#: templates/laboratory/object_list.html:33
-#: templates/laboratory/reactive_precursor_objects_list.html:25
+#: templates/laboratory/object_list.html:25
+#: templates/laboratory/reactive_precursor_objects_list.html:27
 #: templates/pdf/furniture_pdf.html:62 templates/pdf/object_pdf.html:43
 #: templates/pdf/reactive_precursor_objects_pdf.html:48
 msgid "Name:"
 msgstr "Nombre:"
 
-#: templates/laboratory/object_list.html:34
-#: templates/laboratory/reactive_precursor_objects_list.html:26
-#: templates/laboratory/report_furniture_list.html:28
-#: templates/laboratory/report_furniture_list.html:39
-#: templates/laboratory/report_furniture_list.html:49
+#: templates/laboratory/object_list.html:26
+#: templates/laboratory/reactive_precursor_objects_list.html:28
+#: templates/laboratory/report_furniture_list.html:20
+#: templates/laboratory/report_furniture_list.html:31
+#: templates/laboratory/report_furniture_list.html:40
 #: templates/pdf/furniture_pdf.html:47 templates/pdf/furniture_pdf.html:56
 #: templates/pdf/furniture_pdf.html:63 templates/pdf/object_pdf.html:44
 #: templates/pdf/reactive_precursor_objects_pdf.html:49
 msgid "Type:"
 msgstr "Tipo:"
 
-#: templates/laboratory/object_list.html:38
-#: templates/laboratory/reactive_precursor_objects_list.html:30
+#: templates/laboratory/object_list.html:30
+#: templates/laboratory/reactive_precursor_objects_list.html:32
 #: templates/pdf/object_pdf.html:48
 #: templates/pdf/reactive_precursor_objects_pdf.html:52
 msgid "Features:"
 msgstr "Características:"
 
-#: templates/laboratory/object_list.html:46
-#: templates/laboratory/reactive_precursor_objects_list.html:38
-#: templates/pdf/object_pdf.html:56
-#: templates/pdf/reactive_precursor_objects_pdf.html:60
-msgid "No Object Features"
-msgstr "Sin Características de objeto"
+#: templates/laboratory/object_list.html:38
+#: templates/laboratory/reactive_precursor_objects_list.html:40
+msgid "No object features"
+msgstr "No hay características de objeto"
 
-#: templates/laboratory/object_list.html:60
-#: templates/laboratory/reactive_precursor_objects_list.html:52
-#: templates/pdf/object_pdf.html:70
-#: templates/pdf/reactive_precursor_objects_pdf.html:73
-msgid "No Data"
+#: templates/laboratory/object_list.html:52
+msgid "No data"
 msgstr "No hay datos"
 
-#: templates/laboratory/object_list.html:64
-#: templates/laboratory/reactive_precursor_objects_list.html:55
+#: templates/laboratory/object_list.html:56
+#: templates/laboratory/reactive_precursor_objects_list.html:57
 #: templates/pdf/object_pdf.html:74
 #: templates/pdf/reactive_precursor_objects_pdf.html:76
 msgid "Description:"
 msgstr "Descripción:"
 
-#: templates/laboratory/objectview_list.html:10
+#: templates/laboratory/objectview_delete.html:4
+msgid "Delete object"
+msgstr "Borrar objeto"
+
+#: templates/laboratory/objectview_list.html:13
 #: templates/laboratory/search_widget.html:16
 msgid "Search"
 msgstr "Buscar"
@@ -654,77 +675,78 @@ msgstr "seleccione"
 msgid "one of your labs"
 msgstr "uno de sus laboratorios"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:56
+#: templates/laboratory/reactive_precursor_objects_list.html:54
+#: templates/pdf/object_pdf.html:70
+#: templates/pdf/reactive_precursor_objects_pdf.html:73
+msgid "No Data"
+msgstr "No hay datos"
+
+#: templates/laboratory/reactive_precursor_objects_list.html:58
 #: templates/pdf/reactive_precursor_objects_pdf.html:77
 msgid "Molecular formula:"
 msgstr "Fórmula molecular:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:57
+#: templates/laboratory/reactive_precursor_objects_list.html:59
 #: templates/pdf/reactive_precursor_objects_pdf.html:78
 msgid "CAS ID Number:"
 msgstr "Número ID CAS"
 
-#: templates/laboratory/report_furniture_list.html:9
-msgid "Furniture information"
-msgstr "Información del mueble"
+#: templates/laboratory/report_furniture_list.html:4
+#: templates/laboratory/report_furniture_list.html:6
+msgid "Furniture report"
+msgstr "Reporte de muebles"
 
-#: templates/laboratory/report_furniture_list.html:26
-#: templates/pdf/furniture_pdf.html:46
-msgid "LaboratoryRoom:"
+#: templates/laboratory/report_furniture_list.html:19
+#: templates/laboratory/report_laboratoryroom_list.html:18
+msgid "Laboratory room:"
 msgstr "Sala de Laboratorio:"
 
-#: templates/laboratory/report_furniture_list.html:36
+#: templates/laboratory/report_furniture_list.html:28
 #: templates/pdf/summaryfurniture_pdf.html:45
 msgid "Total"
 msgstr "Total"
 
-#: templates/laboratory/report_furniture_list.html:36
+#: templates/laboratory/report_furniture_list.html:28
 #: templates/pdf/summaryfurniture_pdf.html:45
 msgid "objects"
 msgstr "Objetos"
 
-#: templates/laboratory/report_furniture_list.html:59
-#: templates/pdf/furniture_pdf.html:73
-#: templates/pdf/summaryfurniture_pdf.html:52
-msgid "No Object Elements"
+#: templates/laboratory/report_furniture_list.html:49
+msgid "No object elements"
 msgstr "No hay objetos"
 
-#: templates/laboratory/report_furniture_list.html:67
-#: templates/laboratory/report_laboratoryroom_list.html:46
-#: templates/pdf/furniture_pdf.html:78
-#: templates/pdf/laboratoryroom_pdf.html:68
-#: templates/pdf/summaryfurniture_pdf.html:56
-msgid "No Shelf Elements"
+#: templates/laboratory/report_furniture_list.html:56
+msgid "No shelf elements"
 msgstr "No hay estantes"
 
-#: templates/laboratory/report_furniture_list.html:71
-#: templates/pdf/furniture_pdf.html:82
-msgid "No Furniture Elements"
-msgstr "No hay elementos en los muebles"
+#: templates/laboratory/report_furniture_list.html:59
+msgid "No furniture elements"
+msgstr "No hay piezas de mueble"
 
-#: templates/laboratory/report_furniture_list.html:78
-#: templates/laboratory/report_laboratoryroom_list.html:17
-#: templates/laboratory/report_laboratoryroom_list.html:59
+#: templates/laboratory/report_furniture_list.html:64
+#: templates/laboratory/report_laboratoryroom_list.html:12
+#: templates/laboratory/report_laboratoryroom_list.html:49
 msgid "Download PDF"
 msgstr "Descargar PDF"
 
-#: templates/laboratory/report_laboratoryroom_list.html:10
-msgid "LABORATORYROOM INFORMATION"
-msgstr "Información del Laboratorio:"
+#: templates/laboratory/report_laboratoryroom_list.html:4
+#: templates/laboratory/report_laboratoryroom_list.html:7
+msgid "Laboratory report"
+msgstr "Reporte de laboratorio"
 
-#: templates/laboratory/report_laboratoryroom_list.html:29
+#: templates/laboratory/report_laboratoryroom_list.html:23
 #: templates/pdf/laboratoryroom_pdf.html:51
 #: templates/pdf/summaryfurniture_pdf.html:42
 msgid "Furniture:"
 msgstr "Mueble:"
 
-#: templates/laboratory/report_laboratoryroom_list.html:34
+#: templates/laboratory/report_laboratoryroom_list.html:28
 #: templates/laboratory/shelfObject.html:2
 #: templates/pdf/laboratoryroom_pdf.html:56
 msgid "Quantity"
 msgstr "Cantidad"
 
-#: templates/laboratory/report_laboratoryroom_list.html:52
+#: templates/laboratory/report_laboratoryroom_list.html:43
 #: templates/pdf/laboratoryroom_pdf.html:74
 msgid "No Labs"
 msgstr "No hay laboratorios"
@@ -745,11 +767,11 @@ msgstr "Características"
 msgid "Not found"
 msgstr "No encontrado"
 
-#: templates/laboratory/select_lab.html:7
+#: templates/laboratory/select_lab.html:9
 msgid "Select your laboratory"
 msgstr "Seleccione su laboratorio"
 
-#: templates/laboratory/select_lab.html:10
+#: templates/laboratory/select_lab.html:12
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -797,11 +819,30 @@ msgstr "Fecha:"
 msgid "of"
 msgstr "de"
 
+#: templates/pdf/furniture_pdf.html:46
+msgid "LaboratoryRoom:"
+msgstr "Sala de Laboratorio:"
+
 #: templates/pdf/furniture_pdf.html:60 templates/pdf/object_pdf.html:40
 #: templates/pdf/reactive_precursor_objects_pdf.html:45
 #: templates/pdf/shelf_object_pdf.html:40
 msgid "Object Code:"
 msgstr "Código de objeto:"
+
+#: templates/pdf/furniture_pdf.html:73
+#: templates/pdf/summaryfurniture_pdf.html:52
+msgid "No Object Elements"
+msgstr "No hay objetos"
+
+#: templates/pdf/furniture_pdf.html:78
+#: templates/pdf/laboratoryroom_pdf.html:68
+#: templates/pdf/summaryfurniture_pdf.html:56
+msgid "No Shelf Elements"
+msgstr "No hay estantes"
+
+#: templates/pdf/furniture_pdf.html:82
+msgid "No Furniture Elements"
+msgstr "No hay elementos en los muebles"
 
 #: templates/pdf/laboratoryroom_pdf.html:9
 msgid "Organilab Build Report"
@@ -811,6 +852,17 @@ msgstr "Organilab: Reporte de Edificios"
 #: templates/pdf/reactive_precursor_objects_pdf.html:10
 msgid "Organilab Object Report"
 msgstr "Organilab: Reporte de Objetos"
+
+#: templates/pdf/object_pdf.html:56
+#: templates/pdf/reactive_precursor_objects_pdf.html:60
+msgid "No Object Features"
+msgstr "Sin Características de objeto"
+
+#: templates/pdf/object_pdf.html:77
+#: templates/pdf/reactive_precursor_objects_pdf.html:81
+#: templates/pdf/shelf_object_pdf.html:54
+msgid "No Objects Elements"
+msgstr "No hay Objetos"
 
 #: templates/pdf/shelf_object_pdf.html:10
 msgid "Organilab Shelf Object Report"
@@ -828,6 +880,18 @@ msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
 #: views/furniture.py:68
 msgid "Invalid format in shelf dataconfig "
 msgstr "Formato inválido en dataconfig del estante"
+
+#~ msgid "Furniture Management"
+#~ msgstr "Administración de muebles"
+
+#~ msgid "OBJECTS INFORMATION"
+#~ msgstr "Información de objetos"
+
+#~ msgid "Furniture information"
+#~ msgstr "Información del mueble"
+
+#~ msgid "LABORATORYROOM INFORMATION"
+#~ msgstr "Información del Laboratorio:"
 
 #~ msgid "user:"
 #~ msgstr "usuario:"

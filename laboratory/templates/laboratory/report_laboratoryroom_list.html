@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
-
 {% load i18n %}
+
+{% block title %}{% trans 'Laboratory report' %}{% endblock %}
+
 {% block content %}
-  <div class="page-header"><h1>Laboratory</h1></div>
+  <div class="page-header"><h1>{% trans 'Laboratory report' %}</h1></div>
 
   <div>
     <a class="btn btn-default pull-right" href="{% url 'laboratory:report_building' laboratory %}">
@@ -13,7 +15,7 @@
 
   {% for laboratory_room in object_list %}
     <div class="alert alert-info">
-      <strong>Laboratory room:</strong> {{ laboratory_room.name }}
+      <strong>{% trans 'Laboratory room:' %}</strong> {{ laboratory_room.name }}
     </div>
     <table class="table">
       {% for furniture in laboratory_room.furniture_set.all %}
@@ -40,7 +42,6 @@
   {% empty %}
     {% trans "No Labs" %}
   {% endfor %}
-  </div>
 
   <div>
     <a class="btn btn-danger" href="{% url 'laboratory:report_building' laboratory %}">
