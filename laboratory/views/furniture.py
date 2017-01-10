@@ -18,7 +18,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 
 from django_ajax.decorators import ajax
-from laboratory.models import Furniture, Laboratory
+from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
@@ -37,6 +37,13 @@ class FurnitureReportView(ListView):
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("labroom", "name", "type")
+
+    def get_form(self, form_class=None):
+        form = super(FurnitureCreateView, self).get_form(form_class=form_class)
+        if self.kwargs.get('lab_pk') is not None:
+            form.fields['labroom'].choices = ((x.pk, x) for x in
+                                              Laboratory.objects.get(pk=self.kwargs.get('lab_pk')).rooms.all())
+        return form
 
     def get_success_url(self):
         return reverse_lazy('laboratory:furniture_update',
@@ -94,7 +101,7 @@ class FurnitureUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:furniture_create',
-                            args=(self.lab, ))
+                            args=(self.lab,))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -108,7 +115,6 @@ class FurnitureDelete(DeleteView):
 
 @login_required
 def list_furniture_render(request, lab_pk=None):
-
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
