@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
     <div class="page-header text-center">
-        <h1>Permission denied</h1>
-        <h4>You don't have the permissions required to access this laboratory</h4>
-        <h5>Please <a href="{% url 'laboratory:select_lab' %}">select</a> one of your labs</h5>
+        <h1>{% trans 'Permission denied' %}</h1>
+        <h4>{% trans "You don't have the permissions required to access this laboratory" %}</h4>
+        <h5>{% trans 'Please' %} <a href="{% url 'laboratory:select_lab' %}">{% trans 'select' %}</a> {% trans 'one of your labs' %}</h5>
     </div>
 
 {% endblock %}
