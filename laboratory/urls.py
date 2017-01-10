@@ -10,12 +10,11 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 from laboratory import views
-from laboratory.laboratory_views import SelectLaboratoryView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject
+from laboratory.views import labroom, shelfobject, laboratory
 from laboratory.views.objects import ObjectView
 
 
@@ -28,7 +27,7 @@ urlpatterns = [
     url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
-    url(r'^select$', SelectLaboratoryView.as_view(), name='select_lab'),
+    url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
         name='permission_denied'),
     url(r'^feedback$', views.FeedbackView.as_view(), name='feedback')

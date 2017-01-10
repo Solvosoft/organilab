@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-10 15:34-0600\n"
+"POT-Creation-Date: 2017-01-10 15:39-0600\n"
 "PO-Revision-Date: 2017-01-10 15:35-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -18,11 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-
-#: laboratory_views.py:62 models.py:192 templates/base.html:55
-#: templates/laboratory/index.html:41 templates/laboratory/index.html:53
-msgid "Laboratory"
-msgstr "Laboratorio"
 
 #: models.py:23
 msgid "General use"
@@ -214,6 +209,11 @@ msgstr "Pieza de mueble"
 #: models.py:182
 msgid "Laboratory name"
 msgstr "Nombre del laboratorio"
+
+#: models.py:192 templates/base.html:55 templates/laboratory/index.html:41
+#: templates/laboratory/index.html:53 views/laboratory.py:62
+msgid "Laboratory"
+msgstr "Laboratorio"
 
 #: models.py:193
 msgid "Laboratories"
