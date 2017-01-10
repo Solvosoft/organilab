@@ -40,7 +40,7 @@ class ObjectView(object):
 
             def get_success_url(self):
                 return reverse_lazy('laboratory:objectview_list',
-                                    args=(self.lab, ))
+                                    args=(self.lab,))
 
         self.edit = login_required(ObjectUpdateView.as_view(
             model=self.model,
@@ -106,7 +106,6 @@ class ObjectView(object):
 
 
 class ObjectForm(ModelForm):
-
     class Meta:
         model = Object
         fields = '__all__'

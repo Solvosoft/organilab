@@ -24,6 +24,7 @@ def list_objectfeatures_render(request):
             'object_list': objectfeatures
         })
 
+
 @login_required
 @ajax
 def list_objectfeatures(request):

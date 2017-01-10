@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from laboratory.models import FeedbackEntry
 from laboratory.decorators import check_lab_permissions
 
+
 @check_lab_permissions()
 def index(request, lab_pk=None):
     if lab_pk is None:
@@ -15,6 +16,7 @@ def index(request, lab_pk=None):
 
 class PermissionDeniedView(TemplateView):
     template_name = 'laboratory/permission_denied.html'
+
 
 class FeedbackView(CreateView):
     model = FeedbackEntry
