@@ -4,100 +4,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {# METADATA  #}
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  {# METADATA  #}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {# TITLE #}
-    <title>Organilab | {% block title %}Index{% endblock %}</title>
+  {# TITLE #}
+  <title>Organilab | {% block title %}Index{% endblock %}</title>
 
-    {# CSS #}
-    <link href="{% static 'laboratory/css/organilab.css' %}" rel="stylesheet">
-    <link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'laboratory/css/furniture-table-css.css' %}" rel="stylesheet">
+  {# CSS #}
+  <link href="{% static 'laboratory/css/organilab.css' %}" rel="stylesheet">
+  <link href="{% static 'laboratory/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'laboratory/css/furniture-table-css.css' %}" rel="stylesheet">
 
-    {% block css %}{% endblock %}
+  {% block css %}{% endblock %}
 </head>
 <body>
 {# NAV #}
 <nav class="navbar navbar-dark bg-inverse">
-    <a class="navbar-brand" href="{% url 'laboratory:index' %}"><strong>ORGANILAB</strong></a>
-    <ul class="nav navbar-nav">
-        {% if request.user.is_authenticated%}
-        <li><a href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span class="glyphicon glyphicon-cog"></span></a></li>
-        {% if laboratory %}
+  <a class="navbar-brand" href="{% url 'laboratory:index' laboratory %}"><strong>ORGANILAB</strong></a>
+  <ul class="nav navbar-nav">
+    {% if request.user.is_authenticated %}
+      <li><a href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span
+        class="glyphicon glyphicon-cog"></span></a></li>
+      {% if laboratory %}
         <li><a href="{% url 'laboratory:rooms_list' laboratory %}">
           <strong>{% get_laboratory_name %}</strong>
         </a></li>
 
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-          role="button" aria-haspopup="true" aria-expanded="false">
-          {% trans 'Administration' %}<span class="caret"></span></a>
+             role="button" aria-haspopup="true" aria-expanded="false">
+            {% trans 'Administration' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
-            	{% trans 'Laboratory management' %} </a></li>
+              {% trans 'Laboratory management' %} </a></li>
             <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
-            	{% trans 'Furniture management' %}</a></li>
+              {% trans 'Furniture management' %}</a></li>
             <li><a href="{% url 'laboratory:objectview_list' laboratory %}">
-            	{% trans 'Object management' %}</a></li>
+              {% trans 'Object management' %}</a></li>
           </ul>
         </li>
 
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-          role="button" aria-haspopup="true" aria-expanded="false">
-          {% trans 'Reports' %}<span class="caret"></span></a>
+             role="button" aria-haspopup="true" aria-expanded="false">
+            {% trans 'Reports' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
-            	{% trans 'Laboratory' %}</a></li>
+              {% trans 'Laboratory' %}</a></li>
             <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
-            	{% trans 'Furnitures' %}</a></li>
+              {% trans 'Furnitures' %}</a></li>
             <li><a href="{% url 'laboratory:reports_objects_list' laboratory %}">
-            	{% trans 'Objects' %}</a></li>
+              {% trans 'Objects' %}</a></li>
             <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
-            	{% trans 'Reactive precursor objects' %}</a></li>
+              {% trans 'Reactive precursor objects' %}</a></li>
             <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
-              	{% trans 'Limited shelf objects' %}</a></li>
+              {% trans 'Limited shelf objects' %}</a></li>
           </ul>
         </li>
 
-        <li><a href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a> </li>
+        <li><a
+          href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a>
+        </li>
         <li>
         {% if request.reservation %}
-        	<a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %}  </a>
-        	{%else%}
-        	<a href="{% url 'add_user_reservation' %}"> {% trans 'Create a reservation' %} </a>
-   		{% endif %}
-        {% endif %}
-   		</li>
+          <a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %}  </a>
         {% else %}
-            {# TODO #}
+          <a
+            href="{% url 'add_user_reservation' %}?next={% url 'laboratory:index' laboratory %}"> {% trans 'Create a reservation' %} </a>
         {% endif %}
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-        <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
-        {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">{% trans "Log out" %}</a></li>
-        {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">{% trans "Log in" %}</a></li>
-        {% endif %}
-    </ul>
+      {% endif %}
+    </li>
+    {% else %}
+      {# TODO #}
+    {% endif %}
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
+    {% if request.user.is_authenticated %}
+      <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">{% trans "Log out" %}</a></li>
+    {% else %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:login' %}">{% trans "Log in" %}</a></li>
+    {% endif %}
+  </ul>
 </nav>
 
 {# CONTENT #}
-<div class="{%block container%}container{%endblock%}">
-    {% block content %}
-    {% endblock %}
+<div class="{% block container %}container{% endblock %}">
+  {% block content %}
+  {% endblock %}
 </div>
 
 {# FOOTER #}
 <footer class="footer">
-    <div class="container">
-        <p class="text-muted"><a href="https://solvosoft.com"><strong>Solvo</strong> {% now 'Y' %}</a>
-    </div>
+  <div class="container">
+    <p class="text-muted"><a href="https://solvosoft.com"><strong>Solvo</strong> {% now 'Y' %}</a>
+  </div>
 </footer>
 
 <div class="jsmessage"></div>
