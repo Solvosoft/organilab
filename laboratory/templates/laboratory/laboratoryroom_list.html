@@ -1,72 +1,58 @@
 {% extends 'base.html' %}
-
-{% load i18n static %}
+{% load i18n shelf_position static %}
 
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 
+{# Container #}
 {% block container %}container-fluid{% endblock %}
-{% block content %}
 
+{# Content #}
+{% block content %}
+  <h1 class="text-center">{% get_laboratory_name %}</h1>
+
+  {# Search widget #}
   {% include 'laboratory/search_widget.html' with laboratory=laboratory %}
 
+  {# Nav #}
   <div class="row">
-    <div class="col-md-12" style="padding-bottom: 3%">
-      <!-- Nav tabs -->
+    <div class="col-md-12">
       <ul id="labmenues" class="nav nav-tabs" role="tablist">
         {% for LaboratoryRoom in object_list %}
           <li role="presentation">
-            <!-- agregarle ajax-->
             <a href="#idlab"
                data-argument="{{ LaboratoryRoom.id }}"
                onclick="function_name_furniture('{{ LaboratoryRoom.id }}')"
                aria-controls={{ LaboratoryRoom.id }} role="tab"
                data-toggle="tab">{{ LaboratoryRoom.name }}</a>
           </li>
-
-
-          <!-- Nav tabs -->
         {% endfor %}
-
       </ul>
-
     </div>
   </div>
+
+  {# Furniture panel #}
   <div class="row">
     <div class="col-md-12">
-
-      <!-- Tab panes -->
       <div class="tab-content">
         {% for LaboratoryRoom in object_list %}
-
           <div role="tab-panel" class="tab-pane" id="idlab">
-
             <div class="col-md-3">
-              <!-- traer lista de muebles -->
               <div id="furnitures">
-
               </div>
             </div>
 
             <div class="col-md-9">
-              <!-- traer lista de estantes -->
               <div id="shelf">
-
               </div>
-
               <div id="prototype_shelf_field" class="hidden">
-                <center>
-                  <h2>{% trans 'Please click over furniture items' %}<br>
-                    <small> {% trans 'Shelves will be displayed here' %} </small>
-                  </h2>
-                </center>
+                <h2>{% trans 'Please click over furniture items' %}<br>
+                  <small> {% trans 'Shelves will be displayed here' %} </small>
+                </h2>
               </div>
-
             </div>
           </div>
         {% endfor %}
-
       </div>
-
     </div>
   </div>
 
@@ -83,7 +69,7 @@
 
   <script>
     (function () {
-      $("#labmenues a").first().click();
+      $("#labmenues").find("a").first().click();
       see_prototype_shelf_field();
     })();
   </script>
