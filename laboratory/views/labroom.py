@@ -1,6 +1,4 @@
 # encoding: utf-8
-
-
 '''
 Created on 26/12/2016
 
@@ -59,7 +57,7 @@ class LaboratoryRoomDelete(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(
-            self.kwargs.get('lab_pk'), ))
+            self.kwargs.get('lab_pk'),))
 
 
 @method_decorator(login_required, name='dispatch')

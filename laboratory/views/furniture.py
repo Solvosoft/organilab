@@ -18,7 +18,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 
 from django_ajax.decorators import ajax
-from laboratory.models import Furniture, Laboratory, LaboratoryRoom
+from laboratory.models import Furniture, Laboratory
 from laboratory.shelf_utils import get_dataconfig
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
@@ -40,9 +40,9 @@ class FurnitureCreateView(CreateView):
 
     def get_form(self, form_class=None):
         form = super(FurnitureCreateView, self).get_form(form_class=form_class)
-        if self.kwargs.get('lab_pk') is not None:
+        if self.lab is not None:
             form.fields['labroom'].choices = ((x.pk, x) for x in
-                                              Laboratory.objects.get(pk=self.kwargs.get('lab_pk')).rooms.all())
+                                              Laboratory.objects.get(pk=self.lab).rooms.all())
         return form
 
     def get_success_url(self):

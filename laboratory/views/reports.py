@@ -1,6 +1,4 @@
 # encoding: utf-8
-
-
 '''
 Created on 26/12/2016
 
@@ -47,6 +45,7 @@ def report_labroom_building(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
     return response
 
+
 @login_required
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
@@ -84,6 +83,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
     response[
         'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
     return response
+
 
 @login_required
 def report_objects(request, *args, **kwargs):
@@ -127,7 +127,6 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     else:
         rpo = Object.objects.all()
 
-    # Reactive precursor objects
     rpo = rpo.filter(type=Object.REACTIVE, is_precursor=True)
 
     context = {

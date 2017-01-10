@@ -1,6 +1,4 @@
 # encoding: utf-8
-
-
 '''
 Created on 26/12/2016
 
@@ -16,7 +14,6 @@ from django.views.generic.list import ListView as djListView
 
 
 class CreateView(djCreateView):
-
     def get(self, request, *args, **kwargs):
         self.lab = kwargs['lab_pk']
         return djCreateView.get(self, request, *args, **kwargs)
@@ -32,7 +29,6 @@ class CreateView(djCreateView):
 
 
 class UpdateView(djUpdateView):
-
     def get(self, request, *args, **kwargs):
         self.lab = kwargs['lab_pk']
         return djUpdateView.get(self, request, *args, **kwargs)
@@ -48,7 +44,6 @@ class UpdateView(djUpdateView):
 
 
 class DeleteView(djDeleteView):
-
     def get(self, request, *args, **kwargs):
         self.lab = kwargs['lab_pk']
         return djDeleteView.get(self, request, *args, **kwargs)
@@ -64,7 +59,6 @@ class DeleteView(djDeleteView):
 
 
 class ListView(djListView):
-
     def get(self, request, *args, **kwargs):
         self.lab = kwargs['lab_pk']
         return djListView.get(self, request, *args, **kwargs)

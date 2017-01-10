@@ -1,6 +1,4 @@
 # encoding: utf-8
-
-
 '''
 Created on 26/12/2016
 
@@ -25,7 +23,6 @@ from .djgeneric import CreateView, UpdateView
 
 
 def get_shelves(furniture):
-
     if type(furniture) == QuerySet:
         furniture = furniture[0]
 
@@ -77,7 +74,7 @@ def ShelfDelete(request, lab_pk, pk, row, col):
     url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col))
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
-    }, }
+    },}
 
 
 class ShelfForm(forms.ModelForm):

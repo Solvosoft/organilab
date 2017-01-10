@@ -1,6 +1,4 @@
 # encoding: utf-8
-
-
 '''
 Created on 26/12/2016
 
@@ -36,7 +34,7 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
         'laboratory/shelfObject_list.html',
         context={
             'object_list': shelfobject,
-            'data':  Shelf.objects.get(pk=shelf),
+            'data': Shelf.objects.get(pk=shelf),
             'row': row,
             'col': col,
             'laboratory': lab_pk
@@ -125,8 +123,8 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk):
-                list_shelfobject_render(
-                    self.request, self.object.shelf.pk, row, col, lab_pk=self.lab),
+                    list_shelfobject_render(
+                        self.request, self.object.shelf.pk, row, col, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }
@@ -206,7 +204,6 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.row = request.POST.get("row")
         self.col = request.POST.get("col")
-        response = DeleteView.post(self, request, *args, **kwargs)
 
         return {
             'inner-fragments': {
@@ -215,4 +212,3 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
         }
-        return response
