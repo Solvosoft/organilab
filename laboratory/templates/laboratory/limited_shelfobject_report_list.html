@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-  <h1>{% trans 'Limited shelf objects' %}</h1>
+  <div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
   <div>
     <a class="btn btn-danger" title="{% trans 'All objects' %}"
        href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
@@ -27,14 +27,14 @@
         {{ obj.object }}
       </li>
       <li>{% trans "Quantity:" %}
-        {{ obj.quantity }} {{ obj.measurement_unit}}
+        {{ obj.quantity }} {{ obj.measurement_unit }}
       </li>
       <li>{% trans "Limit quantity:" %}
-        {{ obj.limit_quantity }} {{ obj.measurement_unit}}
+        {{ obj.limit_quantity }} {{ obj.measurement_unit }}
       </li>
     </ul>
   {% empty %}
-    {% trans "No Objects Elements" %}
+    <i>{% trans "No objects" %}</i>
   {% endfor %}
 
   <br>

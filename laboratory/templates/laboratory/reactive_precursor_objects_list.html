@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
+
 {% block content %}
-  <h1>{% trans 'Reactive precursor objects' %}</h1>
+  <div class="page-header"><h1>{% trans 'Reactive precursor objects' %}</h1></div>
   <div>
     <a class="btn btn-danger" title="{% trans 'All objects' %}"
        href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}">
@@ -35,7 +37,7 @@
             </li>
           </ul>
         {% empty %}
-          {% trans "No Object Features" %}
+          {% trans "No object features" %}
         {% endfor %}
       </li>
 
@@ -53,11 +55,11 @@
         {% endfor %}
       </li>
       <li>{% trans "Description:" %} {{ obj.description }}</li>
-      <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-'}}</code></li>
+      <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
       <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
     </ul>
   {% empty %}
-    {% trans "No Objects Elements" %}
+    {% trans "No objects" %}
   {% endfor %}
 
   <div>

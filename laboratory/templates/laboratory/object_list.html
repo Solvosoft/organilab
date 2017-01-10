@@ -3,77 +3,67 @@
 {% load i18n %}
 {% block content %}
 
-<div>
+  <div class="page-header"><h1>{% trans 'Objects report' %}</h1></div>
 
-<pre id="pre01" >
-<h3>
- {% trans "OBJECTS INFORMATION" %}
-</h3>
-</pre>
+  <a class="btn btn-danger" title="{% trans 'All objects' %}"
+     href="{% url 'laboratory:reports_objects' lab_pk %}">
+    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+    {% trans "All objects in PDF" %}
+  </a>
+  <br><br>
 
-<div>
-	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
-	href="{% url 'laboratory:reports_objects' lab_pk %}">
-	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	{% trans "All objects in PDF" %} </a>
-	<br> <br>
-</div>
+  {% for obj in object_list %}
+    <div class="alert alert-info">
+      {{ obj.code }}
+      <a class="btn btn-default pull-right"
+         title="{{ obj.name }}"
+         href="{% url 'laboratory:reports_objects' lab_pk %}?pk={{ obj.pk }}">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        {% trans "PDF" %}</a>
+    </div>
+    <ul>
+      <li>{% trans "Name:" %} {{ obj.name }}</li>
+      <li>{% trans "Type:" %}
+        {{ obj.get_type_display }}
+      </li>
 
-	{% for obj in object_list %}
-		<div class="alert alert-info">
-        	{{ obj.code }}
-        	<a class="btn btn-default pull-right"
-        	alt="{% trans 'Object' %} {{obj.pk}}"
-        	title="{{ obj.name }}"
-        	href="{% url 'laboratory:reports_objects' lab_pk %}?pk={{ obj.pk }}">
-        	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-        	{% trans "PDF" %}</a>
-        </div>
-        <ul>
-        	<li>{% trans "Name:" %} {{ obj.name }}</li>
-        	<li>{% trans "Type:" %}
-        		{{ obj.get_type_display }}
-        	</li>
-
-        	<li>{% trans "Features:" %}
-        		{% for features in obj.features.all %}
-        		<ul>
-        			<li>
-        				{{ features.get_name_display }}
-        			</li>
-        		</ul>
-        		{% empty %}
-        			{% trans "No Object Features" %}
-        		{% endfor %}
-        	</li>
-
-        	<li>{% trans "Quantity:" %}
-        		{% for shelfobj in obj.shelfobject_set.all %}
-        		<ul>
-            		<li>
-            			{{ shelfobj.shelf }}:
-            			{{ shelfobj.quantity }}
-               			{{ shelfobj.get_measurement_unit_display }}
-					</li>
-				</ul>
-				{% empty %}
-					{% trans "No Data" %}
-        	    {% endfor %}
+      <li>{% trans "Features:" %}
+        {% for features in obj.features.all %}
+          <ul>
+            <li>
+              {{ features.get_name_display }}
             </li>
+          </ul>
+        {% empty %}
+          {% trans "No object features" %}
+        {% endfor %}
+      </li>
 
-        	<li>{% trans "Description:" %} {{ obj.description }}</li>
-        </ul>
-    {% empty %}
-    	{% trans "No Objects Elements" %}
-    {% endfor %}
+      <li>{% trans "Quantity:" %}
+        {% for shelfobj in obj.shelfobject_set.all %}
+          <ul>
+            <li>
+              {{ shelfobj.shelf }}:
+              {{ shelfobj.quantity }}
+              {{ shelfobj.get_measurement_unit_display }}
+            </li>
+          </ul>
+        {% empty %}
+          {% trans "No data" %}
+        {% endfor %}
+      </li>
 
-</div>
+      <li>{% trans "Description:" %} {{ obj.description }}</li>
+    </ul>
+  {% empty %}
+    {% trans "No objects" %}
+  {% endfor %}
 
-<div>
-	<a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
-	href="{% url 'laboratory:reports_objects' lab_pk %}">
-	<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	{% trans "All objects in PDF" %} </a>
-</div>
+  <div>
+    <a class="btn btn-danger" alt="{% trans 'All objects' %}" title="{% trans 'All objects' %}"
+       href="{% url 'laboratory:reports_objects' lab_pk %}">
+      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+      {% trans "All objects in PDF" %} </a>
+  </div>
 
 {% endblock %}

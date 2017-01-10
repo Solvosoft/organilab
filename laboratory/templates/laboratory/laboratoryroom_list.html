@@ -2,86 +2,90 @@
 
 {% load i18n static %}
 
-{% block container%}container-fluid{%endblock%}
+{% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
+
+{% block container %}container-fluid{% endblock %}
 {% block content %}
 
-{% include 'laboratory/search_widget.html' with laboratory=laboratory %}
+  {% include 'laboratory/search_widget.html' with laboratory=laboratory %}
 
-<div class="row">
-		<div class="col-md-12" style="padding-bottom: 3%">
-			<!-- Nav tabs -->
-			<ul id="labmenues" class="nav nav-tabs" role="tablist">
-				{% for LaboratoryRoom in object_list %}
-				<li role="presentation">
-					<!-- agregarle ajax-->
-					<a href="#idlab"
-					data-argument="{{LaboratoryRoom.id }}"
-					onclick="function_name_furniture('{{LaboratoryRoom.id }}')"
-					aria-controls={{ LaboratoryRoom.id }} role="tab"
-					data-toggle="tab" >{{ LaboratoryRoom.name }}</a>
-				</li>
+  <div class="row">
+    <div class="col-md-12" style="padding-bottom: 3%">
+      <!-- Nav tabs -->
+      <ul id="labmenues" class="nav nav-tabs" role="tablist">
+        {% for LaboratoryRoom in object_list %}
+          <li role="presentation">
+            <!-- agregarle ajax-->
+            <a href="#idlab"
+               data-argument="{{ LaboratoryRoom.id }}"
+               onclick="function_name_furniture('{{ LaboratoryRoom.id }}')"
+               aria-controls={{ LaboratoryRoom.id }} role="tab"
+               data-toggle="tab">{{ LaboratoryRoom.name }}</a>
+          </li>
 
 
-				<!-- Nav tabs -->
-				{% endfor %}
+          <!-- Nav tabs -->
+        {% endfor %}
 
-			</ul>
+      </ul>
 
-		</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-	
-		<!-- Tab panes -->
-		<div class="tab-content">
-			{% for LaboratoryRoom in object_list %}
-	
-			<div role=" tab-panel" class="tab-pane" id="idlab">
-	
-				<div class="col-md-3">
-					<!-- traer lista de muebles -->
-					<div id="furnitures">
-					
-					</div>
-				</div>
-	
-				<div class="col-md-9">
-					<!-- traer lista de estantes -->
-					<div id="shelf">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
 
-					</div>
-					
-					<div id="prototype_shelf_field" class="hidden">
-					<center><h2>{% trans 'Please click over furniture items'%}<br>
-						<small> {% trans 'Shelves will be displayed here'%} </small>
-						</h2></center>
-					</div>
-					
-				</div>
-			</div>
-			{% endfor %}
-	
-		</div>
-	
-	</div>
-	</div>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        {% for LaboratoryRoom in object_list %}
 
-{% include 'laboratory/shelfobjectUpdate_modal.html' %}
+          <div role="tab-panel" class="tab-pane" id="idlab">
+
+            <div class="col-md-3">
+              <!-- traer lista de muebles -->
+              <div id="furnitures">
+
+              </div>
+            </div>
+
+            <div class="col-md-9">
+              <!-- traer lista de estantes -->
+              <div id="shelf">
+
+              </div>
+
+              <div id="prototype_shelf_field" class="hidden">
+                <center>
+                  <h2>{% trans 'Please click over furniture items' %}<br>
+                    <small> {% trans 'Shelves will be displayed here' %} </small>
+                  </h2>
+                </center>
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+
+  {% include 'laboratory/shelfobjectUpdate_modal.html' %}
 {% endblock %}
 
 {% block js %}
-<script>
-document.furniture_list='{% url "laboratory:furniture_list" laboratory %}';
-document.shelf_list='{% url "laboratory:list_shelf" laboratory %}';
-document.shelfobject_list='{% url "laboratory:list_shelfobject" laboratory %}';
-</script>
-<script src="{% static 'js/shelfobjectedit.js' %}"></script>
+  <script>
+    document.furniture_list = '{% url "laboratory:furniture_list" laboratory %}';
+    document.shelf_list = '{% url "laboratory:list_shelf" laboratory %}';
+    document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
+  </script>
+  <script src="{% static 'js/shelfobjectedit.js' %}"></script>
 
-<script>
-(function(){
-	$("#labmenues a").first().click();	
-	see_prototype_shelf_field();
-})();
-</script>
+  <script>
+    (function () {
+      $("#labmenues a").first().click();
+      see_prototype_shelf_field();
+    })();
+  </script>
 
 {% endblock %}

@@ -45,7 +45,6 @@ urlpatterns += [
 
 
 '''MULTILAB'''
-
 lab_shelf_urls = [
     url(r"^list$", shelfs.list_shelf, name="list_shelf"),
     url(r"^create$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
@@ -57,14 +56,14 @@ lab_shelf_urls = [
         name="shelf_list"),
 ]
 
-lab_rooms_urls = [  # ok
+lab_rooms_urls = [
     url(r'^$', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
     url(r'^create$', labroom.LabroomCreate.as_view(), name='rooms_create'),
     url(r'^(?P<pk>\d+)/delete$', labroom.LaboratoryRoomDelete.as_view(),
         name='rooms_delete'),
 ]
 
-lab_furniture_urls = [  # ok
+lab_furniture_urls = [
     url(r'^$', furniture.list_furniture, name='furniture_list'),
     url(r'^create$', furniture.FurnitureCreateView.as_view(),
         name='furniture_create'),
@@ -74,7 +73,7 @@ lab_furniture_urls = [  # ok
         name='furniture_delete'),
 ]
 
-shelf_object_urls = [  # ok
+shelf_object_urls = [
     url(r"^list$", shelfobject.list_shelfobject,
         name="list_shelfobject"),
     url(r"^create$", shelfobject.ShelfObjectCreate.as_view(),

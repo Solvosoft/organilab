@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block title %}{% trans 'Delete furniture' %}{% endblock %}
+
 {% block content %}
 <form action="" method="post">{% csrf_token %}
     <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
