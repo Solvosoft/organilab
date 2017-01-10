@@ -55,11 +55,9 @@
         {% endif %}
       {% endif %}
     </li>
-    {% else %}
-      {# TODO #}
     {% endif %}
   </ul>
-  <ul class="nav navbar-nav navbar-right">
+  <ul class="nav navbar-nav pull-right">
     <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
     {% if request.user.is_authenticated %}
       <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
