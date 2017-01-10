@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-10 15:15-0600\n"
-"PO-Revision-Date: 2017-01-10 15:17-0600\n"
+"POT-Creation-Date: 2017-01-10 15:34-0600\n"
+"PO-Revision-Date: 2017-01-10 15:35-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -26,31 +26,31 @@ msgstr "Laboratorio"
 
 #: models.py:23
 msgid "General use"
-msgstr "Uso General"
+msgstr "Uso general"
 
 #: models.py:24
 msgid "Security equipment"
-msgstr "Equipo de Seguridad"
+msgstr "Equipo de seguridad"
 
 #: models.py:25
 msgid "Analytic Chemistry"
-msgstr "Química Analítica"
+msgstr "Química analítica"
 
 #: models.py:26
 msgid "Organic Chemistry"
-msgstr "Química Orgánica"
+msgstr "Química orgánica"
 
 #: models.py:27
 msgid "Physical Chemistry"
-msgstr "Química Física"
+msgstr "Química física"
 
 #: models.py:28
 msgid "Chemical and Biological process"
-msgstr "Proceso Biológico y Químico"
+msgstr "Proceso biológico y químico"
 
 #: models.py:29
 msgid "Industrial Biotechnology"
-msgstr "Biotecnología Industrial"
+msgstr "Biotecnología industrial"
 
 #: models.py:30
 msgid "Biochemistry"
@@ -58,7 +58,7 @@ msgstr "Bioquímica"
 
 #: models.py:31
 msgid "Water Chemistry"
-msgstr "Química del Agua"
+msgstr "Química del agua"
 
 #: models.py:32
 msgid "Other"
@@ -541,15 +541,15 @@ msgstr "Administración de sala de laboratorio"
 msgid "New"
 msgstr "Nuevo"
 
-#: templates/laboratory/laboratoryroom_list.html:5
+#: templates/laboratory/laboratoryroom_list.html:4
 msgid "Laboratory rooms"
 msgstr "Salas de laboratorio"
 
-#: templates/laboratory/laboratoryroom_list.html:58
+#: templates/laboratory/laboratoryroom_list.html:48
 msgid "Please click over furniture items"
 msgstr "Por favor hacer clic sobre los muebles"
 
-#: templates/laboratory/laboratoryroom_list.html:59
+#: templates/laboratory/laboratoryroom_list.html:49
 msgid "Shelves will be displayed here"
 msgstr "Los muebles se mostrarán aquí"
 
@@ -650,7 +650,7 @@ msgid "Delete object"
 msgstr "Borrar objeto"
 
 #: templates/laboratory/objectview_list.html:13
-#: templates/laboratory/search_widget.html:16
+#: templates/laboratory/search_widget.html:17
 msgid "Search"
 msgstr "Buscar"
 
@@ -766,6 +766,10 @@ msgstr "Características"
 #: templates/laboratory/search.html:65
 msgid "Not found"
 msgstr "No encontrado"
+
+#: templates/laboratory/search_widget.html:12
+msgid "Keyword, for instance Beaker"
+msgstr "Palabra clave, por ejemplo Beaker"
 
 #: templates/laboratory/select_lab.html:9
 msgid "Select your laboratory"
