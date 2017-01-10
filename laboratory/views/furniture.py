@@ -20,10 +20,12 @@ from django.utils.translation import ugettext_lazy as _
 from django_ajax.decorators import ajax
 from laboratory.models import Furniture, Laboratory
 from laboratory.shelf_utils import get_dataconfig
+from laboratory.decorators import check_lab_permissions
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
 
+@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
@@ -33,6 +35,7 @@ class FurnitureReportView(ListView):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
 
 
+@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
@@ -42,7 +45,7 @@ class FurnitureCreateView(CreateView):
         form = super(FurnitureCreateView, self).get_form(form_class=form_class)
         if self.lab is not None:
             form.fields['labroom'].choices = ((x.pk, x) for x in
-                                              Laboratory.objects.get(pk=self.lab).rooms.all())
+                                              get_object_or_404(Laboratory, pk=self.lab).rooms.all())
         return form
 
     def get_success_url(self):
@@ -70,6 +73,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
+@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
@@ -104,6 +108,7 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
+@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture

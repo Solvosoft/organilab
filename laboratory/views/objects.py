@@ -14,6 +14,7 @@ from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.urls.base import reverse_lazy
 
+from laboratory.decorators import check_lab_permissions
 from laboratory.models import Object
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
@@ -29,12 +30,12 @@ class ObjectView(object):
                 return reverse_lazy('laboratory:objectview_list', args=(
                     self.lab,))
 
-        self.create = login_required(ObjectCreateView.as_view(
+        self.create = check_lab_permissions(login_required(ObjectCreateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             success_url="/",
             template_name=self.template_name_base + "_form.html"
-        ))
+        )))
 
         class ObjectUpdateView(UpdateView):
 
@@ -42,12 +43,12 @@ class ObjectView(object):
                 return reverse_lazy('laboratory:objectview_list',
                                     args=(self.lab,))
 
-        self.edit = login_required(ObjectUpdateView.as_view(
+        self.edit = check_lab_permissions(login_required(ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             success_url="/",
             template_name=self.template_name_base + "_form.html"
-        ))
+        )))
 
         class ObjectDeleteView(DeleteView):
 
@@ -55,17 +56,15 @@ class ObjectView(object):
                 return reverse_lazy('laboratory:objectview_list',
                                     args=(self.lab,))
 
-        self.delete = login_required(ObjectDeleteView.as_view(
+        self.delete = check_lab_permissions(login_required(ObjectDeleteView.as_view(
             model=self.model,
             success_url="/",
             template_name=self.template_name_base + "_delete.html"
-        ))
+        )))
 
         class ObjectListView(ListView):
 
             def get_queryset(self):
-                #                 query = Object.objects.filter(
-                #                     shelfobject__shelf__furniture__labroom__laboratory=self.lab)
                 query = ListView.get_queryset(self)
                 if 'q' in self.request.GET:
                     self.q = self.request.GET.get('q', '')
@@ -84,12 +83,12 @@ class ObjectView(object):
                 context['q'] = self.q or ''
                 return context
 
-        self.list = login_required(ObjectListView.as_view(
+        self.list = check_lab_permissions(login_required(ObjectListView.as_view(
             model=self.model,
             paginate_by=10,
             ordering=['code'],
             template_name=self.template_name_base + "_list.html"
-        ))
+        )))
 
     def get_urls(self):
         return [
