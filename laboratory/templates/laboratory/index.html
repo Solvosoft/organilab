@@ -26,8 +26,10 @@
         </div>
         <br>
         <div class="row">
-          <a href="{% url 'laboratory:rooms_list' laboratory %}">
-            <strong>{% trans 'Laboratory view' %}</strong></a>
+          <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'laboratory:rooms_list' laboratory %}">
+              <strong>{% trans 'Laboratory view' %}</strong></a></li>
+          </ul>
         </div>
       </div>
       <div class="col-md-4 text-center">
@@ -38,8 +40,16 @@
         </div>
         <br>
         <div class="row">
-          <a href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
-          <a href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
+          <ul class="list-group">
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
+            </li>
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="col-md-4 text-center">
@@ -50,9 +60,16 @@
         </div>
         <br>
         <div class="row">
-          <a href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
-          <a href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
-          <a href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
+          <ul class="list-group">
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
+            </li>
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
+            </li>
+            <li class="list-group-item"><a
+              href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a></li>
+          </ul>
         </div>
       </div>
     </div>
