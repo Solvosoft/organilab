@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
-{% load i18n shelf_position %}
+{% load i18n static shelf_position %}
 
 {% block title %}
   {% if request.user.is_authenticated %}{% get_laboratory_name %}{% else %}{% trans 'Select laboratory' %}{% endif %}
 {% endblock %}
 
+{% block css %}
+  <link href="{% static 'laboratory/css/bootstrap-tour.css' %}" rel="stylesheet">
+  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
+  <script type="text/javascript" src="{% static 'laboratory/js/tour.js' %}"></script>
+{% endblock %}
+
 {% load i18n static %}
 {% block content %}
-
   {% if request.user.is_authenticated %}
     {% include 'laboratory/search_widget.html' %}
 
     <div class="row">
-      <div class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory view' %}</strong></h3></div>
-      <div class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory administration' %}</strong></h3></div>
-      <div class="col-md-4"><h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3></div>
+      <div id="index_labview_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory view' %}</strong></h3></div>
+      <div id="index_manage_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory administration' %}</strong></h3></div>
+      <div id="index_report_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3></div>
     </div>
     <br><br>
     <div class="row">
