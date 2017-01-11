@@ -1,0 +1,41 @@
+{% load i18n %} 
+
+<html>
+    <head>
+        <style>
+            @page {
+                margin: 3cm 2cm; padding-left: 1.5cm;
+                @top-left {
+                    content: '{% block verbose_name %}{% trans "Organilab Furniture Report" %}'{%endblock %};
+                }
+                
+                @top-right {
+                    content: "{% trans "Date:" %} {{ datetime }}";
+                }
+                
+                @bottom-right {
+                    content: "{% trans "Page" %} " counter(page)
+                    " {% trans "of" %} " counter(pages) ;
+                }
+                
+                @bottom-left {
+                    content:  "{% trans "User:" %} {{ request.user }}";
+                }
+            }
+            
+            body {
+                text-align: justify;
+                font: Arial, sans-serif,;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    {% block pdf_content %}
+        {# extend #}
+    {% endblock %}
+
+    </body>
+</html>

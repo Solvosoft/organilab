@@ -1,87 +1,50 @@
-{% load i18n %} 
+{% extends 'pdf/base_pdf.html' %}
+{% load i18n %}
 
-<html>
-	<head>
-		<style>
-			@page {
-				margin: 3cm 2cm; padding-left: 1.5cm;
-				@top-left {
-					content: "{% trans "Organilab Furniture Report" %}";
-				}
-				@top-right {
-					content: "{% trans "Date:" %} {{ datetime }}";
-				}
-				@bottom-right {
-					content: "{% trans "Page" %} " counter(page)
-					" {% trans "of" %} " counter(pages) ;
-				}
-				@bottom-left {
-					content:  "{% trans "User:" %} {{ request.user }}";
-					color: red;
-				}
-			}
-			
-			body {
-				text-align: justify
-			}
-			h3 {
-				background: gainsboro; 
-				margin-right: 150px;
-			}
-			h5 {
-				background: gainsboro; 
-				margin-right: 150px;
-			}
+{% block verbose_name %}{% trans "Organilab Furniture Report" %}{% endblock %}
 
-		</style>
-	</head>
-
-	<body>
-		
-	{% for furniture in object_list %}
-		<h3>
-        	{{ furniture.name }}
+{% block pdf_content %}
+    {% for furniture in object_list %}
+        <h3>
+            {{ furniture.name }}
         </h3>
         <ul>
-        	<li>{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}</li>
-        	<li>{% trans "Type:" %}
-        		{{ furniture.get_type_display }}
-        	</li>
-          	{% for shelf in furniture.shelf_set.all %}
-          	<li>
-				<h5>
-					{% trans "Shelf:" %} {{ shelf }}
-				</h5>
-           		<ul>
-           			<li>{% trans "Type:" %}
-           				{{ shelf.get_type_display }}
-           			</li>
-            		{% for obj in shelf.shelfobject_set.all %}
-                	<li>{% trans "Object Code:" %} {{ obj.object.code }}</li>
-                	<ul>
-                		<li>{% trans "Name:" %} {{ obj.object.name }}</li>
-						<li>{% trans "Type:" %}
-							{{ obj.object.get_type_display }}
-						</li>
-               			
-        				<li>{% trans "Quantity:" %} 
-							{{ obj.quantity }} {{ obj.get_measurement_unit_display }}
-            			</li>
-                   	
-                   	</ul>
-          			{% empty %}
-               			{% trans "No Object Elements" %}
-               		{% endfor %}
-            	</ul>
-            </li>	
-        	{% empty %}
-        		{% trans "No Shelf Elements" %}
-			{% endfor %}	
-       	</ul>
+            <li>{% trans "LaboratoryRoom:" %} {{ furniture.labroom }}</li>
+            <li>{% trans "Type:" %}
+                {{ furniture.get_type_display }}
+            </li>
+            {% for shelf in furniture.shelf_set.all %}
+            <li>
+                <h5>
+                    {% trans "Shelf:" %} {{ shelf }}
+                </h5>
+                <ul>
+                    <li>{% trans "Type:" %}
+                        {{ shelf.get_type_display }}
+                    </li>
+                    {% for obj in shelf.shelfobject_set.all %}
+                    <li>{% trans "Object Code:" %} {{ obj.object.code }}</li>
+                    <ul>
+                        <li>{% trans "Name:" %} {{ obj.object.name }}</li>
+                        <li>{% trans "Type:" %}
+                            {{ obj.object.get_type_display }}
+                        </li>
+                        
+                        <li>{% trans "Quantity:" %} 
+                            {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
+                        </li>
+                    
+                    </ul>
+                    {% empty %}
+                        {% trans "No Object Elements" %}
+                    {% endfor %}
+                </ul>
+            </li>   
+            {% empty %}
+                {% trans "No Shelf Elements" %}
+            {% endfor %}    
+        </ul>
     {% empty %}
-    	{% trans "No Furniture Elements" %}
-	{% endfor %}
-
-
-	</body>
-</html>
+        {% trans "No Furniture Elements" %}
+    {% endfor %}
+{% endblock %}

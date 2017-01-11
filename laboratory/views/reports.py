@@ -42,7 +42,7 @@ def report_labroom_building(request, *args, **kwargs):
 
     response = HttpResponse(page, content_type='application/pdf')
     response[
-        'Content-Disposition'] = 'attachment; filename="report_building.pdf"'
+        'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     return response
 
 
@@ -81,7 +81,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 
     response = HttpResponse(page, content_type='application/pdf')
     response[
-        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+        'Content-Disposition'] = 'attachment; filename="report_limited_shelf_objects.pdf"'
     return response
 
 
@@ -172,7 +172,7 @@ def report_furniture(request, *args, **kwargs):
 
     response = HttpResponse(page, content_type='application/pdf')
     response[
-        'Content-Disposition'] = 'attachment; filename="report_summaryfurniture.pdf"'
+        'Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
     return response
 
 

@@ -1,81 +1,48 @@
-{% load i18n %} 
+{% extends 'pdf/base_pdf.html' %}
+{% load i18n %}
 
-<html>
-	<head>
-		<style>
-			@page {
-				margin: 3cm 2cm;
-				padding-left: 1.5cm;
-				@top-left {
-					content: "{% trans "Organilab Object Report" %}";
-				}
-				@top-right {
-					content: "{% trans "Date:" %} {{ datetime }}";
-				}
-				@bottom-right {
-					content: "{% trans "Page" %} " counter(page)
-					" {% trans "of" %} " counter(pages) ;
-				}
-				@bottom-left {
-					content:  "{% trans "User:" %} {{ request.user }}";
-					color: red;
-				}
-			}
+{% block verbose_name %}{% trans "Organilab Objects Report" %}{% endblock %}
 
-			body {
-				text-align: justify
-			}
-			h3 {
-				background: gainsboro; 
-				margin-right: 150px;
-			}
+{% block pdf_content %}
+    {% for obj in object_list %}
+            <h3> 
+                {% trans "Object Code:" %} {{ obj.code }} 
+            </h3>
+            <ul>
+                <li>{% trans "Name:" %} {{ obj.name }}</li>
+                <li>{% trans "Type:" %}
+                    {{ obj.get_type_display }}
+                </li>
+                
+                <li>{% trans "Features:" %}
+                    {% for features in obj.features.all %}
+                    <ul>
+                        <li>
+                            {{ features.get_name_display }}
+                        </li>
+                    </ul>   
+                    {% empty %}
+                        {% trans "No Object Features" %}
+                    {% endfor %}
+                </li>
+                
+                <li>{% trans "Quantity:" %} 
+                    {% for shelfobj in obj.shelfobject_set.all %}
+                    <ul>
+                        <li>
+                            {{ shelfobj.shelf }}:
+                            {{ shelfobj.quantity }} 
+                            {{ shelfobj.get_measurement_unit_display }}
+                        </li>   
+                    </ul>
+                    {% empty %}
+                        {% trans "No Data" %}
+                    {% endfor %}
+                </li>
 
-		</style>
-	</head>
-
-	<body>
-
-		{% for obj in object_list %}
-			<h3> 
-				{% trans "Object Code:" %} {{ obj.code }} 
-			</h3>
-			<ul>
-				<li>{% trans "Name:" %} {{ obj.name }}</li>
-				<li>{% trans "Type:" %}
-					{{ obj.get_type_display }}
-				</li>
-				
-        		<li>{% trans "Features:" %}
-        			{% for features in obj.features.all %}
-        			<ul>
-        				<li>
-        					{{ features.get_name_display }}
-        				</li>
-        			</ul>	
-        			{% empty %}
-        				{% trans "No Object Features" %}
-        			{% endfor %}
-        		</li>
-        		
-        		<li>{% trans "Quantity:" %} 
-        			{% for shelfobj in obj.shelfobject_set.all %}
-        			<ul>
-            			<li>
-            				{{ shelfobj.shelf }}:
-            				{{ shelfobj.quantity }} 
-               				{{ shelfobj.get_measurement_unit_display }}
-						</li>	
-					</ul>
-					{% empty %}
-						{% trans "No Data" %}
-        	    	{% endfor %}
-            	</li>
-
-				<li>{% trans "Description:" %} {{ obj.description }}</li>
-			</ul>
-		{% empty %}
-			{% trans "No Objects Elements" %}
-		{% endfor %}
-
-	</body>
-</html>
+                <li>{% trans "Description:" %} {{ obj.description }}</li>
+            </ul>
+        {% empty %}
+            {% trans "No Objects Elements" %}
+        {% endfor %}
+{% endblock %}
