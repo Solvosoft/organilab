@@ -1,9 +1,14 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
+from django_ajax.decorators import ajax
+from django.contrib.auth.decorators import login_required
+
 from laboratory.models import FeedbackEntry
 from laboratory.decorators import check_lab_permissions
+from laboratory.registry import TOUR_STEPS_JSON
 
 
 @check_lab_permissions()
@@ -27,3 +32,11 @@ class FeedbackView(CreateView):
         if lab_pk is not None:
             return reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
         return reverse('laboratory:index')
+
+
+@ajax
+@login_required
+def get_tour_steps(request):
+    if request.method == 'GET' and request.is_ajax():
+        return TOUR_STEPS_JSON
+    return 0

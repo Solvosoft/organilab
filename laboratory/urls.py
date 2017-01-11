@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
         name='permission_denied'),
-    url(r'^feedback$', views.FeedbackView.as_view(), name='feedback')
+    url(r'^feedback$', views.FeedbackView.as_view(), name='feedback'),
+    url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps')
 ]
 
 
