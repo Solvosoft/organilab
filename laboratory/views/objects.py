@@ -119,4 +119,4 @@ class ObjectForm(ModelForm):
         if data_type is not None and data_type == Object.REACTIVE:
             self.fields['molecular_formula'].required = True
             self.fields['cas_id_number'].required = True
-            self.fields['security_sheet'].required = False
+            self.fields['security_sheet'].required = True

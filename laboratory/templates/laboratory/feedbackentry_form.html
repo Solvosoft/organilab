@@ -10,10 +10,10 @@
           <h1>{% trans 'Feedback' %}</h1>
           <p>{% trans 'If you had some problem using Organilab, please let us know about it' %}</p>
         </div>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form | bootstrap }}
-          <input class='btn btn-primary' type='submit' value='Send'>
+          <input class='btn btn-primary' type='submit' value='{% trans "Send" %}'>
         </form>
       </div>
     </div>
