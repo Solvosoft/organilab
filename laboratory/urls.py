@@ -87,23 +87,25 @@ shelf_object_urls = [
 
 
 lab_reports_urls = [
-    url(r'^laboratory$', labroom.LaboratoryRoomReportView.as_view(),
-        name='reports_laboratory'),
-    url(r'^building$', reports.report_labroom_building,
+    # PDF reports
+    url(r'^laboratory$', reports.report_labroom_building,
         name='report_building'),
+    url(r'^furniture$', reports.report_furniture,
+        name='reports_furniture'),
     url(r'^objects$', reports.report_objects, name='reports_objects'),
     url(r'^limited_shelf_objects$', reports.report_limited_shelf_objects, name='reports_limited_shelf_objects'),
     url(r'^reactive_precursor_objects$', reports.report_reactive_precursor_objects,
         name='reports_reactive_precursor_objects'),
-    url(r'^furniture$', reports.report_furniture,
-        name='reports_furniture'),
-    url(r'^furniture/details$', furniture.FurnitureReportView.as_view(),
+    # HTML reports
+    url(r'^list/laboratory$', labroom.LaboratoryRoomReportView.as_view(),
+        name='reports_laboratory'),
+    url(r'^list/furniture$$', furniture.FurnitureReportView.as_view(),
         name='reports_furniture_detail'),
-    url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
-        name='reactive_precursor_object_list'),
     url(r'^list/objects$', reports.ObjectList.as_view(), name='reports_objects_list'),
     url(r'^list/limited_shelf_objects$', reports.LimitedShelfObjectList.as_view(),
-        name='reports_limited_shelf_objects_list')
+        name='reports_limited_shelf_objects_list'),
+    url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
+        name='reactive_precursor_object_list')
 ]
 
 

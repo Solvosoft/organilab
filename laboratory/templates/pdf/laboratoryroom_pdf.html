@@ -1,77 +1,39 @@
+{% extends 'pdf/base_pdf.html' %}
 {% load i18n %} 
 
-<html>
-	<head>
-		<style>
-			@page {
-				margin: 1cm 1cm;
-				@top-left {
-					content: "{% trans "Organilab Build Report" %}";
-				}
-				@top-right {
-					content: "{% trans "Date:" %} {{ datetime }}";
-				}
+{% block verbose_name %}{% trans "Organilab Laboratory Report" %}{% endblock %}
 
-				@bottom-right {
-					content: "{% trans "Page" %} " counter(page)
-					" {% trans "of" %} " counter(pages) ;
-				}
-
-				@bottom-left {
-					content:  "{% trans "User:" %} {{ request.user }}";
-					color: red;
-				}
-
-			}
-			body {
-				text-align: justify
-			}
-			
-			h3 {
-				background: gainsboro; 
-				margin-right: 150px;
-			}
-			h5{
-				background: gainsboro; 
-				margin-right: 150px;
-			}
-
-		</style>
-	</head>
-
-	<body>
-
-			{% for laboratory_room in object_list %}
-		<h3 id="h3-1">
-        	{{ laboratory_room.name }}
+{% block pdf_content %}
+    {% for laboratory_room in object_list %}
+        <h3 id="h3-1">
+            {{ laboratory_room.name }}
         </h3>
             <table >
-		{% for furniture in laboratory_room.furniture_set.all %}
-			<tr id="h5-1" >
-				<th colspan="3" >{% trans "Furniture:" %} {{ furniture.name }}</th>
-			</tr>
-			<tr  >
-				<th >{% trans "Code" %} </th>
-				<th >{% trans "Furniture" %} </th>
-				<th >{% trans "Quantity" %} </th>
-				<th >{% trans "Shelf" %} </th>
-			</tr>
-            	{% for obj in furniture.get_objects %}
-                    	<tr>
-                    		<td>{{obj.object.code }}</td>
-                        	<td>{{obj.object.name }}</td>
-                    		<td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
-                    		<td>{{obj.shelf.name}}</td>
-                    	 </tr>
+        {% for furniture in laboratory_room.furniture_set.all %}
+            <tr id="h5-1" >
+                <th colspan="3" >{% trans "Furniture:" %} {{ furniture.name }}</th>
+            </tr>
+            <tr  >
+                <th >{% trans "Code" %} </th>
+                <th >{% trans "Furniture" %} </th>
+                <th >{% trans "Quantity" %} </th>
+                <th >{% trans "Shelf" %} </th>
+            </tr>
+                {% for obj in furniture.get_objects %}
+                        <tr>
+                            <td>{{obj.object.code }}</td>
+                            <td>{{obj.object.name }}</td>
+                            <td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
+                            <td>{{obj.shelf.name}}</td>
+                         </tr>
 
-               	{% empty %}
-                 	{% trans "No Shelf Elements" %}
+                {% empty %}
+                    {% trans "No Shelf Elements" %}
                 {% endfor %}
-		{% endfor %}
-	</table>
-		<br />
-	{% empty %}	
-		{% trans "No Labs" %}	
-	{% endfor %}
-	</body>
-</html>
+        {% endfor %}
+    </table>
+        <br />
+    {% empty %} 
+        {% trans "No Labs" %}   
+    {% endfor %}
+{% endblock %}

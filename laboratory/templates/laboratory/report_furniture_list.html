@@ -4,6 +4,13 @@
 {% block title %}{% trans 'Furniture report' %}{% endblock %}
 {% block content %}
   <div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
+  
+  <div class="pull-right">
+    <a class="btn btn-info"
+       href="{% url 'laboratory:reports_furniture' laboratory %}">{% trans "Download PDF" %} </a>
+  </div>
+  
+  <br><br>
 
   {% for furniture in object_list %}
     <h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
