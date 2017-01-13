@@ -14,12 +14,11 @@
 
   {% for furniture in object_list %}
     <h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
-      <a class="btn btn-default pull-right"
+      <a class="btn btn-sm btn-danger pull-right"
          href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         {% trans "PDF" %}
       </a>
-      <br><br>
     </h3>
 
     <div class="row text-center">

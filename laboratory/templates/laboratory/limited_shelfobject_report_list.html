@@ -1,26 +1,29 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block title %}{% trans 'Limited shelf objects' %}{% endblock %}
+
 {% block content %}
   <div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
   <div>
-    <a class="btn btn-danger" title="{% trans 'All objects' %}"
-       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
-      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "All objects in PDF" %} </a>
+    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
+         href="{% url 'laboratory:reports_objects' laboratory %}">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        {% trans "All objects in PDF" %}
+    </a>
     <br> <br>
   </div>
   {{ lab }}
 
   {% for obj in object_list %}
-    <div class="alert alert-info">
+    <h3 class="alert alert-info">
       {{ obj }}
-      <a class="btn btn-default pull-right"
+      <a class="btn btn-sm btn-danger pull-right"
          title="{{ obj }}"
          href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?pk={{ obj.pk }}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         {% trans "PDF" %}</a>
-    </div>
+    </h3>
     <ul>
       <li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
       <li>{% trans "Object:" %}
@@ -39,10 +42,11 @@
 
   <br>
   <div>
-    <a class="btn btn-danger" title="{% trans 'All objects' %}"
-       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
-      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "All objects in PDF" %} </a>
+    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
+         href="{% url 'laboratory:reports_objects' laboratory %}">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        {% trans "All objects in PDF" %}
+    </a>
     <br> <br>
   </div>
 {% endblock %}

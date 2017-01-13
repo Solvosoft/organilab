@@ -6,23 +6,24 @@
 {% block content %}
   <div class="page-header"><h1>{% trans 'Reactive precursor objects' %}</h1></div>
   <div>
-    <a class="btn btn-danger" title="{% trans 'All objects' %}"
+    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
        href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "All objects in PDF" %} </a>
-    <br> <br>
+      {% trans "All objects in PDF" %}
+    </a>
+    <br><br>
   </div>
   {{ lab }}
 
   {% for obj in object_list %}
-    <div class="alert alert-info">
+    <h3 class="alert alert-info">
       {{ obj.code }}
-      <a class="btn btn-default pull-right"
+      <a class="btn btn-sm btn-danger pull-right"
          title="{{ obj.name }}"
-         href="{% url 'laboratory:reports_objects' 7 %}?pk={{ obj.pk }}">
+         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
         {% trans "PDF" %}</a>
-    </div>
+    </h3>
     <ul>
       <li>{% trans "Name:" %} {{ obj.name }}</li>
       <li>{% trans "Type:" %}
@@ -63,10 +64,11 @@
   {% endfor %}
 
   <div>
-    <a class="btn btn-danger" title="{% trans 'All objects' %}"
+    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
        href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "All objects in PDF" %} </a>
+      {% trans "All objects in PDF" %}
+    </a>
     <br> <br>
   </div>
 {% endblock %}
