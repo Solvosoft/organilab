@@ -18,6 +18,7 @@ from django_ajax.mixin import AJAXMixin
 from laboratory.models import ShelfObject, Shelf
 
 from .djgeneric import CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
 
 
 @login_required
@@ -202,8 +203,11 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return DeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        DeleteView.post(self, request, *args, **kwargs)
         self.row = request.POST.get("row")
         self.col = request.POST.get("col")
+        
+        DeleteView.post
 
         return {
             'inner-fragments': {

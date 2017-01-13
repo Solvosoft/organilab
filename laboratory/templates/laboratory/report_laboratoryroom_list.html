@@ -7,7 +7,7 @@
   <div class="page-header"><h1>{% trans 'Laboratory report' %}</h1></div>
 
   <div>
-    <a class="btn btn-default pull-right" href="{% url 'laboratory:report_building' laboratory %}">
+    <a class="btn btn-primary pull-right" href="{% url 'laboratory:report_building' laboratory %}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
       {% trans "Download PDF" %}</a>
     <br><br>
@@ -44,7 +44,7 @@
   {% endfor %}
 
   <div>
-    <a class="btn btn-danger" href="{% url 'laboratory:report_building' laboratory %}">
+    <a class="btn btn-primary" href="{% url 'laboratory:report_building' laboratory %}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
       {% trans "Download PDF" %}</a>
   </div>

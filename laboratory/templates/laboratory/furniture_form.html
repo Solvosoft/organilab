@@ -18,7 +18,7 @@
           </button>
         </div>
       </div>
-      <!-- aqui va lo de la tabla-->
+      
       {% if form.instance.pk %}
         <div class="table-responsive">
           <table class="table table-bordered" id="mytab">
@@ -47,12 +47,12 @@
             </div>
           </div>
         </div>
-
       {% else %}
+       <hr>
         <div class="list-group">
           {% for object in object_list %}
             <li class="row list-group-item">
-              <div class="col-md-3 bg-info">{{ object.labroom }}</div>
+              <div class="col-md-3">{{ object.labroom }}</div>
               <div class="col-md-6">
                 {{ object }}
               </div>
