@@ -57,16 +57,6 @@ def list_shelf(request, lab_pk):
 
 @login_required
 @ajax
-def admin_list_shelf(request, lab_pk):
-    return {
-        'inner-fragments': {
-            '#shelves': list_shelf_render(request, lab_pk)
-        },
-    }
-
-
-@login_required
-@ajax
 def ShelfDelete(request, lab_pk, pk, row, col):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)

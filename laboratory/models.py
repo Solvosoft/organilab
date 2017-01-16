@@ -32,7 +32,7 @@ class ObjectFeatures(models.Model):
         (OTHER, _('Other'))
     )
 
-    name = models.CharField(_('Name'), max_length=2, choices=CHOICES)
+    name = models.CharField(_('Name'), max_length=2, choices=CHOICES, unique=True)
     description = models.TextField(_('Description'))
 
     class Meta:

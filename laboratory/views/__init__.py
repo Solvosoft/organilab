@@ -1,10 +1,11 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django_ajax.decorators import ajax
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from laboratory.models import FeedbackEntry
 from laboratory.decorators import check_lab_permissions
@@ -28,6 +29,8 @@ class FeedbackView(CreateView):
     fields = '__all__'
 
     def get_success_url(self):
+        text_message = _('Thank you for your help. We are gonna check your problem as soon as we can')
+        messages.add_message(self.request, messages.SUCCESS, text_message)
         lab_pk = self.request.session.get('lab_pk')
         if lab_pk is not None:
             return reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
