@@ -17,7 +17,6 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory
 from laboratory.views.objects import ObjectView
 
-
 objviews = ObjectView()
 
 urlpatterns = [
@@ -31,29 +30,19 @@ urlpatterns = [
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
         name='permission_denied'),
     url(r'^feedback$', views.FeedbackView.as_view(), name='feedback'),
-    url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps')
-]
-
-
-urlpatterns += [
-    url(r"^objectfeatures/list$", objectfeature.list_objectfeatures,
-        name="objectfeatures_list"),
+    url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
         name="object_reservation")
 ]
 
-
-'''MULTILAB'''
 lab_shelf_urls = [
     url(r"^list$", shelfs.list_shelf, name="list_shelf"),
     url(r"^create$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
     url(r"^delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
         shelfs.ShelfDelete, name="shelf_delete"),
     url(r'^edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
-        shelfs.ShelfEdit.as_view(), name="shelf_edit"),
-    url(r"^adm/list$", shelfs.admin_list_shelf,
-        name="shelf_list"),
+        shelfs.ShelfEdit.as_view(), name="shelf_edit")
 ]
 
 lab_rooms_urls = [
@@ -82,10 +71,9 @@ shelf_object_urls = [
         shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     url(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
-    url(r"q/update/(?P<pk>\d+)$$", shelfobject.ShelfObjectSearchUpdate.as_view(),
+    url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate")
 ]
-
 
 lab_reports_urls = [
     # PDF reports
@@ -109,6 +97,11 @@ lab_reports_urls = [
         name='reactive_precursor_object_list')
 ]
 
+lab_features_urls = [
+    url(r'^create$', objectfeature.FeatureCreateView.as_view(), name='object_feature_create'),
+    url(r'^edit/(?P<pk>\d+)$', objectfeature.FeatureUpdateView.as_view(), name='object_feature_update'),
+    url(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(), name='object_feature_delete'),
+]
 
 '''MULTILAB'''
 urlpatterns += [
@@ -120,5 +113,7 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls))
+    url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
 ]
+

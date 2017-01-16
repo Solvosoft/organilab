@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load bootstrap staticfiles i18n %}
+
+{% block title %}{% trans 'Object features management' %}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <h1 align="center">{% trans 'Object features management' %}</h1>
+
+    <div class="col-md-8 col-md-offset-2">
+      <form class="form-horizontal" action="" method="post">{% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+
+        <div class="form-group">
+          <div class="col-sm-10 col-sm-offset-2">
+            <button class="btn btn-success" type="submit">
+              {% if create %}
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Save' %}
+              {% else %}
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if create %}
+    <div class="row">
+      <div class="list-group">
+        {% for object in object_list %}
+          <li class="row list-group-item">
+            <div class="col-md-3">{{ object }}</div>
+            <div class="col-md-6">{{ object.description }}</div>
+            <div class="col-md-3">
+              <div class="btn-group" role="group" aria-label="...">
+                <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-info">
+                  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
+                <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk %}" class="btn btn-danger">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+              </div>
+            </div>
+          </li>
+        {% empty %}
+          <div class="row text-center"><i>{% trans 'No object features' %}</i></div>
+        {% endfor %}
+      </div>
+      <div class="row text-center">
+        <div class="pagination">
+        <span>
+            {% if object_list.has_previous %}
+              <a href="?page={{ object_list.previous_page_number }}">previous</a>
+            {% endif %}
+
+          <span class="current">
+                Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+            </span>
+
+          {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}">next</a>
+          {% endif %}
+        </span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
