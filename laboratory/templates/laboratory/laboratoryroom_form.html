@@ -19,6 +19,7 @@
       </form>
     </div>
   </div>
+
   <div class="row">
     <ul class="list-group">
       {% for object in object_list %}
@@ -32,8 +33,9 @@
               <a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
             </div>
+          </div>
         </li>
       {% endfor %}
     </ul>
   </div>
-{% endblock %} 
+{% endblock %}
