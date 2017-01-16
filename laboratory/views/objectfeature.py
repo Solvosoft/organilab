@@ -4,47 +4,58 @@ Created on /8/2016
 @author: natalia
 '''
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponseRedirect
-from django.template.loader import render_to_string
-from django.urls.base import reverse_lazy
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import CreateView
 
-from django_ajax.decorators import ajax
-from django_ajax.mixin import AJAXMixin
+from laboratory.decorators import check_lab_permissions
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(check_lab_permissions, name='dispatch')
+class FeatureCreateView(CreateView):
+    model = ObjectFeatures
+    fields = '__all__'
 
-@login_required
-def list_objectfeatures_render(request):
-    objectfeatures = ObjectFeatures.objects.all()
-    return render_to_string(
-        'laboratory/objectfeatures_list.html',
-        context={
-            'object_list': objectfeatures
-        })
+    def get_context_data(self, **kwargs):
+        paginator = Paginator(ObjectFeatures.objects.all().distinct(), 10)
+        page = self.request.GET.get('page')
 
+        context = super(FeatureCreateView, self).get_context_data(**kwargs)
+        context['create'] = True
 
-@login_required
-@ajax
-def list_objectfeatures(request):
-    return {
-        'inner-fragments': {
-            '#objectfeatures': list_objectfeatures_render(request)
-        },
-    }
+        try:
+            context['object_list'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['object_list'] = paginator.page(1)
+        except EmptyPage:
+            context['object_list'] = paginator.page(paginator.num_pages)
 
+        return context
+
+    def get_success_url(self):
+        if self.lab is not None:
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+        return super(FeatureCreateView, self).get_success_url()
 
 @method_decorator(login_required, name='dispatch')
-class ObjectFeaturesCreate(AJAXMixin, CreateView):
+@method_decorator(check_lab_permissions, name='dispatch')
+class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
-    fields = "__all__"
-    success_url = reverse_lazy('laboratory:objectfeatures_list')
+    fields = '__all__'
 
-    def post(self, request, *args, **kwargs):
-        response = CreateView.post(self, request, *args, **kwargs)
+    def get_success_url(self):
+        if self.lab is not None:
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+        return super(FeatureUpdateView, self).get_success_url()
 
-        if type(response) == HttpResponseRedirect:
-            return list_objectfeatures_render(request)
+@method_decorator(login_required, name='dispatch')
+@method_decorator(check_lab_permissions, name='dispatch')
+class FeatureDeleteView(DeleteView):
+    model = ObjectFeatures
 
-        return response
+    def get_success_url(self):
+        if self.lab is not None:
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+        return super(FeatureDeleteView, self).get_success_url()
