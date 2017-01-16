@@ -1,0 +1,20 @@
+<div class="row text-center">
+  <div class="col-md-offset-1 col-md-10">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger alert-dismissable">
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="alert alert-success alert-dismissable">
+          {% else %}
+            <div class="alert alert-dismissable">
+          {% endif %}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
