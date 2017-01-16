@@ -3,12 +3,17 @@ Created on /8/2016
 
 @author: natalia
 '''
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 
+from laboratory.decorators import check_lab_permissions
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(check_lab_permissions, name='dispatch')
 class FeatureCreateView(CreateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -34,7 +39,8 @@ class FeatureCreateView(CreateView):
             return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
         return super(FeatureCreateView, self).get_success_url()
 
-
+@method_decorator(login_required, name='dispatch')
+@method_decorator(check_lab_permissions, name='dispatch')
 class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -44,6 +50,8 @@ class FeatureUpdateView(UpdateView):
             return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
         return super(FeatureUpdateView, self).get_success_url()
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(check_lab_permissions, name='dispatch')
 class FeatureDeleteView(DeleteView):
     model = ObjectFeatures
 
