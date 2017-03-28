@@ -14,7 +14,7 @@ from laboratory.models import ObjectFeatures
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class FeatureCreateView(CreateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -42,7 +42,7 @@ class FeatureCreateView(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -54,7 +54,7 @@ class FeatureUpdateView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class FeatureDeleteView(DeleteView):
     model = ObjectFeatures
 

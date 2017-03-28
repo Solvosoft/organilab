@@ -25,7 +25,7 @@ class ObjectView(object):
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
-        @method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
         class ObjectCreateView(CreateView):
 
             def get_success_url(self):
@@ -39,7 +39,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
             def get_success_url(self):
@@ -53,7 +53,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
             def get_success_url(self):
@@ -66,7 +66,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_teacher'), name='dispatch')
+        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
         class ObjectListView(ListView):
 
             def get_queryset(self):
@@ -125,3 +125,4 @@ class ObjectForm(ModelForm):
             self.fields['molecular_formula'].required = True
             self.fields['cas_id_number'].required = True
             self.fields['security_sheet'].required = True
+            self.fields['imdg_code'].required = True
