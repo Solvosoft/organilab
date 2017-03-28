@@ -50,6 +50,8 @@ lab_rooms_urls = [
     url(r'^create$', labroom.LabroomCreate.as_view(), name='rooms_create'),
     url(r'^(?P<pk>\d+)/delete$', labroom.LaboratoryRoomDelete.as_view(),
         name='rooms_delete'),
+    url(r'^(?P<pk>\d+)/edit$', labroom.LabroomUpdate.as_view(),
+        name='rooms_update'),
 ]
 
 lab_furniture_urls = [

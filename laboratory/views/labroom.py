@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from laboratory.models import LaboratoryRoom, Laboratory
 from laboratory.decorators import check_lab_permissions
 
-from .djgeneric import CreateView, DeleteView, ListView
+from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 
 
 @method_decorator(check_lab_permissions, name='dispatch')
@@ -48,6 +48,14 @@ class LabroomCreate(CreateView):
         lab.rooms.add(room)
         lab.save()
         return super(LabroomCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
+
+
+class LabroomUpdate(UpdateView):
+    model = LaboratoryRoom
+    fields = '__all__'
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
