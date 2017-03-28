@@ -16,14 +16,20 @@
              role="button" aria-haspopup="true" aria-expanded="false">
             {% trans 'Administration' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
-              {% trans 'Laboratory management' %} </a></li>
-            <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
-              {% trans 'Furniture management' %}</a></li>
-            <li><a href="{% url 'laboratory:objectview_list' laboratory %}">
-              {% trans 'Object management' %}</a></li>
-            <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
-              {% trans 'Object features management' %}</a></li>
+            {% if request.user|has_group:'laboratory_admin' %}
+              <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
+                {% trans 'Laboratory management' %} </a></li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_professor' %}
+              <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
+                {% trans 'Furniture management' %}</a></li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_student' %}
+              <li><a href="{% url 'laboratory:objectview_list' laboratory %}">
+                {% trans 'Object management' %}</a></li>
+              <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
+                {% trans 'Object features management' %}</a></li>
+            {% endif %}
           </ul>
         </li>
 
@@ -32,16 +38,22 @@
              role="button" aria-haspopup="true" aria-expanded="false">
             {% trans 'Reports' %}<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
-              {% trans 'Laboratory' %}</a></li>
-            <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
-              {% trans 'Furnitures' %}</a></li>
-            <li><a href="{% url 'laboratory:reports_objects_list' laboratory %}">
-              {% trans 'Objects' %}</a></li>
-            <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
-              {% trans 'Reactive precursor objects' %}</a></li>
-            <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
-              {% trans 'Limited shelf objects' %}</a></li>
+            {% if request.user|has_group:'laboratory_admin' %}
+              <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
+                {% trans 'Laboratory' %}</a></li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_professor' %}
+              <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
+                {% trans 'Furnitures' %}</a></li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_student' %}
+              <li><a href="{% url 'laboratory:reports_objects_list' laboratory %}">
+                {% trans 'Objects' %}</a></li>
+              <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
+                {% trans 'Reactive precursor objects' %}</a></li>
+              <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
+                {% trans 'Limited shelf objects' %}</a></li>
+            {% endif %}
           </ul>
         </li>
 
@@ -60,7 +72,8 @@
     {% endif %}
   </ul>
   <ul class="nav navbar-nav pull-right">
-    <li id='feedback_id' class="nav-item"><a class="nav-link" href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
+    <li id='feedback_id' class="nav-item"><a class="nav-link"
+                                             href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
     {% if request.user.is_authenticated %}
       <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
       <li class="nav-item"><a class="nav-link" href="{% url 'laboratory:logout' %}">{% trans "Log out" %}</a></li>

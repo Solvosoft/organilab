@@ -17,9 +17,11 @@ from weasyprint import HTML
 
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject
 from laboratory.views.djgeneric import ListView
+from laboratory.decorators import check_user_group
 
 
 @login_required
+@check_user_group(group='laboratory_student')
 def report_labroom_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
@@ -47,6 +49,7 @@ def report_labroom_building(request, *args, **kwargs):
 
 
 @login_required
+@check_user_group(group='laboratory_student')
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
         for shelf_object in query:
@@ -86,6 +89,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 
 
 @login_required
+@check_user_group(group='laboratory_student')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
@@ -118,6 +122,7 @@ def report_objects(request, *args, **kwargs):
 
 
 @login_required
+@check_user_group(group='laboratory_student')
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
@@ -147,6 +152,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
 
 
 @login_required
+@check_user_group(group='laboratory_professor')
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     lab = kwargs.get('lab_pk')
@@ -177,6 +183,7 @@ def report_furniture(request, *args, **kwargs):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class ObjectList(ListView):
     model = Object
     template_name = 'laboratory/report_object_list.html'
@@ -192,6 +199,7 @@ class ObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'laboratory/limited_shelfobject_report_list.html'
@@ -209,6 +217,7 @@ class LimitedShelfObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'
