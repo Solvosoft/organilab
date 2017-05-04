@@ -43,3 +43,12 @@ def get_tour_steps(request):
     if request.method == 'GET' and request.is_ajax():
         return TOUR_STEPS_JSON
     return 0
+
+def is_laboratory_admin(user):
+    return bool(user.groups.filter(name='laboratory_admin'))
+
+def is_laboratory_student(user):
+    return bool(user.groups.filter(name='laboratory_student'))
+
+def is_laboratory_teacher(user):
+    return bool(user.groups.filter(name='laboratory_teacher'))

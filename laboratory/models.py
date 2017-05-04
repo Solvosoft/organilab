@@ -52,6 +52,26 @@ class Object(models.Model):
         (MATERIAL, _('Material')),
         (EQUIPMENT, _('Equipment'))
     )
+    EXPLOSIVES = '1'
+    GASES = '2'
+    FLAMMABLE_LIQUIDS = '3'
+    FLAMMABLE_SOLIDS = '4'
+    OXIDIZING = '5'
+    TOXIC = '6'
+    RADIOACTIVE = '7'
+    CORROSIVE = '8'
+    MISCELLANEOUS = '9'
+    IDMG_CHOICES = (
+        (EXPLOSIVES, 'Explosives'),
+        (GASES, 'Gases'),
+        (FLAMMABLE_LIQUIDS, 'Flammable liquids'),
+        (FLAMMABLE_SOLIDS, 'Flammable solids'),
+        (OXIDIZING, 'Oxidizing substances and organic peroxides'),
+        (TOXIC, 'Toxic and infectious substances'),
+        (RADIOACTIVE, 'Radioactive material'),
+        (CORROSIVE, 'Corrosive substances'),
+        (MISCELLANEOUS, 'Miscellaneous dangerous substances and articles')
+    )
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
@@ -63,6 +83,7 @@ class Object(models.Model):
     security_sheet = models.FileField(
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
+    imdg_code = models.CharField(_("IMDG code"), choices=IDMG_CHOICES, max_length=1, null=True, blank=True)
 
     features = models.ManyToManyField(ObjectFeatures)
 
@@ -181,7 +202,7 @@ class Furniture(models.Model):
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     rooms = models.ManyToManyField(
-        'LaboratoryRoom',  blank=True)
+        'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
     lab_admins = models.ManyToManyField(
         User, related_name='lab_admins', blank=True)

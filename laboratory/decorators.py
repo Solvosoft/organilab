@@ -20,3 +20,17 @@ def check_lab_permissions(function=None):
 
 def has_perm_in_lab(user, lab):
     return user in lab.laboratorists.all() or lab.lab_admins.all()
+
+def check_user_group(function=None, group=None):
+    def _decorate(view_function, *args, **kwargs):
+        def view_wrapper(request, *args, **kwargs):
+            if not belongs_to_group(user=request.user, group=group):
+                return redirect(reverse('laboratory:permission_denied'))
+            return view_function(request, *args, **kwargs)
+        return view_wrapper
+    if function:
+        return _decorate(view_function=function)
+    return _decorate
+
+def belongs_to_group(user, group):
+    return bool(user.groups.filter(name=group))
