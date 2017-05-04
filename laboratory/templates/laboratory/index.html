@@ -21,26 +21,35 @@
     {% include 'laboratory/search_widget.html' %}
 
     <div class="row">
-      <div id="index_labview_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory view' %}</strong></h3></div>
-      <div id="index_manage_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Laboratory administration' %}</strong></h3></div>
-      <div id="index_report_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3></div>
+      {% if request.user|has_group:'laboratory_admin' %}
+        <div id="index_labview_id" class="col-md-4"><h3 class="text-center">
+          <strong>{% trans 'Laboratory view' %}</strong>
+        </h3></div>
+      {% endif %}
+      <div id="index_manage_id" class="col-md-4"><h3 class="text-center">
+        <strong>{% trans 'Laboratory administration' %}</strong></h3></div>
+      <div id="index_report_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3>
+      </div>
     </div>
     <br><br>
     <div class="row">
-      <div class="col-md-4 text-center">
-        <div class="row">
-          <img src="{% static 'images/laboratory.png' %}"
-               alt="{% trans 'Laboratory view' %}"
-               class="img-rounded" height="100">
+      {% if request.user|has_group:'laboratory_admin' %}
+        <div class="col-md-4 text-center">
+          <div class="row">
+            <img src="{% static 'images/laboratory.png' %}"
+                 alt="{% trans 'Laboratory view' %}"
+                 class="img-rounded" height="100">
+          </div>
+          <br>
+          <div class="row">
+            <ul class="list-group">
+              <li class="list-group-item"><a href="{% url 'laboratory:rooms_list' laboratory %}">
+                <strong>{% trans 'Laboratory view' %}</strong></a></li>
+            </ul>
+          </div>
         </div>
-        <br>
-        <div class="row">
-          <ul class="list-group">
-            <li class="list-group-item"><a href="{% url 'laboratory:rooms_list' laboratory %}">
-              <strong>{% trans 'Laboratory view' %}</strong></a></li>
-          </ul>
-        </div>
-      </div>
+      {% endif %}
+
       <div class="col-md-4 text-center">
         <div class="row">
           <img src="{% static 'images/management.png' %}"
@@ -50,17 +59,23 @@
         <br>
         <div class="row">
           <ul class="list-group">
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
-            </li>
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
-            </li>
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
-            </li>
+            {% if request.user|has_group:'laboratory_admin' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_professor' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
+              </li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_student' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
+              </li>
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -73,14 +88,20 @@
         <br>
         <div class="row">
           <ul class="list-group">
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
-            </li>
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
-            </li>
-            <li class="list-group-item"><a
-              href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a></li>
+            {% if request.user|has_group:'laboratory_admin' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
+              </li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_professor' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
+              </li>
+            {% endif %}
+            {% if request.user|has_group:'laboratory_student' %}
+              <li class="list-group-item"><a
+                href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a></li>
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -97,7 +118,8 @@
           </p>
           <br/>
           <p class="text-center">
-            <a class="btn btn-lg btn-success" href="{% url 'laboratory:login' %}" role="button">{% trans "Login" %}</a>
+            <a class="btn btn-lg btn-success" href="{% url 'laboratory:login' %}"
+               role="button">{% trans "Login" %}</a>
           </p>
         </div>
       </div>

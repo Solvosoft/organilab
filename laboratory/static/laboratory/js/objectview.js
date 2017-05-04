@@ -25,6 +25,7 @@ var ids = [
     "id_molecular_formula",
     "id_cas_id_number",
     "id_security_sheet",
+    "id_imdg_code",
     "id_is_precursor"
 ];
 
