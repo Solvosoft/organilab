@@ -31,7 +31,7 @@
     <h2>{% trans 'Steps' %} </h2>
 
 {% for step in object.procedurestep_set.all %}
-<div class="panel panel-default">
+<div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
   <div class="panel-heading">
     <h3 class="panel-title">{{forloop.counter}} -- {{step.title}} 
     {% if crud_perms.update %}
@@ -41,7 +41,6 @@
     </h3>
   </div>
   <div class="panel-body">
-    {{step.description|safe}}
      {% if step.procedurerequiredobject_set.all.count %}
     <hr>
     <h3>{% trans 'Required objects' %} </h3>
@@ -52,9 +51,20 @@
 		    {{obj.object}}
 		  </li>
     {% endfor %}
-</ul>
-{% endif %}
+    </ul>
   </div>
+     {% if step.procedureobservations_set.all.count %}
+    	<div class="panel-footer ">
+    	<h2>{% trans 'Observations' %}</h2>
+    	<ol>
+    	{% for observation in step.procedureobservations_set.all %}
+    		<li>{{observation}}</li>
+    	{%endfor%}
+    	   </ol>
+    	</div>
+    {% endif %}
+	{% endif %}
+</div>
 </div>
 {% endfor %}
 
