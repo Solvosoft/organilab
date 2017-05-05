@@ -84,6 +84,7 @@ lab_reports_urls = [
     url(r'^furniture$', reports.report_furniture,
         name='reports_furniture'),
     url(r'^objects$', reports.report_objects, name='reports_objects'),
+    url(r'^shelf_objects$', reports.report_shelf_objects, name='reports_shelf_objects'),
     url(r'^limited_shelf_objects$', reports.report_limited_shelf_objects, name='reports_limited_shelf_objects'),
     url(r'^reactive_precursor_objects$', reports.report_reactive_precursor_objects,
         name='reports_reactive_precursor_objects'),
