@@ -17,10 +17,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from laboratory import urls as laboratory_urls
 from djreservation import urls as djreservation_urls
+from academic.urls import urlpatterns as academic_urls
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(laboratory_urls, namespace='laboratory'))
-
+    url(r'^', include(laboratory_urls, namespace='laboratory')),
 ]
 
 urlpatterns += djreservation_urls.urlpatterns
+urlpatterns += academic_urls

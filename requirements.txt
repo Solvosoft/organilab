@@ -43,3 +43,4 @@ pyEQL==0.4
 django-reservation==0.2.8
 celery==4.0.1
 redis==2.10.5
+django-cruds-adminlte
