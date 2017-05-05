@@ -4,22 +4,20 @@
 {% block verbose_name %}{% trans "Organilab Shelf Objects Report" %}{% endblock %}
 
 {% block pdf_content %}
-    {% for obj in object_list %}
-        <h3>
-            {% trans "Object Code:" %} {{ obj }}
-        </h3>
-        <ul>
-        <li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
-        <li>{% trans "Object:" %}
-            {{ obj.object }}
-        </li>
-        <li>{% trans "Quantity:" %}
-            {{ obj.quantity }} {{ obj.measurement_unit}}
-        </li>
-        <li>{% trans "Limit quantity:" %}
-            {{ obj.limit_quantity }} {{ obj.measurement_unit}}
-        </li>
-    {% empty %}
-        {% trans "No Objects Elements" %}
-    {% endfor %}
+  {% for obj in object_list %}
+    <h3>{{ obj }}</h3>
+    <ul>
+    <li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
+    <li>{% trans "Object:" %}
+      {{ obj.object }}
+    </li>
+    <li>{% trans "Quantity:" %}
+      {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
+    </li>
+    <li>{% trans "Limit quantity:" %}
+      {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}
+    </li>
+  {% empty %}
+    {% trans "No Objects Elements" %}
+  {% endfor %}
 {% endblock %}
