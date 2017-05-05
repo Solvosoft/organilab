@@ -20,14 +20,14 @@ from django.utils.translation import ugettext_lazy as _
 from django_ajax.decorators import ajax
 from laboratory.models import Furniture, Laboratory
 from laboratory.shelf_utils import get_dataconfig
-from laboratory.decorators import check_lab_permissions, check_user_group
+from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_professor'), name='dispatch')
+@method_decorator(user_lab_perms(perm="report"), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
@@ -38,7 +38,7 @@ class FurnitureReportView(ListView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_professor'), name='dispatch')
+@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("labroom", "name", "type")
@@ -77,7 +77,7 @@ class FurnitureForm(forms.ModelForm):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_professor'), name='dispatch')
+@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = "/"
@@ -113,7 +113,7 @@ class FurnitureUpdateView(UpdateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_professor'), name='dispatch')
+@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = "/"
@@ -135,7 +135,8 @@ def list_furniture_render(request, lab_pk=None):
         'laboratory/furniture_list.html',
         context={
             'object_list': furnitures,
-            'laboratory': lab_pk
+            'laboratory': lab_pk,
+            'request': request
         })
 
 

@@ -1,6 +1,7 @@
 from laboratory.models import Laboratory
 from django.shortcuts import redirect, get_object_or_404
 from django.core.urlresolvers import reverse
+from laboratory.utils import check_lab_perms
 
 
 def check_lab_permissions(function=None):
@@ -21,10 +22,12 @@ def check_lab_permissions(function=None):
 def has_perm_in_lab(user, lab):
     return user in lab.laboratorists.all() or lab.lab_admins.all()
 
-def check_user_group(function=None, group=None):
+def user_lab_perms(function=None, perm='search'):
     def _decorate(view_function, *args, **kwargs):
         def view_wrapper(request, *args, **kwargs):
-            if not belongs_to_group(user=request.user, group=group):
+            user = request.user
+            lab = get_object_or_404(Laboratory, pk=request.session.get('lab_pk'))
+            if not check_lab_perms(lab, user, perm):
                 return redirect(reverse('laboratory:permission_denied'))
             return view_function(request, *args, **kwargs)
         return view_wrapper

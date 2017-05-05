@@ -55,6 +55,7 @@ def get_laboratory_name(context):
         # FIXME: find the way to redirect to select_lab
         return redirect(reverse('laboratory:select_lab'))
 
+# FIXME: Eliminar
 @register.filter('has_group')
 def has_group(user, group_name):
     groups = user.groups.all().values_list('name', flat=True)

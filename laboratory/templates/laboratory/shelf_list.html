@@ -1,4 +1,7 @@
-{% load i18n %}
+{% load i18n laboratory %}
+
+{%  has_laboratory_perm 'admin' as perm_admin %}
+
 <div class="panel panel-default">
 	<div class="panel-heading">
 		{% trans 'Shelves' %}
@@ -11,12 +14,13 @@
 			<tr>
 				{% for col in row%}
 				<td> {% if col%}
-				{% for data in col %} <a 
+				{% for data in col %} 
+				{% if perm_admin %}
+				<a 
 				data-ajax="true" data-success="processResponseshelfobjectCreate"
 				href="{% url 'laboratory:shelfobject_create' laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
-				
 				</a>
-
+				{% endif %}
 		<a  role="button"
 				data-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> 
 		</a>

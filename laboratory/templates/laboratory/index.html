@@ -1,39 +1,55 @@
-{% extends 'base.html' %}
-{% load i18n static shelf_position %}
+{% extends 'base.html' %} 
 
-{% block title %}
-  {% if request.user.is_authenticated %}{% get_laboratory_name %}{% else %}{% trans 'Select laboratory' %}{% endif %}
-{% endblock %}
-
+{% load i18n static shelf_position laboratory %} 
+{% block title %} 
+	{% if request.user.is_authenticated %}
+		{% get_laboratory_name %}
+	{% else %}
+		{% trans 'Select laboratory' %}
+	{% endif %} 
+{% endblock %} 
 {% block css %}
-  <link href="{% static 'laboratory/css/bootstrap-tour.css' %}" rel="stylesheet">
-  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}" rel="stylesheet">
-{% endblock %}
-
+<link href="{% static 'laboratory/css/bootstrap-tour.css' %}"
+	rel="stylesheet">
+<link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}"
+	rel="stylesheet">
+{% endblock %} 
 {% block js %}
-  <script type="text/javascript" src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
-  <script type="text/javascript" src="{% static 'laboratory/js/tour.js' %}"></script>
-{% endblock %}
+<script type="text/javascript"
+	src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
+<script type="text/javascript"
+	src="{% static 'laboratory/js/tour.js' %}"></script>
+{% endblock %} 
 
-{% load i18n static %}
-{% block content %}
-  {% if request.user.is_authenticated %}
-    {% include 'laboratory/search_widget.html' %}
+{% load i18n static %} 
+{% block content %} 
+{% if request.user.is_authenticated %} 
+{% include 'laboratory/search_widget.html' %} 
+{% has_laboratory_perm 'search' as perm_search %} 
+{% has_laboratory_perm 'admin' as perm_admin %} 
+{% has_laboratory_perm 'report' as perm_report %}
 
-    <div class="row">
-      {% if request.user|has_group:'laboratory_admin' %}
-        <div id="index_labview_id" class="col-md-4"><h3 class="text-center">
+<div class="row">
+        {% if perm_search %}
+        <div id="index_labview_id" class="col-md-4">
+        <h3 class="text-center">
           <strong>{% trans 'Laboratory view' %}</strong>
-        </h3></div>
-      {% endif %}
+        </h3>
+        </div>
+		{% endif %}
+		{% if perm_admin %}
       <div id="index_manage_id" class="col-md-4"><h3 class="text-center">
         <strong>{% trans 'Laboratory administration' %}</strong></h3></div>
-      <div id="index_report_id" class="col-md-4"><h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3>
+        {% endif %}
+        {% if perm_report %}
+      <div id="index_report_id" class="col-md-4">
+      <h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3>
       </div>
+      {% endif %}
     </div>
     <br><br>
     <div class="row">
-      {% if request.user|has_group:'laboratory_admin' %}
+              {% if perm_search %}
         <div class="col-md-4 text-center">
           <div class="row">
             <img src="{% static 'images/laboratory.png' %}"
@@ -42,14 +58,16 @@
           </div>
           <br>
           <div class="row">
+
             <ul class="list-group">
               <li class="list-group-item"><a href="{% url 'laboratory:rooms_list' laboratory %}">
                 <strong>{% trans 'Laboratory view' %}</strong></a></li>
             </ul>
+         
           </div>
         </div>
-      {% endif %}
-
+		 {% endif %}
+        {% if perm_admin %}
       <div class="col-md-4 text-center">
         <div class="row">
           <img src="{% static 'images/management.png' %}"
@@ -58,27 +76,26 @@
         </div>
         <br>
         <div class="row">
+
           <ul class="list-group">
-            {% if request.user|has_group:'laboratory_admin' %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
-            {% endif %}
-            {% if request.user|has_group:'laboratory_professor' %}
+
               <li class="list-group-item"><a
                 href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
               </li>
-            {% endif %}
-            {% if request.user|has_group:'laboratory_student' %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
               </li>
               <li class="list-group-item"><a
                 href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
               </li>
-            {% endif %}
           </ul>
+         
         </div>
       </div>
+ {% endif %}
+         {% if perm_report %}
       <div class="col-md-4 text-center">
         <div class="row">
           <img src="{% static 'images/report.png' %}"
@@ -87,26 +104,22 @@
         </div>
         <br>
         <div class="row">
+
           <ul class="list-group">
-            {% if request.user|has_group:'laboratory_admin' %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
               </li>
-            {% endif %}
-            {% if request.user|has_group:'laboratory_professor' %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
               </li>
-            {% endif %}
-            {% if request.user|has_group:'laboratory_student' %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a></li>
-            {% endif %}
           </ul>
         </div>
       </div>
+       {% endif %}
     </div>
-
+       
 
   {% else %}
     <div class="row">
