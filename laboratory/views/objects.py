@@ -15,7 +15,7 @@ from django.forms import ModelForm
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.decorators import check_lab_permissions, check_user_group
+from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.models import Object
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
@@ -25,7 +25,7 @@ class ObjectView(object):
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
-        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         class ObjectCreateView(CreateView):
 
             def get_success_url(self):
@@ -39,7 +39,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
             def get_success_url(self):
@@ -53,7 +53,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
             def get_success_url(self):
@@ -66,7 +66,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html"
         )))
 
-        @method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+        @method_decorator(user_lab_perms(perm="search"), name='dispatch')
         class ObjectListView(ListView):
 
             def get_queryset(self):

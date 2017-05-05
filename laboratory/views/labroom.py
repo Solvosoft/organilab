@@ -6,20 +6,20 @@ Created on 26/12/2016
 '''
 from __future__ import unicode_literals
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.models import LaboratoryRoom, Laboratory
-from laboratory.decorators import check_lab_permissions, check_user_group
+from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_admin'), name='dispatch')
+@method_decorator(user_lab_perms(perm='search'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
@@ -31,7 +31,7 @@ class LaboratoryRoomsList(ListView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_admin'), name='dispatch')
+@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     fields = '__all__'
@@ -57,7 +57,7 @@ class LabroomCreate(CreateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_admin'), name='dispatch')
+@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     fields = '__all__'
@@ -68,7 +68,7 @@ class LabroomUpdate(UpdateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_admin'), name='dispatch')
+@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = "/"
@@ -80,7 +80,7 @@ class LaboratoryRoomDelete(DeleteView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_admin'), name='dispatch')
+@method_decorator(user_lab_perms(perm='report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
     template_name = "laboratory/report_laboratoryroom_list.html"

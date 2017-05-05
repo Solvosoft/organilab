@@ -40,7 +40,8 @@ def list_shelf_render(request, lab_pk):
         'laboratory/shelf_list.html',
         context={
             'object_list': shelf,
-            'laboratory': lab_pk
+            'laboratory': lab_pk,
+            'request': request
         })
 
 

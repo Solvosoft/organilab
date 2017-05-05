@@ -209,6 +209,9 @@ class Laboratory(models.Model):
     laboratorists = models.ManyToManyField(
         User, related_name='laboratorists', blank=True)
 
+    students = models.ManyToManyField(
+        User, related_name='students', blank=True)
+
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
@@ -216,6 +219,8 @@ class Laboratory(models.Model):
     def __str__(self):
         return '%s' % (self.name,)
 
+#     class Meta:
+#         permissions = ()
 
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):

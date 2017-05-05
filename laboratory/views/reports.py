@@ -17,11 +17,11 @@ from weasyprint import HTML
 
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject
 from laboratory.views.djgeneric import ListView
-from laboratory.decorators import check_user_group
+from laboratory.decorators import user_lab_perms
 
 
 @login_required
-@check_user_group(group='laboratory_student')
+@user_lab_perms(perm="report")
 def report_labroom_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
@@ -38,7 +38,7 @@ def report_labroom_building(request, *args, **kwargs):
         'laboratory': kwargs.get('lab_pk')
     }
 
-    html = template.render(Context(context)).encode("UTF-8")
+    html = template.render(context=context).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
@@ -49,7 +49,7 @@ def report_labroom_building(request, *args, **kwargs):
 
 
 @login_required
-@check_user_group(group='laboratory_student')
+@user_lab_perms(perm="report")
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
         for shelf_object in query:
@@ -78,7 +78,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
     }
 
     html = template.render(
-        Context(context)).encode("UTF-8")
+        context=context).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
@@ -89,7 +89,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 
 
 @login_required
-@check_user_group(group='laboratory_student')
+@user_lab_perms(perm="report")
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
@@ -111,7 +111,7 @@ def report_objects(request, *args, **kwargs):
     }
 
     html = template.render(
-        Context(context)).encode("UTF-8")
+        context=context).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
@@ -122,11 +122,15 @@ def report_objects(request, *args, **kwargs):
 
 
 @login_required
-@check_user_group(group='laboratory_student')
+@user_lab_perms(perm="report")
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
-    if lab:
+    try:
+        all_labs = int(request.GET.get('all_labs', '0'))
+    except:
+        all_labs = 0
+    if lab and not all_labs:
         rpo = Object.objects.filter(
             shelfobject__shelf__furniture__labroom__laboratory__pk=lab)
     else:
@@ -141,7 +145,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
         'laboratory': lab
     }
 
-    html = template.render(Context(context)).encode('UTF-8')
+    html = template.render(context=context).encode('UTF-8')
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
@@ -152,7 +156,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
 
 
 @login_required
-@check_user_group(group='laboratory_professor')
+@user_lab_perms(perm="report")
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     lab = kwargs.get('lab_pk')
@@ -172,7 +176,7 @@ def report_furniture(request, *args, **kwargs):
     }
 
     html = template.render(
-        Context(context)).encode("UTF-8")
+        context=context).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
@@ -183,7 +187,7 @@ def report_furniture(request, *args, **kwargs):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+@method_decorator(user_lab_perms(perm="search"), name='dispatch')
 class ObjectList(ListView):
     model = Object
     template_name = 'laboratory/report_object_list.html'
@@ -199,7 +203,7 @@ class ObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+@method_decorator(user_lab_perms(perm="report"), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'laboratory/limited_shelfobject_report_list.html'
@@ -217,14 +221,25 @@ class LimitedShelfObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_user_group(group='laboratory_student'), name='dispatch')
+@method_decorator(user_lab_perms(perm="report"), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(ReactivePrecursorObjectList, self).get_context_data(**kwargs)
+        context['all_labs'] = self.all_labs
+        return context
+
     def get_queryset(self):
+        try:
+            self.all_labs = int(self.request.GET.get('all_labs', '0'))
+        except:
+            self.all_labs=0
         query = super(ReactivePrecursorObjectList, self).get_queryset()
+        
         query = query.filter(type=Object.REACTIVE,
-                             is_precursor=True,
-                             shelfobject__shelf__furniture__labroom__laboratory=self.lab)
+                             is_precursor=True)
+        if not self.all_labs:
+            query=query.filter(shelfobject__shelf__furniture__labroom__laboratory=self.lab).distinct()
         return query

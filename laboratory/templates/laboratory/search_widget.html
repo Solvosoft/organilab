@@ -1,4 +1,7 @@
-{% load i18n %}
+{% load i18n laboratory %}
+
+{%  has_laboratory_perm 'search' as perm_search %}
+{% if perm_search %}
 <div class="row">
   <div class="col-md-offset-3 col-md-6">
     <div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
@@ -21,3 +24,4 @@
     </div>
   </div>
 </div>
+{% endif %}
