@@ -60,8 +60,15 @@
           <div class="row">
 
             <ul class="list-group">
-              <li class="list-group-item"><a href="{% url 'laboratory:rooms_list' laboratory %}">
-                <strong>{% trans 'Laboratory view' %}</strong></a></li>
+              <li class="list-group-item">
+              <a href="{% url 'laboratory:rooms_list' laboratory %}">
+                <strong>{% trans 'Laboratory view' %}</strong></a>
+                </li>
+              <li class="list-group-item">
+              <a href="{% url 'academic_procedure_list' %}">
+                <strong>{% trans 'Procedures' %}</strong></a>
+                </li>
+                
             </ul>
          
           </div>

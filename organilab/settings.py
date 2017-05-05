@@ -39,11 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_ajax',
     'laboratory',
+    'academic',
     "bootstrapform",
     "djreservation",
     "celery",
+    'crispy_forms',
+    'cruds_adminlte',
+    
+    
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+IMAGE_CROPPING_JQUERY_URL = None
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
