@@ -11,10 +11,11 @@ from laboratory.models import Laboratory
 
 @register.simple_tag(takes_context=True)
 def has_laboratory_perm(context, perm):
-    user = context['request'].user
-    lab_pk = context['request'].session.get('lab_pk')
-    lab = Laboratory.objects.filter(pk=lab_pk).first()
-    if lab is not None:
-        return check_lab_perms(lab, user, perm)
+    if 'request' in context:
+        user = context['request'].user
+        lab_pk = context['request'].session.get('lab_pk')
+        lab = Laboratory.objects.filter(pk=lab_pk).first()
+        if lab is not None:
+            return check_lab_perms(lab, user, perm)
     
     return False
