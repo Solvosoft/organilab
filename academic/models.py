@@ -12,7 +12,11 @@ class Procedure(models.Model):
     
     def __str__(self):
         return self.title
-
+    class Meta:
+            ordering = ('pk',)
+            permissions = (
+                ("view_procedure", "Can see available Procedure"),
+                )
 
 class ProcedureStep(models.Model):
     procedure = models.ForeignKey(Procedure)
@@ -24,7 +28,11 @@ class ProcedureStep(models.Model):
             return self.title
         return str(_("No titled step"))
 
-
+    class Meta:
+            ordering = ('pk',)
+            permissions = (
+                ("view_procedurestep", "Can see available ProcedureStep"),
+                )
 class ProcedureRequiredObject(models.Model):
     step = models.ForeignKey(ProcedureStep)
     object = models.ForeignKey(Object)
@@ -38,7 +46,11 @@ class ProcedureRequiredObject(models.Model):
             self.quantity,
             self.get_measurement_unit_display()
             )
-
+    class Meta:
+            ordering = ('pk',)
+            permissions = (
+                ("view_procedurerequiredobject", "Can see available ProcedureRequiredObject"),
+                )
    
 class ProcedureObservations(models.Model):
     step = models.ForeignKey(ProcedureStep)
@@ -46,3 +58,9 @@ class ProcedureObservations(models.Model):
     
     def __str__(self):
         return self.description
+    
+    class Meta:
+            ordering = ('pk',)
+            permissions = (
+                ("view_procedureobservations", "Can see available ProcedureObservations"),
+                )
