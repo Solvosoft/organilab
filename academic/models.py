@@ -3,25 +3,26 @@ from laboratory.models import Object, ShelfObject
 
 # Create your models here.
 from django.utils.translation import ugettext_lazy as _
+from academic.presentation import HTMLPresentation
 
 
 
-class Procedure(models.Model):
-    title = models.CharField(max_length=500)
-    description = models.TextField()
+class Procedure(models.Model, HTMLPresentation):
+    title = models.CharField(max_length=500, verbose_name=_('Title'))
+    description = models.TextField(_('Description'))
     
     def __str__(self):
         return self.title
     class Meta:
             ordering = ('pk',)
             permissions = (
-                ("view_procedure", "Can see available Procedure"),
+                ("view_procedure", _("Can see available Procedure")),
                 )
 
-class ProcedureStep(models.Model):
+class ProcedureStep(models.Model, HTMLPresentation):
     procedure = models.ForeignKey(Procedure)
-    title = models.CharField(max_length=500, null=True)
-    description = models.TextField(null=True)
+    title = models.CharField(_('Title'), max_length=500, null=True)
+    description = models.TextField(_('Description'), null=True)
     
     def __str__(self):
         if self.title:
@@ -31,11 +32,11 @@ class ProcedureStep(models.Model):
     class Meta:
             ordering = ('pk',)
             permissions = (
-                ("view_procedurestep", "Can see available ProcedureStep"),
+                ("view_procedurestep", _("Can see available ProcedureStep")),
                 )
 class ProcedureRequiredObject(models.Model):
     step = models.ForeignKey(ProcedureStep)
-    object = models.ForeignKey(Object)
+    object = models.ForeignKey(Object, verbose_name=_('Object'))
     quantity = models.FloatField(_('Material quantity'))
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=ShelfObject.CHOICES)
@@ -49,12 +50,12 @@ class ProcedureRequiredObject(models.Model):
     class Meta:
             ordering = ('pk',)
             permissions = (
-                ("view_procedurerequiredobject", "Can see available ProcedureRequiredObject"),
+                ("view_procedurerequiredobject", _("Can see available ProcedureRequiredObject")),
                 )
    
 class ProcedureObservations(models.Model):
     step = models.ForeignKey(ProcedureStep)
-    description = models.TextField()
+    description = models.TextField(_('Description'))
     
     def __str__(self):
         return self.description
@@ -62,5 +63,5 @@ class ProcedureObservations(models.Model):
     class Meta:
             ordering = ('pk',)
             permissions = (
-                ("view_procedureobservations", "Can see available ProcedureObservations"),
+                ("view_procedureobservations", _("Can see available ProcedureObservations")),
                 )
