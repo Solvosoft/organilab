@@ -10,7 +10,9 @@
 
 <div class="modal-body">
   {% csrf_token %}
-  {{form|bootstrap }}</div>
+
+  {{form|bootstrap }}
+
 
 <div class="modal-footer">
 	{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
@@ -20,6 +22,11 @@
 	<input type="hidden" name="q" value="{{q}}" />
 {%endif%}
 
+<script>
+$(function(){
+$(window).trigger('init-autocomplete');
+});
+</script>
 </form>
   
   
