@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "bootstrapform",
     "djreservation",
     "celery",
+    'ajax_select',
 ]
 
 MIDDLEWARE = [

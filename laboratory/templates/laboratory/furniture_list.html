@@ -10,7 +10,7 @@
   <div class="list-group">
     {% for furniture in object_list %}
       <li class="list-group-item">
-        <a onclick="function_name_shelf({{ furniture.id }})" href="#">
+        <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" href="#">
           {{ furniture.name }}
         </a>
         {% if perm_report %}

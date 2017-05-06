@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 
 from laboratory.models import ShelfObject, Laboratory
+from laboratory.forms import ObjectSearchForm
 
 
 @method_decorator(login_required, name='dispatch')
@@ -22,34 +23,30 @@ class SearchObject(ListView):
     search_fields = ['object__code', 'object__name', 'object__description']
     template_name = "laboratory/search.html"
 
-    def get_queryset_params(self):
-        params = None
-        if 'q' in self.request.GET:
-            q = str(self.request.GET.get('q'))
-            for field in self.search_fields:
-                if params:
-                    params |= Q(**{field + "__icontains": q})
-                else:
-                    params = Q(**{field + "__icontains": q})
-
-        return params
-
     def get_queryset(self):
         user = self.request.user
-
+        params = {}
+        filter_lab = True
+        if 'q' in self.request.GET:
+            form = ObjectSearchForm(self.request.GET)
+            if form.is_valid():               
+                if 'q' in form.cleaned_data:
+                    params = {'object__pk__in': form.cleaned_data['q']}
+                filter_lab = not form.cleaned_data['all_labs']
         labs = Laboratory.objects.filter(
-            Q(lab_admins=user) | Q(laboratorists=user)
+            Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)
         ).distinct()
 
         query = self.model.objects.filter(
             shelf__furniture__labroom__laboratory__in=labs)
 
-        if 'lab_pk' in self.kwargs:
-            query = query.filter(
-                shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
-        params = self.get_queryset_params()
+        if filter_lab:
+            if 'lab_pk' in self.kwargs:
+                query = query.filter(
+                    shelf__furniture__labroom__laboratory=self.kwargs.get('lab_pk'))
+
         if params:
-            query = query.filter(params)
+            query = query.filter(**params)
         else:
             query = query.none()
         return query

@@ -5,6 +5,7 @@ Created on 4 may. 2017
 '''
 from django import template
 from laboratory.utils import check_lab_perms
+from laboratory.forms import ObjectSearchForm
 register = template.Library()
 
 from laboratory.models import Laboratory
@@ -18,3 +19,12 @@ def has_laboratory_perm(context, perm):
         return check_lab_perms(lab, user, perm)
     
     return False
+
+@register.simple_tag(takes_context=True)
+def get_search_form(context):
+    request = context['request']
+    if 'q' in request.GET:
+        form=ObjectSearchForm(request.GET)
+    else:
+        form=ObjectSearchForm()
+    return form
