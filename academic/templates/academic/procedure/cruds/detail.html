@@ -41,6 +41,8 @@
     </h3>
   </div>
   <div class="panel-body">
+  
+  	{{step.description|safe}}
      {% if step.procedurerequiredobject_set.all.count %}
     <hr>
     <h3>{% trans 'Required objects' %} </h3>
