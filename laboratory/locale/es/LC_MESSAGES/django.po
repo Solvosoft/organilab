@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 20:36-0600\n"
-"PO-Revision-Date: 2017-05-04 20:37-0600\n"
+"POT-Creation-Date: 2017-05-05 15:49-0600\n"
+"PO-Revision-Date: 2017-05-05 15:50-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -75,7 +75,7 @@ msgstr "Descripción"
 msgid "Object feature"
 msgstr "Característica del objeto"
 
-#: models.py:40 templates/laboratory/index.html:91
+#: models.py:40 templates/laboratory/index.html:98
 msgid "Object features"
 msgstr "Características del objeto"
 
@@ -126,8 +126,8 @@ msgstr "Código IMDG"
 msgid "Object"
 msgstr "Objeto"
 
-#: models.py:92 templates/laboratory/index.html:88
-#: templates/laboratory/index.html:116
+#: models.py:92 templates/laboratory/index.html:95
+#: templates/laboratory/index.html:123
 #: templates/laboratory/partials/navbar.html:51
 msgid "Objects"
 msgstr "Objetos"
@@ -202,7 +202,7 @@ msgid "Shelves"
 msgstr "Estantería"
 
 #: models.py:181 models.py:191 templates/laboratory/furniture_list.html:7
-#: templates/laboratory/index.html:85
+#: templates/laboratory/index.html:92
 #: templates/laboratory/report_laboratoryroom_list.html:27
 #: templates/pdf/laboratoryroom_pdf.html:18
 msgid "Furniture"
@@ -220,8 +220,8 @@ msgstr "Pieza de mueble"
 msgid "Laboratory name"
 msgstr "Nombre del laboratorio"
 
-#: models.py:216 registry.py:13 templates/laboratory/index.html:82
-#: templates/laboratory/index.html:110
+#: models.py:216 registry.py:13 templates/laboratory/index.html:89
+#: templates/laboratory/index.html:117
 #: templates/laboratory/partials/navbar.html:46 views/laboratory.py:62
 msgid "Laboratory"
 msgstr "Laboratorio"
@@ -284,7 +284,7 @@ msgstr ""
 "controlar los componentes del laboratorio, desde las salas hasta objetos."
 
 #: registry.py:25 registry.py:49 templates/laboratory/index.html:46
-#: templates/laboratory/index.html:102
+#: templates/laboratory/index.html:109
 #: templates/laboratory/partials/navbar.html:42
 msgid "Reports"
 msgstr "Reportes"
@@ -311,7 +311,7 @@ msgstr ""
 "haciendo click aquí"
 
 #: registry.py:37 templates/laboratory/index.html:36
-#: templates/laboratory/index.html:56 templates/laboratory/index.html:64
+#: templates/laboratory/index.html:56 templates/laboratory/index.html:65
 msgid "Laboratory view"
 msgstr "Vista de laboratorio"
 
@@ -566,20 +566,24 @@ msgstr "Crear nuevo estante"
 msgid "PDF"
 msgstr "PDF"
 
-#: templates/laboratory/index.html:42 templates/laboratory/index.html:74
+#: templates/laboratory/index.html:42 templates/laboratory/index.html:81
 msgid "Laboratory administration"
 msgstr "Administración del laboratorio"
 
-#: templates/laboratory/index.html:113
+#: templates/laboratory/index.html:69
+msgid "Procedures"
+msgstr "Procedimientos"
+
+#: templates/laboratory/index.html:120
 #: templates/laboratory/partials/navbar.html:48
 msgid "Furnitures"
 msgstr "Muebles"
 
-#: templates/laboratory/index.html:130
+#: templates/laboratory/index.html:137
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-#: templates/laboratory/index.html:135
+#: templates/laboratory/index.html:142
 msgid "Login"
 msgstr "Inicio de sesión"
 
