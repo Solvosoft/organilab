@@ -8,7 +8,6 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -18,7 +17,8 @@ from django_ajax.mixin import AJAXMixin
 from laboratory.models import ShelfObject, Shelf
 
 from .djgeneric import CreateView, UpdateView, DeleteView
-from django.shortcuts import get_object_or_404
+from ajax_select.fields import AutoCompleteField
+from django.utils.translation import ugettext_lazy as _
 
 
 @login_required
@@ -38,7 +38,8 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
             'data': Shelf.objects.get(pk=shelf),
             'row': row,
             'col': col,
-            'laboratory': lab_pk
+            'laboratory': lab_pk,
+            'request': request
         })
 
 
@@ -58,12 +59,14 @@ def list_shelfobject(request, lab_pk):
 class ShelfObjectForm(forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
+    object = AutoCompleteField('objects',  help_text=_("Search by name, code or CAS number"))
 
     class Meta:
         model = ShelfObject
         fields = "__all__"
         widgets = {
             'shelf': forms.HiddenInput,
+            
         }
 
 

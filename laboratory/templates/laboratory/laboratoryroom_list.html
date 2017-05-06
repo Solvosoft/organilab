@@ -75,34 +75,12 @@
   </script>
 
   <script>
-  function get_url_parameters(){
-	  var params = window.location.href.split("#");
-	  if(params.length > 1){
-	    params = params[1].split("&");
-	  }
 
-	  var obj={};
 
-	  for(var x=0; x<params.length; x++){
-	    var tmp = params[x].split("=");
-	    console.log(tmp.length);
-	    if(tmp.length>1){
-	      if(tmp[0]=='labroom') obj['labroom']=tmp[1];
-	      if(tmp[0]=='furniture') obj['furniture']=tmp[1];
-	      if(tmp[0]=='shelf') obj['shelf']=tmp[1];
-	    }
-	  }
+$(function() {
+	load_self_from_uls();
+});
 
-	  var ok=false;
-	  if(obj.labroom !== undefined && obj.furniture !== undefined && obj.shelf !== undefined){
-	  ok=true;
-	  }
-	  if (!ok){
-	    obj=undefined;
-	  }
-	   return obj; 
-}
-  
   </script>
 
 {% endblock %}
