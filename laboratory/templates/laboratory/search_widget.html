@@ -1,19 +1,26 @@
 {% load i18n laboratory %}
 
 {%  has_laboratory_perm 'search' as perm_search %}
+{% get_search_form as search_form %}
 {% if perm_search %}
 <div class="row">
-  <div class="col-md-offset-3 col-md-6">
+  <div class="col-md-offset-2 col-md-8">
     <div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
       {% if laboratory %}
         <form method="get" action="{% url 'laboratory:search' laboratory %}">
       {% else %}
         <form method="get" action="{% url 'laboratory:search' %}">
       {% endif %}
-      <div class="col-md-10">
-        <input type="search" value="{{ q }}" name="q" class="form-control" id="search"
-               placeholder="{% trans 'Keyword, for instance Beaker'%}">
+      <div class="col-md-7">
+      	{{search_form.q}}
+        
       </div>
+      <div class="col-md-3">
+	      <div class="checkbox">
+	      {{search_form.all_labs}} {% trans 'In all laboratories' %}
+	      </div>
+      </div>
+      
       <div class="col-md-2">
         <button type="submit" class="btn btn-default">
           <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -24,4 +31,8 @@
     </div>
   </div>
 </div>
+
+
+{{ search_form.media }}
+
 {% endif %}

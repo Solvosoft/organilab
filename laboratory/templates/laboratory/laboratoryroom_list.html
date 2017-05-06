@@ -19,7 +19,7 @@
       <ul id="labmenues" class="nav nav-tabs" role="tablist">
         {% for LaboratoryRoom in object_list %}
           <li role="presentation">
-            <a href="#idlab"
+            <a id="room_{{ LaboratoryRoom.id }}" href="#idlab"
                data-argument="{{ LaboratoryRoom.id }}"
                onclick="function_name_furniture('{{ LaboratoryRoom.id }}')"
                aria-controls={{ LaboratoryRoom.id }} role="tab"
@@ -72,6 +72,37 @@
       $("#labmenues").find("a").first().click();
       see_prototype_shelf_field();
     })();
+  </script>
+
+  <script>
+  function get_url_parameters(){
+	  var params = window.location.href.split("#");
+	  if(params.length > 1){
+	    params = params[1].split("&");
+	  }
+
+	  var obj={};
+
+	  for(var x=0; x<params.length; x++){
+	    var tmp = params[x].split("=");
+	    console.log(tmp.length);
+	    if(tmp.length>1){
+	      if(tmp[0]=='labroom') obj['labroom']=tmp[1];
+	      if(tmp[0]=='furniture') obj['furniture']=tmp[1];
+	      if(tmp[0]=='shelf') obj['shelf']=tmp[1];
+	    }
+	  }
+
+	  var ok=false;
+	  if(obj.labroom !== undefined && obj.furniture !== undefined && obj.shelf !== undefined){
+	  ok=true;
+	  }
+	  if (!ok){
+	    obj=undefined;
+	  }
+	   return obj; 
+}
+  
   </script>
 
 {% endblock %}
