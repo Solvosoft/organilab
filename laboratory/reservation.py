@@ -24,4 +24,4 @@ class ShelfObjectReservation(ProductReservationView):
     def dispatch(self, request, *args, **kwargs):
         if hasattr(request, 'reservation'):
             return super(ShelfObjectReservation, self).dispatch(request, *args, **kwargs)
-        return redirect(reverse('laboratory:permission_denied'))
+        return redirect(reverse('add_user_reservation'))
