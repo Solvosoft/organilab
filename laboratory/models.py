@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from pyEQL import Solution as pyEQL_Solution
 
 from laboratory.validators import validate_molecular_formula
 
@@ -234,3 +235,15 @@ class FeedbackEntry(models.Model):
 
     def __str__(self):
         return '%s' % (self.title,)
+
+@python_2_unicode_compatible
+class Solution(models.Model):
+    solutes = models.TextField(_('Solutes'))
+    volume = models.CharField(_('Volumen'), max_length=100)
+    temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
+    pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
+    pH = models.IntegerField(_('pH'), default=7)
+
+    class Meta:
+        verbose_name = _('Solution')
+        verbose_name_plural = _('Solutions')

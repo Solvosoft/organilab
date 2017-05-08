@@ -14,5 +14,6 @@ admin.site.register(models.ObjectFeatures)
 admin.site.register(models.Object, Object_Admin)
 admin.site.register(models.ShelfObject)
 admin.site.register(models.FeedbackEntry)
+admin.site.register(models.Solution)
 
 admin.site.site_header = _('Organilab Administration site')

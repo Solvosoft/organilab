@@ -14,7 +14,7 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory
+from laboratory.views import labroom, shelfobject, laboratory, solutions
 from laboratory.views.objects import ObjectView
 
 objviews = ObjectView()
@@ -105,6 +105,10 @@ lab_features_urls = [
     url(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(), name='object_feature_delete'),
 ]
 
+solutions_urls = [
+    url(r'^calculator', solutions.SolutionCalculatorView.as_view(), name='solution_calculator'),
+]
+
 '''MULTILAB'''
 urlpatterns += [
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(),
@@ -117,5 +121,6 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
 ]
 
