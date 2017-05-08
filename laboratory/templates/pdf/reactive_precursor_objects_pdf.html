@@ -40,6 +40,11 @@
         <li>{% trans "Description:" %} {{ obj.description }}</li>
         <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
         <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
+        {% if obj.clinventory_entry %}
+          <li>{% trans 'Inventario C&L:' %} {{ obj.clinventory_entry.name | safe }} (<a
+              href="{{ obj.clinventory_entry.url }}">{% trans 'Reference link' %}</a>)
+          </li>
+        {% endif %}
       </ul>
     {% empty %}
       {% trans "No Objects Elements" %}
