@@ -47,6 +47,35 @@ def report_labroom_building(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     return response
 
+def report_shelf_objects(request, *args, **kwargs):
+    var = request.GET.get('pk')
+    if var is None:
+        if 'lab_pk' in kwargs:
+            shelf_objects = ShelfObject.objects.filter(
+                shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+        else:
+            shelf_objects = ShelfObject.objects.all()
+    else:
+        shelf_objects = ShelfObject.objects.filter(pk=var)
+
+    context = {
+        'object_list': shelf_objects,
+        'datetime': timezone.now(),
+        'request': request,
+        'laboratory': kwargs.get('lab_pk')
+    }
+
+    template = get_template('pdf/shelf_object_pdf.html')
+
+    html = template.render(
+        context=context).encode("UTF-8")
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+    return response
 
 @login_required
 @user_lab_perms(perm="report")
