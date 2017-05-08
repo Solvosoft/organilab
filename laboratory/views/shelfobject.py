@@ -17,7 +17,7 @@ from django_ajax.mixin import AJAXMixin
 from laboratory.models import ShelfObject, Shelf
 
 from .djgeneric import CreateView, UpdateView, DeleteView
-from ajax_select.fields import AutoCompleteField
+from ajax_select.fields import AutoCompleteSelectField
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -59,8 +59,17 @@ def list_shelfobject(request, lab_pk):
 class ShelfObjectForm(forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
-    object = AutoCompleteField('objects',  help_text=_("Search by name, code or CAS number"))
+    object = AutoCompleteSelectField('objects',  required=False, help_text=_("Search by name, code or CAS number"))
 
+    def clean_object(self):
+        if hasattr(super(ShelfObjectForm, self), 'clean_object'):
+            data=super(ShelfObjectForm, self).clean_object()
+        else:
+            data = self.cleaned_data['object']
+        if not data:
+            raise forms.ValidationError(_("Object is required"))
+        return data
+        
     class Meta:
         model = ShelfObject
         fields = "__all__"
