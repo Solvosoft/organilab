@@ -5,11 +5,11 @@
 
 {% block content %}
   <div class="page-header"><h1>{% trans 'Reactive precursor objects' %}</h1>
-  <a  href="?all_labs=1">{% trans 'Not found? include all laboratories' %}</a>
+    <a href="?all_labs=1">{% trans 'Not found? include all laboratories' %}</a>
   </div>
   <div>
     <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
-       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{all_labs}}">
+       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{ all_labs }}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
       {% trans "All objects in PDF" %}
     </a>
@@ -58,7 +58,12 @@
       </li>
       <li>{% trans "Description:" %} {{ obj.description }}</li>
       <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
-      <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
+      <li>{% trans 'CAS ID Number:' %}: {{ obj.cas_id_number | default:'Undefined' }}</li>
+      {% if obj.clinventory_entry %}
+        <li>{% trans 'Inventario C&L:' %} {{ obj.clinventory_entry.name | safe }} (<a
+            href="{{ obj.clinventory_entry.url }}">{% trans 'Reference link' %}</a>)
+        </li>
+      {% endif %}
     </ul>
   {% empty %}
     {% trans "No objects" %}
@@ -66,7 +71,7 @@
 
   <div>
     <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
-       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{all_labs}}">
+       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{ all_labs }}">
       <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
       {% trans "All objects in PDF" %}
     </a>

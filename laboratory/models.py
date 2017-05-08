@@ -87,6 +87,10 @@ class Object(models.Model):
 
     features = models.ManyToManyField(ObjectFeatures)
 
+    @property
+    def is_reactive(self):
+        return self.type == self.REACTIVE
+
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
@@ -219,9 +223,6 @@ class Laboratory(models.Model):
     def __str__(self):
         return '%s' % (self.name,)
 
-#     class Meta:
-#         permissions = ()
-
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
@@ -234,3 +235,17 @@ class FeedbackEntry(models.Model):
 
     def __str__(self):
         return '%s' % (self.title,)
+
+
+@python_2_unicode_compatible
+class CLInventory(models.Model):
+    name = models.TextField(_('Name'))
+    cas_id_number = models.TextField(_('CAS ID number'))
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('C&L Inventory')
+        verbose_name_plural = ('C&L Inventory objects')
+
+    def __str__(self):
+        return '%s' % self.name

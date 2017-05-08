@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from weasyprint import HTML
 
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_lab_perms
 
@@ -130,6 +130,10 @@ def report_objects(request, *args, **kwargs):
     else:
         objects = Object.objects.filter(pk=var)
 
+    for obj in objects:
+        clentry = CLInventory.objects.filter(cas_id_number=obj.cas_id_number).first()
+        setattr(obj, 'clinventory_entry', clentry)
+
     template = get_template('pdf/object_pdf.html')
 
     context = {
@@ -166,6 +170,10 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
         rpo = Object.objects.all()
 
     rpo = rpo.filter(type=Object.REACTIVE, is_precursor=True)
+
+    for obj in rpo:
+        clentry = CLInventory.objects.filter(cas_id_number=obj.cas_id_number).first()
+        setattr(obj, 'clinventory_entry', clentry)
 
     context = {
         'rpo': rpo,
@@ -271,4 +279,8 @@ class ReactivePrecursorObjectList(ListView):
                              is_precursor=True)
         if not self.all_labs:
             query=query.filter(shelfobject__shelf__furniture__labroom__laboratory=self.lab).distinct()
+
+        for obj in query:
+            clentry = CLInventory.objects.filter(cas_id_number=obj.cas_id_number).first()
+            setattr(obj, 'clinventory_entry', clentry)
         return query
