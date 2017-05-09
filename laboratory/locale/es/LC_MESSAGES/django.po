@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-09 11:29-0600\n"
-"PO-Revision-Date: 2017-05-09 11:29-0600\n"
+"POT-Creation-Date: 2017-05-09 11:59-0600\n"
+"PO-Revision-Date: 2017-05-09 11:59-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -70,7 +70,7 @@ msgstr "Otro"
 #: laboratory/models.py:39 laboratory/models.py:80 laboratory/models.py:142
 #: laboratory/models.py:189 laboratory/models.py:246
 #: laboratory/templates/laboratory/solution_detail.html:45
-#: laboratory/views/solutions.py:75
+#: laboratory/views/solutions.py:77
 msgid "Name"
 msgstr "Nombre"
 
@@ -137,7 +137,7 @@ msgstr "Objeto"
 
 #: laboratory/models.py:96 laboratory/templates/laboratory/index.html:95
 #: laboratory/templates/laboratory/index.html:123
-#: laboratory/templates/laboratory/partials/navbar.html:51
+#: laboratory/templates/laboratory/partials/navbar.html:53
 msgid "Objects"
 msgstr "Objetos"
 
@@ -236,7 +236,7 @@ msgstr "Nombre del laboratorio"
 #: laboratory/models.py:220 laboratory/registry.py:13
 #: laboratory/templates/laboratory/index.html:89
 #: laboratory/templates/laboratory/index.html:117
-#: laboratory/templates/laboratory/partials/navbar.html:46
+#: laboratory/templates/laboratory/partials/navbar.html:48
 #: laboratory/views/laboratory.py:62
 msgid "Laboratory"
 msgstr "Laboratorio"
@@ -267,25 +267,25 @@ msgstr "Entradas de retroalimentación"
 
 #: laboratory/models.py:247
 #: laboratory/templates/laboratory/solution_detail.html:22
-#: laboratory/views/solutions.py:76
+#: laboratory/views/solutions.py:78
 msgid "Solutes"
 msgstr "Solutos"
 
-#: laboratory/models.py:248 laboratory/views/solutions.py:78
+#: laboratory/models.py:248 laboratory/views/solutions.py:80
 msgid "Volumen"
 msgstr "Volumen"
 
-#: laboratory/models.py:249 laboratory/views/solutions.py:51
-#: laboratory/views/solutions.py:79
+#: laboratory/models.py:249 laboratory/views/solutions.py:52
+#: laboratory/views/solutions.py:81
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: laboratory/models.py:250 laboratory/views/solutions.py:50
-#: laboratory/views/solutions.py:80
+#: laboratory/models.py:250 laboratory/views/solutions.py:51
+#: laboratory/views/solutions.py:82
 msgid "Pressure"
 msgstr "Presión"
 
-#: laboratory/models.py:251 laboratory/views/solutions.py:81
+#: laboratory/models.py:251 laboratory/views/solutions.py:83
 msgid "pH"
 msgstr "pH"
 
@@ -333,7 +333,7 @@ msgstr ""
 #: laboratory/registry.py:25 laboratory/registry.py:49
 #: laboratory/templates/laboratory/index.html:46
 #: laboratory/templates/laboratory/index.html:109
-#: laboratory/templates/laboratory/partials/navbar.html:42
+#: laboratory/templates/laboratory/partials/navbar.html:44
 msgid "Reports"
 msgstr "Reportes"
 
@@ -393,7 +393,7 @@ msgstr ""
 "componentes manipulados y guardados en el sistema Organilab"
 
 #: laboratory/registry.py:55
-#: laboratory/templates/laboratory/partials/navbar.html:61
+#: laboratory/templates/laboratory/partials/navbar.html:63
 msgid "My reservations"
 msgstr "Mis reservaciones"
 
@@ -540,7 +540,7 @@ msgstr "Cerrar"
 
 #: laboratory/templates/laboratory/feedbackentry_form.html:4
 #: laboratory/templates/laboratory/feedbackentry_form.html:10
-#: laboratory/templates/laboratory/partials/navbar.html:76
+#: laboratory/templates/laboratory/partials/navbar.html:78
 msgid "Feedback"
 msgstr "Retroalimentación"
 
@@ -627,7 +627,7 @@ msgid "Procedures"
 msgstr "Procedimientos"
 
 #: laboratory/templates/laboratory/index.html:120
-#: laboratory/templates/laboratory/partials/navbar.html:48
+#: laboratory/templates/laboratory/partials/navbar.html:50
 msgid "Furnitures"
 msgstr "Muebles"
 
@@ -697,7 +697,7 @@ msgstr "Los muebles se mostrarán aquí"
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:4
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:7
-#: laboratory/templates/laboratory/partials/navbar.html:55
+#: laboratory/templates/laboratory/partials/navbar.html:57
 msgid "Limited shelf objects"
 msgstr "Objetos en el límite"
 
@@ -743,7 +743,7 @@ msgstr "No hay objetos"
 
 #: laboratory/templates/laboratory/login.html:4
 #: laboratory/templates/laboratory/login.html:9
-#: laboratory/templates/laboratory/partials/navbar.html:81
+#: laboratory/templates/laboratory/partials/navbar.html:83
 msgid "Log in"
 msgstr "Iniciar Sesión"
 
@@ -796,27 +796,31 @@ msgstr "Administración"
 msgid "Laboratory management"
 msgstr "Administración de sala de laboratorio"
 
-#: laboratory/templates/laboratory/partials/navbar.html:53
+#: laboratory/templates/laboratory/partials/navbar.html:35
+msgid "Solution management"
+msgstr "Administración de soluciones"
+
+#: laboratory/templates/laboratory/partials/navbar.html:55
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:4
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:7
 msgid "Reactive precursor objects"
 msgstr "Objetos reactivos precursores"
 
-#: laboratory/templates/laboratory/partials/navbar.html:65
+#: laboratory/templates/laboratory/partials/navbar.html:67
 msgid "Finish reservation"
 msgstr "Finalizar reservación"
 
-#: laboratory/templates/laboratory/partials/navbar.html:68
+#: laboratory/templates/laboratory/partials/navbar.html:70
 msgid "Create a reservation"
 msgstr "Crear reservación"
 
-#: laboratory/templates/laboratory/partials/navbar.html:78
+#: laboratory/templates/laboratory/partials/navbar.html:80
 #: laboratory/templates/pdf/base_pdf.html:22
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:19
 msgid "User:"
 msgstr "Usuario:"
 
-#: laboratory/templates/laboratory/partials/navbar.html:79
+#: laboratory/templates/laboratory/partials/navbar.html:81
 msgid "Log out"
 msgstr "Cerrar Sesión"
 
@@ -1152,113 +1156,113 @@ msgstr ""
 msgid "Invalid format in shelf dataconfig "
 msgstr "Formato inválido en dataconfig del estante"
 
-#: laboratory/views/solutions.py:36
+#: laboratory/views/solutions.py:37
 msgid "Alkalinity"
 msgstr "Alcalinidad"
 
-#: laboratory/views/solutions.py:37
+#: laboratory/views/solutions.py:38
 msgid "Bjerrum length"
 msgstr "Longitud de Bjerrum"
 
-#: laboratory/views/solutions.py:38
+#: laboratory/views/solutions.py:39
 msgid "Charge balance"
 msgstr "Balance de carga"
 
-#: laboratory/views/solutions.py:39
+#: laboratory/views/solutions.py:40
 msgid "Chemical potential energy"
 msgstr "Energía química potencial"
 
-#: laboratory/views/solutions.py:40
+#: laboratory/views/solutions.py:41
 msgid "Conductivity"
 msgstr "Conductividad"
 
-#: laboratory/views/solutions.py:41
+#: laboratory/views/solutions.py:42
 msgid "Debye length"
 msgstr "Longitud de Debye"
 
-#: laboratory/views/solutions.py:42
+#: laboratory/views/solutions.py:43
 msgid "Density"
 msgstr "Densidad"
 
-#: laboratory/views/solutions.py:43
+#: laboratory/views/solutions.py:44
 msgid "Dielectric constant"
 msgstr "Constante dieléctrica"
 
-#: laboratory/views/solutions.py:44
+#: laboratory/views/solutions.py:45
 msgid "Hardness"
 msgstr "Dureza"
 
-#: laboratory/views/solutions.py:45
+#: laboratory/views/solutions.py:46
 msgid "Ionic strength"
 msgstr "Fuerza iónica"
 
-#: laboratory/views/solutions.py:46
+#: laboratory/views/solutions.py:47
 msgid "Mass"
 msgstr "Masa"
 
-#: laboratory/views/solutions.py:47
+#: laboratory/views/solutions.py:48
 msgid "Moles solvent"
 msgstr "Moles de disolvente"
 
-#: laboratory/views/solutions.py:48
+#: laboratory/views/solutions.py:49
 msgid "Osmotic coefficient"
 msgstr "Coeficiente osmótico"
 
-#: laboratory/views/solutions.py:49
+#: laboratory/views/solutions.py:50
 msgid "Osmotic pressure"
 msgstr "Presión osmótica"
 
-#: laboratory/views/solutions.py:52
+#: laboratory/views/solutions.py:53
 msgid "Total moles solute"
 msgstr "Total de moles por soluto"
 
-#: laboratory/views/solutions.py:53
+#: laboratory/views/solutions.py:54
 msgid "Viscosity dynamic"
 msgstr "Viscosidad dinámica"
 
-#: laboratory/views/solutions.py:54
+#: laboratory/views/solutions.py:55
 msgid "Viscosity kinematic"
 msgstr "Viscosidad kinemática"
 
-#: laboratory/views/solutions.py:55
+#: laboratory/views/solutions.py:56
 msgid "Viscosity relative"
 msgstr "Viscosidad relativa"
 
-#: laboratory/views/solutions.py:56
+#: laboratory/views/solutions.py:57
 msgid "Volume"
 msgstr "Volumen"
 
-#: laboratory/views/solutions.py:57
+#: laboratory/views/solutions.py:58
 msgid "Water activity"
 msgstr "Actividad del agua"
 
-#: laboratory/views/solutions.py:75
+#: laboratory/views/solutions.py:77
 msgid "Descriptive name of the solution"
 msgstr "Nombre descriptivo para la solución"
 
-#: laboratory/views/solutions.py:77
+#: laboratory/views/solutions.py:79
 msgid ""
 "Write in each line the formula along with its amount, separated by a comma"
 msgstr ""
 "Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
 
-#: laboratory/views/solutions.py:78
+#: laboratory/views/solutions.py:80
 msgid "For example: 500 mL, 1 L"
 msgstr "Por ejemplo: 500 mL, 1 L"
 
-#: laboratory/views/solutions.py:79
+#: laboratory/views/solutions.py:81
 msgid "In degC"
 msgstr "En degC"
 
-#: laboratory/views/solutions.py:80
+#: laboratory/views/solutions.py:82
 msgid "In atm"
 msgstr "En atm"
 
-#: laboratory/views/solutions.py:90 laboratory/views/solutions.py:94
+#: laboratory/views/solutions.py:92 laboratory/views/solutions.py:96
 msgid "Incorrect solute definition"
 msgstr "Definición incorrecta de soluto"
 
-#: laboratory/views/solutions.py:109
+#: laboratory/views/solutions.py:111
 msgid "There are errors in the solution definition, please try again"
 msgstr "Hay errores en la definición de la solución, intente de nuevo"
 
