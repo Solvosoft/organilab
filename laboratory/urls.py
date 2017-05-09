@@ -106,7 +106,9 @@ lab_features_urls = [
 ]
 
 solutions_urls = [
-    url(r'^calculator', solutions.SolutionCalculatorView.as_view(), name='solution_calculator'),
+    url(r'^calculator$', solutions.SolutionCalculatorView.as_view(), name='solution_calculator'),
+    url(r'^$', solutions.SolutionListView.as_view(), name='solution_list'),
+    url(r'^(?P<pk>\d+)$', solutions.SolutionDetailView.as_view(), name='solution_detail')
 ]
 
 '''MULTILAB'''

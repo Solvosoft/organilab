@@ -11,3 +11,10 @@
     <input type="submit" class="btn btn-primary" value="{% trans 'Calculate' %}">
   </form>
 {% endblock %}
+
+{% block js %}
+  {{ form.errors }}
+  <script defer>
+    $('.help-block').show();
+  </script>
+{% endblock %}
