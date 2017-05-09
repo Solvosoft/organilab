@@ -19,6 +19,7 @@ class SolutionListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(SolutionListView, self).get_context_data(**kwargs)
         context['lab_pk'] = self.lab_pk
+        context['laboratory'] = self.lab_pk
         return context
 
 
@@ -58,6 +59,7 @@ class SolutionDetailView(DetailView):
         ]
         context = super(SolutionDetailView, self).get_context_data(**kwargs)
         context['lab_pk'] = self.lab_pk
+        context['laboratory'] = self.lab_pk
         context['solution_details'] = {}
         for key, has_unit, verbose_name in keys:
             kallable = getattr(self.object.solution_object, 'get_{}'.format(key))
@@ -122,6 +124,7 @@ class SolutionCalculatorView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SolutionCalculatorView, self).get_context_data(**kwargs)
+        context['laboratory'] = self.lab_pk
         return context
 
     def get_success_url(self):

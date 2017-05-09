@@ -1,7 +1,7 @@
 {% load i18n shelf_position laboratory %}
 
-{% has_laboratory_perm 'search' as perm_search %} 
-{% has_laboratory_perm 'admin' as perm_admin %} 
+{% has_laboratory_perm 'search' as perm_search %}
+{% has_laboratory_perm 'admin' as perm_admin %}
 {% has_laboratory_perm 'report' as perm_report %}
 
 
@@ -12,17 +12,17 @@
       <li><a id='select_id' href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span
         class="glyphicon glyphicon-cog"></span></a></li>
       {% if laboratory %}
-       {% if perm_search %}  
-        <li><a id='labview_id' href="{% url 'laboratory:rooms_list' laboratory %}">
-          <strong>{% get_laboratory_name %}</strong>
-        </a></li>
-	   {% endif %}
-        {% if perm_admin %}    
-        <li class="dropdown">
-          <a id='management_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
-             role="button" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Administration' %}<span class="caret"></span></a>
-          <ul class="dropdown-menu">
+        {% if perm_search %}
+          <li><a id='labview_id' href="{% url 'laboratory:rooms_list' laboratory %}">
+            <strong>{% get_laboratory_name %}</strong>
+          </a></li>
+        {% endif %}
+        {% if perm_admin %}
+          <li class="dropdown">
+            <a id='management_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
+               role="button" aria-haspopup="true" aria-expanded="false">
+              {% trans 'Administration' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu">
               <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
                 {% trans 'Laboratory management' %} </a></li>
               <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
@@ -31,16 +31,18 @@
                 {% trans 'Object management' %}</a></li>
               <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
                 {% trans 'Object features management' %}</a></li>
-          </ul>
+              <li><a href="{% url 'laboratory:solution_list' laboratory %}">
+                {% trans 'Solution management' %}</a></li>
+            </ul>
 
-        </li>
-          {% endif %}
-          {% if perm_report %}    
-        <li class="dropdown">
-          <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
-             role="button" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Reports' %}<span class="caret"></span></a>
-          <ul class="dropdown-menu">
+          </li>
+        {% endif %}
+        {% if perm_report %}
+          <li class="dropdown">
+            <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
+               role="button" aria-haspopup="true" aria-expanded="false">
+              {% trans 'Reports' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu">
 
               <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
                 {% trans 'Laboratory' %}</a></li>
@@ -53,10 +55,10 @@
                 {% trans 'Reactive precursor objects' %}</a></li>
               <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
                 {% trans 'Limited shelf objects' %}</a></li>
-          </ul>
-        </li>
- 		{% endif %}
- 
+            </ul>
+          </li>
+        {% endif %}
+
         <li id="reservation_list_id"><a
           href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a>
         </li>
