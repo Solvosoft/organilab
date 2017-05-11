@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n crispy_forms_filters %}
+
+{% block title %}{% trans 'Solution calculator' %}{% endblock %}
+
+{% block content %}
+  <h1>{% trans 'Solution calculator' %}</h1>
+
+  <form method="post" action="">{% csrf_token %}
+    {{ form | crispy }}
+    <input type="submit" class="btn btn-primary" value="{% trans 'Calculate' %}">
+  </form>
+{% endblock %}
+
+{% block js %}
+  {{ form.errors }}
+  <script defer>
+    $('.help-block').show();
+  </script>
+{% endblock %}

@@ -1,8 +1,12 @@
 from __future__ import unicode_literals
+
+import ast
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from pyEQL import Solution as PySolution
 
 from laboratory.validators import validate_molecular_formula
 
@@ -249,3 +253,33 @@ class CLInventory(models.Model):
 
     def __str__(self):
         return '%s' % self.name
+
+class Solution(models.Model):
+    name = models.CharField(_('Name'), max_length=255)
+    solutes = models.TextField(_('Solutes'))
+    volume = models.CharField(_('Volumen'), max_length=100)
+    temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
+    pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
+    pH = models.IntegerField(_('pH'), default=7)
+
+    class Meta:
+        verbose_name = _('Solution')
+        verbose_name_plural = _('Solutions')
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def solute_list(self):
+        return ast.literal_eval(self.solutes)
+
+    @property
+    def solution_object(self):
+        return PySolution(
+            solutes=self.solute_list,
+            volume=self.volume,
+            temperature=self.temperature,
+            pressure=self.pressure,
+            pH=self.pH
+        )
+
