@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Solution detail' %}{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h3>{{ object }}
+      <span class="pull-right">
+        <a class="btn btn-success" href="{% url 'laboratory:solution_list' lab_pk %}">
+          <span class="glyphicon glyphicon-list"
+          aria-hidden="true"></span> {% trans 'Check all the solution results' %}
+        </a>
+        <a class="btn btn-info" href="{% url 'laboratory:solution_calculator' lab_pk %}">
+          <span class="glyphicon glyphicon-plus-sign"
+          aria-hidden="true"></span> {% trans 'Calculate new solution' %}
+        </a>
+      </span>
+    </h3>
+  </div>
+
+  <div class="container">
+    <div class="row text-center">
+      <strong>{% trans 'Solutes' %}</strong>
+      <table class="table">
+        <thead>
+        <tr>
+          <td><strong>{% trans 'Formula' %}</strong></td>
+          <td><strong>{% trans 'Amount' %}</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for solute in object.solute_list %}
+          <tr>
+            <td>{{ solute.0 }}</td>
+            <td>{{ solute.1 }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="row text-center">
+      <strong>{% trans 'Solution properties' %}</strong>
+      <table class="table">
+        <thead>
+        <tr>
+          <td><strong>{% trans 'Name' %}</strong></td>
+          <td><strong>{% trans 'Value' %}</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for name, value in solution_details.values %}
+          <tr>
+            <td>{{ name }}</td>
+            <td>{{ value }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
