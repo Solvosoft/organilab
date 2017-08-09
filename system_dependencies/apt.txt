@@ -1,3 +1,4 @@
+build-essential
 python3-dev
 libxslt-dev
 libxml2-dev
