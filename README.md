@@ -1,5 +1,5 @@
 # organilab
-Simple laboratory organizer
+Simple laboratory organizer, trabajando con pasantes :)
 
 # Documentation
 
