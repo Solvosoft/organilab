@@ -13,6 +13,7 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.query_utils import Q
 
 from laboratory.models import Laboratory
 
@@ -75,8 +76,7 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def get_laboratories(self, user):
-        return Laboratory.objects.filter(
-            laboratorists__pk=user.pk)
+        return Laboratory.objects.filter(Q(laboratorists__pk = user.pk) |  Q(students__pk = user.pk) | Q(lab_admins__pk = user.pk)).distinct()
 
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
@@ -93,6 +93,8 @@ class SelectLaboratoryView(FormView):
     def get(self, request, *args, **kwargs):
         labs = self.get_laboratories(request.user)
         if labs.count() == 1:
-            return redirect('laboratory:index', labs.first().pk)
+            lab_pk = labs.first().pk
+            request.session['lab_pk'] = lab_pk
+            return redirect('laboratory:index', lab_pk)
 
         return FormView.get(self, request, *args, **kwargs)
