@@ -60,7 +60,7 @@ class LaboratoryView(object):
 
 class SelectLaboratoryForm(forms.Form):
     laboratory = forms.ModelChoiceField(label=_('Laboratory'),
-        queryset=Laboratory.objects.all(), empty_label=None)
+                                        queryset=Laboratory.objects.all(), empty_label=None)
 
     def __init__(self, *args, **kwargs):
         lab_queryset = kwargs.pop('lab_queryset')
@@ -74,11 +74,14 @@ class SelectLaboratoryView(FormView):
     form_class = SelectLaboratoryForm
     success_url = '/'
 
+    def get_laboratories(self, user):
+        return Laboratory.objects.filter(
+            laboratorists__pk=user.pk)
+
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
         user = self.request.user
-        kwargs['lab_queryset'] = Laboratory.objects.filter(
-            laboratorists__pk=user.pk)
+        kwargs['lab_queryset'] = self.get_laboratories(user)
         return kwargs
 
     def form_valid(self, form):
@@ -86,3 +89,10 @@ class SelectLaboratoryView(FormView):
         request = self.request
         request.session['lab_pk'] = lab_pk
         return redirect('laboratory:index', lab_pk)
+
+    def get(self, request, *args, **kwargs):
+        labs = self.get_laboratories(request.user)
+        if labs.count() == 1:
+            return redirect('laboratory:index', labs.first().pk)
+
+        return FormView.get(self, request, *args, **kwargs)
