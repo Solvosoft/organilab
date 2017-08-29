@@ -1,0 +1,16 @@
+{% if message %}
+<div class="alert alert-info">{{message}}</div>
+{% endif%}
+
+<ul class="list-group">
+<li class="list-group-item">
+  <a href= "{% url 'laboratory:laboratory_ajax_get_create_admins_user' lab.pk%}" data-ajax="true">Create</a>
+</li>
+{% for object in object_list%}
+<li class="list-group-item">{{object}}
+  <div class="pull-right">
+    <a data-ajax="true" href={%url 'laboratory:laboratory_ajax_del_admins_users' lab.pk object.pk %} class="btn btn-sm btn-danger">Eliminar</a>
+  </div>
+</li>
+{%endfor%}
+</ul>
