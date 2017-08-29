@@ -1,32 +1,32 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
-{% load i18n static shelf_position laboratory %} 
-{% block title %} 
+{% load i18n static shelf_position laboratory %}
+{% block title %}
 	{% if request.user.is_authenticated %}
 		{% get_laboratory_name %}
 	{% else %}
 		{% trans 'Select laboratory' %}
-	{% endif %} 
-{% endblock %} 
+	{% endif %}
+{% endblock %}
 {% block css %}
 <link href="{% static 'laboratory/css/bootstrap-tour.css' %}"
 	rel="stylesheet">
 <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}"
 	rel="stylesheet">
-{% endblock %} 
+{% endblock %}
 {% block js %}
 <script type="text/javascript"
 	src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
 <script type="text/javascript"
 	src="{% static 'laboratory/js/tour.js' %}"></script>
-{% endblock %} 
+{% endblock %}
 
-{% load i18n static %} 
-{% block content %} 
-{% if request.user.is_authenticated %} 
-{% include 'laboratory/search_widget.html' %} 
-{% has_laboratory_perm 'search' as perm_search %} 
-{% has_laboratory_perm 'admin' as perm_admin %} 
+{% load i18n static %}
+{% block content %}
+{% if request.user.is_authenticated %}
+{% include 'laboratory/search_widget.html' %}
+{% has_laboratory_perm 'search' as perm_search %}
+{% has_laboratory_perm 'admin' as perm_admin %}
 {% has_laboratory_perm 'report' as perm_report %}
 
 <div class="row">
@@ -47,7 +47,9 @@
       </div>
       {% endif %}
     </div>
-    <br><br>
+
+		<br><br>
+
     <div class="row">
               {% if perm_search %}
         <div class="col-md-4 text-center">
@@ -64,19 +66,24 @@
               <a href="{% url 'laboratory:rooms_list' laboratory %}">
                 <strong>{% trans 'Laboratory view' %}</strong></a>
                 </li>
+
               <li class="list-group-item">
               <a href="{% url 'academic_procedure_list' %}">
                 <strong>{% trans 'Procedures' %}</strong></a>
               </li>
 
-				<li class="list-group-item">
+						<li class="list-group-item">
               <a href="{% url 'laboratory:solution_list' laboratory %}">
                 <strong>{% trans 'Solution calculator' %}</strong></a>
                 </li>
 
-                
+						<li class="list-group-item">
+              <a href="{% url 'laboratory:access_list_lab_admins' laboratory %}">
+                <strong>{% trans 'Access list' %}</strong></a>
+                </li>
+
             </ul>
-         
+
           </div>
         </div>
 		 {% endif %}
@@ -104,7 +111,7 @@
                 href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
               </li>
           </ul>
-         
+
         </div>
       </div>
  {% endif %}
@@ -132,7 +139,7 @@
       </div>
        {% endif %}
     </div>
-       
+
 
   {% else %}
     <div class="row">

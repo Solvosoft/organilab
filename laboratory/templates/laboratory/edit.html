@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load bootstrap  i18n %}
+
+{% block content %}
+  <h1 align="center">{% trans 'Laboratory Management' %}</h1>
+  <div class="row">
+    <div class="col-md-4">
+      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' form.instance.pk %}{% else %}{% url 'laboratory:laboratory_create' %} {% endif %}"
+            method="post">{% csrf_token %}
+        {{ form|bootstrap }}
+        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+      </form>
+    </div>
+    <div data-href="{% url 'laboratory:laboratory_ajax_admins_users_list' form.instance.pk %}" class="col-md-4" id="admin_lab_users">
+
+    <div>
+  </div>
+  <br> <br>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    ajaxGet("{% url 'laboratory:laboratory_ajax_admins_users_list' form.instance.pk %}", (content) => {
+        console.log(content);
+    })
+</script>
+{% endblock %}
