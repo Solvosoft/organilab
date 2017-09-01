@@ -29,9 +29,15 @@ class ObjectView(object):
         @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         class ObjectCreateView(CreateView):
 
-            def get_success_url(self):
-                return reverse_lazy('laboratory:objectview_list', args=(
+            def get_success_url(self, *args, **kwargs):
+                redirect = reverse_lazy('laboratory:objectview_list', args=(
                     self.lab,))
+                self.type_id = self.request.GET.get('type_id', '')
+                if self.type_id:
+                    redirect += "?type_id=" + self.type_id
+                else:
+                    redirect += "?type_id=0"
+                return redirect
 
             def get_form_kwargs(self):
                 kwargs = super(ObjectCreateView, self).get_form_kwargs()
@@ -41,7 +47,6 @@ class ObjectView(object):
         self.create = check_lab_permissions(login_required(ObjectCreateView.as_view(
             model=self.model,
             form_class=ObjectForm,
-            success_url="/",
             template_name=self.template_name_base + "_form.html"
         )))
 
