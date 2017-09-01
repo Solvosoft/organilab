@@ -12,6 +12,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
+from django import forms
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
@@ -31,6 +32,11 @@ class ObjectView(object):
             def get_success_url(self):
                 return reverse_lazy('laboratory:objectview_list', args=(
                     self.lab,))
+
+            def get_form_kwargs(self):
+                kwargs = super(ObjectCreateView, self).get_form_kwargs()
+                kwargs['request'] = self.request
+                return kwargs
 
         self.create = check_lab_permissions(login_required(ObjectCreateView.as_view(
             model=self.model,
@@ -71,6 +77,14 @@ class ObjectView(object):
 
             def get_queryset(self):
                 query = ListView.get_queryset(self)
+                if 'type_id' in self.request.GET:
+                    self.type_id = self.request.GET.get('type_id', '')
+                    if self.type_id:
+                        filters = Q(type=self.type_id)
+                    query = query.filter(filters)
+                else:
+                    self.type_id = ''
+
                 if 'q' in self.request.GET:
                     self.q = self.request.GET.get('q', '')
                     print(self.q)
@@ -86,6 +100,7 @@ class ObjectView(object):
             def get_context_data(self, **kwargs):
                 context = ListView.get_context_data(self, **kwargs)
                 context['q'] = self.q or ''
+                context['type_id'] = self.type_id or ''
                 return context
 
         self.list = check_lab_permissions(login_required(ObjectListView.as_view(
@@ -115,11 +130,24 @@ class ObjectForm(ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
+        self.request = None
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+
         data_type = None
         if 'data' in kwargs:
             data_type = kwargs.get('data').get('type')
 
         super(ObjectForm, self).__init__(*args, **kwargs)
+
+        if self.request:
+            if 'type_id' in self.request.GET:
+                self.type_id = self.request.GET.get('type_id', '')
+                if self.type_id:
+                    self.fields['type'] = forms.CharField(
+                        initial=self.type_id,
+                        widget=forms.HiddenInput()
+                    )
 
         if data_type is not None and data_type == Object.REACTIVE:
             self.fields['molecular_formula'].required = True

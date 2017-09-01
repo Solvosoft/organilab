@@ -13,7 +13,7 @@
     <button type="submit" class="btn btn-info"> {% trans 'Search' %} </button>
   </form>
   <a class="btn btn-info pull-right"
-     href="{% url 'laboratory:objectview_create' laboratory %}">
+    href="{% url 'laboratory:objectview_create' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %}
   </a>
   <br><br>
