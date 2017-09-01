@@ -54,13 +54,18 @@ class ObjectView(object):
         class ObjectUpdateView(UpdateView):
 
             def get_success_url(self):
-                return reverse_lazy('laboratory:objectview_list',
-                                    args=(self.lab,))
+                return reverse_lazy(
+                    'laboratory:objectview_list',
+                    args=(self.lab,)) + "?type_id=" + self.get_object().type
+
+            def get_form_kwargs(self):
+                kwargs = super(ObjectUpdateView, self).get_form_kwargs()
+                kwargs['request'] = self.request
+                return kwargs
 
         self.edit = check_lab_permissions(login_required(ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
-            success_url="/",
             template_name=self.template_name_base + "_form.html"
         )))
 
