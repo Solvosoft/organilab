@@ -23,7 +23,7 @@
         <div class="col-md-9"> {{ object }}</div>
         <div class="col-md-3">
           <a class="btn btn-info"
-             href="{% url 'laboratory:objectview_update' laboratory object.pk %}">
+             href="{% url 'laboratory:objectview_update' laboratory object.pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
           <a class="btn btn-danger"
              href="{% url 'laboratory:objectview_delete' laboratory object.pk %}">
