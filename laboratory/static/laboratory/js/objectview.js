@@ -10,6 +10,9 @@ $(document).ready(function () {
 function update_form() {
     var select_widget = $('#id_type');
     var selected_option = select_widget.find('option:selected').val();
+    if(!selected_option) {
+        selected_option = select_widget.val();
+    }
     var form = $('#objectview_form');
 
     if (selected_option == '0') {
