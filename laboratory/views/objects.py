@@ -31,12 +31,7 @@ class ObjectView(object):
 
             def get_success_url(self, *args, **kwargs):
                 redirect = reverse_lazy('laboratory:objectview_list', args=(
-                    self.lab,))
-                self.type_id = self.request.GET.get('type_id', '')
-                if self.type_id:
-                    redirect += "?type_id=" + self.type_id
-                else:
-                    redirect += "?type_id=0"
+                    self.lab,)) + "?type_id=" + self.object.type
                 return redirect
 
             def get_form_kwargs(self):
