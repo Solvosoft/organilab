@@ -89,11 +89,11 @@ msgstr "Características del objeto"
 
 #: laboratory/models.py:55
 msgid "Reactive"
-msgstr "Reactivo"
+msgstr "Reactivos"
 
 #: laboratory/models.py:56
 msgid "Material"
-msgstr "Material"
+msgstr "Materiales"
 
 #: laboratory/models.py:57
 msgid "Equipment"
