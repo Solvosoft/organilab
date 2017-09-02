@@ -17,6 +17,10 @@ body {
     margin-top: -1px;
 }
 
+.dropdown-submenu .caret {
+    transform: rotate(270deg);
+}
+
 .footer {
     position: absolute;
     bottom: 0;
