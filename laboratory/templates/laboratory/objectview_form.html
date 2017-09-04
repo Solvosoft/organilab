@@ -2,12 +2,12 @@
 
 {% load bootstrap i18n static %}
 
-{% block title %}{% trans 'Object management' %}{% endblock %}
+{% block title %}{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
 
 {% block content %}
   <div class="row">
     <div class="col-md-6 col-md-offset-4">
-      <h1 align="center">{% trans 'Object management' %}</h1>
+      <h1 align="center">{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}</h1>
       <form enctype="multipart/form-data" action="
         {% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
             method="post">{% csrf_token %}

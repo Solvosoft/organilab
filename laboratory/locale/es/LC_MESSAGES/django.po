@@ -89,11 +89,11 @@ msgstr "Características del objeto"
 
 #: laboratory/models.py:55
 msgid "Reactive"
-msgstr "Reactivos"
+msgstr "Reactivo"
 
 #: laboratory/models.py:56
 msgid "Material"
-msgstr "Materiales"
+msgstr "Material"
 
 #: laboratory/models.py:57
 msgid "Equipment"
@@ -783,6 +783,27 @@ msgstr "Borrar objeto"
 msgid "Object management"
 msgstr "Administración de objetos"
 
+#: laboratory/templates/laboratory/objectview_form.html:5
+#: laboratory/templates/laboratory/objectview_form.html:10
+#: laboratory/templates/laboratory/objectview_list.html:4
+#: laboratory/templates/laboratory/objectview_list.html:7
+msgid "Reactive management"
+msgstr "Administración de Reactivos"
+
+#: laboratory/templates/laboratory/objectview_form.html:5
+#: laboratory/templates/laboratory/objectview_form.html:10
+#: laboratory/templates/laboratory/objectview_list.html:4
+#: laboratory/templates/laboratory/objectview_list.html:7
+msgid "Material management"
+msgstr "Administración de Materiales"
+
+#: laboratory/templates/laboratory/objectview_form.html:5
+#: laboratory/templates/laboratory/objectview_form.html:10
+#: laboratory/templates/laboratory/objectview_list.html:4
+#: laboratory/templates/laboratory/objectview_list.html:7
+msgid "Equipment management"
+msgstr "Administración de Equipos"
+
 #: laboratory/templates/laboratory/objectview_list.html:13
 #: laboratory/templates/laboratory/search_widget.html:27
 msgid "Search"
@@ -960,6 +981,21 @@ msgstr "Cantidad"
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:37
 msgid "No Labs"
 msgstr "No hay laboratorios"
+
+#: laboratory/templates/laboratory/report_object_list.html:4
+#: laboratory/templates/laboratory/report_object_list.html:8
+msgid "Reactives report"
+msgstr "Reporte de Reactivos"
+
+#: laboratory/templates/laboratory/report_object_list.html:4
+#: laboratory/templates/laboratory/report_object_list.html:8
+msgid "Materials report"
+msgstr "Reporte de Materiales"
+
+#: laboratory/templates/laboratory/report_object_list.html:4
+#: laboratory/templates/laboratory/report_object_list.html:8
+msgid "Equipments report"
+msgstr "Reporte de Equipos"
 
 #: laboratory/templates/laboratory/report_object_list.html:4
 #: laboratory/templates/laboratory/report_object_list.html:8
