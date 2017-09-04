@@ -6,6 +6,7 @@ Created on 26/12/2016
 '''
 from __future__ import unicode_literals
 
+from django.db.models.query_utils import Q
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -122,9 +123,18 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
+
         if 'lab_pk' in kwargs:
-            objects = Object.objects.filter(
+            filters = Q(
                 shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+
+        if 'type_id' in request.GET:
+            type_id = request.GET.get('type_id', '')
+            if type_id:
+                filters = filters & Q(type=type_id)
+
+        if 'lab_pk' in kwargs and 'type_id' in request.GET:
+            objects = Object.objects.filter(filters)
         else:
             objects = Object.objects.all()
     else:
@@ -229,13 +239,30 @@ class ObjectList(ListView):
     model = Object
     template_name = 'laboratory/report_object_list.html'
 
+    def get_type(self):
+        if 'type_id' in self.request.GET:
+            self.type_id = self.request.GET.get('type_id', '')
+            if self.type_id:
+                return self.type_id
+            else:
+                return None
+        else:
+            return None
+
     def get_queryset(self):
         query = super(ObjectList, self).get_queryset()
-        return query.filter(shelfobject__shelf__furniture__labroom__laboratory=self.lab)
+        if self.get_type():
+            return query.filter(
+                type=self.get_type(),
+                shelfobject__shelf__furniture__labroom__laboratory=self.lab)
+        else:
+            return query.filter(
+                shelfobject__shelf__furniture__labroom__laboratory=self.lab)
 
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
+        context['type_id'] = self.get_type()
         return context
 
 
@@ -274,7 +301,7 @@ class ReactivePrecursorObjectList(ListView):
         except:
             self.all_labs=0
         query = super(ReactivePrecursorObjectList, self).get_queryset()
-        
+
         query = query.filter(type=Object.REACTIVE,
                              is_precursor=True)
         if not self.all_labs:
