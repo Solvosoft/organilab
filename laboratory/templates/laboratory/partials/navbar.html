@@ -27,8 +27,14 @@
                 {% trans 'Laboratory management' %} </a></li>
               <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
                 {% trans 'Furniture management' %}</a></li>
-              <li><a href="{% url 'laboratory:objectview_list' laboratory %}">
-                {% trans 'Object management' %}</a></li>
+              <li class="dropdown-submenu">
+                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=0" >{% trans 'Reactive' %}</a></li>
+                  <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
+                  <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
+                </ul>
+              </li>
               <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
                 {% trans 'Object features management' %}</a></li>
               <li><a href="{% url 'laboratory:solution_list' laboratory %}">
@@ -49,8 +55,14 @@
               <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
                 {% trans 'Furnitures' %}</a>
               </li>
-              <li><a href="{% url 'laboratory:reports_objects_list' laboratory %}">
-                {% trans 'Objects' %}</a></li>
+              <li class="dropdown-submenu">
+                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">{% trans 'Reactive' %}</a></li>
+                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
+                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
+                </ul>
+              </li>
               <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
                 {% trans 'Reactive precursor objects' %}</a></li>
               <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
