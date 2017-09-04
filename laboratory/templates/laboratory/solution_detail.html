@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'Solution detail' %}{% endblock %}
+{% block title %}{% trans 'Dissolution detail' %}{% endblock %}
 
 {% block content %}
   <div class="page-header">
@@ -9,11 +9,11 @@
       <span class="pull-right">
         <a class="btn btn-success" href="{% url 'laboratory:solution_list' lab_pk %}">
           <span class="glyphicon glyphicon-list"
-          aria-hidden="true"></span> {% trans 'Check all the solution results' %}
+          aria-hidden="true"></span> {% trans 'Check all the dissolution results' %}
         </a>
         <a class="btn btn-info" href="{% url 'laboratory:solution_calculator' lab_pk %}">
           <span class="glyphicon glyphicon-plus-sign"
-          aria-hidden="true"></span> {% trans 'Calculate new solution' %}
+          aria-hidden="true"></span> {% trans 'Calculate new dissolution' %}
         </a>
       </span>
     </h3>
@@ -40,7 +40,7 @@
       </table>
     </div>
     <div class="row text-center">
-      <strong>{% trans 'Solution properties' %}</strong>
+      <strong>{% trans 'Dissolution properties' %}</strong>
       <table class="table">
         <thead>
         <tr>
