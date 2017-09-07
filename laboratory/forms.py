@@ -1,4 +1,7 @@
 from django import forms
+from .models import Laboratory
+from django.contrib.auth.models import User
+
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
 
@@ -7,7 +10,8 @@ class ObjectSearchForm(forms.Form):
     all_labs = forms.BooleanField(widget=forms.CheckboxInput, required=False, label="All labs")
 
 class UserSearchForm(forms.Form):
-    user = AutoCompleteSelectMultipleField('users', help_text=_("Find_users"))
+    user = AutoCompleteSelectMultipleField('users', required=False)
+    #, help_text=_("Search by name")
 
 class UserCreate(forms.Form):
     username = forms.CharField()
@@ -16,6 +20,11 @@ class UserCreate(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget = forms.PasswordInput)
     password_verification = forms.CharField(widget=forms.PasswordInput)
+
+class UserAccessForm(forms.Form):
+    access = forms.BooleanField(widget = forms.CheckboxInput(attrs={'id':'user_cb_'})) #User_checkbox_id
+    #For delete users. Add a delete button.
+
 
 #Traduccion (Multilenguaje)
 #Validacion()

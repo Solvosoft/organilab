@@ -123,17 +123,14 @@ lab_access_urls = [
     url(r'^labadmins$', access.AccessListLabAdminsView.as_view(), name='access_list_lab_admins'),
     url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(), name='access_list_laboratorits'),
     url(r'^students$', access.AccessListStudentsView.as_view(), name='access_list_students'),
-    url(r'^relatedlabs$', access.AccessListRelatedLabsView.as_view(), name='access_list_related_labs'),
 ]
 
 
 '''MULTILAB'''
 urlpatterns += [
-    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(),
-        name="search"),
+    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/furniture/',
-        include(lab_furniture_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
