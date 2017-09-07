@@ -5,23 +5,48 @@
 
 {% block content %}
 
+{% include 'laboratory/search_widget.html' %}
+
   <ul class="nav nav-tabs">
-    <li id="tab_lab_admins"><a href="{% url 'laboratory:access_list_lab_admins' laboratory %}">Admins</a></li>
+    <li id="tab_lab_admins"><a href="{% url 'laboratory:access_list_lab_admins' laboratory %}">Administrators</a></li>
     <li id="tab_laboratorits"><a href="{% url 'laboratory:access_list_laboratorits' laboratory %}">Laboratorits</a></li>
     <li id="tab_students"><a href="{% url 'laboratory:access_list_students' laboratory %}">Students</a></li>
-    <li id="tab_related_labs"><a href="{% url 'laboratory:access_list_related_labs' laboratory %}">Laboratories</a></li>
   </ul>
+
+  <br>
+
+  <div class = "container">
+    <div id="left" style="float:left; width:50%;">
+      <!--<form method="POST" class="post-form">{% csrf_token %}-->
+      <form method="get" action="get-form">
+          {{ user_search.as_p }}
+        <!--<button type="submit" class="save btn btn-default">Create</button>-->
+      </div>
+      </form>
+    </div>
+    <div id="right" style="float:right; width:50%;">
+      <h3>{% trans 'Create users' %}</h3>
+      <br>
+      <form method="POST" class="post-form">{% csrf_token %}
+        <table class="table">
+          {{ user_create.as_table }}
+        </table>
+        <button type="submit" class="save btn btn-default">Create</button>
+      </form>
+    </div>
+  </div>
+
+  <br>
 
   <div class="container">
     <br>
-    {% include 'laboratory/search_widget.html' %}
-    <br>
-
     <ul class="list-group">
       {% for object in object_list %}
         <li class="list-group-item">
+          <!--<input type="checkbox" id="user_cb_{{ object.id }}">-->
+          {{ user_access.access }}
+          &nbsp;
           {{ object }}
-          <input type="checkbox">
         </li>
         {% empty %}
           <i>{% trans 'No solutions yet' %}</i>
@@ -53,7 +78,7 @@
   </div>
 
   <script>
-    switch ({{active}}) {
+    switch ({{role}}) {
       case 1:
         $('#tab_lab_admins').addClass('active');
         break;
@@ -62,9 +87,6 @@
         break;
       case 3:
         $('#tab_students').addClass('active');
-        break;
-      case 4:
-        $('#tab_related_labs').addClass('active');
         break;
     }
 

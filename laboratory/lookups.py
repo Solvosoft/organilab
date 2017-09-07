@@ -22,13 +22,12 @@ class TagsLookup(LookupChannel):
     def format_item_display(self, item):
         return u"<span class='tag'>(%s) %s</span>" % (item.code, item.name)
 
+#Buscar usuarios
 @register('users')
 class UserLookup(LookupChannel):
-
     model = User
-
+    
     def get_query(self, q, request):
-
         qs = q.split(' ')
         _filter = None
         for nq in qs:
@@ -36,6 +35,7 @@ class UserLookup(LookupChannel):
                 _filter = Q(username__icontains=nq) | Q(firstname__icontains=nq) | Q(lastname__icontains=nq)
             else:
                 _filter |= Q(username__icontains=nq) | Q(firstname__icontains=nq) | Q(lastname__icontains=nq)
+
         return self.model.objects.filter(_filter).order_by('username')[:8]
 
     def format_item_display(self, item):

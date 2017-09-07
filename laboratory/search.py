@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
+from django.contrib.auth.models import User
 
 from laboratory.models import ShelfObject, Laboratory
 from laboratory.forms import ObjectSearchForm
@@ -21,6 +22,7 @@ from laboratory.forms import ObjectSearchForm
 class SearchObject(ListView):
     model = ShelfObject
     search_fields = ['object__code', 'object__name', 'object__description']
+    #a usar
     template_name = "laboratory/search.html"
 
     def get_queryset(self):
@@ -29,16 +31,13 @@ class SearchObject(ListView):
         filter_lab = True
         if 'q' in self.request.GET:
             form = ObjectSearchForm(self.request.GET)
-            if form.is_valid():               
+            if form.is_valid():
                 if 'q' in form.cleaned_data:
                     params = {'object__pk__in': form.cleaned_data['q']}
                 filter_lab = not form.cleaned_data['all_labs']
-        labs = Laboratory.objects.filter(
-            Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)
-        ).distinct()
 
-        query = self.model.objects.filter(
-            shelf__furniture__labroom__laboratory__in=labs)
+        labs = Laboratory.objects.filter(Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)).distinct()
+        query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
 
         if filter_lab:
             if 'lab_pk' in self.kwargs:
@@ -57,3 +56,8 @@ class SearchObject(ListView):
             context['laboratory'] = self.kwargs.get('lab_pk')
         context['q'] = self.request.GET.get('q', '')
         return context
+
+@method_decorator(login_required, name='dispatch')
+class SearchUser(ListView):
+    model = User
+    search_fields = ['user__username', 'user__firstname', 'user__lastname', 'user__email']
