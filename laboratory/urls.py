@@ -123,6 +123,7 @@ lab_access_urls = [
     url(r'^labadmins$', access.AccessListLabAdminsView.as_view(), name='access_list_lab_admins'),
     url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(), name='access_list_laboratorits'),
     url(r'^students$', access.AccessListStudentsView.as_view(), name='access_list_students'),
+    url(r'^saveuser$', access.save_user, name='save_user'),
 ]
 
 
