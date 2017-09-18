@@ -15,14 +15,21 @@ from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions
+from laboratory.views import access
 from laboratory.views.objects import ObjectView
 
 objviews = ObjectView()
 
 urlpatterns = [
-    url(r'^(?P<lab_pk>\d)?$', views.index, name='index'),
-    url(r'^accounts/login/$', auth_views.login, {
-        'template_name': 'laboratory/login.html'}, name='login'),
+    url(r'^(?P<lab_pk>\d+)?$', views.index, name='index'),
+    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
+    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users, name='laboratory_ajax_admins_users_list'),
+    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user, name='laboratory_ajax_get_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user, name='laboratory_ajax_create_admins_user'),
+
+    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$', laboratory.del_admins_user, name='laboratory_ajax_del_admins_users'),
+
+    url(r'^accounts/login/$', auth_views.login, {'template_name': 'laboratory/login.html'}, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
@@ -112,18 +119,25 @@ solutions_urls = [
     url(r'^(?P<pk>\d+)$', solutions.SolutionDetailView.as_view(), name='solution_detail')
 ]
 
+lab_access_urls = [
+    url(r'^labadmins$', access.AccessListLabAdminsView.as_view(), name='access_list_lab_admins'),
+    url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(), name='access_list_laboratorits'),
+    url(r'^students$', access.AccessListStudentsView.as_view(), name='access_list_students'),
+    url(r'^saveuser$', access.save_user, name='save_user'),
+]
+
+
 '''MULTILAB'''
 urlpatterns += [
-    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(),
-        name="search"),
+    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/furniture/',
-        include(lab_furniture_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
-]
 
+    url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
+]

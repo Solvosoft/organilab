@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Access List' %}{% endblock %}
+
+{% block content %}
+
+{% include 'laboratory/search_widget.html' %}
+
+  <ul class="nav nav-tabs">
+    <li id="tab_lab_admins"><a href="{% url 'laboratory:access_list_lab_admins' laboratory %}">Administrators</a></li>
+    <li id="tab_laboratorits"><a href="{% url 'laboratory:access_list_laboratorits' laboratory %}">Laboratorits</a></li>
+    <li id="tab_students"><a href="{% url 'laboratory:access_list_students' laboratory %}">Students</a></li>
+  </ul>
+
+  <br>
+
+  <div class = "container">
+
+    <div class="row">
+      <form action='' method="POST"  class="post-form">{% csrf_token %}
+        <div class="col-xs-6 col-md-4">
+          	{{ user_search.user }}
+        </div>
+        <div class="col-xs-6 col-md-4">
+           	<button type="submit" class="save btn btn-default">{% trans 'Add' %}</button>
+        </div>
+      </form>
+
+      <div class="col-xs-6 col-md-4">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#create_users_modal" >{% trans 'Create user' %}</button>
+
+    </div>
+
+    <div class="modal fade" id="create_users_modal" role="dialog">
+
+      <div class="modal-dialog">
+
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center><h3 class="modal-title">{% trans 'Create users' %}</h3></center>
+          </div>
+          <div class="modal-body">
+
+            <!--<form method="POST" class="post-form">{% csrf_token %}
+              <table class="table">
+                {{ user_create_form.as_table }}
+              </table>
+              <button type="submit" class="save btn btn-default">{% trans 'Create' %}</button>
+            </form>-->
+
+            {% block user_create_form %}
+              {% include 'laboratory/user_create_form.html' %}
+            {% endblock user_create_form%}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div class="container">
+    <br>
+    <ul class="list-group">
+      {% for object in object_list %}
+        <li class="list-group-item">
+          {{ object }}
+          <button type="button" class="btn btn-warning pull-right">{% trans 'Unasign' %}</button>
+        </li>
+        {% empty %}
+          <i>{% trans 'No solutions yet' %}</i>
+        {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+          {% if page_obj.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
+  </div>
+
+  <script>
+    switch ({{role}}) {
+      case 1:
+        $('#tab_lab_admins').addClass('active');
+        break;
+      case 2:
+        $('#tab_laboratorits').addClass('active');
+        break;
+      case 3:
+        $('#tab_students').addClass('active');
+        break;
+    }
+
+  </script>
+
+{% endblock %}
