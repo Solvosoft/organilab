@@ -16,24 +16,52 @@
   <br>
 
   <div class = "container">
-    <div id="left" style="float:left; width:50%;">
-      <!--<form method="POST" class="post-form">{% csrf_token %}-->
-      <form method="get" action="get-form">
-          {{ user_search.as_p }}
-        <!--<button type="submit" class="save btn btn-default">Create</button>-->
+
+    <div class="row">
+      <form action='' method="POST"  class="post-form">{% csrf_token %}
+        <div class="col-xs-6 col-md-4">
+          	{{ user_search.user }}
+        </div>
+        <div class="col-xs-6 col-md-4">
+           	<button type="submit" class="save btn btn-default">{% trans 'Add' %}</button>
+        </div>
+      </form>
+
+      <div class="col-xs-6 col-md-4">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#create_users_modal" >{% trans 'Create user' %}</button>
+
+    </div>
+
+    <div class="modal fade" id="create_users_modal" role="dialog">
+
+      <div class="modal-dialog">
+
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center><h3 class="modal-title">{% trans 'Create users' %}</h3></center>
+          </div>
+          <div class="modal-body">
+
+            <!--<form method="POST" class="post-form">{% csrf_token %}
+              <table class="table">
+                {{ user_create_form.as_table }}
+              </table>
+              <button type="submit" class="save btn btn-default">{% trans 'Create' %}</button>
+            </form>-->
+
+            {% block user_create_form %}
+              {% include 'laboratory/user_create_form.html' %}
+            {% endblock user_create_form%}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+          </div>
+        </div>
       </div>
-      </form>
+
     </div>
-    <div id="right" style="float:right; width:50%;">
-      <h3>{% trans 'Create users' %}</h3>
-      <br>
-      <form method="POST" class="post-form">{% csrf_token %}
-        <table class="table">
-          {{ user_create.as_table }}
-        </table>
-        <button type="submit" class="save btn btn-default">Create</button>
-      </form>
-    </div>
+
   </div>
 
   <br>
@@ -43,10 +71,8 @@
     <ul class="list-group">
       {% for object in object_list %}
         <li class="list-group-item">
-          <!--<input type="checkbox" id="user_cb_{{ object.id }}">-->
-          {{ user_access.access }}
-          &nbsp;
           {{ object }}
+          <button type="button" class="btn btn-warning pull-right">{% trans 'Unasign' %}</button>
         </li>
         {% empty %}
           <i>{% trans 'No solutions yet' %}</i>

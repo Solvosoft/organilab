@@ -4,7 +4,7 @@
 Free as freedom will be 26/8/2016
 
 @author: luisza
-'''
+''' 
 
 from __future__ import unicode_literals
 
@@ -16,13 +16,13 @@ from django.contrib.auth.models import User
 
 from laboratory.models import ShelfObject, Laboratory
 from laboratory.forms import ObjectSearchForm
+from babel.util import distinct
 
 
 @method_decorator(login_required, name='dispatch')
 class SearchObject(ListView):
     model = ShelfObject
     search_fields = ['object__code', 'object__name', 'object__description']
-    #a usar
     template_name = "laboratory/search.html"
 
     def get_queryset(self):
@@ -56,8 +56,3 @@ class SearchObject(ListView):
             context['laboratory'] = self.kwargs.get('lab_pk')
         context['q'] = self.request.GET.get('q', '')
         return context
-
-@method_decorator(login_required, name='dispatch')
-class SearchUser(ListView):
-    model = User
-    search_fields = ['user__username', 'user__firstname', 'user__lastname', 'user__email']
