@@ -60,3 +60,7 @@ ul.ui-autocomplete{
 p.help-block{
 	display: none;
 }
+
+.access_item{
+	margin: 5px 0;
+}
