@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'Object management' %}{% endblock %}
+{% block title %} {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
 
 {% block content %}
-  <div class="page-header"><h1>{% trans 'Object management' %}</h1></div>
+  <div class="page-header"><h1> {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} </h1></div>
 
   <form class="form-inline" method="GET" action="">
     <div class="form-group">
       <input type="text" name="q" value="{{ q }}" class="form-control">
+      <input type="hidden" name="type_id" value="{{ type_id }}" class="form-control">
     </div>
     <button type="submit" class="btn btn-info"> {% trans 'Search' %} </button>
   </form>
   <a class="btn btn-info pull-right"
-     href="{% url 'laboratory:objectview_create' laboratory %}">
+    href="{% url 'laboratory:objectview_create' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %}
   </a>
   <br><br>
@@ -23,7 +24,7 @@
         <div class="col-md-9"> {{ object }}</div>
         <div class="col-md-3">
           <a class="btn btn-info"
-             href="{% url 'laboratory:objectview_update' laboratory object.pk %}">
+             href="{% url 'laboratory:objectview_update' laboratory object.pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
           <a class="btn btn-danger"
              href="{% url 'laboratory:objectview_delete' laboratory object.pk %}">

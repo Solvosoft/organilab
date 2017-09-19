@@ -5,110 +5,891 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: organilab academic V1\n"
+"Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-09 11:59-0600\n"
-"PO-Revision-Date: 2017-05-05 15:48-0600\n"
+"POT-Creation-Date: 2017-09-04 10:13-0600\n"
+"PO-Revision-Date: 2017-09-04 10:18-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
-"Language-Team: SOLVO <info@solvosoft.com>\n"
+"Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
-#: academic/models.py:11 academic/models.py:24
+#: models.py:11 models.py:24
 msgid "Title"
 msgstr "Título"
 
-#: academic/models.py:12 academic/models.py:25 academic/models.py:58
+#: models.py:12 models.py:25 models.py:58
 msgid "Description"
 msgstr "Descripción"
 
-#: academic/models.py:19
+#: models.py:19
 msgid "Can see available Procedure"
-msgstr "Puede ver procedimientos"
+msgstr "Puede ver Procedure disponibles"
 
-#: academic/models.py:30
+#: models.py:30
 msgid "No titled step"
 msgstr "Paso sin título"
 
-#: academic/models.py:35
+#: models.py:35
 msgid "Can see available ProcedureStep"
-msgstr "Puede ver pasos disponibles"
+msgstr "Puede ver ProcedureStep disponibles"
 
-#: academic/models.py:39
+#: models.py:39
 msgid "Object"
 msgstr "Objeto"
 
-#: academic/models.py:40
+#: models.py:40
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: academic/models.py:42
+#: models.py:42
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: academic/models.py:53
+#: models.py:53
 msgid "Can see available ProcedureRequiredObject"
-msgstr "Puede ver objetos requeridos en procedimiento"
+msgstr "Puede ver ProcedureRequiredObject disponibles"
 
-#: academic/models.py:66
+#: models.py:66
 msgid "Can see available ProcedureObservations"
-msgstr "Puede ver observaciones a procedimientos"
+msgstr "Puede ver ProcedureObservations disponibles"
 
-#: academic/templates/academic/procedure/cruds/detail.html:4
-#: academic/templates/academic/procedure/cruds/detail.html:7
+#: templates/academic/procedure/cruds/detail.html:4
+#: templates/academic/procedure/cruds/detail.html:7
 msgid "Detail of"
-msgstr "Detalle de "
+msgstr "Detalle de"
 
-#: academic/templates/academic/procedure/cruds/detail.html:17
-#: academic/templates/academic/procedure/cruds/list.html:60
+#: templates/academic/procedure/cruds/detail.html:17
+#: templates/academic/procedure/cruds/list.html:60
 msgid "Edit"
 msgstr "Editar"
 
-#: academic/templates/academic/procedure/cruds/detail.html:31
+#: templates/academic/procedure/cruds/detail.html:31
 msgid "Steps"
 msgstr "Pasos"
 
-#: academic/templates/academic/procedure/cruds/detail.html:48
+#: templates/academic/procedure/cruds/detail.html:48
 msgid "Required objects"
 msgstr "Objetos requeridos"
 
-#: academic/templates/academic/procedure/cruds/detail.html:60
+#: templates/academic/procedure/cruds/detail.html:60
 msgid "Observations"
 msgstr "Observaciones"
 
-#: academic/templates/academic/procedure/cruds/detail.html:75
+#: templates/academic/procedure/cruds/detail.html:75
 msgid "Back to list"
-msgstr "Volver al listado"
+msgstr "Volver a la lista"
 
-#: academic/templates/academic/procedure/cruds/list.html:5
-#: academic/templates/academic/procedure/cruds/list.html:8
+#: templates/academic/procedure/cruds/list.html:5
+#: templates/academic/procedure/cruds/list.html:8
 msgid "List of"
-msgstr "Lista de "
+msgstr "Lista de"
 
-#: academic/templates/academic/procedure/cruds/list.html:21
+#: templates/academic/procedure/cruds/list.html:21
 msgid "Create new "
 msgstr "Crear nuevo"
 
-#: academic/templates/academic/procedure/cruds/list.html:34
+#: templates/academic/procedure/cruds/list.html:34
 msgid "Actions"
 msgstr "Acciones"
 
-#: academic/templates/academic/procedure/cruds/list.html:53
+#: templates/academic/procedure/cruds/list.html:53
 msgid "Steps Details"
 msgstr "Detalle de pasos"
 
-#: academic/templates/academic/procedure/cruds/list.html:58
+#: templates/academic/procedure/cruds/list.html:58
 msgid "New Steps"
 msgstr "Nuevo paso"
 
-#: academic/templates/academic/procedure/cruds/list.html:64
+#: templates/academic/procedure/cruds/list.html:64
 msgid "Delete"
 msgstr "Eliminar"
 
-#: academic/templates/academic/procedure/cruds/list.html:74
+#: templates/academic/procedure/cruds/list.html:74
 msgid "No items yet."
-msgstr "Sin elementos"
+msgstr "Todavía no hay elementos"
+
+#~ msgid "Organilab Administration site"
+#~ msgstr "Sitio administrativo de Organilab"
+
+#~ msgid "Search by name, code or CAS number"
+#~ msgstr "Buscar por nombre, código o número de CAS"
+
+#~ msgid "General use"
+#~ msgstr "Uso general"
+
+#~ msgid "Security equipment"
+#~ msgstr "Equipo de seguridad"
+
+#~ msgid "Analytic Chemistry"
+#~ msgstr "Química analítica"
+
+#~ msgid "Organic Chemistry"
+#~ msgstr "Química orgánica"
+
+#~ msgid "Physical Chemistry"
+#~ msgstr "Química física"
+
+#~ msgid "Chemical and Biological process"
+#~ msgstr "Proceso biológico y químico"
+
+#~ msgid "Industrial Biotechnology"
+#~ msgstr "Biotecnología industrial"
+
+#~ msgid "Biochemistry"
+#~ msgstr "Bioquímica"
+
+#~ msgid "Water Chemistry"
+#~ msgstr "Química del agua"
+
+#~ msgid "Other"
+#~ msgstr "Otro"
+
+#~ msgid "Name"
+#~ msgstr "Nombre"
+
+#~ msgid "Object feature"
+#~ msgstr "Característica del objeto"
+
+#~ msgid "Object features"
+#~ msgstr "Características del objeto"
+
+#~ msgid "Reactive"
+#~ msgstr "Reactivo"
+
+#~ msgid "Material"
+#~ msgstr "Material"
+
+#~ msgid "Equipment"
+#~ msgstr "Equipo"
+
+#~ msgid "Code"
+#~ msgstr "Código"
+
+#~ msgid "Type"
+#~ msgstr "Tipo"
+
+#~ msgid "Molecular formula"
+#~ msgstr "Formula molecular"
+
+#~ msgid "Cas ID Number"
+#~ msgstr "Número CAS"
+
+#~ msgid "Security sheet"
+#~ msgstr "Hoja de seguridad"
+
+#~ msgid "Is precursor"
+#~ msgstr "¿Es precursor"
+
+#~ msgid "IMDG code"
+#~ msgstr "Código IMDG"
+
+#~ msgid "Objects"
+#~ msgstr "Objetos"
+
+#~ msgid "Meters"
+#~ msgstr "Metros"
+
+#~ msgid "Milimeters"
+#~ msgstr "Milímetros"
+
+#~ msgid "Centimeters"
+#~ msgstr "Centímetros"
+
+#~ msgid "Liters"
+#~ msgstr "Litros"
+
+#~ msgid "Mililiters"
+#~ msgstr "Mililitros"
+
+#~ msgid "Unit"
+#~ msgstr "Unidad"
+
+#~ msgid "Limit material quantity"
+#~ msgstr "Cantidad límite de material"
+
+#~ msgid "Shelf object"
+#~ msgstr "Estante del objeto"
+
+#~ msgid "Shelf objects"
+#~ msgstr "Estante de los objetos"
+
+#~ msgid "Laboratory Room"
+#~ msgstr "Sala de laboratorio"
+
+#~ msgid "Laboratory Rooms"
+#~ msgstr "Salas de laboratorio"
+
+#~ msgid "Space"
+#~ msgstr "Espacio"
+
+#~ msgid "Drawer"
+#~ msgstr "Cajón"
+
+#~ msgid "Shelf"
+#~ msgstr "Estante"
+
+#~ msgid "Shelves"
+#~ msgstr "Estantería"
+
+#~ msgid "Furniture"
+#~ msgstr "Mueble"
+
+#~ msgid "Data configuration"
+#~ msgstr "Configuración de datos"
+
+#~ msgid "Piece of furniture"
+#~ msgstr "Pieza de mueble"
+
+#~ msgid "Laboratory name"
+#~ msgstr "Nombre del laboratorio"
+
+#~ msgid "Laboratory"
+#~ msgstr "Laboratorio"
+
+#~ msgid "Laboratories"
+#~ msgstr "Laboratorios"
+
+#~ msgid "Explanation"
+#~ msgstr "Explicación"
+
+#~ msgid "Related file"
+#~ msgstr "Archivo relacionado"
+
+#~ msgid "Feedback entry"
+#~ msgstr "Entrada de retroalimentación"
+
+#~ msgid "Feedback entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#~ msgid "Solutes"
+#~ msgstr "Solutos"
+
+#~ msgid "Volumen"
+#~ msgstr "Volumen"
+
+#~ msgid "Temperature"
+#~ msgstr "Temperatura"
+
+#~ msgid "Pressure"
+#~ msgstr "Presión"
+
+#~ msgid "pH"
+#~ msgstr "pH"
+
+#~ msgid "Solution"
+#~ msgstr "Solución"
+
+#~ msgid "Hello!"
+#~ msgstr "¡Hola!"
+
+#~ msgid "Welcome to Organilab, the simple laboratory organizer. Let's take a look of the main features of this system"
+#~ msgstr "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las características principales de este sistema."
+
+#~ msgid "The laboratory view is Organilab's main feature because it offers a general view of the structure of the laboratory for its management"
+#~ msgstr "La vista de laboratorio es el pilar principal de Organilab porque ofrece una vista general de la estructura del laboratorio para llevar a cabo su administración"
+
+#~ msgid "Management"
+#~ msgstr "Administración"
+
+#~ msgid "In the management views you can find everything you need to control the components of the laboratory, from rooms to objects."
+#~ msgstr "En las vistas de administración puedes encontrar todo lo que necesitas para controlar los componentes del laboratorio, desde las salas hasta objetos."
+
+#~ msgid "Reports"
+#~ msgstr "Reportes"
+
+#~ msgid "If you need a full inventory of the whole laboratory or an specific component, this is the place to do it"
+#~ msgstr "Si necesitas un inventorio completo de todo el laboratorio o de un componente específico, este es el lugar para hacerlo"
+
+#~ msgid "Select laboratory"
+#~ msgstr "Seleccione su laboratorio"
+
+#~ msgid "You can have access to multiple laboratories, select the one you want to manage by clicking this link"
+#~ msgstr "Puedes tener acceso a multiples laboratorios, selecciona el que deseas haciendo click aquí"
+
+#~ msgid "Laboratory view"
+#~ msgstr "Vista de laboratorio"
+
+#~ msgid "In this view you can manage most of the components related to the lab, including its rooms, furniture and objects"
+#~ msgstr "En esta vista puedes administrar la mayoría de los componentes relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
+
+#~ msgid "Management views"
+#~ msgstr "Vistas de administración"
+
+#~ msgid "This views manage the different objects handled by the Organilab system for the current laboratory"
+#~ msgstr "Estas vistas permiten administrar los diferentes objectos manipulados por el sistema Organilab para el laboratorio actual"
+
+#~ msgid "Here you can see and retrieve the reports generated by the different components handled and saved in the Organilab system"
+#~ msgstr "Aquí puedes ver y obtener los reportes generados a partir de los diferentes componentes manipulados y guardados en el sistema Organilab"
+
+#~ msgid "In this view you can check out all the reservations related to you and their current status."
+#~ msgstr "En esta vista puedes revisar todas las reservaciones relacionadas contigo y su estado actual"
+
+#~ msgid "Reservation administration"
+#~ msgstr "Administración de reservaciones"
+
+#~ msgid "Here you create and finish a given reservation registered in the Organilab system"
+#~ msgstr "Aquí puedes crear y finalizar una reservación registrada en el sistema Organilab"
+
+#~ msgid "Help us!"
+#~ msgstr "¡Colabora!"
+
+#~ msgid "If you have an issue testing or using Organilab, let us know. We'll be eager to help you"
+#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber. Estaremos ansiosos por corregirlo."
+
+#~ msgid "Please use an email client with HTML support"
+#~ msgstr "Por favor use un cliente con soporte a HTML"
+
+#~ msgid "Hi,"
+#~ msgstr "Hola"
+
+#~ msgid "You have received this email because you are in charge of a laboratory in the Organilab system."
+#~ msgstr "Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab."
+
+#~ msgid "This message is to notify you that one or more of the shelf objects of your laboratory has reached its limit"
+#~ msgstr "Este mensaje es para notificarle que uno o más estantes en el laboratorio han llegado a su cuota mínima"
+
+#~ msgid "This are the details of the products:"
+#~ msgstr "Detalle de los productos"
+
+#~ msgid "Shelf:"
+#~ msgstr "Estante:"
+
+#~ msgid "Object:"
+#~ msgstr "Objeto:"
+
+#~ msgid "Material quantity:"
+#~ msgstr "Cantidad de material:"
+
+#~ msgid "Limit material quantity:"
+#~ msgstr "Cantidad límite de material:"
+
+#~ msgid "Measurement unit:"
+#~ msgstr "Unidad de medida:"
+
+#~ msgid "No shelf objects have reached their limit."
+#~ msgstr "No hay  objetos en mínimos límites."
+
+#~ msgid "Please refill this product or contact the people that reserved it to balance the current quantity."
+#~ msgstr "Por favor recargue este producto o contacte a la persona que pueda hacerlo."
+
+#~ msgid "Thanks,"
+#~ msgstr "Gracias,"
+
+#~ msgid "Organilab system"
+#~ msgstr "Organilab: Reporte de objetos"
+
+#~ msgid "This message is to notify you that one of the shelf objects of your laboratory has reached its limit"
+#~ msgstr "Este mensaje es para notificarle que uno o más objetos en su laboratorio están en las cuotas mínimas."
+
+#~ msgid "This are the details of the product:"
+#~ msgstr "Detalle de productos"
+
+#~ msgid "Add Shelf"
+#~ msgstr "Agregar estante"
+
+#~ msgid "Close"
+#~ msgstr "Cerrar"
+
+#~ msgid "Feedback"
+#~ msgstr "Retroalimentación"
+
+#~ msgid "If you had some problem using Organilab, please let us know about it"
+#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+
+#~ msgid "Send"
+#~ msgstr "Enviar"
+
+#~ msgid "Delete furniture"
+#~ msgstr "Eliminar pieza de mueble"
+
+#~ msgid "Are you sure you want to delete"
+#~ msgstr "¿Está seguro que desea eliminar "
+
+#~ msgid "Confirm"
+#~ msgstr "Confirmar"
+
+#~ msgid "Furniture management"
+#~ msgstr "Administración de muebles"
+
+#~ msgid "Save"
+#~ msgstr "Guardar"
+
+#~ msgid "PDF"
+#~ msgstr "PDF"
+
+#~ msgid "Laboratory administration"
+#~ msgstr "Administración del laboratorio"
+
+#~ msgid "Procedures"
+#~ msgstr "Procedimientos"
+
+#~ msgid "Furnitures"
+#~ msgstr "Muebles"
+
+#~ msgid "Welcome to the Simple laboratory organizer"
+#~ msgstr "Bienvenido al organizador de laboratorio"
+
+#~ msgid "Login"
+#~ msgstr "Inicio de sesión"
+
+#~ msgid "Laboratory Management"
+#~ msgstr "Administración de laboratorio"
+
+#~ msgid "Add"
+#~ msgstr "Agregar"
+
+#~ msgid "Previous"
+#~ msgstr "Anterior"
+
+#~ msgid "Page"
+#~ msgstr "Página"
+
+#~ msgid "Next"
+#~ msgstr "Siguiente"
+
+#~ msgid "Delete laboratory room"
+#~ msgstr "Eliminar sala de laboratorio"
+
+#~ msgid "Laboratory room management"
+#~ msgstr "Administración de sala de laboratorio"
+
+#~ msgid "Update"
+#~ msgstr "Editar"
+
+#~ msgid "New"
+#~ msgstr "Nuevo"
+
+#~ msgid "Laboratory rooms"
+#~ msgstr "Salas de laboratorio"
+
+#~ msgid "Please click over furniture items"
+#~ msgstr "Por favor hacer clic sobre los muebles"
+
+#~ msgid "Shelves will be displayed here"
+#~ msgstr "Los muebles se mostrarán aquí"
+
+#~ msgid "Limited shelf objects"
+#~ msgstr "Objetos en el límite"
+
+#~ msgid "All objects"
+#~ msgstr "Todos los objetos"
+
+#~ msgid "All objects in PDF"
+#~ msgstr "Todos los objetos en PDF"
+
+#~ msgid "Quantity:"
+#~ msgstr "Cantidad:"
+
+#~ msgid "Limit quantity:"
+#~ msgstr "Cantidad límite:"
+
+#~ msgid "No objects"
+#~ msgstr "No hay objetos"
+
+#~ msgid "Log in"
+#~ msgstr "Iniciar Sesión"
+
+#~ msgid "Sign in"
+#~ msgstr "Registrarse"
+
+#~ msgid "Objects Management"
+#~ msgstr "Manejo de objetos"
+
+#~ msgid "Delete object feature"
+#~ msgstr "Eliminar características de objeto"
+
+#~ msgid "Object features management"
+#~ msgstr "Administración de características de objetos"
+
+#~ msgid "No object features"
+#~ msgstr "No hay características de objeto"
+
+#~ msgid "Delete object"
+#~ msgstr "Borrar objeto"
+
+#~ msgid "Object management"
+#~ msgstr "Administración de objetos"
+
+#~ msgid "Reactive management"
+#~ msgstr "Administración de Reactivos"
+
+#~ msgid "Material management"
+#~ msgstr "Administración de Materiales"
+
+#~ msgid "Equipment management"
+#~ msgstr "Administración de Equipos"
+
+#~ msgid "Search"
+#~ msgstr "Buscar"
+
+#~ msgid "Administration"
+#~ msgstr "Administración"
+
+#~ msgid "Laboratory management"
+#~ msgstr "Administración de sala de laboratorio"
+
+#~ msgid "Solution management"
+#~ msgstr "Administración de soluciones"
+
+#~ msgid "Reactive precursor objects"
+#~ msgstr "Objetos reactivos precursores"
+
+#~ msgid "Finish reservation"
+#~ msgstr "Finalizar reservación"
+
+#~ msgid "Create a reservation"
+#~ msgstr "Crear reservación"
+
+#~ msgid "User:"
+#~ msgstr "Usuario:"
+
+#~ msgid "Log out"
+#~ msgstr "Cerrar Sesión"
+
+#~ msgid "Permission denied"
+#~ msgstr "Permiso denegado"
+
+#~ msgid "You don't have the permissions required to access this section"
+#~ msgstr "Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
+
+#~ msgid "Please"
+#~ msgstr "Por favor"
+
+#~ msgid "select"
+#~ msgstr "seleccione"
+
+#~ msgid "one of your labs"
+#~ msgstr "uno de sus laboratorios"
+
+#~ msgid "Not found? include all laboratories"
+#~ msgstr "¿No existe? Incluya todos los laboratorios"
+
+#~ msgid "Name:"
+#~ msgstr "Nombre:"
+
+#~ msgid "Type:"
+#~ msgstr "Tipo:"
+
+#~ msgid "Features:"
+#~ msgstr "Características:"
+
+#~ msgid "No Data"
+#~ msgstr "No hay datos"
+
+#~ msgid "Description:"
+#~ msgstr "Descripción:"
+
+#~ msgid "Molecular formula:"
+#~ msgstr "Fórmula molecular:"
+
+#~ msgid "CAS ID Number:"
+#~ msgstr "Número ID CAS"
+
+#~ msgid "Furniture report"
+#~ msgstr "Reporte de muebles"
+
+#~ msgid "Download PDF"
+#~ msgstr "Descargar PDF"
+
+#~ msgid "Laboratory room:"
+#~ msgstr "Sala de Laboratorio:"
+
+#~ msgid "Total"
+#~ msgstr "Total"
+
+#~ msgid "objects"
+#~ msgstr "Objetos"
+
+#~ msgid "No object elements"
+#~ msgstr "No hay objetos"
+
+#~ msgid "No shelf elements"
+#~ msgstr "No hay estantes"
+
+#~ msgid "No furniture elements"
+#~ msgstr "No hay piezas de mueble"
+
+#~ msgid "Laboratory report"
+#~ msgstr "Reporte de laboratorio"
+
+#~ msgid "Furniture:"
+#~ msgstr "Mueble:"
+
+#~ msgid "Quantity"
+#~ msgstr "Cantidad"
+
+#~ msgid "No Labs"
+#~ msgstr "No hay laboratorios"
+
+#~ msgid "Reactives report"
+#~ msgstr "Reporte de Reactivos"
+
+#~ msgid "Materials report"
+#~ msgstr "Reporte de Materiales"
+
+#~ msgid "Equipments report"
+#~ msgstr "Reporte de Equipos"
+
+#~ msgid "Objects report"
+#~ msgstr "Reporte de objetos"
+
+#~ msgid "No data"
+#~ msgstr "No hay datos"
+
+#~ msgid "Information"
+#~ msgstr "Información"
+
+#~ msgid "Characteristic"
+#~ msgstr "Características"
+
+#~ msgid "Not found"
+#~ msgstr "No encontrado"
+
+#~ msgid "In all laboratories"
+#~ msgstr "En todos los laboratorios"
+
+#~ msgid "Select your laboratory"
+#~ msgstr "Seleccione su laboratorio"
+
+#~ msgid "Select"
+#~ msgstr "Seleccionar"
+
+#~ msgid "Position:"
+#~ msgstr "Posición:"
+
+#~ msgid "Add Object"
+#~ msgstr "Agregar Objeto"
+
+#~ msgid "Update Object"
+#~ msgstr "Editar Objeto"
+
+#~ msgid "Are you sure?"
+#~ msgstr "¿Está seguro?"
+
+#~ msgid "Are you sure that do you want delete this object"
+#~ msgstr "¿Está seguro que desea eliminar este objeto?"
+
+#~ msgid "Save changes"
+#~ msgstr "Guardar cambios"
+
+#~ msgid "Solution calculator"
+#~ msgstr "Calculadora de Disoluciones"
+
+#~ msgid "Calculate"
+#~ msgstr "Calcular"
+
+#~ msgid "Solution detail"
+#~ msgstr "Detalle de la solución"
+
+#~ msgid "Check all the solution results"
+#~ msgstr "Ver todos los resultados de soluciones"
+
+#~ msgid "Calculate new solution"
+#~ msgstr "Calcular una nueva solución"
+
+#~ msgid "Formula"
+#~ msgstr "Fórmula"
+
+#~ msgid "Amount"
+#~ msgstr "Cantidad"
+
+#~ msgid "Solution properties"
+#~ msgstr "Propiedades de la solución"
+
+#~ msgid "Value"
+#~ msgstr "Valor"
+
+#~ msgid "Solution list"
+#~ msgstr "Lista de soluciones"
+
+#~ msgid "Check solution"
+#~ msgstr "Ver solución"
+
+#~ msgid "Organilab Furniture Report"
+#~ msgstr "Organilab: Reporte de Muebles"
+
+#~ msgid "Date:"
+#~ msgstr "Fecha:"
+
+#~ msgid "of"
+#~ msgstr "de"
+
+#~ msgid "LaboratoryRoom:"
+#~ msgstr "Sala de Laboratorio:"
+
+#~ msgid "Object Code:"
+#~ msgstr "Código de objeto:"
+
+#~ msgid "No Object Elements"
+#~ msgstr "No hay objetos"
+
+#~ msgid "No Shelf Elements"
+#~ msgstr "No hay estantes"
+
+#~ msgid "No Furniture Elements"
+#~ msgstr "No hay elementos en los muebles"
+
+#~ msgid "Organilab Laboratory Report"
+#~ msgstr "Organilab: Reporte de Laboratorio"
+
+#~ msgid "Organilab Objects Report"
+#~ msgstr "Organilab: Reporte de Objetos"
+
+#~ msgid "No Object Features"
+#~ msgstr "Sin Características de objeto"
+
+#~ msgid "No Objects Elements"
+#~ msgstr "No hay Objetos"
+
+#~ msgid "Organilab Shelf Objects Report"
+#~ msgstr "Organilab: Reporte de objetos de estante"
+
+#~ msgid "Organilab Summary Furniture Report"
+#~ msgstr "Organilab: Reporte de Muebles"
+
+#~ msgid "%(value)s is not a valid molecular formula"
+#~ msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
+
+#~ msgid "Thank you for your help. We are gonna check your problem as soon as we can"
+#~ msgstr "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
+
+#~ msgid "Invalid format in shelf dataconfig "
+#~ msgstr "Formato inválido en dataconfig del estante"
+
+#~ msgid "Alkalinity"
+#~ msgstr "Alcalinidad"
+
+#~ msgid "Bjerrum length"
+#~ msgstr "Longitud de Bjerrum"
+
+#~ msgid "Charge balance"
+#~ msgstr "Balance de carga"
+
+#~ msgid "Chemical potential energy"
+#~ msgstr "Energía química potencial"
+
+#~ msgid "Conductivity"
+#~ msgstr "Conductividad"
+
+#~ msgid "Debye length"
+#~ msgstr "Longitud de Debye"
+
+#~ msgid "Density"
+#~ msgstr "Densidad"
+
+#~ msgid "Dielectric constant"
+#~ msgstr "Constante dieléctrica"
+
+#~ msgid "Hardness"
+#~ msgstr "Dureza"
+
+#~ msgid "Ionic strength"
+#~ msgstr "Fuerza iónica"
+
+#~ msgid "Mass"
+#~ msgstr "Masa"
+
+#~ msgid "Moles solvent"
+#~ msgstr "Moles de disolvente"
+
+#~ msgid "Osmotic coefficient"
+#~ msgstr "Coeficiente osmótico"
+
+#~ msgid "Osmotic pressure"
+#~ msgstr "Presión osmótica"
+
+#~ msgid "Total moles solute"
+#~ msgstr "Total de moles por soluto"
+
+#~ msgid "Viscosity dynamic"
+#~ msgstr "Viscosidad dinámica"
+
+#~ msgid "Viscosity kinematic"
+#~ msgstr "Viscosidad kinemática"
+
+#~ msgid "Viscosity relative"
+#~ msgstr "Viscosidad relativa"
+
+#~ msgid "Volume"
+#~ msgstr "Volumen"
+
+#~ msgid "Water activity"
+#~ msgstr "Actividad del agua"
+
+#~ msgid "Descriptive name of the solution"
+#~ msgstr "Nombre descriptivo para la solución"
+
+#~ msgid "Write in each line the formula along with its amount, separated by a comma"
+#~ msgstr "Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
+
+#~ msgid "For example: 500 mL, 1 L"
+#~ msgstr "Por ejemplo: 500 mL, 1 L"
+
+#~ msgid "In degC"
+#~ msgstr "En degC"
+
+#~ msgid "In atm"
+#~ msgstr "En atm"
+
+#~ msgid "Incorrect solute definition"
+#~ msgstr "Definición incorrecta de soluto"
+
+#~ msgid "There are errors in the solution definition, please try again"
+#~ msgstr "Hay errores en la definición de la solución, intente de nuevo"
+
+#~ msgid "Keyword, for instance Beaker"
+#~ msgstr "Palabra clave, por ejemplo Beaker"
+
+#~ msgid "Organilab Build Report"
+#~ msgstr "Organilab: Reporte de Edificios"
+
+#~ msgid "Furniture Management"
+#~ msgstr "Administración de muebles"
+
+#~ msgid "OBJECTS INFORMATION"
+#~ msgstr "Información de objetos"
+
+#~ msgid "Furniture information"
+#~ msgstr "Información del mueble"
+
+#~ msgid "LABORATORYROOM INFORMATION"
+#~ msgstr "Información del Laboratorio:"
+
+#~ msgid "user:"
+#~ msgstr "usuario:"
+
+#~ msgid "Download Object PDF"
+#~ msgstr "Descargar Objecto en PDF"
+
+#~ msgid "Object Features"
+#~ msgstr "Características del objeto"
+
+#~ msgid "Summary Furniture PDF"
+#~ msgstr "Resumen de Mueble PDF"
+
+#~ msgid "Furniture PDF"
+#~ msgstr "Mueble PDF"
+
+#~ msgid "Download Summary PDF"
+#~ msgstr "Descargar PDF Resumido"
+
+#~ msgid "Crate"
+#~ msgstr "Caja"
+
+#~ msgid "General Use"
+#~ msgstr "Uso General"
+
+#~ msgid "Security Equipment"
+#~ msgstr "Equipo de Seguridad"
+
+#~ msgid "Chemical and Biological Process"
+#~ msgstr "Proceso Biológico y Químico"
+
+#~ msgid "FURNITURE INFORMATION"
+#~ msgstr "INFORMACIÓN DE MUEBLE"
