@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load bootstrap i18n static %}
 
 {% block title %}{% trans 'Access List' %}{% endblock %}
 
@@ -18,45 +18,44 @@
   <div class = "container">
 
     <div class="row">
-      <form action='' method="POST"  class="post-form">{% csrf_token %}
+      <form action=''  method="POST"  class="post-form form-horizontal">{% csrf_token %}
         <div class="col-xs-6 col-md-4">
-          	{{ user_search.user }}
+          	{{ form.user }}
         </div>
         <div class="col-xs-6 col-md-4">
-           	<button type="submit" class="save btn btn-default">{% trans 'Add' %}</button>
+           <input type="submit" name="action" value="{% trans 'Search' %}" class="btn btn-success" />
+           	<button type="submit" name='action' value="add" class="save btn btn-info" >{% trans 'Add' %}</button>
         </div>
       </form>
 
       <div class="col-xs-6 col-md-4">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#create_users_modal" >{% trans 'Create user' %}</button>
+        <button id="create_user_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="#create_users_modal" >{% trans 'Create user' %}</button>
 
     </div>
 
-    <div class="modal fade" id="create_users_modal" role="dialog">
+    <div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel"
+     id="create_users_modal" role="dialog">
 
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
 
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             <center><h3 class="modal-title">{% trans 'Create users' %}</h3></center>
           </div>
-          <div class="modal-body">
+          <form method="POST" action="" class="form-horizontal">{% csrf_token %}
+          <div class="modal-body ">
 
-            <!--<form method="POST" class="post-form">{% csrf_token %}
-              <table class="table">
-                {{ user_create_form.as_table }}
-              </table>
-              <button type="submit" class="save btn btn-default">{% trans 'Create' %}</button>
-            </form>-->
 
-            {% block user_create_form %}
-              {% include 'laboratory/user_create_form.html' %}
-            {% endblock user_create_form%}
+      {{ user_create_form|bootstrap_horizontal}}
+
+ 
           </div>
           <div class="modal-footer">
+            <button type="submit" name="action" value="createuser" class="save btn btn-danger">{% trans 'Create' %}</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
           </div>
+       </form>
         </div>
       </div>
 
@@ -67,17 +66,25 @@
   <br>
 
   <div class="container">
-    <br>
+     <form action=''  method="POST"  class="post-form form-horizontal">{% csrf_token %}
     <ul class="list-group">
       {% for object in object_list %}
-        <li class="list-group-item">
-          {{ object }}
-          <button type="button" class="btn btn-warning pull-right">{% trans 'Unasign' %}</button>
+        <li class="input-group access_item">
+
+      <span class="input-group-addon">
+        <input type="checkbox" aria-label="{{ object.get_full_name }}" name="user" value="{{object.pk}}" />
+      </span>
+      <div class="form-control " >
+      {{ object }} -- {{ object.get_full_name }}
+      </div>
+             
         </li>
         {% empty %}
-          <i>{% trans 'No solutions yet' %}</i>
+          <i>{% trans 'Not user found' %}</i>
         {% endfor %}
     </ul>
+    <button type="submit" name="action" value="rmuser" class="save btn btn-danger">{% trans 'Delete users' %}</button>
+    </form>
 
     {% if is_paginated %}
       <ul class="pagination">
@@ -103,19 +110,12 @@
 
   </div>
 
-  <script>
-    switch ({{role}}) {
-      case 1:
-        $('#tab_lab_admins').addClass('active');
-        break;
-      case 2:
-        $('#tab_laboratorits').addClass('active');
-        break;
-      case 3:
-        $('#tab_students').addClass('active');
-        break;
-    }
+  <script>$('{{role}}').addClass('active');
 
-  </script>
-
+{% if user_create_form.errors %}
+$(document).ready(function(){
+	$("#create_user_btn").click();
+});
+{% endif %}
+</script>
 {% endblock %}
