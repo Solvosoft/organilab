@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'Solution list' %}{% endblock %}
+{% block title %}{% trans 'Dissolution list' %}{% endblock %}
 
 {% block content %}
   <a class="btn btn-info"
      href="{% url 'laboratory:solution_calculator' lab_pk %}">
-    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> {% trans 'Calculate new solution' %} </a>
+    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> {% trans 'Calculate new dissolution' %} </a>
 
   <br><br>
   <ul class="list-group">
@@ -15,7 +15,7 @@
         <div class="col-md-9"> {{ object }}</div>
         <div class="col-md-3 text-right">
           <a class="btn btn-success" href="{% url 'laboratory:solution_detail' lab_pk object.pk %}">
-            <span class="glyphicon glyphicon-check" aria-hidden="true"></span> {% trans 'Check solution' %}
+            <span class="glyphicon glyphicon-check" aria-hidden="true"></span> {% trans 'Check dissolution' %}
           </a>
         </div>
       </li>
