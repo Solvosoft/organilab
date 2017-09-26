@@ -59,9 +59,14 @@ class BaseAccessListLab(FormView, ListView):
     def remove_user_to_relation(self, user, relation, group_name):
         group = Group.objects.get(name=group_name)
         relation.remove(user)
-        if not user.group.all().exists():
+
+        if not user.lab_admins.all().exists():
             user.groups.remove(group)
-        
+        if not user.students.all().exists():
+            user.groups.remove(group)
+        if not user.laboratorists.all().exists():
+            user.groups.remove(group)
+
         # user = User.objects.first()
         # user/lab_admins.all().exists()
         # user. studients.all().exists()
