@@ -51,14 +51,20 @@ class BaseAccessListLab(FormView, ListView):
         return context
 
     def add_user_to_relation(self, user, relation, group_name):
-        admin_group = Group.objects.get(name=group_name)
-        user.groups.add(admin_group)
+        group = Group.objects.get(name=group_name)
+        user.groups.add(group)
         if not relation.filter(id=user.pk).exists():
             relation.add(user)
 
     def remove_user_to_relation(self, user, relation, group_name):
-        admin_group = Group.objects.get(name=group_name)
+        group = Group.objects.get(name=group_name)
         relation.remove(user)
+        if not user.group.all().exists():
+            user.groups.remove(group)
+        
+        # user = User.objects.first()
+        # user/lab_admins.all().exists()
+        # user. studients.all().exists()
         # Fixme: Si el usuario no está asociado a ningún otro laboratorio
         # con el rol, entonces se deben quitar los permisos
 
