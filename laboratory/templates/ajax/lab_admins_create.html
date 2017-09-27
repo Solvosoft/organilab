@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+<form data-ajax-submit="" action ="" method="post" onsubmit="return false;">
+  {{usersearchform|crispy}}
+  <input type="submit" value="Search"/>
+</form>
+
+<form data-ajax-submit="" action="{% url 'laboratory:laboratory_ajax_create_admins_user' lab.pk %}" method="post" onsubmit="return false;">
+  {{usercreateform|crispy}}
+  <input type="submit" value="Create"/>
+</form>

@@ -4,7 +4,7 @@
 Free as freedom will be 26/8/2016
 
 @author: luisza
-'''
+''' 
 
 from __future__ import unicode_literals
 
@@ -12,9 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
+from django.contrib.auth.models import User
 
 from laboratory.models import ShelfObject, Laboratory
 from laboratory.forms import ObjectSearchForm
+from babel.util import distinct
 
 
 @method_decorator(login_required, name='dispatch')
@@ -29,16 +31,13 @@ class SearchObject(ListView):
         filter_lab = True
         if 'q' in self.request.GET:
             form = ObjectSearchForm(self.request.GET)
-            if form.is_valid():               
+            if form.is_valid():
                 if 'q' in form.cleaned_data:
                     params = {'object__pk__in': form.cleaned_data['q']}
                 filter_lab = not form.cleaned_data['all_labs']
-        labs = Laboratory.objects.filter(
-            Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)
-        ).distinct()
 
-        query = self.model.objects.filter(
-            shelf__furniture__labroom__laboratory__in=labs)
+        labs = Laboratory.objects.filter(Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)).distinct()
+        query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
 
         if filter_lab:
             if 'lab_pk' in self.kwargs:
