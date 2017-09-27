@@ -15,14 +15,27 @@ from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions
+from laboratory.views import access
 from laboratory.views.objects import ObjectView
 
 objviews = ObjectView()
 
 urlpatterns = [
-    url(r'^(?P<lab_pk>\d)?$', views.index, name='index'),
-    url(r'^accounts/login/$', auth_views.login, {
-        'template_name': 'laboratory/login.html'}, name='login'),
+    url(r'^(?P<lab_pk>\d+)?$', views.index, name='index'),
+    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
+        name='laboratory_update'),
+    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users,
+        name='laboratory_ajax_admins_users_list'),
+    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user,
+        name='laboratory_ajax_get_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user,
+        name='laboratory_ajax_create_admins_user'),
+
+    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$',
+        laboratory.del_admins_user, name='laboratory_ajax_del_admins_users'),
+
+    url(r'^accounts/login/$', auth_views.login,
+        {'template_name': 'laboratory/login.html'}, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, {
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
@@ -84,8 +97,10 @@ lab_reports_urls = [
     url(r'^furniture$', reports.report_furniture,
         name='reports_furniture'),
     url(r'^objects$', reports.report_objects, name='reports_objects'),
-    url(r'^shelf_objects$', reports.report_shelf_objects, name='reports_shelf_objects'),
-    url(r'^limited_shelf_objects$', reports.report_limited_shelf_objects, name='reports_limited_shelf_objects'),
+    url(r'^shelf_objects$', reports.report_shelf_objects,
+        name='reports_shelf_objects'),
+    url(r'^limited_shelf_objects$', reports.report_limited_shelf_objects,
+        name='reports_limited_shelf_objects'),
     url(r'^reactive_precursor_objects$', reports.report_reactive_precursor_objects,
         name='reports_reactive_precursor_objects'),
     # HTML reports
@@ -93,7 +108,8 @@ lab_reports_urls = [
         name='reports_laboratory'),
     url(r'^list/furniture$$', furniture.FurnitureReportView.as_view(),
         name='reports_furniture_detail'),
-    url(r'^list/objects$', reports.ObjectList.as_view(), name='reports_objects_list'),
+    url(r'^list/objects$', reports.ObjectList.as_view(),
+        name='reports_objects_list'),
     url(r'^list/limited_shelf_objects$', reports.LimitedShelfObjectList.as_view(),
         name='reports_limited_shelf_objects_list'),
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
@@ -101,29 +117,43 @@ lab_reports_urls = [
 ]
 
 lab_features_urls = [
-    url(r'^create$', objectfeature.FeatureCreateView.as_view(), name='object_feature_create'),
-    url(r'^edit/(?P<pk>\d+)$', objectfeature.FeatureUpdateView.as_view(), name='object_feature_update'),
-    url(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(), name='object_feature_delete'),
+    url(r'^create$', objectfeature.FeatureCreateView.as_view(),
+        name='object_feature_create'),
+    url(r'^edit/(?P<pk>\d+)$', objectfeature.FeatureUpdateView.as_view(),
+        name='object_feature_update'),
+    url(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(),
+        name='object_feature_delete'),
 ]
 
 solutions_urls = [
-    url(r'^calculator$', solutions.SolutionCalculatorView.as_view(), name='solution_calculator'),
+    url(r'^calculator$', solutions.SolutionCalculatorView.as_view(),
+        name='solution_calculator'),
     url(r'^$', solutions.SolutionListView.as_view(), name='solution_list'),
-    url(r'^(?P<pk>\d+)$', solutions.SolutionDetailView.as_view(), name='solution_detail')
+    url(r'^(?P<pk>\d+)$', solutions.SolutionDetailView.as_view(),
+        name='solution_detail')
 ]
+
+lab_access_urls = [
+    url(r'^labadmins$', access.AccessListLabAdminsView.as_view(),
+        name='access_list_lab_admins'),
+    url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(),
+        name='access_list_laboratorits'),
+    url(r'^students$', access.AccessListStudentsView.as_view(),
+        name='access_list_students'),
+]
+
 
 '''MULTILAB'''
 urlpatterns += [
-    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(),
-        name="search"),
+    url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/furniture/',
-        include(lab_furniture_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     url(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
-]
 
+    url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
+]

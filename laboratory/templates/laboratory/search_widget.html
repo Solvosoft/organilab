@@ -11,10 +11,11 @@
       {% else %}
         <form method="get" action="{% url 'laboratory:search' %}">
       {% endif %}
+      
       <div class="col-md-7">
       	{{search_form.q}}
-        
       </div>
+      
       <div class="col-md-3">
 	      <div class="checkbox">
 	      {{search_form.all_labs}} {% trans 'In all laboratories' %}
