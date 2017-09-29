@@ -43,10 +43,8 @@ class LaboratoryCreate(forms.Form):
     def save(self,user):
         lab = Laboratory()
         lab.name = self.cleaned_data['name']
-        #lab.lab_admins.add(user.id)
         lab.save()
         lab.lab_admins.add(user)
-        #Laboratory.objects.create(name=self.cleaned_data['name'], )
 
 
 #Traduccion (Multilenguaje)
