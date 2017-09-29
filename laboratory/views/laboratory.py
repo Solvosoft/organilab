@@ -156,6 +156,8 @@ class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
 
+    number_of_labs = 0
+
     create_lab_form = LaboratoryCreate
 
     success_url = '/'
@@ -172,6 +174,7 @@ class SelectLaboratoryView(FormView):
     def get_context_data(self, **kwargs):
         context = super(SelectLaboratoryView, self).get_context_data(**kwargs)
         context['create_lab_form'] = self.create_lab_form()
+        context['number_of_labs'] = self.number_of_labs
         return context
 
     def form_valid(self, form):
@@ -189,7 +192,8 @@ class SelectLaboratoryView(FormView):
 
     def get(self, request, *args, **kwargs):
         labs = self.get_laboratories(request.user)
-        if labs.count() == 1:
+        self.number_of_labs = labs.count()
+        if self.number_of_labs == 1:
             lab_pk = labs.first().pk
             request.session['lab_pk'] = lab_pk
             return redirect('laboratory:index', lab_pk)
