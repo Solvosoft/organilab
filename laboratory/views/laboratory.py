@@ -17,7 +17,7 @@ from django.db.models.query_utils import Q
 from laboratory.models import Laboratory
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
-from laboratory.forms import UserCreate, UserSearchForm
+from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
 from django.contrib.auth.models import User
 
 def render_admins_lab(request, object_list, lab, message=None):
@@ -150,10 +150,14 @@ class SelectLaboratoryForm(forms.Form):
         self.fields['laboratory'].queryset = lab_queryset
 
 
+
 @method_decorator(login_required, name='dispatch')
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
+
+    create_lab_form = LaboratoryCreate
+
     success_url = '/'
 
     def get_laboratories(self, user):
@@ -165,11 +169,23 @@ class SelectLaboratoryView(FormView):
         kwargs['lab_queryset'] = self.get_laboratories(user)
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(SelectLaboratoryView, self).get_context_data(**kwargs)
+        context['create_lab_form'] = self.create_lab_form()
+        return context
+
     def form_valid(self, form):
         lab_pk = form.cleaned_data.get('laboratory').pk
         request = self.request
         request.session['lab_pk'] = lab_pk
         return redirect('laboratory:index', lab_pk)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        create_lab_form = self.create_lab_form(request.POST)
+        if create_lab_form.is_valid():
+            create_lab_form.save(user)
+            return redirect(self.get_success_url())
 
     def get(self, request, *args, **kwargs):
         labs = self.get_laboratories(request.user)

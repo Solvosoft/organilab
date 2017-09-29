@@ -32,11 +32,21 @@ class UserCreate(UserCreationForm):
         user.save()
         return user
 
-
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'id': 'user_cb_'}))  # User_checkbox_id
     # For delete users. Add a delete button.
+
+class LaboratoryCreate(forms.Form):
+    name = forms.CharField(label=_('Name'))
+
+    def save(self,user):
+        lab = Laboratory()
+        lab.name = self.cleaned_data['name']
+        #lab.lab_admins.add(user.id)
+        lab.save()
+        lab.lab_admins.add(user)
+        #Laboratory.objects.create(name=self.cleaned_data['name'], )
 
 
 #Traduccion (Multilenguaje)
