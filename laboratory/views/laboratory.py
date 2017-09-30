@@ -18,7 +18,7 @@ from laboratory.models import Laboratory
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -186,8 +186,11 @@ class SelectLaboratoryView(FormView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
         create_lab_form = self.create_lab_form(request.POST)
-        if create_lab_form.is_valid():
-            create_lab_form.save(user)
+        if user.has_perm('laboratory.add_laboratory'):
+            if create_lab_form.is_valid():
+                create_lab_form.save(user)
+                return redirect(self.get_success_url())
+        else:
             return redirect(self.get_success_url())
 
     def get(self, request, *args, **kwargs):
