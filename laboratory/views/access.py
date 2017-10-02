@@ -68,6 +68,7 @@ class BaseAccessListLab(FormView, ListView):
                                           self.group)
             messages.info(self.request, "User added successfully")
             return redirect(self.get_success_url())
+
         elif form.cleaned_data['action'] == 'createuser':
             user_create_form = UserCreate(self.request.POST)
             if user_create_form.is_valid():
@@ -82,6 +83,7 @@ class BaseAccessListLab(FormView, ListView):
                 context['user_create_form'] = user_create_form
                 return render(self.request, self.template_name,
                               context)
+                              
         elif form.cleaned_data['action'] == 'rmuser':
             users = User.objects.filter(
                 pk__in=self.request.POST.getlist('user'))
