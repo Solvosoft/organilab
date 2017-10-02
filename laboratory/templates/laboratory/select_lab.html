@@ -6,7 +6,7 @@
 {% block content %}
 
   <div align="right">
-    <button id="create_lab_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="#create_lab_modal" >{% trans 'Create laboratory' %}</button>
+    <button id="create_lab_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="create_lab_modal" >{% trans 'Create laboratory' %}</button>
   </div>
 
   <div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
@@ -50,8 +50,12 @@
   </div>
 
   <script>
-    if({{number_of_labs}} == 0){
-        swal('{% trans 'You need to create a laboratory' %}');
-    }
+
+    $(document).ready(() => {
+      if({{number_of_labs}} == 0){
+          $("#create_lab_modal").modal('show');
+      }
+    });
+    
   </script>
 {% endblock %}
