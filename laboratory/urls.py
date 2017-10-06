@@ -40,7 +40,10 @@ urlpatterns = [
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
 
+
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
+    #CreateLaboratory
+    url(r'^create_lab$', laboratory.CreateLaboratoryView.as_view(), name='create_lab'),
 
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
         name='permission_denied'),
