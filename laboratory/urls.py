@@ -43,6 +43,7 @@ urlpatterns = [
 
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     #CreateLaboratory
+    url(r'^create_lab_form$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab_form'),
     url(r'^create_lab$', laboratory.CreateLaboratoryView.as_view(), name='create_lab'),
 
     url(r'^permission_denied$', PermissionDeniedView.as_view(),

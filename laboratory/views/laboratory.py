@@ -154,8 +154,7 @@ class SelectLaboratoryForm(forms.Form):
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
-    #number_of_labs = 0
-    #create_lab_form = LaboratoryCreate
+    number_of_labs = 0
     success_url = '/'
 
     def get_laboratories(self, user):
@@ -167,11 +166,10 @@ class SelectLaboratoryView(FormView):
         kwargs['lab_queryset'] = self.get_laboratories(user)
         return kwargs
 
-    """def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(SelectLaboratoryView, self).get_context_data(**kwargs)
-        context['create_lab_form'] = self.create_lab_form()
-        #context['number_of_labs'] = self.number_of_labs
-        return context"""
+        context['number_of_labs'] = self.number_of_labs
+        return context
 
     def form_valid(self, form):
         lab_pk = form.cleaned_data.get('laboratory').pk
@@ -179,28 +177,32 @@ class SelectLaboratoryView(FormView):
         request.session['lab_pk'] = lab_pk
         return redirect('laboratory:index', lab_pk)
 
-    """def post(self, request, *args, **kwargs):
-        user = self.request.user
-        create_lab_form = self.create_lab_form(request.POST)
-        if user.has_perm('laboratory.add_laboratory'):
-            if create_lab_form.is_valid():
-                create_lab_form.save(user)
-                return redirect(self.get_success_url())
-        else:
-            return redirect(self.get_success_url())"""
-
     def get(self, request, *args, **kwargs):
         labs = self.get_laboratories(request.user)
-        #self.number_of_labs = labs.count()
-        if labs.count() == 1:
+        self.number_of_labs = labs.count()
+        if self.number_of_labs == 1:
             lab_pk = labs.first().pk
             request.session['lab_pk'] = lab_pk
             return redirect('laboratory:index', lab_pk)
         return FormView.get(self, request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
-class CreateLaboratoryView(FormView):
-    template_name = 'laboratory/laboratory_create.html'
+class CreateLaboratoryFormView(FormView):
+    template_name = 'laboratory/laboratory_create_form.html'
+    form_class = LaboratoryCreate
+    success_url = '/'
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
+        user = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
+        return context
+
+@method_decorator(login_required, name='dispatch')
+class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = '/'
 
@@ -209,22 +211,12 @@ class CreateLaboratoryView(FormView):
         user = self.request.user
         return kwargs
 
-    def form_valid(self, form):
-        print("Esta entrando aqui.")
-        #form.send_email()
-        return super(CreateLaboratoryView, self).form_valid(form)
-
     def post(self, request, *args, **kwargs):
-        print("Esta entrando aqui ttambien.")
         user = self.request.user
-        form = self.create_lab_form(request.POST)
+        form = self.get_form()
         if user.has_perm('laboratory.add_laboratory'):
             if form.is_valid():
                 form.save(user)
-                return redirect(self.get_success_url())
+                return redirect(self.success_url)
         else:
-            return redirect(self.get_success_url())
-
-    def get_context_data(self, **kwargs):
-        context = super(CreateLaboratoryView, self).get_context_data(**kwargs)
-        return context
+            return redirect(self.success_url)
