@@ -6,7 +6,7 @@
 {% block content %}
 
   <div align="right">
-    <a id="create_lab_btn" class="btn btn-default" data-toggle="modal" href="{% url 'laboratory:create_lab' %}" data-target="#create_lab_modal">{% trans 'Create laboratory' %}</a>
+    <a id="create_lab_btn" class="btn btn-default" data-toggle="modal" href="{% url 'laboratory:create_lab_form' %}" data-target="#create_lab_modal">{% trans 'Create laboratory' %}</a>
   </div>
 
   <div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
@@ -15,9 +15,9 @@
 
       <div class="modal-content">
 
-        {% block laboratory_create %}
-          {% include "laboratory/laboratory_create.html" %}
-        {% endblock laboratory_create %}
+        {% block laboratory_create_form %}
+          {% include "laboratory/laboratory_create_form.html" %}
+        {% endblock laboratory_create_form %}
 
       </div>
     </div>
@@ -38,13 +38,9 @@
 
   <script>
 
-    /*$(document).ready(() => {
-
-        $('#create_lab_modal').modal({
-            show: 'true'
-        });
-
-    });*/
+    $(document).ready(() => {
+      if({{number_of_labs}} == 0) $('#create_lab_btn').click();
+    });
 
   </script>
 {% endblock %}
