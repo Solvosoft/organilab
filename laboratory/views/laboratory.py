@@ -18,6 +18,7 @@ from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
 from django.contrib.auth.models import User, Permission
+from django.contrib import messages
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -219,4 +220,6 @@ class CreateLaboratoryView(CreateView):
                 form.save(user)
                 return redirect(self.success_url)
         else:
+            messages.error(request, "Lo sentimos todavía no hay un laboratorio disponible, por favor contacte con el administrador para que le asigne un laboratorio.")
+            #Translate
             return redirect(self.success_url)
