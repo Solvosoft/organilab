@@ -1,0 +1,16 @@
+  {% load i18n %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <center><h3 class="modal-title">{% trans 'Create laboratory' %}</h3></center>
+  </div>
+    <div class="modal-body ">
+      <div class="alert alert-warning">{% trans 'Sorry, you have not permission to create laboratory, please contact your administrator' %}</div>
+    
+    <p>
+    {% trans 'Maybe you are not associate with any laboratory in a role' %}
+    </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+    </div>
