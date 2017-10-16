@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404, render_to_response
+from django.shortcuts import redirect, get_object_or_404, render_to_response,\
+    render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
@@ -20,20 +21,22 @@ from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
 from django.contrib.auth.models import User, Permission
 from django.contrib import messages
 
+
 def render_admins_lab(request, object_list, lab, message=None):
     return {
-        'inner-fragments':{
-            '#admin_lab_users':render_to_string(
-            'ajax/lab_admins_list.html',
-            context = {
-                'object_list' : object_list,
-                'lab': lab,
-                'message':message
-            },
-            request = request,
+        'inner-fragments': {
+            '#admin_lab_users': render_to_string(
+                'ajax/lab_admins_list.html',
+                context={
+                    'object_list': object_list,
+                    'lab': lab,
+                    'message': message
+                },
+                request=request,
             )
         }
     }
+
 
 @ajax
 def create_admins_user(request, pk):
@@ -58,24 +61,26 @@ def create_admins_user(request, pk):
         message = "Sorry, wrong method"
     return render_admins_lab(request, lab.lab_admins.all(), lab, message=message)
 
+
 @ajax
-def get_create_admis_user(request,pk):
+def get_create_admis_user(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     usersearchform = UserSearchForm()
     usercreateform = UserCreate()
     return {
-        'inner-fragments':{
-            '#admin_lab_users':render_to_string(
-            'ajax/lab_admins_create.html',
-            context = {
-                'usersearchform' : usersearchform,
-                'usercreateform' : usercreateform,
-                'lab':lab
-            },
-            request = request,
+        'inner-fragments': {
+            '#admin_lab_users': render_to_string(
+                'ajax/lab_admins_create.html',
+                context={
+                    'usersearchform': usersearchform,
+                    'usercreateform': usercreateform,
+                    'lab': lab
+                },
+                request=request,
             )
         }
     }
+
 
 @ajax
 def del_admins_user(request, pk, pk_user):
@@ -83,10 +88,12 @@ def del_admins_user(request, pk, pk_user):
     lab.lab_admins.filter(pk=pk_user).delete()
     return render_admins_lab(request, lab.lab_admins.all(), lab)
 
+
 @ajax
 def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     return render_admins_lab(request, lab.lab_admins.all(), lab)
+
 
 class LaboratoryEdit(UpdateView):
     model = Laboratory
@@ -150,7 +157,6 @@ class SelectLaboratoryForm(forms.Form):
         self.fields['laboratory'].queryset = lab_queryset
 
 
-
 @method_decorator(login_required, name='dispatch')
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
@@ -159,7 +165,7 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def get_laboratories(self, user):
-        return Laboratory.objects.filter(Q(laboratorists__pk = user.pk) |  Q(students__pk = user.pk) | Q(lab_admins__pk = user.pk)).distinct()
+        return Laboratory.objects.filter(Q(laboratorists__pk=user.pk) | Q(students__pk=user.pk) | Q(lab_admins__pk=user.pk)).distinct()
 
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
@@ -187,11 +193,17 @@ class SelectLaboratoryView(FormView):
             return redirect('laboratory:index', lab_pk)
         return FormView.get(self, request, *args, **kwargs)
 
+
 @method_decorator(login_required, name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create_form.html'
     form_class = LaboratoryCreate
     success_url = '/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.has_perm('laboratory.add_laboratory'):
+            return render(request, 'laboratory/laboratory_notperm.html')
+        return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
@@ -199,8 +211,10 @@ class CreateLaboratoryFormView(FormView):
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
+        context = super(CreateLaboratoryFormView,
+                        self).get_context_data(**kwargs)
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 class CreateLaboratoryView(CreateView):
@@ -220,6 +234,7 @@ class CreateLaboratoryView(CreateView):
                 form.save(user)
                 return redirect(self.success_url)
         else:
-            messages.error(request, "Lo sentimos todavía no hay un laboratorio disponible, por favor contacte con el administrador para que le asigne un laboratorio.")
-            #Translate
+            messages.error(
+                request, "Lo sentimos todavía no hay un laboratorio disponible, por favor contacte con el administrador para que le asigne un laboratorio.")
+            # Translate
             return redirect(self.success_url)
