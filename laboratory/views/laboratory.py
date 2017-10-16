@@ -220,11 +220,6 @@ class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = '/'
 
-    def get_form_kwargs(self):
-        kwargs = super(CreateLaboratoryView, self).get_form_kwargs()
-        user = self.request.user
-        return kwargs
-
     def post(self, request, *args, **kwargs):
         user = self.request.user
         form = self.get_form()
