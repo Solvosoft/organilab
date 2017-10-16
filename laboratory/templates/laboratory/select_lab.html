@@ -6,7 +6,7 @@
 {% block content %}
 
   <div align="right">
-    <button id="create_lab_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="create_lab_modal" >{% trans 'Create laboratory' %}</button>
+    <a id="create_lab_btn" class="btn btn-default" data-toggle="modal" href="{% url 'laboratory:create_lab_form' %}" data-target="#create_lab_modal">{% trans 'Create laboratory' %}</a>
   </div>
 
   <div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
@@ -14,23 +14,10 @@
     <div class="modal-dialog modal-lg">
 
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <center><h3 class="modal-title">{% trans 'Create laboratory' %}</h3></center>
-        </div>
 
-        <!--Lab form-->
-        <form method="POST" action="" class="form-horizontal">{% csrf_token %}
-          <div class="modal-body ">
-
-            {{ create_lab_form|bootstrap_horizontal}}
-
-          </div>
-          <div class="modal-footer">
-            <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-          </div>
-        </form>
+        {% block laboratory_create_form %}
+          {% include "laboratory/laboratory_create_form.html" %}
+        {% endblock laboratory_create_form %}
 
       </div>
     </div>
@@ -52,10 +39,8 @@
   <script>
 
     $(document).ready(() => {
-      if({{number_of_labs}} == 0){
-          $("#create_lab_modal").modal('show');
-      }
+      if({{number_of_labs}} == 0) $('#create_lab_btn').click();
     });
-    
+
   </script>
 {% endblock %}
