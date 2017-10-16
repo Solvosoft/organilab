@@ -7,8 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404, render_to_response
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView
-from django.views.generic import UpdateView
+from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
@@ -19,6 +18,7 @@ from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
 from django.contrib.auth.models import User, Permission
+from django.contrib import messages
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -155,11 +155,7 @@ class SelectLaboratoryForm(forms.Form):
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
-
     number_of_labs = 0
-
-    create_lab_form = LaboratoryCreate
-
     success_url = '/'
 
     def get_laboratories(self, user):
@@ -173,7 +169,6 @@ class SelectLaboratoryView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SelectLaboratoryView, self).get_context_data(**kwargs)
-        context['create_lab_form'] = self.create_lab_form()
         context['number_of_labs'] = self.number_of_labs
         return context
 
@@ -183,16 +178,6 @@ class SelectLaboratoryView(FormView):
         request.session['lab_pk'] = lab_pk
         return redirect('laboratory:index', lab_pk)
 
-    def post(self, request, *args, **kwargs):
-        user = self.request.user
-        create_lab_form = self.create_lab_form(request.POST)
-        if user.has_perm('laboratory.add_laboratory'):
-            if create_lab_form.is_valid():
-                create_lab_form.save(user)
-                return redirect(self.get_success_url())
-        else:
-            return redirect(self.get_success_url())
-
     def get(self, request, *args, **kwargs):
         labs = self.get_laboratories(request.user)
         self.number_of_labs = labs.count()
@@ -200,5 +185,41 @@ class SelectLaboratoryView(FormView):
             lab_pk = labs.first().pk
             request.session['lab_pk'] = lab_pk
             return redirect('laboratory:index', lab_pk)
-
         return FormView.get(self, request, *args, **kwargs)
+
+@method_decorator(login_required, name='dispatch')
+class CreateLaboratoryFormView(FormView):
+    template_name = 'laboratory/laboratory_create_form.html'
+    form_class = LaboratoryCreate
+    success_url = '/'
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
+        user = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
+        return context
+
+@method_decorator(login_required, name='dispatch')
+class CreateLaboratoryView(CreateView):
+    form_class = LaboratoryCreate
+    success_url = '/'
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateLaboratoryView, self).get_form_kwargs()
+        user = self.request.user
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        form = self.get_form()
+        if user.has_perm('laboratory.add_laboratory'):
+            if form.is_valid():
+                form.save(user)
+                return redirect(self.success_url)
+        else:
+            messages.error(request, "Lo sentimos todavía no hay un laboratorio disponible, por favor contacte con el administrador para que le asigne un laboratorio.")
+            #Translate
+            return redirect(self.success_url)
