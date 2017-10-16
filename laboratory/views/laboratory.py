@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404, render_to_response,\
-    render
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
@@ -18,7 +17,7 @@ from laboratory.models import Laboratory
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 
@@ -235,6 +234,7 @@ class CreateLaboratoryView(CreateView):
                 return redirect(self.success_url)
         else:
             messages.error(
-                request, "Lo sentimos todavía no hay un laboratorio disponible, por favor contacte con el administrador para que le asigne un laboratorio.")
+                request,
+                _("Sorry, there is not available laboratory, please contact the administrator and request a laboratory enrollment"))
             # Translate
             return redirect(self.success_url)
