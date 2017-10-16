@@ -80,7 +80,7 @@
           <i>{% trans 'Not user found' %}</i>
         {% endfor %}
     </ul>
-    <button type="submit" name="action" value="rmuser" class="save btn btn-danger">{% trans 'Delete users' %}</button>
+    <button type="submit" name="action" value="rmuser" class="save btn btn-danger" onclick="return delete_users()">{% trans 'Delete users' %}</button>
     </form>
 
     {% if is_paginated %}
@@ -116,6 +116,26 @@
   	     $("#create_user_btn").click();
        });
     {% endif %}
+
+    function delete_users() {
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(() => {
+        swal(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+        return true;
+      };)
+      return false;
+    }
 
   </script>
 {% endblock %}
