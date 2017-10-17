@@ -40,15 +40,20 @@ urlpatterns = [
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
 
-    #Password_reset
-    url(r'^accounts/password_reset/$', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_ss.html', email_template_name='registration/password_reset_email_ss.html', subject_template_name='registration/password_reset_subject_ss.txt',success_url='/accounts/password_reset_done/',from_email='#'), name='password_reset'), #Set a sending e-mail on 'from_email'.
-    url(r'^accounts/password_reset_done/$', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done_ss.html'), name='password_reset_done'),
-    url(r'^accounts/password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm_ss.html',success_url='/accounts/password_reset_complete/'), name='password_reset_confirm'),
-    url(r'^accounts/password_reset_complete/',auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete_ss.html'), name='password_reset_complete'),
+    # Password_reset
+    url(r'^accounts/password_reset/$', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_ss.html', email_template_name='registration/password_reset_email_ss.html',
+                                                                            subject_template_name='registration/password_reset_subject_ss.txt', success_url='/accounts/password_reset_done/', from_email='Organilab'), name='password_reset'),  # Set a sending e-mail on 'from_email'.
+    url(r'^accounts/password_reset_done/$', auth_views.PasswordResetDoneView.as_view(
+        template_name='registration/password_reset_done_ss.html'), name='password_reset_done'),
+    url(r'^accounts/password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(
+        template_name='registration/password_reset_confirm_ss.html', success_url='/accounts/password_reset_complete/'), name='password_reset_confirm'),
+    url(r'^accounts/password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='registration/password_reset_complete_ss.html'), name='password_reset_complete'),
 
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    #CreateLaboratory
-    url(r'^create_lab_form$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab_form'),
+    # CreateLaboratory
+    url(r'^create_lab_form$', laboratory.CreateLaboratoryFormView.as_view(),
+        name='create_lab_form'),
     url(r'^create_lab$', laboratory.CreateLaboratoryView.as_view(), name='create_lab'),
 
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
