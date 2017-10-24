@@ -43,16 +43,10 @@ class FeedbackView(CreateView):
 @login_required
 def get_tour_steps(request):
     if request.method == 'GET' and request.is_ajax():
-        #return TOUR_STEPS_JSON
-        """return {
-            "steps": TOUR_STEPS,
-            "template": render_to_string('template')
-        }"""
         tour = {
             'steps' : TOUR_STEPS_JSON,
             'template' :render_to_string('tour/tourtemplate.html', request=request)
         }
-        #print(json.dumps(dev))
         return json.dumps(tour)
     return 0
 
