@@ -32,6 +32,7 @@
 })(window, function($) {
   var Tour, document;
   document = window.document;
+
   Tour = (function() {
     function Tour(options) {
       var storage;
