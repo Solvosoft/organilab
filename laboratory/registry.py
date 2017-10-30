@@ -1,7 +1,7 @@
 import json
 from django.utils.translation import ugettext as _
 
-TOUR_STEPS = [
+TOUR_STEPS_LAB = [
     {
         'element': "#brand_id",
         'title': _("Hello!"),
@@ -70,4 +70,39 @@ TOUR_STEPS = [
     }
 ]
 
-TOUR_STEPS_JSON = json.dumps(TOUR_STEPS)
+#Change elements baby!
+TOUR_STEPS_FURNITURE = [
+    {
+        'element': "#intro_title",
+        'title': _("Hello!"),
+        'content': _("In this section you may insert the information about the furniture you want to include into this laboratory."),
+        'placement': 'bottom'
+    },
+    {
+        'element': "#furniture_form",
+        'title': _("Details"),
+        'content': _("You must select the labroom you decide will include the new furniture. Asign it a name and select the type to the furniture."),
+        'placement': 'bottom'
+    },
+    {
+        'element': "#save_button1",
+        'title': _("Save"),
+        'content': _("Press the save button to continue with the laboratory edition."),
+        'placement': 'bottom'
+    },
+    {
+        'element': "#furniture_size",
+        'title': _("Size"),
+        'content': _("In this section you set the size of the furniture. You may add or remove any columnns or rows as necessary."),
+        'placement': 'bottom'
+    },
+    {
+        'element': "#save_button2",
+        'title': _("Save"),
+        'content': _("Press the Save button to save the furniture into the system."),
+        'placement': 'bottom'
+    }
+]
+
+TOUR_STEPS_FURNITURE_JSON = json.dumps(TOUR_STEPS_FURNITURE)
+TOUR_STEPS_LAB_JSON = json.dumps(TOUR_STEPS_LAB)
