@@ -50,7 +50,6 @@
             <div id="save_button2" class="btn-group" role="group" aria-label="...">
               <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
             </div>
-            
           </div>
         </div>
       {% else %}
@@ -144,6 +143,13 @@
   <script src="{% static 'laboratory/js/jquery-sortable-min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
 
+  <link href="{% static 'laboratory/css/bootstrap-tour.css' %}"
+  	rel="stylesheet">
+  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}"
+  	rel="stylesheet">
+
+  <script type="text/javascript"
+  	src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
   <script type="text/javascript" src="{% static 'laboratory/js/tourfurniture.js' %}"></script>
 
 {% endblock %}
