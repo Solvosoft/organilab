@@ -2,25 +2,30 @@
 {% load bootstrap staticfiles i18n %}
 
 {% block title %}{% trans 'Furniture management' %}{% endblock %}
+
 {% block content %}
-  <div>
+  <div id="intro_title">
+
     <h1 align="center">{% trans 'Furniture management' %}</h1>
+
+    <br>
     {{ form.errors }}
+
     <form class="form-horizontal" action="" method="post">
       {% csrf_token %}
       <div class="row">
-        <div class="col-md-4 col-md-offset-2">
+        <div id="furniture_form" class="col-md-4 col-md-offset-2">
           {{ form|bootstrap_horizontal }}
         </div>
-        <div class="col-md-1">
+        <div id="save_button1" class="col-md-1">
           <button class="btn btn-success" type="submit">
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
           </button>
         </div>
       </div>
-      
+
       {% if form.instance.pk %}
-        <div class="table-responsive">
+        <div id="furniture_size" class="table-responsive">
           <table class="table table-bordered" id="mytab">
             {{ dataconfig|safe }}
           </table>
@@ -42,7 +47,7 @@
               </button>
             </div>
 
-            <div class="btn-group" role="group" aria-label="...">
+            <div id="save_button2" class="btn-group" role="group" aria-label="...">
               <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
             </div>
           </div>
@@ -70,6 +75,7 @@
 
       {% endif %}
     </form>
+
   </div>
 
   <div class="hidden" id="addshelfproto">
@@ -136,5 +142,14 @@
 {% block js %}
   <script src="{% static 'laboratory/js/jquery-sortable-min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
+
+  <link href="{% static 'laboratory/css/bootstrap-tour.css' %}"
+  	rel="stylesheet">
+  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}"
+  	rel="stylesheet">
+
+  <script type="text/javascript"
+  	src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
+  <script type="text/javascript" src="{% static 'laboratory/js/tourfurniture.js' %}"></script>
 
 {% endblock %}
