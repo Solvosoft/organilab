@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 13:21-0600\n"
-"PO-Revision-Date: 2017-10-31 13:22-0600\n"
+"POT-Creation-Date: 2017-10-31 15:09-0600\n"
+"PO-Revision-Date: 2017-10-31 15:14-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -328,7 +328,7 @@ msgstr "Solución"
 msgid "Solutions"
 msgstr "Soluciones"
 
-#: laboratory/registry.py:7
+#: laboratory/registry.py:7 laboratory/registry.py:76
 msgid "Hello!"
 msgstr "¡Hola!"
 
@@ -459,6 +459,55 @@ msgid ""
 msgstr ""
 "Si tuviste algún problema usando Organilab, por favor dejanos saber. "
 "Estaremos ansiosos por corregirlo."
+
+#: laboratory/registry.py:77
+msgid ""
+"In this section you may insert the information about the furniture you want "
+"to include into this laboratory."
+msgstr ""
+"En esta sección usted podrá insertar la información acerca del mueble que "
+"usted quiere ingresar en este laboratorio."
+
+#: laboratory/registry.py:82
+msgid "Details"
+msgstr "Detalles"
+
+#: laboratory/registry.py:83
+msgid ""
+"You must select the labroom you decide will include the new furniture. "
+"Assign it a name and select the type to the furniture."
+msgstr ""
+"Debe seleccionar el laboratorio donde incluirá los muebles nuevos. Asignarle "
+"un nombre y seleccionar el tipo de los muebles."
+
+#: laboratory/registry.py:88 laboratory/registry.py:100
+#: laboratory/templates/laboratory/edit.html:11
+#: laboratory/templates/laboratory/furniture_form.html:22
+#: laboratory/templates/laboratory/furniture_form.html:51
+#: laboratory/templates/laboratory/laboratory_form.html:11
+#: laboratory/templates/laboratory/object_form.html:9
+#: laboratory/templates/laboratory/objectfeatures_form.html:18
+#: laboratory/templates/laboratory/objectview_form.html:15
+#: laboratory/templates/laboratory/shelf_form.html:19
+msgid "Save"
+msgstr "Guardar"
+
+#: laboratory/registry.py:89
+msgid "Press the save button to continue with the laboratory edition."
+msgstr ""
+"Presione el botón Grabar para continuar con la edición del laboratorio."
+
+#: laboratory/registry.py:94
+msgid "Size"
+msgstr "Tamaño"
+
+#: laboratory/registry.py:95
+msgid "You may add or remove any columnns or rows as necessary."
+msgstr "Puede agregar o eliminar cualquier comuna o fila que necesite"
+
+#: laboratory/registry.py:101
+msgid "Press the Save button to save the furniture into the system."
+msgstr "Presione el botón Grabar para guardar el mueble en el sistema"
 
 #: laboratory/signals.py:48 laboratory/tasks.py:38
 msgid "Please use an email client with HTML support"
@@ -605,7 +654,7 @@ msgstr "Eliminar usuarios"
 #: laboratory/templates/laboratory/admin_shelf_list.html:3
 #: laboratory/templates/laboratory/admin_shelf_list.html:11
 #: laboratory/templates/laboratory/dataconfig.html:9
-#: laboratory/templates/laboratory/furniture_form.html:79
+#: laboratory/templates/laboratory/furniture_form.html:85
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
@@ -613,17 +662,6 @@ msgstr "Agregar estante"
 #: laboratory/templates/laboratory/laboratory_form.html:7
 msgid "Laboratory Management"
 msgstr "Administración de laboratorio"
-
-#: laboratory/templates/laboratory/edit.html:11
-#: laboratory/templates/laboratory/furniture_form.html:17
-#: laboratory/templates/laboratory/furniture_form.html:46
-#: laboratory/templates/laboratory/laboratory_form.html:11
-#: laboratory/templates/laboratory/object_form.html:9
-#: laboratory/templates/laboratory/objectfeatures_form.html:18
-#: laboratory/templates/laboratory/objectview_form.html:15
-#: laboratory/templates/laboratory/shelf_form.html:19
-msgid "Save"
-msgstr "Guardar"
 
 #: laboratory/templates/laboratory/feedbackentry_form.html:4
 #: laboratory/templates/laboratory/feedbackentry_form.html:10
@@ -658,12 +696,12 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #: laboratory/templates/laboratory/furniture_form.html:4
-#: laboratory/templates/laboratory/furniture_form.html:7
+#: laboratory/templates/laboratory/furniture_form.html:9
 #: laboratory/templates/laboratory/partials/navbar.html:29
 msgid "Furniture management"
 msgstr "Administración de muebles"
 
-#: laboratory/templates/laboratory/furniture_form.html:62
+#: laboratory/templates/laboratory/furniture_form.html:67
 #: laboratory/templates/laboratory/laboratory_list.html:17
 #: laboratory/templates/laboratory/objectfeatures_form.html:20
 #: laboratory/templates/laboratory/objectfeatures_form.html:39
@@ -673,7 +711,7 @@ msgstr "Administración de muebles"
 msgid "Edit"
 msgstr "Editar"
 
-#: laboratory/templates/laboratory/furniture_form.html:64
+#: laboratory/templates/laboratory/furniture_form.html:69
 #: laboratory/templates/laboratory/laboratory_list.html:20
 #: laboratory/templates/laboratory/laboratoryroom_form.html:41
 #: laboratory/templates/laboratory/objectfeatures_form.html:41
@@ -682,7 +720,7 @@ msgstr "Editar"
 msgid "Delete"
 msgstr "Eliminar"
 
-#: laboratory/templates/laboratory/furniture_form.html:93
+#: laboratory/templates/laboratory/furniture_form.html:99
 msgid "Create shelf"
 msgstr "Crear nuevo estante"
 
