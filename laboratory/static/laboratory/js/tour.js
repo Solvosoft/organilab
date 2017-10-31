@@ -5,13 +5,14 @@
 $.ajax({
     method: 'get',
     url: '/_ajax/get_tour_steps',
-    success: function (data){
-        var tour_steps = JSON.parse(data.content);
-        console.log(tour_steps);
+    success: (data) => {
+
+        var aux = JSON.parse(data.content);
         var tour = new Tour({
-            steps: tour_steps
+          steps : JSON.parse(aux.steps),
+          template : aux.template
         });
-        
+
         tour.init();
         tour.start();
     }

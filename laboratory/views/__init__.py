@@ -6,6 +6,8 @@ from django_ajax.decorators import ajax
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string
+import json
 
 from laboratory.models import FeedbackEntry
 from laboratory.decorators import check_lab_permissions
@@ -41,7 +43,11 @@ class FeedbackView(CreateView):
 @login_required
 def get_tour_steps(request):
     if request.method == 'GET' and request.is_ajax():
-        return TOUR_STEPS_JSON
+        tour = {
+            'steps' : TOUR_STEPS_JSON,
+            'template' :render_to_string('tour/tourtemplate.html', request=request)
+        }
+        return json.dumps(tour)
     return 0
 
 def is_laboratory_admin(user):

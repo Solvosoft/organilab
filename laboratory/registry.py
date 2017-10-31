@@ -69,4 +69,5 @@ TOUR_STEPS = [
         'placement': 'bottom'
     }
 ]
+
 TOUR_STEPS_JSON = json.dumps(TOUR_STEPS)
