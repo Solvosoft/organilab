@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-16 16:07-0600\n"
-"PO-Revision-Date: 2017-10-16 16:18-0600\n"
+"POT-Creation-Date: 2017-10-31 13:21-0600\n"
+"PO-Revision-Date: 2017-10-31 13:22-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -744,6 +744,7 @@ msgstr "Página"
 
 #: laboratory/templates/laboratory/laboratory_list.html:41
 #: laboratory/templates/laboratory/objectview_list.html:52
+#: laboratory/templates/tour/tourtemplate.html:1
 msgid "Next"
 msgstr "Siguiente"
 
@@ -1379,12 +1380,24 @@ msgstr "Enviar"
 msgid "Organilab Password Reset"
 msgstr "Recuperar contraseña en organilab"
 
+#: laboratory/templates/tour/tourtemplate.html:1
+msgid "Prev"
+msgstr "Anterior"
+
+#: laboratory/templates/tour/tourtemplate.html:1
+msgid "Pause"
+msgstr "Pausa"
+
+#: laboratory/templates/tour/tourtemplate.html:1
+msgid "End tour"
+msgstr "Finalizar"
+
 #: laboratory/validators.py:9
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
 msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
 
-#: laboratory/views/__init__.py:32
+#: laboratory/views/__init__.py:34
 msgid ""
 "Thank you for your help. We are gonna check your problem as soon as we can"
 msgstr ""
