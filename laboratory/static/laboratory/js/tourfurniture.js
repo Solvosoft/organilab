@@ -12,8 +12,6 @@ $.ajax({
           template : aux.template
         });
 
-        console.log(aux);
-
         tour.init();
         tour.start();
     }

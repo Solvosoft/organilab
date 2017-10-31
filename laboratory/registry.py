@@ -70,7 +70,6 @@ TOUR_STEPS_LAB = [
     }
 ]
 
-#Change elements baby!
 TOUR_STEPS_FURNITURE = [
     {
         'element': "#intro_title",
