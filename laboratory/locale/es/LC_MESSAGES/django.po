@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-25 08:08-0600\n"
-"PO-Revision-Date: 2017-10-16 16:18-0600\n"
+"POT-Creation-Date: 2017-10-31 13:21-0600\n"
+"PO-Revision-Date: 2017-10-31 13:22-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -1381,8 +1381,6 @@ msgid "Organilab Password Reset"
 msgstr "Recuperar contraseña en organilab"
 
 #: laboratory/templates/tour/tourtemplate.html:1
-#, fuzzy
-#| msgid "Previous"
 msgid "Prev"
 msgstr "Anterior"
 
@@ -1392,7 +1390,7 @@ msgstr "Pausa"
 
 #: laboratory/templates/tour/tourtemplate.html:1
 msgid "End tour"
-msgstr "Finalizar tour"
+msgstr "Finalizar"
 
 #: laboratory/validators.py:9
 #, python-format
