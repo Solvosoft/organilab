@@ -6,11 +6,47 @@
 
   <div class="page-header"><h1>{% if type_id == "0" %} {% trans 'Reactives report' %}{% elif type_id == "1" %}{% trans 'Materials report' %}{% elif type_id == "2" %}{% trans 'Equipments report' %}{% else %} {% trans 'Objects report' %} {% endif %}</h1></div>
 
-  <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
-     href="{% url 'laboratory:reports_objects' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-    {% trans "All objects in PDF" %}
-  </a>
+ 
+  <div class="btn-group dropup pull-right">
+  <button type="button" class="btn btn-danger">
+   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+   {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
+   </li>
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
+   </li>
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
+   </li>
+    <li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
+   </li>
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
+   </li>
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
+   </li>    
+    
+  </ul>
+</div>
+  
+  
   <br><br>
 
   {% for obj in object_list %}

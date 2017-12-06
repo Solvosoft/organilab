@@ -129,6 +129,15 @@ class ShelfObject(models.Model):
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=CHOICES)
 
+
+    @staticmethod
+    def get_units( unit):
+        choices = dict(ShelfObject.CHOICES)
+        unit=str(unit)
+        if unit in choices:
+            return str(choices[unit])
+        
+        return ''
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
