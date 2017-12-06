@@ -45,4 +45,10 @@ celery==4.0.1
 redis==2.10.5
 django-ajax-selects==1.5.2
 django-cruds-adminlte
-
+pyexcel==0.5.6
+pyexcel-ezodf==0.3.4
+pyexcel-io==0.5.4
+pyexcel-ods3==0.5.2
+pyexcel-xls==0.5.4
+django-excel==0.0.9
+pyexcel-xlsx==0.5.4
