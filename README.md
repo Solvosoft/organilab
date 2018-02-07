@@ -1,5 +1,13 @@
 # organilab
-Simple laboratory organizer, trabajando con pasantes :)
+Simple laboratory organizer with multiples features:
+
+- Laboratory builder and elegant presentation 
+- Multi-laboratory management
+- Reservation system
+- Solution Calculator
+- Procedures management
+- Object limit notifications
+- Internationalization
 
 # Documentation
 
