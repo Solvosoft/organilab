@@ -2,18 +2,19 @@ from __future__ import unicode_literals
 
 import ast
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
 
 from laboratory.validators import validate_molecular_formula
-from gtk.keysyms import blank
-from xbmcswift2.cli.console import get_max_len
-from unittest.util import _MAX_LENGTH
 
-from location_field.models.spatial import LocationField
+# 
+# from django.contrib.gis.db import models
+# from django.contrib.gis.geos import Point
+#from location_field.models.spatial import LocationField
+from location_field.models.plain import PlainLocationField
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
@@ -220,14 +221,38 @@ class Furniture(models.Model):
 
 
 @python_2_unicode_compatible
+class LaboratoryAdmin(models.Model):
+    credentials = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    name   = models.CharField(_('name'), max_length=255)    
+    phone_number = models.CharField(_('Phone'),max_length=25)
+    id_card = models.CharField(_('ID Card'),max_length=100)
+    email = models.EmailField(_('email address'), unique=True)
+
+    def __str__(self):
+        return "%s"%self.name  
+    
+
+@python_2_unicode_compatible
+class OrganizationStruture(models.Model):
+    name   = models.CharField(_('name'), max_length=255)
+    father = models.ForeignKey('OrganizationStruture',blank=False,null=True,on_delete=models.SET_NULL)
+    group  = models.ForeignKey(Group, blank=False, null=True, on_delete=models.SET_NULL)
+     
+    class Meta:
+        verbose_name = _('Organization')
+        verbose_name_plural = _('Organizations')
+        
+    def __str__(self):
+        return "%s"%self.name       
+
+@python_2_unicode_compatible
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
-    phone_number = models.CharField(_('Phone'),max_length=25)
-    admin = models.ForeignKey('LaboratoryAdmin',blank=False,null=True, on_delete=models.SET_NULL(collector, field, sub_objs, using))
-    city = models.CharField(_('city'),max_length=255)
-    location = models.TextField(_('Location'))
-    geolocation = LocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
-    objects = models.GeoManager()
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    admin = models.ForeignKey('LaboratoryAdmin',blank=False,null=True, on_delete=models.SET_NULL)
+    location = models.TextField(_('Location'),default='')
+    geolocation = PlainLocationField(default='', zoom=7)
+
     
     
     rooms = models.ManyToManyField(
@@ -248,26 +273,7 @@ class Laboratory(models.Model):
     def __str__(self):
         return '%s' % (self.name,)
     
-@python_2_unicode_compatible
-class LaboratoryAdmin(models.Model):
-    name   = models.CharField(_('name'), max_length=255)    
-    phone_number = models.CharField(_('Phone'),max_length=25)
-    id_card = models.CharField(_('ID'),max_length=100)
-    email = models.EmailField()
 
-
-@python_2_unicode_compatible
-class OrganizationStruture(models.Model):
-    name   = models.CharField(_('Laboratory name'), max_length=255)
-    father = models.ForeignKey('OrganizationStruture',blank=True,null=True,on_delete=models.SET_NULL)
-    group  = models.ForeignKey('OrganizationGroup', blank=True, null=True, on_delete=models.SET_NULL)
-    
-@python_2_unicode_compatible    
-class OrganizationGroup(models.Model):
-    name   = models.CharField(_('name'), max_length=255)
-    
-    def __init__(self):
-        return "%s"%self.name    
 
      
 @python_2_unicode_compatible
