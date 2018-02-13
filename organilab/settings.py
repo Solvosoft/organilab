@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ajax_select',
     'crispy_forms',
     'cruds_adminlte',
+    'location_field.apps.DefaultConfig',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
