@@ -221,9 +221,9 @@ class Furniture(models.Model):
 
 
 @python_2_unicode_compatible
-class LaboratoryAdmin(models.Model):
+class PrincipalTechnician(models.Model):
     credentials = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
-    name   = models.CharField(_('name'), max_length=255)    
+    name   = models.CharField(_('Name'), max_length=255)    
     phone_number = models.CharField(_('Phone'),max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
     email = models.EmailField(_('email address'), unique=True)
@@ -233,11 +233,11 @@ class LaboratoryAdmin(models.Model):
     
 
 @python_2_unicode_compatible
-class OrganizationStruture(models.Model):
-    name   = models.CharField(_('name'), max_length=255)
-    father = models.ForeignKey('OrganizationStruture',blank=False,null=True,on_delete=models.SET_NULL)
+class OrganizationStructure(models.Model):
+    name   = models.CharField(_('Name'), max_length=255)
+    father = models.ForeignKey('OrganizationStructure',blank=False,null=True,on_delete=models.SET_NULL)
     group  = models.ForeignKey(Group, blank=False, null=True, on_delete=models.SET_NULL)
-     
+    adminlab = models.ForeignKey('PrincipalTechnician',blank=False,null=True, on_delete=models.SET_NULL)
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
@@ -249,8 +249,8 @@ class OrganizationStruture(models.Model):
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
-    admin = models.ForeignKey('LaboratoryAdmin',blank=False,null=True, on_delete=models.SET_NULL)
-    location = models.TextField(_('Location'),default='')
+    admin = models.ForeignKey('PrincipalTechnician',blank=False,null=True, on_delete=models.SET_NULL)
+    location = models.CharField(_('Location'),default='',max_length=255)
     geolocation = PlainLocationField(default='', zoom=7)
 
     

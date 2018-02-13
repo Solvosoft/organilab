@@ -7,19 +7,20 @@ class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')
 
 class OrganizationStruture_inline(admin.TabularInline):
-    model = models.OrganizationStruture
+    model = models.OrganizationStructure
     
 class Laboratory_inline(admin.TabularInline):
     model = models.Laboratory
         
 class OrganizationStrutureAdmin(admin.ModelAdmin):
     fields = ('name','group')  
+    search_fields = ["name"]
     inlines = [
         OrganizationStruture_inline,
     ]
     
     
-class LaboratoryAdminAdmin(admin.ModelAdmin):
+class PrincipalTechnicianAdmin(admin.ModelAdmin):
     fields= ('name','id_card','phone_number','credentials')
     search_fields = ["credentials__username"]
     inlines = [
@@ -41,8 +42,8 @@ admin.site.register(models.Solution)
 
 
 
-admin.site.register(models.LaboratoryAdmin,LaboratoryAdminAdmin)
-admin.site.register(models.OrganizationStruture,OrganizationStrutureAdmin)
+admin.site.register(models.PrincipalTechnician,PrincipalTechnicianAdmin)
+admin.site.register(models.OrganizationStructure,OrganizationStrutureAdmin)
 
 
 
