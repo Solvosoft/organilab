@@ -49,8 +49,9 @@
                role="button" aria-haspopup="true" aria-expanded="false">
               {% trans 'Reports' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-
-              <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
+               <li><a href="{% url 'reports_organizations_laboratory' laboratory %}">
+                {% trans 'Organizations' %}</a></li>
+              <li><a href="{% url 'laboratory:reports_organizations_laboratory' laboratory %}">
                 {% trans 'Laboratory' %}</a></li>
               <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
                 {% trans 'Furnitures' %}</a>

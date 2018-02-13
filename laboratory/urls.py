@@ -18,6 +18,7 @@ from laboratory.views import labroom, shelfobject, laboratory, solutions
 from laboratory.views import access
 from laboratory.views.objects import ObjectView
 
+
 objviews = ObjectView()
 
 urlpatterns = [
@@ -140,6 +141,14 @@ lab_reports_urls = [
         name='reactive_precursor_object_list')
 ]
 
+# lab_reports_organizations = [
+#          url(r'^laboratory$', reports.report_labroom_building),
+#          url(r'$', organizations.OrganizationReportView.as_view(),
+#         name='reports_organizations_laboratory'),
+#      
+#      
+# ]
+
 lab_features_urls = [
     url(r'^create$', objectfeature.FeatureCreateView.as_view(),
         name='object_feature_create'),
@@ -179,3 +188,8 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
 ]
+
+# urlpatterns +=[
+#      url(r'^organizations/reports/(?P<lab_pk>\d+)', include(lab_reports_organizations)),
+#     
+# ]
