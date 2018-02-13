@@ -9,7 +9,11 @@ from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
 
 from laboratory.validators import validate_molecular_formula
+from gtk.keysyms import blank
+from xbmcswift2.cli.console import get_max_len
+from unittest.util import _MAX_LENGTH
 
+from location_field.models.spatial import LocationField
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
@@ -218,6 +222,14 @@ class Furniture(models.Model):
 @python_2_unicode_compatible
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
+    phone_number = models.CharField(_('Phone'),max_length=25)
+    admin = models.ForeignKey('LaboratoryAdmin',blank=False,null=True, on_delete=models.SET_NULL(collector, field, sub_objs, using))
+    city = models.CharField(_('city'),max_length=255)
+    location = models.TextField(_('Location'))
+    geolocation = LocationField(based_fields=['city'], zoom=7, default=Point(1.0, 1.0))
+    objects = models.GeoManager()
+    
+    
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
@@ -235,7 +247,29 @@ class Laboratory(models.Model):
 
     def __str__(self):
         return '%s' % (self.name,)
+    
+@python_2_unicode_compatible
+class LaboratoryAdmin(models.Model):
+    name   = models.CharField(_('name'), max_length=255)    
+    phone_number = models.CharField(_('Phone'),max_length=25)
+    id_card = models.CharField(_('ID'),max_length=100)
+    email = models.EmailField()
 
+
+@python_2_unicode_compatible
+class OrganizationStruture(models.Model):
+    name   = models.CharField(_('Laboratory name'), max_length=255)
+    father = models.ForeignKey('OrganizationStruture',blank=True,null=True,on_delete=models.SET_NULL)
+    group  = models.ForeignKey('OrganizationGroup', blank=True, null=True, on_delete=models.SET_NULL)
+    
+@python_2_unicode_compatible    
+class OrganizationGroup(models.Model):
+    name   = models.CharField(_('name'), max_length=255)
+    
+    def __init__(self):
+        return "%s"%self.name    
+
+     
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
