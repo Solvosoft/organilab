@@ -141,7 +141,7 @@ lab_reports_urls = [
         name='reactive_precursor_object_list')
 ]
 
-lab_reports_organization_urlss = [
+lab_reports_organization_urls = [
          url(r'^organization$', reports.report_organization_building,
               name='reports_organization_building'),
           url(r'^list$', organizations.OrganizationReportView.as_view(),
@@ -189,6 +189,6 @@ urlpatterns += [
 ]
 
 urlpatterns +=[
-     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/', include(lab_reports_organization_urlss)),
+     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/', include(lab_reports_organization_urls)),
      
 ]
