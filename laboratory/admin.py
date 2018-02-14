@@ -20,12 +20,12 @@ class OrganizationStrutureAdmin(admin.ModelAdmin):
     fields = ('name','group','father')  
     search_fields = ["name"]
     inlines = (  PrincipalTechnician_inline,)
-    excludes = ('organization',  )
+    exclude = ('organization',  )
     
 class LaboratoryAdmin(admin.ModelAdmin):
     fields= ('name','phone_number','location','geolocation')
     inlines = (PrincipalTechnician_inline, )
-    excludes = ('laboratory', )
+    exclude = ('laboratory', )
             
 admin.site.register(models.Laboratory,LaboratoryAdmin)
 admin.site.register(models.LaboratoryRoom)
