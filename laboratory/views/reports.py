@@ -52,6 +52,39 @@ def make_book_laboratory(rooms):
   
     return content
 
+@login_required
+@user_lab_perms(perm="report")
+def report_organization_building(request, *args, **kwargs):
+    if 'lab_pk' in kwargs:
+        rooms = get_object_or_404(
+            Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
+    else:
+        rooms = LaboratoryRoom.objects.all()
+    
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_book_dict(
+        make_book_laboratory(rooms), fileformat ,file_name="Laboratories.%s"%(fileformat,))
+
+    template = get_template('pdf/laboratoryroom_pdf.html')
+
+    context = {
+        'object_list': rooms,
+        'datetime': timezone.now(),
+        'request': request,
+        'laboratory': kwargs.get('lab_pk')
+    }
+
+    html = template.render(context=context).encode("UTF-8")
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+    return response
+
+
 
 @login_required
 @user_lab_perms(perm="report")
