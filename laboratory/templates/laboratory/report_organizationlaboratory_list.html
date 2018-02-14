@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load bootstrap i18n %}
 
 {% block title %}{% trans 'Organization laboratory report' %}{% endblock %}
 
@@ -11,13 +11,12 @@
  <form action="" method="post">
         {% csrf_token %}
         <table>
-        {{ form }}
+        {{ form|bootstrap_horizontal }}
         </table>
-        <input type="submit" value="Submit" />
-    </form>
+        <input type="submit" value={% trans 'Submit' %} />
+ </form>
 
    
-
 
   <div class="btn-group dropup pull-right">
   <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
