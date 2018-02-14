@@ -256,7 +256,7 @@ class Laboratory(models.Model):
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
     
     location = models.CharField(_('Location'),default='',max_length=255)
-    geolocation = PlainLocationField(default='', zoom=7)
+    geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
 
     
     
