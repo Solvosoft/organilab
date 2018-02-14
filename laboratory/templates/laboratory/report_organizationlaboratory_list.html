@@ -50,12 +50,12 @@
   
   </div>
 
-  {% for laboratory_room in object_list %}
+  {% for laboratory in object_list %}
     <div class="alert alert-info">
-      <strong>{% trans 'Laboratory room:' %}</strong> {{ laboratory_room.name }}
+      <strong>{% trans 'Laboratory :' %}</strong> {{ laboratory.name }}
     </div>
     <table class="table">
-      {% for furniture in laboratory_room.furniture_set.all %}
+      {% for furniture in laboratory.furniture_set.all %}
         <tr class="bg-success">
           <th colspan="4">{% trans "Furniture:" %} {{ furniture.name }}</th>
         </tr>

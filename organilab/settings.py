@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'cruds_adminlte',
     'location_field.apps.DefaultConfig',
+    'mptt',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

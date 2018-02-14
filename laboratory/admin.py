@@ -3,11 +3,10 @@ from django import forms
 from laboratory import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
+from mptt.admin import MPTTModelAdmin
 
 class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')
-
-    
 
     
 class PrincipalTechnician_library_inline(admin.TabularInline):
@@ -18,7 +17,10 @@ class PrincipalTechnician_library_inline(admin.TabularInline):
 class PrincipalTechnician_Organization_inline(admin.TabularInline):
       model = models.PrincipalTechnician 
       exclude = ('laboratory', )
-              
+
+class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
+    # specify pixel amount for this ModelAdmin only:
+    mptt_level_indent = 20              
         
 class OrganizationStrutureAdmin(admin.ModelAdmin):
     fields = ('name','group','father')  
