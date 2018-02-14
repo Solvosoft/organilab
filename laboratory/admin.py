@@ -6,31 +6,28 @@ from django.contrib.auth.models import User, Group
 class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')
 
-class OrganizationStruture_inline(admin.TabularInline):
-    model = models.OrganizationStructure
+
     
-class Laboratory_inline(admin.TabularInline):
-    model = models.Laboratory
+class PrincipalTechnician_inline(admin.TabularInline):
+    model = models.PrincipalTechnician
+    list_display = ('name', 'email')
+    
+
+
+        
         
 class OrganizationStrutureAdmin(admin.ModelAdmin):
-    fields = ('name','group')  
+    fields = ('name','group','father')  
     search_fields = ["name"]
-    inlines = [
-        OrganizationStruture_inline,
-    ]
+    inlines = (  PrincipalTechnician_inline,)
+    excludes = ('organization',  )
     
-    
-class PrincipalTechnicianAdmin(admin.ModelAdmin):
-    fields= ('name','id_card','phone_number','credentials')
-    search_fields = ["credentials__username"]
-    inlines = [
-        Laboratory_inline
-    ]
-    list_select_related = (
-        'credentials',
-    )
+class LaboratoryAdmin(admin.ModelAdmin):
+    fields= ('name','phone_number','location','geolocation')
+    inlines = (PrincipalTechnician_inline, )
+    excludes = ('laboratory', )
             
-admin.site.register(models.Laboratory)
+admin.site.register(models.Laboratory,LaboratoryAdmin)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
@@ -42,7 +39,7 @@ admin.site.register(models.Solution)
 
 
 
-admin.site.register(models.PrincipalTechnician,PrincipalTechnicianAdmin)
+admin.site.register(models.PrincipalTechnician)
 admin.site.register(models.OrganizationStructure,OrganizationStrutureAdmin)
 
 

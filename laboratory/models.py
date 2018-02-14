@@ -226,8 +226,13 @@ class PrincipalTechnician(models.Model):
     name   = models.CharField(_('Name'), max_length=255)    
     phone_number = models.CharField(_('Phone'),max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('Email address'), unique=True)
 
+
+
+    organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
+    laboratory = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
+        
     def __str__(self):
         return "%s"%self.name  
     
@@ -237,7 +242,7 @@ class OrganizationStructure(models.Model):
     name   = models.CharField(_('Name'), max_length=255)
     father = models.ForeignKey('OrganizationStructure',blank=False,null=True,on_delete=models.SET_NULL)
     group  = models.ForeignKey(Group, blank=False, null=True, on_delete=models.SET_NULL)
-    adminlab = models.ForeignKey('PrincipalTechnician',blank=False,null=True, on_delete=models.SET_NULL)
+    
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
@@ -249,7 +254,7 @@ class OrganizationStructure(models.Model):
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), max_length=255)
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
-    admin = models.ForeignKey('PrincipalTechnician',blank=False,null=True, on_delete=models.SET_NULL)
+    
     location = models.CharField(_('Location'),default='',max_length=255)
     geolocation = PlainLocationField(default='', zoom=7)
 
