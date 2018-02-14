@@ -12,7 +12,7 @@ class ObjectSearchForm(forms.Form):
     all_labs = forms.BooleanField(
         widget=forms.CheckboxInput, required=False, label="All labs")
 
-
+    
 class UserSearchForm(forms.Form):
     user = AutoCompleteSelectMultipleField(
         'users', required=False, help_text=("Search by username, name or lastname"))
