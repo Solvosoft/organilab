@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django import forms
-
+from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
 
 from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure
@@ -22,11 +22,14 @@ from .djgeneric import  ListView
 
 
 class OrganizationSelectableForm(forms.Form):
-    organizations = OrganizationStructure.objects.all()
-    filter_organization = forms.ChoiceField(choices = [(o.id, str(o)) for o in organizations], label="Organization", initial='', widget=forms.Select(), required=True)
-    
+    organization=OrganizationStructure.objects.all()
+    filter_organization= TreeNodeChoiceField(queryset=organization)
+    #filter_organization = forms.ChoiceField(choices = [(o.id, str(o)) for o in organizations], label="Organization", initial='', widget=forms.Select(), required=True)
+    extra = 1
     
     def get(self, request, *args, **kwargs):
+        self.user=request.user
+        
         return super(OrganizationSelectableForm, self).get(request, *args, **kwargs)
 #     def __init__(self, *args, **kwargs):
 #         if kwargs.get('user'):
@@ -37,7 +40,7 @@ class OrganizationSelectableForm(forms.Form):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_lab_perms(perm='report'), name='dispatch')
 class OrganizationReportView(ListView):
-    model = OrganizationStructure
+    model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"
 
 
@@ -45,20 +48,8 @@ class OrganizationReportView(ListView):
          context = super(OrganizationReportView,self).get_context_data(**kwargs)
          lab = get_object_or_404(Laboratory, pk=self.lab)
          context['form']  = self.form 
-#         context['object_list'] = lab.rooms.all()
-#         context['laboratory'] = self.lab
          return context
      
-# 
-#     def get_form_kwargs(self):
-#         kwargs = super(OrganizationReportView, self).get_form_kwargs() #put your view name in the super
-#         user = self.request.user
-# 
-#         if user:
-#             kwargs['user'] = user
-# 
-#         return kwargs
-#     
      
     def get(self, request, *args, **kwargs):
         self.form = OrganizationSelectableForm(self.request.GET or None,)
