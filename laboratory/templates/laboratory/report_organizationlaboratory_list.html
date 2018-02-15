@@ -53,24 +53,11 @@
       <strong>{% trans 'Laboratory :' %}</strong> {{ laboratory.name }}
     </div>
     <table class="table">
-      {% for furniture in laboratory.furniture_set.all %}
+      {% for room in laboratory.rooms.all %}
         <tr class="bg-success">
-          <th colspan="4">{% trans "Furniture:" %} {{ furniture.name }}</th>
+          <th colspan="4">{% trans "Room:" %} {{ room.name }}</th>
         </tr>
-        <tr>
-          <th>{% trans "Code" %} </th>
-          <th>{% trans "Furniture" %} </th>
-          <th>{% trans "Quantity" %} </th>
-          <th>{% trans "Shelf" %} </th>
-        </tr>
-        {% for obj in furniture.get_objects %}
-          <tr>
-            <td>{{ obj.object.code }}</td>
-            <td>{{ obj.object.name }}</td>
-            <td>{{ obj.quantity }} {{ obj.get_measurement_unit_display }}</td>
-            <td>{{ obj.shelf.name }}</td>
-          </tr>
-        {% endfor %}
+
       {% endfor %}
     </table>
     <br/>
