@@ -16,7 +16,7 @@ from django.utils.decorators import method_decorator
 from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_lab_perms
 import django_excel
@@ -55,34 +55,35 @@ def make_book_laboratory(rooms):
 @login_required
 @user_lab_perms(perm="report")
 def report_organization_building(request, *args, **kwargs):
-    if 'lab_pk' in kwargs:
-        rooms = get_object_or_404(
-            Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
+    var = request.GET.get('organization')
+    print (var)
+    if var is None:
+        if 'organization' in kwargs:
+            organizations_child = OrganizationStructure.objects.get(pk=svar).get_descendants(include_self=True)
+            labs = get_object_or_404(
+                 Laboratory, organization__in=organizations_child).rooms.all()
     else:
-        rooms = LaboratoryRoom.objects.all()
+            labs = Laboratory.objects.all()
     
-    fileformat = request.GET.get('format', 'pdf')
-    if fileformat in ['xls', 'xlsx', 'ods']:
-        return django_excel.make_response_from_book_dict(
-        make_book_laboratory(rooms), fileformat ,file_name="Laboratories.%s"%(fileformat,))
-
-    template = get_template('pdf/laboratoryroom_pdf.html')
-
     context = {
-        'object_list': rooms,
+        'object_list': labs,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
 
-    html = template.render(context=context).encode("UTF-8")
+    template = get_template('pdf/laboratoryroom_pdf.html')
+
+    html = template.render(
+        context=context).encode("UTF-8")
 
     page = HTML(string=html, encoding='utf-8').write_pdf()
 
     response = HttpResponse(page, content_type='application/pdf')
     response[
-        'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
     return response
+
 
 
 
