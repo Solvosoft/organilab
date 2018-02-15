@@ -29,7 +29,7 @@ class OrganizationStrutureAdmin(admin.ModelAdmin):
  
      
 class LaboratoryAdmin(admin.ModelAdmin):
-    fields= ('name','phone_number','location','geolocation')
+    fields= ('name','phone_number','location','geolocation','organization')
     inlines = (PrincipalTechnician_library_inline, )
 
             
