@@ -19,14 +19,10 @@ class PrincipalTechnician_Organization_inline(admin.TabularInline):
       exclude = ('laboratory', )
  
 class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
-    # specify pixel amount for this ModelAdmin only:
-    mptt_level_indent = 20              
-         
-class OrganizationStrutureAdmin(admin.ModelAdmin):
-    fields = ('name','group','father')  
     search_fields = ["name"]
     inlines = (  PrincipalTechnician_Organization_inline,)
- 
+    mptt_level_indent = 20              
+         
      
 class LaboratoryAdmin(admin.ModelAdmin):
     fields= ('name','phone_number','location','geolocation','organization')
