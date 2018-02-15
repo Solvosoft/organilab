@@ -8,15 +8,13 @@
 
   <div>
   
- <form action="" method="post">
+ <form action="#" method="post">
         {% csrf_token %}
         <table>
         {{ form|bootstrap_horizontal }}
         </table>
         <input type="submit" value={% trans 'Submit' %} />
  </form>
-
-   
 
   <div class="btn-group dropup pull-right">
   <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
@@ -27,20 +25,20 @@
   </button>
   <ul class="dropdown-menu">
   <li>  <a  
-       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
   </li><li>
      <a 
-       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods">{% trans "Ods" %} </a>
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
    </li>
    
    <li>
      <a 
-       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls">{% trans "Xls" %} </a>
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
    </li>
    
    <li>
      <a 
-       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
    </li>
     
   </ul>

@@ -14,7 +14,7 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
 
-from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure
+from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure, PrincipalTechnician
 from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import  ListView
@@ -39,22 +39,31 @@ class OrganizationSelectableForm(forms.Form):
 class OrganizationReportView(ListView):
     model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"
-
+    organization = None
 
     def get_context_data(self, **kwargs):
-         context = super(OrganizationReportView,self).get_context_data(**kwargs)
-         lab = get_object_or_404(Laboratory, pk=self.lab)
-         context['form']  = self.form 
-         return context
+        context = super(OrganizationReportView,self).get_context_data(**kwargs)
+        context['form']  = self.form 
+        
+        if self.organization :
+            context['filter_organization']  = self.organization
+            
+        return context
      
      
     def get(self, request, *args, **kwargs):
         self.form = OrganizationSelectableForm(self.request.GET or None,)
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):            
         self.form = OrganizationSelectableForm(self.request.POST or None)
         
+        if self.form.is_valid():
+            self.organization = self.form.cleaned_data['filter_organization']
+            print (self.organization)
+        
+
+    
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
     
     
