@@ -24,20 +24,22 @@ from .djgeneric import  ListView
 
 
 class OrganizationSelectableForm(forms.Form):
-    organization = OrganizationStructure.objects.all()
-    filter_organization= TreeNodeChoiceField(queryset=organization)
-    
-    def get_context_data(self, **kwargs):
-        context = super(OrganizationSelectableForm,self).get_context_data(**kwargs)
-        
-        return context
-        
-        
-    def get(self, request, *args, **kwargs):
-        self.technician=PrincipalTechnician.objects.filter(credentials=self.request.user)
-        return super(OrganizationSelectableForm, self).get(request, *args, **kwargs)
-#
+    technician= None
+    organizations = OrganizationStructure.objects.all() 
+    filter_organization= TreeNodeChoiceField(queryset=organizations)
 
+    
+    def __init__(self, *args, **kwargs):
+        #user =kwargs.pop('user_id',None)# user was passed to a single form
+
+        super(OrganizationSelectableForm, self).__init__(*args, **kwargs)
+        technician=PrincipalTechnician.objects.filter(credentials=None)
+        if self.technician :
+            organizations = OrganizationStructure.objects.get(pk=self.technician.organization.pk).get_descendants(include_self=True)
+            self.fields['filter_organization'].queryset = organizations
+            
+        
+ 
 
 
 @method_decorator(check_lab_permissions, name='dispatch')
@@ -54,26 +56,24 @@ class OrganizationReportView(ListView):
         context['form']  = self.form 
         
         if self.organization :
-            context['filter_organization']  = self.organization
             organizations_child = OrganizationStructure.objects.get(pk=self.organization.pk).get_descendants(include_self=True)
             labs=Laboratory.objects.filter(organization__in=organizations_child)
             context['object_list'] = labs
+            context['filter_organization']  = self.organization
            
             
         return context
-     
+
      
     def get(self, request, *args, **kwargs):
-        self.form = OrganizationSelectableForm(self.request.GET or None,)
+        self.form = OrganizationSelectableForm(self.request.GET or None)
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):            
+    def post(self, request, *args, **kwargs):     
         self.form = OrganizationSelectableForm(self.request.POST or None)
         
         if self.form.is_valid():
-            self.organization = self.form.cleaned_data['filter_organization']
-            print (self.organization)
-        
+            self.organization = self.form.cleaned_data['filter_organization']       
 
     
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
