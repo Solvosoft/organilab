@@ -39,15 +39,17 @@ def make_book_organization_laboratory(objects):
 @login_required
 @user_lab_perms(perm="report")
 def report_organization_building(request, *args, **kwargs):
-    var = request.GET.get('pk')
+    var = request.GET.get('organization')
     if var:
-            organizations_child = OrganizationStructure.objects.get(pk=var).get_descendants(include_self=True)
-            labs=Laboratory.objects.filter(organization__in=organizations_child)
-            labs = get_object_or_404(
-                 Laboratory, pk__in=labs)
+            org= get_object_or_404(
+                 OrganizationStructure, pk=var)
+            
+            organizations_child = org.get_descendants(include_self=True)
+            labs=Laboratory.objects.filter(
+                organization__in=organizations_child)
     else:
             labs = Laboratory.objects.all()
-    
+    print(labs)
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_array(

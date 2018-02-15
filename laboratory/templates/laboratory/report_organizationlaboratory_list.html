@@ -53,12 +53,22 @@
       <strong>{% trans 'Laboratory :' %}</strong> {{ laboratory.name }}
     </div>
     <table class="table">
-      {% for room in laboratory.rooms.all %}
-        <tr class="bg-success">
-          <th colspan="4">{% trans "Room:" %} {{ room.name }}</th>
-        </tr>
-
-      {% endfor %}
+                <tr  >
+                <th >{% trans "Phone" %} </th>
+                <th >{% trans "Location" %} </th>
+                <th >{% trans "Geolocation" %} </th>
+                <th >{% trans "Rooms" %} </th>
+            </tr>
+            <tr>
+                 <td>{{laboratory.phone_number }}</td>
+                 <td>{{laboratory.location }}</td>
+                 <td>{{laboratory.geolocation}}</td>
+                 <td>  <ul>    {% for room in laboratory.rooms.all %}
+                          <li> {{ room.name }} </li>
+                           {% endfor %}
+                       </ul>    
+                 </dt>
+           </tr>
     </table>
     <br/>
   {% empty %}
