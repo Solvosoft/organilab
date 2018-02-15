@@ -22,12 +22,19 @@ from .djgeneric import  ListView
 
 
 
+
 class OrganizationSelectableForm(forms.Form):
     organization = OrganizationStructure.objects.all()
     filter_organization= TreeNodeChoiceField(queryset=organization)
-
+    
+    def get_context_data(self, **kwargs):
+        context = super(OrganizationSelectableForm,self).get_context_data(**kwargs)
+        
+        return context
+        
+        
     def get(self, request, *args, **kwargs):
-        self.user=request.user
+        self.technician=PrincipalTechnician.objects.filter(credentials=self.request.user)
         return super(OrganizationSelectableForm, self).get(request, *args, **kwargs)
 #
 
@@ -43,10 +50,15 @@ class OrganizationReportView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(OrganizationReportView,self).get_context_data(**kwargs)
+        
         context['form']  = self.form 
         
         if self.organization :
             context['filter_organization']  = self.organization
+            organizations_child = OrganizationStructure.objects.get(pk=self.organization.pk).get_descendants(include_self=True)
+            labs=Laboratory.objects.filter(organization__in=organizations_child)
+            context['object_list'] = labs
+           
             
         return context
      

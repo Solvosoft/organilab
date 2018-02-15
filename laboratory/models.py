@@ -278,7 +278,9 @@ class Laboratory(models.Model):
     
     location = models.CharField(_('Location'),default='',max_length=255)
     geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
-
+    
+    
+    organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
     
     
     rooms = models.ManyToManyField(

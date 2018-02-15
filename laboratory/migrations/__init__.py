@@ -89,6 +89,22 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Shelf objects',
             },
         ),
+        migrations.CreateModel(
+            name='Solution',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('solutes', models.TextField(verbose_name='Solutes')),
+                ('volume', models.CharField(max_length=100, verbose_name='Volumen')),
+                ('temperature', models.CharField(default='25 degC', max_length=100, verbose_name='Temperature')),
+                ('pressure', models.CharField(default='1 atm', max_length=100, verbose_name='Pressure')),
+                ('pH', models.IntegerField(default=7, verbose_name='pH')),
+            ],
+            options={
+                'verbose_name': 'Solution',
+                'verbose_name_plural': 'Solutions',
+            },
+        ),
         migrations.AddField(
             model_name='object',
             name='feature',
