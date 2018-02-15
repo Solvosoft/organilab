@@ -25,17 +25,16 @@ from .djgeneric import  ListView
 
 class OrganizationSelectableForm(forms.Form):
     technician= None
-    organizations = OrganizationStructure.objects.all() 
+    organizations = OrganizationStructure.objects.none()
     filter_organization= TreeNodeChoiceField(queryset=organizations)
 
     
-    def __init__(self, *args, **kwargs):
-        #user =kwargs.pop('user_id',None)# user was passed to a single form
-
-        super(OrganizationSelectableForm, self).__init__(*args, **kwargs)
-        technician=PrincipalTechnician.objects.filter(credentials=None)
+    def __init__(self,user, *args, **kwargs):
+        self.user = user 
+        super(OrganizationSelectableForm, self).__init__(*args, **kwargs)        
+        self.technician=PrincipalTechnician.objects.filter(credentials=self.user)
         if self.technician :
-            organizations = OrganizationStructure.objects.get(pk=self.technician.organization.pk).get_descendants(include_self=True)
+            organizations = OrganizationStructure.objects.get(pk=self.technician.values('organization_id')).get_descendants(include_self=True)
             self.fields['filter_organization'].queryset = organizations
             
         
@@ -66,11 +65,11 @@ class OrganizationReportView(ListView):
 
      
     def get(self, request, *args, **kwargs):
-        self.form = OrganizationSelectableForm(self.request.GET or None)
+        self.form = OrganizationSelectableForm(request.user,request.GET or None)
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):     
-        self.form = OrganizationSelectableForm(self.request.POST or None)
+        self.form = OrganizationSelectableForm(request.user,request.POST or None)
         
         if self.form.is_valid():
             self.organization = self.form.cleaned_data['filter_organization']       

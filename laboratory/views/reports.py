@@ -61,7 +61,7 @@ def report_organization_building(request, *args, **kwargs):
         'laboratory': kwargs.get('lab_pk')
     }
 
-    template = get_template('pdf/laboratoryroom_pdf.html')
+    template = get_template('pdf/organizationlaboratory_pdf.html')
 
     html = template.render(
         context=context).encode("UTF-8")
