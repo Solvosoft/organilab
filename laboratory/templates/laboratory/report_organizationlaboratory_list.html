@@ -17,7 +17,8 @@
  </form>
 
   <div class="btn-group dropup pull-right">
-  <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+  <button type="button" onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}" ' 
+   class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
   {% trans 'Download'%}</button>
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
@@ -77,7 +78,9 @@
 
   <div>
  <div class="btn-group dropup pull-right">
-  <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+ 
+  <button  onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}" '  
+   type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
   {% trans 'Download'%}</button>
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
