@@ -58,14 +58,14 @@
                 <th >{% trans "Phone" %} </th>
                 <th >{% trans "Location" %} </th>
                 <th >{% trans "Geolocation" %} </th>
-                <th >{% trans "Rooms" %} </th>
+                <th >{% trans "Technicians" %} </th>
             </tr>
             <tr>
                  <td>{{laboratory.phone_number }}</td>
                  <td>{{laboratory.location }}</td>
                  <td>{{laboratory.geolocation}}</td>
-                 <td>  <ul>    {% for room in laboratory.rooms.all %}
-                          <li> {{ room.name }} </li>
+                 <td>  <ul>    {% for assigned in laboratory.principaltechnician_set.all %}
+                          <li> {{ assigned.name }} </li>
                            {% endfor %}
                        </ul>    
                  </dt>
