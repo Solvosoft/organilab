@@ -21,19 +21,16 @@ from .djgeneric import  ListView
 
 
 
+
 class OrganizationSelectableForm(forms.Form):
-    organization=OrganizationStructure.objects.all()
+    organization = OrganizationStructure.objects.all()
     filter_organization= TreeNodeChoiceField(queryset=organization)
-    #filter_organization = forms.ChoiceField(choices = [(o.id, str(o)) for o in organizations], label="Organization", initial='', widget=forms.Select(), required=True)
-    extra = 1
-    
+
     def get(self, request, *args, **kwargs):
         self.user=request.user
-        
         return super(OrganizationSelectableForm, self).get(request, *args, **kwargs)
-#     def __init__(self, *args, **kwargs):
-#         if kwargs.get('user'):
-#             self.user = kwargs.pop('user', None)
+#
+
 
 
 @method_decorator(check_lab_permissions, name='dispatch')

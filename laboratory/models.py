@@ -18,6 +18,19 @@ from laboratory.validators import validate_molecular_formula
 from location_field.models.plain import PlainLocationField
 
 @python_2_unicode_compatible
+class CLInventory(models.Model):
+    name = models.TextField(_('Name'))
+    cas_id_number = models.TextField(_('CAS ID number'))
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('C&L Inventory')
+        verbose_name_plural = ('C&L Inventory objects')
+
+    def __str__(self):
+        return '%s' % self.name
+    
+@python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
     SECURITY_EQUIPMENT = "1"
@@ -225,40 +238,42 @@ class Furniture(models.Model):
 class PrincipalTechnician(models.Model):
     credentials = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
     name   = models.CharField(_('Name'), max_length=255)    
-    phone_number = models.CharField(_('Phone'),max_length=25)
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
     email = models.EmailField(_('Email address'), unique=True)
 
 
 
     organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
-    laboratory = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
+    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
         
     def __str__(self):
         return "%s"%self.name  
 
-        
+
 @python_2_unicode_compatible
 class OrganizationStructure(MPTTModel):
     name   = models.CharField(_('Name'), max_length=255)
     group  = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
     
-    parent =  TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent =  TreeForeignKey('self', null=True, related_name='children')
        
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
 
     class MPTTMeta:
-        level_attr = 'mptt_level'
-        order_insertion_by=  [_('Name'),]
+        order_insertion_by=  ['name',]
                         
     def __str__(self):
         return "%s"%self.name       
+    
+    def __repr__(self):
+       return self.__str__()
 
 @python_2_unicode_compatible
 class Laboratory(models.Model):
-    name = models.CharField(_('Laboratory name'), max_length=255)
+    name = models.CharField(_('Laboratory name'),default='', max_length=255)
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
     
     location = models.CharField(_('Location'),default='',max_length=255)
@@ -301,18 +316,7 @@ class FeedbackEntry(models.Model):
         return '%s' % (self.title,)
 
 
-@python_2_unicode_compatible
-class CLInventory(models.Model):
-    name = models.TextField(_('Name'))
-    cas_id_number = models.TextField(_('CAS ID number'))
-    url = models.TextField(_('URL'))
 
-    class Meta:
-        verbose_name = _('C&L Inventory')
-        verbose_name_plural = ('C&L Inventory objects')
-
-    def __str__(self):
-        return '%s' % self.name
 
 class Solution(models.Model):
     name = models.CharField(_('Name'), max_length=255)
