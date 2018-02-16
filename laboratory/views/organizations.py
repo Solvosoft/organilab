@@ -82,12 +82,12 @@ class OrganizationReportView(ListView):
                 else:
                     orgs |= Q (pk__in=org.get_descendants(include_self=True) ) 
                      
-            if organizations.exists():                     
+            if organizations.exists():      # show organizations laboratories                
                 organizations_child = OrganizationStructure.objects.filter(orgs).distinct()
                 labs=Laboratory.objects.filter(organization__in=organizations_child)
                 context['object_list'] = labs
-            else:    
-                 context['object_list'] = [] 
+            else:    # show only assign laboratory
+                 context['object_list'] = Laboratory.objects.filter(principaltechnician__credentials=self.user)
         #  when have nothing assign     
         else:
              # Show all to admin user
