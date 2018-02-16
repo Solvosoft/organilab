@@ -86,13 +86,12 @@ class ObjectView(object):
                     self.type_id = self.request.GET.get('type_id', '')
                     if self.type_id:
                         filters = Q(type=self.type_id)
-                    query = query.filter(filters)
+                        query = query.filter(filters)
                 else:
                     self.type_id = ''
 
                 if 'q' in self.request.GET:
                     self.q = self.request.GET.get('q', '')
-                    print(self.q)
                     if self.q:
                         query = query.filter(
                             Q(name__icontains=self.q) | Q(
