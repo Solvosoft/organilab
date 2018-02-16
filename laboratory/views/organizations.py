@@ -73,12 +73,12 @@ class OrganizationReportView(ListView):
             
         #  when have nothing assign     
         else:
-        # Show all to admin user
-           if self.user.is_superuser:
-             context['object_list'] = Laboratory.objects.all()
-        # Dont show if have nothing      
-           else:
-            context['object_list'] = [] 
+             # Show all to admin user
+             if self.user.is_superuser:
+                 context['object_list'] = Laboratory.objects.all()
+             # Dont show if have nothing      
+             else:
+                context['object_list'] = [] 
                        
             
         return context
