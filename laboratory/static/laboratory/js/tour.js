@@ -6,7 +6,6 @@ $.ajax({
     method: 'get',
     url: '/_ajax/get_tour_steps',
     success: (data) => {
-
         var aux = JSON.parse(data.content);
         var tour = new Tour({
           steps : JSON.parse(aux.steps),
