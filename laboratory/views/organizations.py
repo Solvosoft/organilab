@@ -54,21 +54,45 @@ class OrganizationReportView(ListView):
         
         context['form']  = self.form 
         
+        # when a organizations is selected
         if self.organization :
-            organizations_child = OrganizationStructure.objects.get(pk=self.organization.pk).get_descendants(include_self=True)
+            organizations_child = OrganizationStructure.objects.get(
+                pk=self.organization.pk
+                ).get_descendants(include_self=True)
             labs=Laboratory.objects.filter(organization__in=organizations_child)
             context['object_list'] = labs
             context['filter_organization']  = self.organization
-           
+            
+        # start report checking  technician  
+        elif self.technician :   
+            organizations_child = OrganizationStructure.objects.get(
+                pk=self.technician.values('organization_id')
+                ).get_descendants(include_self=True) 
+            labs=Laboratory.objects.filter(organization__in=organizations_child)
+            context['object_list'] = labs
+            
+        #  when have nothing assign     
+        else:
+        # Show all to admin user
+           if self.user.is_superuser:
+             context['object_list'] = Laboratory.objects.all()
+        # Dont show if have nothing      
+           else:
+            context['object_list'] = [] 
+                       
             
         return context
 
      
     def get(self, request, *args, **kwargs):
-        self.form = OrganizationSelectableForm(request.user,request.GET or None)
+        self.user=request.user
+        self.form = OrganizationSelectableForm(request.user,request.GET or None)        
+        self.technician=PrincipalTechnician.objects.filter(credentials=request.user)
+            
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):     
+        self.user=request.user
         self.form = OrganizationSelectableForm(request.user,request.POST or None)
         
         if self.form.is_valid():
