@@ -6,8 +6,39 @@
   <div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
   
   <div class="pull-right">
-    <a class="btn btn-info"
-       href="{% url 'laboratory:reports_furniture' laboratory %}">{% trans "Download PDF" %} </a>
+  
+  
+  
+  <div class="btn-group dropup">
+  <button type="button" class="btn btn-danger">
+   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+   {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
+  
+ 
   </div>
   
   <br><br>
@@ -66,8 +97,34 @@
   {% endfor %}
 
   <div class="pull-right">
-    <a id="a01" class="btn btn-info"
-       href="{% url 'laboratory:reports_furniture' laboratory %}">{% trans "Download PDF" %} </a>
+ <div class="btn-group dropup">
+  <button type="button" class="btn btn-danger">
+   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+   {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
   </div>
 
 {% endblock %}

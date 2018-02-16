@@ -5,14 +5,40 @@
 
 {% block content %}
   <div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
-  <div>
-    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
-         href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
-        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-        {% trans "All objects in PDF" %}
-    </a>
-    <br> <br>
-  </div>
+  <div class="pull-right">
+  
+    <div class="btn-group dropup">
+  <button type="button" class="btn btn-danger">
+   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+   {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=ods">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=xls">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
+  
+ 
+   
+  </div> <br> <br>
   {{ lab }}
 
   {% for obj in object_list %}

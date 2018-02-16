@@ -10,15 +10,47 @@ from django.db.models.query_utils import Q
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.template.context import Context
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from weasyprint import HTML
+from django.utils.translation import ugettext as _
 
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_lab_perms
+import django_excel
+from django.db.models.aggregates import Sum, Min
+
+
+def make_book_laboratory(rooms):
+    
+    content={}
+    for labroom in rooms:
+        labobj=[ [
+                _("Furniture"),
+                _("Shelf"),
+                _("Code"),
+                _("Name"),
+                _("Quantity"),
+                _("Units"),
+            ] ]
+        
+        for furniture in labroom.furniture_set.all():
+            for obj in furniture.get_objects():
+                labobj.append([
+                 furniture.name,   
+                 obj.shelf.name,
+                 obj.object.code, 
+                 obj.object.name,
+                 obj.quantity,
+                 obj.get_measurement_unit_display(),
+                 
+                 ])
+        if labobj:
+            content[labroom.name] = labobj
+  
+    return content
 
 
 @login_required
@@ -29,6 +61,11 @@ def report_labroom_building(request, *args, **kwargs):
             Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
     else:
         rooms = LaboratoryRoom.objects.all()
+    
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_book_dict(
+        make_book_laboratory(rooms), fileformat ,file_name="Laboratories.%s"%(fileformat,))
 
     template = get_template('pdf/laboratoryroom_pdf.html')
 
@@ -48,6 +85,7 @@ def report_labroom_building(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     return response
 
+    
 def report_shelf_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
@@ -78,6 +116,21 @@ def report_shelf_objects(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
     return response
 
+
+def make_book_limited_reached(objects):
+    dev=[
+        [_("Code"), _("Name"), _("Quantity"), _("Limit quantity"), _("Mesurement units")]
+        ]
+    for object in objects:
+        dev.append([
+            object.object.code,
+            object.object.name,
+            object.quantity,
+            object.limit_quantity,
+            object.get_measurement_unit_display()
+            ])
+    return dev
+    
 @login_required
 @user_lab_perms(perm="report")
 def report_limited_shelf_objects(request, *args, **kwargs):
@@ -100,6 +153,12 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 
     template = get_template('pdf/shelf_object_pdf.html')
 
+
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_array(
+        make_book_limited_reached(shelf_objects), fileformat ,file_name="Laboratories.%s"%(fileformat,))
+
     context = {
         'object_list': shelf_objects,
         'datetime': timezone.now(),
@@ -118,10 +177,57 @@ def report_limited_shelf_objects(request, *args, **kwargs):
     return response
 
 
+def make_book_objects(objects, summary=False, type_id=None):
+
+    
+    description = [
+        _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
+        ]
+    if type_id == '0':
+        description+=[
+            _("Molecular formula"),
+            _("CAS id number"),
+            _("Is precursor?"),
+            _("IMDG type")
+            ]
+    content={
+        'objects':[
+            description,
+            ]
+        }
+    objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
+                               measurement_unit=Min('shelfobject__measurement_unit'))
+    for object in objects:
+        obj_info = [
+        object.code,
+        object.name,
+        object.get_type_display(),
+        object.quantity_total, 
+        ShelfObject.get_units(object.measurement_unit)]
+        if type_id == '0':
+            obj_info+=[
+            object.molecular_formula,
+            object.cas_id_number,
+            object.is_precursor,
+            object.get_imdg_code_display()]
+            
+        content['objects'].append(obj_info)
+        if not summary:
+            for shelfobj in object.shelfobject_set.all():
+                content['objects'].append(['',shelfobj.shelf.furniture.name,
+                    shelfobj.shelf.name,
+                    shelfobj.quantity,
+                    shelfobj.get_measurement_unit_display()
+                    ])
+    return content
+        
+        
+
 @login_required
 @user_lab_perms(perm="report")
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
+    type_id=None
     if var is None:
 
         if 'lab_pk' in kwargs:
@@ -139,6 +245,17 @@ def report_objects(request, *args, **kwargs):
             objects = Object.objects.all()
     else:
         objects = Object.objects.filter(pk=var)
+
+    try: 
+        detail=bool(int(request.GET.get('details', 0)))
+    except:
+        detail=False
+
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_book_dict(
+        make_book_objects(objects, summary=detail, type_id=type_id) , fileformat ,file_name="objects.%s"%(fileformat,))
+
 
     for obj in objects:
         clentry = CLInventory.objects.filter(cas_id_number=obj.cas_id_number).first()
@@ -185,6 +302,12 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
         clentry = CLInventory.objects.filter(cas_id_number=obj.cas_id_number).first()
         setattr(obj, 'clinventory_entry', clentry)
 
+
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_book_dict(
+        make_book_objects(rpo, summary=True, type_id='0') , fileformat ,file_name="reactive_precursor.%s"%(fileformat,))
+
     context = {
         'rpo': rpo,
         'datetime': timezone.now(),
@@ -202,6 +325,33 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     return response
 
 
+def make_book_furniture_objects(furnitures):
+    content={}
+    for furniture in furnitures:
+        funobjs=[
+            [   _("Shelf"),
+                _("Code"),
+                _("Name"),
+                _("Quantity"),
+                _("Limit Quantity"),
+                _("Units"),
+            ] 
+            ]
+        for shelf in furniture.shelf_set.all():
+            for obj in shelf.shelfobject_set.all():
+                funobjs.append([
+                     
+                    obj.shelf.name,
+                    obj.object.code, 
+                    obj.object.name,
+                    obj.quantity,
+                    obj.limit_quantity,
+                    obj.get_measurement_unit_display(),
+                 ])
+        content[furniture.name]=funobjs
+
+    return content
+
 @login_required
 @user_lab_perms(perm="report")
 def report_furniture(request, *args, **kwargs):
@@ -212,6 +362,12 @@ def report_furniture(request, *args, **kwargs):
             labroom__laboratory__pk=lab)
     else:
         furniture = Furniture.objects.filter(pk=var)
+
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_book_dict(
+         make_book_furniture_objects(furniture), fileformat, file_name="Furniture.%s"%(fileformat,) )
+
 
     template = get_template('pdf/summaryfurniture_pdf.html')
 
