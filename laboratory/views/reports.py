@@ -25,13 +25,27 @@ from django.db.models.aggregates import Sum, Min
 
 def make_book_organization_laboratory(objects):
     dev=[
-        [_("Name"), _("Phone"), _("Location")]
+        [_("Name"), _("Phone"), _("Location"),_("Principal Technician"),_('Phones'),_('Emails')]
         ]
     for object in objects:
+        principaltechnician=""
+        phones=""
+        emails=""
+        for ptechnician in object.principaltechnician_set.all():
+            if principaltechnician != "" :
+                principaltechnician+=" \n"
+                phones+=" \n"
+                emails+=" \n"
+            principaltechnician += ptechnician.name
+            phones += ptechnician.phone_number
+            emails += ptechnician.email    
         dev.append([
             object.name,
             object.phone_number,
             object.location,
+            principaltechnician,
+            phones,
+            emails,
             ])
     return dev
     
@@ -50,10 +64,21 @@ def report_organization_building(request, *args, **kwargs):
     else:
         technician=PrincipalTechnician.objects.filter(credentials=request.user)
         if technician :
-            organizations_child = OrganizationStructure.objects.get(
-                    pk=technician.values('organization_id')
-                    ).get_descendants(include_self=True) 
-            labs=Laboratory.objects.filter(organization__in=organizations_child)
+            organizations = OrganizationStructure.objects.filter(
+                principaltechnician__credentials=request.user)
+            
+            orgs = None
+            for org in organizations:
+                if orgs is None:
+                    orgs = Q (pk__in=org.get_descendants(include_self=True))
+                else:
+                    orgs |= Q (pk__in=org.get_descendants(include_self=True) ) 
+                     
+            if organizations.exists():                     
+                organizations_child = OrganizationStructure.objects.filter(orgs).distinct()
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
+            else:    
+                 labs = [] 
         else:
              if request.user.is_superuser:
                 labs= Laboratory.objects.all()    

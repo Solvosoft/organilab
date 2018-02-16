@@ -65,7 +65,7 @@
                  <td>{{laboratory.location }}</td>
                  <td>{{laboratory.geolocation}}</td>
                  <td>  <ul>    {% for assigned in laboratory.principaltechnician_set.all %}
-                          <li> {{ assigned.name }} </li>
+                          <li> {{ assigned.name }} {{ assigned.phone_number }}</li>
                            {% endfor %}
                        </ul>    
                  </dt>

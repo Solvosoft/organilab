@@ -236,7 +236,7 @@ class Furniture(models.Model):
 
 @python_2_unicode_compatible
 class PrincipalTechnician(models.Model):
-    credentials = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    credentials = models.ManyToManyField(User)
     name   = models.CharField(_('Name'), max_length=255)    
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
@@ -246,7 +246,8 @@ class PrincipalTechnician(models.Model):
 
     organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
     assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
-        
+    
+
     def __str__(self):
         return "%s"%self.name  
 
