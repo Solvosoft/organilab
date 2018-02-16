@@ -28,7 +28,6 @@ class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
          
      
 class LaboratoryAdmin(admin.ModelAdmin):
-    fields= ('name','phone_number','location','geolocation','organization')
     inlines = (PrincipalTechnician_library_inline, )
 
             
