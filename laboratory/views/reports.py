@@ -78,7 +78,7 @@ def report_organization_building(request, *args, **kwargs):
                 organizations_child = OrganizationStructure.objects.filter(orgs).distinct()
                 labs=Laboratory.objects.filter(organization__in=organizations_child)
             else:    
-                 labs = [] 
+                 labs = Laboratory.objects.filter(principaltechnician__credentials=request.user)
         else:
              if request.user.is_superuser:
                 labs= Laboratory.objects.all()    
