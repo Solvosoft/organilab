@@ -16,7 +16,7 @@ class PrincipalTechnician_library_inline(admin.TabularInline):
  
 class PrincipalTechnician_Organization_inline(admin.TabularInline):
       model = models.PrincipalTechnician 
-      exclude = ('laboratory', )
+      exclude = ('laboratory','assigned' )
  
 class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
     search_fields = ["name"]

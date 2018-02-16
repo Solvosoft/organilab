@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
-
+from django.db.models import Q
 from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure, PrincipalTechnician
 from laboratory.decorators import check_lab_permissions, user_lab_perms
 
@@ -24,23 +24,28 @@ from .djgeneric import  ListView
 
 
 class OrganizationSelectableForm(forms.Form):
-    technician= None
     organizations = OrganizationStructure.objects.none()
     filter_organization= TreeNodeChoiceField(queryset=organizations)
 
     
     def __init__(self,user, *args, **kwargs):
         self.user = user 
-        super(OrganizationSelectableForm, self).__init__(*args, **kwargs)        
-        self.technician=PrincipalTechnician.objects.filter(credentials=self.user)
-        if self.technician :
-            organizations = OrganizationStructure.objects.get(pk=self.technician.values('organization_id')).get_descendants(include_self=True)
-            self.fields['filter_organization'].queryset = organizations
-            
+        super(OrganizationSelectableForm, self).__init__(*args, **kwargs)  
+        organizations = OrganizationStructure.objects.filter(
+            principaltechnician__credentials=self.user)
         
- 
-
-
+        orgs = None
+        for org in organizations:
+            if orgs is None:
+                orgs = Q (pk__in=org.get_descendants(include_self=True))
+            else:
+                orgs |= Q (pk__in=org.get_descendants(include_self=True) )   
+        
+        
+        if organizations.exists():               
+             self.fields['filter_organization'].queryset = OrganizationStructure.objects.filter(orgs).distinct()
+    
+              
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_lab_perms(perm='report'), name='dispatch')
@@ -65,12 +70,22 @@ class OrganizationReportView(ListView):
             
         # start report checking  technician  
         elif self.technician :   
-            organizations_child = OrganizationStructure.objects.get(
-                pk=self.technician.values('organization_id')
-                ).get_descendants(include_self=True) 
-            labs=Laboratory.objects.filter(organization__in=organizations_child)
-            context['object_list'] = labs
+            organizations = OrganizationStructure.objects.filter(
+                principaltechnician__credentials=self.user)
             
+            orgs = None
+            for org in organizations:
+                if orgs is None:
+                    orgs = Q (pk__in=org.get_descendants(include_self=True))
+                else:
+                    orgs |= Q (pk__in=org.get_descendants(include_self=True) ) 
+                     
+            if organizations.exists():                     
+                organizations_child = OrganizationStructure.objects.filter(orgs).distinct()
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
+                context['object_list'] = labs
+            else:    
+                 context['object_list'] = [] 
         #  when have nothing assign     
         else:
              # Show all to admin user
