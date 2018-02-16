@@ -7,10 +7,38 @@
   <div class="page-header"><h1>{% trans 'Laboratory report' %}</h1></div>
 
   <div>
-    <a class="btn btn-primary pull-right" href="{% url 'laboratory:report_building' laboratory %}">
-      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "Download PDF" %}</a>
-    <br><br>
+  
+
+  <div class="btn-group dropup pull-right">
+  <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+  {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:report_building' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=ods">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=xls">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
+<br><br>
+
+  
   </div>
 
   {% for laboratory_room in object_list %}
@@ -44,9 +72,33 @@
   {% endfor %}
 
   <div>
-    <a class="btn btn-primary" href="{% url 'laboratory:report_building' laboratory %}">
-      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-      {% trans "Download PDF" %}</a>
+ <div class="btn-group dropup pull-right">
+  <button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+  {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:report_building' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=ods">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=xls">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:report_building' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
   </div>
   <br><br>
 {% endblock %}

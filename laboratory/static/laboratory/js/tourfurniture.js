@@ -4,10 +4,10 @@
 
 $.ajax({
     method: 'get',
-    url: '/_ajax/get_tour_steps',
+    url: '/_ajax/get_tour_steps_furniture',
     success: (data) => {
         var aux = JSON.parse(data.content);
-        var tour = new Tour({
+        var tour = new Tour({ name: 'furniture_tour',
           steps : JSON.parse(aux.steps),
           template : aux.template
         });

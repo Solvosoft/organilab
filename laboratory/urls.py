@@ -21,7 +21,9 @@ from laboratory.views.objects import ObjectView
 objviews = ObjectView()
 
 urlpatterns = [
+
     url(r'^(?P<lab_pk>\d+)?$', views.index, name='index'),
+
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
         name='laboratory_update'),
     url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users,
@@ -42,7 +44,7 @@ urlpatterns = [
 
     # Password_reset
     url(r'^accounts/password_reset/$', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_ss.html', email_template_name='registration/password_reset_email_ss.html',
-                                                                            subject_template_name='registration/password_reset_subject_ss.txt', success_url='/accounts/password_reset_done/', from_email='Organilab'), name='password_reset'),  # Set a sending e-mail on 'from_email'.
+                                                                            subject_template_name='registration/password_reset_subject_ss.txt', success_url='/accounts/password_reset_done/'), name='password_reset'),  # Set a sending e-mail on 'from_email'.
     url(r'^accounts/password_reset_done/$', auth_views.PasswordResetDoneView.as_view(
         template_name='registration/password_reset_done_ss.html'), name='password_reset_done'),
     url(r'^accounts/password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(
@@ -59,7 +61,11 @@ urlpatterns = [
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
         name='permission_denied'),
     url(r'^feedback$', views.FeedbackView.as_view(), name='feedback'),
+
+    #Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
+    url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
+
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
         name="object_reservation")
@@ -85,8 +91,10 @@ lab_rooms_urls = [
 
 lab_furniture_urls = [
     url(r'^$', furniture.list_furniture, name='furniture_list'),
+
     url(r'^create$', furniture.FurnitureCreateView.as_view(),
         name='furniture_create'),
+
     url(r'^edit/(?P<pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
         name='furniture_update'),
     url(r'^delete/(?P<pk>\d+)$', furniture.FurnitureDelete.as_view(),
@@ -157,11 +165,6 @@ lab_access_urls = [
     url(r'^students$', access.AccessListStudentsView.as_view(),
         name='access_list_students'),
 ]
-
-"""lab_password_reset = [
-    url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
-]"""
-
 
 '''MULTILAB'''
 urlpatterns += [
