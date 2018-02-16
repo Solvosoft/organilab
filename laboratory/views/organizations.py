@@ -44,6 +44,8 @@ class OrganizationSelectableForm(forms.Form):
         
         if organizations.exists():               
              self.fields['filter_organization'].queryset = OrganizationStructure.objects.filter(orgs).distinct()
+        elif self.user.is_superuser:     
+            self.fields['filter_organization'].queryset = OrganizationStructure.objects.all()
     
               
 @method_decorator(check_lab_permissions, name='dispatch')
