@@ -16,7 +16,7 @@ from django.utils.decorators import method_decorator
 from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_lab_perms
 import django_excel
@@ -48,8 +48,19 @@ def report_organization_building(request, *args, **kwargs):
             labs=Laboratory.objects.filter(
                 organization__in=organizations_child)
     else:
-            labs = Laboratory.objects.all()
-    print(labs)
+        technician=PrincipalTechnician.objects.filter(credentials=request.user)
+        if technician :
+            organizations_child = OrganizationStructure.objects.get(
+                    pk=technician.values('organization_id')
+                    ).get_descendants(include_self=True) 
+            labs=Laboratory.objects.filter(organization__in=organizations_child)
+        else:
+             if request.user.is_superuser:
+                labs= Laboratory.objects.all()    
+             else:
+                labs = []          
+            
+    
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_array(
