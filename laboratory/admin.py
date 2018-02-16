@@ -3,7 +3,10 @@ from django import forms
 from laboratory import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
-from mptt.admin import MPTTModelAdmin
+from mptt.admin import MPTTModelAdmin, TreeRelatedFieldListFilter
+
+class RelatedFieldListFilter(TreeRelatedFieldListFilter):
+     mptt_level_indent = 20
 
 class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')

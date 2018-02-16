@@ -234,23 +234,6 @@ class Furniture(models.Model):
         return '%s' % (self.name,)
 
 
-@python_2_unicode_compatible
-class PrincipalTechnician(models.Model):
-    credentials = models.ManyToManyField(User)
-    name   = models.CharField(_('Name'), max_length=255)    
-    phone_number = models.CharField(_('Phone'),default='',max_length=25)
-    id_card = models.CharField(_('ID Card'),max_length=100)
-    email = models.EmailField(_('Email address'), unique=True)
-
-
-
-    organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
-    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
-    
-
-    def __str__(self):
-        return "%s"%self.name  
-
 
 @python_2_unicode_compatible
 class OrganizationStructure(MPTTModel):
@@ -272,6 +255,29 @@ class OrganizationStructure(MPTTModel):
     def __repr__(self):
        return self.__str__()
 
+
+@python_2_unicode_compatible
+class PrincipalTechnician(models.Model):
+    credentials = models.ManyToManyField(User)
+    name   = models.CharField(_('Name'), max_length=255)    
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    id_card = models.CharField(_('ID Card'),max_length=100)
+    email = models.EmailField(_('Email address'), unique=True)
+
+
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
+    
+    class MPTTMeta:
+        order_insertion_by=  ['name',]    
+        
+        
+    def __str__(self):
+        return "%s"%self.name
+    
+    def __repr__(self):
+       return self.__str__()  
+    
 @python_2_unicode_compatible
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'),default='', max_length=255)
@@ -281,7 +287,8 @@ class Laboratory(models.Model):
     geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
     
     
-    organization = models.ForeignKey('OrganizationStructure',blank=True,null=True, on_delete=models.SET_NULL)
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+
     
     
     rooms = models.ManyToManyField(
@@ -298,11 +305,16 @@ class Laboratory(models.Model):
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
+        
+    class MPTTMeta:
+        order_insertion_by=  ['name',]        
 
     def __str__(self):
         return '%s' % (self.name,)
     
 
+    def __repr__(self):
+       return self.__str__()
 
      
 @python_2_unicode_compatible
@@ -322,7 +334,7 @@ class FeedbackEntry(models.Model):
 
 
 class Solution(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.CharField(_('Name'),default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
     volume = models.CharField(_('Volumen'), max_length=100)
     temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
