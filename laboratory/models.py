@@ -247,7 +247,7 @@ class OrganizationStructureManager(models.Manager):
                 orgs |= Q (pk__in=org.get_descendants(include_self=True) )
                  
         if orgs is None:
-            return None
+            return OrganizationStructure.objects.none()
         else:          
             return OrganizationStructure.objects.filter(orgs)
        

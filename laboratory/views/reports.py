@@ -67,8 +67,9 @@ def report_organization_building(request, *args, **kwargs):
             else:        
                     labs = Laboratory.objects.none()
     else: # when haven't user selecting org
-        organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)       
-        if organizations_child is not None:   
+        organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)
+                  
+        if organizations_child :   
             labs=Laboratory.objects.filter(organization__in=organizations_child )
         else:
              if request.user.is_superuser:
