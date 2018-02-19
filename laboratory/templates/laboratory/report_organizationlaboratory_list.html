@@ -8,16 +8,16 @@
 
   <div>
   
- <form action="#" method="post">
+ <form action="#" method="post" class="table-responsive">
         {% csrf_token %}
-        <table>
+        <table class="table" >
         {{ form|bootstrap_horizontal }}
         </table>
-        <input type="submit" value={% trans 'Submit' %} />
+        <input cd type="submit" value={% trans 'Submit' %} />
  </form>
 
   <div class="btn-group dropup pull-right">
-  <button type="button" onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}" ' 
+  <button type="button" onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"' 
    class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
   {% trans 'Download'%}</button>
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -86,13 +86,13 @@
     </table>
     <br/>
   {% empty %}
-    {% trans "No Labs" %}
+    {% trans "You have not assigned laboratories yet, or there is no laboratories registered" %}
   {% endfor %}
 
   <div>
  <div class="btn-group dropup pull-right">
  
-  <button  onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}" '  
+  <button  onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"'   
    type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
   {% trans 'Download'%}</button>
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
