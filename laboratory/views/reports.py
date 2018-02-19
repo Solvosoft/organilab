@@ -58,14 +58,14 @@ def report_organization_building(request, *args, **kwargs):
         org=get_object_or_404(OrganizationStructure, pk=var)
         organizations_child = OrganizationStructure.os_manager.filter_user(request.user)
         if org in organizations_child: # user have perm on that organization ?
-                    organizations_child = org.get_descendants(include_self=True)
-                    labs=Laboratory.objects.filter(organization__in=organizations_child)
+                organizations_child = org.get_descendants(include_self=True)
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
         else:
             if request.user.is_superuser:
-                    organizations_child = OrganizationStructure.os_manager.get_children(var)
-                    labs=Laboratory.objects.filter(organization__in=organizations_child)
+                organizations_child = OrganizationStructure.os_manager.get_children(var)
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
             else:        
-                    labs = Laboratory.objects.none()
+                labs = Laboratory.objects.none()
     else: # when haven't user selecting org
         organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)
                   
