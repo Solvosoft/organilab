@@ -13,7 +13,6 @@ from django.utils.decorators import method_decorator
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
-from django.db.models import Q
 from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure, PrincipalTechnician
 from laboratory.decorators import check_lab_permissions, user_lab_perms
 
@@ -31,19 +30,10 @@ class OrganizationSelectableForm(forms.Form):
     def __init__(self,user, *args, **kwargs):
         self.user = user 
         super(OrganizationSelectableForm, self).__init__(*args, **kwargs)  
-        organizations = OrganizationStructure.objects.filter(
-            principaltechnician__credentials=self.user)
+        organizations = OrganizationStructure.os_manager.filter_user(self.user)
         
-        orgs = None
-        for org in organizations:
-            if orgs is None:
-                orgs = Q (pk__in=org.get_descendants(include_self=True))
-            else:
-                orgs |= Q (pk__in=org.get_descendants(include_self=True) )   
-        
-        
-        if organizations.exists():               
-             self.fields['filter_organization'].queryset = OrganizationStructure.objects.filter(orgs).distinct()
+        if organizations is not None:               
+             self.fields['filter_organization'].queryset = organizations.distinct()
         elif self.user.is_superuser:     
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all()
     
@@ -55,61 +45,54 @@ class OrganizationReportView(ListView):
     model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"
     organization = None
-
+    
     def get_context_data(self, **kwargs):
         context = super(OrganizationReportView,self).get_context_data(**kwargs)
-        
         context['form']  = self.form 
-        
-        # when a organizations is selected
-        if self.organization :
-            organizations_child = OrganizationStructure.objects.get(
-                pk=self.organization.pk
-                ).get_descendants(include_self=True)
-            labs=Laboratory.objects.filter(organization__in=organizations_child)
-            context['object_list'] = labs
-            context['filter_organization']  = self.organization
-            
+           
         # start report checking  technician  
-        elif self.technician :   
-            organizations = OrganizationStructure.objects.filter(
-                principaltechnician__credentials=self.user)
-            
-            orgs = None
-            for org in organizations:
-                if orgs is None:
-                    orgs = Q (pk__in=org.get_descendants(include_self=True))
+        if  self.technician :   
+            if self.organization :  # when a organizations is selected
+                organizations_child = OrganizationStructure.os_manager.filter_user(self.user)
+                if self.organization in organizations_child: # user have perm on that organization ?
+                    organizations_child = OrganizationStructure.os_manager.get_children(self.organization.pk)
+                    labs=Laboratory.objects.filter(organization__in=organizations_child)
                 else:
-                    orgs |= Q (pk__in=org.get_descendants(include_self=True) ) 
-                     
-            if organizations.exists():      # show organizations laboratories                
-                organizations_child = OrganizationStructure.objects.filter(orgs).distinct()
-                labs=Laboratory.objects.filter(organization__in=organizations_child)
-                context['object_list'] = labs
-            else:    # show only assign laboratory
-                 context['object_list'] = Laboratory.objects.filter(principaltechnician__credentials=self.user)
+                    labs = Laboratory.objects.none()
+            else:  #filter all of technician
+                organizations_child  = OrganizationStructure.os_manager.filter_user(self.user)       
+                if organizations_child is not None:      # show organizations laboratories                
+                    labs=Laboratory.objects.filter(organization__in=organizations_child )
+                else:    # show only assign laboratory
+                     labs = Laboratory.objects.filter(principaltechnician__credentials=self.user)
         #  when have nothing assign     
         else:
              # Show all to admin user
              if self.user.is_superuser:
-                 context['object_list'] = Laboratory.objects.all()
+                if self.organization :
+                    organizations_child = OrganizationStructure.os_manager.get_children(self.organization.pk)
+                    labs=Laboratory.objects.filter(organization__in=organizations_child)
+                else: 
+                    labs = Laboratory.objects.all()
              # Dont show if have nothing      
              else:
-                context['object_list'] = [] 
+                labs = Laboratory.objects.none()
                        
-            
+        context['filter_organization'] = self.organization
+        context['object_list'] = labs    
         return context
 
      
     def get(self, request, *args, **kwargs):
         self.user=request.user
-        self.form = OrganizationSelectableForm(request.user,request.GET or None)        
         self.technician=PrincipalTechnician.objects.filter(credentials=request.user)
+        self.form = OrganizationSelectableForm(request.user,request.GET or None)        
             
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):     
         self.user=request.user
+        self.technician=PrincipalTechnician.objects.filter(credentials=request.user)
         self.form = OrganizationSelectableForm(request.user,request.POST or None)
         
         if self.form.is_valid():

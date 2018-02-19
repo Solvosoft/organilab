@@ -52,5 +52,5 @@ pyexcel-ods3==0.5.2
 pyexcel-xls==0.5.4
 django-excel==0.0.9
 pyexcel-xlsx==0.5.4
-django-location-field
-django-mptt
+django-location-field==2.0.3
+django-mptt==0.9.0

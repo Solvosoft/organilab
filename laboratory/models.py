@@ -8,7 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
 from mptt.models import MPTTModel, TreeForeignKey
-
+from django.db.models import Q
 from laboratory.validators import validate_molecular_formula
 
 # 
@@ -235,6 +235,25 @@ class Furniture(models.Model):
 
 
 
+class OrganizationStructureManager(models.Manager):
+    def filter_user(self,user):
+        organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
+        
+        orgs = None
+        for org in organizations:
+            if orgs is None:
+                orgs = Q (pk__in=org.get_descendants(include_self=True))
+            else:
+                orgs |= Q (pk__in=org.get_descendants(include_self=True) )
+                 
+        if orgs is None:
+            return None
+        else:          
+            return OrganizationStructure.objects.filter(orgs)
+       
+    def get_children(self,org_id):
+        return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
+    
 @python_2_unicode_compatible
 class OrganizationStructure(MPTTModel):
     name   = models.CharField(_('Name'), max_length=255)
@@ -242,6 +261,9 @@ class OrganizationStructure(MPTTModel):
     
     parent =  TreeForeignKey('self', blank=True, null=True, related_name='children')
        
+       
+    os_manager = OrganizationStructureManager()   
+    
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
