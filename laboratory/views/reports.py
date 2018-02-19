@@ -55,16 +55,17 @@ def make_book_organization_laboratory(objects):
 def report_organization_building(request, *args, **kwargs):
     var = request.GET.get('organization')
     if var: # when have user selecting org
-        organizations_child = OrganizationStructure.os_manager.filter_user(request.user).values_list('id', flat=True)
-        if var in organizations_child: # user have perm on that organization ?
-                    organizations_child = OrganizationStructure.os_manager.get_children(var)
+        org=get_object_or_404(OrganizationStructure, pk=var)
+        organizations_child = OrganizationStructure.os_manager.filter_user(request.user)
+        if org in organizations_child: # user have perm on that organization ?
+                    organizations_child = org.get_descendants(include_self=True)
                     labs=Laboratory.objects.filter(organization__in=organizations_child)
         else:
-            if self.user.is_superuser:
+            if request.user.is_superuser:
                     organizations_child = OrganizationStructure.os_manager.get_children(var)
                     labs=Laboratory.objects.filter(organization__in=organizations_child)
             else:        
-                    labs = Laboratory.object.none()
+                    labs = Laboratory.objects.none()
     else: # when haven't user selecting org
         organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)       
         if organizations_child is not None:   
@@ -73,7 +74,7 @@ def report_organization_building(request, *args, **kwargs):
              if request.user.is_superuser:
                 labs= Laboratory.objects.all()    
              else:
-                labs = Laboratory.object.none()         
+                labs = Laboratory.objects.none()         
             
     
     fileformat = request.GET.get('format', 'pdf')
