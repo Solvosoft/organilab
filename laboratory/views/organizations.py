@@ -55,7 +55,7 @@ class OrganizationReportView(ListView):
             if self.organization :  # when a organizations is selected
                 organizations_child = OrganizationStructure.os_manager.filter_user(self.user)
                 if self.organization in organizations_child: # user have perm on that organization ?
-                    organizations_child = OrganizationStructure.os_manager.get_children(self.organization.pk)
+                    organizations_child = self.organization.get_descendants(include_self=True)
                     labs=Laboratory.objects.filter(organization__in=organizations_child)
                 else:
                     labs = Laboratory.objects.none()
