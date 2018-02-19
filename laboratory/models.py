@@ -25,7 +25,7 @@ class CLInventory(models.Model):
 
     class Meta:
         verbose_name = _('C&L Inventory')
-        verbose_name_plural = ('C&L Inventory objects')
+        verbose_name_plural = _('C&L Inventory objects')
 
     def __str__(self):
         return '%s' % self.name
