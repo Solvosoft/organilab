@@ -31,8 +31,7 @@ class OrganizationSelectableForm(forms.Form):
         self.user = user 
         super(OrganizationSelectableForm, self).__init__(*args, **kwargs)  
         organizations = OrganizationStructure.os_manager.filter_user(self.user)
-        
-        if organizations is not None:               
+        if organizations:               
              self.fields['filter_organization'].queryset = organizations.distinct()
         elif self.user.is_superuser:     
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all()
@@ -61,7 +60,7 @@ class OrganizationReportView(ListView):
                     labs = Laboratory.objects.none()
             else:  #filter all of technician
                 organizations_child  = OrganizationStructure.os_manager.filter_user(self.user)       
-                if organizations_child is not None:      # show organizations laboratories                
+                if organizations_child :      # show organizations laboratories                
                     labs=Laboratory.objects.filter(organization__in=organizations_child )
                 else:    # show only assign laboratory
                      labs = Laboratory.objects.filter(principaltechnician__credentials=self.user)
