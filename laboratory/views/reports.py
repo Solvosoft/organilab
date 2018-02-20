@@ -16,11 +16,94 @@ from django.utils.decorators import method_decorator
 from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_lab_perms
 import django_excel
 from django.db.models.aggregates import Sum, Min
+
+
+def make_book_organization_laboratory(objects):
+    dev=[
+        [_("Name"), _("Phone"), _("Location"),_("Principal Technician"),_('Phones'),_('Emails')]
+        ]
+    for object in objects:
+        principaltechnician=""
+        phones=""
+        emails=""
+        for ptechnician in object.principaltechnician_set.all():
+            if principaltechnician != "" :
+                principaltechnician+=" \n"
+                phones+=" \n"
+                emails+=" \n"
+            principaltechnician += ptechnician.name
+            phones += ptechnician.phone_number
+            emails += ptechnician.email    
+        dev.append([
+            object.name,
+            object.phone_number,
+            object.location,
+            principaltechnician,
+            phones,
+            emails,
+            ])
+    return dev
+    
+    
+@login_required
+@user_lab_perms(perm="report")
+def report_organization_building(request, *args, **kwargs):
+    var = request.GET.get('organization')
+    if var: # when have user selecting org
+        org=get_object_or_404(OrganizationStructure, pk=var)
+        organizations_child = OrganizationStructure.os_manager.filter_user(request.user)
+        if org in organizations_child: # user have perm on that organization ?
+                organizations_child = org.get_descendants(include_self=True)
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
+        else:
+            if request.user.is_superuser:
+                organizations_child = OrganizationStructure.os_manager.get_children(var)
+                labs=Laboratory.objects.filter(organization__in=organizations_child)
+            else:        
+                labs = Laboratory.objects.none()
+    else: # when haven't user selecting org
+        organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)
+                  
+        if organizations_child :   
+            labs=Laboratory.objects.filter(organization__in=organizations_child )
+        else:
+             if request.user.is_superuser:
+                labs= Laboratory.objects.all()    
+             else:
+                labs = Laboratory.objects.none()         
+            
+    
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        return django_excel.make_response_from_array(
+        make_book_organization_laboratory(labs), fileformat ,file_name="Laboratories.%s"%(fileformat,))
+
+    
+    context = {
+        'object_list': labs,
+        'datetime': timezone.now(),
+        'request': request,
+        'laboratory': kwargs.get('lab_pk')
+    }
+
+    template = get_template('pdf/organizationlaboratory_pdf.html')
+
+    html = template.render(
+        context=context).encode("UTF-8")
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
+    return response
+
+
 
 
 def make_book_laboratory(rooms):

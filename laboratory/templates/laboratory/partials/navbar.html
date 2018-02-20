@@ -1,9 +1,9 @@
 {% load i18n shelf_position laboratory %}
 
+
 {% has_laboratory_perm 'search' as perm_search %}
 {% has_laboratory_perm 'admin' as perm_admin %}
 {% has_laboratory_perm 'report' as perm_report %}
-
 
 <nav class="navbar navbar-dark bg-inverse">
   <a class="navbar-brand" href="{% url 'laboratory:index' laboratory %}"><strong id="brand_id">ORGANILAB</strong></a>
@@ -49,9 +49,14 @@
                role="button" aria-haspopup="true" aria-expanded="false">
               {% trans 'Reports' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-
-              <li><a href="{% url 'laboratory:reports_laboratory' laboratory %}">
-                {% trans 'Laboratory' %}</a></li>
+               <li class="dropdown-submenu">
+                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                 <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">{% trans 'Objects' %}</a></li>
+                 <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">{% trans 'Principal Technician' %}</a></li>
+               
+                </ul>
+              </li>
               <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
                 {% trans 'Furnitures' %}</a>
               </li>

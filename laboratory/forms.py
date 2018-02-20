@@ -10,12 +10,12 @@ class ObjectSearchForm(forms.Form):
     q = AutoCompleteSelectMultipleField(
         'objects', required=False, help_text=_("Search by name, code or CAS number"))
     all_labs = forms.BooleanField(
-        widget=forms.CheckboxInput, required=False, label="All labs")
+        widget=forms.CheckboxInput, required=False, label=_("All labs"))
 
-
+    
 class UserSearchForm(forms.Form):
     user = AutoCompleteSelectMultipleField(
-        'users', required=False, help_text=("Search by username, name or lastname"))
+        'users', required=False, help_text=_("Search by username, name or lastname"))
     action = forms.CharField(widget=forms.HiddenInput)
 
 

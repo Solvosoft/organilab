@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load bootstrap i18n %}
+
+{% block title %}{% trans 'Organization laboratory report' %}{% endblock %}
+
+{% block content %}
+  <div class="page-header"><h1>{% trans 'Organization laboratory report' %}</h1></div>
+
+  <div>
+  
+ <form action="#" method="post" class="table-responsive">
+        {% csrf_token %}
+        <table class="table" >
+        {{ form|bootstrap_horizontal }}
+        </table>
+        <input cd type="submit" value={% trans 'Submit' %} />
+ </form>
+
+  <div class="btn-group dropup pull-right">
+  <button type="button" onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"' 
+   class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+  {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
+<br><br>
+
+  
+  </div>
+
+  {% for laboratory in object_list %}
+    <div class="alert alert-info">
+      <strong>{% trans 'Laboratory :' %}</strong> {{ laboratory.name }}
+    </div>
+    <table class="table">
+                <tr  >
+                <th >{% trans "Phone" %} </th>
+                <th >{% trans "Location" %} </th>
+                <th >{% trans "Technicians" %} </th>
+                <th >{% trans "Phones" %} </th>
+                <th >{% trans "Emails" %} </th>
+            </tr>
+            <tr>
+                 <td>{{laboratory.phone_number }}</td>
+                 <td>{{laboratory.location }}</td>
+                 <td>  <ul>                      
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                          <li> {{ assigned.name }}</li>
+                         {% endfor %}
+                           </ul>    
+                 </dt>
+                 <td>  <ul>                      
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                          <li> {{ assigned.phone_number }}</li>
+                         {% endfor %}
+                           </ul>    
+                 </dt>
+                 <td>  <ul>                      
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                          <li> {{ assigned.email }}</li>
+                         {% endfor %}
+                           </ul>    
+                 </dt>
+           </tr>
+    </table>
+    <br/>
+  {% empty %}
+    {% trans "You have not assigned laboratories yet, or there is no laboratories registered" %}
+  {% endfor %}
+
+  <div>
+ <div class="btn-group dropup pull-right">
+ 
+  <button  onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"'   
+   type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+  {% trans 'Download'%}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+  <li>  <a  
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
+  </li><li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+   </li>
+   
+   <li>
+     <a 
+       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+   </li>
+    
+  </ul>
+</div>
+  </div>
+  <br><br>
+{% endblock %}
