@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'ajax_select',
     'crispy_forms',
     'cruds_adminlte',
+    'location_field.apps.DefaultConfig',
+    'mptt',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -158,3 +160,14 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+GOOGLE_MAPS_API_KEY = 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU'
+
+LOCATION_FIELD = {
+'map.provider': 'google',
+'map.zoom': 15,
+'search.provider': 'google',
+'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
+'provider.google.api_key': GOOGLE_MAPS_API_KEY,
+'provider.google.map.type': 'ROADMAP',
+}

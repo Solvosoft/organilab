@@ -2,15 +2,34 @@ from __future__ import unicode_literals
 
 import ast
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
-
+from mptt.models import MPTTModel, TreeForeignKey
+from django.db.models import Q
 from laboratory.validators import validate_molecular_formula
 
+# 
+# from django.contrib.gis.db import models
+# from django.contrib.gis.geos import Point
+#from location_field.models.spatial import LocationField
+from location_field.models.plain import PlainLocationField
 
+@python_2_unicode_compatible
+class CLInventory(models.Model):
+    name = models.TextField(_('Name'))
+    cas_id_number = models.TextField(_('CAS ID number'))
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('C&L Inventory')
+        verbose_name_plural = _('C&L Inventory objects')
+
+    def __str__(self):
+        return '%s' % self.name
+    
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
@@ -215,9 +234,85 @@ class Furniture(models.Model):
         return '%s' % (self.name,)
 
 
+
+class OrganizationStructureManager(models.Manager):
+    def filter_user(self,user):
+        organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
+        
+        orgs = None
+        for org in organizations:
+            if orgs is None:
+                orgs = Q (pk__in=org.get_descendants(include_self=True))
+            else:
+                orgs |= Q (pk__in=org.get_descendants(include_self=True) )
+                 
+        if orgs is None:
+            return OrganizationStructure.objects.none()
+        else:          
+            return OrganizationStructure.objects.filter(orgs)
+       
+    def get_children(self,org_id):
+        return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
+    
+@python_2_unicode_compatible
+class OrganizationStructure(MPTTModel):
+    name   = models.CharField(_('Name'), max_length=255)
+    group  = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
+    
+    parent =  TreeForeignKey('self', blank=True, null=True, related_name='children')
+       
+       
+    os_manager = OrganizationStructureManager()   
+    
+    class Meta:
+        verbose_name = _('Organization')
+        verbose_name_plural = _('Organizations')
+
+    class MPTTMeta:
+        order_insertion_by=  ['name',]
+                        
+    def __str__(self):
+        return "%s"%self.name       
+    
+    def __repr__(self):
+       return self.__str__()
+
+
+@python_2_unicode_compatible
+class PrincipalTechnician(models.Model):
+    credentials = models.ManyToManyField(User)
+    name   = models.CharField(_('Name'), max_length=255)    
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    id_card = models.CharField(_('ID Card'),max_length=100)
+    email = models.EmailField(_('Email address'), unique=True)
+
+
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
+    
+    class MPTTMeta:
+        order_insertion_by=  ['name',]    
+        
+        
+    def __str__(self):
+        return "%s"%self.name
+    
+    def __repr__(self):
+       return self.__str__()  
+    
 @python_2_unicode_compatible
 class Laboratory(models.Model):
-    name = models.CharField(_('Laboratory name'), max_length=255)
+    name = models.CharField(_('Laboratory name'),default='', max_length=255)
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    
+    location = models.CharField(_('Location'),default='',max_length=255)
+    geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
+    
+    
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+
+    
+    
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
@@ -232,10 +327,18 @@ class Laboratory(models.Model):
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
+        
+    class MPTTMeta:
+        order_insertion_by=  ['name',]        
 
     def __str__(self):
         return '%s' % (self.name,)
+    
 
+    def __repr__(self):
+       return self.__str__()
+
+     
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
@@ -250,21 +353,10 @@ class FeedbackEntry(models.Model):
         return '%s' % (self.title,)
 
 
-@python_2_unicode_compatible
-class CLInventory(models.Model):
-    name = models.TextField(_('Name'))
-    cas_id_number = models.TextField(_('CAS ID number'))
-    url = models.TextField(_('URL'))
 
-    class Meta:
-        verbose_name = _('C&L Inventory')
-        verbose_name_plural = ('C&L Inventory objects')
-
-    def __str__(self):
-        return '%s' % self.name
 
 class Solution(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.CharField(_('Name'),default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
     volume = models.CharField(_('Volumen'), max_length=100)
     temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
