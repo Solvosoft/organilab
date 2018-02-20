@@ -14,9 +14,10 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory, solutions
+from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
 from laboratory.views.objects import ObjectView
+
 
 objviews = ObjectView()
 
@@ -140,6 +141,13 @@ lab_reports_urls = [
         name='reactive_precursor_object_list')
 ]
 
+lab_reports_organization_urls = [
+         url(r'^organization$', reports.report_organization_building,
+              name='reports_organization_building'),
+          url(r'^list$', organizations.OrganizationReportView.as_view(),
+        name='reports_organization'),
+]
+
 lab_features_urls = [
     url(r'^create$', objectfeature.FeatureCreateView.as_view(),
         name='object_feature_create'),
@@ -178,4 +186,9 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
+]
+
+urlpatterns +=[
+     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/', include(lab_reports_organization_urls)),
+     
 ]
