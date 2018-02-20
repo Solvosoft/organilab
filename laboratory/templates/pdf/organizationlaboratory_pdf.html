@@ -1,0 +1,43 @@
+{% extends 'pdf/base_pdf.html' %}
+{% load i18n %} 
+
+{% block verbose_name %}{% trans "Organilab Organization Laboratory Report" %}{% endblock %}
+
+{% block pdf_content %}     
+  {% for laboratory in object_list %}
+        <h3 id="h3-1">
+            {{ laboratory.name }}
+        </h3>
+    <table >
+                <tr  >
+                <th >{% trans "Phone" %} </th>
+                <th >{% trans "Location" %} </th>
+                <th >{% trans "Technicians" %} </th>
+                <th >{% trans "Phones" %} </th>
+                <th >{% trans "Emails" %} </th>
+            </tr>
+            <tr>
+                 <td>{{laboratory.phone_number }}</td>
+                 <td>{{laboratory.location }}</td>
+                 <td>  
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                          {{ assigned.name }}</br>
+                         {% endfor %}
+                 </dt>
+                 <td>                    
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                          {{ assigned.phone_number }}</br>
+                         {% endfor %}    
+                 </dt>
+                 <td>
+                         {% for assigned in laboratory.principaltechnician_set.all %}
+                            {{ assigned.email }}</br>
+                         {% endfor %}
+                 </dt>
+           </tr>
+    </table>
+        <br />
+    {% empty %} 
+        {% trans "You have not assigned laboratories yet, or there is no laboratories registered" %} 
+    {% endfor %}
+{% endblock %}

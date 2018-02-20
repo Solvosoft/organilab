@@ -20,7 +20,7 @@ def check_lab_permissions(function=None):
     return _decorate
 
 def has_perm_in_lab(user, lab):
-    return user in lab.laboratorists.all() or lab.lab_admins.all()
+    return user in lab.laboratorists.all() or user in lab.lab_admins.all()
 
 def user_lab_perms(function=None, perm='search'):
     def _decorate(view_function, *args, **kwargs):
