@@ -50,13 +50,20 @@ def load_group_perms(apps, schema_editor):
         ]
 
         
-    
-    GLaboratory = Group(name='Laboratory Administrator')
-    GLaboratory.save()
-    GProfessor = Group(name='Professor')
-    GProfessor.save()
-    GStudent = Group(name='Student')
-    GStudent.save()
+    GLaboratory = Group.objects.get(name='Laboratory Administrator')
+    if not GLaboratory:
+        GLaboratory = Group(name='Laboratory Administrator')
+        GLaboratory.save()
+     
+    GProfessor = Group.objects.get(name='Professor')
+    if not GProfessor:   
+        GProfessor = Group(name='Professor')
+        GProfessor.save()
+        
+    GStudent = Group.objects.get(name='Student')
+    if not GStudent:     
+        GStudent = Group(name='Student')
+        GStudent.save()
  
     
     # add perms to student
