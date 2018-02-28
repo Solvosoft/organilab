@@ -3,9 +3,14 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
+
+# try:
+#     from django.db.models import get_model
+# except ImportError:
+#     from django.apps.apps import get_model
 
 from django.db import migrations
 
@@ -16,14 +21,29 @@ def set_perms(group,perms):
     else:
          for perm in perms:
             group.permissions.add(perm)
+            
+def get_context_model(perm):
+    omodel=perm.split("_")[-1]
+    model= get_model('laboratory', omodel)
+    content_type = ContentType.objects.get_for_model(model)
+    return content_type.model_class()
     
+def check_perms(list):
+    for iperm in list:
+        operm = Permission.objects.get(codename=iperm)
+        
+        if not operm:
+             content_type = get_context_model(iperm) 
+             if content_type:
+                name= ' '.join(perm.split("_"))    
+                Permission.objects.create(codename=iperm, name='Can %s'%name,  content_type=content_type,)
     
 def load_group_perms(apps, schema_editor):
   
     perms_student =[ # reservations
         "add_reservation","view_reservation",
         ]
-    
+
     perms_professor = [  # reservations
         "add_reservation","view_reservation",
         # Procedure
@@ -77,6 +97,17 @@ def load_group_perms(apps, schema_editor):
 
         ]
 
+    # check perms and add when it not exist
+#     check_perms(perms_student)
+#     check_perms(perms_professor)
+#     check_perms(perms_laboratory)
+    
+    
+    # Get groups
+    GStudent = Group.objects.get(name='Student')
+    if not GStudent:     
+        GStudent = Group(name='Student')
+        GStudent.save()
         
     GLaboratory = Group.objects.get(name='Laboratory Administrator')
     if not GLaboratory:
@@ -88,10 +119,6 @@ def load_group_perms(apps, schema_editor):
         GProfessor = Group(name='Professor')
         GProfessor.save()
         
-    GStudent = Group.objects.get(name='Student')
-    if not GStudent:     
-        GStudent = Group(name='Student')
-        GStudent.save()
  
     
     # add perms to student
