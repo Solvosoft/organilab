@@ -35,5 +35,24 @@ def user_lab_perms(function=None, perm='search'):
         return _decorate(view_function=function)
     return _decorate
 
+#@method_decorator(user_group_perms(perm='admin'), name='dispatch')
+#@method_decorator(login_required, name='dispatch')
+def user_group_perms(function=None,perm=None):
+    def _decorate(view_function, *args, **kwargs):
+        def view_wrapper(request, *args, **kwargs):
+            user = request.user
+            print (user.has_perm(perm))
+            if not  bool(user.has_perm(perm)):
+                return redirect(reverse('laboratory:permission_denied'))
+            return view_function(request, *args, **kwargs)
+        return view_wrapper            
+    
+    if function:
+        return _decorate(view_function=function)
+    return _decorate
+    
 def belongs_to_group(user, group):
     return bool(user.groups.filter(name=group))
+
+
+
