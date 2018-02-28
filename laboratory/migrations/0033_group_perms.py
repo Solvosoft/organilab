@@ -70,18 +70,22 @@ def load_group_perms(apps, schema_editor):
         "add_object","change_object","delete_object",
         
         # objectfeatures        
-        "add_objectfeatures",        "change_objectfeatures","delete_objectfeatures",
+        "add_objectfeatures","change_objectfeatures","delete_objectfeatures",
         
         # procedurerequiredobject
         "view_procedurerequiredobject",
         "add_procedurerequiredobject","change_procedurerequiredobject","delete_procedurerequiredobject",
         
+        # laboratory
+        "add_laboratory","change_laboratory","delete_laboratory",
+        
+        
+        # laboratoryroom
+        "add_laboratoryroom","change_laboratoryroom","delete_laboratoryroom",
+                
         # furniture
         "add_furniture","change_furniture","delete_furniture",
         
-        # laboratory
-        "add_laboratoryroom","change_laboratoryroom","delete_laboratoryroom",
-
         #Prodcuts
         "add_product","change_product","delete_product",
         

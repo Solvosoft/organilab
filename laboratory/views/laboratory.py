@@ -21,6 +21,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 
+from laboratory.decorators import user_group_perms
+
 def render_admins_lab(request, object_list, lab, message=None):
     return {
         'inner-fragments': {
@@ -93,7 +95,7 @@ def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     return render_admins_lab(request, lab.lab_admins.all(), lab)
 
-
+@method_decorator(user_group_perms(perm='laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = 'laboratory/edit.html'
@@ -194,6 +196,7 @@ class SelectLaboratoryView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_laboratoryroom'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create_form.html'
     form_class = LaboratoryCreate
@@ -216,6 +219,7 @@ class CreateLaboratoryFormView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = '/'
