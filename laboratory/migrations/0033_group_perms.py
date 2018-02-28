@@ -27,11 +27,18 @@ def load_group_perms(apps, schema_editor):
     perms_professor = [  # reservations
         "add_reservation","view_reservation",
         # Procedure
-        "view_procedure","view_procedurestep","view_procedurerequiredobject",
-        "view_procedureobservations","add_procedureobservations","change_procedureobservations",
-        "delete_procedureobservations","add_procedure","change_procedure","delete_procedure","add_procedurestep",
-        "change_procedurestep","delete_procedurestep","add_procedurerequiredobject","change_procedurerequiredobject",
-        "delete_procedurerequiredobject",
+        "view_procedure","view_procedurestep","view_procedurerequiredobject","view_procedureobservations",
+        # procedureobservations
+        "add_procedureobservations","change_procedureobservations","delete_procedureobservations",
+        # procedure
+        "add_procedure","change_procedure","delete_procedure",
+        # procedurestep
+        "add_procedurestep", "change_procedurestep","delete_procedurestep",
+        # procedurerequiredobject
+        "add_procedurerequiredobject","change_procedurerequiredobject", "delete_procedurerequiredobject",
+        
+        # solutions
+        "add_solution","change_solution",
         ]
         
     perms_laboratory = [ # reservations
@@ -40,12 +47,33 @@ def load_group_perms(apps, schema_editor):
         
         # objets 
         "add_shelfobject","change_shelfobject","delete_shelfobject",
-        "add_object","change_object","delete_object","add_objectfeatures",
-        "change_objectfeatures","delete_objectfeatures","view_procedurerequiredobject",
+        "add_object","change_object","delete_object",
+        
+        # objectfeatures        
+        "add_objectfeatures",        "change_objectfeatures","delete_objectfeatures",
+        
+        # procedurerequiredobject
+        "view_procedurerequiredobject",
         "add_procedurerequiredobject","change_procedurerequiredobject","delete_procedurerequiredobject",
         
-        # muebles
+        # furniture
         "add_furniture","change_furniture","delete_furniture",
+        
+        # laboratory
+        "add_laboratoryroom","change_laboratoryroom","delete_laboratoryroom",
+
+        #Prodcuts
+        "add_product","change_product","delete_product",
+        
+        #onsertation
+        "add_observation","change_observation","delete_observation",
+       
+        #CL Inventory
+        "add_clinventory","change_clinventory","delete_clinventory","add_solution",
+
+        # solutions
+        "add_solution","change_solution","delete_solution",
+
 
         ]
 
