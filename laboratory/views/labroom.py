@@ -18,7 +18,7 @@ from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 
 from laboratory.decorators import user_group_perms
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
@@ -30,7 +30,7 @@ class LaboratoryRoomsList(ListView):
         return lab.rooms.all()
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
@@ -56,7 +56,7 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
@@ -67,7 +67,7 @@ class LabroomUpdate(UpdateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
@@ -79,9 +79,9 @@ class LaboratoryRoomDelete(DeleteView):
             self.kwargs.get('lab_pk'),))
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
     template_name = "laboratory/report_laboratoryroom_list.html"

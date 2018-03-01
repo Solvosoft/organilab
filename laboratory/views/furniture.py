@@ -37,7 +37,6 @@ class FurnitureReportView(ListView):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):

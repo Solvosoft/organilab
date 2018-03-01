@@ -37,9 +37,9 @@ class OrganizationSelectableForm(forms.Form):
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all()
     
               
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class OrganizationReportView(ListView):
     model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"

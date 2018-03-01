@@ -12,9 +12,10 @@ from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 
+from laboratory.decorators import user_group_perms
+
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_objectfeatures'), name='dispatch')
 class FeatureCreateView(CreateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -41,8 +42,7 @@ class FeatureCreateView(CreateView):
         return super(FeatureCreateView, self).get_success_url()
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_objectfeatures'), name='dispatch')
 class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
     fields = '__all__'
@@ -53,8 +53,7 @@ class FeatureUpdateView(UpdateView):
         return super(FeatureUpdateView, self).get_success_url()
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(check_lab_permissions, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.delete_objectfeatures'), name='dispatch')
 class FeatureDeleteView(DeleteView):
     model = ObjectFeatures
 
