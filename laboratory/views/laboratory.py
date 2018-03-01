@@ -159,6 +159,7 @@ class SelectLaboratoryForm(forms.Form):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm

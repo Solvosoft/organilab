@@ -24,6 +24,7 @@ from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
+from laboratory.decorators import user_group_perms
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
@@ -39,6 +40,7 @@ class FurnitureReportView(ListView):
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("labroom", "name", "type")
@@ -78,6 +80,7 @@ class FurnitureForm(forms.ModelForm):
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = "/"
@@ -114,6 +117,7 @@ class FurnitureUpdateView(UpdateView):
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = "/"

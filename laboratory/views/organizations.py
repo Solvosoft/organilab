@@ -18,7 +18,7 @@ from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import  ListView
 
-
+from laboratory.decorators import user_group_perms
 
 
 
