@@ -32,18 +32,20 @@ from academic.models import (Procedure,
                              )
 
 def create_perms(codename):
-    model_perms= {"view_clinventory":CLInventory,
+    model_perms= {"view_report":Laboratory,
+                  "do_report":Laboratory,
+                  "view_clinventory":CLInventory,
                  "view_objectfeatures":ObjectFeatures,
                  "view_object":Object,
                  "view_shelfobjects":ShelfObject,
-                 "view_shelf":LaboratoryRoom,
                  "view_shelf":Shelf,
                  "view_furniture":Furniture,
                  "view_organizationstructure":OrganizationStructure,
                  "view_principaltechnician":PrincipalTechnician,
                  "view_laboratory":Laboratory,
+                 "view_laboratoryroom":LaboratoryRoom,
                  "view_feedbackentry":FeedbackEntry,
-                 "view_Solution":Solution,
+                 "view_solution":Solution,
                  "view_procedure":Procedure,
                  "view_procedurestep":ProcedureStep,
                  "view_procedurerequiredobject":ProcedureRequiredObject,
@@ -137,6 +139,9 @@ def load_group_perms(apps, schema_editor):
         "view_clinventory","add_clinventory","change_clinventory","delete_clinventory","add_solution",
         # solutions
         "view_solution","add_solution","change_solution","delete_solution",
+        
+        #reports
+        "view_report","do_report",
         ]
     check_perms(perms_laboratory)
 

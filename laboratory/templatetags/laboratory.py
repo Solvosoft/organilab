@@ -29,3 +29,15 @@ def get_search_form(context):
     else:
         form=ObjectSearchForm()
     return form
+
+
+@register.filter(name='has_group')
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
+
+
+@register.filter(name='has_perms')
+def has_perms(user, codename):
+    print (user)
+    print (codename)
+    return  user.has_perm(codename)

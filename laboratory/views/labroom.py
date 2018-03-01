@@ -20,7 +20,6 @@ from laboratory.decorators import user_group_perms
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='search'), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
@@ -33,7 +32,6 @@ class LaboratoryRoomsList(ListView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
@@ -60,7 +58,6 @@ class LabroomCreate(CreateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -72,7 +69,6 @@ class LabroomUpdate(UpdateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='admin'), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
