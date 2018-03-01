@@ -39,7 +39,6 @@ class FurnitureReportView(ListView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
@@ -79,7 +78,6 @@ class FurnitureForm(forms.ModelForm):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
@@ -116,7 +114,6 @@ class FurnitureUpdateView(UpdateView):
 
 @method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="admin"), name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture

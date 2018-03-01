@@ -17,16 +17,21 @@
             <strong>{% get_laboratory_name %}</strong>
           </a></li>
         {% endif %}
-        {% if perm_admin %}
+        {% if not  request.user|has_group:"Student" %} 
           <li class="dropdown">
             <a id='management_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false">
               {% trans 'Administration' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
+                {% if request.user|has_perms:"laboratory.view_furniture" %} 
               <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
                 {% trans 'Laboratory management' %} </a></li>
+                {% endif %} 
+                {% if request.user|has_perms:"laboratory.view_furniture" %} 
               <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
                 {% trans 'Furniture management' %}</a></li>
+                {% endif %} 
+                {% if request.user|has_perms:"laboratory.view_object" %} 
               <li class="dropdown-submenu">
                 <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -35,15 +40,20 @@
                   <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
                 </ul>
               </li>
+                {% endif %} 
+               {% if request.user|has_perms:"laboratory.view_objectfeatures" %} 
               <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
                 {% trans 'Object features management' %}</a></li>
+               {% endif %} 
+               {% if request.user|has_perms:"laboratory.view_solution" %} 
               <li><a href="{% url 'laboratory:solution_list' laboratory %}">
                 {% trans 'Dissolution management' %}</a></li>
+               {% endif %} 
             </ul>
 
           </li>
-        {% endif %}
-        {% if perm_report %}
+          {% endif %} 
+        {% if request.user|has_perms:"laboratory.view_report" %} 
           <li class="dropdown">
             <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false">
