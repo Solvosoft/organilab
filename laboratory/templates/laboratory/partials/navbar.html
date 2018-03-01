@@ -1,9 +1,12 @@
 {% load i18n shelf_position laboratory %}
 
-
-{% has_laboratory_perm 'search' as perm_search %}
-{% has_laboratory_perm 'admin' as perm_admin %}
-{% has_laboratory_perm 'report' as perm_report %}
+{%  has_perms "laboratory.view_laboratory" as perm_lab %}
+{%  has_perms "laboratory.view_solution" as perm_solution %}
+{%  has_perms "laboratory.view_furniture" as perm_furniture %}
+{%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
+{%  has_perms "laboratory.view_objectfeatures" as perm_objectfeatures %}
+{%  has_perms "laboratory.view_object" as perm_object %}
+{%  has_perms "laboratory.view_report" as perm_report  %}
 
 <nav class="navbar navbar-dark bg-inverse">
   <a class="navbar-brand" href="{% url 'laboratory:index' laboratory %}"><strong id="brand_id">ORGANILAB</strong></a>
@@ -12,26 +15,26 @@
       <li><a id='select_id' href="{% url 'laboratory:select_lab' %}" title="Select Laboratory"><span
         class="glyphicon glyphicon-cog"></span></a></li>
       {% if laboratory %}
-        {% if perm_search %}
+         {% if perm_lab %} 
           <li><a id='labview_id' href="{% url 'laboratory:rooms_list' laboratory %}">
             <strong>{% get_laboratory_name %}</strong>
           </a></li>
         {% endif %}
-        {% if not  request.user|has_group:"Student" %} 
+        {% if perm_solution or perm_furniture or perm_laboratoryroom or perm_objectfeatures or perm_object %} 
           <li class="dropdown">
             <a id='management_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false">
               {% trans 'Administration' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                {% if request.user|has_perms:"laboratory.view_furniture" %} 
+                {% if perm_laboratoryroom %} 
               <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
                 {% trans 'Laboratory management' %} </a></li>
                 {% endif %} 
-                {% if request.user|has_perms:"laboratory.view_furniture" %} 
+                {% if perm_furniture %} 
               <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
                 {% trans 'Furniture management' %}</a></li>
                 {% endif %} 
-                {% if request.user|has_perms:"laboratory.view_object" %} 
+                {% if perm_object %} 
               <li class="dropdown-submenu">
                 <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -41,19 +44,18 @@
                 </ul>
               </li>
                 {% endif %} 
-               {% if request.user|has_perms:"laboratory.view_objectfeatures" %} 
+               {% if perm_objectfeatures %} 
               <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
                 {% trans 'Object features management' %}</a></li>
                {% endif %} 
-               {% if request.user|has_perms:"laboratory.view_solution" %} 
+               {% if perm_solution %} 
               <li><a href="{% url 'laboratory:solution_list' laboratory %}">
                 {% trans 'Dissolution management' %}</a></li>
                {% endif %} 
             </ul>
-
           </li>
-          {% endif %} 
-        {% if request.user|has_perms:"laboratory.view_report" %} 
+        {% endif %} 
+        {% if perm_report %} 
           <li class="dropdown">
             <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false">
