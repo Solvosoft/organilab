@@ -21,6 +21,8 @@ from laboratory.shelf_utils import get_dataconfig
 
 from .djgeneric import CreateView, UpdateView
 
+from laboratory.decorators import user_group_perms
+
 
 def get_shelves(furniture):
     if type(furniture) == QuerySet:
@@ -81,6 +83,7 @@ class ShelfForm(forms.ModelForm):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_shelf'), name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
@@ -134,6 +137,7 @@ class ShelfCreate(AJAXMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_shelf'), name='dispatch')
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"

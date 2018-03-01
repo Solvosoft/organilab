@@ -20,6 +20,7 @@ from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.models import Object
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
+from laboratory.decorators import user_group_perms
 
 class ObjectView(object):
     model = Object
@@ -27,6 +28,7 @@ class ObjectView(object):
 
     def __init__(self):
         @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+        @method_decorator(user_group_perms(perm='laboratory.add_object'), name='dispatch')
         class ObjectCreateView(CreateView):
 
             def get_success_url(self, *args, **kwargs):
@@ -46,6 +48,7 @@ class ObjectView(object):
         )))
 
         @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+        @method_decorator(user_group_perms(perm='laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
             def get_success_url(self):
@@ -65,6 +68,7 @@ class ObjectView(object):
         )))
 
         @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
+        @method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
             def get_success_url(self):
@@ -77,7 +81,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html"
         )))
 
-        @method_decorator(user_lab_perms(perm="search"), name='dispatch')
+        @method_decorator(user_lab_perms(perm="search"), name='dispatch')     
         class ObjectListView(ListView):
 
             def get_queryset(self):
