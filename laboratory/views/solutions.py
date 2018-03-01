@@ -24,6 +24,7 @@ class SolutionListView(ListView):
         return context
 
 
+
 class SolutionDetailView(DetailView):
     model = Solution
     template_name = 'laboratory/solution_detail.html'

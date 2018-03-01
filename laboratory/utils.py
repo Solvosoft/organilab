@@ -1,6 +1,7 @@
 
 
 def check_lab_perms(lab, user, perm):
+    print ("check_lab_perms ") 
     admin = lab.lab_admins.filter(username=user.username).exists()
     if perm == 'admin':
         return admin
