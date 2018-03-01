@@ -36,8 +36,16 @@ def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
 
-@register.filter(name='has_perms')
-def has_perms(user, codename):
-    print (user)
-    print (codename)
-    return  user.has_perm(codename)
+@register.simple_tag(takes_context=True)
+def has_perms(context, codename):
+    if 'request' in context:
+        print ("has_perms:  %s"%codename)
+        user = context['request'].user
+        return user.has_perm(codename)
+    return False
+
+@register.filter(name='check_perms')
+def check_perms(user, codename):
+    print ("has_perms:  %s"%codename)
+    return user.has_perm(codename)
+

@@ -1,6 +1,6 @@
 {% load i18n laboratory %}
 
-{%  has_laboratory_perm 'admin' as perm_admin %}
+{%  has_perms "laboratory.add_shelf" as perm_add_shelf %}
 
 <div class="panel panel-default">
 	<div class="panel-heading">
@@ -15,7 +15,7 @@
 				{% for col in row%}
 				<td> {% if col%}
 				{% for data in col %} 
-				{% if perm_admin %}
+				{% if perm_add_shelf %}
 				<a 
 				data-ajax="true" data-success="processResponseshelfobjectCreate"
 				href="{% url 'laboratory:shelfobject_create' laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
@@ -34,7 +34,7 @@
 
 				</div> 
 				{% if not forloop.last %}
-<hr>
+                <hr>
 				{%endif%}
 				
 				{%endfor%}
