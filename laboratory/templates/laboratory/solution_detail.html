@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n laboratory %}
 
 {% block title %}{% trans 'Dissolution detail' %}{% endblock %}
 
 {% block content %}
+
+{%  has_perms "laboratory.view_solution" as perm_solution %}
+
+{% if  perm_solution%}
   <div class="page-header">
     <h3>{{ object }}
       <span class="pull-right">
@@ -59,4 +63,7 @@
       </table>
     </div>
   </div>
+{% else %}
+   {% include 'laboratory/action_denied.html' %} 
+{% endif%}  
 {% endblock %}

@@ -1,30 +1,39 @@
 {% extends 'base.html' %}
-{% load bootstrap staticfiles i18n %}
+{% load laboratory bootstrap staticfiles i18n  %}
+
+
 
 {% block title %}{% trans 'Furniture management' %}{% endblock %}
 
 {% block content %}
+	{%  has_perms "laboratory.view_furniture" as perm_furniture %}
+	{%  has_perms "laboratory.add_furniture" as perm_add_furniture %}
+	{%  has_perms "laboratory.change_furniture" as perm_change_furniture %}
+	{%  has_perms "laboratory.delete_furniture" as perm_delete_furniture %}
+
   <div id="intro_title">
 
     <h1 align="center">{% trans 'Furniture management' %}</h1>
-
+   
+ {% if perm_furniture or perm_add_furniture or perm_change_furniture or perm_delete_furniture %}
     <br>
     {{ form.errors }}
-
     <form class="form-horizontal" action="" method="post">
+    {% if perm_add_furniture %}
       {% csrf_token %}
-      <div class="row">
-        <div id="furniture_form" class="col-md-4 col-md-offset-2">
-          {{ form|bootstrap_horizontal }}
-        </div>
-        <div id="save_button1" class="col-md-1">
-          <button class="btn btn-success" type="submit">
-            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
-          </button>
-        </div>
-      </div>
-
+	      <div class="row">
+	        <div id="furniture_form" class="col-md-4 col-md-offset-2">
+	          {{ form|bootstrap_horizontal }}
+	        </div>
+	        <div id="save_button1" class="col-md-1">
+	          <button class="btn btn-success" type="submit">
+	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+	          </button>
+	        </div>
+	      </div>
+      {% endif %}
       {% if form.instance.pk %}
+         {% if perm_add_furniture %}
         <div id="furniture_size" class="table-responsive">
           <table class="table table-bordered" id="mytab">
             {{ dataconfig|safe }}
@@ -52,30 +61,36 @@
             </div>
           </div>
         </div>
+        {% endif %}
       {% else %}
-       <hr>
-        <div class="list-group">
-          {% for object in object_list %}
-            <li class="row list-group-item">
-              <div class="col-md-3">{{ object.labroom }}</div>
-              <div class="col-md-6">
-                {{ object }}
-              </div>
-              <div class="col-md-3">
-                <div class="btn-group" role="group" aria-label="...">
-                  <a href="{% url 'laboratory:furniture_update' laboratory object.pk %}" class="btn btn-info">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
-                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-                </div>
-              </div>
-            </li>
-          {% endfor %}
-        </div>
-
-      {% endif %}
+	       <hr>
+	        <div class="list-group">
+	          {% for object in object_list %}
+	            <li class="row list-group-item">
+	              <div class="col-md-3">{{ object.labroom }}</div>
+	              <div class="col-md-6">
+	                {{ object }}
+	              </div>
+	              <div class="col-md-3">
+	                <div class="btn-group" role="group" aria-label="...">
+	                  {% if perm_change_furniture %}
+	                  <a href="{% url 'laboratory:furniture_update' laboratory object.pk %}" class="btn btn-info">
+	                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
+	                   {% endif %}
+	                   {% if perm_delete_furniture %}
+	                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
+	                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+	                  {% endif %}  
+	                </div>
+	              </div>
+	            </li>
+	          {% endfor %}
+	        </div>
+        {% endif %}
     </form>
-
+  {% else %}
+       {% include 'laboratory/action_denied.html' %}   
+  {% endif %}
   </div>
 
   <div class="hidden" id="addshelfproto">
@@ -103,11 +118,9 @@
       </div><!-- /.modal-dialog -->
     </div>
   </div>
-  <div id="modalclose"></div>
-
-
-
-{% endblock %}
+  <div id="modalclose"></div>	
+  
+{% endblock%}
 
 {% block css %}
   <style>

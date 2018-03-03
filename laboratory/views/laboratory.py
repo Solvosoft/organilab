@@ -95,6 +95,7 @@ def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     return render_admins_lab(request, lab.lab_admins.all(), lab)
 
+@method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
@@ -197,7 +198,7 @@ class SelectLaboratoryView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_laboratoryroom'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create_form.html'
     form_class = LaboratoryCreate

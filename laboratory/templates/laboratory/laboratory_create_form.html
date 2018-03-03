@@ -1,4 +1,7 @@
-{% load bootstrap i18n %}
+{% load bootstrap i18n laboratory %}
+
+{%  has_perms "laboratory.add_laboratory" as perm_add_lab %}
+
 {% block laboratory_create_form %}
 
   <div class="modal-header">
@@ -6,6 +9,7 @@
     <center><h3 class="modal-title">{% trans 'Create laboratory' %}</h3></center>
   </div>
 
+  {% if perm_add_lab %}
   <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
     <div class="modal-body ">
 
@@ -18,5 +22,7 @@
       <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
     </div>
   </form>
-
+  {% else %} 
+       {% include 'laboratory/action_denied.html' %} 
+  {% endif %}	
 {% endblock%}

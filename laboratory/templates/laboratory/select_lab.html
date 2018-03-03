@@ -1,28 +1,35 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n %}
+{% load bootstrap i18n laboratory %}
 
 {% block title %}{% trans 'Select laboratory' %}{% endblock %}
 
 {% block content %}
 
+{%  has_perms "laboratory.view_laboratory" as perm_laboratory %}
+{%  has_perms "laboratory.add_laboratory" as perm_add_laboratory %}
+
   <div align="right">
+  {% if perm_laboratory %}
     <a id="create_lab_btn" class="btn btn-default" data-toggle="modal" href="{% url 'laboratory:create_lab_form' %}" data-target="#create_lab_modal">{% trans 'Create laboratory' %}</a>
+  {% endif %}
   </div>
 
-  <div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
-
-    <div class="modal-dialog modal-lg">
-
-      <div class="modal-content">
-
-        {% block laboratory_create_form %}
-          {% include "laboratory/laboratory_create_form.html" %}
-        {% endblock laboratory_create_form %}
-
-      </div>
-    </div>
-
-  </div>
+ {% if perm_add_laboratory %}
+	<div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
+	
+	    <div class="modal-dialog modal-lg">
+	
+	      <div class="modal-content">
+	
+	        {% block laboratory_create_form %}
+	          {% include "laboratory/laboratory_create_form.html" %}
+	        {% endblock laboratory_create_form %}
+	
+	      </div>
+	    </div>
+	
+	</div>
+  {% endif %}
 
   <div class="row">
     <div class="col-md-offset-3 col-md-6">
@@ -36,11 +43,13 @@
     </div>
   </div>
 
-  <script>
-
-    $(document).ready(() => {
-      if({{number_of_labs}} == 0) $('#create_lab_btn').click();
-    });
-
-  </script>
+ {% if perm_add_laboratory %}
+   <script>
+	
+	    $(document).ready(() => {
+	      if({{number_of_labs}} == 0) $('#create_lab_btn').click();
+	    });
+	
+   </script>
+ {% endif %}
 {% endblock %}

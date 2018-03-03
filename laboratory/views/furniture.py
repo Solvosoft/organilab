@@ -26,9 +26,9 @@ from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
 from laboratory.decorators import user_group_perms
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="report"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
@@ -75,7 +75,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
@@ -111,7 +111,6 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
-@method_decorator(check_lab_permissions, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
