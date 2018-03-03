@@ -1,5 +1,7 @@
-{% load i18n %}
+{% load i18n laboratory %}
 
+{%  has_perms "laboratory.delete_shelfobject" as perm_delete_shelfobject %}
+ 
 <form data-ajax-submit="" onsubmit="return false;"
 data-success="processResponseshelfobject"
 action="{% url 'laboratory:shelfobject_delete' laboratory object.pk %}" method="post"
@@ -7,19 +9,23 @@ action="{% url 'laboratory:shelfobject_delete' laboratory object.pk %}" method="
 	{% csrf_token %}
 	
 	<div class="modal-body">
-	<p>
-		{% trans 'Are you sure that do you want delete this object' %}
-		<br />
-		{{object}} ?
-	</p>
+	{% if perm_delete_shelfobject %}
+		<p>
+			{% trans 'Are you sure that do you want delete this object' %}
+			<br />
+			{{object}} ?
+		</p>
+	{% else%}
+	    {% include 'laboratory/action_denied.html' %} 
+    {% endif %}
 </div>
 	<div class="modal-footer">
 
-		
-		<button type="submit" class="btn btn-primary">
-			{% trans 'Delete' %}
-		</button>
-
+	   {% if perm_delete_shelfobject %}
+			<button type="submit" class="btn btn-primary">
+				{% trans 'Delete' %}
+			</button>
+        {% endif %}
 		{%if not form.instance.pk %}
 		<button type="button" class="btn btn-default" data-dismiss="modal">
 			{% trans 'Close' %}

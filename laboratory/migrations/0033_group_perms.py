@@ -37,7 +37,7 @@ def create_perms(codename):
                   "view_clinventory":CLInventory,
                  "view_objectfeatures":ObjectFeatures,
                  "view_object":Object,
-                 "view_shelfobjects":ShelfObject,
+                 "view_shelfobject":ShelfObject,
                  "view_shelf":Shelf,
                  "view_furniture":Furniture,
                  "view_organizationstructure":OrganizationStructure,
@@ -92,11 +92,9 @@ def load_group_perms(apps, schema_editor):
         ]
     check_perms(perms_student)
     perms_professor = [  # reservations
-        "view_procedure","add_reservation","view_reservation",
-        # Procedure
-        "view_procedure","view_procedurestep","view_procedurerequiredobject","view_procedureobservations",
+        "view_reservation","add_reservation",
         # procedureobservations
-        "add_procedureobservations","change_procedureobservations","delete_procedureobservations",
+        "view_procedureobservations","add_procedureobservations","change_procedureobservations","delete_procedureobservations",
         # procedure
         "view_procedure","add_procedure","change_procedure","delete_procedure",
         # procedurestep
@@ -116,7 +114,7 @@ def load_group_perms(apps, schema_editor):
         "add_reservation","change_reservation","delete_reservation","add_reservationtoken",
         "change_reservationtoken","delete_reservationtoken","view_reservation",
         
-        # self objets 
+        # shelfobjets 
         "view_shelfobject","add_shelfobject","change_shelfobject","delete_shelfobject",
         # objets         
         "view_object","add_object","change_object","delete_object",

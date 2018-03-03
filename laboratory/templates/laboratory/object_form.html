@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 
-{% load bootstrap i18n %}
+{% load bootstrap i18n laboratory %}
 {% block content %}
+
+{%  has_perms "laboratory.change_object" as perm_change_object %}
+{%  has_perms "laboratory.add_object" as perm_add_object %}
+
 <div class="row">
 <h1 align="center">{% trans 'Objects Management' %}</h1>
-<form action="" method="post">{% csrf_token %}
-    {{ form|bootstrap  }}
-    <input type="submit" value="{% trans 'Save' %}">
-</form>
+{% if perm_change_object or perm_add_object %}
+	<form action="" method="post">{% csrf_token %}
+	    {{ form|bootstrap  }}
+	    <input type="submit" value="{% trans 'Save' %}">
+	</form>
+{% else %}
+       {% include 'laboratory/action_denied.html' %}   
+{% endif %}
 </div>
 {% endblock %}

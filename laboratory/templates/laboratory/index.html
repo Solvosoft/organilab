@@ -33,7 +33,7 @@
 {%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
 {%  has_perms "laboratory.view_objectfeatures" as perm_objectfeatures %}
 {%  has_perms "laboratory.view_object" as perm_object %}
-{%  has_perms "laboratory.view_procedure" as perm_procedure  %}
+{%  has_perms "academic.view_procedure" as perm_procedure  %}
 {%  has_perms "laboratory.do_report" as perm_do_report  %}
 {%  has_perms "laboratory.view_report" as perm_report  %}
 
@@ -134,7 +134,7 @@
 
         </div>
       </div>
- {% endif %}
+   {% endif %}
          {% if perm_report and perm_do_report %}
       <div class="col-md-4 text-center">
         <div class="row">

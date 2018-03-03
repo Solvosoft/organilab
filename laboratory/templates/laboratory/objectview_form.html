@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 
-{% load bootstrap i18n static %}
+{% load bootstrap i18n static laboratory %}
 
 {% block title %}{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
 
 {% block content %}
+{%  has_perms "laboratory.add_object" as perm_add_object %}
+{%  has_perms "laboratory.chage_object" as perm_chage_object %}
+
   <div class="row">
     <div class="col-md-6 col-md-offset-4">
       <h1 align="center">{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}</h1>
-      <form enctype="multipart/form-data" action="
-        {% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
-            method="post">{% csrf_token %}
-        {{ form|bootstrap }}
-        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
-      </form>
+      {% if perm_add_object or perm_chage_object  %}
+	      <form enctype="multipart/form-data" action="
+	        {% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
+	            method="post">{% csrf_token %}
+	        {{ form|bootstrap }}
+	        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+	      </form>
+      {% else %} 
+          {% include 'laboratory/action_denied.html' %} 
+      {% endif %}
     </div>
   </div>
   <br> <br>
