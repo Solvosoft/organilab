@@ -54,11 +54,13 @@
 	  {% for obj in object_list %}
 	    <h3 class="alert alert-info">
 	      {{ obj.code }}
-	      <a class="btn btn-sm btn-danger pull-right"
-	         title="{{ obj.name }}"
-	         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
-	        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	        {% trans "PDF" %}</a>
+	      {% if perm_do_report  %}
+		      <a class="btn btn-sm btn-danger pull-right"
+		         title="{{ obj.name }}"
+		         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
+		        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+		        {% trans "PDF" %}</a>
+	        {% endif %}
 	    </h3>
 	    <ul>
 	      <li>{% trans "Name:" %} {{ obj.name }}</li>

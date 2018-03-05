@@ -13,7 +13,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory,OrganizationStructure
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
@@ -151,7 +151,7 @@ class LaboratoryView(object):
 
 class SelectLaboratoryForm(forms.Form):
     laboratory = forms.ModelChoiceField(label=_('Laboratory'),
-                                        queryset=Laboratory.objects.all(), empty_label=None)
+                                        queryset=Laboratory.objects.none(), empty_label=None)
 
     def __init__(self, *args, **kwargs):
         lab_queryset = kwargs.pop('lab_queryset')
@@ -168,8 +168,16 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def get_laboratories(self, user):
-        return Laboratory.objects.filter(Q(laboratorists__pk=user.pk) | Q(students__pk=user.pk) | Q(lab_admins__pk=user.pk)).distinct()
-
+        organization = OrganizationStructure.os_manager.filter_user(user)
+        # user have perm on that organization ?  else Use assigned user with direct relationship
+        if not organizations:    
+             organizations=[]
+        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
+                                      Q(laboratorists__pk=user.pk) | 
+                                      Q(principaltechnician__credentials=user.pk) | 
+                                      Q (organization__in=organizations) ).distinct().values_list('id', flat=True)
+        return labs
+    
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
         user = self.request.user

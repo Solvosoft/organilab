@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load bootstrap  i18n  laboratory %}
 
-{%  has_perms "laboratory.change_laboratory" as perm_change_lab  %}
 
-{% if perm_change_lab %}
-	{% block content %}
+{% block content %}
+   {%  has_perms "laboratory.change_laboratory" as perm_change_lab  %}
 	  <h1 align="center">{% trans 'Laboratory Management' %}</h1>
+	  
+	{% if perm_change_lab %}
 	  <div class="row">
 	    <div class="col-md-4">
 	      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' form.instance.pk %}{% else %}{% url 'laboratory:laboratory_create' %} {% endif %}"
@@ -19,14 +20,16 @@
 	    <div>
 	  </div>
 	  <br> <br>
-	{% endblock %}
+	{% else %} 
+       {% include 'laboratory/action_denied.html' %} 
+    {% endif %}
+ {% endblock %}
 	
-	{% block js %}
+ {% block js %}
 	<script type="text/javascript">
 	    ajaxGet("{% url 'laboratory:laboratory_ajax_admins_users_list' form.instance.pk %}", (content) => {
 	        console.log(content);
 	    })
 	</script>
-	{% endblock %}
+{% endblock %}
 
-{% endif %}

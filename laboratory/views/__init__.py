@@ -10,11 +10,10 @@ from django.template.loader import render_to_string
 import json
 
 from laboratory.models import FeedbackEntry
-from laboratory.decorators import check_lab_permissions
+from laboratory.decorators import user_group_perms
 from laboratory.registry import TOUR_STEPS_LAB_JSON, TOUR_STEPS_FURNITURE_JSON
 
 
-@check_lab_permissions()
 def index(request, lab_pk=None):
     if lab_pk is None:
         return redirect('laboratory:select_lab')
@@ -61,11 +60,11 @@ def get_tour_steps_furniture(request):
         return json.dumps(tour)
     return 0
 
-def is_laboratory_admin(user):
-    return bool(user.groups.filter(name='laboratory_admin'))
-
-def is_laboratory_student(user):
-    return bool(user.groups.filter(name='laboratory_student'))
-
-def is_laboratory_teacher(user):
-    return bool(user.groups.filter(name='laboratory_teacher'))
+# def is_laboratory_admin(user):
+#     return bool(user.groups.filter(name='laboratory_admin'))
+# 
+# def is_laboratory_student(user):
+#     return bool(user.groups.filter(name='laboratory_student'))
+# 
+# def is_laboratory_teacher(user):
+#     return bool(user.groups.filter(name='laboratory_teacher'))
