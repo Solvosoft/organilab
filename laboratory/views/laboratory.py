@@ -175,7 +175,8 @@ class SelectLaboratoryView(FormView):
         labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                       Q(laboratorists__pk=user.pk) | 
                                       Q(principaltechnician__credentials=user.pk) | 
-                                      Q (organization__in=organizations) ).distinct().values_list('id', flat=True)
+                                      Q (organization__in=organizations) 
+                                      ).distinct()
         return labs
     
     def get_form_kwargs(self):
