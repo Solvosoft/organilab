@@ -16,18 +16,17 @@ from django import forms
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.models import Object
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
-from laboratory.decorators import user_group_perms
+from laboratory.decorators import user_group_perms, view_user_group_perms
 
 class ObjectView(object):
     model = Object
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
-        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.add_object'), name='dispatch')
         class ObjectCreateView(CreateView):
 
@@ -41,13 +40,12 @@ class ObjectView(object):
                 kwargs['request'] = self.request
                 return kwargs
 
-        self.create = check_lab_permissions(login_required(ObjectCreateView.as_view(
+        self.create = view_user_group_perms(login_required(ObjectCreateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
@@ -61,13 +59,12 @@ class ObjectView(object):
                 kwargs['request'] = self.request
                 return kwargs
 
-        self.edit = check_lab_permissions(login_required(ObjectUpdateView.as_view(
+        self.edit = view_user_group_perms(login_required(ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
         )))
 
-        @method_decorator(user_lab_perms(perm="admin"), name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
@@ -75,13 +72,13 @@ class ObjectView(object):
                 return reverse_lazy('laboratory:objectview_list',
                                     args=(self.lab,))
 
-        self.delete = check_lab_permissions(login_required(ObjectDeleteView.as_view(
+        self.delete = view_user_group_perms(login_required(ObjectDeleteView.as_view(
             model=self.model,
             success_url="/",
             template_name=self.template_name_base + "_delete.html"
         )))
 
-        @method_decorator(user_lab_perms(perm="search"), name='dispatch')     
+        @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')    
         class ObjectListView(ListView):
 
             def get_queryset(self):
@@ -111,7 +108,7 @@ class ObjectView(object):
                 context['type_id'] = self.type_id or ''
                 return context
 
-        self.list = check_lab_permissions(login_required(ObjectListView.as_view(
+        self.list = view_user_group_perms(login_required(ObjectListView.as_view(
             model=self.model,
             paginate_by=10,
             ordering=['code'],

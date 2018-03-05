@@ -6,6 +6,7 @@
 {%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
 {%  has_perms "laboratory.view_objectfeatures" as perm_objectfeatures %}
 {%  has_perms "laboratory.view_object" as perm_object %}
+{%  has_perms "laboratory.view_selfobject" as perm_shelfobject %}
 {%  has_perms "laboratory.view_report" as perm_report  %}
 
 <nav class="navbar navbar-dark bg-inverse">
@@ -60,30 +61,37 @@
             <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false">
               {% trans 'Reports' %}<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-               <li class="dropdown-submenu">
-                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                 <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">{% trans 'Objects' %}</a></li>
-                 <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">{% trans 'Principal Technician' %}</a></li>
-               
+              <ul class="dropdown-menu">
+                  <li class="dropdown-submenu">
+                  <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">{% trans 'Objects' %}</a></li>
+                     <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">{% trans 'Principal Technician' %}</a></li>
                 </ul>
               </li>
-              <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
-                {% trans 'Furnitures' %}</a>
-              </li>
-              <li class="dropdown-submenu">
-                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">{% trans 'Reactive' %}</a></li>
-                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
-                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
-                </ul>
-              </li>
-              <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
-                {% trans 'Reactive precursor objects' %}</a></li>
-              <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
-                {% trans 'Limited shelf objects' %}</a></li>
+                {% if perm_furniture %} 
+	              <li><a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
+	                {% trans 'Furnitures' %}</a>
+	              </li>
+               {% endif %}
+               {% if perm_object %}               
+	              <li class="dropdown-submenu">
+	                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
+	                <ul class="dropdown-menu">
+	                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">{% trans 'Reactive' %}</a></li>
+	                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
+	                  <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
+	                </ul>
+	              </li>
+               {% endif %}
+               {% if perm_object %} 
+	              <li><a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
+	                {% trans 'Reactive precursor objects' %}</a></li>
+               {% endif %} 
+               {% if perm_shelfobject %} 
+	              <li><a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
+	                {% trans 'Limited shelf objects' %}</a></li>
+              {% endif %}  
             </ul>
           </li>
         {% endif %}

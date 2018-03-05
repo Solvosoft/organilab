@@ -12,7 +12,7 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.models import LaboratoryRoom, Laboratory
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 

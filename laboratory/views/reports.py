@@ -18,7 +18,7 @@ from django.utils.translation import ugettext as _
 
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
 from laboratory.views.djgeneric import ListView
-from laboratory.decorators import user_lab_perms
+from laboratory.decorators import user_group_perms
 import django_excel
 from django.db.models.aggregates import Sum, Min
 
@@ -51,7 +51,7 @@ def make_book_organization_laboratory(objects):
     
     
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_organization_building(request, *args, **kwargs):
     var = request.GET.get('organization')
     if var: # when have user selecting org
@@ -145,7 +145,7 @@ def make_book_laboratory(rooms):
 
 
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_labroom_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
@@ -176,7 +176,8 @@ def report_labroom_building(request, *args, **kwargs):
         'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     return response
 
-
+@login_required
+@user_group_perms(perm='laboratory.do_report')
 def report_shelf_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
@@ -225,7 +226,7 @@ def make_book_limited_reached(objects):
 
 
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
         for shelf_object in query:
@@ -315,7 +316,7 @@ def make_book_objects(objects, summary=False, type_id=None):
 
 
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     type_id = None
@@ -373,7 +374,7 @@ def report_objects(request, *args, **kwargs):
 
 
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
@@ -445,7 +446,7 @@ def make_book_furniture_objects(furnitures):
 
 
 @login_required
-@user_lab_perms(perm="report")
+@user_group_perms(perm='laboratory.do_report')
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     lab = kwargs.get('lab_pk')
@@ -481,7 +482,7 @@ def report_furniture(request, *args, **kwargs):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="search"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
     template_name = 'laboratory/report_object_list.html'
@@ -514,7 +515,7 @@ class ObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="report"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'laboratory/limited_shelfobject_report_list.html'
@@ -533,7 +534,7 @@ class LimitedShelfObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm="report"), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'

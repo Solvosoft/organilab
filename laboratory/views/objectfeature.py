@@ -8,7 +8,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 

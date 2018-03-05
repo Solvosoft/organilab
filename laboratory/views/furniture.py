@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_ajax.decorators import ajax
 from laboratory.models import Furniture, Laboratory
 from laboratory.shelf_utils import get_dataconfig
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 

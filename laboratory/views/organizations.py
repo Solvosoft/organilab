@@ -14,7 +14,7 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
 from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure, PrincipalTechnician
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import  ListView
 
