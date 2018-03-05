@@ -56,7 +56,10 @@ def check_user_has_lab(user,lab):
     if not organizations_child:    
         organizations_chil=[]
 
-    labs = Laboratory.objects.filter(Q(laboratorists__pk=user.pk) | Q(principaltechnician__credentials=user.pk) | Q (organization__in=organizations_child) ).distinct().values_list('id', flat=True)
+    labs = Laboratory.objects.filter(Q(laboratorists__pk=user.pk) |
+                                      Q(principaltechnician__credentials=user.pk) |
+                                       Q (organization__in=organizations_child) 
+                                       ).distinct().values_list('id', flat=True)
                       
     if lab in labs:
         return True      
