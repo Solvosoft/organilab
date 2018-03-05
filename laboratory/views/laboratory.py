@@ -168,7 +168,7 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def get_laboratories(self, user):
-        organization = OrganizationStructure.os_manager.filter_user(user)
+        organizations = OrganizationStructure.os_manager.filter_user(user)
         # user have perm on that organization ?  else Use assigned user with direct relationship
         if not organizations:    
              organizations=[]
