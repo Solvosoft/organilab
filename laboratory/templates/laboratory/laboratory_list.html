@@ -2,11 +2,13 @@
 {% load i18n laboratory %}
 
 
-{%  has_perms "laboratory.add_laboratory" as perm_add_laboratory %}
-{%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}
-{%  has_perms "laboratory.delete_laboratory" as perm_delete_laboratory %}
+
 
 {% block content %}
+  {%  has_perms "laboratory.add_laboratory" as perm_add_laboratory %}
+  {%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}  
+  {%  has_perms "laboratory.delete_laboratory" as perm_delete_laboratory %}
+
   {% if perm_add_laboratory %}
     <a class="btn btn-info"
      href="{% url 'laboratory:laboratory_create' %}">

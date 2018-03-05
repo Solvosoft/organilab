@@ -1,9 +1,9 @@
 {% load bootstrap i18n laboratory %}
 
-{%  has_perms "laboratory.add_laboratory" as perm_add_lab %}
+
 
 {% block laboratory_create_form %}
-
+  {%  has_perms "laboratory.add_laboratory" as perm_add_lab %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <center><h3 class="modal-title">{% trans 'Create laboratory' %}</h3></center>

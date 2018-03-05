@@ -256,6 +256,11 @@ class Furniture(models.Model):
 
 
 class OrganizationStructureManager(models.Manager):
+    def filter_lab(self,lab):
+        organizations = OrganizationStructure.objects.filter(Laboratory=lab)
+        return organizations
+        
+    
     def filter_user(self,user):
         organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
         

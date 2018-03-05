@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% load bootstrap  i18n laboratory %}
 
-{%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}
-
 {% block content %}
+  {%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}
   <div class="row">
     <div class="col-md-6 col-md-offset-4">
       <h1 align="center">{% trans 'Laboratory Management' %}</h1>
