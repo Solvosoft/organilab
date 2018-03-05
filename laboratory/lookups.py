@@ -34,6 +34,12 @@ class TagsLookup(LookupChannel):
 class UserLookup(LookupChannel):
     model = User
 
+
+    def check_auth(self, request):
+        if request.user.is_authenticated():
+            return True
+        return False
+    
     def get_query(self, q, request):
         qs = q.split(' ')
         _filter = None

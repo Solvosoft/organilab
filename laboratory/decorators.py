@@ -8,7 +8,16 @@ from laboratory.utils import check_lab_perms
 def check_group_has_perm(group,codename):
     appname, perm = (codename.split("."))
     return group.permissions.filter(codename=perm).exists()
-    
+
+def sum_ancestors_group(user_org,lab_org,perm):     
+    lab_ancestors = lab_org.get_ancestors(ascending=True, include_self=True) 
+    user_org = user_org.first()  # first have the first org 
+    for org in  lab_ancestors:
+        if org.level >= user_org.level  :
+            group = org.group  if hasattr(org, 'group') else None
+            if group :
+                return check_group_has_perm(group,perm)
+    return False        
 def check_user_has_perm(user, perm):
    return bool(user.has_perm(perm))
 
@@ -21,19 +30,13 @@ def check_lab_group_has_perm(user,lab,perm):
     if not user_org:    
         user_org=[]
         
-    # if lab have an organizations, compare that perms with with param perm
+    # if lab have an organizations, compare that perms with perm param
     if lab_org :
-        if lab_org in user_org:
-            # user have perm on that organization ?  check group perms
-            group = lab_org.group  if hasattr(lab_org, 'group') else None
-            # if Org have Group, check first perms of User with the Orgs
-            if group :
-                print ("User have some Organization... checking perms: '%i : %s'"%(group.pk,group))
-                return check_group_has_perm(group,perm)
-            
+        if lab_org in user_org:  # user have some organization
+            if sum_ancestors_group(user_org,lab_org,perm): # check ancestor perms
+                return True
 
-        
-        
+            
     labs = Laboratory.objects.filter(Q(laboratorists__pk=user.pk) |
                                       Q(principaltechnician__credentials=user.pk) |
                                       Q (organization__in=user_org) 
@@ -52,7 +55,6 @@ def check_perms(lab_pk,request,perm):
     # User Admin can allway all
     if user.is_superuser:
         return True
-    
     # redirect to select lab, if no login that send to login form
     if not lab_pk:
         redirect('laboratory:select_lab')

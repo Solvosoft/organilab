@@ -104,20 +104,7 @@ class BaseAccessListLab(FormView, ListView):
     def get_relationfield(self):
         pass
 
-class AccessListLabAdminsView(BaseAccessListLab):
-    role = '#tab_lab_admins'
-    group = 'laboratory_admin'
-    success_url = 'laboratory:access_list_lab_admins'
 
-    def get_relationfield(self):
-        laboratory = get_object_or_404(Laboratory, pk=self.lab)
-        return laboratory.lab_admins
-
-    def remove_user_to_relation(self, user, relation, group_name):
-        group = Group.objects.get(name=group_name)
-        relation.remove(user)
-        if not user.lab_admins.all().exists():
-            user.groups.remove(group)
 
 class AccessListLaboratoritsView(BaseAccessListLab):
     role = '#tab_laboratorits'

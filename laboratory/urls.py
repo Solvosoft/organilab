@@ -166,8 +166,6 @@ solutions_urls = [
 ]
 
 lab_access_urls = [
-    url(r'^labadmins$', access.AccessListLabAdminsView.as_view(),
-        name='access_list_lab_admins'),
     url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(),
         name='access_list_laboratorits'),
     url(r'^students$', access.AccessListStudentsView.as_view(),
