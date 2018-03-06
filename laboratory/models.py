@@ -256,11 +256,7 @@ class Furniture(models.Model):
 
 
 class OrganizationStructureManager(models.Manager):
-    def filter_lab(self,lab):
-        organizations = OrganizationStructure.objects.filter(Laboratory=lab)
-        return organizations
-        
-    
+         
     def filter_user(self,user):
         organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
         
@@ -311,7 +307,7 @@ class PrincipalTechnician(models.Model):
     name   = models.CharField(_('Name'), max_length=255)    
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
-    email = models.EmailField(_('Email address'), unique=True)
+    email = models.EmailField(_('Email address'))
 
 
     organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
@@ -347,8 +343,7 @@ class Laboratory(models.Model):
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
-    lab_admins = models.ManyToManyField(
-        User, related_name='lab_admins', blank=True)
+
     laboratorists = models.ManyToManyField(
         User, related_name='laboratorists', blank=True)
 
@@ -391,7 +386,7 @@ class FeedbackEntry(models.Model):
 
 
 
-
+@python_2_unicode_compatible
 class Solution(models.Model):
     name = models.CharField(_('Name'),default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
@@ -424,3 +419,12 @@ class Solution(models.Model):
             pH=self.pH
         )
 
+@python_2_unicode_compatible
+class LaboratoryGroup(models.Model):
+    codename = models.CharField(_('Codename'),primary_key=True,max_length=60)
+    group  = models.OneToOneField(Group)
+    
+        
+    def __str__(self):
+        return self.codename
+        

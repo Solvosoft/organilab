@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 
 
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory, LaboratoryGroup
 from laboratory.forms import UserCreate, UserSearchForm
 
 from django.views.generic import FormView
@@ -51,7 +51,7 @@ class BaseAccessListLab(FormView, ListView):
         return context
 
     def add_user_to_relation(self, user, relation, group_name):
-        group = Group.objects.get(name=group_name)
+        group = LaboratoryGroup.objects.get(pk=group_name)
         user.groups.add(group)
         if not relation.filter(id=user.pk).exists():
             relation.add(user)
@@ -104,7 +104,20 @@ class BaseAccessListLab(FormView, ListView):
     def get_relationfield(self):
         pass
 
+class AccessListLabAdminsView(BaseAccessListLab):
+    role = '#tab_lab_admins'
+    group = 'laboratory_admin'
+    success_url = 'laboratory:access_list_lab_admins'
 
+    def get_relationfield(self):
+        laboratory = get_object_or_404(Laboratory, pk=self.lab)
+        return laboratory.lab_admins
+
+    def remove_user_to_relation(self, user, relation, group_name):
+        group = LaboratoryGroup.objects.get(pk=group_name)
+        relation.remove(user)
+        if not user.lab_admins.all().exists():
+            user.groups.remove(group.group)
 
 class AccessListLaboratoritsView(BaseAccessListLab):
     role = '#tab_laboratorits'
@@ -116,10 +129,10 @@ class AccessListLaboratoritsView(BaseAccessListLab):
         return laboratory.laboratorists
 
     def remove_user_to_relation(self, user, relation, group_name):
-        group = Group.objects.get(name=group_name)
+        group = LaboratoryGroup.objects.get(pk=group_name)
         relation.remove(user)
         if not user.laboratorists.all().exists():
-            user.groups.remove(group)
+            user.groups.remove(group.group)
 
 class AccessListStudentsView(BaseAccessListLab):
     role = '#tab_students'
@@ -131,7 +144,7 @@ class AccessListStudentsView(BaseAccessListLab):
         return laboratory.students
 
     def remove_user_to_relation(self, user, relation, group_name):
-        group = Group.objects.get(name=group_name)
+        group = LaboratoryGroup.objects.get(pk=group_name)
         relation.remove(user)
         if not user.students.all().exists():
-            user.groups.remove(group)
+            user.groups.remove(group.group)

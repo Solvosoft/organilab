@@ -23,7 +23,8 @@ from laboratory.models import ( CLInventory,
                                 PrincipalTechnician,
                                 Laboratory,
                                 FeedbackEntry,
-                                Solution
+                                Solution,
+                                LaboratoryGroup as LaboratoryGroup
                                 )
 from academic.models import (Procedure,
                              ProcedureStep,
@@ -32,27 +33,26 @@ from academic.models import (Procedure,
                              )
 
 def create_perms(codename):
-    model_perms= {"view_report":Laboratory,
-                  "do_report":Laboratory,
-                  "view_clinventory":CLInventory,
-                 "view_objectfeatures":ObjectFeatures,
-                 "view_object":Object,
-                 "view_shelfobject":ShelfObject,
-                 "view_shelf":Shelf,
-                 "view_furniture":Furniture,
-                 "view_organizationstructure":OrganizationStructure,
-                 "view_principaltechnician":PrincipalTechnician,
-                 "view_laboratory":Laboratory,
-                 "view_laboratoryroom":LaboratoryRoom,
-                 "view_feedbackentry":FeedbackEntry,
-                 "view_solution":Solution,
-                 "view_procedure":Procedure,
-                 "view_procedurestep":ProcedureStep,
-                 "view_procedurerequiredobject":ProcedureRequiredObject,
-                 "view_procedureobservations":ProcedureObservations
+    model_perms= {"report":Laboratory,
+                  "clinventory":CLInventory,
+                  "objectfeatures":ObjectFeatures,
+                  "object":Object,
+                  "shelfobject":ShelfObject,
+                  "shelf":Shelf,
+                  "furniture":Furniture,
+                  "organizationstructure":OrganizationStructure,
+                  "principaltechnician":PrincipalTechnician,
+                  "laboratory":Laboratory,
+                  "laboratoryroom":LaboratoryRoom,
+                  "feedbackentry":FeedbackEntry,
+                  "solution":Solution,
+                  "procedure":Procedure,
+                  "procedurestep":ProcedureStep,
+                  "procedurerequiredobject":ProcedureRequiredObject,
+                  "procedureobservations":ProcedureObservations
                  }
-    if codename in model_perms:
-         name= ' '.join(codename.split("_"))        
+    action, name = (codename.split("_")) 
+    if name in model_perms:       
          model=model_perms[codename]
          content_type = ContentType.objects.get_for_model(model)
          try:
@@ -113,7 +113,9 @@ def load_group_perms(apps, schema_editor):
     perms_laboratory = [ # reservations
         "add_reservation","change_reservation","delete_reservation","add_reservationtoken",
         "change_reservationtoken","delete_reservationtoken","view_reservation",
-        
+
+        # shelf
+        "view_shelf","add_shelf","change_shelf","delete_shelf",        
         # shelfobjets 
         "view_shelfobject","add_shelfobject","change_shelfobject","delete_shelfobject",
         # objets         
@@ -129,7 +131,7 @@ def load_group_perms(apps, schema_editor):
         "view_laboratoryroom","add_laboratoryroom","change_laboratoryroom","delete_laboratoryroom",
         # furniture
         "view_furniture","add_furniture","change_furniture","delete_furniture",
-        #Prodcuts
+        #Products
         "view_product","add_product","change_product","delete_product",
         #onsertation
         "view_observation","add_observation","change_observation","delete_observation",
@@ -150,18 +152,30 @@ def load_group_perms(apps, schema_editor):
     if not GStudent:     
         GStudent = Group(name='Student')
         GStudent.save()
+
+        
         
     GLaboratory = Group.objects.get(name='Laboratory Administrator')
     if not GLaboratory:
         GLaboratory = Group(name='Laboratory Administrator')
         GLaboratory.save()
+
      
     GProfessor = Group.objects.get(name='Professor')
     if not GProfessor:   
         GProfessor = Group(name='Professor')
         GProfessor.save()
-        
+
  
+    # add control of change name
+    defg=LaboratoryGroup(codename='laboaratory_administrator',group=GLaboratory)
+    defg.save()
+    # add control of change name
+    defg=LaboratoryGroup(codename='laboaratory_professor',group=GProfessor)
+    defg.save()
+    # add control of change name
+    defg=LaboratoryGroup(codename='laboaratory_student',group=GStudent)
+    defg.save()
     
     # add perms to student
     perms = Permission.objects.filter(codename__in=perms_student)
@@ -180,7 +194,7 @@ def load_group_perms(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('laboratory', '0032_auto_20180216_1502'),
+        ('laboratory', '0033_auto_20180305_1912'),
     ]
 
     operations = [
