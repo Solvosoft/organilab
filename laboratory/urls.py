@@ -190,3 +190,4 @@ urlpatterns +=[
      url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/', include(lab_reports_organization_urls)),
      
 ]
+

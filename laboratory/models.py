@@ -419,12 +419,4 @@ class Solution(models.Model):
             pH=self.pH
         )
 
-@python_2_unicode_compatible
-class LaboratoryGroup(models.Model):
-    codename = models.CharField(_('Codename'),primary_key=True,max_length=60)
-    group  = models.OneToOneField(Group)
-    
-        
-    def __str__(self):
-        return self.codename
         

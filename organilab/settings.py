@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 import os
 
 
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'cruds_adminlte',
     'location_field.apps.DefaultConfig',
     'mptt',
+    'constance',
+    'constance.backends.database',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -76,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'constance.context_processors.config',
             ],
         },
     },
@@ -171,3 +175,18 @@ LOCATION_FIELD = {
 'provider.google.api_key': GOOGLE_MAPS_API_KEY,
 'provider.google.map.type': 'ROADMAP',
 }
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
+                       'User Administrator of labotatory', int),
+    'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
+                       'User Laboratorist/Professor of labotatory', int),
+    'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
+                       'User Student of labotatory', int)
+}
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK','GROUP_STUDENT_PK'),
+}
+
+
