@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 
 
-from laboratory.models import Laboratory, LaboratoryGroup
+from laboratory.models import Laboratory
 from laboratory.forms import UserCreate, UserSearchForm
 
 from django.views.generic import FormView
@@ -20,6 +20,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render
 
 from django.utils.decorators import method_decorator
+
+from constance import config
 
 
 @method_decorator(login_required, name='dispatch')
@@ -51,7 +53,7 @@ class BaseAccessListLab(FormView, ListView):
         return context
 
     def add_user_to_relation(self, user, relation, group_name):
-        group = LaboratoryGroup.objects.get(pk=group_name)
+        group = Group.objects.get(pk=group_name)
         user.groups.add(group)
         if not relation.filter(id=user.pk).exists():
             relation.add(user)
@@ -81,6 +83,7 @@ class BaseAccessListLab(FormView, ListView):
                 self.object_list = self.get_queryset()
                 context = self.get_context_data()
                 context['user_create_form'] = user_create_form
+                              
                 return render(self.request, self.template_name,
                               context)
                               
@@ -106,45 +109,45 @@ class BaseAccessListLab(FormView, ListView):
 
 class AccessListLabAdminsView(BaseAccessListLab):
     role = '#tab_lab_admins'
-    group = 'laboratory_admin'
+    group = config.GROUP_ADMIN_PK
     success_url = 'laboratory:access_list_lab_admins'
 
     def get_relationfield(self):
         laboratory = get_object_or_404(Laboratory, pk=self.lab)
         return laboratory.lab_admins
 
-    def remove_user_to_relation(self, user, relation, group_name):
-        group = LaboratoryGroup.objects.get(pk=group_name)
+    def remove_user_to_relation(self, user, relation, group_pk):
+        group = Group.objects.get(pk=group_pk)
         relation.remove(user)
         if not user.lab_admins.all().exists():
-            user.groups.remove(group.group)
+            user.groups.remove(group)
 
 class AccessListLaboratoritsView(BaseAccessListLab):
     role = '#tab_laboratorits'
-    group = 'laboratory_professor'
+    group = config.GROUP_LABORATORIST_PK
     success_url = 'laboratory:access_list_laboratorits'
 
     def get_relationfield(self):
         laboratory = get_object_or_404(Laboratory, pk=self.lab)
         return laboratory.laboratorists
 
-    def remove_user_to_relation(self, user, relation, group_name):
-        group = LaboratoryGroup.objects.get(pk=group_name)
+    def remove_user_to_relation(self, user, relation, group_pk):
+        group = Group.objects.get(pk=group_pk)
         relation.remove(user)
         if not user.laboratorists.all().exists():
-            user.groups.remove(group.group)
+            user.groups.remove(group)
 
 class AccessListStudentsView(BaseAccessListLab):
     role = '#tab_students'
-    group = 'laboratory_student'
+    group = config.GROUP_STUDENT_PK
     success_url = 'laboratory:access_list_students'
 
     def get_relationfield(self):
         laboratory = get_object_or_404(Laboratory, pk=self.lab)
         return laboratory.students
 
-    def remove_user_to_relation(self, user, relation, group_name):
-        group = LaboratoryGroup.objects.get(pk=group_name)
+    def remove_user_to_relation(self, user, relation, group_pk):
+        group = Group.objects.get(pk=group_pk)
         relation.remove(user)
         if not user.students.all().exists():
-            user.groups.remove(group.group)
+            user.groups.remove(group)

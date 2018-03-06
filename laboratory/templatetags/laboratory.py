@@ -23,17 +23,16 @@ def get_search_form(context):
         form=ObjectSearchForm()
     return form
 
-# 
-# @register.filter(name='has_group')
-# def has_group(user, group_name):
-#     return user.groups.filter(name=group_name).exists()
-
-
 @register.simple_tag(takes_context=True)
 def has_perms(context, codename):
     if 'request' in context:
         user = context['request'].user
         lab_pk = context['request'].session.get('lab_pk') 
+        
+        # Permit to redirect User to select form
+        if not lab_pk:
+            return True
+         
         if user.has_perm(codename) :
             return True
         else:

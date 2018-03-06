@@ -9,8 +9,6 @@ from django.db import migrations
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-
 
 from laboratory.models import ( CLInventory,
                                 ObjectFeatures,
@@ -24,7 +22,6 @@ from laboratory.models import ( CLInventory,
                                 Laboratory,
                                 FeedbackEntry,
                                 Solution,
-                                LaboratoryGroup as LaboratoryGroup
                                 )
 from academic.models import (Procedure,
                              ProcedureStep,
@@ -33,7 +30,9 @@ from academic.models import (Procedure,
                              )
 
 def create_perms(codename):
-    model_perms= {"report":Laboratory,
+    model_perms= {
+                  "user":User,
+                  "report":Laboratory,
                   "clinventory":CLInventory,
                   "objectfeatures":ObjectFeatures,
                   "object":Object,
@@ -53,7 +52,7 @@ def create_perms(codename):
                  }
     action, name = (codename.split("_")) 
     if name in model_perms:       
-         model=model_perms[codename]
+         model=model_perms[name]
          content_type = ContentType.objects.get_for_model(model)
          try:
              permission = Permission.objects.get(codename=codename)
@@ -147,36 +146,24 @@ def load_group_perms(apps, schema_editor):
 
     
     
-    # Get groups
-    GStudent = Group.objects.get(name='Student')
-    if not GStudent:     
-        GStudent = Group(name='Student')
-        GStudent.save()
-
-        
-        
+            
     GLaboratory = Group.objects.get(name='Laboratory Administrator')
     if not GLaboratory:
         GLaboratory = Group(name='Laboratory Administrator')
         GLaboratory.save()
 
-     
     GProfessor = Group.objects.get(name='Professor')
     if not GProfessor:   
         GProfessor = Group(name='Professor')
         GProfessor.save()
-
- 
-    # add control of change name
-    defg=LaboratoryGroup(codename='laboaratory_administrator',group=GLaboratory)
-    defg.save()
-    # add control of change name
-    defg=LaboratoryGroup(codename='laboaratory_professor',group=GProfessor)
-    defg.save()
-    # add control of change name
-    defg=LaboratoryGroup(codename='laboaratory_student',group=GStudent)
-    defg.save()
     
+    # Get groups
+    GStudent = Group.objects.get(name='Student')
+    if not GStudent:     
+        GStudent = Group(name='Student')
+        GStudent.save()
+        
+
     # add perms to student
     perms = Permission.objects.filter(codename__in=perms_student)
     set_perms(GStudent,perms)
@@ -194,7 +181,7 @@ def load_group_perms(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('laboratory', '0033_auto_20180305_1912'),
+        ('laboratory', '0033_auto_20180306_1643'),
     ]
 
     operations = [
