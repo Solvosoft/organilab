@@ -88,6 +88,7 @@ class BaseAccessListLab(FormView, ListView):
                               context)
                               
         elif form.cleaned_data['action'] == 'rmuser':
+            print ("USER PROCESS DELETE")
             users = User.objects.filter(
                 pk__in=self.request.POST.getlist('user'))
             relation_field = self.get_relationfield()
