@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from django.contrib.auth.models import User
 
-from laboratory.models import ShelfObject, Laboratory
+from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import ObjectSearchForm
 from babel.util import distinct
 
@@ -36,7 +36,15 @@ class SearchObject(ListView):
                     params = {'object__pk__in': form.cleaned_data['q']}
                 filter_lab = not form.cleaned_data['all_labs']
 
-        labs = Laboratory.objects.filter(Q(lab_admins=user) | Q(laboratorists=user) | Q(students=user)).distinct()
+        organizations = OrganizationStructure.os_manager.filter_user(user)
+        # User have perm on that organization ?  else it use assigned User with direct relationship
+        if not organizations:    
+             organizations=[]
+        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
+                                      Q(laboratorists__pk=user.pk) | 
+                                      Q(principaltechnician__credentials=user.pk) | 
+                                      Q (organization__in=organizations) 
+                                      ).distinct()
         query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
 
         if filter_lab:

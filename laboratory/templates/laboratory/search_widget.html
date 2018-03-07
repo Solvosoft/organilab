@@ -1,8 +1,8 @@
 {% load i18n laboratory %}
 
-{%  has_laboratory_perm 'search' as perm_search %}
+{%  has_perms "laboratory.view_laboratory" as perm_laboratory %}
 {% get_search_form as search_form %}
-{% if perm_search %}
+{% if perm_laboratory %}
 <div class="row">
   <div class="col-md-offset-2 col-md-8">
     <div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">

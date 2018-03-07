@@ -1,5 +1,10 @@
-{% load i18n %}
+{% load i18n laboratory %}
+{%  has_perms "laboratory.view_shelfobject" as perm_shelfobject %}
+
 <strong>{% trans 'Quantity' %}: </strong> 
 {{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}
+
+{% if perm_shelfobject %}
 	<a class="btn btn-info" data-ajax=true 
 	href="{% url 'laboratory:shelfobject_searchupdate' laboratory object.pk %}">{% trans 'Edit' %}</a>
+{% endif %}
