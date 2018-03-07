@@ -13,13 +13,15 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory,OrganizationStructure
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+
+from laboratory.decorators import user_group_perms
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -93,7 +95,8 @@ def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     return render_admins_lab(request, lab.lab_admins.all(), lab)
 
-
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = 'laboratory/edit.html'
@@ -148,7 +151,7 @@ class LaboratoryView(object):
 
 class SelectLaboratoryForm(forms.Form):
     laboratory = forms.ModelChoiceField(label=_('Laboratory'),
-                                        queryset=Laboratory.objects.all(), empty_label=None)
+                                        queryset=Laboratory.objects.none(), empty_label=None)
 
     def __init__(self, *args, **kwargs):
         lab_queryset = kwargs.pop('lab_queryset')
@@ -157,6 +160,7 @@ class SelectLaboratoryForm(forms.Form):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
@@ -164,8 +168,17 @@ class SelectLaboratoryView(FormView):
     success_url = '/'
 
     def get_laboratories(self, user):
-        return Laboratory.objects.filter(Q(laboratorists__pk=user.pk) | Q(students__pk=user.pk) | Q(lab_admins__pk=user.pk)).distinct()
-
+        organizations = OrganizationStructure.os_manager.filter_user(user)
+        # user have perm on that organization ?  else Use assigned user with direct relationship
+        if not organizations:    
+             organizations=[]
+        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
+                                      Q(laboratorists__pk=user.pk) | 
+                                      Q(principaltechnician__credentials=user.pk) | 
+                                      Q (organization__in=organizations) 
+                                      ).distinct()
+        return labs
+    
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
         user = self.request.user
@@ -194,6 +207,7 @@ class SelectLaboratoryView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create_form.html'
     form_class = LaboratoryCreate
@@ -216,6 +230,7 @@ class CreateLaboratoryFormView(FormView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = '/'

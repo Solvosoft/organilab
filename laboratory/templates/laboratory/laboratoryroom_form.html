@@ -1,48 +1,64 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n %}
+{% load bootstrap i18n laboratory %}
+
+
 
 {% block title %}{% trans 'Laboratory room management' %}{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <h1 align="center">{% trans 'Laboratory room management' %}</h1>
+	{%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
+	{%  has_perms "laboratory.add_laboratoryroom" as perm_add_laboratoryroom %}
+	{%  has_perms "laboratory.change_laboratoryroom" as perm_change_laboratoryroom %}
+	{%  has_perms "laboratory.delete_laboratoryroom" as perm_delete_laboratoryroom %}
 
-    <div class="col-md-8 col-md-offset-2">
-      <form class="form-horizontal" action="" method="post">{% csrf_token %}
-        {{ form|bootstrap_horizontal }}
-        <div class="form-group">
-          <div class="col-sm-10 col-sm-offset-2">
-            <button class="btn btn-success" type="submit">
-              {% if form.instance.pk %}
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Update' %}
-              {% else %}
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'New' %}
-              {% endif %}
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="row">
-    <ul class="list-group">
-      {% for object in object_list %}
-        <li class="row list-group-item">
-
-          <div class="col-md-10">
-            {{ object }}
-          </div>
-          <div class="col-md-2">
-            <div class="btn-group" role="group" aria-label="...">
-              <a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-info">
-                <span class="glyphicon glyphicon-update" aria-hidden="true"></span>{% trans 'Update' %}</a>
-              <a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-            </div>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
+ {% if perm_laboratoryroom or perm_add_laboratoryroom or  perm_add_laboratoryroom or perm_change_laboratoryroom %}
+	<div class="row">
+	<h1 align="center">{% trans 'Laboratory room management' %}</h1>
+       <div class="col-md-8 col-md-offset-2">
+	    {% if perm_add_laboratoryroom or perm_change_laboratoryroom %}
+		      <form class="form-horizontal" action="" method="post">{% csrf_token %}
+		        {{ form|bootstrap_horizontal }}
+		        <div class="form-group">
+		          <div class="col-sm-10 col-sm-offset-2">
+		            <button class="btn btn-success" type="submit">
+		              {% if form.instance.pk %}
+		                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Update' %}
+		              {% else %}
+		                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'New' %}
+		              {% endif %}
+		            </button>
+		          </div>
+		        </div>
+		      </form>
+	    {% endif %}
+	    </div>
+	  </div>
+	
+	  <div class="row">
+	    <ul class="list-group">
+	      {% for object in object_list %}
+	        <li class="row list-group-item">
+	
+	          <div class="col-md-10">
+	            {{ object }}
+	          </div>
+	          <div class="col-md-2">
+	            <div class="btn-group" role="group" aria-label="...">
+	                {% if perm_change_laboratoryroom %}
+	              <a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-info">
+	                <span class="glyphicon glyphicon-update" aria-hidden="true"></span>{% trans 'Update' %}</a>
+	                {% endif %}
+	                {% if perm_delete_laboratoryroom %}
+	              <a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
+	                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+	                {% endif %}
+	            </div>
+	          </div>
+	        </li>
+	      {% endfor %}
+	    </ul>
+	  </div>
+ {% else %} 
+       {% include 'laboratory/action_denied.html' %} 
+ {% endif %}
 {% endblock %}

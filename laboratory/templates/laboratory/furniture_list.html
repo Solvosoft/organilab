@@ -1,6 +1,7 @@
 {% load i18n laboratory %}
 
-{%  has_laboratory_perm 'report' as perm_report %}
+{%  has_perms "laboratory.do_report" as perm_do_report %}
+
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -13,7 +14,7 @@
         <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" href="#">
           {{ furniture.name }}
         </a>
-        {% if perm_report %}
+        {% if perm_do_report %} 
         <a class=" pull-right"
            href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>

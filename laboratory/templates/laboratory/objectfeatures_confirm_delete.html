@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n laboratory %}
 
 {% block title %}{% trans 'Delete object feature' %}{% endblock %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
-    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
-</form>
-<br> <br>
+  {%  has_perms "laboratory.delete_objectfeatures" as perm_delete_objectfeatures %}
+  {% if perm_delete_objectfeatures  %}
+		<form action="" method="post">{% csrf_token %}
+		    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+		    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+		</form>
+		<br> <br>
+  {% else %} 
+       {% include 'laboratory/action_denied.html' %} 
+  {% endif %}
 {% endblock%}

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 import os
 
 
@@ -46,6 +47,10 @@ INSTALLED_APPS = [
     'ajax_select',
     'crispy_forms',
     'cruds_adminlte',
+    'location_field.apps.DefaultConfig',
+    'mptt',
+    'constance',
+    'constance.backends.database',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -74,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'constance.context_processors.config',
             ],
         },
     },
@@ -158,3 +164,29 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+GOOGLE_MAPS_API_KEY = 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU'
+
+LOCATION_FIELD = {
+'map.provider': 'google',
+'map.zoom': 15,
+'search.provider': 'google',
+'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
+'provider.google.api_key': GOOGLE_MAPS_API_KEY,
+'provider.google.map.type': 'ROADMAP',
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
+                       'User Administrator of labotatory', int),
+    'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
+                       'User Laboratorist/Professor of labotatory', int),
+    'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
+                       'User Student of labotatory', int)
+}
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK','GROUP_STUDENT_PK'),
+}
+
+

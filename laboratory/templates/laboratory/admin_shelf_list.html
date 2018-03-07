@@ -1,4 +1,8 @@
-{% load i18n %}
+{% load i18n laboratory %}
+
+{%  has_perms "laboratory.add_shelf" as perm_add_shelf  %}
+
+{% if perm_add_shelf %}
 <a data-ajax="true" data-success="processResponse"
 href="{% url 'laboratory:shelf_create' %}"> {% trans 'Add Shelf' %} </a>
 <div class="modal fade" id="myModal" role="dialog">
@@ -28,3 +32,4 @@ href="{% url 'laboratory:shelf_create' %}"> {% trans 'Add Shelf' %} </a>
 	</div>
 </div>
 </div>
+{% endif %}

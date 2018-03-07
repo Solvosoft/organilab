@@ -15,7 +15,13 @@ from django.db.models.query_utils import Q
 class TagsLookup(LookupChannel):
 
     model = Object
+    
+    def check_auth(self, request):
+        if request.user.is_authenticated():
+            return True
+        return False
 
+        
     def get_query(self, q, request):
         return self.model.objects.filter(Q(code__icontains=q) | Q(
             name__icontains=q)|Q(cas_id_number__icontains=q)).order_by('name')[:8]
@@ -28,6 +34,12 @@ class TagsLookup(LookupChannel):
 class UserLookup(LookupChannel):
     model = User
 
+
+    def check_auth(self, request):
+        if request.user.is_authenticated():
+            return True
+        return False
+    
     def get_query(self, q, request):
         qs = q.split(' ')
         _filter = None

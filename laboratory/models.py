@@ -2,15 +2,37 @@ from __future__ import unicode_literals
 
 import ast
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
-
+from mptt.models import MPTTModel, TreeForeignKey
+from django.db.models import Q
 from laboratory.validators import validate_molecular_formula
 
+# 
+# from django.contrib.gis.db import models
+# from django.contrib.gis.geos import Point
+#from location_field.models.spatial import LocationField
+from location_field.models.plain import PlainLocationField
 
+@python_2_unicode_compatible
+class CLInventory(models.Model):
+    name = models.TextField(_('Name'))
+    cas_id_number = models.TextField(_('CAS ID number'))
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('C&L Inventory')
+        verbose_name_plural = _('C&L Inventory objects')
+        permissions = (
+            ("view_clinventory", _("Can see available C&L Inventory")),
+        )
+
+    def __str__(self):
+        return '%s' % self.name
+    
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
@@ -42,6 +64,9 @@ class ObjectFeatures(models.Model):
     class Meta:
         verbose_name = _('Object feature')
         verbose_name_plural = _('Object features')
+        permissions = (
+            ("view_objectfeatures", _("Can see available objectfeatures")),
+        )
 
     def __str__(self):
         return '%s' % (self.CHOICES[int(self.name)][1],)
@@ -98,6 +123,9 @@ class Object(models.Model):
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
+        permissions = (
+            ("view_object", _("Can see available object")),
+        )
 
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
@@ -145,6 +173,9 @@ class ShelfObject(models.Model):
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
+        permissions = (
+            ("view_shelfobjects", _("Can see available shelf objects")),
+        )
 
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, self.CHOICES[int(self.measurement_unit)][1])
@@ -157,6 +188,9 @@ class LaboratoryRoom(models.Model):
     class Meta:
         verbose_name = _('Laboratory Room')
         verbose_name_plural = _('Laboratory Rooms')
+        permissions = (
+            ("view_shelf", _("Can see available shelf")),
+        )
 
     def __str__(self):
         return '%s' % (self.name,)
@@ -184,7 +218,9 @@ class Shelf(models.Model):
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
-
+        permissions = (
+            ("view_shelf", _("Can see available shelf")),
+        )
     def __str__(self):
         return '%s %s %s' % (self.furniture, self.get_type_display(),
                              self.name)
@@ -207,6 +243,9 @@ class Furniture(models.Model):
         verbose_name = _('Piece of furniture')
         verbose_name_plural = _('Furniture')
         ordering = ['name']
+        permissions = (
+            ("view_furniture", _("Can see available Furniture")),
+        )
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
@@ -215,14 +254,96 @@ class Furniture(models.Model):
         return '%s' % (self.name,)
 
 
+
+class OrganizationStructureManager(models.Manager):
+         
+    def filter_user(self,user):
+        organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
+        
+        orgs = None
+        for org in organizations:
+            if orgs is None:
+                orgs = Q (pk__in=org.get_descendants(include_self=True))
+            else:
+                orgs |= Q (pk__in=org.get_descendants(include_self=True) )
+                 
+        if orgs is None:
+            return OrganizationStructure.objects.none()
+        else:          
+            return OrganizationStructure.objects.filter(orgs)
+       
+    def get_children(self,org_id):
+        return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
+    
+@python_2_unicode_compatible
+class OrganizationStructure(MPTTModel):
+    name   = models.CharField(_('Name'), max_length=255)
+    group  = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
+    
+    parent =  TreeForeignKey('self', blank=True, null=True, related_name='children')
+       
+       
+    os_manager = OrganizationStructureManager()   
+    
+    class Meta:
+        verbose_name = _('Organization')
+        verbose_name_plural = _('Organizations')
+        permissions = (
+            ("view_organizationstructure", _("Can see available OrganizationStructure")),
+        )
+    class MPTTMeta:
+        order_insertion_by=  ['name',]
+                        
+    def __str__(self):
+        return "%s"%self.name       
+    
+    def __repr__(self):
+       return self.__str__()
+
+
+@python_2_unicode_compatible
+class PrincipalTechnician(models.Model):
+    credentials = models.ManyToManyField(User)
+    name   = models.CharField(_('Name'), max_length=255)    
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    id_card = models.CharField(_('ID Card'),max_length=100)
+    email = models.EmailField(_('Email address'))
+
+
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
+    
+    class MPTTMeta:
+        order_insertion_by=  ['name',]    
+        
+    class Meta:
+        permissions = (
+            ("view_principaltechnician", _("Can see available PrincipalTechnician")),
+        )
+        
+    def __str__(self):
+        return "%s"%self.name
+    
+    def __repr__(self):
+       return self.__str__()  
+    
 @python_2_unicode_compatible
 class Laboratory(models.Model):
-    name = models.CharField(_('Laboratory name'), max_length=255)
+    name = models.CharField(_('Laboratory name'),default='', max_length=255)
+    phone_number = models.CharField(_('Phone'),default='',max_length=25)
+    
+    location = models.CharField(_('Location'),default='',max_length=255)
+    geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
+    
+    
+    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+
+    
+    
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
-    lab_admins = models.ManyToManyField(
-        User, related_name='lab_admins', blank=True)
+
     laboratorists = models.ManyToManyField(
         User, related_name='laboratorists', blank=True)
 
@@ -232,10 +353,21 @@ class Laboratory(models.Model):
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
+        permissions = (
+            ("view_laboratory", _("Can see available laboratory")),
+        )
+        
+    class MPTTMeta:
+        order_insertion_by=  ['name',]        
 
     def __str__(self):
         return '%s' % (self.name,)
+    
 
+    def __repr__(self):
+       return self.__str__()
+
+     
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
@@ -245,26 +377,18 @@ class FeedbackEntry(models.Model):
     class Meta:
         verbose_name = _('Feedback entry')
         verbose_name_plural = _('Feedback entries')
+        permissions = (
+            ("view_feedbackentry", _("Can see available feed back entry")),
+        )
 
     def __str__(self):
         return '%s' % (self.title,)
 
 
+
 @python_2_unicode_compatible
-class CLInventory(models.Model):
-    name = models.TextField(_('Name'))
-    cas_id_number = models.TextField(_('CAS ID number'))
-    url = models.TextField(_('URL'))
-
-    class Meta:
-        verbose_name = _('C&L Inventory')
-        verbose_name_plural = ('C&L Inventory objects')
-
-    def __str__(self):
-        return '%s' % self.name
-
 class Solution(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.CharField(_('Name'),default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
     volume = models.CharField(_('Volumen'), max_length=100)
     temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
@@ -274,6 +398,9 @@ class Solution(models.Model):
     class Meta:
         verbose_name = _('Solution')
         verbose_name_plural = _('Solutions')
+        permissions = (
+            ("view_Solution", _("Can see available Solution")),
+        )
 
     def __str__(self):
         return self.name
@@ -292,3 +419,4 @@ class Solution(models.Model):
             pH=self.pH
         )
 
+        
