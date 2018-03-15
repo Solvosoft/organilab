@@ -26,6 +26,9 @@ class CLInventory(models.Model):
     class Meta:
         verbose_name = _('C&L Inventory')
         verbose_name_plural = _('C&L Inventory objects')
+        permissions = (
+            ("view_clinventory", _("Can see available C&L Inventory")),
+        )
 
     def __str__(self):
         return '%s' % self.name
@@ -61,6 +64,9 @@ class ObjectFeatures(models.Model):
     class Meta:
         verbose_name = _('Object feature')
         verbose_name_plural = _('Object features')
+        permissions = (
+            ("view_objectfeatures", _("Can see available objectfeatures")),
+        )
 
     def __str__(self):
         return '%s' % (self.CHOICES[int(self.name)][1],)
@@ -117,6 +123,9 @@ class Object(models.Model):
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
+        permissions = (
+            ("view_object", _("Can see available object")),
+        )
 
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
@@ -164,6 +173,9 @@ class ShelfObject(models.Model):
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
+        permissions = (
+            ("view_shelfobjects", _("Can see available shelf objects")),
+        )
 
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, self.CHOICES[int(self.measurement_unit)][1])
@@ -176,6 +188,9 @@ class LaboratoryRoom(models.Model):
     class Meta:
         verbose_name = _('Laboratory Room')
         verbose_name_plural = _('Laboratory Rooms')
+        permissions = (
+            ("view_shelf", _("Can see available shelf")),
+        )
 
     def __str__(self):
         return '%s' % (self.name,)
@@ -203,7 +218,9 @@ class Shelf(models.Model):
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
-
+        permissions = (
+            ("view_shelf", _("Can see available shelf")),
+        )
     def __str__(self):
         return '%s %s %s' % (self.furniture, self.get_type_display(),
                              self.name)
@@ -226,6 +243,9 @@ class Furniture(models.Model):
         verbose_name = _('Piece of furniture')
         verbose_name_plural = _('Furniture')
         ordering = ['name']
+        permissions = (
+            ("view_furniture", _("Can see available Furniture")),
+        )
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
@@ -236,6 +256,7 @@ class Furniture(models.Model):
 
 
 class OrganizationStructureManager(models.Manager):
+         
     def filter_user(self,user):
         organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
         
@@ -267,7 +288,9 @@ class OrganizationStructure(MPTTModel):
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
-
+        permissions = (
+            ("view_organizationstructure", _("Can see available OrganizationStructure")),
+        )
     class MPTTMeta:
         order_insertion_by=  ['name',]
                         
@@ -284,7 +307,7 @@ class PrincipalTechnician(models.Model):
     name   = models.CharField(_('Name'), max_length=255)    
     phone_number = models.CharField(_('Phone'),default='',max_length=25)
     id_card = models.CharField(_('ID Card'),max_length=100)
-    email = models.EmailField(_('Email address'), unique=True)
+    email = models.EmailField(_('Email address'))
 
 
     organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
@@ -293,6 +316,10 @@ class PrincipalTechnician(models.Model):
     class MPTTMeta:
         order_insertion_by=  ['name',]    
         
+    class Meta:
+        permissions = (
+            ("view_principaltechnician", _("Can see available PrincipalTechnician")),
+        )
         
     def __str__(self):
         return "%s"%self.name
@@ -316,8 +343,7 @@ class Laboratory(models.Model):
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
     related_labs = models.ManyToManyField('Laboratory', blank=True)
-    lab_admins = models.ManyToManyField(
-        User, related_name='lab_admins', blank=True)
+
     laboratorists = models.ManyToManyField(
         User, related_name='laboratorists', blank=True)
 
@@ -327,6 +353,9 @@ class Laboratory(models.Model):
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
+        permissions = (
+            ("view_laboratory", _("Can see available laboratory")),
+        )
         
     class MPTTMeta:
         order_insertion_by=  ['name',]        
@@ -348,13 +377,16 @@ class FeedbackEntry(models.Model):
     class Meta:
         verbose_name = _('Feedback entry')
         verbose_name_plural = _('Feedback entries')
+        permissions = (
+            ("view_feedbackentry", _("Can see available feed back entry")),
+        )
 
     def __str__(self):
         return '%s' % (self.title,)
 
 
 
-
+@python_2_unicode_compatible
 class Solution(models.Model):
     name = models.CharField(_('Name'),default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
@@ -366,6 +398,9 @@ class Solution(models.Model):
     class Meta:
         verbose_name = _('Solution')
         verbose_name_plural = _('Solutions')
+        permissions = (
+            ("view_Solution", _("Can see available Solution")),
+        )
 
     def __str__(self):
         return self.name
@@ -384,3 +419,4 @@ class Solution(models.Model):
             pH=self.pH
         )
 
+        

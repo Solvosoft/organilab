@@ -4,22 +4,15 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django import template
-from laboratory.utils import check_lab_perms
 from laboratory.forms import ObjectSearchForm
-register = template.Library()
-
+from django.shortcuts import get_object_or_404
+from laboratory.utils import check_lab_group_has_perm,filter_laboratorist_technician
 from laboratory.models import Laboratory
 
-@register.simple_tag(takes_context=True)
-def has_laboratory_perm(context, perm):
-    if 'request' in context:
-        user = context['request'].user
-        lab_pk = context['request'].session.get('lab_pk')
-        lab = Laboratory.objects.filter(pk=lab_pk).first()
-        if lab is not None:
-            return check_lab_perms(lab, user, perm)
-    
-    return False
+register = template.Library()
+
+
+
 
 @register.simple_tag(takes_context=True)
 def get_search_form(context):
@@ -29,3 +22,30 @@ def get_search_form(context):
     else:
         form=ObjectSearchForm()
     return form
+
+@register.simple_tag(takes_context=True)
+def has_perms(context, codename):
+    if 'request' in context:
+        user = context['request'].user
+        lab_pk = context['request'].session.get('lab_pk') 
+        
+        # Permit to redirect User to select form
+        if not lab_pk:
+            return True
+         
+        if user.has_perm(codename) :
+            return True
+        else:
+            lab = get_object_or_404(Laboratory, pk=lab_pk)
+            if check_lab_group_has_perm(user,lab,codename,filter_laboratorist_technician):
+                return True
+    return False
+
+    
+    
+@register.simple_tag
+def check_perms(*args, **kwargs):
+    user= kwargs['user']
+    perm= kwargs['perm']    
+    return user.has_perm(perm)
+
