@@ -24,6 +24,6 @@ room_api_urls = [
     ]
                
 
-urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms/$', include(room_api_urls)),
+urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms', include(room_api_urls)),
                 
                 ]
