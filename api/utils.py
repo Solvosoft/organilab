@@ -1,10 +1,14 @@
 
 from django.db.models.query_utils import Q
-from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
-
+from django.http.response import HttpResponse
 from laboratory import utils as utils_lab
 
+
+STATUS_403 =  "{'detail' :'No Forbidden'}"
+STATUS_500 =  "{'detail' :'error'}"
+
+RESPONSE_VALUE= {403:STATUS_403,500:STATUS_500}
 
 # models
 from laboratory.models import (Laboratory,
@@ -34,11 +38,15 @@ def filters_params_api(queryset,params,model):
             print (query_models)
             return queryset.filter(query_models)
     
-    
+def get_response_code(code):
+    try:
+       return  HttpResponse(RESPONSE_VALUE[code],status=code, content_type='application/json')
+    except (KeyError): 
+         return  HttpResponse(RESPONSE_VALUE[500],status=500, content_type='application/json')
+        
 def get_valid_lab(lab_pk,user,perm):
     lab =  get_object_or_404(Laboratory, pk=lab_pk)
     perm = utils_lab.check_lab_group_has_perm(user,lab,perm)
     
-    if (perm):
-        return lab
-    return HttpResponse(status=403)
+    return( lab, perm)
+
