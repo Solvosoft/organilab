@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'^', include(api_urls)),
+    url(r'^api/', include(api_urls)),
 ]
 
 urlpatterns += djreservation_urls.urlpatterns

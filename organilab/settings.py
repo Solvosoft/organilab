@@ -53,12 +53,20 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'rest_framework',
     'rest_framework.authtoken',
+    'api',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    )
+         'rest_framework.authentication.TokenAuthentication',
+    ),
+        'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 50
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -197,4 +205,4 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK','GROUP_STUDENT_PK'),
 }
 
-
+APPEND_SLASH=False
