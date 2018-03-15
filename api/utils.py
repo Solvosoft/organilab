@@ -5,10 +5,10 @@ from django.http.response import HttpResponse
 from laboratory import utils as utils_lab
 
 
-STATUS_403 =  "{'detail' :'No Forbidden'}"
+STATUS_400 =  "{'detail' :'Not Found'}"
 STATUS_500 =  "{'detail' :'error'}"
 
-RESPONSE_VALUE= {403:STATUS_403,500:STATUS_500}
+RESPONSE_VALUE= {400:STATUS_400,500:STATUS_500}
 
 # models
 from laboratory.models import (Laboratory,
@@ -35,7 +35,6 @@ def filters_params_api(queryset,params,model):
         if query_models is None:
             return queryset
         else:          
-            print (query_models)
             return queryset.filter(query_models)
     
 def get_response_code(code):
@@ -43,6 +42,7 @@ def get_response_code(code):
        return  HttpResponse(RESPONSE_VALUE[code],status=code, content_type='application/json')
     except (KeyError): 
          return  HttpResponse(RESPONSE_VALUE[500],status=500, content_type='application/json')
+
         
 def get_valid_lab(lab_pk,user,perm):
     lab =  get_object_or_404(Laboratory, pk=lab_pk)
