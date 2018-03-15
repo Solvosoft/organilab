@@ -1,5 +1,9 @@
-from rest_framework import serializers
+'''
+Created on 1/142018
 
+@author: migue56
+'''
+from rest_framework import serializers
 from laboratory.models import (LaboratoryRoom, 
                                Furniture,
                                Shelf,
