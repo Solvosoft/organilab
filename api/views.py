@@ -3,41 +3,56 @@ Created on 1/14/2018
 
 @author: migue56
 '''
-from django.shortcuts import render
-from rest_framework.serializers import  Serializers
-from rest_framework.generic import GenericAPIView
-from rest_framework.respose import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.shortcuts import get_object_or_404
+
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
-from laboratory.models import (LaboratoryRoom, 
-                               Furniture,
-                               Shelf,
-                               ShelfObject,
-                               Object
-                                )
+from .utils import filters_params_api, get_valid_lab
+
 from .serializers import ( LaboratoryRoomSerializer,
                            FurnitureSerializer,
                            ShelfSerializer,
                            ShelfObjectSerializer,
                            ObjectSerializer
                            )
+# models
+from laboratory.models import (Laboratory,
+                               LaboratoryRoom, 
+                               Furniture,
+                               Shelf,
+                               ShelfObject,
+                               Object
+                                )
 
 class LaboratoryRoomAPIView(GenericAPIView):
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
     
     queryset = LaboratoryRoom.objects.all()
     serializer_class = LaboratoryRoomSerializer
     
     
-    def get (self,request,*arg,**kwargs):
+    def get (self,request,lab_pk, *arg,**kwargs):
+        """
+        Get:
+        Use this to get your laboratoryrooms, to filter this result you can add query params to the url
+        
+        build your get whit your user token valid
+         Header: [{"key":"Authorization","value":"Token  da293ee2561211f1edf5b6722f349a2e23898cbe"}]
+         
+        """
         params = request.query_params
-        if params: # when have a filters
-            print (params)
+        user = request.user
+        lab = get_valid_lab(lab_pk,user,'laboratory.view_laboratoryroom')
+        
+        if lab:
+              self.queryset= lab.rooms.all()     
+        if params: # it can have filters params
+            self.queryset=filters_params_api(self.queryset,params,LaboratoryRoom)
             
         queryset = self.paginate_queryset(queryset=self.queryset)
+    
         serialiser = LaboratoryRoomSerializer(instance=queryset, many=True)
         return self.get_paginated_response(serialiser.data)    
         
