@@ -1,23 +1,35 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n laboratory %}
+
+
+
 
 {% block content %}
-  <a class="btn btn-info"
+  {%  has_perms "laboratory.add_laboratory" as perm_add_laboratory %}
+  {%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}  
+  {%  has_perms "laboratory.delete_laboratory" as perm_delete_laboratory %}
+
+  {% if perm_add_laboratory %}
+    <a class="btn btn-info"
      href="{% url 'laboratory:laboratory_create' %}">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %} </a>
-
+  {% endif  %} 
   <br> <br>
   <ul class="list-group">
     {% for object in object_list %}
       <li class="row list-group-item">
         <div class="col-md-9"> {{ object }}</div>
         <div class="col-md-3">
+         {% if perm_change_laboratory %}
           <a class="btn btn-info"
              href="{% url 'laboratory:laboratory_update' object.pk %}">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
+         {% endif %}
+         {% if perm_change_laboratory %}  
           <a class="btn btn-danger"
              href="{% url 'laboratory:laboratory_delete' object.pk %}">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+         {% endif %}  
         </div>
       </li>
     {% endfor %}

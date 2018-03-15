@@ -20,6 +20,7 @@ from .djgeneric import CreateView, UpdateView, DeleteView
 from ajax_select.fields import AutoCompleteSelectField
 from django.utils.translation import ugettext_lazy as _
 
+from laboratory.decorators import user_group_perms
 
 @login_required
 def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
@@ -92,6 +93,7 @@ class ShelfObjectFormUpdate(forms.ModelForm):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.add_shelfobject'), name='dispatch')
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     form_class = ShelfObjectForm
@@ -121,6 +123,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -151,6 +154,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -196,6 +200,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.delete_shelfobject'), name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = "/"

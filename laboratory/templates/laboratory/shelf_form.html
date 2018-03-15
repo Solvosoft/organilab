@@ -1,4 +1,8 @@
-{% load bootstrap shelf_position i18n %}
+{% load bootstrap shelf_position i18n laboratory %}
+
+{%  has_perms "laboratory.change_shelf" as perm_change_shelf %}
+{%  has_perms "laboratory.add_shelf" as perm_add_shelf %}
+
 
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
 action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create' laboratory %}{%else%}{% url 'laboratory:shelf_edit' laboratory form.instance.pk form.row.value form.col.value %}{%endif%}" method="post">
@@ -16,6 +20,8 @@ action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create' labora
 	
 	 <div class="modal-footer">
         <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">{% trans 'Close' %}</button>
-        <button type="submit" class="btn btn-primary" > {% trans 'Save' %} </button>
+        {% if perm_change_shelf or perm_add_shelf%}
+          <button type="submit" class="btn btn-primary" > {% trans 'Save' %} </button>
+        {% endif  %}
       </div>
 </form>

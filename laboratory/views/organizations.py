@@ -14,11 +14,11 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from django.utils.functional import lazy
 from laboratory.models import LaboratoryRoom, Laboratory, OrganizationStructure, PrincipalTechnician
-from laboratory.decorators import check_lab_permissions, user_lab_perms
+#from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import  ListView
 
-
+from laboratory.decorators import user_group_perms
 
 
 
@@ -37,9 +37,9 @@ class OrganizationSelectableForm(forms.Form):
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all()
     
               
-@method_decorator(check_lab_permissions, name='dispatch')
+
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_lab_perms(perm='report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class OrganizationReportView(ListView):
     model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"

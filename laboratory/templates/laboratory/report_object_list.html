@@ -1,105 +1,112 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n laboratory%}
 
 {% block title%}{% if type_id == "0" %} {% trans 'Reactives report' %}{% elif type_id == "1" %}{% trans 'Materials report' %}{% elif type_id == "2" %}{% trans 'Equipments report' %}{% else %} {% trans 'Objects report' %}{% endif %}{% endblock %}
 {% block content %}
-
+ {%  has_perms "laboratory.do_report" as perm_do_report %}
+ {%  has_perms "laboratory.view_object" as perm_object %}
+ 
   <div class="page-header"><h1>{% if type_id == "0" %} {% trans 'Reactives report' %}{% elif type_id == "1" %}{% trans 'Materials report' %}{% elif type_id == "2" %}{% trans 'Equipments report' %}{% else %} {% trans 'Objects report' %} {% endif %}</h1></div>
 
- 
-  <div class="btn-group dropup pull-right">
-  <button type="button" class="btn btn-danger">
-   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-   {% trans 'Download'%}</button>
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu">
-  <li>  <a  
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
-  </li><li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
-   </li>
-   <li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
-   </li>
-   <li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
-   </li>
-    <li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
-   </li>
-   <li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
-   </li>
-   <li>
-     <a 
-       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
-   </li>    
-    
-  </ul>
-</div>
-  
+   {% if perm_do_report and perm_object  %}
+	 <div class="btn-group dropup pull-right">
+	  <button type="button" class="btn btn-danger">
+	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	   {% trans 'Download'%}</button>
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="caret"></span>
+	    <span class="sr-only">Toggle Dropdown</span>
+	  </button>
+	  <ul class="dropdown-menu">
+	  <li>  <a  
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
+	  </li><li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
+	   </li>
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
+	   </li>
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
+	   </li>
+	    <li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
+	   </li>
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
+	   </li>
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
+	   </li>    
+	    
+	  </ul>
+	</div>
+  {% endif%}
   
   <br><br>
-
-  {% for obj in object_list %}
-    <h3 class="alert alert-info">
-      {{ obj.code }}
-      <a class="btn btn-sm btn-danger pull-right"
-         title="{{ obj.name }}"
-         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
-        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-        {% trans "PDF" %}</a>
-    </h3>
-    <ul>
-      <li>{% trans "Name:" %} {{ obj.name }}</li>
-      <li>{% trans "Type:" %}
-        {{ obj.get_type_display }}
-      </li>
-
-      <li>{% trans "Features:" %}
-        {% for features in obj.features.all %}
-          <ul>
-            <li>
-              {{ features.get_name_display }}
-            </li>
-          </ul>
-        {% empty %}
-          {% trans "No object features" %}
-        {% endfor %}
-      </li>
-
-      <li>{% trans "Quantity:" %}
-        {% for shelfobj in obj.shelfobject_set.all %}
-          <ul>
-            <li>
-              {{ shelfobj.shelf }}:
-              {{ shelfobj.quantity }}
-              {{ shelfobj.get_measurement_unit_display }}
-            </li>
-          </ul>
-        {% empty %}
-          {% trans "No data" %}
-        {% endfor %}
-      </li>
-
-      <li>{% trans "Description:" %} {{ obj.description }}</li>
-    </ul>
-  {% empty %}
-    {% trans "No objects" %}
-  {% endfor %}
-
-  <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
-     href="{% url 'laboratory:reports_objects' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-    {% trans "All objects in PDF" %}
-  </a>
-
+  {% if perm_object %}
+	  {% for obj in object_list %}
+	    <h3 class="alert alert-info">
+	      {{ obj.code }}
+	      {% if perm_do_report  %}
+		      <a class="btn btn-sm btn-danger pull-right"
+		         title="{{ obj.name }}"
+		         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
+		        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+		        {% trans "PDF" %}</a>
+	        {% endif %}
+	    </h3>
+	    <ul>
+	      <li>{% trans "Name:" %} {{ obj.name }}</li>
+	      <li>{% trans "Type:" %}
+	        {{ obj.get_type_display }}
+	      </li>
+	
+	      <li>{% trans "Features:" %}
+	        {% for features in obj.features.all %}
+	          <ul>
+	            <li>
+	              {{ features.get_name_display }}
+	            </li>
+	          </ul>
+	        {% empty %}
+	          {% trans "No object features" %}
+	        {% endfor %}
+	      </li>
+	
+	      <li>{% trans "Quantity:" %}
+	        {% for shelfobj in obj.shelfobject_set.all %}
+	          <ul>
+	            <li>
+	              {{ shelfobj.shelf }}:
+	              {{ shelfobj.quantity }}
+	              {{ shelfobj.get_measurement_unit_display }}
+	            </li>
+	          </ul>
+	        {% empty %}
+	          {% trans "No data" %}
+	        {% endfor %}
+	      </li>
+	
+	      <li>{% trans "Description:" %} {{ obj.description }}</li>
+	    </ul>
+	  {% empty %}
+	    {% trans "No objects" %}
+	  {% endfor %}
+  {% else %}
+      {% include 'laboratory/action_denied.html' %}
+  {% endif %}
+  {% if perm_do_report and perm_object  %}
+	  <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
+	     href="{% url 'laboratory:reports_objects' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+	    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	    {% trans "All objects in PDF" %}
+	  </a>
+  {% endif %}
 {% endblock %}

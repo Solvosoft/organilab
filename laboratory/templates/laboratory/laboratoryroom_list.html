@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n shelf_position static %}
+{% load i18n shelf_position static laboratory %}
 
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 
@@ -7,7 +7,12 @@
 {% block container %}container-fluid{% endblock %}
 
 {# Content #}
+
+
 {% block content %}
+ {%  has_perms "laboratory.view_furniture" as perm_furniture %}
+ {%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
+ 
   <h1 class="text-center">{% get_laboratory_name %}</h1>
 
   {# Search widget #}
@@ -17,6 +22,7 @@
   <div class="row">
     <div class="col-md-12">
       <ul id="labmenues" class="nav nav-tabs" role="tablist">
+       {% if perm_laboratoryroom %}
         {% for LaboratoryRoom in object_list %}
           <li role="presentation">
             <a id="room_{{ LaboratoryRoom.id }}" href="#idlab"
@@ -25,7 +31,8 @@
                aria-controls={{ LaboratoryRoom.id }} role="tab"
                data-toggle="tab">{{ LaboratoryRoom.name }}</a>
           </li>
-        {% endfor %}
+         {% endfor %}
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -34,6 +41,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="tab-content">
+      {% if perm_furniture %}
         {% for LaboratoryRoom in object_list %}
           <div role="tab-panel" class="tab-pane" id="idlab">
             <div class="col-md-3">
@@ -52,6 +60,7 @@
             </div>
           </div>
         {% endfor %}
+       {% endif %}
       </div>
     </div>
   </div>
