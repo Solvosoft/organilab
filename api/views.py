@@ -8,8 +8,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
+# Utils
 from .utils import filters_params_api, get_valid_lab, get_response_code
+from laboratory.shelf_utils import get_dataconfig
 
+# serializers
 from .serializers import ( LaboratoryRoomSerializer,
                            FurnitureSerializer,
                            ShelfSerializer,
@@ -24,6 +27,7 @@ from laboratory.models import (Laboratory,
                                ShelfObject,
                                Object
                                 )
+from django.core.serializers import serialize
 def get_object_room(lab, pk):
     try:
         return lab.rooms.get(pk=pk)
@@ -37,7 +41,16 @@ def get_object_furniture(queryset, pk):
     except LaboratoryRoom.DoesNotExist:
         get_response_code(status.HTTP_400_BAD_REQUEST)
         return Furniture.objects.none()
-            
+    
+def get_object_shelf(furnitures,pk=None):
+    try:
+        if pk:
+            return  Shelf.objects.filter(furniture__in=furnitures).filter(pk=pk).get()
+        else:
+            return Shelf.objects.filter(furniture__in=furnitures)      
+    except Shelf.DoesNotExist:
+        get_response_code(status.HTTP_400_BAD_REQUEST)
+        return Shelf.objects.none()            
                         
 def get_json_room(self,lab,object_json):
     print ("get_json_room")
@@ -49,7 +62,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
     serializer_class = LaboratoryRoomSerializer
     
         
-    def get (self,request,lab_pk):
+    def get (self,request,lab_pk, pk = None):
         """
         Get:
         Use this to get your laboratoryrooms, to filter this result you can add query params to the url
@@ -66,7 +79,13 @@ class LaboratoryRoomAPIView(GenericAPIView):
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_laboratoryroom')
         
         if perm:
-            self.queryset= lab.rooms.all()     
+            self.queryset= lab.rooms.all()  
+            
+            if pk:
+                queryset=get_object_room(self.queryset,pk)
+                serialiser = LaboratoryRoomSerializer(queryset)
+                return Response(serialiser.data, status=status.HTTP_200_OK)
+               
             if params: # it can have filters params
                 self.queryset=filters_params_api(self.queryset,params,LaboratoryRoom)
                 
@@ -157,7 +176,7 @@ class FurnitureAPIView(GenericAPIView):
     serializer_class = FurnitureSerializer
     
     
-    def get (self,request,lab_pk):
+    def get (self,request,lab_pk,pk=None):
         """
         Get:
         Use this to get your Furniture, to filter this result you can add query params to the url
@@ -175,7 +194,14 @@ class FurnitureAPIView(GenericAPIView):
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_furniture')
         
         if perm:
-            self.queryset=  Furniture.objects.filter(labroom__laboratory=lab_pk).order_by('labroom')
+            self.queryset=  Furniture.objects.filter(
+                labroom__laboratory=lab_pk).order_by('labroom')
+                
+            if pk:
+                queryset=get_object_furniture(self.queryset,pk)
+                serialiser = FurnitureSerializer(queryset)
+                return Response(serialiser.data, status=status.HTTP_200_OK)
+            
             if params: # it can have filters params
                 self.queryset=filters_params_api(self.queryset,params,Furniture)
                 
@@ -237,10 +263,10 @@ class FurnitureAPIView(GenericAPIView):
         user = request.user
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.add_furniture')
         if perm:
-            lab_room_serializer = FurnitureSerializer(data=request.data)
-            if lab_room_serializer.is_valid():
-                object=lab_room_serializer.save()
-                return Response(lab_room_serializer.data, status=status.HTTP_201_CREATED)
+            serializer = FurnitureSerializer(data=request.data)
+            if serializer.is_valid():
+                object=serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else: 
                 return Response(lab_room_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST)     
@@ -268,8 +294,11 @@ class FurnitureAPIView(GenericAPIView):
     
              
 class ShelfAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = ShelfSerializer
+    queryset = Shelf.objects.none()
 
-    def get (self,request,lab_pk):    
+    def get (self,request,lab_pk,pk = None):    
         """
         Get:
         Use this to get your Shelf, to filter this result you can add query params to the url
@@ -283,20 +312,106 @@ class ShelfAPIView(GenericAPIView):
         """
         params = request.query_params
         user = request.user
-        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_Shelf')
-        
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_shelf')
         if perm:
-            self.queryset=  Furniture.objects.filter(labroom__laboratory=lab_pk).order_by('labroom')
+            furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
+                                                   ).order_by('labroom'
+                                                     ).values_list('id', flat=True)
+            if pk:
+                queryset=get_object_shelf(furnitures,pk)
+                serialiser = ShelfSerializer(queryset)
+                return Response(serialiser.data, status=status.HTTP_200_OK)
+                
+            self.queryset= get_object_shelf(furnitures)
             if params: # it can have filters params
-                self.queryset=filters_params_api(self.queryset,params,Furniture)
+                self.queryset=filters_params_api(self.queryset,params,Shelf)
                 
             queryset = self.paginate_queryset(queryset=self.queryset)
         
-            serialiser = FurnitureSerializer(instance=queryset, many=True)
+            serialiser = ShelfSerializer(instance=queryset, many=True)
             return self.get_paginated_response(serialiser.data)    
         return get_response_code(status.HTTP_400_BAD_REQUEST) 
     
+    def put (selfself,request,lab_pk,pk):
+        """
+        Put:
+        Use this to create your shelf
+        
+        build your post with your user token valid 
     
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body: {
+            "name": "Tapas",
+            "type": "D",
+            "furniture": 64,
+            "container_shelf": null
+            }
+        
+        """       
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.change_shelf')
+        if perm:
+            furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
+                                                   ).order_by('labroom'
+                                                   ).values_list('id', flat=True)
+            furniture_shelf = get_object_shelf(furnitures,pk)
+            if furniture_shelf :
+                serializer = ShelfSerializer(furniture_shelf,data=request.data)
+                if serializer.is_valid():
+                    serializer.save();
+                    return Response (serializer.data)
+                else: 
+                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return get_response_code(status.HTTP_400_BAD_REQUEST)     
+          
+    
+    def post (selfself,request,lab_pk):
+        """
+        Post:
+        Use this to create your shelf
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body: 
+        """            
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.add_shelf')
+        if perm:
+            serializer = ShelfSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        return get_response_code(status.HTTP_400_BAD_REQUEST)          
+        
+    def delete (self,request,lab_pk,pk):
+        """
+        Delete:
+        Use this to delete your shelf 
+        
+        build your delete with your user token valid 
+        
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        """
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_laboratoryroom')
+        if perm:
+            furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
+                                                   ).order_by('labroom'
+                                                   ).values_list('id', flat=True)
+            furniture_shelf = get_object_shelf(furnitures,pk)
+            if furniture_shelf:
+                furniture_shelf.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)     
+        return get_response_code(status.HTTP_400_BAD_REQUEST)           
 #     
 #     
 #     

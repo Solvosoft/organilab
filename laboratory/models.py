@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import ast
+import json
 
 from django.contrib.auth.models import User, Group
 from django.db import models
@@ -214,7 +215,42 @@ class Shelf(models.Model):
 
     def count_objects(self):
         return ShelfObject.objects.filter(shelf=self).count()
+    
+    def get_position_dataconfig(self,dataconfig):
+        if dataconfig:
+            dataconfig = json.loads(dataconfig)
+    
+        for irow, row in enumerate(dataconfig):
+            for icol, col in enumerate(row):
+                if col:
+                    val = None
+                    if type(col) == str:
+                        val = col.split(",")
+                    elif type(col) == int:
+                        val = [col]
+                    elif type(col) == list:
+                        val = col
+                    else:
+                        continue
+                    if self.pk in  val :
+                         return [irow,icol]
+        return [None,None]
+    def positions(self):
+        positions = None
+        furniture = self.furniture
+        if furniture:
+            dataconfig = furniture.dataconfig
+            positions = self.get_position_dataconfig(dataconfig)
+        return positions
 
+    def row(self):
+        (row,col) = self.positions()
+        return row
+    
+    def col(self):
+        (row,col) = self.positions()
+        return row
+    
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
