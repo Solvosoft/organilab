@@ -3,7 +3,7 @@ from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from django.http.response import HttpResponse
 from laboratory import utils as utils_lab
-
+from laboratory import shelf_utils
 
 STATUS_400 =  "{'detail' :'Not Found'}"
 STATUS_500 =  "{'detail' :'error'}"
@@ -50,4 +50,11 @@ def get_valid_lab(lab_pk,user,perm):
     lab =  get_object_or_404(Laboratory, pk=lab_pk)
     perm = utils_lab.check_lab_group_has_perm(user,lab,perm)
     return( lab, perm)
+
+
+
+    
+    
+    
+
 

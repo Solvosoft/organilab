@@ -33,8 +33,13 @@ furniture_api_urls = [
         url(r'^(?P<pk>\d+)/$',FurnitureAPIView.as_view(),name='api_furniture_updates'),
     ]
 
+shelf_api_urls = [
+        url(r'^$',ShelfAPIView.as_view(),name='api_furniture'),
+        url(r'^(?P<pk>\d+)/$',ShelfAPIView.as_view(),name='api_furniture_updates'),
+    ]
 
-
+# Main api urls
 urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms/', include(room_api_urls)),
                 url(r'^(?P<lab_pk>\d+)/furniture/',include(furniture_api_urls)),
+                url(r'^(?P<lab_pk>\d+)/shelf/',include(shelf_api_urls)),                
                 ]
