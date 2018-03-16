@@ -26,7 +26,9 @@ def filters_params_api(queryset,params,model):
         if hasattr(model, key):
             value = params.get(key)
             tabquery= "%s__contains"%key 
-            
+            if key in ('id','pk'):
+                tabquery = 'pk'                
+                
             if query_models is None:
                  query_models = Q (**{tabquery: value}) 
             else:
@@ -47,6 +49,5 @@ def get_response_code(code):
 def get_valid_lab(lab_pk,user,perm):
     lab =  get_object_or_404(Laboratory, pk=lab_pk)
     perm = utils_lab.check_lab_group_has_perm(user,lab,perm)
-    
     return( lab, perm)
 
