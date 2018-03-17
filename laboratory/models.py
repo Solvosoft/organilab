@@ -18,6 +18,7 @@ from laboratory.validators import validate_molecular_formula
 #from location_field.models.spatial import LocationField
 from location_field.models.plain import PlainLocationField
 
+
 @python_2_unicode_compatible
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
@@ -216,31 +217,12 @@ class Shelf(models.Model):
     def count_objects(self):
         return ShelfObject.objects.filter(shelf=self).count()
     
-    def get_position_dataconfig(self,dataconfig):
-        if dataconfig:
-            dataconfig = json.loads(dataconfig)
-    
-        for irow, row in enumerate(dataconfig):
-            for icol, col in enumerate(row):
-                if col:
-                    val = None
-                    if type(col) == str:
-                        val = col.split(",")
-                    elif type(col) == int:
-                        val = [col]
-                    elif type(col) == list:
-                        val = col
-                    else:
-                        continue
-                    if self.pk in  val :
-                         return [irow,icol]
-        return [None,None]
+
     def positions(self):
         positions = None
         furniture = self.furniture
         if furniture:
-            dataconfig = furniture.dataconfig
-            positions = self.get_position_dataconfig(dataconfig)
+            positions = furniture.get_position_shelf(self.pk)
         return positions
 
     def row(self):
@@ -249,7 +231,7 @@ class Shelf(models.Model):
     
     def col(self):
         (row,col) = self.positions()
-        return row
+        return col
     
     class Meta:
         verbose_name = _('Shelf')
@@ -275,6 +257,90 @@ class Furniture(models.Model):
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     dataconfig = models.TextField(_('Data configuration'))
 
+    def remove_shelf_dataconfig(self,shelf_pk):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+    
+        for irow, row in enumerate(dataconfig):
+            for icol, col in enumerate(row):
+                if col:
+                    val = None
+                    if type(col) == str:
+                        val = col.split(",")
+                    elif type(col) == int:
+                        val = [col]
+                    elif type(col) == list:
+                        val = col
+                    else:
+                        continue
+                    if shelf_pk in  val :
+                         val.remove(shelf_pk)
+        self.dataconfig = str(dataconfig)
+        self.save()
+        
+    def change_shelf_dataconfig(self,shelf_row,shelf_col,shelf_pk):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+    
+        for irow, row in enumerate(dataconfig):
+            for icol, col in enumerate(row):
+                if col:
+                    val = None
+                    if type(col) == str:
+                        val = col.split(",")
+                    elif type(col) == int:
+                        val = [col]
+                    elif type(col) == list:
+                        val = col
+                    else:
+                        continue
+                    if shelf_pk in  val :
+                         val.remove(shelf_pk)
+                         
+                    if shelf_row==irow and shelf_col==icol:    
+                        val.append(shelf_pk)
+
+        self.dataconfig = str(dataconfig)
+        self.save()
+
+    def get_position_shelf(self,shelf_pk):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+    
+        for irow, row in enumerate(dataconfig):
+            for icol, col in enumerate(row):
+                if col:
+                    val = None
+                    if type(col) == str:
+                        val = col.split(",")
+                    elif type(col) == int:
+                        val = [col]
+                    elif type(col) == list:
+                        val = col
+                    else:
+                        continue
+                    if shelf_pk in  val :
+                         return [irow,icol]
+        return [None,None]
+    
+    def get_row_count(self):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+            count = len(dataconfig) 
+            return count
+        return 0
+
+    def get_col_count(self):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+        for irow, row in enumerate(dataconfig):
+                count = len(row) 
+                return count
+        return 0
+            
+        
+
+
     class Meta:
         verbose_name = _('Piece of furniture')
         verbose_name_plural = _('Furniture')
@@ -282,15 +348,12 @@ class Furniture(models.Model):
         permissions = (
             ("view_furniture", _("Can see available Furniture")),
         )
-
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def __str__(self):
         return '%s' % (self.name,)
-
-
-
+    
 class OrganizationStructureManager(models.Manager):
          
     def filter_user(self,user):

@@ -409,6 +409,7 @@ class ShelfAPIView(GenericAPIView):
                                                    ).values_list('id', flat=True)
             furniture_shelf = get_object_shelf(furnitures,pk)
             if furniture_shelf:
+                furniture_shelf.furniture.remove_shelf_dataconfig(pk)
                 furniture_shelf.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)     
         return get_response_code(status.HTTP_400_BAD_REQUEST)           
