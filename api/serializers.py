@@ -3,6 +3,9 @@ Created on 1/142018
 
 @author: migue56
 '''
+import re
+from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
 from rest_framework import serializers
 from .utils import list_shelf_dataconfig
 from laboratory.models import (LaboratoryRoom, 
@@ -29,19 +32,45 @@ class FurnitureSerializer(serializers.ModelSerializer):
         id = data.get('id')
         dataconfig = data.get('dataconfig')
         
+               
         if isinstance(dataconfig,str):
+            #format regex valid
+            match = re.search(r'^[\[\],\s"\d]*$',dataconfig)
+            if not match:
+                 raise serializers.ValidationError({ 'dataconfig': [_("Invalid format in shelf dataconfig ")] }) 
+            
+            # Can read the json format
             listed = list_shelf_dataconfig(dataconfig);
-            furniture_shelf_list = Shelf.objects.filter(pk__in=listed).filter(furniture__pk=id).values_list('pk',flat=True)
+            if listed is False:
+                raise serializers.ValidationError({ 'dataconfig': [_("Does not is decodable")] }) 
+                        
+            # data validation
+            furniture_shelf_list = Shelf.objects.filter(pk__in=listed
+                                                        ).filter(furniture__pk=id
+                                                        ).values_list('pk',flat=True)
             for ipk in listed:
                 if ipk not in furniture_shelf_list:
-                     raise serializers.ValidationError({ 'dataconfig': ["%i shelf does not permitted "%ipk] })     
+                     raise serializers.ValidationError(
+                         { 'dataconfig': ["%i %s"%(ipk, _("Shelf does not permitted"))] }
+                     )
         elif isinstance(dataconfig,list):
+            # Fix: add functions to process shelf  dataconfig like json
             print ("json")  
 
 
         
         data = super(FurnitureSerializer, self).to_internal_value(data)
         return data
+
+    def update(self,instance,validated_data):
+
+        labroom = validated_data.get('labroom')
+        
+        if  labroom != instance.labroom :
+            raise serializers.ValidationError({ 'labroom': [_("Laboratoryroom does not is changeable")] }) 
+
+    
+        return super(FurnitureSerializer, self).update(instance,validated_data)
 
         
 class ShelfSerializer(serializers.ModelSerializer):
@@ -58,10 +87,10 @@ class ShelfSerializer(serializers.ModelSerializer):
     
         col = data.get('col')
         if (col > furniture.get_col_count()  or col < 0):
-            raise serializers.ValidationError({ 'col': ["col %i not exist "%col] })       
+            raise serializers.ValidationError({ 'col': ["col %i: %s"%(col, _("Invalid"))] })       
         row = data.get('row')
         if (row > furniture.get_row_count() or row < 0):
-           raise serializers.ValidationError({ 'row': ["row %i not exist "%row] })
+           raise serializers.ValidationError({ 'row': ["row %i: %s"%(row ,_("Invalid"))] })
         return data
     
     def create(self, validated_data):
@@ -81,7 +110,7 @@ class ShelfSerializer(serializers.ModelSerializer):
         furniture = validated_data.get('furniture')
         
         if  furniture != instance.furniture :
-            raise serializers.ValidationError({ 'furniture': ["Furniture does not is changeble"] }) 
+            raise serializers.ValidationError({ 'furniture': [_("Furniture does not is changeable")] }) 
             
         
         col = validated_data.get('col')

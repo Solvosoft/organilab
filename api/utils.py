@@ -51,22 +51,25 @@ def get_response_code(code):
 
 def list_shelf_dataconfig(dataconfig=None):
         listed=[]
-        if dataconfig:
-            dataconfig = json.loads(dataconfig) 
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if type(col) == str:
-                            val = col.split(",")
-                        elif type(col) == int:
-                            val = [col]
-                        elif type(col) == list:
-                            val = col
-                        else:
-                            continue
-                        for ival in val:
-                            listed.append(ival)
+        try :
+            if dataconfig:
+                dataconfig = json.loads(dataconfig) 
+                for irow, row in enumerate(dataconfig):
+                    for icol, col in enumerate(row):
+                        if col:
+                            val = None
+                            if type(col) == str:
+                                val = col.split(",")
+                            elif type(col) == int:
+                                val = [col]
+                            elif type(col) == list:
+                                val = col
+                            else:
+                                continue
+                            for ival in val:
+                                listed.append(ival)
+        except ValueError:
+             return False                     
         return listed 
         
 def get_valid_lab(lab_pk,user,perm):
