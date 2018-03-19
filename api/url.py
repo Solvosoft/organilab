@@ -11,6 +11,8 @@ from rest_framework.authtoken import views
 from .views import (LaboratoryRoomAPIView, 
                     FurnitureAPIView,
                     ShelfAPIView,
+                    ShelfObjectAPIView,
+                    ObjectAPIView
                     )
 
 
@@ -34,12 +36,23 @@ furniture_api_urls = [
     ]
 
 shelf_api_urls = [
-        url(r'^$',ShelfAPIView.as_view(),name='api_furniture'),
-        url(r'^(?P<pk>\d+)/$',ShelfAPIView.as_view(),name='api_furniture_updates'),
+        url(r'^$',ShelfAPIView.as_view(),name='api_shelf'),
+        url(r'^(?P<pk>\d+)/$',ShelfAPIView.as_view(),name='api_shelf_updates'),
     ]
 
+shelfobject_api_urls = [
+        url(r'^$',ShelfObjectAPIView.as_view(),name='api_shelfobject'),
+        url(r'^(?P<pk>\d+)/$',ShelfObjectAPIView.as_view(),name='api_shelfobject_updates'),
+    ]
+
+object_api_urls = [
+        url(r'^$',ObjectAPIView.as_view(),name='api_object'),
+        url(r'^(?P<pk>\d+)/$',ObjectAPIView.as_view(),name='api_object_updates'),
+    ]
 # Main api urls
 urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms/', include(room_api_urls)),
                 url(r'^(?P<lab_pk>\d+)/furniture/',include(furniture_api_urls)),
-                url(r'^(?P<lab_pk>\d+)/shelf/',include(shelf_api_urls)),                
+                url(r'^(?P<lab_pk>\d+)/shelf/',include(shelf_api_urls)), 
+                url(r'^(?P<lab_pk>\d+)/shelfobject/',include(shelfobject_api_urls)),
+                url(r'^(?P<lab_pk>\d+)/object/',include(object_api_urls)),         
                 ]

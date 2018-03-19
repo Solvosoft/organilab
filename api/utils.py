@@ -26,6 +26,8 @@ def filters_params_api(queryset,params,model):
         if hasattr(model, key):
             value = params.get(key)
             tabquery= "%s__contains"%key 
+            # check if is FK, to check it
+            
             if key in ('id','pk'):
                 tabquery = 'pk'                
                 

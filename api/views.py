@@ -52,6 +52,26 @@ def get_object_shelf(furnitures,pk=None):
         get_response_code(status.HTTP_400_BAD_REQUEST)
         return Shelf.objects.none()            
                         
+                            
+def get_object_shelfobject(queryset,pk=None):
+    try:
+        if pk:
+            return  queryset.filter(pk=pk).get()
+        else:
+            return queryset      
+    except ShelfObject.DoesNotExist:
+        get_response_code(status.HTTP_400_BAD_REQUEST)
+        return Shelf.objects.none()            
+def get_object_object(queryset,pk=None):
+    try:
+        if pk:
+            return  queryset.filter(pk=pk).get()
+        else:
+            return queryset      
+    except Object.DoesNotExist:
+        get_response_code(status.HTTP_400_BAD_REQUEST)
+        return Object.objects.none()            
+        
 def get_json_room(self,lab,object_json):
     print ("get_json_room")
     
@@ -283,7 +303,7 @@ class FurnitureAPIView(GenericAPIView):
          
         """
         user = request.user
-        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_laboratoryroom')
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_furniture')
         if perm:
             self.queryset = Furniture.objects.filter(labroom__laboratory=lab_pk)
             room_furniture = get_object_furniture(self.queryset,pk)
@@ -385,7 +405,7 @@ class ShelfAPIView(GenericAPIView):
             serializer = ShelfSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return response(serializer.data,status=status.HTTP_201_CREATED)
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
         return get_response_code(status.HTTP_400_BAD_REQUEST)          
@@ -402,7 +422,7 @@ class ShelfAPIView(GenericAPIView):
          
         """
         user = request.user
-        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_laboratoryroom')
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_shelf')
         if perm:
             furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
                                                    ).order_by('labroom'
@@ -413,12 +433,269 @@ class ShelfAPIView(GenericAPIView):
                 furniture_shelf.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)     
         return get_response_code(status.HTTP_400_BAD_REQUEST)           
-#     
-#     
-#     
-#     
-# class ShelfObjectAPIView(GenericAPIView):            
-# 
-# 
-# 
-# class ObjectAPIView(GenericAPIView):     
+
+
+class ShelfObjectAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)     
+    serializer_class = ShelfObjectSerializer
+    queryset = ShelfObject.objects.none()
+    
+    
+    def get_shelfObjects(self,lab_pk):
+        furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
+                                                   ).order_by('labroom'
+                                                     ).values_list('id', flat=True)
+        self.queryset=ShelfObject.objects.filter(shelf__furniture__in=furnitures)  
+    
+    def get (self,request,lab_pk,pk=None):
+        """
+        Get:
+        Use this to get your shelfobjects
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]        
+        """      
+        params = request.query_params
+        user = request.user
+        (lab,perm ) = get_valid_lab(lab_pk,user,'laboratory.view_shelfobject')
+        if perm:
+            self.get_shelfObjects(lab_pk)          
+            if pk:
+                queryset=get_object_shelfobject(self.queryset,pk)
+                serialiser = ShelfObjectSerializer(queryset)
+                return Response(serialiser.data, status=status.HTTP_200_OK)
+            
+            if params: # it can have filters params
+                self.queryset=filters_params_api(self.queryset,params,ShelfObject)
+            
+            queryset = self.paginate_queryset(queryset=self.queryset)
+            serialiser = ShelfObjectSerializer(instance=queryset, many=True)
+            return self.get_paginated_response(serialiser.data)    
+        return get_response_code(status.HTTP_400_BAD_REQUEST)   
+    
+    def put (self,request,lab_pk,pk):       
+        """
+        Put:
+        Use this to create your shelfobject
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body:{
+            "quantity": 1,
+            "limit_quantity": 0,
+            "measurement_unit": "3",
+            "shelf": 99999,
+            "object": 339
+            }
+        """       
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.change_shelfobject')
+        if perm:
+            self.get_shelfObjects(lab_pk)          
+            object=get_object_shelfobject(self.queryset,pk)
+            if object :
+                serializer = ShelfObjectSerializer(object,data=request.data)
+                if serializer.is_valid():
+                    serializer.save();
+                    return Response (serializer.data)
+                else: 
+                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return get_response_code(status.HTTP_400_BAD_REQUEST)   
+         
+    def post (selfself,request,lab_pk):
+        """
+        Post:
+        Use this to create your shelfobject
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body: 
+            {
+            "quantity": 1,
+            "limit_quantity": 0,
+            "measurement_unit": "3",
+            "shelf": 99999,
+            "object": 339
+            }
+        """            
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.add_shelfobject')
+        if perm:
+            serializer = ShelfObjectSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        return get_response_code(status.HTTP_400_BAD_REQUEST)          
+        
+    def delete (self,request,lab_pk,pk):
+        """
+        Delete:
+        Use this to delete your shelf 
+        
+        build your delete with your user token valid 
+        
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        """
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_shelfobject')
+        if perm:
+            self.get_shelfObjects(lab_pk)          
+            object=get_object_shelfobject(self.queryset,pk)
+            if object:
+                object.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)     
+        return get_response_code(status.HTTP_400_BAD_REQUEST)                 
+ 
+class ObjectAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ObjectSerializer
+    queryset = Object.objects.none()
+
+    
+    def get_Objects(self,lab_pk):
+        furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
+                                                   ).order_by('labroom'
+                                                     ).values_list('id', flat=True)
+        self.queryset = Object.objects.filter(shelfobject__shelf__furniture__in=furnitures) 
+
+            
+        
+    def get(self,request,lab_pk,pk=None):
+        """
+        Get:
+        Use this to get your objects
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]        
+        """           
+        user=request.user
+        params= request.query_params
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_object')
+        if perm:
+            self.get_Objects(lab_pk)          
+            if pk:
+                queryset=get_object_object(self.queryset,pk)
+                serialiser = ShelfObjectSerializer(queryset)
+                return Response(serialiser.data, status=status.HTTP_200_OK)
+            
+            if params: # it can have filters params
+                self.queryset=filters_params_api(self.queryset,params,ShelfObject)
+            
+            queryset = self.paginate_queryset(queryset=self.queryset)
+            serialiser = ObjectSerializer(instance=queryset, many=True)
+            return self.get_paginated_response(serialiser.data)    
+        return get_response_code(status.HTTP_400_BAD_REQUEST)                             
+    
+    def put(self,request,lab_pk,pk):
+        """
+        Put:
+        Use this to create your object
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body: 
+         {
+            "id": 341,
+            "code": "LBC-0003",
+            "name": "Ácido Sulfúrico",
+            "type": "0",
+            "description": "Corrosivo",
+            "molecular_formula": "H2SO4",
+            "cas_id_number": "7664-93-9",
+            "security_sheet": "/media/security_sheets/%C3%81cido_sulf%C3%BArico.pdf",
+            "is_precursor": true,
+            "imdg_code": "8",
+            "features": [
+                1
+            ]
+         }
+        """       
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.change_object')
+        if perm:
+            self.get_Objects(lab_pk) 
+            object = get_object_object(self.queryset,pk)
+            if object :
+                serializer = ObjectSerializer(object,data=request.data)
+                if serializer.is_valid():
+                    serializer.save();
+                    return Response (serializer.data)
+                else: 
+                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return get_response_code(status.HTTP_400_BAD_REQUEST) 
+    
+    def post(self,request,lab_pk):
+        """
+        Post:
+        Use this to create your object
+        
+        build your post with your user token valid 
+    
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        Body: 
+         {
+            "code": "LBC-0003",
+            "name": "Ácido Sulfúrico",
+            "type": "0",
+            "description": "Corrosivo",
+            "molecular_formula": "H2SO4",
+            "cas_id_number": "7664-93-9",
+       FIX: "security_sheet": "/media/security_sheets/%C3%81cido_sulf%C3%BArico.pdf",
+            "is_precursor": true,
+            "imdg_code": "8",
+            "features": [
+                1
+            ]
+         }
+        """       
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.add_object')
+        if perm:
+            serializer = ObjectSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save();
+                return Response (serializer.data)
+            else: 
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return get_response_code(status.HTTP_400_BAD_REQUEST)     
+    
+    def delete (self,request,lab_pk,pk):
+        """
+        Delete:
+        Use this to delete your object 
+        
+        build your delete with your user token valid 
+        
+        Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
+               {"key":"Content-Type","value":"application/json","description":""}]
+         
+        """
+        user = request.user
+        (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_object')
+        if perm:
+            self.get_Objects(lab_pk) 
+            object = get_object_object(self.queryset,pk)
+            if object:
+                object.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)     
+        return get_response_code(status.HTTP_400_BAD_REQUEST)    
+         
