@@ -12,10 +12,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.db.models import Q
 from laboratory.validators import validate_molecular_formula
 
-# 
-# from django.contrib.gis.db import models
-# from django.contrib.gis.geos import Point
-#from location_field.models.spatial import LocationField
+
 from location_field.models.plain import PlainLocationField
 
 
