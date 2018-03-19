@@ -219,7 +219,7 @@ class Shelf(models.Model):
     
 
     def positions(self):
-        positions = None
+        positions = (None,None)
         furniture = self.furniture
         if furniture:
             positions = furniture.get_position_shelf(self.pk)
@@ -333,7 +333,7 @@ class Furniture(models.Model):
     def get_col_count(self):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
-        for irow, row in enumerate(dataconfig):
+            for irow, row in enumerate(dataconfig):
                 count = len(row) 
                 return count
         return 0

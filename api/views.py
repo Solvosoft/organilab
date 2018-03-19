@@ -72,10 +72,7 @@ def get_object_object(queryset,pk=None):
         get_response_code(status.HTTP_400_BAD_REQUEST)
         return Object.objects.none()            
         
-def get_json_room(self,lab,object_json):
-    print ("get_json_room")
-    
-                
+   
 class LaboratoryRoomAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = LaboratoryRoom.objects.none()
@@ -561,15 +558,14 @@ class ShelfObjectAPIView(GenericAPIView):
 class ObjectAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ObjectSerializer
-    queryset = Object.objects.none()
+    queryset = Object.objects.all()
 
     
     def get_Objects(self,lab_pk):
         furnitures =  Furniture.objects.filter(labroom__laboratory=lab_pk
                                                    ).order_by('labroom'
                                                      ).values_list('id', flat=True)
-        self.queryset = Object.objects.filter(shelfobject__shelf__furniture__in=furnitures) 
-
+        return Object.objects.filter(shelfobject__shelf__furniture__in=furnitures) 
             
         
     def get(self,request,lab_pk,pk=None):
@@ -585,11 +581,10 @@ class ObjectAPIView(GenericAPIView):
         user=request.user
         params= request.query_params
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.view_object')
-        if perm:
-            self.get_Objects(lab_pk)          
+        if perm:     
             if pk:
                 queryset=get_object_object(self.queryset,pk)
-                serialiser = ShelfObjectSerializer(queryset)
+                serialiser = ObjectSerializer(queryset)
                 return Response(serialiser.data, status=status.HTTP_200_OK)
             
             if params: # it can have filters params
@@ -619,18 +614,18 @@ class ObjectAPIView(GenericAPIView):
             "description": "Corrosivo",
             "molecular_formula": "H2SO4",
             "cas_id_number": "7664-93-9",
-            "security_sheet": "/media/security_sheets/%C3%81cido_sulf%C3%BArico.pdf",
             "is_precursor": true,
             "imdg_code": "8",
             "features": [
                 1
             ]
          }
+        Body file:
+            "security_sheet" 
         """       
         user = request.user
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.change_object')
         if perm:
-            self.get_Objects(lab_pk) 
             object = get_object_object(self.queryset,pk)
             if object :
                 serializer = ObjectSerializer(object,data=request.data)
@@ -659,13 +654,14 @@ class ObjectAPIView(GenericAPIView):
             "description": "Corrosivo",
             "molecular_formula": "H2SO4",
             "cas_id_number": "7664-93-9",
-       FIX: "security_sheet": "/media/security_sheets/%C3%81cido_sulf%C3%BArico.pdf",
             "is_precursor": true,
             "imdg_code": "8",
             "features": [
                 1
             ]
          }
+         Body file:
+            "security_sheet" 
         """       
         user = request.user
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.add_object')
@@ -681,7 +677,7 @@ class ObjectAPIView(GenericAPIView):
     def delete (self,request,lab_pk,pk):
         """
         Delete:
-        Use this to delete your object 
+        Use this to delete your object. This can do deleted only when it is not used
         
         build your delete with your user token valid 
         
@@ -692,10 +688,13 @@ class ObjectAPIView(GenericAPIView):
         user = request.user
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.delete_object')
         if perm:
-            self.get_Objects(lab_pk) 
-            object = get_object_object(self.queryset,pk)
-            if object:
-                object.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)     
+            listeds = self.get_Objects(lab_pk).values_list('id', flat=True)
+            if pk not in listeds:
+                 object  = get_object_object(self.queryset,pk)             
+                 if object:
+                     object.delete()
+                     return Response(status=status.HTTP_204_NO_CONTENT)    
+            else:
+                return get_response_code(status.HTTP_304_NOT_MODIFIED) 
         return get_response_code(status.HTTP_400_BAD_REQUEST)    
          

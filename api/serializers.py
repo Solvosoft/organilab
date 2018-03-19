@@ -22,6 +22,28 @@ class FurnitureSerializer(serializers.ModelSerializer):
         model = Furniture
         fields = '__all__'
         
+    def to_internal_value(self, data):
+        data = super(FurnitureSerializer, self).to_internal_value(data)
+
+        return data
+    def create(self, validated_data):
+        
+
+                          
+#       object = Shelf.objects.create(**validated_data)
+        return object
+        
+    def update(self,instance,validated_data):
+
+
+#         furniture = validated_data.get('furniture')
+#         
+#         if  furniture != instance.furniture :
+#             raise serializers.ValidationError({ 'furniture': ["Furniture do not is changeble"] }) 
+#             
+    
+        return super(FurnitureSerializer, self).update(instance,validated_data)
+
         
 class ShelfSerializer(serializers.ModelSerializer):
     row = serializers.IntegerField()
@@ -44,14 +66,15 @@ class ShelfSerializer(serializers.ModelSerializer):
         return data
     
     def create(self, validated_data):
-        furniture = validated_data.get('furniture')
-        col = validated_data.get('col')
-        row = validated_data.get('row')             
-        id = instance.pk
         
-        furniture.change_shelf_dataconfig(row,col,id)               
-    
-        return Comment.objects.create(**validated_data)
+        furniture = validated_data.get('furniture')
+        col = validated_data.pop('col')
+        row = validated_data.pop('row') 
+                          
+        object = Shelf.objects.create(**validated_data)
+        furniture.change_shelf_dataconfig(row,col,object.pk)   
+        
+        return object
         
     def update(self,instance,validated_data):
 
@@ -98,4 +121,8 @@ class ObjectSerializer(serializers.ModelSerializer):
         
         extra_kwargs = {
             'security_sheet': {'read_only': True},
-        }               
+        }           
+        
+        
+        extra_kwargs = {'security_sheet': {'required': False}}
+
