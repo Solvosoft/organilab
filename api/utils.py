@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.http.response import HttpResponse
 from laboratory import utils as utils_lab
 from laboratory import shelf_utils
+import json
 
 STATUS_304 =  "{'detail' :'Not Modified'}"
 STATUS_400 =  "{'detail' :'Not Found'}"
@@ -48,6 +49,25 @@ def get_response_code(code):
     except (KeyError): 
          return  HttpResponse(RESPONSE_VALUE[500],status=500, content_type='application/json')
 
+def list_shelf_dataconfig(dataconfig=None):
+        listed=[]
+        if dataconfig:
+            dataconfig = json.loads(dataconfig) 
+            for irow, row in enumerate(dataconfig):
+                for icol, col in enumerate(row):
+                    if col:
+                        val = None
+                        if type(col) == str:
+                            val = col.split(",")
+                        elif type(col) == int:
+                            val = [col]
+                        elif type(col) == list:
+                            val = col
+                        else:
+                            continue
+                        for ival in val:
+                            listed.append(ival)
+        return listed 
         
 def get_valid_lab(lab_pk,user,perm):
     lab =  get_object_or_404(Laboratory, pk=lab_pk)

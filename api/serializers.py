@@ -4,12 +4,14 @@ Created on 1/142018
 @author: migue56
 '''
 from rest_framework import serializers
+from .utils import list_shelf_dataconfig
 from laboratory.models import (LaboratoryRoom, 
                                Furniture,
                                Shelf,
                                ShelfObject,
                                Object
                                 )
+
 
 
 class LaboratoryRoomSerializer(serializers.ModelSerializer):
@@ -23,26 +25,23 @@ class FurnitureSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def to_internal_value(self, data):
+        
+        id = data.get('id')
+        dataconfig = data.get('dataconfig')
+        
+        if isinstance(dataconfig,str):
+            listed = list_shelf_dataconfig(dataconfig);
+            furniture_shelf_list = Shelf.objects.filter(pk__in=listed).filter(furniture__pk=id).values_list('pk',flat=True)
+            for ipk in listed:
+                if ipk not in furniture_shelf_list:
+                     raise serializers.ValidationError({ 'dataconfig': ["%i shelf does not permitted "%ipk] })     
+        elif isinstance(dataconfig,list):
+            print ("json")  
+
+
+        
         data = super(FurnitureSerializer, self).to_internal_value(data)
-
         return data
-    def create(self, validated_data):
-        
-
-                          
-#       object = Shelf.objects.create(**validated_data)
-        return object
-        
-    def update(self,instance,validated_data):
-
-
-#         furniture = validated_data.get('furniture')
-#         
-#         if  furniture != instance.furniture :
-#             raise serializers.ValidationError({ 'furniture': ["Furniture do not is changeble"] }) 
-#             
-    
-        return super(FurnitureSerializer, self).update(instance,validated_data)
 
         
 class ShelfSerializer(serializers.ModelSerializer):
@@ -82,7 +81,7 @@ class ShelfSerializer(serializers.ModelSerializer):
         furniture = validated_data.get('furniture')
         
         if  furniture != instance.furniture :
-            raise serializers.ValidationError({ 'furniture': ["Furniture do not is changeble"] }) 
+            raise serializers.ValidationError({ 'furniture': ["Furniture does not is changeble"] }) 
             
         
         col = validated_data.get('col')
@@ -95,7 +94,9 @@ class ShelfSerializer(serializers.ModelSerializer):
       
     def to_representation(self, instance):
             output = super(ShelfSerializer, self).to_representation(instance)
-            (row,col) = instance.positions()
+            if hasattr(instance, 'furniture') :
+              (row,col) = instance.positions()
+            else: (row,col) = (None,None)  
             output["row"]  = row
             output["col"] = col
             return output        
@@ -118,11 +119,6 @@ class ObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
         fields = '__all__' 
-        
-        extra_kwargs = {
-            'security_sheet': {'read_only': True},
-        }           
-        
         
         extra_kwargs = {'security_sheet': {'required': False}}
 
