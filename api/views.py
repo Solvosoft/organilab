@@ -603,20 +603,15 @@ class ObjectAPIView(GenericAPIView):
                {"key":"Content-Type","value":"application/json" }]
          
         Body: 
-         {
-            "id": 341,
-            "code": "LBC-0003",
-            "name": "Ácido Sulfúrico",
-            "type": "0",
-            "description": "Corrosivo",
-            "molecular_formula": "H2SO4",
-            "cas_id_number": "7664-93-9",
-            "is_precursor": true,
-            "imdg_code": "8",
-            "features": [
-                1
-            ]
-         }
+        {
+            "id": 369,
+            "row": 2,
+            "col": 3,
+            "name": "Tubos de ensayo",
+            "type": "D",
+            "furniture": 64,
+            "container_shelf": null
+        
         Body file:
             "security_sheet" 
         """       
@@ -644,19 +639,15 @@ class ObjectAPIView(GenericAPIView):
                {"key":"Content-Type","value":"application/json" }]
          
         Body: 
-         {
-            "code": "LBC-0003",
-            "name": "Ácido Sulfúrico",
-            "type": "0",
-            "description": "Corrosivo",
-            "molecular_formula": "H2SO4",
-            "cas_id_number": "7664-93-9",
-            "is_precursor": true,
-            "imdg_code": "8",
-            "features": [
-                1
-            ]
-         }
+        {
+            "id": 369,
+            "row": 2,
+            "col": 3,
+            "name": "Tubos de ensayo",
+            "type": "D",
+            "furniture": 64,
+            "container_shelf": null
+        
          Body file:
             "security_sheet" 
         """       

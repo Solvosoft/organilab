@@ -28,6 +28,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def to_internal_value(self, data):
+        data = super(FurnitureSerializer, self).to_internal_value(data)
         
         id = data.get('id')
         dataconfig = data.get('dataconfig')
@@ -51,15 +52,12 @@ class FurnitureSerializer(serializers.ModelSerializer):
             for ipk in listed:
                 if ipk not in furniture_shelf_list:
                      raise serializers.ValidationError(
-                         { 'dataconfig': ["%i %s"%(ipk, _("Shelf does not permitted"))] }
+                         { 'dataconfig': ["%i %s"%(ipk, _("Shelf does not is permitted"))] }
                      )
         elif isinstance(dataconfig,list):
             # Fix: add functions to process shelf  dataconfig like json
             print ("json")  
-
-
-        
-        data = super(FurnitureSerializer, self).to_internal_value(data)
+            
         return data
 
     def update(self,instance,validated_data):

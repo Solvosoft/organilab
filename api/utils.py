@@ -1,14 +1,15 @@
 
 from django.db.models.query_utils import Q
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.http.response import HttpResponse
 from laboratory import utils as utils_lab
 from laboratory import shelf_utils
 import json
 
-STATUS_304 =  "{'detail' :'Not Modified'}"
-STATUS_400 =  "{'detail' :'Not Found'}"
-STATUS_500 =  "{'detail' :'error'}"
+STATUS_304 =  {'detail' : _('Not Modified')}
+STATUS_400 =  {'detail' : _('Not Found')}
+STATUS_500 =  {'detail' : _('error')}
 
 RESPONSE_VALUE= {304:STATUS_304,400:STATUS_400,500:STATUS_500}
 
