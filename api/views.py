@@ -90,7 +90,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
         build your get with your user token valid
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         URL filters: /api/4/rooms/?id=2  
         """
@@ -125,7 +125,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
         build your put with your user token valid
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
         
         Body: {"id":18,"name":"Sala B4"}
          
@@ -153,7 +153,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: {"name":"Sala B4"} 
         """
@@ -178,7 +178,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
         build your delete with your user token valid 
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         """
         user = request.user
@@ -204,7 +204,7 @@ class FurnitureAPIView(GenericAPIView):
         build your get with your user token valid
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
         
         URL filters: /api/4/furniture/?id=2  
          
@@ -239,7 +239,7 @@ class FurnitureAPIView(GenericAPIView):
         build your put with your user token valid
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
         
         Body:{
             "name": "A-02 Gabinete azul de reactivos corrosivos M5",
@@ -271,7 +271,7 @@ class FurnitureAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: {
             "name": "A-02 Gabinete azul de reactivos corrosivos M5",
@@ -299,7 +299,7 @@ class FurnitureAPIView(GenericAPIView):
         build your delete with your user token valid 
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         """
         user = request.user
@@ -326,7 +326,7 @@ class ShelfAPIView(GenericAPIView):
         build your get with your user token valid
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         URL filters: /api/4/shelf/?id=2  
         """
@@ -360,7 +360,7 @@ class ShelfAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: {
             "name": "Tapas",
@@ -395,7 +395,7 @@ class ShelfAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: 
         """            
@@ -418,7 +418,7 @@ class ShelfAPIView(GenericAPIView):
         build your delete with your user token valid 
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         """
         user = request.user
@@ -455,7 +455,7 @@ class ShelfObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]        
+               {"key":"Content-Type","value":"application/json"}]        
         """      
         params = request.query_params
         user = request.user
@@ -483,7 +483,7 @@ class ShelfObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body:{
             "quantity": 1,
@@ -515,7 +515,7 @@ class ShelfObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: 
             {
@@ -545,7 +545,7 @@ class ShelfObjectAPIView(GenericAPIView):
         build your delete with your user token valid 
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         """
         user = request.user
@@ -580,7 +580,7 @@ class ObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]        
+               {"key":"Content-Type","value":"application/json" }]        
         """           
         user=request.user
         params= request.query_params
@@ -608,7 +608,7 @@ class ObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: 
          {
@@ -649,7 +649,7 @@ class ObjectAPIView(GenericAPIView):
         build your post with your user token valid 
     
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         Body: 
          {
@@ -686,7 +686,7 @@ class ObjectAPIView(GenericAPIView):
         build your delete with your user token valid 
         
         Header: [{"key":"Authorization","value":"Token  a98fa58aacb028eb6aa83cd3ab8a827d919db399"},
-               {"key":"Content-Type","value":"application/json","description":""}]
+               {"key":"Content-Type","value":"application/json" }]
          
         """
         user = request.user
