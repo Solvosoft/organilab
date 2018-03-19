@@ -26,7 +26,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
 class ShelfSerializer(serializers.ModelSerializer):
     row = serializers.IntegerField()
     col = serializers.IntegerField()
-
+ 
     class Meta:
         model = Shelf
         fields = '__all__' 
@@ -34,7 +34,7 @@ class ShelfSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         data = super(ShelfSerializer, self).to_internal_value(data)
         furniture = data.get('furniture')
-        
+    
         col = data.get('col')
         if (col > furniture.get_col_count()  or col < 0):
             raise serializers.ValidationError({ 'col': ["col %i not exist "%col] })       
@@ -54,8 +54,14 @@ class ShelfSerializer(serializers.ModelSerializer):
         return Comment.objects.create(**validated_data)
         
     def update(self,instance,validated_data):
-        print(validated_data)
+
+
         furniture = validated_data.get('furniture')
+        
+        if  furniture != instance.furniture :
+            raise serializers.ValidationError({ 'furniture': ["Furniture do not is changeble"] }) 
+            
+        
         col = validated_data.get('col')
         row = validated_data.get('row')             
         id = instance.pk
