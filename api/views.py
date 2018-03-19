@@ -28,19 +28,19 @@ from laboratory.models import (Laboratory,
                                Object
                                 )
 from django.core.serializers import serialize
+from django.http.response import Http404
+
 def get_object_room(lab, pk):
     try:
         return lab.rooms.get(pk=pk)
     except LaboratoryRoom.DoesNotExist:
-        get_response_code(status.HTTP_400_BAD_REQUEST)
-        return LaboratoryRoom.objects.none()
+        raise Http404
             
 def get_object_furniture(queryset, pk):
     try:
         return  queryset.filter(pk=pk).get()
-    except LaboratoryRoom.DoesNotExist:
-        get_response_code(status.HTTP_400_BAD_REQUEST)
-        return Furniture.objects.none()
+    except Furniture.DoesNotExist:
+        raise Http404
     
 def get_object_shelf(furnitures,pk=None):
     try:
@@ -49,8 +49,7 @@ def get_object_shelf(furnitures,pk=None):
         else:
             return Shelf.objects.filter(furniture__in=furnitures)      
     except Shelf.DoesNotExist:
-        get_response_code(status.HTTP_400_BAD_REQUEST)
-        return Shelf.objects.none()            
+        raise Http404         
                         
                             
 def get_object_shelfobject(queryset,pk=None):
@@ -60,8 +59,7 @@ def get_object_shelfobject(queryset,pk=None):
         else:
             return queryset      
     except ShelfObject.DoesNotExist:
-        get_response_code(status.HTTP_400_BAD_REQUEST)
-        return Shelf.objects.none()            
+        raise Http404          
 def get_object_object(queryset,pk=None):
     try:
         if pk:
@@ -69,8 +67,7 @@ def get_object_object(queryset,pk=None):
         else:
             return queryset      
     except Object.DoesNotExist:
-        get_response_code(status.HTTP_400_BAD_REQUEST)
-        return Object.objects.none()            
+        raise Http404            
         
    
 class LaboratoryRoomAPIView(GenericAPIView):

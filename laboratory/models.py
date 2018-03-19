@@ -219,11 +219,11 @@ class Shelf(models.Model):
     
 
     def positions(self):
-        positions = (None,None)
-        furniture = self.furniture
-        if furniture:
-            positions = furniture.get_position_shelf(self.pk)
-        return positions
+        if hasattr(self, 'furniture') :
+            furniture = self.furniture
+            if furniture:
+                return furniture.get_position_shelf(self.pk)
+        return (None,None)
 
     def row(self):
         (row,col) = self.positions()
@@ -302,7 +302,9 @@ class Furniture(models.Model):
 
         self.dataconfig = str(dataconfig)
         self.save()
+                 
 
+        
     def get_position_shelf(self,shelf_pk):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
@@ -319,7 +321,7 @@ class Furniture(models.Model):
                         val = col
                     else:
                         continue
-                    if shelf_pk in  val :
+                    if shelf_pk in  (val) :
                          return [irow,icol]
         return [None,None]
     
