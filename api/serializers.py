@@ -79,12 +79,17 @@ class ShelfSerializer(serializers.ModelSerializer):
       
     
 class ShelfObjectSerializer(serializers.ModelSerializer):
+    
     class Meta:
-        model = Shelf
+        model = ShelfObject
         fields = '__all__'
-        
+            
         
 class ObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
-        fields = '__all__'                
+        fields = '__all__' 
+        
+        extra_kwargs = {
+            'security_sheet': {'read_only': True},
+        }               
