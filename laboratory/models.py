@@ -274,11 +274,11 @@ class Furniture(models.Model):
                                 col.remove(shelf_pk)
                         else:
                             continue
-                        if shelf_pk in  val :
-                             col.remove(shelf_pk)
+                        
+                        if int(shelf_pk) in val:
+                             val.remove(int(shelf_pk))
                              
             self.dataconfig = str(dataconfig)
-            print (self.dataconfig)
             self.save()
         
     def change_shelf_dataconfig(self,shelf_row,shelf_col,shelf_pk):
