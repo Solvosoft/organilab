@@ -22,6 +22,7 @@ def get_token(test):
     url = '/api/token-auth/'
     data={"username":"test","password":"test"}
     response = test.client.post(url,data,format="json")
+    test.assertEqual(response.status_code,status.HTTP_200_OK) 
     token = response.data['token']     
     return token  
     
@@ -363,7 +364,7 @@ class test_api_Shelf(TreeData):
         response = self.client.get(url,format='json')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         
-        # Shelf setting on dataconfig 
+        # Shelf setting on dataconfig have been deleted
         listed =list_shelf_dataconfig(response.data['dataconfig'])
         self.assertTrue( (shelf_pk not in listed))          
            
@@ -459,9 +460,15 @@ class test_api_Object(TreeData):
         response=self.client.post(url, data,content_type="application/json")
         self.assertEqual(response.status_code,status.HTTP_401_UNAUTHORIZED)
            
-        
-        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        
+        # Bad formule format
+        data['molecular_formula']='XZ1ZX'
+        response = self.client.post(url,data,format='json')
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST) 
+        
+        # Good formule format    
+        data['molecular_formula']='H2SO4'            
         response = self.client.post(url,data,format='json')
         self.assertEqual(response.status_code,status.HTTP_201_CREATED)               
           
@@ -484,12 +491,17 @@ class test_api_Object(TreeData):
         response = self.client.put(url,data,content_type="application/json")
         self.assertEqual(response.status_code,status.HTTP_401_UNAUTHORIZED)   
        
-        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        
+        # Bad formule format
+        data['molecular_formula']='XZ1ZX'
         response = self.client.put(url,data,format='json')
-        self.assertEqual(response.status_code,status.HTTP_200_OK)  
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)  
  
-          
+        # Good formule format
+        data['molecular_formula']='H2SO4'
+        response = self.client.put(url,data,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)            
     
      
     def test_get(self):
