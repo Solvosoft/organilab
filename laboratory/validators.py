@@ -4,8 +4,14 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def validate_molecular_formula(value):
-    if not is_valid_formula(value):
+    if not isValidate_molecular_formula(value):
         raise ValidationError(
             _('%(value)s is not a valid molecular formula'),
             params={'value': value}
         )
+
+
+def isValidate_molecular_formula(value):
+    if not is_valid_formula(value):
+          return False
+    return True;  
