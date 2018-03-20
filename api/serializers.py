@@ -79,6 +79,7 @@ class ShelfSerializer(serializers.ModelSerializer):
         model = Shelf
         fields = '__all__' 
         
+        
     def to_internal_value(self, data):
         data = super(ShelfSerializer, self).to_internal_value(data)
         furniture = data.get('furniture')
