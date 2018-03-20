@@ -32,29 +32,20 @@ class FurnitureSerializer(serializers.ModelSerializer):
         data = super(FurnitureSerializer, self).to_internal_value(data)
         id = data.get('id')
         
-        
-        type = data.get('type')
-        if type not in Furniture.TYPE_CHOICES:
-            raise serializers.ValidationError(
-                 {
-                 'type': [
-                      _("%(value)s is not a valid type ")%{'value': type}
-                 ],
-                 'choices':  Furniture.TYPE_CHOICES  ,
-                 }) 
-                     
-    
+            
         
         dataconfig = data.get('dataconfig')
         if isinstance(dataconfig,str):
             #format regex valid
             match = re.search(r'^[\[\],\s"\d]*$',dataconfig)
             if not match:
-                 raise serializers.ValidationError({ 'dataconfig': [_("Invalid format in shelf dataconfig ")] }) 
+                 raise serializers.ValidationError({ 'dataconfig': 
+                                                    [_("Invalid format in shelf dataconfig ")] }) 
             # Can read the json format
             listed = list_shelf_dataconfig(dataconfig);
             if listed is False:
-                raise serializers.ValidationError({ 'dataconfig': [_("Does not is decodable")] }) 
+                raise serializers.ValidationError({ 'dataconfig': 
+                                                   [_("Does not is decodable")] }) 
             # data validation
             furniture_shelf_list = Shelf.objects.filter(pk__in=listed
                                                         ).filter(furniture__pk=id
@@ -62,7 +53,8 @@ class FurnitureSerializer(serializers.ModelSerializer):
             for ipk in listed:
                 if ipk not in furniture_shelf_list:
                      raise serializers.ValidationError(
-                         { 'dataconfig': ["%s %i: %s"%(ipk, _("Shelf"),_("It is not permitted"))] }
+                         { 'dataconfig': ["%s %i: %s"%(ipk, 
+                                                       _("Shelf"),_("It is not permitted"))] }
                      )
         elif isinstance(dataconfig,list):
             # Fix: add functions to process shelf  dataconfig like json
@@ -72,7 +64,8 @@ class FurnitureSerializer(serializers.ModelSerializer):
     def update(self,instance,validated_data):
         labroom = validated_data.get('labroom')
         if  labroom != instance.labroom :
-            raise serializers.ValidationError({ 'labroom': [_("Laboratoryroom is not changeable")] }) 
+            raise serializers.ValidationError({ 'labroom': 
+                                               [_("Laboratoryroom is not changeable")] }) 
 
     
         return super(FurnitureSerializer, self).update(instance,validated_data)
@@ -115,7 +108,8 @@ class ShelfSerializer(serializers.ModelSerializer):
         furniture = validated_data.get('furniture')
         
         if  furniture != instance.furniture :
-            raise serializers.ValidationError({ 'furniture': [_("Furniture is not changeable")] }) 
+            raise serializers.ValidationError({ 'furniture':
+                                                [_("Furniture is not changeable")] }) 
             
         
         col = validated_data.get('col')
@@ -151,16 +145,6 @@ class ShelfObjectSerializer(serializers.ModelSerializer):
      
     def to_internal_value(self,data):
         
-        measurement_unit = data.get('measurement_unit')
-        if measurement_unit not in ShelfObject.CHOICES:
-            raise serializers.ValidationError(
-                 {
-                 'measurement_unit': [
-                      _("%(value)s is not a valid measurement ")%{'value': measurement_unit}
-                 ],
-                 'choices':  ShelfObject.CHOICES  ,
-                 })         
-            
         data = super(ShelfObjectSerializer, self).to_internal_value(data)
         return data        
         
@@ -180,26 +164,6 @@ class ObjectSerializer(serializers.ModelSerializer):
                  { 'molecular_formula': [
                       _("%(value)s is not a valid molecular formula")%{'value': formule}
                       ] }) 
-             
-        imdg_code = data.get('imdg_code')
-        if imdg_code not in Object.IDMG_CHOICES:
-            raise serializers.ValidationError(
-                 {
-                 'imdg_code': [
-                      _("%(value)s is not a valid code ")%{'value': imdg_code}
-                 ],
-                 'choices':  Object.IDMG_CHOICES  ,
-                 }) 
-            
-        type = data.get('type')
-        if imdg_code not in Object.TYPE_CHOICES:
-            raise serializers.ValidationError(
-                 {
-                 'type': [
-                      _("%(value)s is not a valid type ")%{'value': type}
-                 ],
-                 'choices':  Object.TYPE_CHOICES  ,
-                 }) 
-                               
+                                                   
         data = super(ObjectSerializer, self).to_internal_value(data)
         return data
