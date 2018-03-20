@@ -40,6 +40,10 @@ def filter_laboratorist_technician(user,user_org):
 def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_technician):
     if not user or not lab:
         return False
+    
+    # django admins        
+    if user.is_superuser:
+        return True;
             
     # Check org of labs
     lab_org = lab.organization  if hasattr(lab, 'organization') else None

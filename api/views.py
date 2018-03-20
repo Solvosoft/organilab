@@ -35,7 +35,8 @@ def get_object_room(lab, pk):
         return lab.rooms.get(pk=pk)
     except LaboratoryRoom.DoesNotExist:
         raise Http404
-            
+
+                
 def get_object_furniture(queryset, pk):
     try:
         return  queryset.filter(pk=pk).get()
@@ -127,7 +128,7 @@ class LaboratoryRoomAPIView(GenericAPIView):
         user = request.user
         (lab,perm) = get_valid_lab(lab_pk,user,'laboratory.change_laboratoryroom')
         if perm:
-            lab_room = get_object_room_lab(lab,pk)
+            lab_room = get_object_room(lab,pk)
             if lab_room :
                 serializer = LaboratoryRoomSerializer(lab_room,data=request.data)
                 if serializer.is_valid():
@@ -657,7 +658,7 @@ class ObjectAPIView(GenericAPIView):
             serializer = ObjectSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save();
-                return Response (serializer.data)
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
             else: 
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST)     
