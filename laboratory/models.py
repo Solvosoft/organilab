@@ -266,13 +266,19 @@ class Furniture(models.Model):
                             val = col.split(",")
                         elif type(col) == int:
                             val = [col]
+                            if shelf_pk in  val :
+                                 val.set('')
                         elif type(col) == list:
                             val = col
+                            if shelf_pk in  val :
+                                col.remove(shelf_pk)
                         else:
                             continue
                         if shelf_pk in  val :
-                             val.remove(shelf_pk)
+                             col.remove(shelf_pk)
+                             
             self.dataconfig = str(dataconfig)
+            print (self.dataconfig)
             self.save()
         
     def change_shelf_dataconfig(self,shelf_row,shelf_col,shelf_pk):
@@ -296,7 +302,10 @@ class Furniture(models.Model):
                              
                         if shelf_row==irow and shelf_col==icol:    
                             val.append(shelf_pk)
-    
+                            
+                    else: # add id when it is white
+                        if shelf_row==irow and shelf_col==icol:    
+                            col.append(shelf_pk)        
             self.dataconfig = str(dataconfig)
             self.save()
                  
@@ -320,6 +329,7 @@ class Furniture(models.Model):
                             continue
                         if shelf_pk in  (val) :
                              return [irow,icol]
+                       
         return [None,None]
     
     def get_row_count(self):
