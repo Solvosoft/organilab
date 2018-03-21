@@ -44,7 +44,7 @@ class ObjectView(object):
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
-        )))
+        )),'laboratory.add_object')
 
         @method_decorator(user_group_perms(perm='laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
@@ -63,7 +63,7 @@ class ObjectView(object):
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
-        )))
+        )),'laboratory.change_object')
 
         @method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
@@ -76,7 +76,7 @@ class ObjectView(object):
             model=self.model,
             success_url="/",
             template_name=self.template_name_base + "_delete.html"
-        )))
+        )),'laboratory.delete_object')
 
         @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')    
         class ObjectListView(ListView):
@@ -113,7 +113,7 @@ class ObjectView(object):
             paginate_by=10,
             ordering=['code'],
             template_name=self.template_name_base + "_list.html"
-        )))
+        )),'laboratory.change_object')
 
     def get_urls(self):
         return [
