@@ -113,7 +113,7 @@ class ObjectView(object):
             paginate_by=10,
             ordering=['code'],
             template_name=self.template_name_base + "_list.html"
-        )),'laboratory.change_object')
+        )),'laboratory.view_object')
 
     def get_urls(self):
         return [
