@@ -24,6 +24,8 @@ def sum_ancestors_group(user_org,lab_org,perm):
 def check_user_has_perm(user, perm):
    return bool(user.has_perm(perm))
 
+
+
 def filter_laboratorist_technician_student(user,user_org):
     return Laboratory.objects.filter(Q(students__pk=user.pk)   |     
                                      Q(laboratorists__pk=user.pk) |
@@ -38,6 +40,10 @@ def filter_laboratorist_technician(user,user_org):
 def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_technician):
     if not user or not lab:
         return False
+    
+    # django admins        
+    if user.is_superuser:
+        return True;
             
     # Check org of labs
     lab_org = lab.organization  if hasattr(lab, 'organization') else None
@@ -59,5 +65,5 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_t
             return True
     return False    
 
-
+    
 check_lab_perms = check_lab_group_has_perm
