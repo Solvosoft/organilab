@@ -297,8 +297,9 @@ class Furniture(models.Model):
                             val = col
                         else:
                             continue
-                        if shelf_pk in  val :
-                             val.remove(shelf_pk)
+                        #remove old postion
+                        if int(shelf_pk) in val:
+                             val.remove(int(shelf_pk))
                              
                         if shelf_row==irow and shelf_col==icol:    
                             val.append(shelf_pk)
