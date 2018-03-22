@@ -13,7 +13,7 @@
 {{data.get_type_display}} 
 <p>{% trans 'Position:' %} {{data.name}}</p>
 
-{$ if perm_change_shelf %}
+{% if perm_change_shelf %}
 	<a class="btn btn-xs btn-warning" data-ajax="true" data-success="processResponse"
 	href="{% url 'laboratory:shelf_edit' laboratory data.pk crow ccol %}?furniture={{data.furniture.pk}}"> {% trans 'Edit' %}</a>
 {% endif %}
