@@ -1,4 +1,8 @@
+'''
+Created on 3/15/2018
 
+@author: migue56
+'''
 from django.db.models.query_utils import Q
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
