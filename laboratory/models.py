@@ -5,16 +5,13 @@ import json
 
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.db.models import Q
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from pyEQL import Solution as PySolution
 from mptt.models import MPTTModel, TreeForeignKey
-from django.db.models import Q
-from laboratory.validators import validate_molecular_formula
-
-
 from location_field.models.plain import PlainLocationField
-
+from laboratory.validators import validate_molecular_formula
 
 @python_2_unicode_compatible
 class CLInventory(models.Model):
@@ -267,7 +264,7 @@ class Furniture(models.Model):
                         elif type(col) == int:
                             val = [col]
                             if shelf_pk in  val :
-                                 val.set('')
+                                val.set('')
                         elif type(col) == list:
                             val = col
                             if shelf_pk in  val :
@@ -276,7 +273,7 @@ class Furniture(models.Model):
                             continue
                         
                         if int(shelf_pk) in val:
-                             val.remove(int(shelf_pk))
+                            val.remove(int(shelf_pk))
                              
             self.dataconfig = str(dataconfig)
             self.save()
@@ -299,7 +296,7 @@ class Furniture(models.Model):
                             continue
                         #remove old postion
                         if int(shelf_pk) in val:
-                             val.remove(int(shelf_pk))
+                            val.remove(int(shelf_pk))
                              
                         if shelf_row==irow and shelf_col==icol:    
                             val.append(shelf_pk)
@@ -329,7 +326,7 @@ class Furniture(models.Model):
                         else:
                             continue
                         if shelf_pk in  (val) :
-                             return [irow,icol]
+                            return [irow,icol]
                        
         return [None,None]
     
@@ -407,7 +404,7 @@ class OrganizationStructure(MPTTModel):
         return "%s"%self.name       
     
     def __repr__(self):
-       return self.__str__()
+        return self.__str__()
 
 
 @python_2_unicode_compatible
@@ -434,7 +431,7 @@ class PrincipalTechnician(models.Model):
         return "%s"%self.name
     
     def __repr__(self):
-       return self.__str__()  
+        return self.__str__()  
     
 @python_2_unicode_compatible
 class Laboratory(models.Model):
@@ -474,7 +471,7 @@ class Laboratory(models.Model):
     
 
     def __repr__(self):
-       return self.__str__()
+        return self.__str__()
 
      
 @python_2_unicode_compatible

@@ -6,7 +6,8 @@ Created on 4 may. 2017
 from django import template
 from laboratory.forms import ObjectSearchForm
 from django.shortcuts import get_object_or_404
-from laboratory.utils import check_lab_group_has_perm,filter_laboratorist_technician
+from laboratory.utils import check_lab_group_has_perm,filter_laboratorist_technician,\
+    get_user_laboratories
 from laboratory.models import Laboratory
 
 register = template.Library()
@@ -49,3 +50,10 @@ def check_perms(*args, **kwargs):
     perm= kwargs['perm']    
     return user.has_perm(perm)
 
+
+@register.simple_tag(takes_context=True)
+def get_user_labs(context):
+    if 'request' not in context:
+        return []
+
+    return get_user_laboratories(context['request'].user)

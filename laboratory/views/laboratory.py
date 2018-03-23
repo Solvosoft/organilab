@@ -22,6 +22,7 @@ from django.contrib import messages
 
 
 from laboratory.decorators import user_group_perms
+from django.urls.base import reverse
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -171,7 +172,7 @@ class SelectLaboratoryView(FormView):
         organizations = OrganizationStructure.os_manager.filter_user(user)
         # user have perm on that organization ?  else Use assigned user with direct relationship
         if not organizations:    
-             organizations=[]
+            organizations=[]
         labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                       Q(laboratorists__pk=user.pk) | 
                                       Q(principaltechnician__credentials=user.pk) | 
@@ -209,7 +210,7 @@ class SelectLaboratoryView(FormView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
-    template_name = 'laboratory/laboratory_create_form.html'
+    template_name = 'laboratory/laboratory_create.html'
     form_class = LaboratoryCreate
     success_url = '/'
 
@@ -227,7 +228,17 @@ class CreateLaboratoryFormView(FormView):
         context = super(CreateLaboratoryFormView,
                         self).get_context_data(**kwargs)
         return context
+    
+    def form_valid(self, form):
+        form.save()
+        self.object = form.instance
+        response = super(CreateLaboratoryFormView, self).form_valid(form)
+        
+        return response
 
+    def get_success_url(self):
+        print(self.object.pk)
+        return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk} )
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
