@@ -39,7 +39,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
             #format regex valid
             match = re.search(r'^[\[\],\s"\d]*$',dataconfig)
             if not match:
-                 raise serializers.ValidationError({ 'dataconfig': 
+                raise serializers.ValidationError({ 'dataconfig': 
                                                     [_("Invalid format in shelf dataconfig ")] }) 
             # Can read the json format
             listed = list_shelf_dataconfig(dataconfig);
@@ -52,7 +52,7 @@ class FurnitureSerializer(serializers.ModelSerializer):
                                                         ).values_list('pk',flat=True)
             for ipk in listed:
                 if ipk not in furniture_shelf_list:
-                     raise serializers.ValidationError(
+                    raise serializers.ValidationError(
                          { 'dataconfig': ["%s %i: %s"%(ipk, 
                                                        _("Shelf"),_("It is not permitted"))] }
                      )
@@ -89,7 +89,7 @@ class ShelfSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({ 'col': ["col %i: %s"%(col, _("Invalid"))] })       
         row = data.get('row')
         if (row >= furniture.get_row_count() or row < 0):
-           raise serializers.ValidationError({ 'row': ["row %i: %s"%(row ,_("Invalid"))] })
+            raise serializers.ValidationError({ 'row': ["row %i: %s"%(row ,_("Invalid"))] })
         return data
     
     def create(self, validated_data):
@@ -124,7 +124,7 @@ class ShelfSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
             output = super(ShelfSerializer, self).to_representation(instance)
             if hasattr(instance, 'furniture') :
-              (row,col) = instance.positions()
+                (row,col) = instance.positions()
             else: (row,col) = (None,None)  
             output["row"]  = row
             output["col"] = col
@@ -161,7 +161,7 @@ class ObjectSerializer(serializers.ModelSerializer):
         
         formule = data.get('molecular_formula')
         if not isValidate_molecular_formula(formule):
-             raise serializers.ValidationError(
+            raise serializers.ValidationError(
                  { 'molecular_formula': [
                       _("%(value)s is not a valid molecular formula")%{'value': formule}
                       ] }) 

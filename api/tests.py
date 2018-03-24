@@ -359,7 +359,7 @@ class test_api_Shelf(TreeData):
         self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)  
         
                 
-         # check changes on furniture dataconfig   
+        # check changes on furniture dataconfig   
         url="/api/%i/furniture/%i/"%(self.lab.pk,furniture_id)        
         response = self.client.get(url,format='json')
         self.assertEqual(response.status_code,status.HTTP_200_OK)

@@ -255,7 +255,7 @@ class FurnitureAPIView(GenericAPIView):
                     serializer.save();
                     return Response (serializer.data)
                 else: 
-                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST)     
     
     def post (self,request,lab_pk):
@@ -378,7 +378,7 @@ class ShelfAPIView(GenericAPIView):
                     serializer.save();
                     return Response (serializer.data)
                 else: 
-                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST)     
           
     
@@ -499,7 +499,7 @@ class ShelfObjectAPIView(GenericAPIView):
                     serializer.save();
                     return Response (serializer.data)
                 else: 
-                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST)   
          
     def post (selfself,request,lab_pk):
@@ -626,7 +626,7 @@ class ObjectAPIView(GenericAPIView):
                     serializer.save();
                     return Response (serializer.data)
                 else: 
-                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return get_response_code(status.HTTP_400_BAD_REQUEST) 
     
     def post(self,request,lab_pk):
@@ -679,10 +679,10 @@ class ObjectAPIView(GenericAPIView):
         if perm:
             listeds = self.get_Objects(lab_pk).values_list('id', flat=True)
             if pk not in listeds:
-                 object  = get_object_object(self.queryset,pk)             
-                 if object:
-                     object.delete()
-                     return Response(status=status.HTTP_204_NO_CONTENT)    
+                object  = get_object_object(self.queryset,pk)             
+                if object:
+                    object.delete()
+                    return Response(status=status.HTTP_204_NO_CONTENT)    
             else:
                 return get_response_code(status.HTTP_304_NOT_MODIFIED) 
         return get_response_code(status.HTTP_400_BAD_REQUEST)    

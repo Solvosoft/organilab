@@ -406,7 +406,14 @@ class OrganizationStructure(MPTTModel):
     def __repr__(self):
         return self.__str__()
 
-
+    @property
+    def laboratories(self):
+        labs=""
+        for lab in Laboratory.objects.filter(organization=self):
+            if labs:
+                labs += " -- "
+            labs += lab.name
+        return labs
 @python_2_unicode_compatible
 class PrincipalTechnician(models.Model):
     credentials = models.ManyToManyField(User)
