@@ -26,32 +26,22 @@
 {% if request.user.is_authenticated %}
 {% include 'laboratory/search_widget.html' %}
 
-{%  has_perms "laboratory.change_laboratory" as perm_change_lab %}
-{%  has_perms "laboratory.view_laboratory" as perm_lab %}
-{%  has_perms "laboratory.view_solution" as perm_solution %}
-{%  has_perms "laboratory.view_furniture" as perm_furniture %}
-{%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
-{%  has_perms "laboratory.view_objectfeatures" as perm_objectfeatures %}
-{%  has_perms "laboratory.view_object" as perm_object %}
-{%  has_perms "academic.view_procedure" as perm_procedure  %}
-{%  has_perms "laboratory.do_report" as perm_do_report  %}
-{%  has_perms "laboratory.view_report" as perm_report  %}
-
+{% index_permissions as userperms %}
 
 
 <div class="row">
-         {% if perm_laboratoryroom or perm_procedure or perm_solution or perm_change_lab %}
+         {% if userperms.show_labview %}
         <div id="index_labview_id" class="col-md-4">
         <h3 class="text-center">
           <strong>{% trans 'Laboratory view' %}</strong>
         </h3>
         </div>
 		{% endif %}
-        {% if perm_laboratoryroom or perm_furniture or perm_object or perm_objectfeatures %}
+        {% if userperms.admin_lab %}
       <div id="index_manage_id" class="col-md-4"><h3 class="text-center">
         <strong>{% trans 'Laboratory administration' %}</strong></h3></div>
         {% endif %}
-        {% if perm_report and perm_do_report %}
+        {% if userperms.show_reports %}
       <div id="index_report_id" class="col-md-4">
       <h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3>
       </div>
@@ -61,7 +51,7 @@
 		<br><br>
 
     <div class="row">
-      {% if perm_laboratoryroom or perm_procedure or perm_solution or perm_change_lab %}
+      {% if userperms.show_labview  %}
         <div class="col-md-4 text-center">
           <div class="row">
             <img src="{% static 'images/laboratory.png' %}"
@@ -72,35 +62,30 @@
           <div class="row">
 
             <ul class="list-group">
-              {% if perm_laboratoryroom %}
+              {% if userperms.view_laboratory %}
               <li class="list-group-item">
-              <a href="{% url 'laboratory:rooms_list' laboratory %}">
+                <a href="{% url 'laboratory:rooms_list' laboratory %}">
                 <strong>{% trans 'Laboratory view' %}</strong></a>
                 </li>
                {% endif %}
-              {% if perm_procedure %}
+              {% if userperms.view_procedure %}
               <li class="list-group-item">
               <a href="{% url 'academic_procedure_list' %}">
                 <strong>{% trans 'Procedures' %}</strong></a>
               </li>
                {% endif %}
-               {% if perm_solution %}
+               {% if userperms.view_solutions %}
 			   <li class="list-group-item">
               <a href="{% url 'laboratory:solution_list' laboratory %}">
                 <strong>{% trans 'Dissolution calculator' %}</strong></a>
                 </li>
                {% endif %}
-               {% if perm_change_lab %}               
-			   <li class="list-group-item">
-              <a href="{% url 'laboratory:access_list_students' laboratory %}">
-                <strong>{% trans 'Access list' %}</strong></a>
-                </li>
-               {% endif %}
+
             </ul>
           </div>
         </div>
 		 {% endif %}
-	 {% if perm_laboratoryroom or perm_furniture or perm_object or perm_objectfeatures %}
+	 {% if userperms.admin_lab %}
       <div class="col-md-4 text-center">
         <div class="row">
           <img src="{% static 'images/management.png' %}"
@@ -111,31 +96,37 @@
         <div class="row">
 
           <ul class="list-group">
-            {% if perm_laboratoryroom %}
+            {% if userperms.add_laboratory %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
               {% endif %}
-              {% if perm_furniture %}
+              {% if userperms.add_furniture  %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
               </li>
                {% endif %} 
-              {% if perm_object %}                         
+              {% if userperms.add_object %}                         
               <li class="list-group-item"><a
                 href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
               </li>
                {% endif %}
-               {% if perm_objectfeatures %}
+               {% if userperms.add_features %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
               </li>
               {% endif %}
+               {% if userperms.manage_laboratory %}               
+			   <li class="list-group-item">
+              <a href="{% url 'laboratory:access_list_students' laboratory %}">
+                <strong>{% trans 'Access list' %}</strong></a>
+                </li>
+               {% endif %}
           </ul>
 
         </div>
       </div>
    {% endif %}
-         {% if perm_report and perm_do_report %}
+         {% if userperms.show_reports %}
       <div class="col-md-4 text-center">
         <div class="row">
           <img src="{% static 'images/report.png' %}"
@@ -146,20 +137,18 @@
         <div class="row">
 
           <ul class="list-group">
-               {% if perm_laboratory and perm_do_report %}
+               {% if userperms.do_reports %}
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
               </li>
                {% endif %}
-               {% if perm_furniture and perm_do_report %}               
+                              
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
               </li>
-               {% endif %}              
-               {% if perm_object and perm_do_report%}              
+
               <li class="list-group-item"><a
                 href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a></li>
-               {% endif %}                
           </ul>
         </div>
       </div>

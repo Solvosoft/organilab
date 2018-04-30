@@ -20,7 +20,7 @@ from laboratory.decorators import user_group_perms
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_laboratoryroom'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
