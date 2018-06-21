@@ -25,6 +25,7 @@ SECRET_KEY = '8sko4lo%ca!0e^-i%7@6hnzxmc7l0^m040n%jy99z_e8cvmta)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+FULL_APPS = False
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
@@ -32,6 +33,7 @@ else:
     ALLOWED_HOSTS = []
 
 # Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_ajax',
     'laboratory',
+    'authentication',
     'academic',
     "bootstrapform",
     "djreservation",
@@ -55,23 +58,31 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'rest_framework',
     'rest_framework.authtoken',
-    'api',
-    'demoQA'
+    'snowpenguin.django.recaptcha2',
 ]
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 50,
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
-}
+if FULL_APPS:
+    INSTALLED_APPS += [
+        'api',
+        'demoQA'
+    ]
+
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.TokenAuthentication',
+        ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
+        'DEFAULT_PARSER_CLASSES': (
+            'rest_framework.parsers.JSONParser',
+        ),
+        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+        'PAGE_SIZE': 50,
+        'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+    }
+
+RECAPTCHA_PRIVATE_KEY = '6LdxAmAUAAAAAMxAz4s9em2TgxXUb7MGCZMGRE8l'
+RECAPTCHA_PUBLIC_KEY = '6LdxAmAUAAAAAH2R-6v5EZUALYcqs8AJyrlkqo7_'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 IMAGE_CROPPING_JQUERY_URL = None
@@ -208,3 +219,5 @@ CONSTANCE_CONFIG = {
 CONSTANCE_CONFIG_FIELDSETS = {
     'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK', 'GROUP_STUDENT_PK'),
 }
+
+ACCOUNT_ACTIVATION_DAYS = 2

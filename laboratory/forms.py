@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
+from laboratory.models import OrganizationStructure
 
 
 class ObjectSearchForm(forms.Form):
@@ -12,7 +13,7 @@ class ObjectSearchForm(forms.Form):
     all_labs = forms.BooleanField(
         widget=forms.CheckboxInput, required=False, label=_("All labs"))
 
-    
+
 class UserSearchForm(forms.Form):
     user = AutoCompleteSelectMultipleField(
         'users', required=False, help_text=_("Search by username, name or lastname"))
@@ -32,15 +33,25 @@ class UserCreate(UserCreationForm):
         user.save()
         return user
 
+
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'id': 'user_cb_'}))  # User_checkbox_id
     # For delete users. Add a delete button.
 
+
 class LaboratoryCreate(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(LaboratoryCreate, self).__init__(*args, **kwargs)
+        print(dir(self.fields['organization']))
+        self.fields['organization'].queryset = \
+            OrganizationStructure.os_manager.filter_user(user)
+
     class Meta:
         model = Laboratory
-        fields = ['name', 'phone_number', 'location', 'geolocation', 'organization']
+        fields = ['name', 'phone_number', 'location',
+                  'geolocation', 'organization']
 
 #Traduccion (Multilenguaje)
 # Validacion()

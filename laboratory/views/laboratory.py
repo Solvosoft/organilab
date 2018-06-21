@@ -13,7 +13,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
-from laboratory.models import Laboratory,OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
@@ -23,6 +23,7 @@ from django.contrib import messages
 
 from laboratory.decorators import user_group_perms
 from django.urls.base import reverse
+
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -95,6 +96,7 @@ def del_admins_user(request, pk, pk_user):
 def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
     return render_admins_lab(request, lab.lab_admins.all(), lab)
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_laboratory'), name='dispatch')
@@ -170,16 +172,17 @@ class SelectLaboratoryView(FormView):
 
     def get_laboratories(self, user):
         organizations = OrganizationStructure.os_manager.filter_user(user)
-        # user have perm on that organization ?  else Use assigned user with direct relationship
-        if not organizations:    
-            organizations=[]
+        # user have perm on that organization ?  else Use assigned user with
+        # direct relationship
+        if not organizations:
+            organizations = []
         labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
-                                      Q(laboratorists__pk=user.pk) | 
-                                      Q(principaltechnician__credentials=user.pk) | 
-                                      Q (organization__in=organizations) 
-                                      ).distinct()
+                                         Q(laboratorists__pk=user.pk) |
+                                         Q(principaltechnician__credentials=user.pk) |
+                                         Q(organization__in=organizations)
+                                         ).distinct()
         return labs
-    
+
     def get_form_kwargs(self):
         kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
         user = self.request.user
@@ -221,24 +224,25 @@ class CreateLaboratoryFormView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
-        user = self.request.user
+        kwargs['user'] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(CreateLaboratoryFormView,
                         self).get_context_data(**kwargs)
         return context
-    
+
     def form_valid(self, form):
         form.save()
         self.object = form.instance
         response = super(CreateLaboratoryFormView, self).form_valid(form)
-        
+
         return response
 
     def get_success_url(self):
         print(self.object.pk)
-        return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk} )
+        return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk})
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')

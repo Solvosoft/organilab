@@ -13,6 +13,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from location_field.models.plain import PlainLocationField
 from laboratory.validators import validate_molecular_formula
 
+
 @python_2_unicode_compatible
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
@@ -28,7 +29,8 @@ class CLInventory(models.Model):
 
     def __str__(self):
         return '%s' % self.name
-    
+
+
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
     GENERAL_USE = "0"
@@ -54,7 +56,8 @@ class ObjectFeatures(models.Model):
         (OTHER, _('Other'))
     )
 
-    name = models.CharField(_('Name'), max_length=2, choices=CHOICES, unique=True)
+    name = models.CharField(_('Name'), max_length=2,
+                            choices=CHOICES, unique=True)
     description = models.TextField(_('Description'))
 
     class Meta:
@@ -108,7 +111,8 @@ class Object(models.Model):
     security_sheet = models.FileField(
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
-    imdg_code = models.CharField(_("IMDG code"), choices=IDMG_CHOICES, max_length=1, null=True, blank=True)
+    imdg_code = models.CharField(
+        _("IMDG code"), choices=IDMG_CHOICES, max_length=1, null=True, blank=True)
 
     features = models.ManyToManyField(ObjectFeatures)
 
@@ -153,15 +157,15 @@ class ShelfObject(models.Model):
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=CHOICES)
 
-
     @staticmethod
-    def get_units( unit):
+    def get_units(unit):
         choices = dict(ShelfObject.CHOICES)
-        unit=str(unit)
+        unit = str(unit)
         if unit in choices:
             return str(choices[unit])
-        
+
         return ''
+
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
@@ -210,29 +214,29 @@ class Shelf(models.Model):
 
     def count_objects(self):
         return ShelfObject.objects.filter(shelf=self).count()
-    
 
     def positions(self):
-        if hasattr(self, 'furniture') :
+        if hasattr(self, 'furniture'):
             furniture = self.furniture
             if furniture:
                 return furniture.get_position_shelf(self.pk)
-        return (None,None)
+        return (None, None)
 
     def row(self):
-        (row,col) = self.positions()
+        (row, col) = self.positions()
         return row
-    
+
     def col(self):
-        (row,col) = self.positions()
+        (row, col) = self.positions()
         return col
-    
+
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
         permissions = (
             ("view_shelf", _("Can see available shelf")),
         )
+
     def __str__(self):
         return '%s %s %s' % (self.furniture, self.get_type_display(),
                              self.name)
@@ -251,10 +255,10 @@ class Furniture(models.Model):
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     dataconfig = models.TextField(_('Data configuration'))
 
-    def remove_shelf_dataconfig(self,shelf_pk):
+    def remove_shelf_dataconfig(self, shelf_pk):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
-    
+
             for irow, row in enumerate(dataconfig):
                 for icol, col in enumerate(row):
                     if col:
@@ -263,56 +267,25 @@ class Furniture(models.Model):
                             val = col.split(",")
                         elif type(col) == int:
                             val = [col]
-                            if shelf_pk in  val :
+                            if shelf_pk in val:
                                 val.set('')
                         elif type(col) == list:
                             val = col
-                            if shelf_pk in  val :
+                            if shelf_pk in val:
                                 col.remove(shelf_pk)
                         else:
                             continue
-                        
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-                             
-            self.dataconfig = str(dataconfig)
-            self.save()
-        
-    def change_shelf_dataconfig(self,shelf_row,shelf_col,shelf_pk):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-    
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if type(col) == str:
-                            val = col.split(",")
-                        elif type(col) == int:
-                            val = [col]
-                        elif type(col) == list:
-                            val = col
-                        else:
-                            continue
-                        #remove old postion
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-                             
-                        if shelf_row==irow and shelf_col==icol:    
-                            val.append(shelf_pk)
-                            
-                    else: # add id when it is white
-                        if shelf_row==irow and shelf_col==icol:    
-                            col.append(shelf_pk)        
-            self.dataconfig = str(dataconfig)
-            self.save()
-                 
 
-        
-    def get_position_shelf(self,shelf_pk):
+                        if int(shelf_pk) in val:
+                            val.remove(int(shelf_pk))
+
+            self.dataconfig = str(dataconfig)
+            self.save()
+
+    def change_shelf_dataconfig(self, shelf_row, shelf_col, shelf_pk):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
-    
+
             for irow, row in enumerate(dataconfig):
                 for icol, col in enumerate(row):
                     if col:
@@ -325,15 +298,44 @@ class Furniture(models.Model):
                             val = col
                         else:
                             continue
-                        if shelf_pk in  (val) :
-                            return [irow,icol]
-                       
-        return [None,None]
-    
+                        # remove old postion
+                        if int(shelf_pk) in val:
+                            val.remove(int(shelf_pk))
+
+                        if shelf_row == irow and shelf_col == icol:
+                            val.append(shelf_pk)
+
+                    else:  # add id when it is white
+                        if shelf_row == irow and shelf_col == icol:
+                            col.append(shelf_pk)
+            self.dataconfig = str(dataconfig)
+            self.save()
+
+    def get_position_shelf(self, shelf_pk):
+        if self.dataconfig:
+            dataconfig = json.loads(self.dataconfig)
+
+            for irow, row in enumerate(dataconfig):
+                for icol, col in enumerate(row):
+                    if col:
+                        val = None
+                        if type(col) == str:
+                            val = col.split(",")
+                        elif type(col) == int:
+                            val = [col]
+                        elif type(col) == list:
+                            val = col
+                        else:
+                            continue
+                        if shelf_pk in (val):
+                            return [irow, icol]
+
+        return [None, None]
+
     def get_row_count(self):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
-            count = len(dataconfig) 
+            count = len(dataconfig)
             return count
         return 0
 
@@ -341,12 +343,9 @@ class Furniture(models.Model):
         if self.dataconfig:
             dataconfig = json.loads(self.dataconfig)
             for irow, row in enumerate(dataconfig):
-                count = len(row) 
+                count = len(row)
                 return count
         return 0
-            
-        
-
 
     class Meta:
         verbose_name = _('Piece of furniture')
@@ -355,107 +354,114 @@ class Furniture(models.Model):
         permissions = (
             ("view_furniture", _("Can see available Furniture")),
         )
+
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def __str__(self):
         return '%s' % (self.name,)
-    
+
+
 class OrganizationStructureManager(models.Manager):
-         
-    def filter_user(self,user):
-        organizations = OrganizationStructure.objects.filter(principaltechnician__credentials=user)
-        
+
+    def filter_user(self, user):
+        organizations = OrganizationStructure.objects.filter(
+            principaltechnician__credentials=user)
+
         orgs = None
         for org in organizations:
             if orgs is None:
-                orgs = Q (pk__in=org.get_descendants(include_self=True))
+                orgs = Q(pk__in=org.get_descendants(include_self=True))
             else:
-                orgs |= Q (pk__in=org.get_descendants(include_self=True) )
-                 
+                orgs |= Q(pk__in=org.get_descendants(include_self=True))
+
         if orgs is None:
             return OrganizationStructure.objects.none()
-        else:          
+        else:
             return OrganizationStructure.objects.filter(orgs)
-       
-    def get_children(self,org_id):
+
+    def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
-    
+
+
 @python_2_unicode_compatible
 class OrganizationStructure(MPTTModel):
-    name   = models.CharField(_('Name'), max_length=255)
-    group  = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
-    
-    parent =  TreeForeignKey('self', blank=True, null=True, related_name='children')
-       
-       
-    os_manager = OrganizationStructureManager()   
-    
+    name = models.CharField(_('Name'), max_length=255)
+    group = models.ForeignKey(
+        Group, blank=True, null=True, on_delete=models.SET_NULL)
+
+    parent = TreeForeignKey(
+        'self', blank=True, null=True, related_name='children')
+
+    os_manager = OrganizationStructureManager()
+
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
         permissions = (
-            ("view_organizationstructure", _("Can see available OrganizationStructure")),
+            ("view_organizationstructure", _(
+                "Can see available OrganizationStructure")),
         )
+
     class MPTTMeta:
-        order_insertion_by=  ['name',]
-                        
+        order_insertion_by = ['name', ]
+
     def __str__(self):
-        return "%s"%self.name       
-    
+        return "%s" % self.name
+
     def __repr__(self):
         return self.__str__()
 
     @property
     def laboratories(self):
-        labs=""
+        labs = ""
         for lab in Laboratory.objects.filter(organization=self):
             if labs:
                 labs += " -- "
             labs += lab.name
         return labs
+
+
 @python_2_unicode_compatible
 class PrincipalTechnician(models.Model):
     credentials = models.ManyToManyField(User)
-    name   = models.CharField(_('Name'), max_length=255)    
-    phone_number = models.CharField(_('Phone'),default='',max_length=25)
-    id_card = models.CharField(_('ID Card'),max_length=100)
+    name = models.CharField(_('Name'), max_length=255)
+    phone_number = models.CharField(_('Phone'), default='', max_length=25)
+    id_card = models.CharField(_('ID Card'), max_length=100)
     email = models.EmailField(_('Email address'))
 
+    organization = TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    assigned = models.ForeignKey(
+        'Laboratory', blank=True, null=True, on_delete=models.SET_NULL)
 
-    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
-    assigned = models.ForeignKey('Laboratory',blank=True,null=True, on_delete=models.SET_NULL)
-    
     class MPTTMeta:
-        order_insertion_by=  ['name',]    
-        
+        order_insertion_by = ['name', ]
+
     class Meta:
         permissions = (
             ("view_principaltechnician", _("Can see available PrincipalTechnician")),
         )
-        
+
     def __str__(self):
-        return "%s"%self.name
-    
+        return "%s" % self.name
+
     def __repr__(self):
-        return self.__str__()  
-    
+        return self.__str__()
+
+
 @python_2_unicode_compatible
 class Laboratory(models.Model):
-    name = models.CharField(_('Laboratory name'),default='', max_length=255)
-    phone_number = models.CharField(_('Phone'),default='',max_length=25)
-    
-    location = models.CharField(_('Location'),default='',max_length=255)
-    geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',zoom=15)
-    
-    
-    organization =  TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    name = models.CharField(_('Laboratory name'), default='', max_length=255)
+    phone_number = models.CharField(_('Phone'), default='', max_length=25)
 
-    
-    
+    location = models.CharField(_('Location'), default='', max_length=255)
+    geolocation = PlainLocationField(
+        default='9.895804362670006,-84.1552734375', zoom=15)
+
+    organization = TreeForeignKey(OrganizationStructure)
+
     rooms = models.ManyToManyField(
         'LaboratoryRoom', blank=True)
-    related_labs = models.ManyToManyField('Laboratory', blank=True)
 
     laboratorists = models.ManyToManyField(
         User, related_name='laboratorists', blank=True)
@@ -469,23 +475,23 @@ class Laboratory(models.Model):
         permissions = (
             ("view_laboratory", _("Can see available laboratory")),
         )
-        
+
     class MPTTMeta:
-        order_insertion_by=  ['name',]        
+        order_insertion_by = ['name', ]
 
     def __str__(self):
         return '%s' % (self.name,)
-    
 
     def __repr__(self):
         return self.__str__()
 
-     
+
 @python_2_unicode_compatible
 class FeedbackEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
     explanation = models.TextField(_('Explanation'), blank=True)
-    related_file = models.FileField(_('Related file'), upload_to='media/feedback_entries/', blank=True)
+    related_file = models.FileField(
+        _('Related file'), upload_to='media/feedback_entries/', blank=True)
 
     class Meta:
         verbose_name = _('Feedback entry')
@@ -498,13 +504,13 @@ class FeedbackEntry(models.Model):
         return '%s' % (self.title,)
 
 
-
 @python_2_unicode_compatible
 class Solution(models.Model):
-    name = models.CharField(_('Name'),default='', max_length=255)
+    name = models.CharField(_('Name'), default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
     volume = models.CharField(_('Volumen'), max_length=100)
-    temperature = models.CharField(_('Temperature'), default='25 degC', max_length=100)
+    temperature = models.CharField(
+        _('Temperature'), default='25 degC', max_length=100)
     pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
     pH = models.IntegerField(_('pH'), default=7)
 
@@ -531,5 +537,3 @@ class Solution(models.Model):
             pressure=self.pressure,
             pH=self.pH
         )
-
-        
