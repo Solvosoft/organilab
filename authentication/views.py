@@ -28,16 +28,25 @@ class PermissionDeniedView(TemplateView):
 class FeedbackView(CreateView):
     template_name = 'feedback/feedbackentry_form.html'
     model = FeedbackEntry
-    fields = '__all__'
+    fields = ['title', 'explanation', 'related_file']
 
     def get_success_url(self):
         text_message = _(
             'Thank you for your help. We are gonna check your problem as soon as we can')
         messages.add_message(self.request, messages.SUCCESS, text_message)
-        lab_pk = self.request.GET.get('lab_pk')
-        if lab_pk is not None:
-            return reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
-        return reverse('laboratory:index')
+        try:
+            lab_pk = int(self.request.GET.get('lab_pk', 0))
+        except:
+            lab_pk = None
+        dev = reverse('laboratory:index')
+        if self.request.user.is_authenticated():
+            self.object.user = self.request.user
+        if lab_pk:
+            self.object.laboratory_id = lab_pk
+            dev = reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
+        if self.request.user.is_authenticated() or lab_pk:
+            self.object.save()
+        return dev
 
 
 def get_organization_admin_group():
