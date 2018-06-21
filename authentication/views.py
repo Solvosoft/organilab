@@ -1,0 +1,93 @@
+from django.shortcuts import render, redirect
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib.auth.forms import UserCreationForm
+# Create your views here.
+from django.contrib.auth.models import User, Group
+from django import forms
+from django.core.exceptions import ValidationError
+from laboratory.models import OrganizationStructure, PrincipalTechnician
+from constance import config
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+from django.contrib.auth import authenticate, login
+from django.urls.base import reverse_lazy
+from django.views.decorators.http import require_POST
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
+
+
+def get_organization_admin_group():
+    return Group.objects.get(pk=config.GROUP_ADMIN_PK)
+
+
+class SignUpForm(UserCreationForm):
+    ROLES = (
+        (1, _('Organization administrator')),
+        (2, _('Student'))
+    )
+    role = forms.ChoiceField(choices=ROLES, widget=forms.RadioSelect())
+    organization_name = forms.CharField(
+        max_length=120, required=False, help_text=_('Your organization name'))
+
+    captcha = ReCaptchaField(widget=ReCaptchaWidget())
+
+    def clean(self):
+        dev = super(SignUpForm, self).clean()
+        if self.cleaned_data['role'] == '1':
+            if not self.cleaned_data['organization_name']:
+                raise ValidationError(
+                    _('Organization name is required when role Organization administrator is selected'))
+
+        return dev
+
+    def save(self, commit=True):
+        instance = UserCreationForm.save(self, commit=commit)
+        group = get_organization_admin_group()
+        org = OrganizationStructure(
+            name=self.cleaned_data['organization_name'],
+            group=group
+        )
+        org.save()
+        pt = PrincipalTechnician(name=instance.first_name + " " + instance.last_name,
+                                 phone_number="8888-8888",
+                                 id_card="0-0000-0000",
+                                 email=instance.email,
+                                 organization=org
+                                 )
+        pt.save()
+        pt.credentials.add(instance)
+
+        instance.groups.add(group)
+        return instance
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name',
+                  'email', 'password1', 'password2', )
+
+
+@require_POST
+def signup(request):
+    form_login = AuthenticationForm()
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+        form.save()
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=raw_password)
+        login(request, user)
+        return redirect(reverse_lazy('laboratory:index'))
+    # else:
+    #    form = SignUpForm()
+    return render(request, 'registration/login.html',
+                  {'form_signup': form,
+                   'form': form_login})
+
+
+class OrgLoginView(LoginView):
+
+    def get_context_data(self, **kwargs):
+        self.context = LoginView.get_context_data(self, **kwargs)
+        self.context['form_signup'] = SignUpForm()
+        return self.context

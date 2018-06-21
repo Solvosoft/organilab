@@ -6,7 +6,7 @@ Created on 1/8/2016
 from __future__ import unicode_literals
 
 from django.conf.urls import url, include
-from django.contrib.auth import views as auth_views
+
 from django.urls import reverse_lazy
 
 from laboratory import views
@@ -37,22 +37,6 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$',
         laboratory.del_admins_user, name='laboratory_ajax_del_admins_users'),
 
-    url(r'^accounts/login/$', auth_views.login,
-        {'template_name': 'laboratory/login.html'}, name='login'),
-    url(r'^accounts/logout/$', auth_views.logout, {
-        'next_page': reverse_lazy('laboratory:index')},
-        name='logout'),
-
-    # Password_reset
-    url(r'^accounts/password_reset/$', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_ss.html', email_template_name='registration/password_reset_email_ss.html',
-                                                                            subject_template_name='registration/password_reset_subject_ss.txt', success_url='/accounts/password_reset_done/'), name='password_reset'),  # Set a sending e-mail on 'from_email'.
-    url(r'^accounts/password_reset_done/$', auth_views.PasswordResetDoneView.as_view(
-        template_name='registration/password_reset_done_ss.html'), name='password_reset_done'),
-    url(r'^accounts/password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(
-        template_name='registration/password_reset_confirm_ss.html', success_url='/accounts/password_reset_complete/'), name='password_reset_confirm'),
-    url(r'^accounts/password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='registration/password_reset_complete_ss.html'), name='password_reset_complete'),
-
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     # CreateLaboratory
     url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),
@@ -62,9 +46,10 @@ urlpatterns = [
         name='permission_denied'),
     url(r'^feedback$', views.FeedbackView.as_view(), name='feedback'),
 
-    #Tour steps
+    # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
-    url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
+    url(r'^_ajax/get_tour_steps_furniture$',
+        views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
 
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
@@ -141,9 +126,9 @@ lab_reports_urls = [
 ]
 
 lab_reports_organization_urls = [
-         url(r'^organization$', reports.report_organization_building,
-              name='reports_organization_building'),
-          url(r'^list$', organizations.OrganizationReportView.as_view(),
+    url(r'^organization$', reports.report_organization_building,
+        name='reports_organization_building'),
+    url(r'^list$', organizations.OrganizationReportView.as_view(),
         name='reports_organization'),
 ]
 
@@ -183,10 +168,6 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
+        include(lab_reports_organization_urls)),
 ]
-
-urlpatterns +=[
-     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/', include(lab_reports_organization_urls)),
-     
-]
-

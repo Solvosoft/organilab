@@ -16,20 +16,24 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from laboratory import urls as laboratory_urls
-from api import url as api_urls
+
 from djreservation import urls as djreservation_urls
 from academic.urls import urlpatterns as academic_urls
 from ajax_select import urls as ajax_select_urls
+from authentication.urls import urlpatterns as auth_urls
+from django.conf import settings
 
 
-
-
-urlpatterns = [
+urlpatterns = auth_urls + [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'^api/', include(api_urls)),
 ]
 
+if settings.FULL_APPS:
+    from api import url as api_urls
+    urlpatterns += [
+        url(r'^api/', include(api_urls))
+    ]
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls
