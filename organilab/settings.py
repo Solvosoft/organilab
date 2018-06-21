@@ -27,7 +27,10 @@ SECRET_KEY = '8sko4lo%ca!0e^-i%7@6hnzxmc7l0^m040n%jy99z_e8cvmta)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if os.getenv('ALLOWED_HOSTS', ''):
+    ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+else:
+    ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -168,12 +171,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 GOOGLE_MAPS_API_KEY = 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU'
 
 LOCATION_FIELD = {
-'map.provider': 'google',
-'map.zoom': 15,
-'search.provider': 'google',
-'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-'provider.google.api_key': GOOGLE_MAPS_API_KEY,
-'provider.google.map.type': 'ROADMAP',
+    'map.provider': 'google',
+    'map.zoom': 15,
+    'search.provider': 'google',
+    'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
+    'provider.google.api_key': GOOGLE_MAPS_API_KEY,
+    'provider.google.map.type': 'ROADMAP',
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
@@ -181,12 +184,10 @@ CONSTANCE_CONFIG = {
     'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
                        'User Administrator of labotatory', int),
     'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
-                       'User Laboratorist/Professor of labotatory', int),
+                              'User Laboratorist/Professor of labotatory', int),
     'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
-                       'User Student of labotatory', int)
+                         'User Student of labotatory', int)
 }
 CONSTANCE_CONFIG_FIELDSETS = {
-    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK','GROUP_STUDENT_PK'),
+    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK', 'GROUP_STUDENT_PK'),
 }
-
-
