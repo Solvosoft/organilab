@@ -11,7 +11,8 @@ stepView = StepsView().get_urls()
 
 
 urlpatterns = [
-    url(r'add_steps_wrapper/(?P<pk>\d+)$', add_steps_wrapper, name='add_steps_wrapper'),
+    url(r'add_steps_wrapper/(?P<pk>\d+)$',
+        add_steps_wrapper, name='add_steps_wrapper'),
     url(r'^',  include(procView)),
     url(r'^',  include(stepView)),
-    ]
+]
