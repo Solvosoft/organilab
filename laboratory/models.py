@@ -487,24 +487,6 @@ class Laboratory(models.Model):
 
 
 @python_2_unicode_compatible
-class FeedbackEntry(models.Model):
-    title = models.CharField(_('Title'), max_length=255)
-    explanation = models.TextField(_('Explanation'), blank=True)
-    related_file = models.FileField(
-        _('Related file'), upload_to='media/feedback_entries/', blank=True)
-
-    class Meta:
-        verbose_name = _('Feedback entry')
-        verbose_name_plural = _('Feedback entries')
-        permissions = (
-            ("view_feedbackentry", _("Can see available feed back entry")),
-        )
-
-    def __str__(self):
-        return '%s' % (self.title,)
-
-
-@python_2_unicode_compatible
 class Solution(models.Model):
     name = models.CharField(_('Name'), default='', max_length=255)
     solutes = models.TextField(_('Solutes'))

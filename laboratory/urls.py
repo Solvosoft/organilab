@@ -6,13 +6,9 @@ Created on 1/8/2016
 from __future__ import unicode_literals
 
 from django.conf.urls import url, include
-
-from django.urls import reverse_lazy
-
 from laboratory import views
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
-from laboratory.views import PermissionDeniedView
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
@@ -41,10 +37,6 @@ urlpatterns = [
     # CreateLaboratory
     url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),
         name='create_lab'),
-
-    url(r'^permission_denied$', PermissionDeniedView.as_view(),
-        name='permission_denied'),
-    url(r'^feedback$', views.FeedbackView.as_view(), name='feedback'),
 
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),

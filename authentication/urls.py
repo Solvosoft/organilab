@@ -9,7 +9,9 @@ Created on 20 jun. 2018
 from django.contrib.auth import views as auth_views
 from django.conf.urls import url
 from django.urls.base import reverse_lazy
-from authentication.views import signup, OrgLoginView
+from authentication.views import signup, OrgLoginView, PermissionDeniedView,\
+    FeedbackView
+
 
 urlpatterns = [
 
@@ -20,6 +22,9 @@ urlpatterns = [
         'next_page': reverse_lazy('laboratory:index')},
         name='logout'),
 
+    url(r'^permission_denied$', PermissionDeniedView.as_view(),
+        name='permission_denied'),
+    url(r'^feedback$', FeedbackView.as_view(), name='feedback'),
 
     # Password_reset
     url(r'^accounts/password_reset/$',
