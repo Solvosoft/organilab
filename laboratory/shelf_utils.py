@@ -30,3 +30,6 @@ def get_dataconfig(dataconfig):
                 dataconfig[irow][icol] = Shelf.objects.filter(
                     pk__in=val)
     return dataconfig
+
+
+

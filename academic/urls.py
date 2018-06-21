@@ -6,6 +6,7 @@ Created on 4 may. 2017
 from academic.views import ProcedureView, StepsView, add_steps_wrapper
 from django.conf.urls import url, include
 
+
 procView = ProcedureView().get_urls()
 stepView = StepsView().get_urls()
 

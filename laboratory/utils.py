@@ -1,13 +1,12 @@
 
 from django.db.models.query_utils import Q
 from laboratory.models import Laboratory,OrganizationStructure
-from django.shortcuts import redirect, get_object_or_404
-from django.core.urlresolvers import reverse
+ 
 
 
 def check_group_has_perm(group,codename):
     if codename:
-        appname, perm = (codename.split("."))
+        _, perm = (codename.split("."))
         return group.permissions.filter(codename=perm).exists()
     return False
 
@@ -22,7 +21,12 @@ def sum_ancestors_group(user_org,lab_org,perm):
                     return True
     return False        
 def check_user_has_perm(user, perm):
-   return bool(user.has_perm(perm))
+    return bool(user.has_perm(perm))
+
+
+def get_user_laboratories(user):
+    user_org = OrganizationStructure.os_manager.filter_user(user) 
+    return filter_laboratorist_technician_student(user, user_org)
 
 def filter_laboratorist_technician_student(user,user_org):
     return Laboratory.objects.filter(Q(students__pk=user.pk)   |     
@@ -30,14 +34,20 @@ def filter_laboratorist_technician_student(user,user_org):
                                      Q(principaltechnician__credentials=user.pk) |
                                      Q (organization__in=user_org) 
                                     ).distinct() 
-def filter_laboratorist_technician(user,user_org):
+
+def filter_laboratorist_technician(user, user_org):
     return Laboratory.objects.filter( Q(laboratorists__pk=user.pk) |
                                       Q(principaltechnician__credentials=user.pk) |
                                       Q (organization__in=user_org) 
-                                    ).distinct()     
+                                    ).distinct()
+
 def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_technician):
     if not user or not lab:
         return False
+    
+    # django admins        
+    if user.is_superuser:
+        return True;
             
     # Check org of labs
     lab_org = lab.organization  if hasattr(lab, 'organization') else None
@@ -59,5 +69,5 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_t
             return True
     return False    
 
-
+    
 check_lab_perms = check_lab_group_has_perm

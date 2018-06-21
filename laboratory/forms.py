@@ -37,15 +37,10 @@ class UserAccessForm(forms.Form):
         attrs={'id': 'user_cb_'}))  # User_checkbox_id
     # For delete users. Add a delete button.
 
-class LaboratoryCreate(forms.Form):
-    name = forms.CharField(label=_('Name'))
-
-    def save(self,user):
-        lab = Laboratory()
-        lab.name = self.cleaned_data['name']
-        lab.save()
-        lab.lab_admins.add(user)
-
+class LaboratoryCreate(forms.ModelForm):
+    class Meta:
+        model = Laboratory
+        fields = ['name', 'phone_number', 'location', 'geolocation', 'organization']
 
 #Traduccion (Multilenguaje)
 # Validacion()

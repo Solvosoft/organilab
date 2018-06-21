@@ -9,27 +9,11 @@
 {%  has_perms "laboratory.add_laboratory" as perm_add_laboratory %}
 
   <div align="right">
-  {% if perm_laboratory %}
-    <a id="create_lab_btn" class="btn btn-default" data-toggle="modal" href="{% url 'laboratory:create_lab_form' %}" data-target="#create_lab_modal">{% trans 'Create laboratory' %}</a>
+  {% if perm_add_laboratory %}
+    <a id="create_lab_btn" class="btn btn-default"  href="{% url 'laboratory:create_lab' %}" >
+    {% trans 'Create laboratory' %}</a>
   {% endif %}
   </div>
-
- {% if perm_add_laboratory %}
-	<div class="modal fade" tabindex="-1"  aria-labelledby="myLargeModalLabel" id="create_lab_modal" role="dialog">
-	
-	    <div class="modal-dialog modal-lg">
-	
-	      <div class="modal-content">
-	
-	        {% block laboratory_create_form %}
-	          {% include "laboratory/laboratory_create_form.html" %}
-	        {% endblock laboratory_create_form %}
-	
-	      </div>
-	    </div>
-	
-	</div>
-  {% endif %}
 
   <div class="row">
     <div class="col-md-offset-3 col-md-6">
