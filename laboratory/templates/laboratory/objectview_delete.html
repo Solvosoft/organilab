@@ -6,7 +6,7 @@
 {% block content %}
 {%  has_perms "laboratory.delete_object" as perm_delete_object %}
 
-  {% if perm_delete_lab %}
+  {% if perm_delete_object %}
 	  <form action="" method="post">{% csrf_token %}
 	    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
 	    <input class="btn btn-danger" type="submit" value="Confirm"/>

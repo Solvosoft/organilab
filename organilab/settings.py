@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 import os
 
 
@@ -54,7 +53,25 @@ INSTALLED_APPS = [
     'mptt',
     'constance',
     'constance.backends.database',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'api',
+    'demoQA'
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 50,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 IMAGE_CROPPING_JQUERY_URL = None

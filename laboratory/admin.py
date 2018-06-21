@@ -1,29 +1,28 @@
 from django.contrib import admin
-from django import forms
 from laboratory import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User, Group
 from mptt.admin import MPTTModelAdmin, TreeRelatedFieldListFilter
 from constance.admin import ConstanceAdmin, ConstanceForm, Config
 
 class RelatedFieldListFilter(TreeRelatedFieldListFilter):
-     mptt_level_indent = 20
+    mptt_level_indent = 20
 
 class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')
 
      
 class PrincipalTechnician_library_inline(admin.TabularInline):
-      model = models.PrincipalTechnician
-      exclude = ('organization', )
+    model = models.PrincipalTechnician
+    exclude = ('organization', )
  
  
 class PrincipalTechnician_Organization_inline(admin.TabularInline):
-      model = models.PrincipalTechnician 
-      exclude = ('laboratory','assigned' )
+    model = models.PrincipalTechnician 
+    exclude = ('laboratory','assigned' )
  
 class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
-    search_fields = ["name"]
+    search_fields = ["name", 'laboratories']
+    list_display = ["name", 'laboratories']
     inlines = (  PrincipalTechnician_Organization_inline,)
     mptt_level_indent = 20              
          
@@ -33,7 +32,7 @@ class LaboratoryAdmin(admin.ModelAdmin):
 
  
 class CustomConfigForm(ConstanceForm):
-      def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CustomConfigForm, self).__init__(*args, **kwargs)
         #... do stuff to make your settings form nice ...
 
@@ -44,7 +43,7 @@ class ConfigAdmin(ConstanceAdmin):
 admin.site.unregister([Config])
 admin.site.register([Config], ConfigAdmin)
             
-admin.site.register(models.Laboratory,LaboratoryAdmin)
+admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
@@ -57,7 +56,7 @@ admin.site.register(models.Solution)
 
 
 admin.site.register(models.PrincipalTechnician)
-admin.site.register(models.OrganizationStructure,OrganizationStrutureMPTTModelAdmin)
+admin.site.register(models.OrganizationStructure, OrganizationStrutureMPTTModelAdmin)
 
 
 
