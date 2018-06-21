@@ -11,10 +11,33 @@ from constance import config
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 from django.contrib.auth import authenticate, login
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse_lazy, reverse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
+from django.views.generic.base import TemplateView
+from django.contrib import messages
+from django.views.generic.edit import CreateView
+from authentication.models import FeedbackEntry
+
+
+class PermissionDeniedView(TemplateView):
+    template_name = 'laboratory/permission_denied.html'
+
+
+class FeedbackView(CreateView):
+    template_name = 'feedback/feedbackentry_form.html'
+    model = FeedbackEntry
+    fields = '__all__'
+
+    def get_success_url(self):
+        text_message = _(
+            'Thank you for your help. We are gonna check your problem as soon as we can')
+        messages.add_message(self.request, messages.SUCCESS, text_message)
+        lab_pk = self.request.GET.get('lab_pk')
+        if lab_pk is not None:
+            return reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
+        return reverse('laboratory:index')
 
 
 def get_organization_admin_group():

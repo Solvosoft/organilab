@@ -134,7 +134,8 @@
   </ul>
   <ul class="nav navbar-nav pull-right">
     <li id='feedback_id' class="nav-item"><a class="nav-link"
-                                             href="{% url 'laboratory:feedback' %}">{% trans 'Feedback' %}</a></li>
+      href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
+      {% trans 'Feedback' %}</a></li>
     {% if request.user.is_authenticated %}
       <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
       <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">{% trans "Log out" %}</a></li>
