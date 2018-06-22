@@ -17,6 +17,7 @@ from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 
 from laboratory.decorators import user_group_perms
+from laboratory.views.furniture import FurnitureCreateForm
 
 
 @method_decorator(login_required, name='dispatch')
@@ -28,7 +29,6 @@ class LaboratoryRoomsList(ListView):
         lab = get_object_or_404(
             Laboratory, pk=self.lab)
         return lab.rooms.all()
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -43,6 +43,7 @@ class LabroomCreate(CreateView):
         lab = get_object_or_404(Laboratory, pk=self.lab)
         context['object_list'] = lab.rooms.all()
         context['laboratory'] = self.lab
+        context['furniture_form'] = FurnitureCreateForm
         return context
 
     def form_valid(self, form):
@@ -56,7 +57,6 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
-
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
@@ -65,7 +65,6 @@ class LabroomUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -77,7 +76,6 @@ class LaboratoryRoomDelete(DeleteView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(
             self.kwargs.get('lab_pk'),))
-
 
 
 @method_decorator(login_required, name='dispatch')

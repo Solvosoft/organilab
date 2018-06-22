@@ -40,7 +40,42 @@
 	        <li class="row list-group-item">
 	
 	          <div class="col-md-10">
-	            {{ object }}
+	             
+	            <div class="row">
+	            	<div class="col-md-4">
+	            	{{ object }} 
+	            	</div>
+	            	<div class="col-md-4">
+	            	
+	            	</div>
+	            	<div class="col-md-4" style="font-size: 1.5em">
+	            	
+<div class="btn-group" role="group" aria-label="...">
+
+<div id="f{{object.pk}}" class="hidden">
+<ul class="list-group">
+{% for furniture in object.furniture_set.all %}
+<li class="list-group-item">
+<a href="{% url 'laboratory:furniture_update' laboratory furniture.pk %}" > {{furniture}} </a>
+</li>
+{% endfor %}
+</ul>
+</div>
+  <button type="button" class="btn btn-success"
+  data-container="body" data-toggle="popover" data-placement="left" 
+  data-content="f{{object.pk}}"
+  data-html=true
+  >{{ object.furniture_set.count }}</button>
+  <button type="button" class="btn btn-default" title="{% trans 'Create Furniture' %}" 
+	data-toggle="modal" data-target="#furnitureModal" 
+	data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
+		+ <span  class="glyphicon glyphicon-bed" aria-hidden="true"></span>
+   </button>
+</div>	            	
+	            	
+	            	</div>
+	            </div>
+	            
 	          </div>
 	          <div class="col-md-2">
 	            <div class="btn-group" role="group" aria-label="...">
@@ -61,4 +96,50 @@
  {% else %} 
        {% include 'laboratory/action_denied.html' %} 
  {% endif %}
+ 
+ <div class="modal fade" id="furnitureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form method="post" action="">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{% trans 'Create furniture' %}</h4>
+      </div>
+      <div class="modal-body">
+      	{% csrf_token %}
+        {{furniture_form|bootstrap}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">
+        {% trans 'Create furniture' %}</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(function () {
+  $('[data-toggle="popover"]').each( function(i){
+	  var idelem="#"+$(this).data('content');
+	  var content=$(idelem).html();
+	  $(this).attr('data-content', content);
+	  $(idelem).remove();
+  });
+  $('[data-toggle="popover"]').popover();
+
+  $('#furnitureModal').on('show.bs.modal', function (event) {
+	  var button = $(event.relatedTarget) // Button that triggered the modal
+	  var url = button.data('href');
+	  var modal = $(this);
+	  modal.find('.modal-content form').attr('action', url); 
+	  modal.find('.modal-content form').attr('method', 'post');   
+  });
+  
+
+});
+</script>
 {% endblock %}

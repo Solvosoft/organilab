@@ -69,7 +69,7 @@ lab_rooms_urls = [
 lab_furniture_urls = [
     url(r'^$', furniture.list_furniture, name='furniture_list'),
 
-    url(r'^create$', furniture.FurnitureCreateView.as_view(),
+    url(r'^create/(?P<labroom>\d+)$', furniture.FurnitureCreateView.as_view(),
         name='furniture_create'),
 
     url(r'^edit/(?P<pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
