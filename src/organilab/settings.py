@@ -21,10 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8sko4lo%ca!0e^-i%7@6hnzxmc7l0^m040n%jy99z_e8cvmta)'
+SECRET_KEY = os.getenv('SECRET_KEY',
+                       '8sko4lo%ca!0e^-i%7@6hnzxmc7l0^m040n%jy99z_e8cvmta)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True')
 FULL_APPS = False
 
 if os.getenv('ALLOWED_HOSTS', ''):
@@ -81,8 +82,10 @@ if FULL_APPS:
         'TEST_REQUEST_DEFAULT_FORMAT': 'json'
     }
 
-RECAPTCHA_PRIVATE_KEY = '6LdxAmAUAAAAAMxAz4s9em2TgxXUb7MGCZMGRE8l'
-RECAPTCHA_PUBLIC_KEY = '6LdxAmAUAAAAAH2R-6v5EZUALYcqs8AJyrlkqo7_'
+RECAPTCHA_PRIVATE_KEY = os.getenv(
+    'RECAPTCHA_PRIVATE_KEY', '6LdxAmAUAAAAAMxAz4s9em2TgxXUb7MGCZMGRE8l')
+RECAPTCHA_PUBLIC_KEY = os.getenv(
+    'RECAPTCHA_PUBLIC_KEY', '6LdxAmAUAAAAAH2R-6v5EZUALYcqs8AJyrlkqo7_')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 IMAGE_CROPPING_JQUERY_URL = None
@@ -121,14 +124,15 @@ WSGI_APPLICATION = 'organilab.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'organilab',
-        'USER': 'organilab_user',
-        'PASSWORD': '0rg4n1l4b',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('DBNAME', 'organilab'),
+        'USER': os.getenv('DBUSER', 'organilab_user'),
+        'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
+        'HOST': os.getenv('DBHOST', '127.0.0.1'),
+        'PORT': os.getenv('DBPORT', '5432'),
     }
 }
 
@@ -166,37 +170,42 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
 
 # Email development settings
-DEFAULT_FROM_EMAIL = "mail@example.com"
+DEFAULT_FROM_EMAIL = os.getenv(
+    'DEFAULT_FROM_EMAIL', "site@organilab.org")
 #EMAIL_HOST = "localhost"
 #EMAIL_PORT = "1025"
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-#EMAIL_USE_TLS = True
-EMAIL_HOST = 'localhost'  # mail service smtp
-EMAIL_PORT = 1025
-EMAIL_HOST_USER = 'organilab@organilab.com'  # a real email
-# EMAIL_HOST_PASSWORD = 'a password' # the password of the real email
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')  # mail service smtp
+EMAIL_PORT = os.getenv('EMAIL_PORT', '1025')
+EMAIL_HOST_USER = os.getenv(
+    'EMAIL_HOST_USER', 'organilab@organilab.com')  # a real email
+# the password of the real email
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'a password')
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Celery settings
-BROKER_URL = 'redis://localhost:6379'
+BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379')
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = os.getenv(
+    'CELERY_RESULT_BACKEND', 'redis://localhost:6379')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-GOOGLE_MAPS_API_KEY = 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU'
+GOOGLE_MAPS_API_KEY = os.getenv(
+    'GOOGLE_MAPS_API_KEY', 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU')
 
 LOCATION_FIELD = {
     'map.provider': 'google',
