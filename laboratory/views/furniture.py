@@ -11,14 +11,14 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.validators import RegexValidator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 
 from django_ajax.decorators import ajax
-from laboratory.models import Furniture, Laboratory
+from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
 
@@ -41,14 +41,25 @@ class FurnitureReportView(ListView):
 @method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
-    fields = ("labroom", "name", "type")
+    fields = ("name", "type")
 
-    def get_form(self, form_class=None):
-        form = super(FurnitureCreateView, self).get_form(form_class=form_class)
-        if self.lab is not None:
-            form.fields['labroom'].choices = ((x.pk, x) for x in
-                                              get_object_or_404(Laboratory, pk=self.lab).rooms.all())
-        return form
+    def get(self, request, *args, **kwargs):
+        self.labroom = kwargs['labroom']
+        return super(FurnitureCreateView, self).get(
+            request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.labroom = kwargs['labroom']
+        return super(FurnitureCreateView, self).post(
+            request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+
+        self.object.labroom = get_object_or_404(
+            LaboratoryRoom, pk=self.labroom)
+        self.object.save()
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy('laboratory:furniture_update',
@@ -62,6 +73,12 @@ class FurnitureCreateView(CreateView):
         return context
 
 
+class FurnitureCreateForm(forms.ModelForm):
+    class Meta:
+        model = Furniture
+        fields = ("name", "type")
+
+
 class FurnitureForm(forms.ModelForm):
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
@@ -73,7 +90,6 @@ class FurnitureForm(forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("labroom", "name", "type", 'dataconfig')
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -107,7 +123,7 @@ class FurnitureUpdateView(UpdateView):
                                  'laboratory': self.lab})
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:furniture_create',
+        return reverse_lazy('laboratory:rooms_create',
                             args=(self.lab,))
 
 

@@ -52,10 +52,6 @@
               <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
                 {% trans 'Laboratory management' %} </a></li>
                 {% endif %} 
-                {% if perm_furniture %} 
-              <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
-                {% trans 'Furniture management' %}</a></li>
-                {% endif %} 
                 {% if perm_object %} 
               <li class="dropdown-submenu">
                 <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>

@@ -115,11 +115,6 @@
               <li class="list-group-item"><a
                 href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
               {% endif %}
-              {% if perm_furniture %}
-              <li class="list-group-item"><a
-                href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
-              </li>
-               {% endif %} 
               {% if perm_object %}                         
               <li class="list-group-item"><a
                 href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
