@@ -15,7 +15,7 @@ RUN apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi 
 RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 RUN pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
 
-RUN apt-get remove -y libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev
+
 RUN apt-get -y autoremove
 RUN apt-get -y clean
 

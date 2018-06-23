@@ -63,6 +63,11 @@ class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     fields = '__all__'
 
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['furniture_form'] = FurnitureCreateForm
+        return context
+
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
