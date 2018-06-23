@@ -14,11 +14,11 @@ services:
   organilab:
     hostname: organilab.org
     image: organilab
-    command: gunicorn organilab.wsgi:application --bind 0.0.0.0:80--workers 1
+    command: gunicorn organilab.wsgi:application --bind 0.0.0.0:80 --workers 1
     depends_on:
       - organilab_database
     environment:
-      - ALLOWED_HOSTS='*'
+      - ALLOWED_HOSTS=organilab.org
       - DBNAME=organilab
       - DBUSER=organilab_user
       - DBPASSWORD=0rg4n1l4b
@@ -26,11 +26,23 @@ services:
       - DBPORT=5432
       - BROKER_URL='amqp://myuser:mypassword@organilab_rabbitmq:5672/myvhost'
       - CELERY_RESULT_BACKEND='amqp://myuser:mypassword@organilab_rabbitmq:5672/myvhost'
+      - VIRTUAL_HOST=organilab.org
+    volumes:
+        - ./static:/organilab/static
+        - ./media:/organilab/media
 
-    port:
-      - 8123:80
-#    volumes:
-#        - ./certs:/certs/
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    depends_on:
+      - organilab
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./static:/static
+      - ./media:/media
+    ports:
+      - "8123:80"
+
 
 # RABBIT MQ para celery
   organilab_rabbitmq:
