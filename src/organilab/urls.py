@@ -22,12 +22,14 @@ from academic.urls import urlpatterns as academic_urls
 from ajax_select import urls as ajax_select_urls
 from authentication.urls import urlpatterns as auth_urls
 from django.conf import settings
-
+from msds.urls import urlpatterns as msds_urls
 
 urlpatterns = auth_urls + [
+
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
+    url(r'msds/', include(msds_urls, namespace='msds'))
 ]
 
 if settings.FULL_APPS:
