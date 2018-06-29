@@ -12,9 +12,12 @@ from laboratory.decorators import user_group_perms
 from laboratory.registry import TOUR_STEPS_LAB_JSON, TOUR_STEPS_FURNITURE_JSON
 
 
-def index(request, lab_pk=None):
-    if lab_pk is None:
-        return redirect('laboratory:select_lab')
+def index(request):
+    return render(request, 'index.html')
+
+
+@login_required
+def lab_index(request, lab_pk):
     return render(request, 'laboratory/index.html',
                   {'laboratory': lab_pk})
 

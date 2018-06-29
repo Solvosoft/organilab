@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
+    'msds'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -172,11 +173,16 @@ USE_TZ = True
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_CRAWL = os.path.join(BASE_DIR, '../crawlstatic/')
+STATICFILES_DIRS = [
+    #os.path.join(BASE_DIR, "static"),
+    STATIC_CRAWL
+]
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
+LOGIN_REDIRECT_URL = reverse_lazy('laboratory:labindex')
 
 # Email development settings
 DEFAULT_FROM_EMAIL = os.getenv(
@@ -230,3 +236,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2
+
+DATASETS_SUPPORT_LANGUAGES = {
+    'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+}
