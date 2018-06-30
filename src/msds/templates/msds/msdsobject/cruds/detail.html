@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n static pdfpreview %}
+
+
+{% block content %}
+
+
+<div class="row">
+<div class="col-md-offset-3 col-md-6" >
+	
+    <h1 class="heading text-center"> 
+        {{object.product}} <br> <small>{% trans 'by ' %} {{object.provider}} </small> 
+    </h1>
+   <center> <a href="{% static object.file %}" target="_blank" 
+    class="btn btn-success"> {% trans 'Download' %}</a></center>
+</div>
+</div>
+
+	{% is_pdf_object object.file as ispdf%}
+	{% if ispdf %}
+	<br>
+		<div class="row">
+		<div class="col-md-offset-1 col-md-10 jumbotron" >
+			{% get_pdf_viewcanvas object.file %}
+			
+		</div>
+		</div>
+	<div class="pdfbuttons">
+		<div class="btn-group" role="group" aria-label="...">
+			<button id="prev" type="button" class="btn btn-info">{% trans 'Prev' %}</button>
+			<button type="button" class="btn btn-default disabled" > 
+			<span id="page_num" > </span> {% trans ' of ' %}
+			<span id="page_count"> </span>
+			</button>
+			<button id="next" type="button" class="btn btn-info">{% trans 'Next' %}</button>
+		</div>
+</div>
+	{% endif %}
+{% endblock %}
+
+{% block js %}
+	{% is_pdf_object object.file as ispdf%}
+	{% if ispdf %}
+		<script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+	{% get_pdf_viewjs object.file %}
+	{% endif %}
+{% endblock %}

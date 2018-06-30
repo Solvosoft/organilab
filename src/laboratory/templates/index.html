@@ -6,7 +6,12 @@
 {% endblock %}
 
 {% block content %} 
-<h1 class="header text-center">  {% trans 'Search MSDS' %} </h1>
+<h1 class="header text-center">  {% trans 'Search MSDS' %} 
+<a class="btn btn-success pull-right" href="{% url 'msds:msds_msdsobject_create' %}">
+{% trans 'Upload your MSDS' %}
+</a>
+
+</h1>
 <table id="example" class="display" style="width: 100%">
 	<thead>
 		<tr>
