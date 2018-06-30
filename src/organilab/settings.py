@@ -182,7 +182,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy('laboratory:labindex')
+LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
 
 # Email development settings
 DEFAULT_FROM_EMAIL = os.getenv(

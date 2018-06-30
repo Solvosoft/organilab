@@ -8,7 +8,11 @@ Created on 29 jun. 2018
 
 from django.conf.urls import url
 from .views import get_list_msds
-urlpatterns = [
+from msds.views import MSDSObjectCRUD
+
+msdsobj = MSDSObjectCRUD()
+
+urlpatterns = msdsobj.get_urls() + [
     url(r'^list$', get_list_msds, name="list_msds"),
 
 ]

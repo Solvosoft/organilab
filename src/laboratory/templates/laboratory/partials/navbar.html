@@ -11,7 +11,7 @@
 {%  has_perms "laboratory.view_report" laboratory as perm_report  %}
 
 <nav class="navbar navbar-dark bg-inverse">
-  <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% endif %}"><strong id="brand_id">ORGANILAB</strong></a>
+  <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'laboratory:index' %}{% endif %}"><strong id="brand_id">ORGANILAB</strong></a>
   <ul class="nav navbar-nav">
   	{% if perm_addlab %}
       <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" 

@@ -12,7 +12,6 @@ from django.urls.base import reverse_lazy
 from authentication.views import signup, OrgLoginView, PermissionDeniedView,\
     FeedbackView
 
-
 urlpatterns = [
 
     url(r'^signup$', signup, name='signup'),

@@ -44,7 +44,6 @@ class LaboratoryCreate(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
-        print(dir(self.fields['organization']))
         self.fields['organization'].queryset = \
             OrganizationStructure.os_manager.filter_user(user)
 

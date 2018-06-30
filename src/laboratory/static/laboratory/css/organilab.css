@@ -64,3 +64,8 @@ p.help-block{
 .access_item{
 	margin: 5px 0;
 }
+.pdfbuttons{
+	position: fixed;
+	bottom: 5em;
+	right: 5em;
+}
