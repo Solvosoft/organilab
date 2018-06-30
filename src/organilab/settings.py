@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
-    'msds'
+    'msds',
+    'monitarize'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -229,7 +230,10 @@ CONSTANCE_CONFIG = {
     'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
                               'User Laboratorist/Professor of labotatory', int),
     'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
-                         'User Student of labotatory', int)
+                         'User Student of labotatory', int),
+    'ADSENSE_ACTIVE': (True, 'Active the Ads', bool),
+    'ADSENSE_PUB_TOKEN': ('ca-pub-1539451676311396', 'Google adsense public key'
+                          'for monitarize the website', str),
 }
 CONSTANCE_CONFIG_FIELDSETS = {
     'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK', 'GROUP_STUDENT_PK'),
