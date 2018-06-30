@@ -24,21 +24,22 @@ from django.db.models.aggregates import Sum, Min
 
 
 def make_book_organization_laboratory(objects):
-    dev=[
-        [_("Name"), _("Phone"), _("Location"),_("Principal Technician"),_('Phones'),_('Emails')]
-        ]
+    dev = [
+        [_("Name"), _("Phone"), _("Location"), _(
+            "Principal Technician"), _('Phones'), _('Emails')]
+    ]
     for object in objects:
-        principaltechnician=""
-        phones=""
-        emails=""
+        principaltechnician = ""
+        phones = ""
+        emails = ""
         for ptechnician in object.principaltechnician_set.all():
-            if principaltechnician != "" :
-                principaltechnician+=" \n"
-                phones+=" \n"
-                emails+=" \n"
+            if principaltechnician != "":
+                principaltechnician += " \n"
+                phones += " \n"
+                emails += " \n"
             principaltechnician += ptechnician.name
             phones += ptechnician.phone_number
-            emails += ptechnician.email    
+            emails += ptechnician.email
         dev.append([
             object.name,
             object.phone_number,
@@ -46,44 +47,48 @@ def make_book_organization_laboratory(objects):
             principaltechnician,
             phones,
             emails,
-            ])
+        ])
     return dev
-    
-    
+
+
 @login_required
 @user_group_perms(perm='laboratory.do_report')
 def report_organization_building(request, *args, **kwargs):
     var = request.GET.get('organization')
-    if var: # when have user selecting org
-        org=get_object_or_404(OrganizationStructure, pk=var)
-        organizations_child = OrganizationStructure.os_manager.filter_user(request.user)
-        if org in organizations_child: # user have perm on that organization ?
-                organizations_child = org.get_descendants(include_self=True)
-                labs=Laboratory.objects.filter(organization__in=organizations_child)
+    if var:  # when have user selecting org
+        org = get_object_or_404(OrganizationStructure, pk=var)
+        organizations_child = OrganizationStructure.os_manager.filter_user(
+            request.user)
+        if org in organizations_child:  # user have perm on that organization ?
+            organizations_child = org.get_descendants(include_self=True)
+            labs = Laboratory.objects.filter(
+                organization__in=organizations_child)
         else:
             if request.user.is_superuser:
-                organizations_child = OrganizationStructure.os_manager.get_children(var)
-                labs=Laboratory.objects.filter(organization__in=organizations_child)
-            else:        
+                organizations_child = OrganizationStructure.os_manager.get_children(
+                    var)
+                labs = Laboratory.objects.filter(
+                    organization__in=organizations_child)
+            else:
                 labs = Laboratory.objects.none()
-    else: # when haven't user selecting org
-        organizations_child  = OrganizationStructure.os_manager.filter_user(request.user)
-                  
-        if organizations_child :   
-            labs=Laboratory.objects.filter(organization__in=organizations_child )
+    else:  # when haven't user selecting org
+        organizations_child = OrganizationStructure.os_manager.filter_user(
+            request.user)
+
+        if organizations_child:
+            labs = Laboratory.objects.filter(
+                organization__in=organizations_child)
         else:
-             if request.user.is_superuser:
-                labs= Laboratory.objects.all()    
-             else:
-                labs = Laboratory.objects.none()         
-            
-    
+            if request.user.is_superuser:
+                labs = Laboratory.objects.all()
+            else:
+                labs = Laboratory.objects.none()
+
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_array(
-        make_book_organization_laboratory(labs), fileformat ,file_name="Laboratories.%s"%(fileformat,))
+            make_book_organization_laboratory(labs), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
-    
     context = {
         'object_list': labs,
         'datetime': timezone.now(),
@@ -102,8 +107,6 @@ def report_organization_building(request, *args, **kwargs):
     response[
         'Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
     return response
-
-
 
 
 def make_book_laboratory(rooms):
@@ -175,6 +178,7 @@ def report_labroom_building(request, *args, **kwargs):
     response[
         'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     return response
+
 
 @login_required
 @user_group_perms(perm='laboratory.do_report')
@@ -515,7 +519,7 @@ class ObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'laboratory/limited_shelfobject_report_list.html'
