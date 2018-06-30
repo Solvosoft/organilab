@@ -16,7 +16,7 @@ def get_download_links(request, obj):
     dev = '<a href="%s" target="_blank">%s</a>' % (
         new_url,
         _("Download"))
-    if request.user.has_perm('msds.add_msdsobject'):
+    if request.user.has_perm('msds.change_msdsobject'):
         new_url = reverse('msds:msds_msdsobject_update', args=(obj.pk,))
         dev += ' -- <a href="%s" target="_blank">%s</a>' % (
             new_url,
