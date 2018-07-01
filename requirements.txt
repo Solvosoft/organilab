@@ -1,3 +1,5 @@
+async_notifications==0.1.8 
+django-ckeditor==5.5.0
 alabaster==0.7.9
 djangoajax==2.3.6
 argh==0.26.2
