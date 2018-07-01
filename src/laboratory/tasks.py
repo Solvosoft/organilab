@@ -18,11 +18,12 @@ def notify_about_product_limit_reach():
 
 @app.on_after_configure.connect
 def setup_daily_tasks(sender, **kwargs):
-    sender.add_periodic_task(2, notify_about_product_limit_reach.s(), name='notify')
+    sender.add_periodic_task(
+        2, notify_about_product_limit_reach.s(), name='notify')
 
 
 def send_email():
-    subject = 'Products that reached the limit quantity today'
+    subject = _('Products that reached the limit quantity today')
 
     limited_shelf_objects = get_limited_shelf_objects()
 
@@ -30,7 +31,8 @@ def send_email():
         'shelf_objects': limited_shelf_objects
     }
 
-    html_message = render_to_string('email/object_list_reach_quantity_limit.html', context=context)
+    html_message = render_to_string(
+        'email/object_list_reach_quantity_limit.html', context=context)
 
     from django.core.mail import send_mail
     send_mail(
@@ -41,6 +43,7 @@ def send_email():
         fail_silently=True,
         html_message=html_message
     )
+
 
 def get_limited_shelf_objects():
     for shelf_object in ShelfObject.objects.all():

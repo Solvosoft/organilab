@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 15:09-0600\n"
+"POT-Creation-Date: 2018-06-30 18:35-0600\n"
 "PO-Revision-Date: 2017-09-04 10:18-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -19,43 +19,89 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: academic/models.py:11 academic/models.py:24
+#: academic/models.py:10 academic/models.py:27
 msgid "Title"
 msgstr "Título"
 
-#: academic/models.py:12 academic/models.py:25 academic/models.py:58
+#: academic/models.py:11 academic/models.py:28 academic/models.py:70
 msgid "Description"
 msgstr "Descripción"
 
+#: academic/models.py:18 academic/models.py:26
+#, fuzzy
+#| msgid "Procedures"
+msgid "Procedure"
+msgstr "Procedimientos"
+
 #: academic/models.py:19
+msgid "Procedures"
+msgstr "Procedimientos"
+
+#: academic/models.py:21
 msgid "Can see available Procedure"
 msgstr "Puede ver Procedure disponibles"
 
-#: academic/models.py:30
+#: academic/models.py:33
 msgid "No titled step"
 msgstr "Paso sin título"
 
-#: academic/models.py:35
+#: academic/models.py:37
+#, fuzzy
+#| msgid "Procedures"
+msgid "Procedure step"
+msgstr "Procedimientos"
+
+#: academic/models.py:38
+#, fuzzy
+#| msgid "Procedures"
+msgid "Procedure steps"
+msgstr "Procedimientos"
+
+#: academic/models.py:40
 msgid "Can see available ProcedureStep"
 msgstr "Puede ver ProcedureStep disponibles"
 
-#: academic/models.py:39
+#: academic/models.py:46
 msgid "Object"
 msgstr "Objeto"
 
-#: academic/models.py:40
+#: academic/models.py:47
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: academic/models.py:42
+#: academic/models.py:49
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: academic/models.py:53
+#: academic/models.py:60
+#, fuzzy
+#| msgid "Can see available ProcedureRequiredObject"
+msgid "Procedure Required Object"
+msgstr "Puede ver ProcedureRequiredObject disponibles"
+
+#: academic/models.py:61
+#, fuzzy
+#| msgid "Required objects"
+msgid "Procedure Required Objects"
+msgstr "Objetos requeridos"
+
+#: academic/models.py:64
 msgid "Can see available ProcedureRequiredObject"
 msgstr "Puede ver ProcedureRequiredObject disponibles"
 
-#: academic/models.py:66
+#: academic/models.py:77
+#, fuzzy
+#| msgid "Can see available ProcedureObservations"
+msgid "Procedure Observation"
+msgstr "Puede ver ProcedureObservations disponibles"
+
+#: academic/models.py:78
+#, fuzzy
+#| msgid "Observations"
+msgid "Procedure Observations"
+msgstr "Observaciones"
+
+#: academic/models.py:81
 msgid "Can see available ProcedureObservations"
 msgstr "Puede ver ProcedureObservations disponibles"
 
@@ -488,9 +534,6 @@ msgstr "Todavía no hay elementos"
 
 #~ msgid "Laboratory administration"
 #~ msgstr "Administración del laboratorio"
-
-#~ msgid "Procedures"
-#~ msgstr "Procedimientos"
 
 #~ msgid "Furnitures"
 #~ msgstr "Muebles"

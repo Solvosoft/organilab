@@ -3,53 +3,47 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: organilab\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-30 18:35-0600\n"
-"PO-Revision-Date: 2017-10-31 15:14-0600\n"
-"Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
-"Language-Team: es_CR <info@solvosoft.com>\n"
-"Language: es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 
 #: laboratory/admin.py:65
 msgid "Organilab Administration site"
-msgstr "Sitio administrativo de Organilab"
+msgstr ""
 
 #: laboratory/forms.py:12 laboratory/views/shelfobject.py:63
 msgid "Search by name, code or CAS number"
-msgstr "Buscar por nombre, código o número de CAS"
+msgstr ""
 
 #: laboratory/forms.py:14
-#, fuzzy
-#| msgid "All objects"
 msgid "All labs"
-msgstr "Todos los objetos"
+msgstr ""
 
 #: laboratory/forms.py:19
-#, fuzzy
-#| msgid "Search by name, code or CAS number"
 msgid "Search by username, name or lastname"
-msgstr "Buscar por nombre, código o número de CAS"
+msgstr ""
 
 #: laboratory/forms.py:24
 msgid "First name"
-msgstr "Nombre"
+msgstr ""
 
 #: laboratory/forms.py:25
 msgid "Last name"
-msgstr "Apellidos"
+msgstr ""
 
 #: laboratory/forms.py:26
 msgid "Email"
-msgstr "Correo electrónico"
+msgstr ""
 
 #: laboratory/migrations/0034_group_perms.py:61
 #, python-format
@@ -65,25 +59,23 @@ msgstr ""
 #: laboratory/views/reports.py:218 laboratory/views/reports.py:280
 #: laboratory/views/reports.py:430 laboratory/views/solutions.py:79
 msgid "Name"
-msgstr "Nombre"
+msgstr ""
 
 #: laboratory/models.py:20
 msgid "CAS ID number"
-msgstr "Número CAS"
+msgstr ""
 
 #: laboratory/models.py:21
 msgid "URL"
-msgstr "URL"
+msgstr ""
 
 #: laboratory/models.py:24
 msgid "C&L Inventory"
-msgstr "Inventario C&L"
+msgstr ""
 
 #: laboratory/models.py:25
-#, fuzzy
-#| msgid "C&L Inventory"
 msgid "C&L Inventory objects"
-msgstr "Inventario C&L"
+msgstr ""
 
 #: laboratory/models.py:27
 msgid "Can see available C&L Inventory"
@@ -91,81 +83,79 @@ msgstr ""
 
 #: laboratory/models.py:47
 msgid "General use"
-msgstr "Uso general"
+msgstr ""
 
 #: laboratory/models.py:48
 msgid "Security equipment"
-msgstr "Equipo de seguridad"
+msgstr ""
 
 #: laboratory/models.py:49
 msgid "Analytic Chemistry"
-msgstr "Química analítica"
+msgstr ""
 
 #: laboratory/models.py:50
 msgid "Organic Chemistry"
-msgstr "Química orgánica"
+msgstr ""
 
 #: laboratory/models.py:51
 msgid "Physical Chemistry"
-msgstr "Química física"
+msgstr ""
 
 #: laboratory/models.py:52
 msgid "Chemical and Biological process"
-msgstr "Proceso biológico y químico"
+msgstr ""
 
 #: laboratory/models.py:53
 msgid "Industrial Biotechnology"
-msgstr "Biotecnología industrial"
+msgstr ""
 
 #: laboratory/models.py:54
 msgid "Biochemistry"
-msgstr "Bioquímica"
+msgstr ""
 
 #: laboratory/models.py:55
 msgid "Water Chemistry"
-msgstr "Química del agua"
+msgstr ""
 
 #: laboratory/models.py:56
 msgid "Other"
-msgstr "Otro"
+msgstr ""
 
 #: laboratory/models.py:61 laboratory/models.py:106
 #: laboratory/templates/laboratory/search.html:67
 msgid "Description"
-msgstr "Descripción"
+msgstr ""
 
 #: laboratory/models.py:64
 msgid "Object feature"
-msgstr "Característica del objeto"
+msgstr ""
 
 #: laboratory/models.py:65 laboratory/models.py:118
 #: laboratory/templates/laboratory/index.html:125
 msgid "Object features"
-msgstr "Características del objeto"
+msgstr ""
 
 #: laboratory/models.py:67
-#, fuzzy
-#| msgid "Delete object feature"
 msgid "Can see available objectfeatures"
-msgstr "Eliminar características de objeto"
+msgstr ""
 
 #: laboratory/models.py:79
 #: laboratory/templates/laboratory/partials/navbar.html:61
 #: laboratory/templates/laboratory/partials/navbar.html:100
 msgid "Reactive"
-msgstr "Reactivo"
+msgstr ""
 
 #: laboratory/models.py:80
 #: laboratory/templates/laboratory/partials/navbar.html:62
 #: laboratory/templates/laboratory/partials/navbar.html:101
 msgid "Material"
-msgstr "Material"
+msgstr ""
 
 #: laboratory/models.py:81
 #: laboratory/templates/laboratory/partials/navbar.html:63
 #: laboratory/templates/laboratory/partials/navbar.html:102
 msgid "Equipment"
-msgstr "Equipo"
+msgstr ""
 
 #: laboratory/models.py:93
 msgid "Explosives"
@@ -210,33 +200,33 @@ msgstr ""
 #: laboratory/views/reports.py:119 laboratory/views/reports.py:218
 #: laboratory/views/reports.py:280 laboratory/views/reports.py:429
 msgid "Code"
-msgstr "Código"
+msgstr ""
 
 #: laboratory/models.py:105 laboratory/models.py:217 laboratory/models.py:262
 #: laboratory/templates/laboratory/search.html:53
 #: laboratory/views/reports.py:280
 msgid "Type"
-msgstr "Tipo"
+msgstr ""
 
 #: laboratory/models.py:107 laboratory/views/reports.py:285
 msgid "Molecular formula"
-msgstr "Formula molecular"
+msgstr ""
 
 #: laboratory/models.py:110
 msgid "Cas ID Number"
-msgstr "Número CAS"
+msgstr ""
 
 #: laboratory/models.py:112
 msgid "Security sheet"
-msgstr "Hoja de seguridad"
+msgstr ""
 
 #: laboratory/models.py:113
 msgid "Is precursor"
-msgstr "¿Es precursor"
+msgstr ""
 
 #: laboratory/models.py:115 laboratory/views/reports.py:125
 msgid "IMDG code"
-msgstr "Código IMDG"
+msgstr ""
 
 #: laboratory/models.py:120
 msgid "Model"
@@ -252,14 +242,14 @@ msgstr ""
 
 #: laboratory/models.py:130
 msgid "Object"
-msgstr "Objeto"
+msgstr ""
 
 #: laboratory/models.py:131 laboratory/templates/laboratory/index.html:120
 #: laboratory/templates/laboratory/index.html:156
 #: laboratory/templates/laboratory/partials/navbar.html:87
 #: laboratory/templates/laboratory/partials/navbar.html:98
 msgid "Objects"
-msgstr "Objetos"
+msgstr ""
 
 #: laboratory/models.py:133
 msgid "Can see available object"
@@ -267,75 +257,71 @@ msgstr ""
 
 #: laboratory/models.py:152
 msgid "Meters"
-msgstr "Metros"
+msgstr ""
 
 #: laboratory/models.py:153
 msgid "Milimeters"
-msgstr "Milímetros"
+msgstr ""
 
 #: laboratory/models.py:154
 msgid "Centimeters"
-msgstr "Centímetros"
+msgstr ""
 
 #: laboratory/models.py:155
 msgid "Liters"
-msgstr "Litros"
+msgstr ""
 
 #: laboratory/models.py:156
 msgid "Mililiters"
-msgstr "Mililitros"
+msgstr ""
 
 #: laboratory/models.py:157
 msgid "Unit"
-msgstr "Unidad"
+msgstr ""
 
 #: laboratory/models.py:159 laboratory/models.py:241
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:61
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:20
 #: laboratory/views/reports.py:118 laboratory/views/reports.py:428
 msgid "Shelf"
-msgstr "Estante"
+msgstr ""
 
 #: laboratory/models.py:161
-#, fuzzy
-#| msgid "Equipments report"
 msgid "Equipment or reactive or sustance"
-msgstr "Reporte de Equipos"
+msgstr ""
 
 #: laboratory/models.py:162
 msgid "Material quantity"
-msgstr "Cantidad de material"
+msgstr ""
 
 #: laboratory/models.py:163
 msgid "Limit material quantity"
-msgstr "Cantidad límite de material"
+msgstr ""
 
 #: laboratory/models.py:165
 msgid "Measurement unit"
-msgstr "Unidad de medida"
+msgstr ""
 
 #: laboratory/models.py:181
 #: laboratory/templates/laboratory/report_furniture_list.html:76
 msgid "Shelf object"
-msgstr "Estante del objeto"
+msgstr ""
 
 #: laboratory/models.py:182
 msgid "Shelf objects"
-msgstr "Estante de los objetos"
+msgstr ""
 
 #: laboratory/models.py:184
-#, fuzzy
-#| msgid "Limited shelf objects"
 msgid "Can see available shelf objects"
-msgstr "Objetos en el límite"
+msgstr ""
 
 #: laboratory/models.py:196
 msgid "Laboratory Room"
-msgstr "Sala de laboratorio"
+msgstr ""
 
 #: laboratory/models.py:197
 msgid "Laboratory Rooms"
-msgstr "Salas de laboratorio"
+msgstr ""
 
 #: laboratory/models.py:199 laboratory/models.py:244
 msgid "Can see available shelf"
@@ -343,37 +329,35 @@ msgstr ""
 
 #: laboratory/models.py:211
 msgid "Space"
-msgstr "Espacio"
+msgstr ""
 
 #: laboratory/models.py:212 laboratory/models.py:258
 msgid "Drawer"
-msgstr "Cajón"
+msgstr ""
 
 #: laboratory/models.py:214 laboratory/models.py:257 laboratory/models.py:359
 #: laboratory/templates/laboratory/furniture_list.html:8
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:59
 #: laboratory/views/reports.py:117
 msgid "Furniture"
-msgstr "Mueble"
+msgstr ""
 
 #: laboratory/models.py:242 laboratory/templates/laboratory/shelf_list.html:9
 msgid "Shelves"
-msgstr "Estantería"
+msgstr ""
 
 #: laboratory/models.py:263
 msgid "Data configuration"
-msgstr "Configuración de datos"
+msgstr ""
 
 #: laboratory/models.py:358
 #: laboratory/templates/laboratory/report_furniture_list.html:49
 msgid "Piece of furniture"
-msgstr "Pieza de mueble"
+msgstr ""
 
 #: laboratory/models.py:362
-#, fuzzy
-#| msgid "Organilab Furniture Report"
 msgid "Can see available Furniture"
-msgstr "Organilab: Reporte de Muebles"
+msgstr ""
 
 #: laboratory/models.py:398
 msgid "Group"
@@ -384,10 +368,8 @@ msgid "Parent"
 msgstr ""
 
 #: laboratory/models.py:408 laboratory/models.py:443 laboratory/models.py:477
-#, fuzzy
-#| msgid "Explanation"
 msgid "Organization"
-msgstr "Explicación"
+msgstr ""
 
 #: laboratory/models.py:409
 msgid "Organizations"
@@ -432,26 +414,22 @@ msgstr ""
 
 #: laboratory/models.py:469
 msgid "Laboratory name"
-msgstr "Nombre del laboratorio"
+msgstr ""
 
 #: laboratory/models.py:472
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:60
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:14
 #: laboratory/views/reports.py:28
-#, fuzzy
-#| msgid "Information"
 msgid "Location"
-msgstr "Información"
+msgstr ""
 
 #: laboratory/models.py:480
 msgid "Rooms"
 msgstr ""
 
 #: laboratory/models.py:483
-#, fuzzy
-#| msgid "Laboratories"
 msgid "Laboratorists"
-msgstr "Laboratorios"
+msgstr ""
 
 #: laboratory/models.py:486 laboratory/templates/laboratory/access_list.html:12
 msgid "Students"
@@ -463,49 +441,47 @@ msgstr ""
 #: laboratory/templates/laboratory/partials/navbar.html:85
 #: laboratory/views/laboratory.py:156
 msgid "Laboratory"
-msgstr "Laboratorio"
+msgstr ""
 
 #: laboratory/models.py:490
 msgid "Laboratories"
-msgstr "Laboratorios"
+msgstr ""
 
 #: laboratory/models.py:492
-#, fuzzy
-#| msgid "Create laboratory"
 msgid "Can see available laboratory"
-msgstr "Crear un laboratorio"
+msgstr ""
 
 #: laboratory/models.py:508
 #: laboratory/templates/laboratory/solution_detail.html:28
 #: laboratory/views/solutions.py:80
 msgid "Solutes"
-msgstr "Solutos"
+msgstr ""
 
 #: laboratory/models.py:509 laboratory/views/solutions.py:82
 msgid "Volumen"
-msgstr "Volumen"
+msgstr ""
 
 #: laboratory/models.py:511 laboratory/views/solutions.py:54
 #: laboratory/views/solutions.py:83
 msgid "Temperature"
-msgstr "Temperatura"
+msgstr ""
 
 #: laboratory/models.py:512 laboratory/views/solutions.py:53
 #: laboratory/views/solutions.py:84
 msgid "Pressure"
-msgstr "Presión"
+msgstr ""
 
 #: laboratory/models.py:513 laboratory/views/solutions.py:85
 msgid "pH"
-msgstr "pH"
+msgstr ""
 
 #: laboratory/models.py:516
 msgid "Solution"
-msgstr "Solución"
+msgstr ""
 
 #: laboratory/models.py:517
 msgid "Solutions"
-msgstr "Soluciones"
+msgstr ""
 
 #: laboratory/models.py:519
 msgid "Can see available Solution"
@@ -513,155 +489,128 @@ msgstr ""
 
 #: laboratory/registry.py:7 laboratory/registry.py:76
 msgid "Hello!"
-msgstr "¡Hola!"
+msgstr ""
 
 #: laboratory/registry.py:8
 msgid ""
 "Welcome to Organilab, the simple laboratory organizer. Let's take a look of "
 "the main features of this system"
 msgstr ""
-"Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las "
-"características principales de este sistema."
 
 #: laboratory/registry.py:14
 msgid ""
 "The laboratory view is Organilab's main feature because it offers a general "
 "view of the structure of the laboratory for its management"
 msgstr ""
-"La vista de laboratorio es el pilar principal de Organilab porque ofrece una "
-"vista general de la estructura del laboratorio para llevar a cabo su "
-"administración"
 
 #: laboratory/registry.py:19
 msgid "Management"
-msgstr "Administración"
+msgstr ""
 
 #: laboratory/registry.py:20
 msgid ""
 "In the management views you can find everything you need to control the "
 "components of the laboratory, from rooms to objects."
 msgstr ""
-"En las vistas de administración puedes encontrar todo lo que necesitas para "
-"controlar los componentes del laboratorio, desde las salas hasta objetos."
 
 #: laboratory/registry.py:25 laboratory/registry.py:49
 #: laboratory/templates/laboratory/index.html:56
 #: laboratory/templates/laboratory/index.html:137
 #: laboratory/templates/laboratory/partials/navbar.html:82
 msgid "Reports"
-msgstr "Reportes"
+msgstr ""
 
 #: laboratory/registry.py:26
 msgid ""
 "If you need a full inventory of the whole laboratory or an specific "
 "component, this is the place to do it"
 msgstr ""
-"Si necesitas un inventorio completo de todo el laboratorio o de un "
-"componente específico, este es el lugar para hacerlo"
 
 #: laboratory/registry.py:31 laboratory/templates/laboratory/index.html:8
 #: laboratory/templates/laboratory/select_lab.html:4
 msgid "Select laboratory"
-msgstr "Seleccione su laboratorio"
+msgstr ""
 
 #: laboratory/registry.py:32
 msgid ""
 "You can have access to multiple laboratories, select the one you want to "
 "manage by clicking this link"
 msgstr ""
-"Puedes tener acceso a multiples laboratorios, selecciona el que deseas "
-"haciendo click aquí"
 
 #: laboratory/registry.py:37 laboratory/templates/laboratory/index.html:46
 #: laboratory/templates/laboratory/index.html:68
 #: laboratory/templates/laboratory/index.html:78
 msgid "Laboratory view"
-msgstr "Vista de laboratorio"
+msgstr ""
 
 #: laboratory/registry.py:38
 msgid ""
 "In this view you can manage most of the components related to the lab, "
 "including its rooms, furniture and objects"
 msgstr ""
-"En esta vista puedes administrar la mayoría de los componentes relacionados "
-"con el laboratorio, incluyendo sus salas, muebles y objetos."
 
 #: laboratory/registry.py:43
 msgid "Management views"
-msgstr "Vistas de administración"
+msgstr ""
 
 #: laboratory/registry.py:44
 msgid ""
 "This views manage the different objects handled by the Organilab system for "
 "the current laboratory"
 msgstr ""
-"Estas vistas permiten administrar los diferentes objectos manipulados por el "
-"sistema Organilab para el laboratorio actual"
 
 #: laboratory/registry.py:50
 msgid ""
 "Here you can see and retrieve the reports generated by the different "
 "components handled and saved in the Organilab system"
 msgstr ""
-"Aquí puedes ver y obtener los reportes generados a partir de los diferentes "
-"componentes manipulados y guardados en el sistema Organilab"
 
 #: laboratory/registry.py:55
 #: laboratory/templates/laboratory/partials/navbar.html:119
 msgid "My reservations"
-msgstr "Mis reservaciones"
+msgstr ""
 
 #: laboratory/registry.py:56
 msgid ""
 "In this view you can check out all the reservations related to you and their "
 "current status."
 msgstr ""
-"En esta vista puedes revisar todas las reservaciones relacionadas contigo y "
-"su estado actual"
 
 #: laboratory/registry.py:61
 msgid "Reservation administration"
-msgstr "Administración de reservaciones"
+msgstr ""
 
 #: laboratory/registry.py:62
 msgid ""
 "Here you create and finish a given reservation registered in the Organilab "
 "system"
 msgstr ""
-"Aquí puedes crear y finalizar una reservación registrada en el sistema "
-"Organilab"
 
 #: laboratory/registry.py:67
 msgid "Help us!"
-msgstr "¡Colabora!"
+msgstr ""
 
 #: laboratory/registry.py:68
 msgid ""
 "If you have an issue testing or using Organilab, let us know. We'll be eager "
 "to help you"
 msgstr ""
-"Si tuviste algún problema usando Organilab, por favor dejanos saber. "
-"Estaremos ansiosos por corregirlo."
 
 #: laboratory/registry.py:77
 msgid ""
 "In this section you may insert the information about the furniture you want "
 "to include into this laboratory."
 msgstr ""
-"En esta sección usted podrá insertar la información acerca del mueble que "
-"usted quiere ingresar en este laboratorio."
 
 #: laboratory/registry.py:82
 msgid "Details"
-msgstr "Detalles"
+msgstr ""
 
 #: laboratory/registry.py:83
 msgid ""
 "You must select the labroom you decide will include the new furniture. "
 "Assign it a name and select the type to the furniture."
 msgstr ""
-"Debe seleccionar el laboratorio donde incluirá los muebles nuevos. Asignarle "
-"un nombre y seleccionar el tipo de los muebles."
 
 #: laboratory/registry.py:88 laboratory/registry.py:100
 #: laboratory/templates/laboratory/edit.html:15
@@ -673,34 +622,32 @@ msgstr ""
 #: laboratory/templates/laboratory/objectview_form.html:19
 #: laboratory/templates/laboratory/shelf_form.html:24
 msgid "Save"
-msgstr "Guardar"
+msgstr ""
 
 #: laboratory/registry.py:89
 msgid "Press the save button to continue with the laboratory edition."
 msgstr ""
-"Presione el botón Grabar para continuar con la edición del laboratorio."
 
 #: laboratory/registry.py:94
 msgid "Size"
-msgstr "Tamaño"
+msgstr ""
 
 #: laboratory/registry.py:95
 msgid "You may add or remove any columnns or rows as necessary."
-msgstr "Puede agregar o eliminar cualquier comuna o fila que necesite"
+msgstr ""
 
 #: laboratory/registry.py:101
 msgid "Press the Save button to save the furniture into the system."
-msgstr "Presione el botón Grabar para guardar el mueble en el sistema"
+msgstr ""
 
 #: laboratory/signals.py:39
-#, fuzzy, python-format
-#| msgid "No shelf objects have reached their limit."
+#, python-format
 msgid "The shelf object called %s reached its limit quantity"
-msgstr "No hay  objetos en mínimos límites."
+msgstr ""
 
 #: laboratory/signals.py:50 laboratory/tasks.py:40
 msgid "Please use an email client with HTML support"
-msgstr "Por favor use un cliente con soporte a HTML"
+msgstr ""
 
 #: laboratory/tasks.py:26
 msgid "Products that reached the limit quantity today"
@@ -711,14 +658,14 @@ msgstr ""
 #: laboratory/templates/laboratory/objectview_list.html:19
 #: laboratory/templates/laboratory/search_widget.html:28
 msgid "Search"
-msgstr "Buscar"
+msgstr ""
 
 #: laboratory/templates/ajax/lab_admins_create.html:9
 #: laboratory/templates/ajax/lab_admins_list.html:9
 #: laboratory/templates/laboratory/access_list.html:50
 #: laboratory/templates/laboratory/laboratory_create.html:23
 msgid "Create"
-msgstr "Crear"
+msgstr ""
 
 #: laboratory/templates/ajax/lab_admins_list.html:15
 #: laboratory/templates/laboratory/furniture_form.html:82
@@ -728,12 +675,12 @@ msgstr "Crear"
 #: laboratory/templates/laboratory/objectview_list.html:41
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:26
 msgid "Delete"
-msgstr "Eliminar"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:2
 #: laboratory/templates/email/shelf_object_quantity_limit.html:2
 msgid "Hi,"
-msgstr "Hola"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:4
 #: laboratory/templates/email/shelf_object_quantity_limit.html:4
@@ -741,20 +688,16 @@ msgid ""
 "You have received this email because you are in charge of a laboratory in "
 "the Organilab system."
 msgstr ""
-"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el "
-"sistema Organilab."
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:5
 msgid ""
 "This message is to notify you that one or more of the shelf objects of your "
 "laboratory has reached its limit"
 msgstr ""
-"Este mensaje es para notificarle que uno o más estantes en el laboratorio "
-"han llegado a su cuota mínima"
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:7
 msgid "This are the details of the products:"
-msgstr "Detalle de los productos"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:10
 #: laboratory/templates/email/shelf_object_quantity_limit.html:9
@@ -763,33 +706,33 @@ msgstr "Detalle de los productos"
 #: laboratory/templates/pdf/furniture_pdf.html:19
 #: laboratory/templates/pdf/shelf_object_pdf.html:10
 msgid "Shelf:"
-msgstr "Estante:"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:11
 #: laboratory/templates/email/shelf_object_quantity_limit.html:10
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:62
 #: laboratory/templates/pdf/shelf_object_pdf.html:11
 msgid "Object:"
-msgstr "Objeto:"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:12
 #: laboratory/templates/email/shelf_object_quantity_limit.html:11
 msgid "Material quantity:"
-msgstr "Cantidad de material:"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:13
 #: laboratory/templates/email/shelf_object_quantity_limit.html:12
 msgid "Limit material quantity:"
-msgstr "Cantidad límite de material:"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:14
 #: laboratory/templates/email/shelf_object_quantity_limit.html:13
 msgid "Measurement unit:"
-msgstr "Unidad de medida:"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:16
 msgid "No shelf objects have reached their limit."
-msgstr "No hay  objetos en mínimos límites."
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:20
 #: laboratory/templates/email/shelf_object_quantity_limit.html:16
@@ -797,35 +740,30 @@ msgid ""
 "Please refill this product or contact the people that reserved it to balance "
 "the current quantity."
 msgstr ""
-"Por favor recargue este producto o contacte a la persona que pueda hacerlo."
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:22
 #: laboratory/templates/email/shelf_object_quantity_limit.html:18
 msgid "Thanks,"
-msgstr "Gracias,"
+msgstr ""
 
 #: laboratory/templates/email/object_list_reach_quantity_limit.html:24
 #: laboratory/templates/email/shelf_object_quantity_limit.html:20
 msgid "Organilab system"
-msgstr "Organilab: Reporte de objetos"
+msgstr ""
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:5
 msgid ""
 "This message is to notify you that one of the shelf objects of your "
 "laboratory has reached its limit"
 msgstr ""
-"Este mensaje es para notificarle que uno o más objetos en su laboratorio "
-"están en las cuotas mínimas."
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:7
 msgid "This are the details of the product:"
-msgstr "Detalle de productos"
+msgstr ""
 
 #: laboratory/templates/index.html:9
-#, fuzzy
-#| msgid "Search"
 msgid "Search MSDS"
-msgstr "Buscar"
+msgstr ""
 
 #: laboratory/templates/index.html:11
 msgid "Upload your MSDS"
@@ -849,34 +787,30 @@ msgstr ""
 #: laboratory/templates/laboratory/report_object_list.html:15
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:24
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:100
-#, fuzzy
-#| msgid "Download PDF"
 msgid "Download"
-msgstr "Descargar PDF"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:4
 msgid "Access List"
-msgstr "Lista de acceso"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:11
-#, fuzzy
-#| msgid "Laboratories"
 msgid "Laboratorits"
-msgstr "Laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:26
 #: laboratory/templates/laboratory/laboratory_list.html:15
 #: laboratory/templates/laboratory/objectview_list.html:24
 msgid "Add"
-msgstr "Agregar"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:31
 msgid "Create user"
-msgstr "Crear usuario"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:41
 msgid "Create users"
-msgstr "Crear usuarios"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:51
 #: laboratory/templates/laboratory/admin_shelf_list.html:28
@@ -886,15 +820,15 @@ msgstr "Crear usuarios"
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:31
 #: laboratory/templates/laboratory/shelfobject_form.html:22
 msgid "Close"
-msgstr "Cerrar"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:80
 msgid "Not user found"
-msgstr "Usuario no encontrado"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:83
 msgid "Delete users"
-msgstr "Eliminar usuarios"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:126
 msgid "You need to select!"
@@ -911,7 +845,7 @@ msgstr ""
 #: laboratory/templates/laboratory/access_list.html:134
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:35
 msgid "Are you sure?"
-msgstr "¿Está seguro?"
+msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:135
 msgid "You will not be able to revert this!"
@@ -924,30 +858,27 @@ msgstr ""
 #: laboratory/templates/laboratory/action_denied.html:4
 #: laboratory/templates/laboratory/permission_denied.html:6
 msgid "Permission denied"
-msgstr "Permiso denegado"
+msgstr ""
 
 #: laboratory/templates/laboratory/action_denied.html:5
-#, fuzzy
-#| msgid "You don't have the permissions required to access this section"
 msgid "You don't have the permissions required to access this action"
 msgstr ""
-"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
 
 #: laboratory/templates/laboratory/admin_shelf_list.html:7
 #: laboratory/templates/laboratory/admin_shelf_list.html:15
 #: laboratory/templates/laboratory/dataconfig.html:9
 #: laboratory/templates/laboratory/furniture_form.html:100
 msgid "Add Shelf"
-msgstr "Agregar estante"
+msgstr ""
 
 #: laboratory/templates/laboratory/edit.html:7
 #: laboratory/templates/laboratory/laboratory_form.html:8
 msgid "Laboratory Management"
-msgstr "Administración de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_confirm_delete.html:6
 msgid "Delete furniture"
-msgstr "Eliminar pieza de mueble"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_confirm_delete.html:13
 #: laboratory/templates/laboratory/laboratory_delete.html:13
@@ -955,19 +886,19 @@ msgstr "Eliminar pieza de mueble"
 #: laboratory/templates/laboratory/objectfeatures_confirm_delete.html:10
 #: laboratory/templates/laboratory/objectview_delete.html:11
 msgid "Are you sure you want to delete"
-msgstr "¿Está seguro que desea eliminar "
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_confirm_delete.html:14
 #: laboratory/templates/laboratory/laboratoryroom_confirm_delete.html:15
 #: laboratory/templates/laboratory/objectfeatures_confirm_delete.html:11
 #: laboratory/templates/laboratory/objectview_delete.html:12
 msgid "Confirm"
-msgstr "Confirmar"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_form.html:6
 #: laboratory/templates/laboratory/furniture_form.html:16
 msgid "Furniture management"
-msgstr "Administración de muebles"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_form.html:44
 #: laboratory/templates/laboratory/furniture_form.html:52
@@ -976,10 +907,8 @@ msgstr ""
 
 #: laboratory/templates/laboratory/furniture_form.html:47
 #: laboratory/templates/laboratory/furniture_form.html:55
-#, fuzzy
-#| msgid "Volumen"
 msgid "Column"
-msgstr "Volumen"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_form.html:78
 #: laboratory/templates/laboratory/laboratory_list.html:26
@@ -989,11 +918,11 @@ msgstr "Volumen"
 #: laboratory/templates/laboratory/shelfObject.html:9
 #: laboratory/templates/laboratory/shelf_details.html:18
 msgid "Edit"
-msgstr "Editar"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_form.html:114
 msgid "Create shelf"
-msgstr "Crear nuevo estante"
+msgstr ""
 
 #: laboratory/templates/laboratory/furniture_list.html:21
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:26
@@ -1010,55 +939,53 @@ msgstr "Crear nuevo estante"
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:31
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:107
 msgid "PDF"
-msgstr "PDF"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:52
 #: laboratory/templates/laboratory/index.html:107
 msgid "Laboratory administration"
-msgstr "Administración del laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:84
 msgid "Procedures"
-msgstr "Procedimientos"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:90
 msgid "Dissolution calculator"
-msgstr "Calculadora de disoluciones"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:96
 msgid "Access list"
-msgstr "Lista de acceso"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:151
 #: laboratory/templates/laboratory/partials/navbar.html:93
 msgid "Furnitures"
-msgstr "Muebles"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:171
 msgid "Welcome to the Simple laboratory organizer"
-msgstr "Bienvenido al organizador de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/index.html:176
 msgid "Login"
-msgstr "Inicio de sesión"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_create.html:11
 #: laboratory/templates/laboratory/laboratory_notperm.html:4
 #: laboratory/templates/laboratory/select_lab.html:14
 msgid "Create laboratory"
-msgstr "Crear un laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_delete.html:6
-#, fuzzy
-#| msgid "Select laboratory"
 msgid "Delete laboratory"
-msgstr "Seleccione su laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_list.html:43
 #: laboratory/templates/laboratory/objectfeatures_form.html:64
 #: laboratory/templates/laboratory/objectview_list.html:52
 msgid "Previous"
-msgstr "Anterior"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_list.html:48
 #: laboratory/templates/laboratory/objectfeatures_form.html:68
@@ -1066,75 +993,69 @@ msgstr "Anterior"
 #: laboratory/templates/pdf/base_pdf.html:17
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:15
 msgid "Page"
-msgstr "Página"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_list.html:53
 #: laboratory/templates/laboratory/objectfeatures_form.html:72
 #: laboratory/templates/laboratory/objectview_list.html:62
 #: laboratory/templates/tour/tourtemplate.html:1
 msgid "Next"
-msgstr "Siguiente"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratory_notperm.html:7
 msgid ""
 "Sorry, you have not permission to create laboratory, please contact your "
 "administrator"
 msgstr ""
-"Disculpas, usted no tiene permiso para crear un laboratorio, por favor "
-"contáctese con su administrador"
 
 #: laboratory/templates/laboratory/laboratory_notperm.html:10
 msgid "Maybe you are not associate with any laboratory in a role"
-msgstr "Posiblemente, porque no tiene asociado un laboratorio en algún rol"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_confirm_delete.html:6
 msgid "Delete laboratory room"
-msgstr "Eliminar sala de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:6
 #: laboratory/templates/laboratory/laboratoryroom_form.html:16
 msgid "Laboratory room management"
-msgstr "Administración de sala de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:25
 #: laboratory/templates/laboratory/laboratoryroom_form.html:84
 msgid "Update"
-msgstr "Editar"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:27
 msgid "New"
-msgstr "Nuevo"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:69
-#, fuzzy
-#| msgid "Delete furniture"
 msgid "Create Furniture"
-msgstr "Eliminar pieza de mueble"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:106
 #: laboratory/templates/laboratory/laboratoryroom_form.html:116
-#, fuzzy
-#| msgid "Delete furniture"
 msgid "Create furniture"
-msgstr "Eliminar pieza de mueble"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_list.html:4
 msgid "Laboratory rooms"
-msgstr "Salas de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_list.html:56
 msgid "Please click over furniture items"
-msgstr "Por favor hacer clic sobre los muebles"
+msgstr ""
 
 #: laboratory/templates/laboratory/laboratoryroom_list.html:57
 msgid "Shelves will be displayed here"
-msgstr "Los muebles se mostrarán aquí"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:4
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:11
 #: laboratory/templates/laboratory/partials/navbar.html:112
 msgid "Limited shelf objects"
-msgstr "Objetos en el límite"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:22
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:21
@@ -1193,81 +1114,81 @@ msgstr ""
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:27
 #: laboratory/templates/pdf/shelf_object_pdf.html:14
 msgid "Quantity:"
-msgstr "Cantidad:"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:68
 #: laboratory/templates/pdf/shelf_object_pdf.html:17
 msgid "Limit quantity:"
-msgstr "Cantidad límite:"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:73
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:100
 #: laboratory/templates/laboratory/report_object_list.html:100
 msgid "No objects"
-msgstr "No hay objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:83
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:108
 #: laboratory/templates/laboratory/report_object_list.html:106
 msgid "All objects"
-msgstr "Todos los objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:86
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:111
 #: laboratory/templates/laboratory/report_object_list.html:109
 msgid "All objects in PDF"
-msgstr "Todos los objetos en PDF"
+msgstr ""
 
 #: laboratory/templates/laboratory/object_form.html:10
 msgid "Objects Management"
-msgstr "Manejo de objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectfeatures_confirm_delete.html:4
 msgid "Delete object feature"
-msgstr "Eliminar características de objeto"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectfeatures_form.html:4
 #: laboratory/templates/laboratory/objectfeatures_form.html:14
 #: laboratory/templates/laboratory/partials/navbar.html:69
 msgid "Object features management"
-msgstr "Administración de características de objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectfeatures_form.html:57
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:73
 #: laboratory/templates/laboratory/report_object_list.html:79
 msgid "No object features"
-msgstr "No hay características de objeto"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectfeatures_form.html:68
 #: laboratory/templates/pdf/base_pdf.html:18
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:16
 msgid "of"
-msgstr "de"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectview_delete.html:4
 msgid "Delete object"
-msgstr "Borrar objeto"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectview_form.html:5
 #: laboratory/templates/laboratory/objectview_form.html:13
 #: laboratory/templates/laboratory/objectview_list.html:4
 #: laboratory/templates/laboratory/objectview_list.html:12
 msgid "Reactive management"
-msgstr "Administración de Reactivos"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectview_form.html:5
 #: laboratory/templates/laboratory/objectview_form.html:13
 #: laboratory/templates/laboratory/objectview_list.html:4
 #: laboratory/templates/laboratory/objectview_list.html:12
 msgid "Material management"
-msgstr "Administración de Materiales"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectview_form.html:5
 #: laboratory/templates/laboratory/objectview_form.html:13
 #: laboratory/templates/laboratory/objectview_list.html:4
 #: laboratory/templates/laboratory/objectview_list.html:12
 msgid "Equipment management"
-msgstr "Administración de Equipos"
+msgstr ""
 
 #: laboratory/templates/laboratory/objectview_form.html:5
 #: laboratory/templates/laboratory/objectview_form.html:13
@@ -1275,84 +1196,79 @@ msgstr "Administración de Equipos"
 #: laboratory/templates/laboratory/objectview_list.html:12
 #: laboratory/templates/laboratory/partials/navbar.html:59
 msgid "Object management"
-msgstr "Administración de objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:18
-#, fuzzy
-#| msgid "Laboratory"
 msgid "Add Laboratory"
-msgstr "Laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:30
-#, fuzzy
-#| msgid "Laboratories"
 msgid "My laboratories"
-msgstr "Laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:51
 msgid "Administration"
-msgstr "Administración"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:55
 msgid "Laboratory management"
-msgstr "Administración de sala de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:73
 msgid "Dissolution management"
-msgstr "Administración de disoluciones"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:108
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:4
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:10
 msgid "Reactive precursor objects"
-msgstr "Objetos reactivos precursores"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:123
 msgid "Finish reservation"
-msgstr "Finalizar reservación"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:126
 msgid "Create a reservation"
-msgstr "Crear reservación"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:136
 msgid "Feedback"
-msgstr "Retroalimentación"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:138
 #: laboratory/templates/pdf/base_pdf.html:22
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:19
 msgid "User:"
-msgstr "Usuario:"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:139
 msgid "Log out"
-msgstr "Cerrar Sesión"
+msgstr ""
 
 #: laboratory/templates/laboratory/partials/navbar.html:141
 msgid "Log in"
-msgstr "Iniciar Sesión"
+msgstr ""
 
 #: laboratory/templates/laboratory/permission_denied.html:7
 msgid "You don't have the permissions required to access this section"
 msgstr ""
-"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
 
 #: laboratory/templates/laboratory/permission_denied.html:8
 msgid "Please"
-msgstr "Por favor"
+msgstr ""
 
 #: laboratory/templates/laboratory/permission_denied.html:8
 msgid "select"
-msgstr "seleccione"
+msgstr ""
 
 #: laboratory/templates/laboratory/permission_denied.html:8
 msgid "one of your labs"
-msgstr "uno de sus laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:11
 msgid "Not found? include all laboratories"
-msgstr "¿No existe? Incluya todos los laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:60
 #: laboratory/templates/laboratory/report_object_list.html:66
@@ -1360,7 +1276,7 @@ msgstr "¿No existe? Incluya todos los laboratorios"
 #: laboratory/templates/pdf/object_pdf.html:12
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:12
 msgid "Name:"
-msgstr "Nombre:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:61
 #: laboratory/templates/laboratory/report_furniture_list.html:59
@@ -1373,94 +1289,94 @@ msgstr "Nombre:"
 #: laboratory/templates/pdf/object_pdf.html:13
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:13
 msgid "Type:"
-msgstr "Tipo:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:65
 #: laboratory/templates/laboratory/report_object_list.html:71
 #: laboratory/templates/pdf/object_pdf.html:17
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:16
 msgid "Features:"
-msgstr "Características:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:87
 #: laboratory/templates/pdf/object_pdf.html:39
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:37
 msgid "No Data"
-msgstr "No hay datos"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:90
 #: laboratory/templates/laboratory/report_object_list.html:97
 #: laboratory/templates/pdf/object_pdf.html:43
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:40
 msgid "Description:"
-msgstr "Descripción:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:91
 #: laboratory/templates/pdf/object_pdf.html:45
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:41
 msgid "Molecular formula:"
-msgstr "Fórmula molecular:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:92
 #: laboratory/templates/pdf/object_pdf.html:46
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:42
 msgid "CAS ID Number:"
-msgstr "Número ID CAS"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:94
 #: laboratory/templates/pdf/object_pdf.html:48
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:44
 msgid "Inventario C&L:"
-msgstr "Inventario C&L:"
+msgstr ""
 
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:95
 #: laboratory/templates/pdf/object_pdf.html:49
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:45
 msgid "Reference link"
-msgstr "Enlace de referencia"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:4
 #: laboratory/templates/laboratory/report_furniture_list.html:9
 msgid "Furniture report"
-msgstr "Reporte de muebles"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:58
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:50
 msgid "Laboratory room:"
-msgstr "Sala de Laboratorio:"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:67
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:45
 msgid "Total"
-msgstr "Total"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:67
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:45
 msgid "objects"
-msgstr "Objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:88
 msgid "No object elements"
-msgstr "No hay objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:95
 msgid "No shelf elements"
-msgstr "No hay estantes"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_furniture_list.html:98
 msgid "No furniture elements"
-msgstr "No hay piezas de mueble"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:4
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:10
 msgid "Laboratory report"
-msgstr "Reporte de laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:55
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:14
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:42
 msgid "Furniture:"
-msgstr "Mueble:"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:60
 #: laboratory/templates/laboratory/shelfObject.html:4
@@ -1468,33 +1384,31 @@ msgstr "Mueble:"
 #: laboratory/views/reports.py:121 laboratory/views/reports.py:218
 #: laboratory/views/reports.py:431
 msgid "Quantity"
-msgstr "Cantidad"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:75
-#, fuzzy
-#| msgid "Laboratories"
 msgid "You have not Laboratories"
-msgstr "Laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:4
 #: laboratory/templates/laboratory/report_object_list.html:9
 msgid "Reactives report"
-msgstr "Reporte de Reactivos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:4
 #: laboratory/templates/laboratory/report_object_list.html:9
 msgid "Materials report"
-msgstr "Reporte de Materiales"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:4
 #: laboratory/templates/laboratory/report_object_list.html:9
 msgid "Equipments report"
-msgstr "Reporte de Equipos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:4
 #: laboratory/templates/laboratory/report_object_list.html:9
 msgid "Objects report"
-msgstr "Reporte de objetos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:29
 msgid "Without details Ods"
@@ -1510,24 +1424,20 @@ msgstr ""
 
 #: laboratory/templates/laboratory/report_object_list.html:93
 msgid "No data"
-msgstr "No hay datos"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:4
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:10
-#, fuzzy
-#| msgid "Organilab Laboratory Report"
 msgid "Organization laboratory report"
-msgstr "Organilab: Reporte de Laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:18
 msgid "Submit"
-msgstr "Enviar"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:55
-#, fuzzy
-#| msgid "Laboratory"
 msgid "Laboratory :"
-msgstr "Laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:61
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:15
@@ -1543,10 +1453,8 @@ msgstr ""
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:63
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:17
 #: laboratory/views/reports.py:29
-#, fuzzy
-#| msgid "Email"
 msgid "Emails"
-msgstr "Correo electrónico"
+msgstr ""
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:90
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:41
@@ -1557,207 +1465,205 @@ msgstr ""
 
 #: laboratory/templates/laboratory/search.html:45
 msgid "Reserve object"
-msgstr "Reservar"
+msgstr ""
 
 #: laboratory/templates/laboratory/search.html:51
 msgid "Information"
-msgstr "Información"
+msgstr ""
 
 #: laboratory/templates/laboratory/search.html:58
 msgid "Characteristic"
-msgstr "Características"
+msgstr ""
 
 #: laboratory/templates/laboratory/search.html:75
 msgid "Not found"
-msgstr "No encontrado"
+msgstr ""
 
 #: laboratory/templates/laboratory/search_widget.html:21
 msgid "In all laboratories"
-msgstr "En todos los laboratorios"
+msgstr ""
 
 #: laboratory/templates/laboratory/select_lab.html:20
 msgid "Select your laboratory"
-msgstr "Seleccione su laboratorio"
+msgstr ""
 
 #: laboratory/templates/laboratory/select_lab.html:24
 msgid "Select"
-msgstr "Seleccionar"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelfObject_list.html:38
 msgid "Reserve"
-msgstr "Reservar"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelf_details.html:14
 msgid "Position:"
-msgstr "Posición:"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:8
 msgid "Add Object"
-msgstr "Agregar Objeto"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:22
 msgid "Update Object"
-msgstr "Editar Objeto"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:14
 msgid "Are you sure that do you want delete this object"
-msgstr "¿Está seguro que desea eliminar este objeto?"
+msgstr ""
 
 #: laboratory/templates/laboratory/shelfobject_form.html:23
 msgid "Save changes"
-msgstr "Guardar cambios"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_calculator.html:4
 #: laboratory/templates/laboratory/solution_calculator.html:11
 msgid "Solution calculator"
-msgstr "Calculadora de soluciones"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_calculator.html:16
 msgid "Calculate"
-msgstr "Calcular"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:4
 msgid "Dissolution detail"
-msgstr "Detalle de la disolución"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:16
 msgid "Check all the dissolution results"
-msgstr "Ver todos los resultados de las disoluciones"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:20
 #: laboratory/templates/laboratory/solution_list.html:12
 msgid "Calculate new dissolution"
-msgstr "Calcular una nueva disolución"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:32
 msgid "Formula"
-msgstr "Fórmula"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:33
 msgid "Amount"
-msgstr "Cantidad"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:47
 msgid "Dissolution properties"
-msgstr "Propiedades de la disolución"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_detail.html:52
 msgid "Value"
-msgstr "Valor"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_list.html:4
 msgid "Dissolution list"
-msgstr "Lista de disoluciones"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_list.html:21
 msgid "Check dissolution"
-msgstr "Ver disolución"
+msgstr ""
 
 #: laboratory/templates/laboratory/solution_list.html:26
 msgid "No solutions yet"
-msgstr "Todavía no hay soluciones"
+msgstr ""
 
 #: laboratory/templates/pdf/base_pdf.html:9
 #: laboratory/templates/pdf/furniture_pdf.html:4
 msgid "Organilab Furniture Report"
-msgstr "Organilab: Reporte de Muebles"
+msgstr ""
 
 #: laboratory/templates/pdf/base_pdf.html:13
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:12
 msgid "Date:"
-msgstr "Fecha:"
+msgstr ""
 
 #: laboratory/templates/pdf/furniture_pdf.html:12
 msgid "LaboratoryRoom:"
-msgstr "Sala de Laboratorio:"
+msgstr ""
 
 #: laboratory/templates/pdf/furniture_pdf.html:26
 #: laboratory/templates/pdf/object_pdf.html:9
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:9
 msgid "Object Code:"
-msgstr "Código de objeto:"
+msgstr ""
 
 #: laboratory/templates/pdf/furniture_pdf.html:39
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:52
 msgid "No Object Elements"
-msgstr "No hay objetos"
+msgstr ""
 
 #: laboratory/templates/pdf/furniture_pdf.html:44
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:31
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:56
 msgid "No Shelf Elements"
-msgstr "No hay estantes"
+msgstr ""
 
 #: laboratory/templates/pdf/furniture_pdf.html:48
 msgid "No Furniture Elements"
-msgstr "No hay elementos en los muebles"
+msgstr ""
 
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:4
 msgid "Organilab Laboratory Report"
-msgstr "Organilab: Reporte de Laboratorio"
+msgstr ""
 
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:37
 msgid "No Labs"
-msgstr "No hay laboratorios"
+msgstr ""
 
 #: laboratory/templates/pdf/object_pdf.html:4
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:4
 msgid "Organilab Objects Report"
-msgstr "Organilab: Reporte de Objetos"
+msgstr ""
 
 #: laboratory/templates/pdf/object_pdf.html:25
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:24
 msgid "No Object Features"
-msgstr "Sin Características de objeto"
+msgstr ""
 
 #: laboratory/templates/pdf/object_pdf.html:55
 #: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:50
 #: laboratory/templates/pdf/shelf_object_pdf.html:21
 msgid "No Objects Elements"
-msgstr "No hay Objetos"
+msgstr ""
 
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:4
-#, fuzzy
-#| msgid "Organilab Laboratory Report"
 msgid "Organilab Organization Laboratory Report"
-msgstr "Organilab: Reporte de Laboratorio"
+msgstr ""
 
 #: laboratory/templates/pdf/shelf_object_pdf.html:4
 msgid "Organilab Shelf Objects Report"
-msgstr "Organilab: Reporte de objetos de estante"
+msgstr ""
 
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:9
 msgid "Organilab Summary Furniture Report"
-msgstr "Organilab: Reporte de Muebles"
+msgstr ""
 
 #: laboratory/templates/tour/tourtemplate.html:1
 msgid "Prev"
-msgstr "Anterior"
+msgstr ""
 
 #: laboratory/templates/tour/tourtemplate.html:1
 msgid "Pause"
-msgstr "Pausa"
+msgstr ""
 
 #: laboratory/templates/tour/tourtemplate.html:1
 msgid "End tour"
-msgstr "Finalizar"
+msgstr ""
 
 #: laboratory/validators.py:9
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
-msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
+msgstr ""
 
 #: laboratory/views/access.py:80 laboratory/views/laboratory.py:60
 msgid "User added successfully"
-msgstr "Usuario agregado satisfactoriamente"
+msgstr ""
 
 #: laboratory/views/access.py:96
 msgid "Users removed successfully"
-msgstr "Usuarios eliminados correctamente"
+msgstr ""
 
 #: laboratory/views/furniture.py:87
 msgid "Invalid format in shelf dataconfig "
-msgstr "Formato inválido en dataconfig del estante"
+msgstr ""
 
 #: laboratory/views/laboratory.py:62
 msgid "Something went wrong"
@@ -1772,335 +1678,160 @@ msgid ""
 "Sorry, there is not available laboratory, please contact the administrator "
 "and request a laboratory enrollment"
 msgstr ""
-"Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
-"administrador y solicite que lo asigne a algún laboratorio."
 
 #: laboratory/views/reports.py:122 laboratory/views/reports.py:433
-#, fuzzy
-#| msgid "Unit"
 msgid "Units"
-msgstr "Unidad"
+msgstr ""
 
 #: laboratory/views/reports.py:123
-#, fuzzy
-#| msgid "Object feature"
 msgid "Object type"
-msgstr "Característica del objeto"
+msgstr ""
 
 #: laboratory/views/reports.py:124
-#, fuzzy
-#| msgid "CAS ID number"
 msgid "CAS ID"
-msgstr "Número CAS"
+msgstr ""
 
 #: laboratory/views/reports.py:219
-#, fuzzy
-#| msgid "Limit quantity:"
 msgid "Limit quantity"
-msgstr "Cantidad límite:"
+msgstr ""
 
 #: laboratory/views/reports.py:219
-#, fuzzy
-#| msgid "Measurement unit"
 msgid "Mesurement units"
-msgstr "Unidad de medida"
+msgstr ""
 
 #: laboratory/views/reports.py:281
-#, fuzzy
-#| msgid "Quantity"
 msgid "Quantity total"
-msgstr "Cantidad"
+msgstr ""
 
 #: laboratory/views/reports.py:281
-#, fuzzy
-#| msgid "Measurement unit"
 msgid "Measurement units"
-msgstr "Unidad de medida"
+msgstr ""
 
 #: laboratory/views/reports.py:286
-#, fuzzy
-#| msgid "CAS ID number"
 msgid "CAS id number"
-msgstr "Número CAS"
+msgstr ""
 
 #: laboratory/views/reports.py:287
-#, fuzzy
-#| msgid "Is precursor"
 msgid "Is precursor?"
-msgstr "¿Es precursor"
+msgstr ""
 
 #: laboratory/views/reports.py:288
-#, fuzzy
-#| msgid "IMDG code"
 msgid "IMDG type"
-msgstr "Código IMDG"
+msgstr ""
 
 #: laboratory/views/reports.py:432
-#, fuzzy
-#| msgid "Limit quantity:"
 msgid "Limit Quantity"
-msgstr "Cantidad límite:"
+msgstr ""
 
 #: laboratory/views/shelfobject.py:71
 msgid "Object is required"
-msgstr "Objeto requerido"
+msgstr ""
 
 #: laboratory/views/solutions.py:39
 msgid "Alkalinity"
-msgstr "Alcalinidad"
+msgstr ""
 
 #: laboratory/views/solutions.py:40
 msgid "Bjerrum length"
-msgstr "Longitud de Bjerrum"
+msgstr ""
 
 #: laboratory/views/solutions.py:41
 msgid "Charge balance"
-msgstr "Balance de carga"
+msgstr ""
 
 #: laboratory/views/solutions.py:42
 msgid "Chemical potential energy"
-msgstr "Energía química potencial"
+msgstr ""
 
 #: laboratory/views/solutions.py:43
 msgid "Conductivity"
-msgstr "Conductividad"
+msgstr ""
 
 #: laboratory/views/solutions.py:44
 msgid "Debye length"
-msgstr "Longitud de Debye"
+msgstr ""
 
 #: laboratory/views/solutions.py:45
 msgid "Density"
-msgstr "Densidad"
+msgstr ""
 
 #: laboratory/views/solutions.py:46
 msgid "Dielectric constant"
-msgstr "Constante dieléctrica"
+msgstr ""
 
 #: laboratory/views/solutions.py:47
 msgid "Hardness"
-msgstr "Dureza"
+msgstr ""
 
 #: laboratory/views/solutions.py:48
 msgid "Ionic strength"
-msgstr "Fuerza iónica"
+msgstr ""
 
 #: laboratory/views/solutions.py:49
 msgid "Mass"
-msgstr "Masa"
+msgstr ""
 
 #: laboratory/views/solutions.py:50
 msgid "Moles solvent"
-msgstr "Moles de disolvente"
+msgstr ""
 
 #: laboratory/views/solutions.py:51
 msgid "Osmotic coefficient"
-msgstr "Coeficiente osmótico"
+msgstr ""
 
 #: laboratory/views/solutions.py:52
 msgid "Osmotic pressure"
-msgstr "Presión osmótica"
+msgstr ""
 
 #: laboratory/views/solutions.py:55
 msgid "Total moles solute"
-msgstr "Total de moles por soluto"
+msgstr ""
 
 #: laboratory/views/solutions.py:56
 msgid "Viscosity dynamic"
-msgstr "Viscosidad dinámica"
+msgstr ""
 
 #: laboratory/views/solutions.py:57
 msgid "Viscosity kinematic"
-msgstr "Viscosidad kinemática"
+msgstr ""
 
 #: laboratory/views/solutions.py:58
 msgid "Viscosity relative"
-msgstr "Viscosidad relativa"
+msgstr ""
 
 #: laboratory/views/solutions.py:59
 msgid "Volume"
-msgstr "Volumen"
+msgstr ""
 
 #: laboratory/views/solutions.py:60
 msgid "Water activity"
-msgstr "Actividad del agua"
+msgstr ""
 
 #: laboratory/views/solutions.py:79
 msgid "Descriptive name of the solution"
-msgstr "Nombre descriptivo para la solución"
+msgstr ""
 
 #: laboratory/views/solutions.py:81
 msgid ""
 "Write in each line the formula along with its amount, separated by a comma"
 msgstr ""
-"Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
 
 #: laboratory/views/solutions.py:82
 msgid "For example: 500 mL, 1 L"
-msgstr "Por ejemplo: 500 mL, 1 L"
+msgstr ""
 
 #: laboratory/views/solutions.py:83
 msgid "In degC"
-msgstr "En degC"
+msgstr ""
 
 #: laboratory/views/solutions.py:84
 msgid "In atm"
-msgstr "En atm"
+msgstr ""
 
 #: laboratory/views/solutions.py:94 laboratory/views/solutions.py:98
 msgid "Incorrect solute definition"
-msgstr "Definición incorrecta de soluto"
+msgstr ""
 
 #: laboratory/views/solutions.py:113
 msgid "There are errors in the solution definition, please try again"
-msgstr "Hay errores en la definición de la solución, intente de nuevo"
-
-#~ msgid "Title"
-#~ msgstr "Título"
-
-#~ msgid "Related file"
-#~ msgstr "Archivo relacionado"
-
-#~ msgid "Feedback entry"
-#~ msgstr "Entrada de retroalimentación"
-
-#~ msgid "Feedback entries"
-#~ msgstr "Entradas de retroalimentación"
-
-#~ msgid "If you had some problem using Organilab, please let us know about it"
-#~ msgstr ""
-#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
-
-#~ msgid "Send"
-#~ msgstr "Enviar"
-
-#~ msgid "Sign in"
-#~ msgstr "Registrarse"
-
-#~ msgid "Forgot password?"
-#~ msgstr "¿Olvidó su contraseña?"
-
-#~ msgid "Reset password"
-#~ msgstr "Recuperar contraseña"
-
-#~ msgid "Your password has been set.  You may go ahead and log in now."
-#~ msgstr "Su contraseña ha sido cambiada, Usted puede ir a ingreso ahora."
-
-#~ msgid "Change password"
-#~ msgstr "Cambiar contraseña"
-
-#~ msgid "Password"
-#~ msgstr "Contraseña"
-
-#~ msgid "Password confirm"
-#~ msgstr "Confirmar contraseña"
-
-#~ msgid ""
-#~ "We've emailed you instructions for setting your password, if an account "
-#~ "exists with the email you entered. You should receive them shortly."
-#~ msgstr ""
-#~ "Hemos enviado instrucciones para editar su contraseña, si alguna cuenta "
-#~ "existe con el correo ingresado.  Usted recibirá un correo pronto."
-
-#~ msgid ""
-#~ "If you don't receive an email, please make sure you've entered the "
-#~ "address you registered with, and check your spam folder."
-#~ msgstr ""
-#~ "Si usted no recibe un correo, por favor asegúrese que ha ingresado la "
-#~ "dirección de correo correcta y revise su bandeja de SPAM"
-
-#~ msgid ""
-#~ "\n"
-#~ "You're receiving this email because you requested a password reset for "
-#~ "your user account at Organilab.\n"
-#~ "\n"
-#~ "Please go to the following page and choose a new password:\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Usted está recibiendo este correo, porque usted solicitó un cambio de "
-#~ "contraseña para su cuenta en Organilab. \n"
-#~ "\n"
-#~ "Por favor vaya a la siguiente página y elija una nueva contraseña:\n"
-
-#~ msgid "Your username, in case you've forgotten:"
-#~ msgstr "Su nombre de usuario, en caso de que lo olvidara es:"
-
-#~ msgid ""
-#~ "\n"
-#~ "If clicking the link above doesn't work, please copy and paste the URL in "
-#~ "a new browser\n"
-#~ "window instead.\n"
-#~ "\n"
-#~ "Thanks for using Organilab!\n"
-#~ "\n"
-#~ "Sincerely,"
-#~ msgstr ""
-#~ "\n"
-#~ "Si al hacer clic en el enlace de arriba no funciona, por favor copie y "
-#~ "pegue esta URL en una pestaña de su navegador\n"
-#~ "\n"
-#~ "¡Gracias por usar Organilab!\n"
-#~ "\n"
-#~ "Atentamente,"
-
-#~ msgid "Forgot password"
-#~ msgstr "Olvidó su contraseña"
-
-#~ msgid "Organilab Password Reset"
-#~ msgstr "Recuperar contraseña en organilab"
-
-#~ msgid ""
-#~ "Thank you for your help. We are gonna check your problem as soon as we can"
-#~ msgstr ""
-#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
-
-#~ msgid "Keyword, for instance Beaker"
-#~ msgstr "Palabra clave, por ejemplo Beaker"
-
-#~ msgid "Organilab Build Report"
-#~ msgstr "Organilab: Reporte de Edificios"
-
-#~ msgid "Furniture Management"
-#~ msgstr "Administración de muebles"
-
-#~ msgid "OBJECTS INFORMATION"
-#~ msgstr "Información de objetos"
-
-#~ msgid "Furniture information"
-#~ msgstr "Información del mueble"
-
-#~ msgid "LABORATORYROOM INFORMATION"
-#~ msgstr "Información del Laboratorio:"
-
-#~ msgid "user:"
-#~ msgstr "usuario:"
-
-#~ msgid "Download Object PDF"
-#~ msgstr "Descargar Objecto en PDF"
-
-#~ msgid "Object Features"
-#~ msgstr "Características del objeto"
-
-#~ msgid "Summary Furniture PDF"
-#~ msgstr "Resumen de Mueble PDF"
-
-#~ msgid "Furniture PDF"
-#~ msgstr "Mueble PDF"
-
-#~ msgid "Download Summary PDF"
-#~ msgstr "Descargar PDF Resumido"
-
-#~ msgid "Crate"
-#~ msgstr "Caja"
-
-#~ msgid "General Use"
-#~ msgstr "Uso General"
-
-#~ msgid "Security Equipment"
-#~ msgstr "Equipo de Seguridad"
-
-#~ msgid "Chemical and Biological Process"
-#~ msgstr "Proceso Biológico y Químico"
-
-#~ msgid "FURNITURE INFORMATION"
-#~ msgstr "INFORMACIÓN DE MUEBLE"
+msgstr ""

@@ -12,8 +12,10 @@ class FeedbackEntry(models.Model):
     explanation = models.TextField(_('Explanation'), null=True, blank=True)
     related_file = models.FileField(
         _('Related file'), upload_to='media/feedback_entries/', null=True, blank=True)
-    laboratory_id = models.IntegerField(default=0, null=True)
-    user = models.ForeignKey(User, null=True, blank=True)
+    laboratory_id = models.IntegerField(
+        default=0, null=True, verbose_name=_("Laboratory id"))
+    user = models.ForeignKey(
+        User, verbose_name=_("User"), null=True, blank=True)
 
     class Meta:
         verbose_name = _('Feedback entry')

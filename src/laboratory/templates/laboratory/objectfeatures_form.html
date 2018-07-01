@@ -61,15 +61,15 @@
         <div class="pagination">
         <span>
             {% if object_list.has_previous %}
-              <a href="?page={{ object_list.previous_page_number }}">previous</a>
+              <a href="?page={{ object_list.previous_page_number }}"> {% trans 'Previous' %}</a>
             {% endif %}
 
           <span class="current">
-                Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+               {% trans 'Page' %} {{ object_list.number }} {% trans 'of' %} {{ object_list.paginator.num_pages }}.
             </span>
 
           {% if object_list.has_next %}
-            <a href="?page={{ object_list.next_page_number }}">next</a>
+            <a href="?page={{ object_list.next_page_number }}">{% trans 'Next' %}</a>
           {% endif %}
         </span>
         </div>

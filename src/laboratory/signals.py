@@ -35,13 +35,15 @@ def get_laboratory_users():
 
 
 def send_notification_email(shelf_object):
-    subject = 'The shelf object called %s reached its limit quantity' % shelf_object.object.name
+    subject = _(
+        'The shelf object called %s reached its limit quantity') % shelf_object.object.name
 
     context = {
         'shelf_object': shelf_object
     }
 
-    html_message = render_to_string('email/shelf_object_quantity_limit.html', context=context)
+    html_message = render_to_string(
+        'email/shelf_object_quantity_limit.html', context=context)
 
     send_mail(
         subject=subject,

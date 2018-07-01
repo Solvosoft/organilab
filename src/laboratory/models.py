@@ -90,15 +90,15 @@ class Object(models.Model):
     CORROSIVE = '8'
     MISCELLANEOUS = '9'
     IDMG_CHOICES = (
-        (EXPLOSIVES, 'Explosives'),
-        (GASES, 'Gases'),
-        (FLAMMABLE_LIQUIDS, 'Flammable liquids'),
-        (FLAMMABLE_SOLIDS, 'Flammable solids'),
-        (OXIDIZING, 'Oxidizing substances and organic peroxides'),
-        (TOXIC, 'Toxic and infectious substances'),
-        (RADIOACTIVE, 'Radioactive material'),
-        (CORROSIVE, 'Corrosive substances'),
-        (MISCELLANEOUS, 'Miscellaneous dangerous substances and articles')
+        (EXPLOSIVES, _('Explosives')),
+        (GASES, _('Gases')),
+        (FLAMMABLE_LIQUIDS, _('Flammable liquids')),
+        (FLAMMABLE_SOLIDS, _('Flammable solids')),
+        (OXIDIZING, _('Oxidizing substances and organic peroxides')),
+        (TOXIC, _('Toxic and infectious substances')),
+        (RADIOACTIVE, _('Radioactive material')),
+        (CORROSIVE, _('Corrosive substances')),
+        (MISCELLANEOUS, _('Miscellaneous dangerous substances and articles'))
     )
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
@@ -114,7 +114,13 @@ class Object(models.Model):
     imdg_code = models.CharField(
         _("IMDG code"), choices=IDMG_CHOICES, max_length=1, null=True, blank=True)
 
-    features = models.ManyToManyField(ObjectFeatures)
+    features = models.ManyToManyField(
+        ObjectFeatures, verbose_name=_("Object features"))
+
+    model = models.CharField(_('Model'), max_length=50, null=True, blank=True)
+    serie = models.CharField(_('Serie'),  max_length=50, null=True, blank=True)
+    plaque = models.CharField(
+        _('Plaque'), max_length=50, null=True, blank=True)
 
     @property
     def is_reactive(self):
@@ -150,8 +156,9 @@ class ShelfObject(models.Model):
         (ML, _('Mililiters')),
         (U, _('Unit'))
     )
-    shelf = models.ForeignKey('Shelf')
-    object = models.ForeignKey('Object')
+    shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"))
+    object = models.ForeignKey('Object', verbose_name=_(
+        "Equipment or reactive or sustance"))
     quantity = models.FloatField(_('Material quantity'))
     limit_quantity = models.FloatField(_('Limit material quantity'))
     measurement_unit = models.CharField(
@@ -204,8 +211,8 @@ class Shelf(models.Model):
         (CRATE, _('Space')),
         (DRAWER, _('Drawer'))
     )
-    furniture = models.ForeignKey('Furniture')
-    name = models.CharField(max_length=15, default="nd")
+    furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"))
+    name = models.CharField(_("Name"), max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
 
@@ -388,10 +395,12 @@ class OrganizationStructureManager(models.Manager):
 class OrganizationStructure(MPTTModel):
     name = models.CharField(_('Name'), max_length=255)
     group = models.ForeignKey(
-        Group, blank=True, null=True, on_delete=models.SET_NULL)
+        Group, blank=True, null=True, verbose_name=_("Group"),
+        on_delete=models.SET_NULL)
 
     parent = TreeForeignKey(
-        'self', blank=True, null=True, related_name='children')
+        'self', blank=True, null=True, verbose_name=_("Parent"),
+        related_name='children')
 
     os_manager = OrganizationStructureManager()
 
@@ -430,14 +439,20 @@ class PrincipalTechnician(models.Model):
     id_card = models.CharField(_('ID Card'), max_length=100)
     email = models.EmailField(_('Email address'))
 
-    organization = TreeForeignKey(OrganizationStructure, blank=True, null=True)
+    organization = TreeForeignKey(OrganizationStructure,
+                                  verbose_name=_("Organization"),
+                                  blank=True, null=True)
     assigned = models.ForeignKey(
-        'Laboratory', blank=True, null=True, on_delete=models.SET_NULL)
+        'Laboratory', verbose_name=_("Assigned to"),
+        blank=True, null=True, on_delete=models.SET_NULL)
 
     class MPTTMeta:
         order_insertion_by = ['name', ]
 
     class Meta:
+        verbose_name = _('Principal Technician')
+        verbose_name_plural = _('Principal Technicians')
+        ordering = ['name']
         permissions = (
             ("view_principaltechnician", _("Can see available PrincipalTechnician")),
         )
@@ -458,16 +473,17 @@ class Laboratory(models.Model):
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
 
-    organization = TreeForeignKey(OrganizationStructure)
+    organization = TreeForeignKey(
+        OrganizationStructure, verbose_name=_("Organization"))
 
     rooms = models.ManyToManyField(
-        'LaboratoryRoom', blank=True)
+        'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
     laboratorists = models.ManyToManyField(
-        User, related_name='laboratorists', blank=True)
+        User, related_name='laboratorists', verbose_name=_("Laboratorists"), blank=True)
 
     students = models.ManyToManyField(
-        User, related_name='students', blank=True)
+        User, related_name='students', verbose_name=_("Students"), blank=True)
 
     class Meta:
         verbose_name = _('Laboratory')
