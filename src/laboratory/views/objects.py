@@ -22,6 +22,7 @@ from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListV
 
 from laboratory.decorators import user_group_perms, view_user_group_perms
 
+
 class ObjectView(object):
     model = Object
     template_name_base = "laboratory/objectview"
@@ -44,7 +45,7 @@ class ObjectView(object):
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
-        )),'laboratory.add_object')
+        )), 'laboratory.add_object')
 
         @method_decorator(user_group_perms(perm='laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
@@ -63,7 +64,7 @@ class ObjectView(object):
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
-        )),'laboratory.change_object')
+        )), 'laboratory.change_object')
 
         @method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
@@ -76,9 +77,9 @@ class ObjectView(object):
             model=self.model,
             success_url="/",
             template_name=self.template_name_base + "_delete.html"
-        )),'laboratory.delete_object')
+        )), 'laboratory.delete_object')
 
-        @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')    
+        @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')
         class ObjectListView(ListView):
 
             def get_queryset(self):
@@ -113,7 +114,7 @@ class ObjectView(object):
             paginate_by=10,
             ordering=['code'],
             template_name=self.template_name_base + "_list.html"
-        )),'laboratory.view_object')
+        )), 'laboratory.view_object')
 
     def get_urls(self):
         return [
@@ -153,9 +154,23 @@ class ObjectForm(ModelForm):
                         initial=self.type_id,
                         widget=forms.HiddenInput()
                     )
+                data_type = self.type_id
 
         if data_type is not None and data_type == Object.REACTIVE:
             self.fields['molecular_formula'].required = True
             self.fields['cas_id_number'].required = True
             self.fields['security_sheet'].required = True
             self.fields['imdg_code'].required = True
+
+        if data_type == Object.EQUIPMENT:
+            self.fields['model'].required = True
+        else:
+            self.fields['model'] = forms.CharField(
+                widget=forms.HiddenInput()
+            )
+            self.fields['serie'] = forms.CharField(
+                widget=forms.HiddenInput()
+            )
+            self.fields['plaque'] = forms.CharField(
+                widget=forms.HiddenInput()
+            )

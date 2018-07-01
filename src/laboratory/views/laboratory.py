@@ -57,11 +57,11 @@ def create_admins_user(request, pk):
             user.last_name = form.cleaned_data['last_name']
             user.save()
             lab.lab_admins.add()
-            message = "User added successfully"
+            message = _("User added successfully")
         else:
-            message = "Something went wrong"
+            message = _("Something went wrong")
     else:
-        message = "Sorry, wrong method"
+        message = _("Sorry, wrong method")
     return render_admins_lab(request, lab.lab_admins.all(), lab, message=message)
 
 
