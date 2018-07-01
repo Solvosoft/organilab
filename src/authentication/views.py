@@ -20,6 +20,7 @@ from django.contrib import messages
 from django.views.generic.edit import CreateView
 from authentication.models import FeedbackEntry
 from async_notifications.utils import send_email_from_template
+from django.conf import settings
 
 
 class PermissionDeniedView(TemplateView):
@@ -33,7 +34,7 @@ class FeedbackView(CreateView):
 
     def get_success_url(self):
         text_message = _(
-            'Thank you for your help. We are gonna check your problem as soon as we can')
+            'Thank you for your help. We will check your problem as soon as we can')
         messages.add_message(self.request, messages.SUCCESS, text_message)
         try:
             lab_pk = int(self.request.GET.get('lab_pk', 0))
@@ -47,6 +48,16 @@ class FeedbackView(CreateView):
             dev = reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
         if self.request.user.is_authenticated() or lab_pk:
             self.object.save()
+
+        send_email_from_template("New feedback",
+                                 settings.DEFAULT_FROM_EMAIL,
+                                 context={
+                                     'feedback': self.object
+                                 },
+                                 enqueued=True,
+                                 user=None,
+                                 upfile=self.object.related_file)
+
         return dev
 
 
