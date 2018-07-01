@@ -15,3 +15,10 @@ class AuthenticationConfig(AppConfig):
         ]
         update_template_context(
             "new user",  'You are register now in Organilab', context)
+
+        fdcontext = [
+            ('feedback', """Feedback instance, use like {{ feedback.title }} options:  
+            title, explanation, related_file, laboratory_id""")
+        ]
+        update_template_context(
+            "New feedback",  'New Feedback to Organilab', fdcontext)
