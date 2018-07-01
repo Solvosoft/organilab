@@ -61,7 +61,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
     'msds',
-    'monitarize'
+    'monitarize',
+    'async_notifications',
+    'ckeditor'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -193,20 +195,21 @@ DEFAULT_FROM_EMAIL = os.getenv(
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')  # mail service smtp
 EMAIL_PORT = os.getenv('EMAIL_PORT', '1025')
-EMAIL_HOST_USER = os.getenv(
-    'EMAIL_HOST_USER', 'organilab@organilab.com')  # a real email
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', None)  # a real email
 # the password of the real email
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'a password')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', None)
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Celery settings
-BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379')
+BROKER_URL = os.getenv(
+    'BROKER_URL', 'amqp://guest:guest@localhost:5672/organilabvhost')
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_MODULE = "organilab.celery"
 CELERY_RESULT_BACKEND = os.getenv(
-    'CELERY_RESULT_BACKEND', 'redis://localhost:6379')
+    'CELERY_RESULT_BACKEND', 'amqp://guest:guest@localhost:5672/organilabvhost')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -243,4 +246,20 @@ ACCOUNT_ACTIVATION_DAYS = 2
 
 DATASETS_SUPPORT_LANGUAGES = {
     'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+}
+
+ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
+
+from celery.schedules import crontab
+
+CELERYBEAT_SCHEDULE = {
+    # execute 12:30 pm
+    'send_daily_emails': {
+        'task': 'async_notifications.tasks.send_daily',
+        'schedule': crontab(minute=2, hour=0),
+    },
+    'check_product_limits': {
+        'task': 'laboratory.tasks.notify_about_product_limit_reach',
+        'schedule': crontab(minute=10, hour=0),
+    }
 }

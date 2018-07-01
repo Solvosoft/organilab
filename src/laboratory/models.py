@@ -213,7 +213,8 @@ class Shelf(models.Model):
     )
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"))
     name = models.CharField(_("Name"), max_length=15, default="nd")
-    container_shelf = models.ForeignKey('Shelf', null=True, blank=True)
+    container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
+                                        verbose_name=_("Container shelf"))
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
 
     def get_objects(self):

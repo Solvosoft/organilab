@@ -29,7 +29,8 @@ urlpatterns = auth_urls + [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'msds/', include(msds_urls, namespace='msds'))
+    url(r'msds/', include(msds_urls, namespace='msds')),
+    url(r'^ajax_select/', include(ajax_select_urls)),
 ]
 
 if settings.FULL_APPS:

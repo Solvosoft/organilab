@@ -19,6 +19,7 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.views.generic.edit import CreateView
 from authentication.models import FeedbackEntry
+from async_notifications.utils import send_email_from_template
 
 
 class PermissionDeniedView(TemplateView):
@@ -109,6 +110,15 @@ def signup(request):
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
         login(request, user)
+        send_email_from_template("new user", user.email,
+                                 context={
+                                     'user': user,
+                                     'role': form.cleaned_data['role'],
+                                     'organization': form.cleaned_data['organization_name']
+                                 },
+                                 enqueued=True,
+                                 user=user,
+                                 upfile=None)
         return redirect(reverse_lazy('laboratory:index'))
     # else:
     #    form = SignUpForm()
