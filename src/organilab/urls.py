@@ -34,6 +34,8 @@ urlpatterns = auth_urls + [
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'msds/', include(msds_urls, namespace='msds')),
     url(r'^ajax_select/', include(ajax_select_urls)),
+    url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
+    url(r'^comments/', include('django_comments.urls')),
 ]
 
 if settings.FULL_APPS:
@@ -48,3 +50,10 @@ if settings.DEBUG:
     from django.conf.urls.static import static
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+
+# if settings.DEBUG:
+#    import debug_toolbar
+#    urlpatterns = [
+#        url(r'^__debug__/', include(debug_toolbar.urls)),
+#    ] + urlpatterns

@@ -9,6 +9,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+{% block meta-keywords %} 	{% endblock %}
+{% block extrameta%} {% endblock %}
   {# TITLE #}
   <title>Organilab | {% block title %}Index{% endblock %}</title>
 
@@ -26,8 +28,10 @@
   <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
 
 	{% adsense_header %}
+    {% block link %}{% endblock link %}
+    {% block script %}{% endblock script %}
 </head>
-<body>
+<body {% block bodyklss %}{%endblock%}>
 {# NAV #}
 {% include 'laboratory/partials/navbar.html' %}
 
@@ -35,13 +39,14 @@
 {% include 'laboratory/partials/messages.html' %}
 
 {# CONTENT #}
+{% block wrapcontent %}
 <div id="site_content">
   <div class="{% block container %}container{% endblock %}">
     {% block content %}
     {% endblock %}
   </div>
 </div>
-
+{% endblock %}
 {# FOOTER #}
 {% include 'laboratory/partials/footer.html' %}
 
