@@ -1,0 +1,127 @@
+{% load mptt_tags %}
+{% load fontawesome %}
+<html>
+<head>
+  {% fontawesome_stylesheet %}
+<link href="https://revealjs.com/css/reveal.css" rel="stylesheet" type="text/css" />
+<link href="https://revealjs.com/css/theme/white.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+	<div class="reveal">
+			<div class="slides">
+			
+    {% recursetree sections %}
+        <section id="slide-{{node.pk}}">
+                   
+           {% if not node.is_root_node %}
+           		<a class="child_parent" href="#slide-{{node.parent_id}}"> 
+           		{% fontawesome_icon 'angle-left'  %}
+           		{{node.parent.name}} </a>
+           {% endif %}
+        
+           <h3> {{ node.name }} </h3>
+           {{node.description|safe}}
+           
+     
+    <div id="dock-container">
+  <div id="dock">
+  <ul>
+ 	 {% for child in node.get_children %}
+         <li>  <a href="#slide-{{child.pk}}"   title="{{child.name}}"  > 
+       {% if child.image %}
+       		 <img src="{{child.image.url}}" />
+       {% else %}
+	         {% if child.icon and child.icon.as_html %}
+	         	{{child.icon.as_html }}
+	         {% else %}
+	        	{% fontawesome_icon 'android'  %}
+	         {% endif %}
+       {% endif %}
+         </a> </li>
+     {% endfor %}
+  </ul>
+  <div class="base"></div>
+  </div>
+</div>
+  
+        </section>
+        
+        
+       {% if not node.is_leaf_node %}
+             {{ children }}
+       {% endif %}
+    {% endrecursetree %}			
+			
+			</div>
+    </div>
+
+</body>
+
+<style>
+#dock li {display:inline-block}
+#dock li i {
+  -webkit-box-reflect: below 2px
+		    -webkit-gradient(linear, left top, left bottom, from(transparent),
+		    color-stop(0.7, transparent), to(rgba(255,255,255,.5))); /* reflection is supported by webkit only */
+  -webkit-transition: all 0.3s;
+  -webkit-transform-origin: 50% 100%;
+}
+
+#dock li img {
+  width: 1.5em;
+  height: 1.5em;
+  -webkit-box-reflect: below 2px
+		    -webkit-gradient(linear, left top, left bottom, from(transparent),
+		    color-stop(0.7, transparent), to(rgba(255,255,255,.5))); /* reflection is supported by webkit only */
+  -webkit-transition: all 0.3s;
+  -webkit-transform-origin: 50% 100%;
+}
+
+#dock li:hover img { 
+  -webkit-transform: scale(2);
+  margin: 0 1.3em;
+}
+#dock li:hover i { 
+  -webkit-transform: scale(2);
+  margin: 0 1.3em;
+}
+
+#dock li:hover + li i,
+#dock li.prev i {
+  -webkit-transform: scale(1.5);
+  margin: 0 1em;
+}
+
+#dock li:hover + li img,
+#dock li.prev img {
+  -webkit-transform: scale(1.5);
+  margin: 0 1em;
+}
+
+.child_parent{
+   position: fixed !important;
+	left: 1px;
+	top: 5px;
+	font-size: 0.60em !important;
+}
+
+.reveal section img{
+	margin: 0px;
+	border: 0px;
+}
+
+</style>
+
+<script src="https://revealjs.com/lib/js/head.min.js"></script>
+<script src="https://revealjs.com/js/reveal.js" ></script>
+<script type="text/javascript">
+Reveal.initialize({
+	controls: true,
+	center: true,
+    progress: false,
+    history: true
+	});
+
+</script>
+</html>
