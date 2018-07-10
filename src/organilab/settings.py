@@ -35,7 +35,7 @@ else:
 
 # Application definition
 
-
+SITE_ID = 1
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_ajax',
     'laboratory',
     'authentication',
@@ -65,6 +66,10 @@ INSTALLED_APPS = [
     'async_notifications',
     'ckeditor',
     'fontawesome',
+    'django_comments',
+    'tagging',
+    'zinnia',
+    #    'debug_toolbar',
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -101,6 +106,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    #  'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djreservation.middleware.ReservationMiddleware'
 ]
@@ -117,6 +123,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
                 'constance.context_processors.config',
             ],
@@ -280,3 +287,5 @@ LOGGING = {
         },
     },
 }
+
+INTERNAL_IPS = ('127.0.0.1',)

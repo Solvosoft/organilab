@@ -131,6 +131,11 @@
     {% endif %}
   </ul>
   <ul class="nav navbar-nav pull-right">
+  
+  <li id='block_id' class="nav-item">
+  <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}" >
+  {% trans 'Blog' %} </a> 
+  </li>
     <li id='feedback_id' class="nav-item"><a class="nav-link"
       href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
       {% trans 'Feedback' %}</a></li>
