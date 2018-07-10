@@ -40,12 +40,12 @@ class FeedbackView(CreateView):
             lab_pk = int(self.request.GET.get('lab_pk', 0))
         except:
             lab_pk = None
-        dev = reverse('laboratory:index')
+        dev = reverse('index')
         if self.request.user.is_authenticated():
             self.object.user = self.request.user
         if lab_pk:
             self.object.laboratory_id = lab_pk
-            dev = reverse('laboratory:index', kwargs={'lab_pk': lab_pk})
+            dev = reverse('laboratory:labindex', kwargs={'lab_pk': lab_pk})
         if self.request.user.is_authenticated() or lab_pk:
             self.object.save()
 
@@ -130,7 +130,7 @@ def signup(request):
                                  enqueued=True,
                                  user=user,
                                  upfile=None)
-        return redirect(reverse_lazy('laboratory:index'))
+        return redirect(reverse_lazy('index'))
     # else:
     #    form = SignUpForm()
     return render(request, 'registration/login.html',

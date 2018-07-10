@@ -1,5 +1,5 @@
 from django.http.response import JsonResponse
-from msds.models import MSDSObject
+from msds.models import MSDSObject, OrganilabNode
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
@@ -8,6 +8,11 @@ from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import render
+
+
+def index_msds(request):
+    return render(request, 'index_msds.html')
 
 
 def get_download_links(request, obj):
@@ -96,7 +101,7 @@ class MSDSObjectCRUD(CRUDView):
 
         class OCreateView(CreateViewClass):
             def get_success_url(self):
-                url = reverse("laboratory:index")
+                url = reverse("msds:index_msds")
                 messages.success(self.request,
                                  _("Your MSDS was uploaded successfully"))
                 return url
@@ -108,7 +113,7 @@ class MSDSObjectCRUD(CRUDView):
         class OEditView(EditViewClass):
 
             def get_success_url(self):
-                url = reverse("laboratory:index")
+                url = reverse("msds:index_msds")
                 messages.success(self.request,
                                  _("Your MSDS was updated successfully"))
                 return url
@@ -132,3 +137,16 @@ class MSDSObjectCRUD(CRUDView):
                     query = query.none()
                 return query
         return ODeleteView
+
+
+def organilab_tree_frame(request):
+    context = {}
+    context['sections'] = OrganilabNode.objects.all()
+    return render(request, 'msds/organilab_tree_frame.html', context)
+
+
+def organilab_tree(request):
+    content = request.GET.get('content', '')
+    if content:
+        return organilab_tree_frame(request)
+    return render(request, 'msds/organilab_tree.html')

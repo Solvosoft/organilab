@@ -23,9 +23,12 @@ from ajax_select import urls as ajax_select_urls
 from authentication.urls import urlpatterns as auth_urls
 from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
+from django.views.generic.base import RedirectView
+from django.urls.base import reverse_lazy
 
 urlpatterns = auth_urls + [
-
+    url(r'^$', RedirectView.as_view(url=reverse_lazy(
+        'msds:organilab_tree')), name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^', include(laboratory_urls, namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
@@ -40,3 +43,8 @@ if settings.FULL_APPS:
     ]
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'msds',
     'monitarize',
     'async_notifications',
-    'ckeditor'
+    'ckeditor',
+    'fontawesome',
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -175,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
 STATIC_CRAWL = os.path.join(BASE_DIR, '../crawlstatic/')
 STATICFILES_DIRS = [
     #os.path.join(BASE_DIR, "static"),
@@ -183,7 +184,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('laboratory:index')
 
@@ -262,4 +263,20 @@ CELERYBEAT_SCHEDULE = {
         'task': 'laboratory.tasks.notify_about_product_limit_reach',
         'schedule': crontab(minute=10, hour=0),
     }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.template': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
 }

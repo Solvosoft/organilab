@@ -18,7 +18,7 @@ from laboratory.views.objects import ObjectView
 objviews = ObjectView()
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
 
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
