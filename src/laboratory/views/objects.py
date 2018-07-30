@@ -131,9 +131,7 @@ class ObjectView(object):
 
 
 class ObjectForm(ModelForm):
-    class Meta:
-        model = Object
-        fields = '__all__'
+    required_css_class = ''
 
     def __init__(self, *args, **kwargs):
         self.request = None
@@ -166,11 +164,15 @@ class ObjectForm(ModelForm):
             self.fields['model'].required = True
         else:
             self.fields['model'] = forms.CharField(
-                widget=forms.HiddenInput()
+                widget=forms.HiddenInput(), required=False
             )
             self.fields['serie'] = forms.CharField(
-                widget=forms.HiddenInput()
+                widget=forms.HiddenInput(), required=False
             )
             self.fields['plaque'] = forms.CharField(
-                widget=forms.HiddenInput()
+                widget=forms.HiddenInput(), required=False
             )
+
+    class Meta:
+        model = Object
+        fields = '__all__'
