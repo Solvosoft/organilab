@@ -33,8 +33,7 @@ class CLInventory(models.Model):
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
-    name = models.CharField(_('Name'), max_length=250,
-                            choices=CHOICES, unique=True)
+    name = models.CharField(_('Name'), max_length=250,  unique=True)
     description = models.TextField(_('Description'))
 
     class Meta:
