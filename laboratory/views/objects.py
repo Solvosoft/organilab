@@ -27,6 +27,7 @@ class ObjectView(object):
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
+        @method_decorator(login_required, name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.add_object'), name='dispatch')
         class ObjectCreateView(CreateView):
 
@@ -46,6 +47,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )),'laboratory.add_object')
 
+        @method_decorator(login_required, name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
@@ -65,6 +67,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )),'laboratory.change_object')
 
+        @method_decorator(login_required, name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
@@ -78,6 +81,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html"
         )),'laboratory.delete_object')
 
+        @method_decorator(login_required, name='dispatch')
         @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')    
         class ObjectListView(ListView):
 
