@@ -48,7 +48,10 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_t
     # django admins        
     if user.is_superuser:
         return True;
-            
+
+    if not user.is_authenticated:
+        return False 
+
     # Check org of labs
     lab_org = lab.organization  if hasattr(lab, 'organization') else None
     user_org = OrganizationStructure.os_manager.filter_user(user) 
