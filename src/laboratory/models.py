@@ -33,30 +33,7 @@ class CLInventory(models.Model):
 
 @python_2_unicode_compatible
 class ObjectFeatures(models.Model):
-    GENERAL_USE = "0"
-    SECURITY_EQUIPMENT = "1"
-    ANALYTIC_CHEMISTRY = "2"
-    ORGANIC_CHEMISTRY = "3"
-    PHYSICAL_CHEMISTRY = "4"
-    CHEMICAL_BIOLOGICAL_PROCESS = "5"
-    INDUSTRIAL_BIOTECHNOLOGY = "6"
-    BIOCHEMISTRY = "7"
-    WATER_CHEMISTRY = "8"
-    OTHER = "9"
-    CHOICES = (
-        (GENERAL_USE, _('General use')),
-        (SECURITY_EQUIPMENT, _('Security equipment')),
-        (ANALYTIC_CHEMISTRY, _('Analytic Chemistry')),
-        (ORGANIC_CHEMISTRY, _('Organic Chemistry')),
-        (PHYSICAL_CHEMISTRY, _('Physical Chemistry')),
-        (CHEMICAL_BIOLOGICAL_PROCESS, _('Chemical and Biological process')),
-        (INDUSTRIAL_BIOTECHNOLOGY, _('Industrial Biotechnology')),
-        (BIOCHEMISTRY, _('Biochemistry')),
-        (WATER_CHEMISTRY, _('Water Chemistry')),
-        (OTHER, _('Other'))
-    )
-
-    name = models.CharField(_('Name'), max_length=2,
+    name = models.CharField(_('Name'), max_length=250,
                             choices=CHOICES, unique=True)
     description = models.TextField(_('Description'))
 
@@ -68,7 +45,7 @@ class ObjectFeatures(models.Model):
         )
 
     def __str__(self):
-        return '%s' % (self.CHOICES[int(self.name)][1],)
+        return self.name
 
 
 class Object(models.Model):
