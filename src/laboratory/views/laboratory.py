@@ -196,8 +196,6 @@ class SelectLaboratoryView(FormView):
 
     def form_valid(self, form):
         lab_pk = form.cleaned_data.get('laboratory').pk
-        request = self.request
-        request.session['lab_pk'] = lab_pk
         return redirect('laboratory:labindex', lab_pk)
 
     def get(self, request, *args, **kwargs):
@@ -205,7 +203,6 @@ class SelectLaboratoryView(FormView):
         self.number_of_labs = labs.count()
         if self.number_of_labs == 1:
             lab_pk = labs.first().pk
-            request.session['lab_pk'] = lab_pk
             return redirect('laboratory:labindex', lab_pk)
         return FormView.get(self, request, *args, **kwargs)
 

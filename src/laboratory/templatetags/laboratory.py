@@ -27,16 +27,16 @@ def get_search_form(context):
 def has_perms(context, codename, lab_pk=None):
     if 'request' in context:
         user = context['request'].user
-        lab_pk = context['request'].session.get('lab_pk')
-
-        if user.has_perm(codename):
-            return True
-        elif lab_pk:
+        if 'laboratory' in context:
+            lab_pk=context['laboratory']
             lab = get_object_or_404(Laboratory, pk=lab_pk)
             if check_lab_group_has_perm(
                     user, lab, codename,
                     filter_laboratorist_technician):
                 return True
+        elif user.has_perm(codename):
+            return True
+        
     return False
 
 
