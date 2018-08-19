@@ -1,0 +1,127 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-19 01:39+0000\n"
+"PO-Revision-Date: 2018-08-18 19:45-0600\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: models.py:8
+msgid "Physic warning"
+msgstr "Advertencia física"
+
+#: models.py:9
+msgid "Healty warning"
+msgstr "Advertencia a la salud"
+
+#: models.py:10
+msgid "Environment warning"
+msgstr "Advertencia ambiental"
+
+#: models.py:19
+msgid "Warning Class"
+msgstr "Clase de advertencia"
+
+#: models.py:20
+msgid "Warning Classes"
+msgstr "Clases de advertencia"
+
+#: models.py:22
+msgid "Can see available Warning Classes"
+msgstr "Puede ver clases de advertencia disponibles"
+
+#: models.py:35
+msgid "Pictogram"
+msgstr "Pictograma"
+
+#: models.py:36
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+#: models.py:38
+msgid "Can see available pictograms"
+msgstr "Puede ver pictogramas disponibles"
+
+#: models.py:51
+msgid "Warning Word"
+msgstr "Palabra de advertencia"
+
+#: models.py:52
+msgid "Warning Words"
+msgstr "Palabras de advertencia"
+
+#: models.py:54
+msgid "Can see available Warning Words"
+msgstr "Puede ver palabras de advertencia disponibles"
+
+#: models.py:70
+msgid "Danger Indication"
+msgstr "Indicación de peligro"
+
+#: models.py:71
+msgid "Indication of Danger"
+msgstr "Indicaciones de peligro"
+
+#: models.py:73
+msgid "Can see available indication of danger"
+msgstr "Puede ver las indicaciones de peligro disponibles"
+
+#: models.py:84
+msgid "Component"
+msgstr "Componente"
+
+#: models.py:85
+msgid "Components"
+msgstr "Componentes"
+
+#: models.py:87
+msgid "Can see available Component"
+msgstr "Puede ver los componentes disponibles"
+
+#: models.py:111
+msgid "Sustance"
+msgstr "Sustancia"
+
+#: models.py:112
+msgid "Sustances"
+msgstr "Sustancias"
+
+#: models.py:114
+msgid "Can see available Sustance"
+msgstr "Puede ver las sustancias disponibles"
+
+#: models.py:129
+msgid "Builder Information"
+msgstr "Información del fabricante"
+
+#: models.py:130
+msgid "Information of Builders"
+msgstr "Información de los fabricantes"
+
+#: models.py:132
+msgid "Can see available Builder Information"
+msgstr "Puede ver la información de los fabricantes"
+
+#: models.py:151
+msgid "Label"
+msgstr "Etiqueta"
+
+#: models.py:152
+msgid "Labels"
+msgstr "Etiquetas"
+
+#: models.py:154
+msgid "Can see available labels"
+msgstr "Puede ver las etiquetas"
