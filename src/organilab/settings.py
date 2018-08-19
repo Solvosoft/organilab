@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
     'msds',
+    'sga',
     'monitarize',
     'async_notifications',
     'ckeditor',
