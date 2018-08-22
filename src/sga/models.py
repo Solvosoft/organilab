@@ -1,16 +1,34 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
+from tagging.registry import register
+from tagging.fields import TagField
+
+
+class WarningCategory(models.Model):
+    name = models.CharField(max_length=256, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Warning Category')
+        verbose_name_plural = _('Warning Categories')
+        permissions = (
+            ("view_warningclass", _("Can see available Warning Categories")),
+        )
 
 
 class WarningClass(models.Model):
-    CATEGORIES = (
-        (0, _("Physic warning")),
-        (1, _("Healty warning")),
-        (2, _("Environment warning"))
+    TYPES = (
+        (0, _("Physic danger")),
+        (1, _("Healty danger")),
+        (2, _("Environment danger"))
     )
-    name = models.CharField(max_length=150)
-    category = models.SmallIntegerField(choices=CATEGORIES)
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    _type = models.SmallIntegerField(choices=TYPES, verbose_name=_("Type"))
+    categories = models.ManyToManyField(WarningCategory,
+                                        verbose_name=_("Categories"))
 
     def __str__(self):
         return self.name
@@ -26,7 +44,8 @@ class WarningClass(models.Model):
 
 
 class Pictogram(models.Model):
-    name = models.CharField(max_length=150, primary_key=True)
+    name = models.CharField(max_length=150, primary_key=True,
+                            verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
@@ -41,8 +60,8 @@ class Pictogram(models.Model):
 
 
 class WarningWord(models.Model):
-    name = models.CharField(max_length=50)
-    weigth = models.SmallIntegerField(default=0)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    weigth = models.SmallIntegerField(default=0, verbose_name=_("Weigth"))
 
     def __str__(self):
         return self.name
@@ -57,11 +76,15 @@ class WarningWord(models.Model):
 
 
 class DangerIndication(models.Model):
-    code = models.CharField(max_length=150, primary_key=True)
-    description = models.TextField()
-    warning_words = models.ForeignKey(WarningWord, on_delete=models.CASCADE)
-    pictograms = models.ManyToManyField(Pictogram)
-    warning_class = models.ManyToManyField(WarningClass)
+    code = models.CharField(max_length=150, primary_key=True,
+                            verbose_name=_("Code"))
+    description = models.TextField(verbose_name=_("Description"))
+    warning_words = models.ForeignKey(WarningWord, on_delete=models.CASCADE,
+                                      verbose_name=_("Warning words"))
+    pictograms = models.ManyToManyField(
+        Pictogram, verbose_name=_("Pictograms"))
+    warning_class = models.ManyToManyField(WarningClass,
+                                           verbose_name=_("Warning class"))
 
     def __str__(self):
         return self.code
@@ -75,7 +98,8 @@ class DangerIndication(models.Model):
 
 
 class Component(models.Model):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, verbose_name=_("Name"))
+    cas_number = models.CharField(max_length=150, verbose_name=_("CAS number"))
 
     def __str__(self):
         return self.name
@@ -89,10 +113,14 @@ class Component(models.Model):
 
 
 class Sustance(models.Model):
-    comercial_name = models.CharField(max_length=250)
-    cas_number = models.CharField(max_length=150)
-    components = models.ManyToManyField(Component)
-    danger_indications = models.ManyToManyField(DangerIndication)
+    comercial_name = models.CharField(max_length=250,
+                                      verbose_name=_("Comercial name"))
+    components = models.ManyToManyField(
+        Component, verbose_name=_("Components"))
+    danger_indications = models.ManyToManyField(
+        DangerIndication,
+        verbose_name=_("Danger indications"))
+    synonymous = TagField(verbose_name=_("Synonymous"))
 
     @property
     def warning_word(self):
@@ -114,13 +142,15 @@ class Sustance(models.Model):
             ("view_sustance", _("Can see available Sustance")),
         )
 
+
+register(Sustance)
 # build information
 
 
 class BuilderInformation(models.Model):
-    name = models.CharField(max_length=150)
-    phone = models.TextField(max_length=15)
-    address = models.TextField(max_length=100)
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    phone = models.TextField(max_length=15, verbose_name=_("Phone"))
+    address = models.TextField(max_length=100, verbose_name=_("Address"))
 
     def __str__(self):
         return self.name
@@ -139,10 +169,13 @@ class Label(models.Model):
     SIZES = (
         (0, "default"),
     )
-    sustance = models.ForeignKey(Sustance, on_delete=models.CASCADE)
+    sustance = models.ForeignKey(Sustance,
+                                 verbose_name=_("Sustance"),
+                                 on_delete=models.CASCADE)
     builderInformation = models.ForeignKey(
-        BuilderInformation, on_delete=models.CASCADE)
-    size = models.SmallIntegerField(choices=SIZES)
+        BuilderInformation, verbose_name=_("Builder Information"),
+        on_delete=models.CASCADE)
+    size = models.SmallIntegerField(choices=SIZES, verbose_name=_("Size"))
 
     def __str__(self):
         return str(self.sustance)
