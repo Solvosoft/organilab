@@ -85,6 +85,12 @@ class DangerIndication(models.Model):
         Pictogram, verbose_name=_("Pictograms"))
     warning_class = models.ManyToManyField(WarningClass,
                                            verbose_name=_("Warning class"))
+    prudence_advice = models.TextField(default=_("None"),
+                                       verbose_name=_("Prudence advice"))
+
+    prudence_advice_help = models.TextField(
+        null=True, blank=True,
+        verbose_name=_("Help for prudence advice"))
 
     def __str__(self):
         return self.code
