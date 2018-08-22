@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from tagging.registry import register
 from tagging.fields import TagField
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class WarningCategory(models.Model):
@@ -19,16 +20,14 @@ class WarningCategory(models.Model):
         )
 
 
-class WarningClass(models.Model):
-    TYPES = (
-        (0, _("Physic danger")),
-        (1, _("Healty danger")),
-        (2, _("Environment danger"))
-    )
+class WarningClass(MPTTModel):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
-    _type = models.SmallIntegerField(choices=TYPES, verbose_name=_("Type"))
     categories = models.ManyToManyField(WarningCategory,
                                         verbose_name=_("Categories"))
+
+    parent = TreeForeignKey('self',
+                            on_delete=models.CASCADE, null=True, blank=True,
+                            related_name='children')
 
     def __str__(self):
         return self.name
@@ -73,6 +72,10 @@ class WarningWord(models.Model):
             ("view_warningword", _("Can see available Warning Words")),
         )
 # Indicación de peligro
+
+
+class prudence_advice(models.Model):
+    name = models.CharField(max_length=500, verbose_name=_("Name"))
 
 
 class DangerIndication(models.Model):

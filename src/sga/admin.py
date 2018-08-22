@@ -5,6 +5,7 @@ from .utils import render_pdf_view
 # Register your models here.
 from django.utils.safestring import mark_safe
 from django import forms
+from mptt.admin import MPTTModelAdmin
 
 
 def make_label_pdf(modeladmin, request, queryset):
@@ -29,8 +30,9 @@ class AdminSustance(admin.ModelAdmin):
     filter_horizontal = ['components', 'danger_indications']
 
 
+admin.site.register(WarningClass, MPTTModelAdmin)
 admin.site.register(
-    [WarningClass,  BuilderInformation,  WarningCategory, Component,
+    [BuilderInformation,  WarningCategory, Component,
      WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Sustance,  AdminSustance)
