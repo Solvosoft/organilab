@@ -28,7 +28,8 @@ class AdminLabels(admin.ModelAdmin):
 
 class AdminDangerIndication(admin.ModelAdmin):
     #form = DangerIndicationForm
-    filter_horizontal = ['pictograms', 'warning_class', 'prudence_advice']
+    filter_horizontal = ['pictograms', 'warning_class',
+                         'warning_category', 'prudence_advice']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminDangerIndication, self).get_form(*args, **kwargs)
@@ -40,6 +41,11 @@ class AdminDangerIndication(admin.ModelAdmin):
                     WarningClass.objects.filter(
                     danger_type="class"
                 )
+                self.fields['warning_category'].queryset = \
+                    WarningClass.objects.filter(
+                    danger_type="category"
+                )
+
         return MyForm
 
 
