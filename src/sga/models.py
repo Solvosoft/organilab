@@ -177,17 +177,44 @@ class BuilderInformation(models.Model):
 # labels
 
 
-class Label(models.Model):
-    SIZES = (
-        (0, "default"),
+class RecipientSize(models.Model):
+    CHOICES = (
+        ('mm', _('Milimeters')),
+        ('cm', _('Centimeters')),
+        ('inch', _('inch')),
     )
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    height = models.FloatField(default=10,  verbose_name=_("Height"))
+    height_unit = models.CharField(max_length=5, default="cm",
+                                   verbose_name=_("Height Unit"),
+                                   choices=CHOICES)
+    width = models.FloatField(default=10,  verbose_name=_("Width"))
+    width_unit = models.CharField(max_length=5, default="cm",
+                                  verbose_name=_("Width Unit"),
+                                  choices=CHOICES)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Recipient Size')
+        verbose_name_plural = _('Size of recipients')
+        permissions = (
+            ("view_recipientsize", _("Can see available Recipient Size")),
+        )
+
+
+class Label(models.Model):
     sustance = models.ForeignKey(Sustance,
                                  verbose_name=_("Sustance"),
                                  on_delete=models.CASCADE)
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
         on_delete=models.CASCADE)
-    size = models.SmallIntegerField(choices=SIZES, verbose_name=_("Size"))
+    commercial_information = models.TextField(
+        null=True, blank=True,
+        verbose_name=_("Commercial Information"))
+    size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"))
 
     def __str__(self):
         return str(self.sustance)
