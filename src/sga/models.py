@@ -6,24 +6,15 @@ from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-class WarningCategory(models.Model):
-    name = models.CharField(max_length=256, verbose_name=_("Name"))
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Warning Category')
-        verbose_name_plural = _('Warning Categories')
-        permissions = (
-            ("view_warningclass", _("Can see available Warning Categories")),
-        )
-
-
 class WarningClass(MPTTModel):
+    TYPE = (
+        ("typeofdanger", _("Type of danger")),
+        ("class", _("Danger class")),
+        ("category", _("Danger Category"))
+    )
     name = models.CharField(max_length=150, verbose_name=_("Name"))
-    categories = models.ManyToManyField(WarningCategory,
-                                        verbose_name=_("Categories"))
+    danger_type = models.CharField(
+        max_length=25,  default="category", choices=TYPE)
 
     parent = TreeForeignKey('self',
                             on_delete=models.CASCADE, null=True, blank=True,
