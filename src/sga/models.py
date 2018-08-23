@@ -75,7 +75,12 @@ class WarningWord(models.Model):
 
 
 class PrudenceAdvice(models.Model):
+    code = models.CharField(max_length=150,
+                            verbose_name=_("Code"))
     name = models.CharField(max_length=500, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.code+": "+self.name
 
     class Meta:
         verbose_name = _('Prudence Advice')
