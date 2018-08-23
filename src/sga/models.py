@@ -74,22 +74,29 @@ class WarningWord(models.Model):
 # Indicación de peligro
 
 
-class prudence_advice(models.Model):
+class PrudenceAdvice(models.Model):
     name = models.CharField(max_length=500, verbose_name=_("Name"))
+
+    class Meta:
+        verbose_name = _('Prudence Advice')
+        verbose_name_plural = _('Prudence Advices')
+        permissions = (
+            ("view_prudenceadvice", _("Can see available prudence advice")),
+        )
 
 
 class DangerIndication(models.Model):
     code = models.CharField(max_length=150, primary_key=True,
                             verbose_name=_("Code"))
     description = models.TextField(verbose_name=_("Description"))
-    warning_words = models.ForeignKey(WarningWord, on_delete=models.CASCADE,
+    warning_words = models.ForeignKey(WarningWord, on_delete=models.DO_NOTHING,
                                       verbose_name=_("Warning words"))
     pictograms = models.ManyToManyField(
         Pictogram, verbose_name=_("Pictograms"))
     warning_class = models.ManyToManyField(WarningClass,
                                            verbose_name=_("Warning class"))
-    prudence_advice = models.TextField(default=_("None"),
-                                       verbose_name=_("Prudence advice"))
+    prudence_advice = models.ManyToManyField(
+        PrudenceAdvice, verbose_name=_("Prudence advice"))
 
     prudence_advice_help = models.TextField(
         null=True, blank=True,

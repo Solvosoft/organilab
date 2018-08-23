@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import DangerIndication, BuilderInformation, Sustance, Label, \
-    WarningClass, Component, WarningWord, Pictogram, WarningCategory
+    WarningClass, Component, WarningWord, Pictogram, WarningCategory, \
+    PrudenceAdvice
 from .utils import render_pdf_view
 # Register your models here.
 from django.utils.safestring import mark_safe
@@ -33,7 +34,7 @@ class AdminSustance(admin.ModelAdmin):
 
 admin.site.register(WarningClass, DraggableMPTTAdmin)
 admin.site.register(
-    [BuilderInformation,  WarningCategory, Component,
+    [BuilderInformation, PrudenceAdvice, WarningCategory, Component,
      WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Sustance,  AdminSustance)
