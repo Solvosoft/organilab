@@ -8,6 +8,8 @@ from django.utils.safestring import mark_safe
 from django import forms
 #from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 def make_label_pdf(modeladmin, request, queryset):
@@ -25,7 +27,20 @@ class AdminLabels(admin.ModelAdmin):
 
 
 class AdminDangerIndication(admin.ModelAdmin):
-    filter_horizontal = ['pictograms', 'warning_class']
+    #form = DangerIndicationForm
+    filter_horizontal = ['pictograms', 'warning_class', 'prudence_advice']
+
+    def get_form(self, *args, **kwargs):
+        form = super(AdminDangerIndication, self).get_form(*args, **kwargs)
+
+        class MyForm(form):
+            def __init__(self, *args, **kwargs):
+                super(MyForm, self).__init__(*args, **kwargs)
+                self.fields['warning_class'].queryset = \
+                    WarningClass.objects.filter(
+                    danger_type="class"
+                )
+        return MyForm
 
 
 class AdminSustance(admin.ModelAdmin):
