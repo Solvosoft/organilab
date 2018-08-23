@@ -91,6 +91,11 @@ class DangerIndication(models.Model):
         Pictogram, verbose_name=_("Pictograms"))
     warning_class = models.ManyToManyField(WarningClass,
                                            verbose_name=_("Warning class"))
+
+    warning_category = models.ManyToManyField(
+        WarningClass,
+        related_name='warningcategory',
+        verbose_name=_("Warning category"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
 
