@@ -10,6 +10,7 @@ from django import forms
 from mptt.admin import DraggableMPTTAdmin
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import ugettext_lazy as _
 
 
 def make_label_pdf(modeladmin, request, queryset):
@@ -19,7 +20,7 @@ def make_label_pdf(modeladmin, request, queryset):
                            'labels.html', context)
 
 
-make_label_pdf.short_description = "Download Label"
+make_label_pdf.short_description = _("Download Label")
 
 
 class AdminLabels(admin.ModelAdmin):

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-23 09:36-0600\n"
-"PO-Revision-Date: 2018-08-23 09:36-0600\n"
+"POT-Creation-Date: 2018-08-23 22:12-0600\n"
+"PO-Revision-Date: 2018-08-23 22:14-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
+
+#: admin.py:23
+msgid "Download Label"
+msgstr "Descargar etiquetas"
 
 #: models.py:11
 msgid "Type of danger"
@@ -30,216 +34,220 @@ msgstr "Clase de peligro"
 msgid "Danger Category"
 msgstr "Categoría de peligo"
 
-#: models.py:15 models.py:38 models.py:53 models.py:71 models.py:118
-#: models.py:168 models.py:191
+#: models.py:15 models.py:44 models.py:59 models.py:77 models.py:124
+#: models.py:174 models.py:197
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:27
+#: models.py:18
+msgid "Danger type"
+msgstr "Clasificación de peligro"
+
+#: models.py:33
 msgid "Warning Class"
 msgstr "Clase de peligro"
 
-#: models.py:28
+#: models.py:34
 msgid "Warning Classes"
 msgstr "Clases de peligro"
 
-#: models.py:30
+#: models.py:36
 msgid "Can see available Warning Classes"
 msgstr "Puede ver clases de peligro disponibles"
 
-#: models.py:44
+#: models.py:50
 msgid "Pictogram"
 msgstr "Pictograma"
 
-#: models.py:45 models.py:91
+#: models.py:51 models.py:97
 msgid "Pictograms"
 msgstr "Pictogramas"
 
-#: models.py:47
+#: models.py:53
 msgid "Can see available pictograms"
 msgstr "Puede ver pictogramas disponibles"
 
-#: models.py:54
+#: models.py:60
 msgid "Weigth"
 msgstr "Peso"
 
-#: models.py:60
+#: models.py:66
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
-#: models.py:61
+#: models.py:67
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
-#: models.py:63
+#: models.py:69
 msgid "Can see available Warning Words"
 msgstr "Puede ver palabras de advertencia disponibles"
 
-#: models.py:70 models.py:86
+#: models.py:76 models.py:92
 msgid "Code"
 msgstr "Código"
 
-#: models.py:77
+#: models.py:83
 msgid "Prudence Advice"
 msgstr "Consejo de prudencia"
 
-#: models.py:78
+#: models.py:84
 msgid "Prudence Advices"
 msgstr "Consejos de prudencia"
 
-#: models.py:80
+#: models.py:86
 msgid "Can see available prudence advice"
 msgstr "Puede ver los consejos de prudencia disponibles"
 
-#: models.py:87
+#: models.py:93
 msgid "Description"
 msgstr "Descripción"
 
-#: models.py:89
+#: models.py:95
 msgid "Warning words"
 msgstr "Palabras de advertencia"
 
-#: models.py:93
+#: models.py:99
 msgid "Warning class"
 msgstr "Clase de peligro"
 
-#: models.py:98
+#: models.py:104
 msgid "Warning category"
 msgstr "Categorías de peligro"
 
-#: models.py:100
+#: models.py:106
 msgid "Prudence advice"
 msgstr "Consejos de prudencia"
 
-#: models.py:104
+#: models.py:110
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
 
-#: models.py:110
+#: models.py:116
 msgid "Danger Indication"
 msgstr "Indicación de peligro"
 
-#: models.py:111
+#: models.py:117
 msgid "Indication of Danger"
 msgstr "Indicaciones de peligro"
 
-#: models.py:113
+#: models.py:119
 msgid "Can see available indication of danger"
 msgstr "Puede ver las indicaciones de peligro disponibles"
 
-#: models.py:119
+#: models.py:125
 msgid "CAS number"
 msgstr "Número CAS"
 
-#: models.py:125
+#: models.py:131
 msgid "Component"
 msgstr "Componente"
 
-#: models.py:126 models.py:136
+#: models.py:132 models.py:142
 msgid "Components"
 msgstr "Componentes"
 
-#: models.py:128
+#: models.py:134
 msgid "Can see available Component"
 msgstr "Puede ver los componentes disponibles"
 
-#: models.py:134
+#: models.py:140
 msgid "Comercial name"
 msgstr "Nombre comercial"
 
-#: models.py:139
+#: models.py:145
 msgid "Danger indications"
 msgstr "Indicación de peligro"
 
-#: models.py:140
+#: models.py:146
 msgid "Synonymous"
 msgstr "Sinónimos"
 
-#: models.py:156 models.py:214
+#: models.py:162 models.py:220
 msgid "Sustance"
 msgstr "Sustancia"
 
-#: models.py:157
+#: models.py:163
 msgid "Sustances"
 msgstr "Sustancias"
 
-#: models.py:159
+#: models.py:165
 msgid "Can see available Sustance"
 msgstr "Puede ver las sustancias disponibles"
 
-#: models.py:169
+#: models.py:175
 msgid "Phone"
 msgstr "Telefono"
 
-#: models.py:170
+#: models.py:176
 msgid "Address"
 msgstr "Dirección"
 
-#: models.py:176 models.py:217
+#: models.py:182 models.py:223
 msgid "Builder Information"
 msgstr "Información del fabricante"
 
-#: models.py:177
+#: models.py:183
 msgid "Information of Builders"
 msgstr "Información de los fabricantes"
 
-#: models.py:179
+#: models.py:185
 msgid "Can see available Builder Information"
 msgstr "Puede ver la información de los fabricantes"
 
-#: models.py:187
+#: models.py:193
 msgid "Milimeters"
 msgstr "Milimetros"
 
-#: models.py:188
+#: models.py:194
 msgid "Centimeters"
 msgstr "Centimetros"
 
-#: models.py:189
+#: models.py:195
 msgid "inch"
 msgstr "Inches"
 
-#: models.py:192
+#: models.py:198
 msgid "Height"
 msgstr "Alto"
 
-#: models.py:194
+#: models.py:200
 msgid "Height Unit"
 msgstr "Alto en:"
 
-#: models.py:196
+#: models.py:202
 msgid "Width"
 msgstr "Ancho"
 
-#: models.py:198
+#: models.py:204
 msgid "Width Unit"
 msgstr "Ancho en: "
 
-#: models.py:205 models.py:222
+#: models.py:211 models.py:228
 msgid "Recipient Size"
 msgstr "Tamaño de recipiente"
 
-#: models.py:206
+#: models.py:212
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: models.py:208
+#: models.py:214
 msgid "Can see available Recipient Size"
 msgstr "Puede ver los tamaños de recipiente disponibles"
 
-#: models.py:221
+#: models.py:227
 msgid "Commercial Information"
 msgstr "Información comercial"
 
-#: models.py:228
+#: models.py:234
 msgid "Label"
 msgstr "Etiqueta"
 
-#: models.py:229
+#: models.py:235
 msgid "Labels"
 msgstr "Etiquetas"
 
-#: models.py:231
+#: models.py:237
 msgid "Can see available labels"
 msgstr "Puede ver las etiquetas"
 

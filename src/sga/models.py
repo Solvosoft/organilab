@@ -14,14 +14,20 @@ class WarningClass(MPTTModel):
     )
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     danger_type = models.CharField(
-        max_length=25,  default="category", choices=TYPE)
+        max_length=25,  default="category", choices=TYPE,
+        verbose_name=_("Danger type"))
 
     parent = TreeForeignKey('self',
                             on_delete=models.CASCADE, null=True, blank=True,
                             related_name='children')
 
     def __str__(self):
-        return self.name
+        name = self.name
+        if len(name) < 3 and self.parent:
+            name = self.parent.name + " > "+name
+        elif WarningClass.objects.filter(name=self.name).count() > 1:
+            name = self.parent.name + " > "+name
+        return name
 
     class Meta:
         verbose_name = _('Warning Class')
