@@ -151,7 +151,8 @@ class Sustance(models.Model):
         DangerIndication,
         verbose_name=_("Danger indications"))
     synonymous = TagField(verbose_name=_("Synonymous"))
-    agrochemical = models.BooleanField(default=False)
+    agrochemical = models.BooleanField(default=False,
+                                       verbose_name=_("Agrochemical"))
 
     @property
     def warning_word(self):
