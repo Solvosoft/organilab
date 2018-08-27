@@ -23,10 +23,18 @@ class WarningClass(MPTTModel):
 
     def __str__(self):
         name = self.name
+
         if len(name) < 3 and self.parent:
             name = self.parent.name + " > "+name
         elif WarningClass.objects.filter(name=self.name).count() > 1:
             name = self.parent.name + " > "+name
+
+        """
+        if self.danger_type == 'class':
+            name = "+ "+name
+        elif self.danger_type == 'category':
+            name = "# "+name
+        """
         return name
 
     class Meta:
@@ -75,6 +83,9 @@ class PrudenceAdvice(models.Model):
     code = models.CharField(max_length=150,
                             verbose_name=_("Code"))
     name = models.CharField(max_length=500, verbose_name=_("Name"))
+    prudence_advice_help = models.TextField(
+        null=True, blank=True,
+        verbose_name=_("Help for prudence advice"))
 
     def __str__(self):
         return self.code+": "+self.name
@@ -104,10 +115,6 @@ class DangerIndication(models.Model):
         verbose_name=_("Warning category"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
-
-    prudence_advice_help = models.TextField(
-        null=True, blank=True,
-        verbose_name=_("Help for prudence advice"))
 
     def __str__(self):
         return self.code
@@ -144,6 +151,7 @@ class Sustance(models.Model):
         DangerIndication,
         verbose_name=_("Danger indications"))
     synonymous = TagField(verbose_name=_("Synonymous"))
+    agrochemical = models.BooleanField(default=False)
 
     @property
     def warning_word(self):
