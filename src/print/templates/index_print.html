@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static i18n datasets %}
+
+{% block css %}
+<link href="{% static 'css/jquery.dataTables.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1 class="header text-center"> {% trans 'Printers' %}
+	{% endblock %}
