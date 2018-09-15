@@ -26,6 +26,8 @@ from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
 
+from sga import urls as sga_urls
+
 urlpatterns = auth_urls + [
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
@@ -36,6 +38,7 @@ urlpatterns = auth_urls + [
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
+    url(r'sga/', include(sga_urls, namespace='sga'))
 ]
 
 if settings.FULL_APPS:

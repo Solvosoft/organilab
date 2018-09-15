@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'django_comments',
     'tagging',
     'zinnia',
-    'zinnia_ckeditor'
+    'zinnia_ckeditor',
     #    'debug_toolbar',
 ]
 if FULL_APPS:

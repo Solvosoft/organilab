@@ -1,0 +1,31 @@
+<!--
+Created on 13 sept. 2018
+
+@author: Guillermo
+-->
+
+
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+
+{% block title %}{% trans 'SGA Home' %}{% endblock %}
+
+{% block content %}
+    <div class='row'>
+      <div class='col-md-offset-2 col-md-8'>
+        <div class='page-header col-xs-13' align="center">
+          <h1 center>{% trans 'Globally Harmonized System of Classification and Labelling of Chemicals' %}</h1>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Information</h4></div>
+                <div class="panel-body">
+                  <a type="button" class="btn btn-primary" href="{% url 'sga:pre_editor' %}">Pre-Editor</a>
+                </div>
+              </div>
+        </div>
+    </div>
+{% endblock %}
