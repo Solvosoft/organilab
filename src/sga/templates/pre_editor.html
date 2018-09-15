@@ -1,0 +1,51 @@
+<!--
+Created on 13 sept. 2018
+
+@author: Guillermo
+-->
+
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'autocomplete.css' %}">
+
+{% block extrameta%}
+
+{% endblock %}
+
+{% block title %}{% trans 'SGA Pre Editor' %}{% endblock %}
+
+{% block content %}
+    <div class='row'>
+      <div class='col-md-offset-2 col-md-8'>
+        <div class='page-header col-xs-13' align="center">
+          <h1 center>{% trans 'Globally Harmonized System of Classification and Labelling of Chemicals' %}</h1>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" >
+                <div class="panel panel-primary">
+                        <div class="panel-heading"><h4>Pre Editor</h4></div>
+                        <div class="panel-body">
+                            <!--Search by sustance with autocomplete-->
+                            <form class="form-inline">
+                                <div class="form-group">
+                                  <label for="sustances"> {% trans 'Substance' %}: </label>
+                                  <input id="sustances" placeholder="{% trans 'comercial name' %}" class="form-control mx-sm-3" aria-describedby="sustanceHelp">
+                                  <small id="sustanceHelp" class="text-muted">
+                                      {% trans '' %}
+                                  </small>
+                                </div>
+                                <button type="submit" class="btn btn-primary mb-2">{% trans 'Watch Label' %}</button>
+                            </form>
+                            <br>
+                            <!--Add new sustance-->
+                            <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a href="/admin/sga/label/add/"><u>{% trans 'Create it Here!' %}</u></a>
+                        </div>
+                </div>
+        </div>
+    </div>    
+    <script src="{% static 'autocomplete.js' %}"> </script>       
+{% endblock %}
