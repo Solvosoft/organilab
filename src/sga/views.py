@@ -1,7 +1,9 @@
 '''
-Created on 13 Sept. 2018
-
-@author: Guillermo
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 13 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
 '''
 
 # Import functions of another modules

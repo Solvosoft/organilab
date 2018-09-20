@@ -1,29 +1,54 @@
 <!--
-Created on 13 sept. 2018
-
-@author: Guillermo
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 13 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
 -->
-
 
 {% extends 'base.html' %}
 {% load i18n bootstrap %}
+{% load static %}
 
-{% block title %}{% trans 'SGA Home' %}{% endblock %}
+{# CSS #}
+{# Styles #}
+{% block css %}
+<link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}{% trans 'GHS' %}{% endblock %}
 
 {% block content %}
     <div class='row'>
       <div class='col-md-offset-2 col-md-8'>
         <div class='page-header col-xs-13' align="center">
-          <h1 center>{% trans 'Globally Harmonized System of Classification and Labelling of Chemicals' %}</h1>
+          <h3 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h3>
         </div>
       </div>
     </div>
     <div class="row">
         <div class="col-md-12" >
             <div class="panel panel-primary">
-                <div class="panel-heading"><h4>Information</h4></div>
+                <div class="panel-heading"><h4>{% trans 'Online GHS Solution' %}</h4></div>
                 <div class="panel-body">
-                  <a type="button" class="btn btn-primary" href="{% url 'sga:pre_editor' %}">Pre-Editor</a>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <br>
+                         <img class="img-responsive" src="/static/sga/img/label_example.png" title="Label Example" alt="Label Example" border="5"/>
+                        </div>
+                        <div class="col-md-9">
+                         <p>{% trans 'Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance.' %}</p>
+                         <p>{% trans 'Moreover, the solution contains multiples features:' %}</p>
+                         <ul style="list-style-type:square">
+                            <li>{% trans 'Container Management.' %}</li>
+                            <li>{% trans 'Social Media Options.' %}</li>
+                            <li>{% trans 'Printing Management.' %}</li>
+                          </ul>
+                     <br>
+                     <a type="button" class="btn btn-primary " href="{% url 'sga:pre_editor' %}">{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                        </div>
+                       </div>
+                      </div>
                 </div>
               </div>
         </div>
