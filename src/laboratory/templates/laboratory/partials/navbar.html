@@ -131,7 +131,11 @@
     {% endif %}
   </ul>
   <ul class="nav navbar-nav pull-right">
-  
+  <!--GHS Labels-->
+  <li id='block_id' class="nav-item">
+  <a class="nav-link" href="{% url 'sga:index_sga' %}" title="{% trans 'GHS' %}" >
+  {% trans 'GHS' %} </a> 
+  </li>
   <li id='block_id' class="nav-item">
   <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}" >
   {% trans 'Blog' %} </a> 
