@@ -242,8 +242,8 @@ LOCATION_FIELD = {
 
 MAP_WIDGETS = {
     "GooglePointFieldWidget": (
-        ("zoom", 15),
-        ("mapCenterLocation", 'Costa Rica'),
+        ("zoom", 8),
+        ("mapCenterLocationName", "Costa_Rica"),
     ),
     "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
 }
