@@ -25,7 +25,7 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
-from print.urls import urlpatterns as print_urls
+from printOrderManager.urls import urlpatterns as printOrderManager_urls
 
 urlpatterns = auth_urls + [
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
@@ -37,7 +37,8 @@ urlpatterns = auth_urls + [
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
-    url(r'print/', include(print_urls, namespace='print')),
+    url(r'printOrderManager/',
+        include(printOrderManager_urls, namespace='printOrderManager')),
 ]
 
 if settings.FULL_APPS:

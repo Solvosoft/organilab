@@ -1,0 +1,90 @@
+.login-register-form-section {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.register-form-section {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.title {
+    color: #3273dc;
+    font-size: 200%;
+}
+
+.button4 {
+    background-color: white;
+    color: black;
+    border: 2px solid #e7e7e7;
+}
+
+.button4:hover {
+    background-color: #e7e7e7;
+}
+
+.button {
+    background-color: white;
+    /* Green */
+    border: none;
+    color: #3273dc;
+    padding: 9.1px 60px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s;
+    /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.login-register-form-section i {
+    width: 45px;
+}
+
+.form-control {
+    height: 40px;
+
+}
+
+.login-register-form-section .nav-tabs>li>a {
+    color: #3273dc;
+}
+
+.login-register-form-section .nav-tabs>li.active>a {
+    background-color: #3273dc;
+    border-color: #3273dc;
+    color: white;
+}
+
+.login-register-form-section .nav-tabs>li>a,
+.login-register-form-section .nav-tabs>li.active>a {
+    width: 160px;
+    text-align: center;
+    border-radius: 0;
+}
+
+.login-register-form-section .nav-tabs {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.login-register-form-section .btn-custom {
+    width: 100%;
+    background-color: #3273dc;
+    border-color: #3273dc;
+    margin-bottom: 0.5em;
+    border-radius: 0;
+}
+
+.login-register-form-section .btn-custom:hover {
+    width: 100%;
+    background-color: #28a55c;
+    border-color: #28a55c;
+}
+
+.login-register-form-section .form-group {
+    padding: 0 30px;
+}

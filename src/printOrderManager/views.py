@@ -5,24 +5,31 @@ Created on 14 sep. 2018
 '''
 
 from django.http.response import JsonResponse
-from print.models import PaperType, Print
+from printOrderManager.models import PaperType, PrintObject
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
 from cruds_adminlte.crud import CRUDView
-from print.forms import FormPrint
+from printOrderManager.forms import FormPrintObject
 from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render
-from print.models import Print
+# TEST
+from django.views.generic import FormView
+from printOrderManager.forms import PrintLoginForm, PrintRegisterForm
+# END TEST
 
 
-def index_print(request):
-    return render(request, 'index_print.html')
+def index_printOrderManager(request):
+    return render(request, 'index_printOrderManager.html')
 
 
-def get_list_print(request):
+def index_printManager(request):
+    return render(request, 'index_printManager.html')
+
+
+def get_list_printObject(request):
     q = request.GET.get('search[value]')
     length = request.GET.get('length', '10')
     pgnum = request.GET.get('start', '0')
@@ -35,11 +42,11 @@ def get_list_print(request):
         pgnum = 1
 
     if q:
-        objs = Print.objects.filter(
+        objs = PrintObject.objects.filter(
             Q(name__icontains=q) | Q(location__icontains=q)
         ).order_by('name')
     else:
-        objs = Print.objects.all().order_by('name')
+        objs = PrintObject.objects.all().order_by('name')
 
     recordsFiltered = objs.count()
     p = Paginator(objs, length)
@@ -52,11 +59,11 @@ def get_list_print(request):
             obj.id,
             obj.name,
             obj.email,
-            #            get_download_links(request, obj)
+            # get_download_links(request, obj)
         ])
     dev = {
         "data": data,
-        "recordsTotal": Print.objects.all().count(),
+        "recordsTotal": PrintObject.objects.all().count(),
         "recordsFiltered": recordsFiltered
     }
 
@@ -68,20 +75,32 @@ def get_list_print(request):
         pass
     return JsonResponse(dev)
 
+# Agregar permisos a modelo, con base a  laboratory. """
 
-class PrintCRUD(CRUDView):
-    model = Print
+
+class PrintObjectCRUD(CRUDView):
+    model = PrintObject
     views_available = ['create', 'delete', 'update', 'detail']
-    namespace = "print"
-    add_form = FormPrint
+    namespace = "printOrderManager"  # Necesario, si se pone en URL
+    add_form = FormPrintObject
 
     def get_create_view(self):
-        CreateViewClass = super(PrintCRUD, self).get_create_view()
+        CreateViewClass = super(PrintObjectCRUD, self).get_create_view()
 
         class OCreateView(CreateViewClass):
             def get_success_url(self):
-                url = reverse("print:index_print")
+                url = reverse("printOrderManager:index_printOrderManager")
                 messages.success(self.request,
                                  _("Your Print was register successfully"))
                 return url
         return OCreateView
+
+
+class PrintLogin(FormView):
+    template_name = 'loginRegister/loginPrint.html'
+    form_class = PrintLoginForm
+
+
+class PrintRegister(FormView):
+    template_name = 'loginRegister/registerPrint.html'
+    form_class = PrintRegisterForm
