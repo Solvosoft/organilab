@@ -13,19 +13,26 @@
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/pre_editor.css' %}" rel="stylesheet">
-{# Django jQuery AJAX Autocomplete #}
-<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
 {# Paper Bootstrap Wizard #}
 <link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
-<link href="{% static 'sga/css/paper-bootstrap-wizard-demo.css.css' %}" rel="stylesheet" />
-<link href="{% static 'sga/assets/css/themify-icons.css' %}" rel="stylesheet">
+<!--<link href="{% static 'sga/css/paper-bootstrap-wizard-demo.css.css' %}" rel="stylesheet" />-->
+{# Fonts and Icons #}
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+<link href="{% static 'sga/css/themify-icons.css' %}" rel="stylesheet">
+{# Django jQuery AJAX Autocomplete #}
+<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
 {% endblock %}
 
 {# JS #}
-{# Django jQuery AJAX Autocomplete #}
 {% block script %}
+{# Django jQuery AJAX Autocomplete #}
 <script type="text/javascript" src="{% static 'sga/js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'sga/js/jquery-ui.min.js' %}"></script>
+{# Fabric.js #}
+<script src="{% static 'sga/js/fabric.min.js' %}"></script>
+<script src="{% static 'sga/js/canvas-toBlob.js' %}"></script>
+<script src="{% static 'sga/js/FileSaver.min.js' %}"></script>
 {% endblock %}
 
 {% block extrameta%}{% endblock %}
@@ -33,9 +40,8 @@
 {% block title %}{% trans 'GHS' %}{% endblock %}
 
 {% block content %}
-	<div class="card wizard-card" data-color="blue" id="wizard">
+	<div class="card wizard-card div" data-color="blue" id="wizard">
 		<form action="" method="">
-			<!--  You can switch " data-color="green" "  with one of the next bright colors: "blue", "azure", "orange", "red"       -->
 			<div class="wizard-header">
 				<h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
 				<p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
@@ -51,7 +57,7 @@
 							<div class="icon-circle">
 								<i class="ti-paint-bucket"></i>
 							</div>
-							{% trans 'Substance' %}
+							{% trans 'Chemical' %}
 						</a>
 					</li>
 					<li>
@@ -84,54 +90,63 @@
 				<div class="tab-pane" id="location">
 					<div class="row">
 						<div class="col-sm-12">
-							<h5 class="info-text">{% trans 'Choose the substance and start editing the label' %}</h5>
+							<h5 class="info-text">{% trans 'Enter all required information below and start customize the label' %}</h5>
 						</div>
 						<div class="col-sm-5 col-sm-offset-1">
 							<div class="form-group">
 								<label>{% trans 'Substance' %}</label>
-								<input type="text" class="form-control" id="exampleInputEmail1"
-									placeholder="Where is your place located?">
-							</div>
-						</div>
-						<div class="col-sm-5">
-							<div class="form-group">
-								<label>Country</label><br>
-								<select name="country" class="form-control">
-									<option disabled="" selected="">- country -</option>
-									<option value="Afghanistan"> Afghanistan </option>
-									<option value="Albania"> Albania </option>
-									<option value="Algeria"> Algeria </option>
-									<option value="American Samoa"> American Samoa </option>
-									<option value="Andorra"> Andorra </option>
-									<option value="Angola"> Angola </option>
-									<option value="Anguilla"> Anguilla </option>
-									<option value="Antarctica"> Antarctica </option>
-									<option value="...">...</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-sm-5 col-sm-offset-1">
-							<div class="form-group">
-								<label>Accommodates</label>
-								<select class="form-control">
-									<option disabled="" selected="">- persons -</option>
-									<option>1 Person</option>
-									<option>2 Persons </option>
-									<option>3 Persons</option>
-									<option>4 Persons</option>
-									<option>5 Persons</option>
-									<option>6+ Persons</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-sm-5">
-							<div class="form-group">
-								<label>Rent price</label>
-								<div class="input-group">
-									<input type="text" class="form-control" placeholder="Rent price per
-										day">
-									<span class="input-group-addon">$</span>
+								<!--Search substance with autocomplete-->
+								<input id="substance" id="substance" placeholder="{% trans 'Name or CAS Number' %}" class="form-control" aria-describedby="sustanceHelp">
+								<small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
+								<div class="form-group">
+								<!--Add new sustance-->
+							    <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_sustance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
 								</div>
+								<!-- Default button -->
+								<div class="form-group">
+								<button type="button" id="substanceInformation" class="btn btn-primary btn-rounded">{% trans 'View substance label information' %}</button>
+								</div>
+								<div class="form-group">
+								<label>{% trans 'Company information' %}</label>
+								<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="company_name" placeholder="{% trans 'Name' %}" class="form-control" aria-describedby="sustanceHelp">
+								</div>
+								<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span><input id="company_address" placeholder="{% trans 'Address' %}" class="form-control" aria-describedby="sustanceHelp">
+							    </div>
+								<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span><input id="company_phone" placeholder="{% trans 'Phone' %}" class="form-control" aria-describedby="sustanceHelp">
+								</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-2 v-divider"></div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{% trans 'Label preview' %}</label>
+								<!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#saved" aria-controls="saved" role="tab" data-toggle="tab">{% trans 'Saved Designs' %}</a></li>
+                                    <li role="presentation"><a href="#designed" aria-controls="designed" role="tab" data-toggle="tab">{% trans 'Pre-Designed Templates' %}</a></li>
+								</ul>
+								<!-- Tab panels -->
+								 <div class="tab-content preview-canvas">
+									<!--Saved Designs-->
+									<div role="tabpanel" class="tab-pane active" id="saved">
+										<!--Canvas-->
+										<div class="border-canvas">
+										<canvas id="saved_design_canvas1" width="498" height="264"></canvas>
+										</div>
+									</div>
+									<!--Pre-Designed Templates-->
+									<div role="tabpanel" class="tab-pane" id="designed">
+										<!--Canvas-->
+										<div class="border-canvas">
+												<canvas id="pre_design_canvas1" width="498" height="264"></canvas>
+										</div>
+									</div>
+								</div>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -139,30 +154,38 @@
 			</div>
 			<div class="wizard-footer">
 				<div class="pull-right">
-					<input type='button' class='btn btn-next btn-fill btn-success btn-wd'
+					<input type='button' class='btn btn-next btn-fill btn-info btn-wd'
 						name='next' value='Next' />
-					<input type='button' class='btn btn-finish btn-fill btn-success btn-wd'
+					<input type='button' class='btn btn-finish btn-fill btn-info btn-wd'
 						name='finish' value='Finish' />
 				</div>
 
 				<div class="pull-left">
-					<input type='button' class='btn btn-previous btn-default btn-wd'
+					<input type='button' class='btn btn-previous btn-info btn-wd'
 						name='previous' value='Previous' />
 				</div>
 				<div class="clearfix"></div>
+				<div id="powered_by">
+						<a href="https://solvosoft.com/en/">
+						  <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png" />
+						</a>
+						{% trans 'Powered by' %}
+						<a href="http://fabricjs.com/">Fabric.js</a>
+				</div>
 			</div>
 		</form>
 	</div> <!-- wizard container -->
 
+<!-- Django jQuery AJAX Autocomplete -->
+<script src="{% static 'sga/js/pre_editor.js' %}"> </script>
+
 <!--   Core JS Files   -->
-<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}"
-	type="text/javascript"></script>
+<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}" type="text/javascript"></script>
 
 <!--  Plugin for the Wizard -->
-<script src="{% static 'sga/js/paper-bootstrap-wizard.js' %}"
-	type="text/javascript"></script>
+<script src="{% static 'sga/js/paper-bootstrap-wizard.js' %}" type="text/javascript"></script>
 
 <!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
-<script src="{% static 'sga/js/jquery.validate.min.js' %}"
-	type="text/javascript"></script>
+<script src="{% static 'sga/js/jquery.validate.min.js' %}" type="text/javascript"></script>
+
 {% endblock %}

@@ -27,3 +27,28 @@ padding: 0 10px;
 position: relative;
 z-index: 1;
 }
+/* Vertical divider */
+.v-divider{
+    margin-left:5px;
+    margin-right:5px;
+    width:1px;
+    height:100%;
+    border-left:1px solid gray;
+}
+.middle{
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+}
+.preview-canvas {
+    padding-top: 20px !important;
+    padding-right: 1px !important;
+    padding-bottom: 1px !important;
+    padding-left: 1px !important;
+}
+.border-canvas{
+    width: 500px !important;
+    height:265px !important;
+    margin: 0px auto !important;
+    border: 2px solid black !important;
+    background-color: white !important;
+}
