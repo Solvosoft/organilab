@@ -80,26 +80,26 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 }*/
 
 .form-control::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.2);
+  color: #0000007c;
 }
 
 .form-control:-moz-placeholder {
-  color: rgba(0, 0, 0, 0.2);
+  color: #0000007c;
 }
 
 .form-control::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.2);
+  color: #0000007c;
 }
 
 .form-control:-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.2);
+  color: #0000007c;
 }
 
 .form-control {
   background-color: #F3F2EE;
   border: 1px solid #e8e7e3;
   border-radius: 4px;
-  color: #66615b;
+  color: #000000;
   font-size: 14px;
   padding: 7px 18px;
   height: 40px;
@@ -107,7 +107,7 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
   box-shadow: none;
 }
 .form-control:focus {
-  border: 1px solid #e8e7e3;
+  border: 1px solid #0000007c;
   background-color: #FFFFFF;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -123,7 +123,7 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
   border-color: #EB5E28;
 }
 .has-success .form-control, .form-control.valid {
-  color: #66615b;
+  color: #000000;
   border-color: #e8e7e3;
 }
 .has-error .form-control:focus, .form-control.error:focus {
@@ -225,34 +225,34 @@ label.error:not(.form-control) {
 }
 
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-  background-color: #E3E3E3;
+  background-color: #0000007c;
   cursor: not-allowed;
-  color: #9A9A9A;
-  opacity: 1;
+  color: #000000;
+  opacity: 4;
   filter: alpha(opacity=100);
 }
 
 .form-control[disabled]::-moz-placeholder {
-  color: #9A9A9A;
-  opacity: 1;
+  color: #0000007c;
+  opacity: 4;
   filter: alpha(opacity=100);
 }
 
 .form-control[disabled]:-moz-placeholder {
-  color: #cfcfca;
-  opacity: 1;
+  color: #0000007c;
+  opacity: 4;
   filter: alpha(opacity=100);
 }
 
 .form-control[disabled]::-webkit-input-placeholder {
-  color: #cfcfca;
-  opacity: 1;
+  color: #0000007c;
+  opacity: 4;
   filter: alpha(opacity=100);
 }
 
 .form-control[disabled]:-ms-input-placeholder {
-  color: #cfcfca;
-  opacity: 1;
+  color: #0000007c;
+  opacity: 4;
   filter: alpha(opacity=100);
 }
 
@@ -1331,10 +1331,12 @@ input[type="button"]:focus {
   top: 0;
   width: 100%;
 }
+
 .wizard-card .tab-content {
-  min-height: 435px;
+  min-height: 235px;
   padding: 105px 20px 10px;
 }
+
 .wizard-card .wizard-footer {
   padding: 0 15px 5px;
 }
