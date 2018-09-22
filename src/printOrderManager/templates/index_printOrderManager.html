@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static i18n datasets %}
+
+{% block css %}
+<!-- Bootstrap core CSS -->
+<link href="Justified%20Nav%20Template%20for%20Bootstrap_files/bootstrap.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="Justified%20Nav%20Template%20for%20Bootstrap_files/justified-nav.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+    <div class="container">
+
+        <!-- Jumbotron -->
+        <div class="jumbotron" style="background-color: #e6f1f5;">
+            <center>
+                <h1>{% trans 'Prints and Orders Manager' %}</h1>
+                <p class="lead"> Manage your printing press, offer your services quickly and easily. In
+                    addition, you look for which printing press best suits your needs and requests your orders </p>
+            </center>
+        </div>
+
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Prints Manager</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce
+                    dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                    fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
+                    mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn btn-primary" href="{% url 'printOrderManager:index_printManager' %}" role="button">View
+                        details »</a></p>
+            </div>
+            <div class="col-lg-4">
+                <h2>Orders Manager</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce
+                    dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                    fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
+                    mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn btn-primary" href="#" role="button">View details »</a></p>
+            </div>
+            <div class="col-lg-4">
+                <h2>GHS Labeling System</h2>
+                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis
+                    in, egestas eget quam. Vestibulum id ligula porta felis euismod semper.
+                    Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
+                    ut fermentum massa.</p>
+                <p><a class="btn btn-primary" href="#" role="button">View details »</a></p>
+            </div>
+        </div>
+
+    </div>
+
+    {% endblock %}

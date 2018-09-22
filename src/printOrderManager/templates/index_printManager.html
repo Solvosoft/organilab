@@ -8,7 +8,7 @@
 
 {% block content %}
 <h1 class="header text-center"> {% trans 'Search Printers' %}
-	<a class="btn btn-success pull-right" href="{% url 'print:print_print_create' %}">
+	<a class="btn btn-success pull-right" href="{% url 'printOrderManager:printOrderManager_printobject_create' %}">
 		{% trans 'Register your Print' %}
 	</a>
 
@@ -33,13 +33,14 @@
 
 {% endblock %}
 {% block js %}
+<!-- JQuery No conflict -->
 <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
 <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
 
 <script>
 	$(document).ready(function () {
 		$('#example').DataTable({
-			"ajax": '{% url "print:list_print" %}',
+			"ajax": '{% url "printOrderManager:list_printObject" %}',
 			// "processing" : true,
 			"serverSide": true,
 			"language": {

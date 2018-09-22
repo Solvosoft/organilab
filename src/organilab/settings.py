@@ -72,7 +72,8 @@ INSTALLED_APPS = [
     'zinnia',
     'zinnia_ckeditor',
     #    'debug_toolbar',
-    'print'
+    'printOrderManager',
+    'mapwidgets',  # TEST
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -236,6 +237,19 @@ LOCATION_FIELD = {
     'provider.google.api_key': GOOGLE_MAPS_API_KEY,
     'provider.google.map.type': 'ROADMAP',
 }
+
+# TEST
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 15),
+        ("mapCenterLocation", 'Costa Rica'),
+    ),
+    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
+}
+
+
+# END TEST
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
