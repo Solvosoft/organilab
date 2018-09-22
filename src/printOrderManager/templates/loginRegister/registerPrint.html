@@ -35,24 +35,33 @@
 
                         <div class="form-group">
                             <div class="register-size">
-                                <!-- {% if field.name == 'name' %}
-                                                <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                                                {% elif field.name == 'location' %}
-                                                <div class="input-group-addon"><i class="fa fa-lock"></i></div>
-                                                {% endif %} -->
-                                <center> {{field}}</center>
+                                <div class="input-group">
+                                    <!-- Icon for the field-->
+                                    {% if field.name == 'name' %}
+                                    <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                    {% elif field.name == 'email' %}
+                                    <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                                    {% elif field.name == 'logo' %}
+                                    <label for="image_uploads">Choose the logo of your company </label>
+                                    {% endif %}
+
+                                    {% if field.name != 'location' %}
+                                    {{field}}
+                                    {% endif %}
+                                </div>
+                                {% if field.name == 'location' %}
+                                <center>{{field}}</center>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
-                        <input type="submit" value="Register" class="btn btn-success btn-custom">
+                        <center><input type="submit" value="Register" class="btn btn-success btn-custom"></center>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 

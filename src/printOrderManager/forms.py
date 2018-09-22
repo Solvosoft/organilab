@@ -21,7 +21,8 @@ class PrintRegisterForm(forms.ModelForm):
         attrs={'class': 'form-control', 'placeholder': 'Name'}))
     email = forms.EmailField(widget=forms.EmailInput(
         attrs={'class': 'form-control', 'placeholder': 'Email'}))
-    logo = forms.ImageField(widget=forms.FileInput())
+    logo = forms.ImageField(widget=forms.FileInput(
+        attrs={'accept': '.jpg, .jpeg, .png'}))
 
     class Meta:
         model = PrintObject

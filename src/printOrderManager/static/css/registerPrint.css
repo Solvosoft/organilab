@@ -44,7 +44,7 @@
 }
 
 .login-register-form-section .btn-custom {
-    width: 100%;
+    width: 50%;
     background-color: #3273dc;
     border-color: #3273dc;
     margin-bottom: 0.5em;
@@ -52,7 +52,7 @@
 }
 
 .login-register-form-section .btn-custom:hover {
-    width: 100%;
+    width: 50%;
     background-color: #28a55c;
     border-color: #28a55c;
 }
