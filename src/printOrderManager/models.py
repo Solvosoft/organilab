@@ -8,6 +8,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 from location_field.models.plain import PlainLocationField
+# Import for the validators
+from .validators import validate_email
+from django.core.validators import RegexValidator
+from django.core.validators import FileExtensionValidator
 
 
 class Contact(models.Model):     # Fixed: Use user for the contacts
@@ -81,12 +85,17 @@ class Advertisement(models.Model):
 class PrintObject(models.Model):
     responsible_user = models.ForeignKey(
         User, verbose_name=_("Responsible User"))
-    email = models.EmailField(_('Email address'))
+    email = models.EmailField(_('Email address'), validators=[validate_email])
+    # The internationally standardized format E.164 : https://www.itu.int/rec/T-REC-E.164/es
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_(
+        "Phone number must be entered in the format: '+55577777777'. Up to 15 digits allowed."))
+    phone = models.CharField(
+        validators=[phone_regex], max_length=15, blank=True, verbose_name=_("Phone"))  # validators should be a list
     location = models.TextField(_('Location'), default='', max_length=255)
     geolocation = PlainLocationField(zoom=15)
     name = models.TextField(_('Name'), default='', max_length=255)
     logo = models.ImageField(
-        _('Logo'), upload_to='print_logos/', null=True, blank=True)  # Fixed : Create the folder media and the print_logos folder
+        _('Logo'), upload_to='print_logos/', null=True, blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'gif'])])  # Fixed : Create the folder media and the print_logos folder
     qualifications = (  # Fixed : SmallIntegerField and Choices
         (1, _('Very Bad')),
         (2, _('Bad')),
