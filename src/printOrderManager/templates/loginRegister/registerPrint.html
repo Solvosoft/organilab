@@ -5,8 +5,11 @@
 
 
 {% block css %} {% recaptcha_init 'es' %}
-<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="{% static 'css/registerPrint.css' %}" rel="stylesheet">
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
+
 {{form.media}}
 {% endblock %}
 
@@ -24,45 +27,59 @@
                 <div class="tab-content">
                 </div>
                 <div role="tabpanel" class="tab-pane fade in active" id="register">
-                    {% csrf_token %}
                     <form class="form-horizontal" method="post" action="">
-                        <div class="form-group has-errors text-danger small">
-                            {{field.errors}}
-                        </div>
-                        <div class="form-group has-errors text-danger small">
-                        </div>
+                        {% csrf_token %}
                         {% for field in form %}
-
-                        <div class="form-group">
-                            <div class="register-size">
-                                <div class="input-group">
+                        {% if field.errors %}
+                        <div class="form-group has-error">
+                            {% else %}
+                            <div class="form-group">
+                                {% endif %}
+                                <!-- Label for the field-->
+                                {% if field.name == 'name' %}
+                                <label class="labelFont" for="name">Print name</label>
+                                {% elif field.name == 'email' %}
+                                <label class="labelFont" for="email">Print email address</label>
+                                {% elif field.name == 'logo' %}
+                                <label class="labelFont" for="email">Print logo</label>
+                                {% elif field.name == 'description' %}
+                                <label class="labelFont" for="description">Description of your print</label>
+                                {% elif field.name == 'location' %}
+                                <label class="labelFont" for="location">Print location</label>
+                                {% elif field.name == 'phone' %}
+                                <label class="labelFont" for="phone">Print phone number</label>
+                                {% endif %} <div class="input-group">
                                     <!-- Icon for the field-->
                                     {% if field.name == 'name' %}
-                                    <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                    <div class="input-group-addon primary"><i class="fas fa-city"></i></div>
                                     {% elif field.name == 'email' %}
                                     <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                                    {% elif field.name == 'phone' %}
+                                    <div class="input-group-addon"><i class="fas fa-phone"></i></div>
                                     {% elif field.name == 'logo' %}
-                                    <label for="image_uploads">Choose the logo of your company </label>
+                                    <!--<div class="input-group-addon"><i class="fas fa-images"></i></div>-->
+                                    {% elif field.name == 'description' %}
                                     {% endif %}
 
                                     {% if field.name != 'location' %}
-                                    {{field}}
+                                    <center>{{field}}</center>
                                     {% endif %}
                                 </div>
-                                {% if field.name == 'location' %}
-                                <center>{{field}}</center>
-                                {% endif %}
                             </div>
-                        </div>
-                        {% endfor %}
-                        <center><input type="submit" value="Register" class="btn btn-success btn-custom"></center>
+                            {% if field.name == 'location' %}
+                            <center>{{field}}</center>
+                            {% endif %}
+                            <div class="form-group has-errors text-danger small">
+                                {{field.errors}}
+                            </div>
+                            {% endfor %}
+                            <center><input type="submit" value="Register" class="btn btn-success btn-custom"></center>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     </div>
-
 </body>
 
 </html>

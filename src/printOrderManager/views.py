@@ -15,10 +15,8 @@ from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render
-# TEST
 from django.views.generic import FormView
 from printOrderManager.forms import PrintLoginForm, PrintRegisterForm
-# END TEST
 
 
 def index_printOrderManager(request):
@@ -99,6 +97,11 @@ class PrintObjectCRUD(CRUDView):
 class PrintLogin(FormView):
     template_name = 'loginRegister/loginPrint.html'
     form_class = PrintLoginForm
+
+#    def post(self, request, *args, **kwargs):
+#        form = PrintLoginForm(request.POST)
+#        if form.is_valid():
+#            print(form.cleaned_data)
 
 
 class PrintRegister(FormView):

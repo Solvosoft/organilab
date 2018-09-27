@@ -1,12 +1,43 @@
 .login-register-form-section {
-    max-width: 790px;
+    max-width: 690px;
+    margin: 0 auto;
+}
+
+#cke_id_description {
+    max-width: 690px;
     margin: 0 auto;
 }
 
 .register-form-section {
-    max-width: 600px;
+    max-width: 690px;
     margin: 0 auto;
 }
+
+.labelFont {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 15px;
+    letter-spacing: 0px;
+    word-spacing: 0px;
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none;
+    font-style: normal;
+    font-variant: normal;
+    text-transform: none;
+}
+
+.input-group-addon {
+    background-color: #e8f1ff;
+}
+
+.merged input:first-child {
+    border-right: 0px;
+}
+
+.merged .input-group-addon+input {
+    border-left: 0px;
+}
+
 
 .title {
     color: #073f99;
@@ -14,11 +45,11 @@
 }
 
 .login-register-form-section i {
-    width: 45px;
+    width: 25px;
 }
 
 .form-control {
-    height: 40px;
+    height: 38px;
 }
 
 .login-register-form-section .nav-tabs>li>a {
@@ -33,7 +64,7 @@
 
 .login-register-form-section .nav-tabs>li>a,
 .login-register-form-section .nav-tabs>li.active>a {
-    width: 160px;
+    width: 300px;
     text-align: center;
     border-radius: 0;
 }
