@@ -74,7 +74,10 @@
                                 </small>
                                 <br>
                                 <br>
-                                {% endif %} <div class="input-group">
+                                {% elif field.name == 'captcha' %}
+                                <label class="labelCaptcha" for="captcha">{% trans "Captcha*" %}</label>
+                                {% endif %}
+                                <div class="input-group">
                                     <!-- Icon for the field-->
                                     {% if field.name == 'name' %}
                                     <div class="input-group-addon primary"><i class="fas fa-city"></i></div>
@@ -88,12 +91,18 @@
                                     {% endif %}
 
                                     {% if field.name != 'location' %}
+                                    {% if field.name != 'captcha' %}
                                     <center>{{field}}</center>
+                                    {% endif %}
                                     {% endif %}
                                 </div>
                                 {% if field.name == 'location' %}
                                 <small id="locationHelp" class="form-text text-muted">
                                     {% trans "Locate your print on the map" %}</small>
+                                {% endif %}
+                                {% if field.name == 'captcha' %}
+                                <center>{{field}}</center>
+                                <br>
                                 {% endif %}
                             </div>
                             {% if field.name == 'location' %}

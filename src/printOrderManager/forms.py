@@ -18,9 +18,12 @@ from location_field.models.plain import PlainLocationField
 import logging
 # Import the validators
 from .validators import validate_email
-
+# Import for the captcha
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 # Forms for the severals models
+
 
 class PrintRegisterForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(
@@ -31,8 +34,7 @@ class PrintRegisterForm(forms.ModelForm):
         attrs={'class': '', 'accept': '.jpg, .jpeg, .png, .gif'}))
     phone = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Phone number of your print (Ex: +55577777777) '}))
-#    description = forms.CharField(widget=forms.Textarea(
-#        attrs={'class': 'form-control', 'placeholder': 'Print Name'}))
+    captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
     class Meta:
         model = PrintObject
