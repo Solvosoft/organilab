@@ -25,7 +25,7 @@ from .validators import validate_email
 class PrintRegisterForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Print Name (Ex: Print)'}))
-    email = forms.EmailField(validators=[validate_email], widget=forms.EmailInput(
+    email = forms.EmailField(widget=forms.EmailInput(
         attrs={'class': 'form-control', 'placeholder': 'Print Email or Principal Email to contact (Ex: print@gmail.com)'}))
     logo = forms.ImageField(widget=forms.FileInput(
         attrs={'class': '', 'accept': '.jpg, .jpeg, .png, .gif'}))

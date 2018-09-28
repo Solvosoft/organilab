@@ -19,9 +19,9 @@
     <div class="row">
         <div class="container">
             <center>
-                <p class="title">Complete the fields to register your print</p>
-                <small id="titleHelp" class="form-text text-muted">All the given information will be used only in this
-                    site</small>
+                <p class="title">{% trans "Complete the fields to register your print" %}</p>
+                <small id="titleHelp" class="form-text text-muted">
+                    {% trans "All the given information will be used only in this site" %}</small>
             </center>
             <div class="login-register-form-section">
                 <ul class="nav nav-tabs" role="tablist">
@@ -31,6 +31,12 @@
                 <div role="tabpanel" class="tab-pane fade in active" id="register">
                     <form class="form-horizontal" method="post" enctype="multipart/form-data" action="" role="form">
                         {% csrf_token %}
+                        {% if form.errors %}
+                        <center>
+                            <p class="error">
+                                {% trans "The form has errors, check the fields" %}</p>
+                        </center>
+                        {% endif %}
                         {% for field in form %}
                         {% if field.errors %}
                         <div class="form-group has-error">
@@ -39,26 +45,35 @@
                                 {% endif %}
                                 <!-- Label for the field-->
                                 {% if field.name == 'name' %}
-                                <label class="labelFont" for="name">Print name</label>
+                                <label class="labelFont" for="name">{% trans "Print name*" %}</label>
                                 {% elif field.name == 'email' %}
-                                <label class="labelFont" for="email">Print email address</label>
+                                <label class="labelFont" for="email">{% trans "Print email address*" %}</label>
                                 {% elif field.name == 'logo' %}
-                                <label class="labelFont" for="email">Print logo</label>
+                                <label class="labelFont" for="email">{% trans "Print logo*" %}</label>
                                 <br>
-                                <small id="logoHelp" class="form-text text-muted">Choose only jpg, .jpeg, .png or .gif
-                                    files</small>
+                                <small id="logoHelp" class="form-text text-muted">
+                                    {% trans "Choose only jpg, .jpeg, .png or .gif files*" %}</small>
                                 <br>
                                 <br>
                                 {% elif field.name == 'description' %}
-                                <label class="labelFont" for="description">Description of your print</label>
+                                <label class="labelFont" for="description">{% trans "Description of your print*" %}</label>
                                 <br>
-                                <small id="descriptionHelp" class="form-text text-muted">Briefly describe your services</small>
+                                <small id="descriptionHelp" class="form-text text-muted">
+                                    {% trans "Briefly describe your services" %}</small>
                                 <br>
                                 <br>
                                 {% elif field.name == 'location' %}
-                                <label class="labelFont" for="location">Print location</label>
+                                <label class="labelFont" for="location">{% trans "Print location*" %}</label>
                                 {% elif field.name == 'phone' %}
-                                <label class="labelFont" for="phone">Print phone number</label>
+                                <label class="labelFont" for="phone">{% trans "Print phone number*" %}</label>
+                                <br>
+                                <small id="phoneHelp" class="form-text text-muted">
+                                    {% trans "Enter the phone number with your country code," %}
+                                    {% trans "if you don't know it visit" %}
+                                    <a href="https://countrycode.org/" target="_blank">this site</a>
+                                </small>
+                                <br>
+                                <br>
                                 {% endif %} <div class="input-group">
                                     <!-- Icon for the field-->
                                     {% if field.name == 'name' %}
@@ -77,17 +92,19 @@
                                     {% endif %}
                                 </div>
                                 {% if field.name == 'location' %}
-                                <small id="locationHelp" class="form-text text-muted">Locate your print on the map</small>
+                                <small id="locationHelp" class="form-text text-muted">
+                                    {% trans "Locate your print on the map" %}</small>
                                 {% endif %}
                             </div>
                             {% if field.name == 'location' %}
                             <center>{{field}}</center>
                             {% endif %}
                             <div class="form-group has-errors text-danger small">
-                                {{field.errors}}
+                                {{ field.errors}}
                             </div>
                             {% endfor %}
-                            <center><input type="submit" value="Register" class="btn btn-success btn-custom"></center>
+                            {% trans "Register" as register %}
+                            <center><input type="submit" value="{{ register }}" class="btn btn-success btn-custom"></center>
                     </form>
                 </div>
             </div>
