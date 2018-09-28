@@ -120,7 +120,7 @@ class PrintObject(models.Model):
         _('Description'), default='', max_length=255)
     # Print model has an advertisement
     advertisement = models.ForeignKey(  # Fixed: Create a model for the advertisement
-        Advertisement, on_delete=models.CASCADE,  related_name='advertisements')
+        Advertisement, on_delete=models.CASCADE,  related_name='advertisements',null=True, blank=True)
 
     class Meta:
         ordering = ('pk',)

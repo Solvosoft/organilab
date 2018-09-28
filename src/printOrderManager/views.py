@@ -98,12 +98,24 @@ class PrintLogin(FormView):
     template_name = 'loginRegister/loginPrint.html'
     form_class = PrintLoginForm
 
-#    def post(self, request, *args, **kwargs):
-#        form = PrintLoginForm(request.POST)
-#        if form.is_valid():
-#            print(form.cleaned_data)
-
 
 class PrintRegister(FormView):
     template_name = 'loginRegister/registerPrint.html'
     form_class = PrintRegisterForm
+
+    # This method is called when the data inserted in the form is valid
+    def form_valid(self, form):
+        # Saving with commit=False gets you a model object, then you can add your extra data and save it.
+        printObject = form.save(commit=False)
+        # Set the extra data
+        printObject.qualification = 5
+        printObject.responsible_user = self.request.user
+        printObject.save()
+        response = super(PrintRegister, self).form_valid(form)
+        return response
+
+
+ #      printObject = form.save()
+ #       print(printObject.value)
+ #       response = super(PrintRegister, self).form_valid(form) # Return the method of the parent
+ #       return response
