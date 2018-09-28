@@ -20,6 +20,8 @@
         <div class="container">
             <center>
                 <p class="title">Complete the fields to register your print</p>
+                <small id="titleHelp" class="form-text text-muted">All the given information will be used only in this
+                    site</small>
             </center>
             <div class="login-register-form-section">
                 <ul class="nav nav-tabs" role="tablist">
@@ -27,7 +29,7 @@
                 <div class="tab-content">
                 </div>
                 <div role="tabpanel" class="tab-pane fade in active" id="register">
-                    <form class="form-horizontal" method="post" action="">
+                    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="" role="form">
                         {% csrf_token %}
                         {% for field in form %}
                         {% if field.errors %}
@@ -42,8 +44,17 @@
                                 <label class="labelFont" for="email">Print email address</label>
                                 {% elif field.name == 'logo' %}
                                 <label class="labelFont" for="email">Print logo</label>
+                                <br>
+                                <small id="logoHelp" class="form-text text-muted">Choose only jpg, .jpeg, .png or .gif
+                                    files</small>
+                                <br>
+                                <br>
                                 {% elif field.name == 'description' %}
                                 <label class="labelFont" for="description">Description of your print</label>
+                                <br>
+                                <small id="descriptionHelp" class="form-text text-muted">Briefly describe your services</small>
+                                <br>
+                                <br>
                                 {% elif field.name == 'location' %}
                                 <label class="labelFont" for="location">Print location</label>
                                 {% elif field.name == 'phone' %}
@@ -65,6 +76,9 @@
                                     <center>{{field}}</center>
                                     {% endif %}
                                 </div>
+                                {% if field.name == 'location' %}
+                                <small id="locationHelp" class="form-text text-muted">Locate your print on the map</small>
+                                {% endif %}
                             </div>
                             {% if field.name == 'location' %}
                             <center>{{field}}</center>
@@ -81,6 +95,13 @@
     </div>
     </div>
 </body>
+
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="{% static 'js/registerPrint.js' %}"></script>
+
+{% endblock %}
 
 </html>
 {% endblock %}
