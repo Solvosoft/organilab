@@ -1,3 +1,7 @@
+.error {
+    color: rgb(197, 73, 73) !important;
+}
+
 .login-register-form-section {
     max-width: 690px;
     margin: 0 auto;
