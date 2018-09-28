@@ -113,9 +113,3 @@ class PrintRegister(FormView):
         printObject.save()
         response = super(PrintRegister, self).form_valid(form)
         return response
-
-
- #      printObject = form.save()
- #       print(printObject.value)
- #       response = super(PrintRegister, self).form_valid(form) # Return the method of the parent
- #       return response
