@@ -7,7 +7,7 @@
 '''
 
 # Import functions of another modules
-from sga.views import index_sga, pre_editor
+from sga.views import index_sga, label_creator, label_information,label_template
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -23,10 +23,14 @@ app_name = 'sga'
 urlpatterns = [
     # sga/index_sga/
     url(r'index_sga', index_sga, name='index_sga'),
-    # sga/pre_editor/
-    url(r'pre_editor', pre_editor, name='pre_editor'),
+    # sga/label_creator/
+    url(r'label_creator', label_creator, name='label_creator'),
     # Django Ajax Selects
     url(r'^ajax_select/', include(ajax_select_urls)),
-    # sga/autocompleteSustance/
-    url(r'^search_autocomplete_sustance/', views.search_autocomplete_sustance, name='search_autocomplete_sustance')
+    # sga/auto_complete_sustance/
+    url(r'^search_autocomplete_sustance/', views.search_autocomplete_sustance, name='search_autocomplete_sustance'),
+    # sga/label_information/
+    url(r'label_information', label_information, name='label_information'),
+    # sga/label_template/
+    url(r'label_template', label_template, name='label_template'),
 ]

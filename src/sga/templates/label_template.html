@@ -1,0 +1,57 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 26 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% load i18n %}
+{% load static %}
+
+{% block extrameta%}{% endblock %}
+
+{% block content %}
+<div class="form-group">
+    <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <!-- Save designs for a future implementation  -->
+        <!-- <li role="presentation" class="active"><a href="#saved" aria-controls="saved" role="tab" data-toggle="tab">{% trans 'Saved Designs' %}</a></li>-->
+        <!-- Blank Templates -->
+        <li role="presentation" class="active"><a href="#blank_template" aria-controls="blank_template" role="tab" data-toggle="tab">{% trans 'Blank templates' %}</a></li>
+        <!-- Pre Designed Templates -->
+        <li role="presentation"><a href="#pre_designed_template" aria-controls="pre_designed_template" role="tab" data-toggle="tab">{% trans 'Pre-Designed Templates' %}</a></li>
+    </ul>
+        <!-- Tab panels -->
+        <div class="tab-content preview-canvas">
+        <!-- Save designs for a future implementation  -->
+        <!--
+        <div role="tabpanel" class="tab-pane active" id="blank_template">
+            <div class="border-canvas">
+                <canvas id="saved_design_canvas1" width="498" height="264"></canvas>
+            </div>
+        </div>
+        -->
+        <!-- Blank Templates -->
+        <div role="tabpanel" class="tab-pane active" id="blank_template">
+            <!-- Canvas -->    
+            <div class="border-canvas">
+                <canvas id="blank_template_canvas" width="498" height="264"></canvas>
+            </div>
+        </div>
+        <!--Pre-Designed Templates-->
+        <div role="tabpanel" class="tab-pane" id="pre_designed_template">
+            <!--Canvas-->
+            <div class="border-canvas">
+                <canvas id="pre_design_template_canvas" width="498" height="264"></canvas>
+            </div>
+        </div>
+        
+    </div>
+    </select>
+</div>
+{% endblock %}
+
+<!-- Label template JS -->
+<script src="{% static 'sga/js/label_template.js' %}"> </script>
