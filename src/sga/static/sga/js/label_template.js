@@ -1,7 +1,7 @@
 /*
 @organization: Solvo
 @license: GNU General Public License v3.0
-@date: Created on 13 sept. 2018
+@date: Created on 27 sept. 2018
 @author: Guillermo Castro Sánchez
 @email: guillermoestebancs@gmail.com
 */
@@ -12,22 +12,7 @@ fabric.Object.prototype.objectCaching = true;
 fabric.Object.prototype.noScaleCache = true;
 
 $(document).ready(function () {
-    //Search sustance with autocomplete
-    $("#substance").autocomplete({
-        source: "search_autocomplete_sustance",
-        //Start predicting at character #1
-        minLength: 1
-    })
-    //Check substance information is not empty
-    $("#substanceInformation").click(function () {
-        if (!$("#substance").val()) {
-            alert("Please enter substance information");
-        } else {
-            //Validate information
-            //Show Modal Popup with tabs
-
-        }
-    });
+    /*
     //Check substance information is not empty
     $("#substance").change(function () {
         if (!$("#substance").val()) {
@@ -39,7 +24,9 @@ $(document).ready(function () {
             //Create label in database
         }
     });
+    */
 });
+
 /*----------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------Saved Canvas Design ----------------------------------------------*/
 //Initialize Fabric.js with our canvas using "id"
@@ -84,6 +71,7 @@ function previewTemplate1() {
         top: 50,
         stroke: 'black'
     }));
+    
 
     //#1: Name of the product or identifier
     var name_label = document.getElementById("substance").value;
@@ -91,7 +79,7 @@ function previewTemplate1() {
     name_label = split_substance_input[0];
 
     //Text size <=20
-    if(name_label.length<=20){
+    if (name_label.length <= 20) {
         name_label = new fabric.Textbox(name_label, {
             width: 280,
             height: 5,
@@ -99,10 +87,10 @@ function previewTemplate1() {
             left: 205,
             fontSize: 25,
             textAlign: 'center',
-            fixedWidth:280,
+            fixedWidth: 280,
             fontFamily: 'Helvetica',
         });
-    }else{
+    } else {
         //Text size >20
         name_label = new fabric.IText(name_label, {
             width: 280,
@@ -116,7 +104,7 @@ function previewTemplate1() {
             centeredScaling: true
         });
     }
-    name_label.text=titleCase(name_label.text);
+    name_label.text = titleCase(name_label.text);
     controlTextNameSize(name_label);
     canvas.add(name_label);
 
@@ -125,12 +113,12 @@ function previewTemplate1() {
 }
 
 //Control text size in label
-function controlTextNameSize(text){
+function controlTextNameSize(text) {
     if (text.width > text.fixedWidth) {
         text.fontSize *= text.fixedWidth / (text.width + 1);
         text.width = text.fixedWidth;
-    } 
-    canvas.on('text:changed', function(opt) {
+    }
+    canvas.on('text:changed', function (opt) {
         var text = opt.target;
         if (text.width > text.fixedWidth) {
             text.fontSize *= text.fixedWidth / (text.width + 1);
@@ -138,16 +126,4 @@ function controlTextNameSize(text){
         }
     });
 }
-
-//Capitalize each Word
-function titleCase(str) {
-    var splitStr = str.toString().toLowerCase().split(' ');
-    for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] = splitStr[i].charAt(0).toString().toUpperCase() + splitStr[i].substring(1);     
-    }
-    // Directly return the joined string
-    return splitStr.join(' '); 
- } 
 /*----------------------------------------------------------------------------------------------------------------*/

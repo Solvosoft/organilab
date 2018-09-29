@@ -149,11 +149,12 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 .form-control.input-no-border {
   border: 0 none;
 }
+/*
 .input-group .form-control:not(:first-child):not(:last-child) {
   border-left: 0;
   border-right: 0;
 }
-
+*/
 label.error:not(.form-control) {
   color: #EB5E28;
   font-weight: 300;
