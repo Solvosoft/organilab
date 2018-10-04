@@ -18,8 +18,15 @@
 <body>
     <div class="row">
         <div class="container">
+            <h1 class="header text-center title2">
+                {% trans 'Print Manager' %}
+            </h1>
+            <div>
+                <span class="subtitle">
+                    <center>{% trans 'Complete the fields to register your print' %}</center>
+                </span>
+            </div>
             <center>
-                <p class="title">{% trans "Complete the fields to register your print" %}</p>
                 <small id="titleHelp" class="form-text text-muted">
                     {% trans "All the given information will be used only in this site" %}</small>
             </center>
@@ -92,7 +99,9 @@
 
                                     {% if field.name != 'location' %}
                                     {% if field.name != 'captcha' %}
+                                    {% if field.name != 'description' %}
                                     <center>{{field}}</center>
+                                    {% endif %}
                                     {% endif %}
                                     {% endif %}
                                 </div>
@@ -103,6 +112,9 @@
                                 {% if field.name == 'captcha' %}
                                 <center>{{field}}</center>
                                 <br>
+                                {% endif %}
+                                {% if field.name == 'description' %}
+                                <center>{{field}}</center>
                                 {% endif %}
                             </div>
                             {% if field.name == 'location' %}

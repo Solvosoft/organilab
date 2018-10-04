@@ -41,7 +41,7 @@ class PrintRegisterForm(forms.ModelForm):
         fields = ['name', 'email', 'phone', 'description', 'logo', 'location']
         widgets = {
             'location': GooglePointFieldWidget,
-            'description': CKEditorWidget(attrs={'class': 'form-control', 'lang': settings.LANGUAGE_CODE, 'value': 'Hola', 'text': 'Bien y usted'}),
+            'description': CKEditorWidget(attrs={'class': 'form-control center', 'lang': settings.LANGUAGE_CODE}),
         }
 
 

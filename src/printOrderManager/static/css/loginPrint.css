@@ -23,6 +23,10 @@
     background-color: #e7e7e7;
 }
 
+.input-group-addon {
+    background-color: #e8f1ff;
+}
+
 .button {
     background-color: white;
     /* Green */
