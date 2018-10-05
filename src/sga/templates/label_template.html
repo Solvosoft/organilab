@@ -9,6 +9,11 @@
 {% load i18n %}
 {% load static %}
 
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block extrameta%}{% endblock %}
 
 {% block content %}
@@ -24,34 +29,72 @@
         <li role="presentation"><a href="#pre_designed_template" aria-controls="pre_designed_template" role="tab" data-toggle="tab">{% trans 'Pre-Designed Templates' %}</a></li>
     </ul>
         <!-- Tab panels -->
-        <div class="tab-content preview-canvas">
+        <div class="tab-content tab-padding">
+
         <!-- Save designs for a future implementation  -->
         <!--
-        <div role="tabpanel" class="tab-pane active" id="blank_template">
-            <div class="border-canvas">
-                <canvas id="saved_design_canvas1" width="498" height="264"></canvas>
-            </div>
+        <div role="tabpanel" class="tab-pane active" id="saved_template">
         </div>
         -->
+
         <!-- Blank Templates -->
         <div role="tabpanel" class="tab-pane active" id="blank_template">
-            <!-- Canvas -->    
-            <div class="border-canvas">
-                <canvas id="blank_template_canvas" width="498" height="264"></canvas>
+        {% csrf_token %}
+        <!-- Blank Template: Vertical -->
+            <div class="template_card">
+                <br>
+                <div class="container">
+                    <label class="center_label_vertical">{% trans 'Vertical' %}</label>
+                </div>
+                <img id="blank_template_vertical" class="template_card_image_vertical" style="border:1px solid black;">
+                <div class="card-button">
+                        <a id="button_blank_template_vertical" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
+                </div>
+            </div>
+        <!-- Blank Template: Horizontal -->
+            <div class="template_card">
+                <br>
+                <div class="container">
+                    <label class="center_label_horizontal">{% trans 'Horizontal' %}</label>
+                </div>
+                <img id="blank_template_horizontal" class="template_card_image_horizontal" style="border:1px solid black;">
+                <div class="card-button">
+                        <a id="button_blank_template_horizontal" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
+                </div>
             </div>
         </div>
         <!--Pre-Designed Templates-->
         <div role="tabpanel" class="tab-pane" id="pre_designed_template">
-            <!--Canvas-->
-            <div class="border-canvas">
-                <canvas id="pre_design_template_canvas" width="498" height="264"></canvas>
+        <!-- Pre-Designed Template: Vertical -->
+            <div class="template_card">
+                <br>
+                <div class="container">
+                    <label class="center_label_vertical">{% trans 'Vertical' %}</label>
+                </div>
+                <img id="pre_designed_template_vertical" src="/static/sga/img/label_example.png" class="template_card_image_vertical" style="border:1px solid black;">
+                <div class="card-button">
+                    <a id="button_pre_designed_template_vertical" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
+                </div>
+            </div>
+        <!-- Pre-Designed Template: Horizontal -->
+            <div class="template_card">
+                    <br>
+                    <div class="container">
+                        <label class="center_label_horizontal">{% trans 'Horizontal' %}</label>
+                    </div>
+                    <img id="pre_designed_template_horizontal" src="/static/sga/img/label_example.png" class="template_card_image_horizontal" style="border:1px solid black;">
+                    <div class="card-button">
+                        <a id="button_pre_designed_template_horizontal" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
+                    </div>
             </div>
         </div>
-        
     </div>
     </select>
 </div>
+
 {% endblock %}
+
 
 <!-- Label template JS -->
 <script src="{% static 'sga/js/label_template.js' %}"> </script>
+

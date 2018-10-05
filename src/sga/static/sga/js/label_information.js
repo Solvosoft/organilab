@@ -6,12 +6,21 @@
 @email: guillermoestebancs@gmail.com
 */
 
+// Control label information validation
+var errorsValidation=$('.wizard-card form');
+
 $(document).ready(function () {
     //Search sustance with autocomplete
     $("#substance").autocomplete({
         source: "search_autocomplete_sustance",
         //Start predicting at character #1
-        minLength: 1
+        minLength: 1,
+        //Show important substance information and save id
+        select: function (event, ui) {
+            $('#substance').val(ui.item.label); // display the selected text
+            $('#substance_id').val(ui.item.value); // save selected id to hidden input
+            return false;
+        }
     })
     // View substance label information for a future implementation
     /*
@@ -26,7 +35,7 @@ $(document).ready(function () {
     });
     */
     // Code for the Validator
-    $('.wizard-card form').validate({
+    errorsValidation.validate({
         rules: {
             substance: {
                 required: true,
@@ -40,25 +49,24 @@ $(document).ready(function () {
             company_phone: {
                 required: true,
             },
-            product_identification: {
-                required: true,
-            },
             recipients: {
                 required: true,
             }
         }
     });
     // Save label information in JSON
-    $("#Next").click(function(e){
+    $("#Next").click(function (e) {
         var label_JSON = {};
-        var label_information = document.getElementById('label_information');
-        if(hasClass(label_information,'active')){
+        errorsValidation.validate();
+        if (hasClass(label_information, 'active') && errorsValidation.valid()==true) {
             //Label properties
             // #1: Substance
             var substance = $('#substance').val();
             var substance_name = substance.split(' : ');
-            substance = substance_name[0];
-            label_JSON.substance = substance;
+            substance_commercial_name = substance_name[0];
+            label_JSON.substance_commercial_name = substance_commercial_name;
+            var substance_id = $('#substance_id').val();
+            label_JSON.substance_id = substance_id;
             // #2: Supplier Identification
             var company_name = $('#company_name').val();
             label_JSON.company_name = company_name;
@@ -67,8 +75,8 @@ $(document).ready(function () {
             var company_phone = $('#company_phone').val();
             label_JSON.company_phone = company_phone;
             // #3: Product Identification
-            var product_identification = $('#product_identification').val();
-            label_JSON.product_identification = product_identification;
+            var commercial_information = $('#commercial_information').val();
+            label_JSON.commercial_information = commercial_information;
             // #4: Recipient Size
             var recipient_select_box = document.getElementById("recipients");
             var recipient_name = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-name');
@@ -81,11 +89,15 @@ $(document).ready(function () {
             label_JSON.width = width;
             var width_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width_unit');
             label_JSON.width_unit = width_unit;
-        
+
             var label_JSON_String = JSON.stringify(label_JSON);
             localStorage.setItem('label_storage', label_JSON_String);
+            
             /*var obj = JSON.parse(localStorage.getItem('label_storage'));
             alert(JSON.stringify(obj));*/
+            
+            /* Set blank templates images according to recipient size */
+            set_template_image();
         }
     });
 });
