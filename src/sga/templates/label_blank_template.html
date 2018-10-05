@@ -1,0 +1,28 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 4 oct. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% load i18n %}
+{% load static %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_blank_template.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrameta%}{% endblock %}
+
+{% block content %}
+<!--Canvas-->
+<div id="border-canvas" class="border-canvas-horizontal" align="left">
+    <canvas id="blank_template_canvas" width="498" height="264" align="left"></canvas>
+</div>
+{% endblock %}
+
+
+<!-- Label template JS -->
+<script src="{% static 'sga/js/label_blank_template.js' %}"> </script>

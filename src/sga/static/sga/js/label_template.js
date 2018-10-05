@@ -1,129 +1,80 @@
 /*
 @organization: Solvo
 @license: GNU General Public License v3.0
-@date: Created on 27 sept. 2018
+@date: Created on 03 oct. 2018
 @author: Guillermo Castro Sánchez
 @email: guillermoestebancs@gmail.com
 */
 
-// Default to true for browsers, false for node, it enables objectCaching at object level.
-fabric.Object.prototype.objectCaching = true;
-// Enabled to avoid blurry effects for big scaling
-fabric.Object.prototype.noScaleCache = true;
-
 $(document).ready(function () {
-    /*
-    //Check substance information is not empty
-    $("#substance").change(function () {
-        if (!$("#substance").val()) {
-            alert("Please enter substance information");
-        } else {
-            //Validate information
-            //Create a preview label
-            previewTemplate1();
-            //Create label in database
-        }
+    // Change tab content  according to selected blank template 
+    // Blank Templates
+    // Blank Template: Vertical
+
+    $("#button_blank_template_vertical").on("click", function () {
+
+        //$("#blank_template").load('label_information.html');
+
+        /*$.ajax({
+             type: "POST",
+             url: "{% include 'label_blank_template.html' %} ",
+             dataType: "html",
+         }).done(function (response) {
+             $("#blank_template").attr("label_blank", "_vertical");
+             $("#blank_template").html(response);
+         });*/
+
+        /*
+        $.ajax({
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            type: 'POST',
+            async: false,
+            url: 'label_blank_template',
+            success: function (response) {
+                $('#blank_template').html(response);
+            }
+        });*/
+
+
+        $.ajax({
+            url: "label_blank_template",
+            dataType: "html",
+            success: function(html) {
+               $("#blank_template").attr("label_blank", "_vertical");
+               $("#blank_template").html(html);   
+            }
+         });
+
     });
-    */
+    // Blank Template: Horizontal
+    $("#button_blank_template_horizontal").on("click", function () {
+    });
+    // Pre Designed Template: Vertical
+    $("#button_pre_designed_template_vertical").on("click", function () {
+        /* $("#blank_template").load("dir/page.html"); */
+        alert("Click on pre designed template vertical");
+    });
+    // Pre Designed Template: Horizontal
+    $("#button_pre_designed_template_horizontal").on("click", function () {
+        /* $("#blank_template").load("dir/page.html"); */
+        alert("Click on pre designed template horizontal");
+    });
 });
 
-/*----------------------------------------------------------------------------------------------------------------*/
-/*----------------------------------------------Saved Canvas Design ----------------------------------------------*/
-//Initialize Fabric.js with our canvas using "id"
-var canvas = new fabric.StaticCanvas('saved_design_canvas1');
+/* Set blank templates images according to recipient size */
+function set_template_image() {
 
-//Selection settings
-canvas.selectionColor = 'rgba(0,255,0,0.3)';
-canvas.selectionBorderColor = '#fe7f00';
-canvas.selectionLineWidth = 2;
+    // Show loading message
+    waitingDialog.show('Loading...');
 
-//Canvas background color
-canvas.backgroundColor = 'rgba(242,242,242,1)';
+    var label_information = JSON.parse(localStorage.getItem('label_storage'));
+    //Blank Template: Vertical
+    $("#blank_template_vertical").attr("src", "https://dummyimage.com/300x400/ededed/0000007c/&text=" + label_information.height + label_information.height_unit + "+x+" + label_information.width + label_information.width_unit);
+    //Blank Template: Horizontal
+    $("#blank_template_horizontal").attr("src", "https://dummyimage.com/300x250/ededed/0000007c/&text=" + label_information.height + label_information.height_unit + "+x+" + label_information.width + label_information.width_unit);
 
-//Save changes in Canvas
-canvas.clear().renderAll();
-/*----------------------------------------------------------------------------------------------------------------*/
-/*----------------------------------------------Pre-Designed Templates -------------------------------------------*/
-//Initialize Fabric.js with our canvas using "id"
-var canvas = new fabric.Canvas('pre_design_canvas1');
-
-//Selection settings
-canvas.selectionColor = 'rgba(0,255,0,0.3)';
-canvas.selectionBorderColor = '#fe7f00';
-canvas.selectionLineWidth = 2;
-
-//Canvas background color
-canvas.backgroundColor = 'rgba(242,242,242,1)';
-
-//Save changes in Canvas
-canvas.clear().renderAll();
-
-//Template #1:
-function previewTemplate1() {
-    //Clear preview
-    //Eemove all objects and re-render
-    canvas.clear().renderAll();
-
-    //Sustance Name Line
-    canvas.add(new fabric.Line([100, 400, 400, 400], {
-        strokeWidth: 2,
-        left: 200,
-        top: 50,
-        stroke: 'black'
-    }));
-    
-
-    //#1: Name of the product or identifier
-    var name_label = document.getElementById("substance").value;
-    var split_substance_input = name_label.split(' : ');
-    name_label = split_substance_input[0];
-
-    //Text size <=20
-    if (name_label.length <= 20) {
-        name_label = new fabric.Textbox(name_label, {
-            width: 280,
-            height: 5,
-            top: 20,
-            left: 205,
-            fontSize: 25,
-            textAlign: 'center',
-            fixedWidth: 280,
-            fontFamily: 'Helvetica',
-        });
-    } else {
-        //Text size >20
-        name_label = new fabric.IText(name_label, {
-            width: 280,
-            left: 205,
-            top: 22,
-            fontSize: 25,
-            fontFamily: 'Helvetica',
-            textAlign: 'center',
-            fill: '#000000',
-            fixedWidth: 280,
-            centeredScaling: true
-        });
-    }
-    name_label.text = titleCase(name_label.text);
-    controlTextNameSize(name_label);
-    canvas.add(name_label);
-
-    //Save changes in Canvas
-    canvas.renderAll();
+    // Hide loading message after 3 seconds
+    setTimeout(function () { waitingDialog.hide() }, 500);
 }
-
-//Control text size in label
-function controlTextNameSize(text) {
-    if (text.width > text.fixedWidth) {
-        text.fontSize *= text.fixedWidth / (text.width + 1);
-        text.width = text.fixedWidth;
-    }
-    canvas.on('text:changed', function (opt) {
-        var text = opt.target;
-        if (text.width > text.fixedWidth) {
-            text.fontSize *= text.fixedWidth / (text.width + 1);
-            text.width = text.fixedWidth;
-        }
-    });
-}
-/*----------------------------------------------------------------------------------------------------------------*/

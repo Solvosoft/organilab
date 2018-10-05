@@ -16,6 +16,7 @@ from django.db.models.query_utils import Q
 import json
 import logging
 from django.template import Template, Library
+
 register = Library()
 
 
@@ -26,7 +27,6 @@ def index_sga(request):
     return render(request, 'index_sga.html', {})
 
 # SGA Label Creator Page
-
 
 def label_creator(request):
     return render(request, 'label_creator.html', {})
@@ -43,9 +43,14 @@ def label_information(request):
 
 # SGA Label Template Page
 
-
 def label_template(request):
     return render(request, 'label_template.html', {})
+
+
+# SGA Label Blank Template Page
+
+def label_blank_template(request):
+    return render(request, 'label_blank_template.html', {})
 
 
 # SGA Search sustance with autocomplete
@@ -64,7 +69,8 @@ def search_autocomplete_sustance(request):
                 components__cas_number__icontains=q)
         results = []
         for r in search_qs:
-            results.append(r.comercial_name+' : '+r.synonymous)
+            # r.comercial_name+' : '+r.synonymous
+            results.append({'label': r.comercial_name+' : '+r.synonymous, 'value': r.id})
         if(not results):
             results.append('No results')
         data = json.dumps(results)

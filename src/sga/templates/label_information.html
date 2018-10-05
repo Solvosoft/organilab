@@ -30,6 +30,7 @@
                 <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
                 <!--Search substance with autocomplete-->
                 <input id="substance" name="substance" placeholder="{% trans 'Name or CAS number' %}" class="form-control" aria-describedby="sustanceHelp">
+                <input type="hidden" id="substance_id" name="substance_id" />
                 <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
                 <div class="form-group">
                     <!--Add new sustance-->
@@ -64,11 +65,11 @@
         <div class="col-xs-2 v-divider"></div>
         <div class="col-sm-6">
             <!---------------------------------------------------------------------------------------------------------------->
-            <!-------------------------------------------Product Identification----------------------------------------------->
+            <!-------------------------------------------Comercial information------------------------------------------------>
             <div class="form-group">
-                <label><span class="label label-info">3</span>&nbsp;{% trans 'Product Identification' %}</label>
+                <label><span class="label label-info">3</span>&nbsp;{% trans 'Comercial Information' %}</label>
                 <div class="form-group shadow-textarea">
-                    <textarea name="product_identification" class="form-control z-depth-1" id="product_identification" rows="2" placeholder="Additionals product identifiers"></textarea>
+                    <textarea name="comercial_information" class="form-control z-depth-1" id="comercial_information" rows="2" placeholder="Additionals product identifiers"></textarea>
                 </div>
             </div>
             <!---------------------------------------------------------------------------------------------------------------->

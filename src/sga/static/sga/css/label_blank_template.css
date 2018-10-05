@@ -1,0 +1,25 @@
+/*
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 4 oct. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+*/
+
+/* Canvas blank template vertical size */
+.border-canvas-vertical{
+    width: 265px !important;
+    height:500px !important;
+
+    margin: 12px !important;
+    border: 2px solid black !important;
+    background-color: white !important;
+}
+/* Canvas blank template horizontal size */
+.border-canvas-horizontal{
+    width: 500px !important;
+    height:265px !important;
+    margin: 12px !important;
+    border: 2px solid black !important;
+    background-color: white !important;
+}
