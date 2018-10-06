@@ -28,6 +28,7 @@ def index_sga(request):
 
 # SGA Label Creator Page
 
+
 def label_creator(request):
     return render(request, 'label_creator.html', {})
 
@@ -47,10 +48,10 @@ def label_template(request):
     return render(request, 'label_template.html', {})
 
 
-# SGA Label Blank Template Page
+# SGA Label Customization Page
 
-def label_blank_template(request):
-    return render(request, 'label_blank_template.html', {})
+def label_customization(request):
+    return render(request, 'label_customization.html', {})
 
 
 # SGA Search sustance with autocomplete
@@ -69,8 +70,8 @@ def search_autocomplete_sustance(request):
                 components__cas_number__icontains=q)
         results = []
         for r in search_qs:
-            # r.comercial_name+' : '+r.synonymous
-            results.append({'label': r.comercial_name+' : '+r.synonymous, 'value': r.id})
+            results.append({'label': r.comercial_name +
+                            ' : '+r.synonymous, 'value': r.id})
         if(not results):
             results.append('No results')
         data = json.dumps(results)

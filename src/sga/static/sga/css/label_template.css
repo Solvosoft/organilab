@@ -27,6 +27,21 @@
     display: inline-block;
     margin-top: 10px;
     margin-left: 40px;
+    border-style: solid;
+    border-color:#add8e6;
+    border-width: thin;
+}
+/* Template option Card selected */
+.template_card_selected {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 20%;
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 40px;
+    border-style: solid;
+    border-color:#64e115;
+    border-width: thin;
 }
 /* Center label */
 .center_label_vertical {
@@ -54,7 +69,7 @@
     margin-left: 50% !important;
     margin-bottom: 20% !important;
 }
-.card-button {
+.card_button {
     padding-top: 20px;
     padding-bottom: 20px;
     margin-left:20%;
@@ -62,9 +77,15 @@
     font-size: 1.0em;
 }
 /* Tab padding */
-.tab-padding {
+.tab_padding {
     padding-top: 20px !important;
     padding-right: 1px !important;
     padding-bottom: 1px !important;
     padding-left: 1px !important;
+}
+/* Button border color selected */
+.button_border_selected{
+    border-color: #64e115 !important;
+    background-color: #64e115 !important;
+    color:white !important;
 }

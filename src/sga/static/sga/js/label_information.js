@@ -7,7 +7,8 @@
 */
 
 // Control label information validation
-var errorsValidation=$('.wizard-card form');
+var errorsValidation = $('.wizard-card form');
+
 
 $(document).ready(function () {
     //Search sustance with autocomplete
@@ -17,8 +18,8 @@ $(document).ready(function () {
         minLength: 1,
         //Show important substance information and save id
         select: function (event, ui) {
-            $('#substance').val(ui.item.label); // display the selected text
             $('#substance_id').val(ui.item.value); // save selected id to hidden input
+            $('#substance').val(ui.item.label); // display the selected text
             return false;
         }
     })
@@ -34,11 +35,20 @@ $(document).ready(function () {
         }
     });
     */
+    // Valid substance entered
+    $.validator.addMethod("validSubstance", function () {
+      if($('#substance_id').val() == ''){
+          return false;
+      }else{
+          return true;
+     }
+    }, "Por favor, escriba una sustancia válida.");
     // Code for the Validator
     errorsValidation.validate({
         rules: {
             substance: {
                 required: true,
+                validSubstance: true,
             },
             company_name: {
                 required: true,
@@ -51,53 +61,65 @@ $(document).ready(function () {
             },
             recipients: {
                 required: true,
+            },
+            label_selected: {
+                required: true
             }
+
         }
     });
     // Save label information in JSON
-    $("#Next").click(function (e) {
+    $("#Next").click(function () {
         var label_JSON = {};
-        errorsValidation.validate();
-        if (hasClass(label_information, 'active') && errorsValidation.valid()==true) {
-            //Label properties
-            // #1: Substance
-            var substance = $('#substance').val();
-            var substance_name = substance.split(' : ');
-            substance_commercial_name = substance_name[0];
-            label_JSON.substance_commercial_name = substance_commercial_name;
-            var substance_id = $('#substance_id').val();
-            label_JSON.substance_id = substance_id;
-            // #2: Supplier Identification
-            var company_name = $('#company_name').val();
-            label_JSON.company_name = company_name;
-            var company_address = $('#company_address').val();
-            label_JSON.company_address = company_address;
-            var company_phone = $('#company_phone').val();
-            label_JSON.company_phone = company_phone;
-            // #3: Product Identification
-            var commercial_information = $('#commercial_information').val();
-            label_JSON.commercial_information = commercial_information;
-            // #4: Recipient Size
-            var recipient_select_box = document.getElementById("recipients");
-            var recipient_name = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-name');
-            label_JSON.recipient_name = recipient_name;
-            var height = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height');
-            label_JSON.height = height;
-            var height_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height_unit');
-            label_JSON.height_unit = height_unit;
-            var width = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width');
-            label_JSON.width = width;
-            var width_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width_unit');
-            label_JSON.width_unit = width_unit;
+        if (hasClass(label_information, 'active')) {
+            errorsValidation.validate();
+            if(errorsValidation.valid()==false){
+                swal({
+                    type: 'error',
+                    title: 'Información incompleta',
+                    text: 'Por favor, revise los datos solicitados.'
+                })
+            }else{
+                //Label properties
+                // #1: Substance
+                var substance = $('#substance').val();
+                var substance_name = substance.split(' : ');
+                substance_commercial_name = substance_name[0];
+                label_JSON.substance_commercial_name = substance_commercial_name;
+                var substance_id = $('#substance_id').val();
+                label_JSON.substance_id = substance_id;
+                // #2: Supplier Identification
+                var company_name = $('#company_name').val();
+                label_JSON.company_name = company_name;
+                var company_address = $('#company_address').val();
+                label_JSON.company_address = company_address;
+                var company_phone = $('#company_phone').val();
+                label_JSON.company_phone = company_phone;
+                // #3: Product Identification
+                var commercial_information = $('#commercial_information').val();
+                label_JSON.commercial_information = commercial_information;
+                // #4: Recipient Size
+                var recipient_select_box = document.getElementById("recipients");
+                var recipient_name = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-name');
+                label_JSON.recipient_name = recipient_name;
+                var height = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height');
+                label_JSON.height = height;
+                var height_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height_unit');
+                label_JSON.height_unit = height_unit;
+                var width = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width');
+                label_JSON.width = width;
+                var width_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width_unit');
+                label_JSON.width_unit = width_unit;
 
-            var label_JSON_String = JSON.stringify(label_JSON);
-            localStorage.setItem('label_storage', label_JSON_String);
-            
-            /*var obj = JSON.parse(localStorage.getItem('label_storage'));
-            alert(JSON.stringify(obj));*/
-            
-            /* Set blank templates images according to recipient size */
-            set_template_image();
+                var label_JSON_String = JSON.stringify(label_JSON);
+                localStorage.setItem('label_storage', label_JSON_String);
+
+                /*var obj = JSON.parse(localStorage.getItem('label_storage'));
+                alert(JSON.stringify(obj));*/
+
+                /* Set blank templates images according to recipient size */
+                set_template_image();
+            }
         }
     });
 });
