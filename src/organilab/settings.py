@@ -248,8 +248,11 @@ CONSTANCE_CONFIG = {
     'ADSENSE_PUB_TOKEN': ('ca-pub-1539451676311396', 'Google adsense public key'
                           'for monitarize the website', str),
 }
+
 CONSTANCE_CONFIG_FIELDSETS = {
-    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK', 'GROUP_STUDENT_PK'),
+    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK',
+    'GROUP_STUDENT_PK', 'ADSENSE_ACTIVE',
+    'ADSENSE_PUB_TOKEN'),
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2

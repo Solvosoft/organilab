@@ -7,7 +7,7 @@
 '''
 
 # Import functions of another modules
-from sga.views import index_sga, label_creator, label_information,label_template,label_blank_template
+from sga.views import index_sga, label_creator, label_information,label_template,label_customization
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -32,7 +32,7 @@ urlpatterns = [
     # sga/label_information/
     url(r'label_information', views.label_information, name='label_information'),
     # sga/label_template/
-    url(r'label_template', label_template, name='label_template'),
-    # sga/label_blank_template/
-    url(r'label_blank_template', label_blank_template, name='label_blank_template'),
+    url(r'label_template', views.label_template, name='label_template'),
+    # sga/label_customization/
+    url(r'label_customization', views.label_customization, name='label_customization'),
 ]

@@ -19,13 +19,12 @@
 
 {% block content %}
 <div class="row">
-    <form action="" method="">
         <div class="col-sm-12">
             <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
         </div>
         <div class="col-sm-5 col-sm-offset-1">
-            <!---------------------------------------------------------------------------------------------------------------->
-            <!------------------------------------------------Substance------------------------------------------------------->
+            <!--============================================================================================================-->
+            <!--==============================================Substance=====================================================-->
             <div class="form-group">
                 <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
                 <!--Search substance with autocomplete-->
@@ -42,8 +41,8 @@
                 <button type="button" id="substanceInformation" class="btn btn-primary btn-rounded">{% trans 'View substance label information' %}</button>
                 </div>
             -->
-            <!---------------------------------------------------------------------------------------------------------------->
-            <!-------------------------------------------Supplier Identification---------------------------------------------->
+            <!--============================================================================================================-->
+            <!--=========================================Supplier Identification============================================-->
             <div class="form-group">
                 <label><span class="label label-info">2</span>&nbsp;{% trans 'Supplier Identification' %}</label>
                 <div class="input-group">
@@ -60,28 +59,28 @@
                 </div>
             </div>
         </div>
-            <!---------------------------------------------------------------------------------------------------------------->
+            <!--============================================================================================================-->
         </div>
         <div class="col-xs-2 v-divider"></div>
         <div class="col-sm-6">
-            <!---------------------------------------------------------------------------------------------------------------->
-            <!-------------------------------------------Comercial information------------------------------------------------>
+            <!--============================================================================================================-->
+            <!--=========================================Comercial information==============================================-->
             <div class="form-group">
                 <label><span class="label label-info">3</span>&nbsp;{% trans 'Comercial Information' %}</label>
                 <div class="form-group shadow-textarea">
                     <textarea name="comercial_information" class="form-control z-depth-1" id="comercial_information" rows="2" placeholder="Additionals product identifiers"></textarea>
                 </div>
             </div>
-            <!---------------------------------------------------------------------------------------------------------------->
+            <!--============================================================================================================-->
         </div>
         <div class="col-sm-6">
-            <!---------------------------------------------------------------------------------------------------------------->
-            <!-------------------------------------------Recipient------------------------------------------------------------>
+            <!--============================================================================================================-->
+            <!--=========================================Recipient==========================================================-->
             {% get_recipient_size as recipients %}
             <div class="form-group">
                 <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
-                <select name="recipients" id="recipients" name="recipient" class="form-control" onchange="changePlaceHolder(this)">
+                <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
                     <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
                     {% if recipients != null %}
                     {% for recipient in recipients %}
@@ -92,9 +91,8 @@
             </div>
             <!--Add new recipient-->
             <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
-            <!---------------------------------------------------------------------------------------------------------------->
+            <!--============================================================================================================-->
         </div>
-    </form>
 </div>
 {% endblock %}
 
