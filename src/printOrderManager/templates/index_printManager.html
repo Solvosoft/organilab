@@ -6,6 +6,7 @@
 {% block css %}
 <link href="{% static 'css/jquery.dataTables.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/index_printManager.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 
@@ -68,10 +69,11 @@
 <script src="{% static 'js/index_printManager.js' %}"></script>
 
 <script>
-	$(document).ready(function () {
+	function updateTable() {
 		var table = $('#example').DataTable({
 			"ajax": '{% url "printOrderManager:list_printObject" %}',
 			// "processing" : true,
+			"destroy": true, // Permite reinicializar la tabla
 			"serverSide": true,
 			"responsive": true,
 			"fixedHeader": true,
@@ -86,8 +88,11 @@
 			}
 		});
 		//table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
+	}
 
 
+	$(document).ready(function () {
+		updateTable();
 	});
 </script>
 {% endblock %}
