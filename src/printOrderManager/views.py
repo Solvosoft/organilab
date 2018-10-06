@@ -22,6 +22,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 # Import for messages
 from django.contrib import messages
+# Import for response
+from django.http import HttpResponse
+# Import JSON
+import json
+# Impor for the reverse lazy
+from django.urls.base import reverse_lazy
+# Import for the redirect
+from django.shortcuts import redirect
 
 def index_printOrderManager(request):
     return render(request, 'index_printOrderManager.html')
@@ -62,9 +70,11 @@ def get_list_printObject(request):
         cont = 0
         state = ""
         qualification = ""
+        hola = 4
         user = User.objects.get(pk=obj.responsible_user_id)
-        printActions = "<a class='btn btn-info'><span class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a>&nbsp;"
-        printActions += "<a class='btn btn-danger'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a>"
+        printActions = "<a  id='edit1' class='btn btn-info'><span id='edit' class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a>&nbsp;"
+                            # 1A. Define the onclick method
+        printActions += "<a onclick='deletePrint(\"" + obj.name + "\" ,\"" + str(obj.id) + "\"  )' class='btn btn-danger'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a>"
         printLogo = "<img class='iconTable' src='http://localhost:8000/media/"+obj.logo.name+"'> &nbsp;&nbsp; " + obj.name
         while cont < obj.qualification:
             qualification += "<img class='iconTable' src='http://localhost:8000/static/images/star.png'>";
@@ -104,6 +114,38 @@ def get_list_printObject(request):
         pass
     return JsonResponse(dev)
 
+
+# 4A. Delete print object by id and return a json with the result
+@login_required
+def delete_print_byId(request):
+    if (request.META.get('HTTP_REFERER') is not None): # If the previous URL is None, redirect to the index page
+        if (request.META.get('HTTP_REFERER') is not "http://localhost:8000/printOrderManager/index_printManager"): # If the previous URL is different of the index print manager, redirect to the index page
+            response_data = {} # Create a JSON object
+            if((request.GET.get('pk') is not None) and (request.GET.get('csrfmiddlewaretoken') is not None)): #If the pk or the csrf is says don't have permissions
+                # Delete the print object
+                try:
+                    pk = int(request.GET.get('pk'))
+                    instance = PrintObject.objects.get(id=pk)
+                    instance.delete()
+                    response_data['status'] = '0'
+                    response_data['msg'] = 'The print '+str(request.GET.get('nombre'))+' was deleted successfully'
+                    return HttpResponse(json.dumps(response_data),content_type="application/json")
+                except PrintObject.DoesNotExist:
+                    response_data['status'] = '1'
+                    response_data['msg'] = 'The print '+str(request.GET.get('nombre'))+' was deleted by another user'
+                    return HttpResponse(json.dumps(response_data),content_type="application/json")
+            else:
+                # Create a message for the error
+                response_data['status'] = '2' # { 'msg': 'Post was deleted'}
+                response_data['msg'] = 'You don\'t have permissions to delete a print' # { 'msg': 'Post was deleted'}    response_data[]
+                return HttpResponse(json.dumps(response_data),content_type="application/json")
+        else:
+            # Redirect to other site
+            return redirect('printOrderManager:index_printOrderManager')
+    else:
+        # Redirect to other site
+        return redirect('printOrderManager:index_printOrderManager')
+    
 
 class PrintObjectCRUD(CRUDView):
     model = PrintObject

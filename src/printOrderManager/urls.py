@@ -5,7 +5,7 @@ Created on 14 sep. 2018
 '''
 
 from django.conf.urls import url
-from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister
+from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId
 from printOrderManager.views import PrintObjectCRUD
 
 # Fixed: Name of the variable changed
@@ -21,4 +21,8 @@ urlpatterns = printObjectCRUD.get_urls() + [
         name='printLogin'),
     url(r'^printRegister$', PrintRegister.as_view(),
         name='printRegister'),
+    # Methods in URL
+    # Delete Print Object
+    url(r'^printDelete$', delete_print_byId,
+        name='printDelete'),
 ]
