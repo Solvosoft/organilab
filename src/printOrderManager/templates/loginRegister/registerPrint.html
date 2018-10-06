@@ -18,6 +18,11 @@
 <body>
     <div class="row">
         <div class="container">
+            <a class="btn btn-info pull-left" href="{% url 'printOrderManager:index_printManager' %}">
+                <span class='glyphicon glyphicon-chevron-left' aria-hidden='true'></span>&nbsp;
+                {% trans 'Print List Page'%}
+            </a>
+            <br>
             <h1 class="header text-center title2">
                 {% trans 'Print Manager' %}
             </h1>
@@ -26,6 +31,7 @@
                     <center>{% trans 'Complete the fields to register your print' %}</center>
                 </span>
             </div>
+
             <center>
                 <small id="titleHelp" class="form-text text-muted">
                     {% trans "All the given information will be used only in this site" %}</small>
@@ -87,11 +93,11 @@
                                 <div class="input-group">
                                     <!-- Icon for the field-->
                                     {% if field.name == 'name' %}
-                                    <div class="input-group-addon primary"><i class="fas fa-city"></i></div>
+                                    <div class="input-group-addon primary colorIcon"><i class="fas fa-city"></i></div>
                                     {% elif field.name == 'email' %}
-                                    <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                                    <div class="input-group-addon colorIcon"><i class="fa fa-envelope"></i></div>
                                     {% elif field.name == 'phone' %}
-                                    <div class="input-group-addon"><i class="fas fa-phone"></i></div>
+                                    <div class="input-group-addon colorIcon"><i class="fas fa-phone"></i></div>
                                     {% elif field.name == 'logo' %}
                                     <!--<div class="input-group-addon"><i class="fas fa-images"></i></div>-->
                                     {% elif field.name == 'description' %}
