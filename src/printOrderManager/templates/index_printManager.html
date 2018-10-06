@@ -19,6 +19,11 @@
 	{% endfor %}
 </ul>
 {% endif %}
+<a class="btn btn-info pull-left" href="{% url 'printOrderManager:index_printOrderManager' %}">
+	<span class='glyphicon glyphicon-chevron-left' aria-hidden='true'></span>&nbsp;
+	{% trans 'Home Page'%}
+</a>
+<br>
 <h1 class="header text-center title">
 	{% trans 'Print Manager' %}
 </h1>
@@ -27,8 +32,9 @@
 		<center>{% trans 'Search in the table and choose the print you want to manage or delete !' %}</center>
 	</span>
 </div>
+
 <a class="btn btn-success pull-right" href="{% url 'printOrderManager:printRegister' %}">
-	{% trans 'Register another print' %}
+	<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>&nbsp;{% trans 'Register Another Print' %}
 </a>
 <br><br>
 <table class="table table-hover table-responsive table-bordered" id="example" class="display" style="width: 100%">

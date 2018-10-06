@@ -37,7 +37,7 @@
 }
 
 .input-group-addon {
-    background-color: #e8f1ff;
+    background-color: #4e8bec;
 }
 
 .merged input:first-child {
@@ -46,6 +46,10 @@
 
 .merged .input-group-addon+input {
     border-left: 0px;
+}
+
+.colorIcon {
+    color: white !important;
 }
 
 .title {
@@ -83,16 +87,12 @@ h1:after {
 
 .subtitle {
     width: 300px;
-}
-
-span {
     padding-bottom: 10px;
     border-bottom: 1px solid rgb(180, 177, 177);
     line-height: 48px;
     font-size: 150%;
     color: #3961a0;
 }
-
 
 .login-register-form-section i {
     width: 25px;
