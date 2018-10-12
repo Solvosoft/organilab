@@ -1,0 +1,30 @@
+.title {
+    color: rgb(78, 137, 189) !important;
+    size: 40;
+    font-size: 20px !important;
+}
+
+.imageAdmin {
+    width: 90px !important;
+    height: 90px !important;
+
+}
+
+.subtitle {
+    width: 300px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(180, 177, 177);
+    line-height: 48px;
+    font-size: 150%;
+    color: #3961a0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.contactList {
+    background-color: #729fe7 !important;
+    color: white !important;
+
+}
