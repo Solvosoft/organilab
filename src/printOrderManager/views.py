@@ -5,7 +5,7 @@ Created on 14 sep. 2018
 '''
 
 from django.http.response import JsonResponse
-from printOrderManager.models import PaperType, PrintObject
+from printOrderManager.models import PaperType, PrintObject, Contact
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
@@ -26,9 +26,10 @@ from django.contrib import messages
 from django.http import HttpResponse
 # Import JSON
 import json
-# Impor for the reverse lazy
+# Impor for the reverse lazy, reverse, get_object_or_404 and redirect
 from django.urls.base import reverse_lazy
-# Import for the redirect
+from django.urls.base import reverse
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 
 def index_printOrderManager(request):
@@ -38,7 +39,7 @@ def index_printOrderManager(request):
 def index_printManager(request):
     return render(request, 'index_printManager.html')
 
-
+@login_required
 def get_list_printObject(request):
     q = request.GET.get('search[value]')
     length = request.GET.get('length', '10')
@@ -72,7 +73,8 @@ def get_list_printObject(request):
         qualification = ""
         hola = 4
         user = User.objects.get(pk=obj.responsible_user_id)
-        printActions = "<a  id='edit1' class='btn btn-info'><span id='edit' class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a>&nbsp;"
+        url = reverse('printOrderManager:index_printManageById', kwargs={'pk': obj.id})
+        printActions = "<a  href="+url+"  class='btn btn-info'><span id='edit' class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a>&nbsp;"
                             # 1A. Define the onclick method
         printActions += "<a onclick='deletePrint(\"" + obj.name + "\" ,\"" + str(obj.id) + "\"  )' class='btn btn-danger'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a>"
         printLogo = "<img class='iconTable' src='http://localhost:8000/media/"+obj.logo.name+"'> &nbsp;&nbsp; " + obj.name
@@ -145,7 +147,89 @@ def delete_print_byId(request):
     else:
         # Redirect to other site
         return redirect('printOrderManager:index_printOrderManager')
-    
+
+# PRINT MANAGER 
+
+# Enter to the Print Manager (SB Admin 2: https://startbootstrap.com/template-overviews/sb-admin-2/) 
+@login_required
+def index_printManageById(request, pk):
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    return render(request, 'printManageById/index_printManageById.html', {
+            'printObject': printObject,  # Parametros enviados con la vista.
+        })
+
+# Enter to the section of Contacts on the Print Manager
+@login_required
+def contacts_printManageById(request, pk):
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    return render(request, 'printManageById/contacts_printManageById.html', {
+            'printObject': printObject,  # Parametros enviados con la vista.
+    })
+
+# Return the contacts of an specific print
+@login_required
+def get_list_contactByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    if q:
+        objs = PrintObject.objects.all().filter(Q(creation_date__icontains=q) | 
+        Q(name__icontains=q) | Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) | 
+        Q(responsible_user__first_name__icontains=q) | Q(responsible_user__last_name__icontains=q), Q(responsible_user_id=request.user.id)).order_by('creation_date')
+    else:
+        printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+        objs = printObject.contacts.all()
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    for obj in page.object_list:
+        permissions = "<div class='toggle-group'>"
+        permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
+        simbolo = 'class="fas fa-info-circle"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+        simbolo = 'class="fas fa-users"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+        simbolo = 'class="fas fa-users"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+        simbolo = 'class="fas fa-users"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+        simbolo = 'class="fas fa-users"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+        simbolo = 'class="fas fa-users"'
+        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
+
+        user = User.objects.get(pk=int(obj.assigned_user_id))
+        data.append([
+            user.username,
+            user.first_name+" "+user.last_name,
+            permissions,
+        ])
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
 
 class PrintObjectCRUD(CRUDView):
     model = PrintObject

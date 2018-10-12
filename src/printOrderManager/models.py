@@ -15,7 +15,10 @@ from django.core.validators import FileExtensionValidator
 
 
 class Contact(models.Model):     # Fixed: Use user for the contacts
-    phone = models.TextField(max_length=15, verbose_name=_("Phone"))
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_(
+        "Phone number must be entered in the format: '+55577777777'. Up to 15 digits allowed."))
+    phone = models.CharField(
+        validators=[phone_regex], max_length=15, blank=True, verbose_name=_("Phone"))  # validators should be a list
     assigned_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='Assigned_User')
 
@@ -120,7 +123,7 @@ class PrintObject(models.Model):
         _('Description'), default='', max_length=255)
     # Print model has an advertisement
     advertisement = models.ForeignKey(  # Fixed: Create a model for the advertisement
-        Advertisement, on_delete=models.CASCADE,  related_name='advertisements',null=True, blank=True)
+        Advertisement, on_delete=models.CASCADE,  related_name='advertisements', null=True, blank=True)
 
     class Meta:
         ordering = ('pk',)
