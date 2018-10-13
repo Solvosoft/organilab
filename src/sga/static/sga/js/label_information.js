@@ -19,6 +19,7 @@ $(document).ready(function () {
         //Show important substance information and save id
         select: function (event, ui) {
             $('#substance_id').val(ui.item.value); // save selected id to hidden input
+            $('#substance_id').data("name",ui.item.label); // save the selected text to hidden input
             $('#substance').val(ui.item.label); // display the selected text
             return false;
         }
@@ -37,35 +38,39 @@ $(document).ready(function () {
     */
     // Valid substance entered
     $.validator.addMethod("validSubstance", function () {
-      if($('#substance_id').val() == ''){
+      if($('#substance_id').data("name") != $('#substance').val() || $('#substance_id').data("name")=='No results'){
           return false;
       }else{
           return true;
-     }
-    }, "Por favor, escriba una sustancia válida.");
+      }
+    }, "Por favor, ingrese una sustancia válida.");
     // Code for the Validator
     errorsValidation.validate({
         rules: {
             substance: {
                 required: true,
                 validSubstance: true,
+                maxlength: 250
             },
             company_name: {
                 required: true,
+                maxlength: 150
             },
             company_address: {
                 required: true,
+                maxlength: 100
             },
             company_phone: {
                 required: true,
+                maxlength: 15
+            },
+            comercial_information:{
+                maxlength: 250
             },
             recipients: {
                 required: true,
+                maxlength: 180
             },
-            label_selected: {
-                required: true
-            }
-
         }
     });
     // Save label information in JSON
@@ -77,7 +82,7 @@ $(document).ready(function () {
                 swal({
                     type: 'error',
                     title: 'Información incompleta',
-                    text: 'Por favor, revise los datos solicitados.'
+                    text: 'Por favor, compruebe los datos solicitados.'
                 })
             }else{
                 //Label properties
@@ -112,13 +117,16 @@ $(document).ready(function () {
                 label_JSON.width_unit = width_unit;
 
                 var label_JSON_String = JSON.stringify(label_JSON);
-                localStorage.setItem('label_storage', label_JSON_String);
+                localStorage.setItem('label_information', label_JSON_String);
 
-                /*var obj = JSON.parse(localStorage.getItem('label_storage'));
+                /*var obj = JSON.parse(localStorage.getItem('label_information'));
                 alert(JSON.stringify(obj));*/
 
                 /* Set blank templates images according to recipient size */
-                set_template_image();
+                set_blank_templates();
+
+                /* Set pre designed templates according to selected substance */
+                set_pre_designed_templates();
             }
         }
     });
@@ -131,17 +139,6 @@ function changePlaceHolder(sel) {
 // Element contains a class 
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-}
-//Capitalize each Word
-function titleCase(str) {
-    var splitStr = str.toString().toLowerCase().split(' ');
-    for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] = splitStr[i].charAt(0).toString().toUpperCase() + splitStr[i].substring(1);
-    }
-    // Directly return the joined string
-    return splitStr.join(' ');
 }
 
 

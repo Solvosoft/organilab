@@ -35,4 +35,6 @@ urlpatterns = [
     url(r'label_template', views.label_template, name='label_template'),
     # sga/label_customization/
     url(r'label_customization', views.label_customization, name='label_customization'),
+    # sga/getSignalWord/
+    url(r'getSignalWord', views.getSignalWord, name='getSignalWord'),
 ]

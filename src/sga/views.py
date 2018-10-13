@@ -10,13 +10,15 @@
 from django import forms
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
-from .models import Sustance, Component, RecipientSize
+from .models import Sustance, Component, RecipientSize, DangerIndication
 from django.http import HttpResponse
 from django.db.models.query_utils import Q
 import json
 import logging
 from django.template import Template, Library
-
+from rest_framework import serializers
+from django.core import serializers
+from django.http import JsonResponse
 register = Library()
 
 
@@ -79,3 +81,23 @@ def search_autocomplete_sustance(request):
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def getSignalWord(request):
+    signalWord = ''
+    if request.is_ajax():
+        ports = DangerIndication.objects.filter(
+            sustance__in=[request.GET['substance_id']])
+        for r in ports:
+            if(signalWord == 'Peligro'):
+                break
+            else:
+                if(r.warning_words == 'Sin palabra de advertencia' and signalWord == 'atención'):
+                    break
+                else:
+                    # print(r.warning_words)
+                    signalWord = r.warning_words
+        data = signalWord
+    else:
+        data = 'fail'
+    return HttpResponse(data)

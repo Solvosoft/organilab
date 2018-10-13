@@ -12,15 +12,15 @@
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_customization.css' %}" rel="stylesheet">
-{% endblock %}
+{% endblock css %}
 
-{% block extrameta%}{% endblock %}
+{% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
 <!--Canvas-->
 <div id="border-canvas" class="border-canvas-horizontal" align="left">
     <canvas id="blank_template_canvas" width="498" height="264" align="left"></canvas>
 </div>
-{% endblock %}
+{% endblock content %}
 <!-- Label template JS -->
 <script src="{% static 'sga/js/label_customization.js' %}"> </script>

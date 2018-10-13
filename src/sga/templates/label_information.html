@@ -13,27 +13,29 @@
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_information.css' %}" rel="stylesheet">
-{% endblock %}
+{% endblock css %}
 
-{% block extrameta%}{% endblock %}
+{% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
 <div class="row">
-        <div class="col-sm-12">
-            <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
-        </div>
-        <div class="col-sm-5 col-sm-offset-1">
-            <!--============================================================================================================-->
-            <!--==============================================Substance=====================================================-->
+    <div class="col-sm-12">
+        <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
+    </div>
+    <div class="col-sm-5 col-sm-offset-1">
+        <!--============================================================================================================-->
+        <!--==============================================Substance=====================================================-->
+        <div class="form-group">
+            <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
+            <!--Search substance with autocomplete-->
+            <input id="substance" name="substance" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
+                aria-describedby="sustanceHelp">
+            <input type="hidden" id="substance_id" name="substance_id" />
+            <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
             <div class="form-group">
-                <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
-                <!--Search substance with autocomplete-->
-                <input id="substance" name="substance" placeholder="{% trans 'Name or CAS number' %}" class="form-control" aria-describedby="sustanceHelp">
-                <input type="hidden" id="substance_id" name="substance_id" />
-                <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
-                <div class="form-group">
-                    <!--Add new sustance-->
-                    <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_sustance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+                <!--Add new sustance-->
+                <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
+                    href="{% url 'admin:sga_sustance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             </div>
             <!-- View substance label information for a future implementation -->
             <!--
@@ -46,55 +48,71 @@
             <div class="form-group">
                 <label><span class="label label-info">2</span>&nbsp;{% trans 'Supplier Identification' %}</label>
                 <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-                    <input name="company_name" id="company_name" placeholder="{% trans 'Name' %}" class="form-control" aria-describedby="sustanceHelp">
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-home"></i></span>
+                    <input name="company_name" id="company_name" placeholder="{% trans 'Name' %}" class="form-control"
+                        aria-describedby="sustanceHelp">
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span><input name="company_address" id="company_address" placeholder="{% trans 'Address' %}"
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-pushpin"></i></span><input
+                        name="company_address" id="company_address"
+                        placeholder="{% trans 'Address' %}"
                         class="form-control" aria-describedby="sustanceHelp">
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-                    <input name="company_phone" id="company_phone" placeholder="{% trans 'Phone' %}" class="form-control" aria-describedby="sustanceHelp">
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-earphone"></i></span>
+                    <input name="company_phone" id="company_phone"
+                        placeholder="{% trans 'Phone' %}" class="form-control"
+                        aria-describedby="sustanceHelp">
                 </div>
             </div>
         </div>
-            <!--============================================================================================================-->
-        </div>
-        <div class="col-xs-2 v-divider"></div>
-        <div class="col-sm-6">
-            <!--============================================================================================================-->
-            <!--=========================================Comercial information==============================================-->
-            <div class="form-group">
-                <label><span class="label label-info">3</span>&nbsp;{% trans 'Comercial Information' %}</label>
-                <div class="form-group shadow-textarea">
-                    <textarea name="comercial_information" class="form-control z-depth-1" id="comercial_information" rows="2" placeholder="Additionals product identifiers"></textarea>
-                </div>
+        <!--============================================================================================================-->
+    </div>
+    <div class="col-xs-2 v-divider"></div>
+    <div class="col-sm-6">
+        <!--============================================================================================================-->
+        <!--=========================================Comercial information==============================================-->
+        <div class="form-group">
+            <label><span class="label label-info">3</span>&nbsp;{% trans 'Comercial Information' %}</label>
+            <div class="form-group shadow-textarea">
+                <textarea name="comercial_information" class="form-control
+                    z-depth-1" id="comercial_information" rows="2"
+                    placeholder="Additionals product identifiers"></textarea>
             </div>
-            <!--============================================================================================================-->
         </div>
-        <div class="col-sm-6">
-            <!--============================================================================================================-->
-            <!--=========================================Recipient==========================================================-->
-            {% get_recipient_size as recipients %}
-            <div class="form-group">
-                <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
-                <!--<a>{{ recipients }}</a>-->
-                <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
-                    <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
-                    {% if recipients != null %}
-                    {% for recipient in recipients %}
-                        <option data-name="{{recipient.name}}" data-height="{{recipient.height}}" data-height_unit="{{recipient.height_unit}}" data-width="{{recipient.width}}" data-width_unit="{{recipient.width_unit}}">{{recipient.name}} - {{recipient.height}}{{recipient.height_unit}} x {{recipient.width}}{{recipient.width_unit}}</option>
-                    {% endfor %}
-                    {% endif %}
-                </select>         
-            </div>
-            <!--Add new recipient-->
-            <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
-            <!--============================================================================================================-->
+        <!--============================================================================================================-->
+    </div>
+    <div class="col-sm-6">
+        <!--============================================================================================================-->
+        <!--=========================================Recipient==========================================================-->
+        {% get_recipient_size as recipients %}
+        <div class="form-group">
+            <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
+            <!--<a>{{ recipients }}</a>-->
+            <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
+                <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
+                {% if recipients != null %}
+                {% for recipient in recipients %}
+                <option data-name="{{recipient.name}}"
+                    data-height="{{recipient.height}}"
+                    data-height_unit="{{recipient.height_unit}}"
+                    data-width="{{recipient.width}}"
+                    data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
+                    - {{recipient.height}}{{recipient.height_unit}} x
+                    {{recipient.width}}{{recipient.width_unit}}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
         </div>
+        <!--Add new recipient-->
+        <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+        <!--============================================================================================================-->
+    </div>
 </div>
-{% endblock %}
+{% endblock content %}
 
 <!-- Label information JS -->
 <script src="{% static 'sga/js/label_information.js' %}"> </script>

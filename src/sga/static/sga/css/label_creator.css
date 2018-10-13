@@ -46,4 +46,7 @@ z-index: 1;
 .shadow-textarea textarea.form-control {
     padding-left: 0.8rem;
 }
-
+/* Center Canvas in modal */
+.canvas-container {
+    margin:0 auto !important;
+}
