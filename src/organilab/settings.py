@@ -73,7 +73,8 @@ INSTALLED_APPS = [
     'zinnia_ckeditor',
     #    'debug_toolbar',
     'printOrderManager',
-    'mapwidgets',  # TEST
+    'mapwidgets',
+    'guardian',
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -151,6 +152,15 @@ DATABASES = {
         'PORT': os.getenv('DBPORT', '5432'),
     }
 }
+
+# TEST - DJANGO:GUARDIAN
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+# END TEST
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

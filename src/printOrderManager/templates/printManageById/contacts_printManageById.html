@@ -1,5 +1,6 @@
 {% load static i18n datasets %}
 {% load staticfiles %}
+{% load label_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +15,7 @@
     {% block extrameta%} {% endblock %}
 
     {% block css %}
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2/metisMenu.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css" />
@@ -267,7 +269,6 @@
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-paper-plane"></i>&nbsp; {% trans 'Paper Types' %}</span></a>
-
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-calendar-alt"></i> &nbsp; {% trans 'Schedules' %}</span></a>
@@ -301,12 +302,12 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            DataTables Advanced Tables
+                            Manage the contacts of your print with this table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <table width="100%" class="table table-bordered table-hover" id="dataTables-example">
-                                <caption>List of printss</caption>
+                                <caption>List of contacts</caption>
                                 <thead class="contactList">
                                     <tr>
                                         <th>{% trans 'User Name' %}</th>
@@ -344,6 +345,7 @@
     <!-- /#wrapper -->
 
     {% block js %}
+    <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2/jquery.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2/metisMenu.min.js' %}"></script>
@@ -353,7 +355,10 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
     <script src="{% static 'js/SB-Admin2/sb-admin-2.js' %}"></script>
     <!-- Toogle Button -->
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="{% static 'js/contacts_printManageById.js' %}"></script>
+    <!-- Bootstrap Notify-->
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
 
     {% endblock %}
     <script>

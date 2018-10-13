@@ -129,3 +129,15 @@ class PrintObject(models.Model):
         ordering = ('pk',)
         verbose_name = _('Print')
         verbose_name_plural = _('Printers')
+        permissions = (
+            ("changeInformation_printObject", _(
+                "Can edit the print information")),
+            ("changeContacts_printObject", _(
+                "Can edit the print contacts")),
+            ("changePaper_printObject", _(
+                "Can edit the print paper types")),
+            ("changeSchedules_printObject", _(
+                "Can edit the print schedules")),
+            ("changeAdvertisements_printObject", _(
+                "Can edit the print advertisements")),
+        )
