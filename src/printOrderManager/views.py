@@ -26,11 +26,15 @@ from django.contrib import messages
 from django.http import HttpResponse
 # Import JSON
 import json
-# Impor for the reverse lazy, reverse, get_object_or_404 and redirect
+# Import for the reverse lazy, reverse, get_object_or_404 and redirect
 from django.urls.base import reverse_lazy
 from django.urls.base import reverse
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
+# Import for django-guardian
+from guardian.shortcuts import assign_perm
+from guardian.shortcuts import remove_perm
+
 
 def index_printOrderManager(request):
     return render(request, 'index_printOrderManager.html')
@@ -158,6 +162,75 @@ def index_printManageById(request, pk):
             'printObject': printObject,  # Parametros enviados con la vista.
         })
 
+# Give or drop permissions to a user
+@login_required
+def giveDropPermissionsById(request):
+    if (request.META.get('HTTP_REFERER') is not None): # If the previous URL is None, redirect to the index page
+        if (request.META.get('HTTP_REFERER') is not "http://localhost:8000/printOrderManager/contacts_printManageById/"+str(request.GET.get('pk'))): # If the previous URL is different of the index print manager, redirect to the index page
+            response_data = {} # Create a JSON object
+            if((request.GET.get('pk') is not None) and (request.GET.get('userID') is not None) and (request.GET.get('permissionType') is not None) and (request.GET.get('action') is not None)): #If the pk or the csrf is says don't have permissions
+                # Obtain the permission
+                permission = nameOfThePermission(str(request.GET.get('permissionType')))
+                # Give or drop the permission to the user
+                user = get_object_or_404(User, pk=int(request.GET.get('userID')))
+                print = get_object_or_404(PrintObject, pk=int(request.GET.get('pk')))
+                if (str(request.GET.get('action')) == "true"): # Otorgar Permisos
+                    if (user.has_perm(permission, print)):
+                        response_data['msg'] = '&nbsp; The user already has permission to edit the '+messageOfThePermission(str(request.GET.get('permissionType'))) # { 'msg': 'Post was deleted'}    response_data[]
+                        response_data['status'] = '1'
+                    else:
+                        response_data['msg'] = '&nbsp; Permission to edit the '+messageOfThePermission(str(request.GET.get('permissionType')))+' has been assigned' # { 'msg': 'Post was deleted'}    response_data[]
+                        assign_perm(permission, user, print)
+                        response_data['status'] = '0'
+                else: # Quitar Permisos
+                    if (user.has_perm(permission, print)):
+                        response_data['msg'] = '&nbsp; Permission to edit the '+messageOfThePermission(str(request.GET.get('permissionType')))+' has been removed' # { 'msg': 'Post was deleted'}    response_data[]
+                        remove_perm(permission, user, print)
+                        response_data['status'] = '0'
+                    else:
+                        response_data['msg'] = '&nbsp; The user already hasn\'t permission to edit the '+messageOfThePermission(str(request.GET.get('permissionType'))) # { 'msg': 'Post was deleted'}    response_data[]
+                        response_data['status'] = '1'
+                return HttpResponse(json.dumps(response_data),content_type="application/json")
+            else:
+                # Create a message for the error
+                response_data['status'] = '2' # { 'msg': 'Post was deleted'}
+                response_data['msg'] = '&nbsp; More data is necessary for manage the permissions' # { 'msg': 'Post was deleted'}    response_data[]
+                return HttpResponse(json.dumps(response_data),content_type="application/json")
+        else:
+            # Redirect to other site
+            return redirect('printOrderManager:index_printManager')
+    else:
+        # Redirect to other site
+        return redirect('printOrderManager:index_printManager')
+
+
+# Method that return the name of the permission depending of the param
+def nameOfThePermission(permissionType):
+    if (permissionType == 'i'):
+        return 'changeInformation_printObject'
+    elif (permissionType == 'c'):
+        return 'changeContacts_printObject'
+    elif (permissionType == 'p'):
+        return 'changePaper_printObject'
+    elif (permissionType == 's'):
+        return 'changeSchedules_printObject'
+    elif (permissionType == 'a'):
+        return 'changeAdvertisements_printObject'
+
+
+# Method that return the message of the permission depending of the param
+def messageOfThePermission(permissionType):
+    if (permissionType == 'i'):
+        return 'information'
+    elif (permissionType == 'c'):
+        return 'contacts'
+    elif (permissionType == 'p'):
+        return 'paper types'
+    elif (permissionType == 's'):
+        return 'schedules'
+    elif (permissionType == 'a'):
+        return 'advertisements'
+
 # Enter to the section of Contacts on the Print Manager
 @login_required
 def contacts_printManageById(request, pk):
@@ -172,6 +245,7 @@ def get_list_contactByPrint(request):
     q = request.GET.get('search[value]')
     length = request.GET.get('length', '10')
     pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
 
     try:
         length = int(length)
@@ -194,23 +268,55 @@ def get_list_contactByPrint(request):
         pgnum = 1
     page = p.page(pgnum)
     data = []
+    cont = 0
+    permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
     for obj in page.object_list:
-        permissions = "<div class='toggle-group'>"
-        permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
-        simbolo = 'class="fas fa-info-circle"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-        simbolo = 'class="fas fa-users"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-        simbolo = 'class="fas fa-users"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-        simbolo = 'class="fas fa-users"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-        simbolo = 'class="fas fa-users"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-        simbolo = 'class="fas fa-users"'
-        permissions += "<input data-off='<i "+simbolo+"></i>' type='checkbox'  data-toggle='toggle' data-size='small'  data-on='<i "+simbolo+"></i>' data-onstyle='primary'>&nbsp;"
-
         user = User.objects.get(pk=int(obj.assigned_user_id))
+        if (cont == 0):
+            symbol = 'class="fas fa-info-circle"'
+            symbolPermission = 'i'
+            if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            else:
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            cont += 1
+        else:
+            permissions = ""
+            symbolPermission = 'i'
+            symbol = 'class="fas fa-info-circle"'
+            if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            else:
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            
+        symbol = 'class="fas fa-users"'
+        symbolPermission = 'c'
+        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+            permissions += "<input checked id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+        else:
+            permissions += "<input id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+        
+        symbol = 'class="fas fa-paper-plane"'
+        symbolPermission = 'p'
+        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+            permissions += "<input checked id='p"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+        else:
+            permissions += "<input id='p"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+        
+        symbol = 'class="fas fa-calendar-alt"'
+        symbolPermission = 's'
+        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+            permissions += "<input checked id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+        else:
+            permissions += "<input id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+        
+        symbol = 'class="fas fa-bell"'
+        symbolPermission = 'a'
+        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+            permissions += "<input checked id='a"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+        else:
+            permissions += "<input id='a"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+        
         data.append([
             user.username,
             user.first_name+" "+user.last_name,

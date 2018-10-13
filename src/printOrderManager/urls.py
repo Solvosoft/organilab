@@ -5,7 +5,7 @@ Created on 14 sep. 2018
 '''
 
 from django.conf.urls import url
-from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint
+from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById
 from printOrderManager.views import PrintObjectCRUD
 
 # Fixed: Name of the variable changed
@@ -31,4 +31,7 @@ urlpatterns = printObjectCRUD.get_urls() + [
     # Delete Print Object
     url(r'^printDelete$', delete_print_byId,
         name='printDelete'),
+    # Give and drop permissions
+    url(r'^giveDropPermissionsById$', giveDropPermissionsById,
+        name='giveDropPermissionsById'),
 ]
