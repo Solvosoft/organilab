@@ -36,8 +36,8 @@ $(document).ready(function () {
                 if (!$valid || !selectedCardTemplate) {
                     $validator.focusInvalid();
                     return false;
-                } 
-            }else {
+                }
+            } else {
                 if (!$valid) {
                     $validator.focusInvalid();
                     return false;
@@ -56,24 +56,7 @@ $(document).ready(function () {
         },
 
         onTabClick: function (tab, navigation, index) {
-
-            var $valid = $('.wizard-card form').valid();
-            //Check if the user select a card template
-            if (hasClass(label_template, 'active')) {
-                if(!$valid || !selectedCardTemplate){
-                    return false;
-                } else{
-                    return true;
-                }
-            }else {
-                if(!$valid){
-                    return false;
-                } else{
-                    return true;
-                }
-            }
-            
-
+            return false;
         },
 
         onTabShow: function (tab, navigation, index) {

@@ -14,9 +14,9 @@
 {# Styles #}
 {% block css %}
 <link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
-{% endblock %}
+{% endblock css %}
 
-{% block title %}{% trans 'GHS' %}{% endblock %}
+{% block title %}{% trans 'GHS' %}{% endblock title %}
 
 {% block content %}
     <div class='row'>
@@ -53,4 +53,4 @@
               </div>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

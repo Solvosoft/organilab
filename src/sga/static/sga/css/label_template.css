@@ -70,8 +70,8 @@
     margin-bottom: 20% !important;
 }
 .card_button {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 8%;
+    padding-bottom: 8%;
     margin-left:20%;
     margin-right:20%;
     font-size: 1.0em;
@@ -88,4 +88,38 @@
     border-color: #64e115 !important;
     background-color: #64e115 !important;
     color:white !important;
+}
+/* Pre designed template color no selected */
+.pre_designed_template{
+    border:1px solid black;
+}
+.pre_designed_template_horizontal{
+    border:1px solid black;
+    margin-top: 26%;
+    margin-bottom: 20%;
+}
+/* Template card button eye */
+.button_eye{
+    font-size: 1.5em !important;
+    padding-top: 5% !important;
+    margin-left: 45% !important;
+    margin-right: 10% !important;
+    color: black !important;
+}
+/* Center Modal */
+.modal {
+    text-align: center;
+}
+@media screen and (min-width: 768px) { 
+    .modal:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: " ";
+        height: 100%;
+    }
+}
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
 }
