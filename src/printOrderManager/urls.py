@@ -4,9 +4,10 @@ Created on 14 sep. 2018
 @author: luisfelipe7
 '''
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById
 from printOrderManager.views import PrintObjectCRUD
+from printOrderManager.api import RequestLabelPrintViewSet
 
 # Fixed: Name of the variable changed
 printObjectCRUD = PrintObjectCRUD()
@@ -34,4 +35,13 @@ urlpatterns = printObjectCRUD.get_urls() + [
     # Give and drop permissions
     url(r'^giveDropPermissionsById$', giveDropPermissionsById,
         name='giveDropPermissionsById'),
+]
+
+
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register(r'printerorders', RequestLabelPrintViewSet)
+
+urlpatterns += [
+    url('API/', include(router.urls)),
 ]
