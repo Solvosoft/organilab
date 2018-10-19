@@ -1,6 +1,7 @@
 // This functions is called when the document is ready
 // This functions is called when the document is ready
 $(document).ready(function () {
+    console.log("Valor de id ");
 
 });
 
