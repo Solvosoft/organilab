@@ -79,11 +79,13 @@ $(document).ready(function () {
         if (hasClass(label_information, 'active')) {
             errorsValidation.validate();
             if(errorsValidation.valid()==false){
+                /*
                 swal({
                     type: 'error',
                     title: 'Información incompleta',
                     text: 'Por favor, compruebe los datos solicitados.'
                 })
+                */
             }else{
                 //Label properties
                 // #1: Substance
