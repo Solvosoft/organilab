@@ -1,3 +1,6 @@
+coreapi
+pygments
+markdown
 django-guardian==1.4.9
 django-map-widgets
 async_notifications==0.1.8 

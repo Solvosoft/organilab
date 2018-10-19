@@ -89,7 +89,8 @@ class PrintObject(models.Model):
     responsible_user = models.ForeignKey(
         User, verbose_name=_("Responsible User"))
     email = models.EmailField(_('Email address'), validators=[validate_email])
-    # The internationally standardized format E.164 : https://www.itu.int/rec/T-REC-E.164/es
+    # The internationally standardized format E.164 :
+    # https://www.itu.int/rec/T-REC-E.164/es
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_(
         "Phone number must be entered in the format: '+55577777777'. Up to 15 digits allowed."))
     phone = models.CharField(
@@ -111,12 +112,15 @@ class PrintObject(models.Model):
     creation_date = models.DateField(
         _('Creation Date'), auto_now=True)  # Fixed: Auto_Now
     state = models.TextField(_('State'), default='', max_length=255)
-    # The several paper types can be on multiple printers and each print has multiple paper types
+    # The several paper types can be on multiple printers and each print has
+    # multiple paper types
     paperType = models.ManyToManyField(
         PaperType, verbose_name=_("Paper Types"))
-    # The several contact can be on multiple printers and each print has multiple contacts
+    # The several contact can be on multiple printers and each print has
+    # multiple contacts
     contacts = models.ManyToManyField(Contact, verbose_name=_("Contacts"))
-    # The several horary can be on multiple print and each print has multiple horary
+    # The several horary can be on multiple print and each print has multiple
+    # horary
     schedules = models.ManyToManyField(Schedule, verbose_name=_(
         "Schedules"))  # Fixed: Create a model for the schedules
     description = models.TextField(
@@ -141,3 +145,19 @@ class PrintObject(models.Model):
             ("changeAdvertisements_printObject", _(
                 "Can edit the print advertisements")),
         )
+
+
+class RequestLabelPrint(models.Model):
+    STATUS_CHOICES = (
+        (0, 'Requested'),
+        (1, 'Preparing'),
+        (2, 'Done'),
+        (3, 'Rejected'),
+        (4, 'Delivered'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    printer = models.ForeignKey(PrintObject, on_delete=models.CASCADE)
+    add_date = models.DateTimeField(auto_now_add=True)
+    status = models.SmallIntegerField(default=0, choices=STATUS_CHOICES)
+
+    def __str__(self):
+        return str(self.user) + " -- " + str(self.print)
