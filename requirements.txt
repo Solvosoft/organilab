@@ -1,3 +1,5 @@
+django-guardian==1.4.9
+django-map-widgets
 async_notifications==0.1.8 
 django-ckeditor==5.5.0
 alabaster==0.7.9
