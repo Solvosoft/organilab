@@ -1,0 +1,39 @@
+h1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+h1:before,
+h1:after {
+    flex-grow: 1;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    position: relative;
+    top: 0.5em;
+}
+
+h1:before {
+    margin-right: 10px;
+}
+
+h1:after {
+    margin-left: 10px;
+}
+
+.title {
+    color: #073f99;
+}
+
+.subtitle {
+    width: 300px;
+}
+
+span {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(180, 177, 177);
+    line-height: 48px;
+    font-size: 150%;
+    color: #3961a0;
+}
