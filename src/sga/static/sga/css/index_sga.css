@@ -27,8 +27,34 @@ padding: 0 10px;
 position: relative;
 z-index: 1;
 }
-/* Image */
-  img {
-    padding:1px;
-    border:1px solid #021a40;
- }
+/* Label example */
+.label-img {
+  padding:1px;
+  border:1px solid #021a40;
+  height: 220px !important;
+  width : 450px !important;
+  margin-left:50px;
+}
+/* Information Tab */
+.tab-index-sga{
+  padding: 0% 20px 0% !important;
+}
+/* Shadow */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.400) !important;
+  transition: 0.3s;
+  width: 100%;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.500) !important;
+}
+.container {
+  padding: 8px 16px;
+}
+/* Centered button */
+#createLabel { 
+  display: flex; 
+  justify-content: center; 
+  margin-top: 2%;
+  margin-bottom: 1%;
+}

@@ -11,6 +11,8 @@
 var errorsValidation = $('.wizard-card form');
 // Control selected card template
 var selectedCardTemplate = false;
+// Canvas images for the modals
+var canvasImages = []
 
 /* Testing Canvas */
 /*
@@ -123,6 +125,10 @@ $(document).ready(function () {
             }
         }
     });
+    // Pre Designed Horizontal Template Modal
+    $("#tag_pre_designed_template_horizontal").on('click', function () {
+        document.getElementById("modal_pre_designed_template").src = canvasImages[0];
+    });
 });
 
 
@@ -131,7 +137,7 @@ function set_blank_templates() {
 
     // Show loading message
     //waitingDialog.show('Loading...');
-    waitingDialog.show("<span class='glyphicon glyphicon-time'></span> Loading...", { dialogSize: 'sm', progressType: 'info' });
+    waitingDialog.show("<span class='glyphicon glyphicon-time'></span> Loading...", { dialogSize: 'sm', progressType: 'primary' });
     var label_information = JSON.parse(localStorage.getItem('label_information'));
     // console.log(JSON.parse(localStorage.getItem('label_information')));
     //Blank Template: Vertical
@@ -145,8 +151,23 @@ function set_blank_templates() {
 
 /* Set pre designed templates according to selected substance */
 function set_pre_designed_templates() {
-    // Pre Designed Horizontal Template
-    preDesignedHorizontalTemplate();
+    //Load label information
+    var label_information = JSON.parse(localStorage.getItem('label_information'));
+
+    // Obtain all substance information
+    $.ajax({
+        url: 'getSubstanceInformation',
+        dataType: 'json',
+        data: {
+            substance_id: label_information.substance_id,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        },
+        success: function (substance_information) {
+            // Pre Designed Horizontal Template
+            preDesignedHorizontalTemplate(label_information,substance_information);
+        }
+    });
+
 }
 
 /* Add green color to selected card */
@@ -182,10 +203,7 @@ function selectButon(button_id) {
 }
 
 /* Pre-Designed Horizontal Template */
-function preDesignedHorizontalTemplate() {
-    //Load label information
-    var label_information = JSON.parse(localStorage.getItem('label_information'));
-
+function preDesignedHorizontalTemplate(label_information,substance_information) {
     //Initialize Fabric.js canvas using "id"
     var canvas = new fabric.Canvas('working_canvas_area');
 
@@ -220,19 +238,9 @@ function preDesignedHorizontalTemplate() {
         stroke: 'black'
     }));
 
-    $.ajax({
-        url: 'getSignalWord',
-        type: 'GET',
-        data: {
-            substance_id: label_information.substance_id,
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-        },
-        success: function (result) {
-            // console.log(result);
-        }
-    });
-
+    //---------------------------------------------------------------------------
     //#1: Name of the product or identifier
+    //---------------------------------------------------------------------------
     var name_label = label_information.substance_commercial_name;
     var split_substance_input = name_label.split(' : ');
     name_label = split_substance_input[0];
@@ -268,28 +276,71 @@ function preDesignedHorizontalTemplate() {
     name_label.text = titleCase(name_label.text);
     controlTextNameSize(name_label, canvas);
     canvas.add(name_label);
-
+    //Save changes in Canvas
+    canvas.renderAll();
+    //---------------------------------------------------------------------------
+    //#2: Signal Word
+    //---------------------------------------------------------------------------
+    //Text size <=10
+    if (substance_information.signalWord.length <= 10) {
+        signalWord = new fabric.Textbox(substance_information.signalWord, {
+            width: 180,
+            height: 4,
+            top: 20,
+            left: 5,
+            fontSize: 25,
+            textAlign: 'center',
+            fixedWidth: 180,
+            fontFamily: 'Helvetica',
+            objectCaching: false
+        });
+    } else {
+        //Text size >10
+        signalWord = new fabric.IText(substance_information.signalWord, {
+            width: 150,
+            left: 4,
+            top: 22,
+            fontSize: 25,
+            fontFamily: 'Helvetica',
+            textAlign: 'center',
+            fill: '#000000',
+            fixedWidth: 150,
+            centeredScaling: true,
+            objectCaching: false
+        });
+    }
+    signalWord.text = signalWord.text.toUpperCase();
+    controlTextNameSize(signalWord, canvas);
+    canvas.add(signalWord);
     //Save changes in Canvas
     canvas.renderAll();
 
-    jsonPrueba = JSON.stringify(canvas);
+    /*
+    //---------------------------------------------------------------------------
+    //-------------------------------Prueba--------------------------------------
 
+    //Save changes in Canvas
+    canvas.renderAll();
+    //---------------------------------------------------------------------------
+    jsonPrueba = JSON.stringify(canvas);
+    */
+
+    /*
+    // Pre Designed Horizontal Template Modal
+    var factorX = 700 / canvas.getWidth();
+    var factorY = 350 / canvas.getHeight();
+    zoomCanvas(factorX, factorY, canvas);
+    // Save Canvas image in array for the pre Designed Horizontal Template Modal
+    canvasImages[0] = canvas.toDataURL('png');
 
     // Pre Designed Horizontal Template
     var factorX = 300 / canvas.getWidth();
     var factorY = 250 / canvas.getHeight();
     zoomCanvas(factorX, factorY, canvas);
     document.getElementById("pre_designed_template_horizontal").src = canvas.toDataURL('png');
+    
 
-    // Pre Designed Horizontal Template Modal
-    var factorX = 700 / canvas.getWidth();
-    var factorY = 350 / canvas.getHeight();
-    zoomCanvas(factorX, factorY, canvas);
-    document.getElementById("modal_pre_designed_template_horizontal").src = canvas.toDataURL('png');
-
-
-    /*document.getElementById("modal_pre_designed_template_horizontal").src = canvas.toDataURL('png');*/
-    /*
+    
     var factorX = 0 / canvas.getWidth();
     var factorY = 0 / canvas.getHeight();
     zoomCanvas(factorX, factorY, canvas);
@@ -297,6 +348,7 @@ function preDesignedHorizontalTemplate() {
     canvas.dispose();
     $('#working_canvas_area').hide();
     */
+    
 }
 
 /* Control text size in label */
@@ -327,7 +379,7 @@ function titleCase(str) {
 }
 
 /* Resize canvas and objects to specified width and height */
-function zoomCanvas(factorX, factorY, canvas) {
+function zoomCanvas(factorX, factorY, canvas) {++
     canvas.setHeight(canvas.getHeight() * factorY);
     canvas.setWidth(canvas.getWidth() * factorX);
 
@@ -339,7 +391,6 @@ function zoomCanvas(factorX, factorY, canvas) {
     var objects = canvas.getObjects();
 
     for (var i in objects) {
-
         var scaleX = objects[i].scaleX;
         var scaleY = objects[i].scaleY;
         var left = objects[i].left;

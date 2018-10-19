@@ -11,46 +11,57 @@
 {% load static %}
 
 {# CSS #}
-{# Styles #}
 {% block css %}
 <link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
+{# Paper Bootstrap Wizard #}
+<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
 {% endblock css %}
 
 {% block title %}{% trans 'GHS' %}{% endblock title %}
 
 {% block content %}
-    <div class='row'>
-      <div class='col-md-offset-2 col-md-8'>
-        <div class='page-header col-xs-13' align="center">
-          <h3 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h3>
+<div class="card wizard-card div" data-color="blue" id="wizard">
+        <div class="wizard-header">
+            <h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
+            <p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
         </div>
-      </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12" >
-            <div class="panel panel-primary">
-                <div class="panel-heading"><h4>{% trans 'Online GHS Solution' %}</h4></div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <br>
-                         <img class="img-responsive" src="/static/sga/img/label_example.png" title="Label Example" alt="Label Example" border="5"/>
-                        </div>
-                        <div class="col-md-9">
-                         <p>{% trans 'Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance.' %}</p>
-                         <p>{% trans 'Moreover, the solution contains multiples features:' %}</p>
-                         <ul style="list-style-type:square">
-                            <li>{% trans 'Container Management.' %}</li>
-                            <li>{% trans 'Social Media Options.' %}</li>
-                            <li>{% trans 'Printing Management.' %}</li>
-                          </ul>
-                     <br>
-                     <a type="button" class="btn btn-primary " href="{% url 'sga:label_creator' %}">{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
-                        </div>
-                       </div>
-                      </div>
+        <div class="tab-content tab-index-sga">
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <img class="img-responsive label-img" src="/static/sga/img/label_example.png" title="Label example" alt="Label Example" border="5" />
+                    
                 </div>
-              </div>
+                <div class="col-md-6">
+                    <br>
+                    <p style="font-size:100%;"><strong>{% trans 'Online GHS Solution' %}</strong></p>
+                    <p style="font-size:100%;">{% trans 'Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance.' %}</p>
+                    <p style="font-size:100%;">{% trans 'Moreover, the solution contains multiples features:' %}</p>
+                    <ul style="list-style-type:square">
+                       <li><p style="font-size:100%;">{% trans 'Container Management.' %}</p></li>
+                       <li><p style="font-size:100%;">{% trans 'Social Media Options.' %}</p></li>
+                       <li><p style="font-size:100%;">{% trans 'Printing Management.' %}</p></li>
+                     </ul>
+                <br>
+                </div>
+
+
+            </div>
         </div>
-    </div>
+        <div class="col-sm-12">
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style" id="createLabel">
+                        <a type="button" class="btn btn-info btn-fill" href="{% url 'sga:label_creator' %}" >{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                        </div>
+        </div>
+        <div class="wizard-footer">
+            <div class="clearfix"></div>
+            <div id="powered_by">
+                <a href="https://solvosoft.com/en/">
+                    <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
+                </a>
+                {% trans 'Powered by' %}
+                <a href="http://fabricjs.com/">Fabric.js</a>
+            </div>
+        </div>
+</div> <!-- wizard container -->
 {% endblock content %}
