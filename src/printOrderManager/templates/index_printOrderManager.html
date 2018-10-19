@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static i18n datasets %}
+
+{% block css %}
+<!-- Bootstrap core CSS -->
+<link href="Justified%20Nav%20Template%20for%20Bootstrap_files/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="Justified%20Nav%20Template%20for%20Bootstrap_files/justified-nav.css" rel="stylesheet">
+<!-- Styles for this page-->
+<link href="{% static 'css/index_printOrderManager.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+    <div class="container">
+
+        <h1 class="header text-center title">
+            {% trans 'Prints and Orders Manager' %}
+        </h1>
+        <div>
+            <span>
+                <center>{% trans 'Welcome! Enter to your administrator ' %}</center>
+            </span>
+        </div>
+        <br>
+        <div class="row">
+            <center>
+                <div class="col-lg-4">
+                    <img src="{% static 'images/print.png' %}" alt="Generic placeholder image" width="140" height="140">
+                    <h2>Prints Manager</h2>
+                    <p>Register and manage your printers. Add other responsible users,
+                        schedules, featured notices and paper types, improve your business
+                        and offer your services here. </p>
+                    <p><a class="btn btn-primary" href="{% url 'printOrderManager:index_printManager' %}" role="button">
+                            {% trans 'View Details' %} »</a></p>
+                </div>
+                <div class="col-lg-4">
+                    <img class="rounded-circle" src="{% static 'images/order.png' %}" alt="Generic placeholder image"
+                        width="140" height="140">
+                    <h2>Orders Manager</h2>
+                    <p>Do you need to print labels? Do it here, quickly and easily find
+                        which print satisfy your needs, search through the various filters
+                        and place your order, check your status and rate the service offered</p>
+                    <p><a class="btn btn-primary" href="#" role="button">View details »</a></p>
+                </div>
+                <div class="col-lg-4">
+                    <img class="rounded-circle" src="{% static 'images/frasco.png' %}" alt="Generic placeholder image"
+                        width="140" height="140">
+                    <h2>GHS Labeling System</h2>
+                    <p>Create your labels with the GHS standard here, enter the essential data
+                        and with a few simple steps you will get your label
+                        and if you do not like the created you can edit it.</p>
+                    <p><a class="btn btn-primary" href="#" role="button">View details »</a></p>
+                </div>
+            </center>
+        </div>
+
+    </div>
+
+    {% endblock %}

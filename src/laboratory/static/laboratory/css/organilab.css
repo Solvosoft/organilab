@@ -7,11 +7,11 @@ body {
     margin-bottom: 60px;
 }
 
-.dropdown-submenu{
+.dropdown-submenu {
     position: relative;
 }
 
-.dropdown-submenu .dropdown-menu{
+.dropdown-submenu .dropdown-menu {
     top: 0;
     left: 100%;
     margin-top: -1px;
@@ -39,7 +39,7 @@ body {
 }
 
 .ui-autocomplete-input {
-	background-color: #fff;
+    background-color: #fff;
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -54,18 +54,20 @@ body {
     width: 100%;
 }
 
-ul.ui-autocomplete{
-	z-index: 9999;
-}
-p.help-block{
-	display: none;
+ul.ui-autocomplete {
+    z-index: 9999;
 }
 
-.access_item{
-	margin: 5px 0;
+p.help-block {
+    display: none;
 }
-.pdfbuttons{
-	position: fixed;
-	bottom: 5em;
-	right: 5em;
+
+.access_item {
+    margin: 5px 0;
+}
+
+.pdfbuttons {
+    position: fixed;
+    bottom: 5em;
+    right: 5em;
 }

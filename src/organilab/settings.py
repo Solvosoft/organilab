@@ -72,6 +72,9 @@ INSTALLED_APPS = [
     'zinnia',
     'zinnia_ckeditor',
     #    'debug_toolbar',
+    'printOrderManager',
+    'mapwidgets',
+    'guardian',
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -149,6 +152,15 @@ DATABASES = {
         'PORT': os.getenv('DBPORT', '5432'),
     }
 }
+
+# TEST - DJANGO:GUARDIAN
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+# END TEST
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -235,6 +247,19 @@ LOCATION_FIELD = {
     'provider.google.api_key': GOOGLE_MAPS_API_KEY,
     'provider.google.map.type': 'ROADMAP',
 }
+
+# TEST
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 8),
+        ("mapCenterLocationName", "Costa_Rica"),
+    ),
+    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
+}
+
+
+# END TEST
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {

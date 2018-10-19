@@ -1,0 +1,143 @@
+.error {
+    color: rgb(197, 73, 73) !important;
+}
+
+.login-register-form-section {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+#cke_id_description {
+    max-width: 690px;
+    margin: 0 auto;
+}
+
+.register-form-section {
+    max-width: 690px;
+    margin: 0 auto;
+}
+
+.labelFont {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 15px;
+    letter-spacing: 0px;
+    word-spacing: 0px;
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none;
+    font-style: normal;
+    font-variant: normal;
+    text-transform: none;
+}
+
+.input-group-addon {
+    background-color: #4e8bec;
+}
+
+.merged input:first-child {
+    border-right: 0px;
+}
+
+.merged .input-group-addon+input {
+    border-left: 0px;
+}
+
+.colorIcon {
+    color: white !important;
+}
+
+.title {
+    color: #073f99;
+    font-size: 140%;
+}
+
+h1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+h1:before,
+h1:after {
+    flex-grow: 1;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    position: relative;
+    top: 0.5em;
+}
+
+h1:before {
+    margin-right: 10px;
+}
+
+h1:after {
+    margin-left: 10px;
+}
+
+.title2 {
+    color: #073f99;
+}
+
+.subtitle {
+    width: 300px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(180, 177, 177);
+    line-height: 48px;
+    font-size: 150%;
+    color: #3961a0;
+}
+
+.login-register-form-section i {
+    width: 25px;
+}
+
+.form-control {
+    height: 38px;
+}
+
+.login-register-form-section .nav-tabs>li>a {
+    color: #3273dc;
+}
+
+.login-register-form-section .nav-tabs>li.active>a {
+    background-color: #3273dc;
+    border-color: #3273dc;
+    color: white;
+}
+
+.login-register-form-section .nav-tabs>li>a,
+.login-register-form-section .nav-tabs>li.active>a {
+    width: 300px;
+    text-align: center;
+    border-radius: 0;
+}
+
+.login-register-form-section .nav-tabs {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.login-register-form-section .btn-custom {
+    width: 50%;
+    background-color: #3273dc;
+    border-color: #3273dc;
+    margin-bottom: 0.5em;
+    border-radius: 0;
+}
+
+.login-register-form-section .btn-custom:hover {
+    width: 50%;
+    background-color: #28a55c;
+    border-color: #28a55c;
+}
+
+.login-register-form-section .form-group {
+    padding: 0 30px;
+}
