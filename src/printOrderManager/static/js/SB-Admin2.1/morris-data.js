@@ -35,7 +35,6 @@ $(function () {
         hideHover: 'auto'
     });
 
-
     Morris.Donut({
         element: 'morris-donut-chart',
         data: [{
@@ -50,34 +49,6 @@ $(function () {
         }],
         resize: true
     });
-
-
-    Morris.Area({
-        element: 'morris-area-chart',
-        data: [{
-            period: '2018-09-24',
-            orderPrice: 2666,
-        }, {
-            period: '2018-10-07',
-            orderPrice: 2778,
-        }, {
-            period: '2018-10-24',
-            orderPrice: 4912,
-        }, {
-            period: '2018-10-28',
-            orderPrice: 3767,
-        }],
-        xkey: 'period',
-        ykeys: ['orderPrice', 'numbersOfPages'],
-        labels: ['Order Price', 'Number of Pages'],
-        pointSize: 2,
-        hideHover: 'auto',
-        resize: true
-    });
-
-
-
-
 
 
 });

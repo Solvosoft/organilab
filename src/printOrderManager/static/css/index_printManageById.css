@@ -11,15 +11,6 @@
 }
 
 .subtitle {
-    width: 300px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgb(180, 177, 177);
-    line-height: 48px;
-    font-size: 150%;
-    color: #3961a0;
-}
-
-
-.text-center {
-    text-align: center;
+    font-size: 200%;
+    color: #284675;
 }
