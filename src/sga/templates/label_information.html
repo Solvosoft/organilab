@@ -18,6 +18,7 @@
 {% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-sm-12">
         <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
@@ -88,12 +89,12 @@
     <div class="col-sm-6">
         <!--============================================================================================================-->
         <!--=========================================Recipient==========================================================-->
-        {% get_recipient_size as recipients %}
         <div class="form-group">
             <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
-            <!--<a>{{ recipients }}</a>-->
+            <!--<a>{{ recipients }}</a>--> 
             <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
                 <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
+    
                 {% if recipients != null %}
                 {% for recipient in recipients %}
                 <option data-name="{{recipient.name}}"

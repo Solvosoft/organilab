@@ -32,7 +32,10 @@ def index_sga(request):
 
 
 def label_creator(request):
-    return render(request, 'label_creator.html', {})
+    recipients= RecipientSize.objects.all()
+    return render(request, 'label_creator.html', {'recipients': recipients,
+'laboratory': 1
+})
 
 
 # SGA Label Information Page
@@ -47,7 +50,11 @@ def label_information(request):
 # SGA Label Template Page
 
 def label_template(request):
-    return render(request, 'label_template.html', {})
+    recipients= RecipientSize.objects.all()
+
+    return render(request, 'label_template.html', {'recipients': recipients,
+'laboratory': None
+})
 
 
 # SGA Label Customization Page
