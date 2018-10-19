@@ -131,8 +131,8 @@
       {% if request.reservation %}
       <a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %} </a>
       {% else %}
-      <a href="{% url 'add_user_reservation' %}?next={% url 'laboratory:labindex' laboratory %}"> {% trans 'Create a
-        reservation' %} </a>
+      <a href="{% url 'add_user_reservation' %}?next={% url 'laboratory:labindex' laboratory %}"> 
+{% trans 'Create a reservation' %} </a>
       {% endif %}
     </li>
     {% endif %}
