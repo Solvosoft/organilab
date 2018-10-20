@@ -331,21 +331,18 @@
                                 <caption>List of contacts</caption>
                                 <thead class="contactList">
                                     <tr>
-                                        <th>{% trans 'User Name' %}</th>
+                                        <th>{% trans 'User name' %}</th>
                                         <th>{% trans 'Name' %}</th>
-                                        <th>{% trans 'Permissions' %}</th>
+                                        <th>{% trans 'Permissions to edit' %}</th>
                                     </tr>
                                 </thead>
-                                <!--<tfoot>
-                                        <tr>
-                                            <th>{% trans 'Print ' %}</th>
-                                            <th>{% trans 'State' %}</th>
-                                            <th>{% trans 'Responsible User'%}</th>
-                                            <th>{% trans 'Creation Date' %}</th>
-                                            <th>{% trans 'Qualification' %}</th>
-                                            <th>{% trans 'Actions' %}</th>
-                                        </tr>
-                                    </tfoot>-->
+                                <tfoot>
+                                    <tr>
+                                        <th>{% trans 'User name' %}</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Permissions to edit' %}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                             <!-- /.table-responsive -->
                         </div>
@@ -394,7 +391,7 @@
                 responsive: true,
                 "fixedHeader": true,
                 "columnDefs": [{
-                    "width": "35%",
+                    "width": "58%",
                     "targets": 2
                 }]
                 //"scrollY": 200,

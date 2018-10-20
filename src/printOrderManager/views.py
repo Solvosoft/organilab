@@ -83,18 +83,18 @@ def get_list_printObject(request):
         printActions += "<a onclick='deletePrint(\"" + obj.name + "\" ,\"" + str(obj.id) + "\"  )' class='btn btn-danger'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a>"
         printLogo = "<img class='iconTable' src='http://localhost:8000/media/"+obj.logo.name+"'> &nbsp;&nbsp; " + obj.name
         while cont < obj.qualification:
-            qualification += "<img class='iconTable' src='http://localhost:8000/static/images/star.png'>";
+            qualification += "<i class='fas fa-star fa-1x colorStar'></i>&nbsp;"
             cont += 1
         cont = 0
         while cont < (5-obj.qualification):
-            qualification += "<img class='iconTable' src='http://localhost:8000/static/images/whiteStar.png'>";
+            qualification += "<img class='iconTable' src='http://localhost:8000/static/images/whiteStar.png'>"
             cont += 1
         if(user.first_name == ""):
             responsibleUser = user.username
         else:
             responsibleUser = user.first_name+" "+user.last_name+" ("+ user.username+")"
         if(obj.state == ""):
-            state = _("<div class='stateA'> Available </div>")
+            state = _("<span class='label label-success'>Available</span>")
         else:
             state = obj.state
         data.append([
@@ -276,46 +276,46 @@ def get_list_contactByPrint(request):
             symbol = 'class="fas fa-info-circle"'
             symbolPermission = 'i'
             if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"' data-onstyle='primary'>&nbsp;"
             else:
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+                permissions += "<input  id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  data-onstyle='primary'>&nbsp;"
             cont += 1
         else:
             permissions = ""
             symbolPermission = 'i'
             symbol = 'class="fas fa-info-circle"'
             if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"' data-onstyle='primary'>&nbsp;"
             else:
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+                permissions += "<input  id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  data-onstyle='primary'>&nbsp;"
             
         symbol = 'class="fas fa-users"'
         symbolPermission = 'c'
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            permissions += "<input checked id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-paper-plane"'
         symbolPermission = 'p'
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='p"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            permissions += "<input checked id='p"+str(user.id)+"' data-width='115' data-off='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"&nbsp;' data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='p"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input id='p"+str(user.id)+"' data-width='115' data-off='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"&nbsp;'  data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-calendar-alt"'
         symbolPermission = 's'
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            permissions += "<input checked id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-bell"'
         symbolPermission = 'a'
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='a"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"
+            permissions += "<input checked id='a"+str(user.id)+"' data-width='130' data-off='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='a"+str(user.id)+"' data-off='<i "+symbol+"></i>' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input id='a"+str(user.id)+"' data-width='130' data-off='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' data-onstyle='primary'>&nbsp;"  
         
         data.append([
             user.username,
