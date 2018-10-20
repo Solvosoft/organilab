@@ -17,14 +17,16 @@
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/metisMenu.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css" />
     <link href="{% static 'css/SB-Admin2.1/sb-admin-2.css' %}" rel="stylesheet">
-    <link href="{% static 'css/contacts_printManageById.css' %}" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-        crossorigin="anonymous">{% endblock %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css" />
+        crossorigin="anonymous">
+    <link href="{% static 'css/contacts_printManageById.css' %}" rel="stylesheet">
     <!-- Toogle Button -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    {% endblock %}
 
     {% block content %}
 
@@ -362,19 +364,22 @@
     <!-- /#wrapper -->
 
     {% block js %}
+    <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/metisMenu.min.js' %}"></script>
     <!-- Datatable JS-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
+    <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
+    <!-- Toogle Button -->
+    <script src="{% static 'js/contacts_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
-    <!-- Toogle Button -->
-    <script src="{% static 'js/contacts_printManageById.js' %}"></script>
+
+
     {% endblock %}
 
     <script>
