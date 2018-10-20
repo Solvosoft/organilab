@@ -25,6 +25,8 @@ fabric.Object.prototype.objectCaching = false;
 fabric.Object.prototype.noScaleCache = true;
 
 $(document).ready(function () {
+    //Hide Working Canvas Area
+    $('#working_canvas_area').hide();
     // Blank Templates
     // Blank Template: Vertical
     // Add green border to selected card, change button text and color
@@ -164,7 +166,7 @@ function set_pre_designed_templates() {
         },
         success: function (substance_information) {
             // Pre Designed Horizontal Template
-            preDesignedHorizontalTemplate(label_information,substance_information);
+            preDesignedHorizontalTemplate(label_information, substance_information);
         }
     });
 
@@ -203,7 +205,7 @@ function selectButon(button_id) {
 }
 
 /* Pre-Designed Horizontal Template */
-function preDesignedHorizontalTemplate(label_information,substance_information) {
+function preDesignedHorizontalTemplate(label_information, substance_information) {
     //Initialize Fabric.js canvas using "id"
     var canvas = new fabric.Canvas('working_canvas_area');
 
@@ -274,7 +276,7 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
         });
     }
     name_label.text = titleCase(name_label.text);
-    controlTextNameSize(name_label, canvas);
+    controlTextWidth(name_label, canvas);
     canvas.add(name_label);
     //Save changes in Canvas
     canvas.renderAll();
@@ -285,7 +287,7 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
     if (substance_information.signalWord.length <= 10) {
         signalWord = new fabric.Textbox(substance_information.signalWord, {
             width: 180,
-            height: 4,
+            height: 20,
             top: 20,
             left: 5,
             fontSize: 25,
@@ -310,8 +312,29 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
         });
     }
     signalWord.text = signalWord.text.toUpperCase();
-    controlTextNameSize(signalWord, canvas);
+    controlTextWidth(signalWord, canvas);
     canvas.add(signalWord);
+    //Save changes in Canvas
+    canvas.renderAll();
+    //---------------------------------------------------------------------------
+    //#3: Danger Indications
+    //---------------------------------------------------------------------------
+    dangerIndication = new fabric.Textbox('La banca tendrá que asumir el impuesto de las hipotecas. El Supremo libra al cliente de abonar un tributo clave en la compra de vivienda. La sentencia no aclara si afecta a préstamos nuevos o también a miles ya firmados.', {
+        width: 280,
+        height: 100,
+        left: 205,
+        top: 50,
+        fontSize: 30,
+        fontFamily: 'Helvetica',
+        textAlign: 'justify',
+        fill: '#000000',
+        fixedWidth: 280,
+        fixedHeight: 100,
+        objectCaching: false
+    });
+    controlTextWidth(dangerIndication, canvas);
+    //controlTextHeight(dangerIndication, canvas);
+    canvas.add(dangerIndication);
     //Save changes in Canvas
     canvas.renderAll();
 
@@ -325,7 +348,7 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
     jsonPrueba = JSON.stringify(canvas);
     */
 
-    /*
+
     // Pre Designed Horizontal Template Modal
     var factorX = 700 / canvas.getWidth();
     var factorY = 350 / canvas.getHeight();
@@ -338,7 +361,7 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
     var factorY = 250 / canvas.getHeight();
     zoomCanvas(factorX, factorY, canvas);
     document.getElementById("pre_designed_template_horizontal").src = canvas.toDataURL('png');
-    
+
 
     
     var factorX = 0 / canvas.getWidth();
@@ -347,12 +370,12 @@ function preDesignedHorizontalTemplate(label_information,substance_information) 
     canvas.clear();
     canvas.dispose();
     $('#working_canvas_area').hide();
-    */
     
+
 }
 
-/* Control text size in label */
-function controlTextNameSize(text, canvas) {
+/* Control text width in label */
+function controlTextWidth(text, canvas) {
     if (text.width > text.fixedWidth) {
         text.fontSize *= text.fixedWidth / (text.width + 1);
         text.width = text.fixedWidth;
@@ -362,6 +385,21 @@ function controlTextNameSize(text, canvas) {
         if (text.width > text.fixedWidth) {
             text.fontSize *= text.fixedWidth / (text.width + 1);
             text.width = text.fixedWidth;
+        }
+    });
+}
+
+/* Control text height in label */
+function controlTextHeight(text, canvas) {
+    if (text.height > text.fixedHeight) {
+        text.fontSize *= (text.fixedHeight / (text.height+1));
+        text.height = text.fixedHeight;
+    }
+    canvas.on('text:changed', function (opt) {
+        var text = opt.target;
+        if (text.height > text.fixedHeight) {
+            text.fontSize *= text.fixedHeight / (text.height + 1);
+            text.height = text.fixedHeight;
         }
     });
 }
@@ -379,7 +417,7 @@ function titleCase(str) {
 }
 
 /* Resize canvas and objects to specified width and height */
-function zoomCanvas(factorX, factorY, canvas) {++
+function zoomCanvas(factorX, factorY, canvas) {
     canvas.setHeight(canvas.getHeight() * factorY);
     canvas.setWidth(canvas.getWidth() * factorX);
 
