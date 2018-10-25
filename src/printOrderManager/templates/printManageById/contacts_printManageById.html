@@ -25,6 +25,8 @@
     <link href="{% static 'css/contacts_printManageById.css' %}" rel="stylesheet">
     <!-- Toogle Button -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    {# Sweetalert2 #}
+    <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
 
     {% endblock %}
 
@@ -327,13 +329,14 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <table width="100%" class="table table-bordered table-hover" id="dataTables-example">
+                            <table width="100%" class="table table-bordered table-hover" id="contacts">
                                 <caption>List of contacts</caption>
                                 <thead class="contactList">
                                     <tr>
                                         <th>{% trans 'User name' %}</th>
                                         <th>{% trans 'Name' %}</th>
                                         <th>{% trans 'Permissions to edit' %}</th>
+                                        <th>{% trans 'Actions' %}</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -341,6 +344,7 @@
                                         <th>{% trans 'User name' %}</th>
                                         <th>{% trans 'Name' %}</th>
                                         <th>{% trans 'Permissions to edit' %}</th>
+                                        <th>{% trans 'Actions' %}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -352,7 +356,6 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-
             <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
@@ -360,7 +363,16 @@
     </div>
     <!-- /#wrapper -->
 
+    <!-- Loading the values on vars-->
     {% block js %}
+
+    <script>
+        userName = '{{ user.username }}'
+        userEmail = '{{ user.email }}'
+        password = '{{ user.password }}'
+        printObjectId = '{{ printObject.id }}'
+    </script>
+
     <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
@@ -370,35 +382,16 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
     <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
     <!-- Toogle Button -->
     <script src="{% static 'js/contacts_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
-
-
+    <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
     {% endblock %}
-
-    <script>
-        $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                "ajax": {
-                    "url": '{% url "printOrderManager:list_contactByPrint" %}',
-                    "data": { //Parameters send it in a POST
-                        "pk": '{{ printObject.id }}',
-                    }
-                }, // Data sent with the delete request
-                responsive: true,
-                "fixedHeader": true,
-                "columnDefs": [{
-                    "width": "58%",
-                    "targets": 2
-                }]
-                //"scrollY": 200,
-                //"scrollX": true
-            });
-        });
-    </script>
 
 </html>
 {% endblock %}
