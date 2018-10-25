@@ -34,14 +34,60 @@ from django.shortcuts import redirect
 # Import for django-guardian
 from guardian.shortcuts import assign_perm
 from guardian.shortcuts import remove_perm
+# Import for Django Rest Framework - Token
+from rest_framework.authtoken.models import Token
 
+
+# Method to display a page for the login section
+
+
+class PrintLogin(FormView):
+    template_name = 'loginRegister/loginPrint.html'
+    form_class = PrintLoginForm
+
+
+# Method with the form to register a print
+# This means the view requiered login
+# @login_required -> Login requiered is used in other kind of views
+
+
+@method_decorator(login_required, name='dispatch')
+class PrintRegister(FormView):
+    template_name = 'loginRegister/registerPrint.html'
+    form_class = PrintRegisterForm
+
+    # This method is called when the data inserted in the form is valid
+    def form_valid(self, form):
+        # Saving with commit=False gets you a model object, then you can add your extra data and save it.
+        printObject = form.save(commit=False)
+        # Set the extra data
+        printObject.qualification = 5
+        printObject.responsible_user = self.request.user
+        printObject.save()
+        response = super(PrintRegister, self).form_valid(form)
+        return response
+
+    #  This method is called when the data inserted in the form is valid and saved
+    def get_success_url(self):
+        text_message = _(
+            'Your print has been successfully registered.')
+        messages.add_message(self.request, messages.SUCCESS, text_message)
+        dev = reverse('printOrderManager:index_printManager')
+        return dev
+
+
+# Method that return the index page to select the administrator
 
 def index_printOrderManager(request):
     return render(request, 'index_printOrderManager.html')
 
+# Method that return the index page with the list of prints
+
 @login_required
 def index_printManager(request):
     return render(request, 'index_printManager.html')
+
+# Method that return the list of prints
 
 @login_required
 def get_list_printObject(request):
@@ -120,8 +166,10 @@ def get_list_printObject(request):
         pass
     return JsonResponse(dev)
 
-
+# Method to delet the print by the id send it by ajax
 # 4A. Delete print object by id and return a json with the result
+
+
 @login_required
 def delete_print_byId(request):
     if (request.META.get('HTTP_REFERER') is not None): # If the previous URL is None, redirect to the index page
@@ -152,9 +200,10 @@ def delete_print_byId(request):
         # Redirect to other site
         return redirect('printOrderManager:index_printOrderManager')
 
-# PRINT MANAGER 
-
+# METHODS FOR THE PRINT MANAGER
 # Enter to the Print Manager (SB Admin 2: https://startbootstrap.com/template-overviews/sb-admin-2/) 
+
+
 @login_required
 def index_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
@@ -162,7 +211,9 @@ def index_printManageById(request, pk):
             'printObject': printObject,  # Parametros enviados con la vista.
         })
 
-# Give or drop permissions to a user
+# Method to give or drop permissions to a user
+
+
 @login_required
 def giveDropPermissionsById(request):
     if (request.META.get('HTTP_REFERER') is not None): # If the previous URL is None, redirect to the index page
@@ -205,6 +256,8 @@ def giveDropPermissionsById(request):
 
 
 # Method that return the name of the permission depending of the param
+
+
 def nameOfThePermission(permissionType):
     if (permissionType == 'i'):
         return 'changeInformation_printObject'
@@ -219,6 +272,8 @@ def nameOfThePermission(permissionType):
 
 
 # Method that return the message of the permission depending of the param
+
+
 def messageOfThePermission(permissionType):
     if (permissionType == 'i'):
         return 'information'
@@ -231,15 +286,26 @@ def messageOfThePermission(permissionType):
     elif (permissionType == 'a'):
         return 'advertisements'
 
-# Enter to the section of Contacts on the Print Manager
+
+# Method that enter to the section of Contacts on the Print Manager
+
+
 @login_required
 def contacts_printManageById(request, pk):
+    user = None
+    token = None
+    if request.user.is_authenticated():
+        user = request.user
     printObject = get_object_or_404(PrintObject, pk=pk)
     return render(request, 'printManageById/contacts_printManageById.html', {
             'printObject': printObject,  # Parametros enviados con la vista.
+            'user': user,
     })
 
-# Return the contacts of an specific print
+
+# Method that return the list of contacts of an specific print
+
+
 @login_required
 def get_list_contactByPrint(request):
     q = request.GET.get('search[value]')
@@ -254,6 +320,7 @@ def get_list_contactByPrint(request):
         length = 10
         pgnum = 1
 
+    # Filter Section
     if q:
         objs = PrintObject.objects.all().filter(Q(creation_date__icontains=q) | 
         Q(name__icontains=q) | Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) | 
@@ -272,6 +339,8 @@ def get_list_contactByPrint(request):
     permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
     for obj in page.object_list:
         user = User.objects.get(pk=int(obj.assigned_user_id))
+
+        # Permissions Section
         if (cont == 0):
             symbol = 'class="fas fa-info-circle"'
             symbolPermission = 'i'
@@ -317,10 +386,15 @@ def get_list_contactByPrint(request):
         else:
             permissions += "<input id='a"+str(user.id)+"' data-width='130' data-off='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' data-onstyle='primary'>&nbsp;"  
         
+        # Actions Section
+        actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu pull-right' role='menu'><li><a href='#'>Edit</a></li><li><a href='#'></a></li><li><a href='#'>Disable</a></li><li><a onclick='deleteContact(\"" + str(obj.id)+ "\" ,\"" + user.username + "\"  )'>Delete</a></li></ul></div>"
+
+        # Data Section
         data.append([
             user.username,
             user.first_name+" "+user.last_name,
             permissions,
+            actions,
         ])
     dev = {
         "data": data,
@@ -335,6 +409,9 @@ def get_list_contactByPrint(request):
     except:
         pass
     return JsonResponse(dev)
+
+
+# Method to create a CRUDView
 
 
 class PrintObjectCRUD(CRUDView):
@@ -355,34 +432,4 @@ class PrintObjectCRUD(CRUDView):
         return OCreateView
 
 
-class PrintLogin(FormView):
-    template_name = 'loginRegister/loginPrint.html'
-    form_class = PrintLoginForm
 
-# This means the view requiered login
-# @login_required -> Login requiered is used in other kind of views
-
-
-@method_decorator(login_required, name='dispatch')
-class PrintRegister(FormView):
-    template_name = 'loginRegister/registerPrint.html'
-    form_class = PrintRegisterForm
-
-    # This method is called when the data inserted in the form is valid
-    def form_valid(self, form):
-        # Saving with commit=False gets you a model object, then you can add your extra data and save it.
-        printObject = form.save(commit=False)
-        # Set the extra data
-        printObject.qualification = 5
-        printObject.responsible_user = self.request.user
-        printObject.save()
-        response = super(PrintRegister, self).form_valid(form)
-        return response
-
-    #  This method is called when the data inserted in the form is valid and saved
-    def get_success_url(self):
-        text_message = _(
-            'Your print has been successfully registered.')
-        messages.add_message(self.request, messages.SUCCESS, text_message)
-        dev = reverse('printOrderManager:index_printManager')
-        return dev

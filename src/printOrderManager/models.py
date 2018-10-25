@@ -141,3 +141,21 @@ class PrintObject(models.Model):
             ("changeAdvertisements_printObject", _(
                 "Can edit the print advertisements")),
         )
+
+# DJANGO REST FRAMEWORK
+
+
+class RequestLabelPrint(models.Model):
+    STATUS_CHOICES = (
+        (0, 'Requested'),
+        (1, 'Preparing'),
+        (2, 'Done'),
+        (3, 'Rejected'),
+        (4, 'Delivered'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    printer = models.ForeignKey(PrintObject, on_delete=models.CASCADE)
+    add_date = models.DateTimeField(auto_now_add=True)
+    status = models.SmallIntegerField(default=0, choices=STATUS_CHOICES)
+
+    def str(self):
+        return str(self.user) + " -- " + str(self.print)
