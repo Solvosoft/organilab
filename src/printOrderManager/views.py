@@ -64,6 +64,12 @@ class PrintRegister(FormView):
         printObject.qualification = 5
         printObject.responsible_user = self.request.user
         printObject.save()
+        # Set all the permissions to the user
+        assign_perm("changeInformation_printObject", self.request.user, printObject)
+        assign_perm("changeContacts_printObject", self.request.user, printObject)
+        assign_perm("changePaper_printObject", self.request.user, printObject)
+        assign_perm("changeSchedules_printObject", self.request.user, printObject)
+        assign_perm("changeAdvertisements_printObject", self.request.user, printObject)
         response = super(PrintRegister, self).form_valid(form)
         return response
 
@@ -104,12 +110,12 @@ def get_list_printObject(request):
 
     if q:
         objs = PrintObject.objects.all().filter(Q(creation_date__icontains=q) | 
-        Q(name__icontains=q) | Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) | 
-        Q(responsible_user__first_name__icontains=q) | Q(responsible_user__last_name__icontains=q), Q(responsible_user_id=request.user.id)).order_by('creation_date')
+        Q(name__icontains=q) | Q(contacts__assigned_user__id=request.user.id) |  Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) | 
+        Q(responsible_user__first_name__icontains=q) | Q(responsible_user__last_name__icontains=q), Q(responsible_user_id=request.user.id)).order_by('creation_date').distinct()
     else:
         objs = PrintObject.objects.all().filter(
-            Q(responsible_user_id=request.user.id)
-        ).order_by('creation_date')
+            Q(responsible_user_id=request.user.id) | Q(contacts__assigned_user__id=request.user.id)
+        ).order_by('creation_date').distinct()
 
     recordsFiltered = objs.count()
     p = Paginator(objs, length)
@@ -124,9 +130,13 @@ def get_list_printObject(request):
         hola = 4
         user = User.objects.get(pk=obj.responsible_user_id)
         url = reverse('printOrderManager:index_printManageById', kwargs={'pk': obj.id})
-        printActions = "<a  href="+url+"  class='btn btn-info'><span id='edit' class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a>&nbsp;"
-                            # 1A. Define the onclick method
-        printActions += "<a onclick='deletePrint(\"" + obj.name + "\" ,\"" + str(obj.id) + "\"  )' class='btn btn-danger'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a>"
+        printActions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
+        printActions += "<li><a  href="+url+" ><span id='edit' class='glyphicon glyphicon-th-list' aria-hidden='true'></span>&nbsp; "+_('Manage')+"</a></li>"
+        # 1A. Define the onclick method                    
+        if(request.user.id == obj.responsible_user_id):
+            printActions += "<li><a onclick='deletePrint(\"" + obj.name + "\" ,\"" + str(obj.id) + "\"  )' ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp; "+_('Delete')+"</a></li></ul></div>"
+        else:
+            printActions += "</ul></div>"
         printLogo = "<img class='iconTable' src='http://localhost:8000/media/"+obj.logo.name+"'> &nbsp;&nbsp; " + obj.name
         while cont < obj.qualification:
             qualification += "<i class='fas fa-star fa-1x colorStar'></i>&nbsp;"
@@ -135,10 +145,14 @@ def get_list_printObject(request):
         while cont < (5-obj.qualification):
             qualification += "<img class='iconTable' src='http://localhost:8000/static/images/whiteStar.png'>"
             cont += 1
-        if(user.first_name == ""):
-            responsibleUser = user.username
+        if(request.user.id == obj.responsible_user_id):
+            responsibleUser = "<span class='label label-warning'>"+_("Owner")+"</span>"
         else:
-            responsibleUser = user.first_name+" "+user.last_name+" ("+ user.username+")"
+            if(user.first_name == ""):
+                responsibleUser = user.username
+            else:
+                responsibleUser = user.first_name+" "+user.last_name+" ("+ user.username+")"
+
         if(obj.state == ""):
             state = _("<span class='label label-success'>Available</span>")
         else:
@@ -154,7 +168,7 @@ def get_list_printObject(request):
         ])
     dev = {
         "data": data,
-        "recordsTotal": PrintObject.objects.all().filter(Q(responsible_user_id=request.user.id)).count(),
+        "recordsTotal": PrintObject.objects.all().filter( Q(responsible_user_id=request.user.id) | Q(contacts__assigned_user__id=request.user.id)).count(),
         "recordsFiltered": recordsFiltered
     }
 
@@ -293,7 +307,6 @@ def messageOfThePermission(permissionType):
 @login_required
 def contacts_printManageById(request, pk):
     user = None
-    token = None
     if request.user.is_authenticated():
         user = request.user
     printObject = get_object_or_404(PrintObject, pk=pk)
@@ -339,63 +352,79 @@ def get_list_contactByPrint(request):
     permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
     for obj in page.object_list:
         user = User.objects.get(pk=int(obj.assigned_user_id))
+        toggle = ""
+
+        # Set disable the bootstrap toogle 
+        if(request.user.has_perm('changeContacts_printObject', printObject) is True):
+            pass
+        else:
+            toggle = 'disabled'
 
         # Permissions Section
         if (cont == 0):
-            symbol = 'class="fas fa-info-circle"'
-            symbolPermission = 'i'
-            if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"' data-onstyle='primary'>&nbsp;"
-            else:
-                permissions += "<input  id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  data-onstyle='primary'>&nbsp;"
             cont += 1
         else:
             permissions = ""
-            symbolPermission = 'i'
-            symbol = 'class="fas fa-info-circle"'
-            if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-                permissions += "<input checked id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"' data-onstyle='primary'>&nbsp;"
-            else:
-                permissions += "<input  id='i"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Information")+"'  data-onstyle='primary'>&nbsp;"
-            
+
+        symbol = 'class="fas fa-info-circle"'
+        symbolPermission = 'i'
+        textInput = '<div data-toggle="tooltip" data-placement="top" title="'+_('Information')+'"><i '+symbol+'></i></div> '
+        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
+            permissions += "<input "+toggle+" checked id='i"+str(user.id)+"' data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
+        else:
+            permissions += "<input "+toggle+" id='i"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"
+
         symbol = 'class="fas fa-users"'
         symbolPermission = 'c'
+        textInput = '<div data-toggle="tooltip" data-placement="top" title="'+_('Contacts')+'"><i '+symbol+'></i></div> '
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  data-onstyle='primary'>&nbsp;"
+            permissions += "<input "+toggle+" checked id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='c"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Contacts")+"'  data-onstyle='primary'>&nbsp;"  
+            permissions += "<input "+toggle+" id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-paper-plane"'
         symbolPermission = 'p'
+        textInput = '<div data-toggle="tooltip" data-placement="top" title="'+_('Paper Types')+'"><i '+symbol+'></i></div> '
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='p"+str(user.id)+"' data-width='115' data-off='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"&nbsp;' data-onstyle='primary'>&nbsp;"
+            permissions += "<input "+toggle+" checked id='p"+str(user.id)+"'  data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='p"+str(user.id)+"' data-width='115' data-off='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Paper Types")+"&nbsp;'  data-onstyle='primary'>&nbsp;"  
+            permissions += "<input "+toggle+" id='p"+str(user.id)+"'  data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-calendar-alt"'
         symbolPermission = 's'
+        textInput = '<div data-toggle="tooltip" data-placement="top" title="'+_('Schedules')+'"><i '+symbol+'></i></div> '
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' data-onstyle='primary'>&nbsp;"
+            permissions += "<input "+toggle+" checked id='s"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='s"+str(user.id)+"' data-off='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Schedules")+"' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input "+toggle+" id='s"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"  
         
         symbol = 'class="fas fa-bell"'
         symbolPermission = 'a'
+        textInput = '<div data-toggle="tooltip" data-placement="top" title="'+_('Advertisements')+'"><i '+symbol+'></i></div> '
         if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input checked id='a"+str(user.id)+"' data-width='130' data-off='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' data-onstyle='primary'>&nbsp;"
+            permissions += "<input "+toggle+" checked id='a"+str(user.id)+"'  data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
         else:
-            permissions += "<input id='a"+str(user.id)+"' data-width='130' data-off='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='<i "+symbol+"></i>&nbsp;"+_("Advertisements")+"' data-onstyle='primary'>&nbsp;"  
+            permissions += "<input "+toggle+" id='a"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"  
         
-        # Actions Section
-        actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu pull-right' role='menu'><li><a href='#'>Edit</a></li><li><a href='#'></a></li><li><a href='#'>Disable</a></li><li><a onclick='deleteContact(\"" + str(obj.id)+ "\" ,\"" + user.username + "\"  )'>Delete</a></li></ul></div>"
 
-        # Data Section
-        data.append([
-            user.username,
-            user.first_name+" "+user.last_name,
-            permissions,
-            actions,
-        ])
+        # Actions Section
+        if(request.user.has_perm('changeContacts_printObject'),printObject is True):
+            actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu pull-right' role='menu'><li><a href='#'>Edit</a></li><li><a href='#'></a></li><li><a href='#'>Disable</a></li><li><a onclick='deleteContact(\"" + str(obj.id)+ "\" ,\"" + user.username + "\"  )'>Delete</a></li></ul></div>"
+            # Data Section
+            data.append([
+                user.username,
+                user.first_name+" "+user.last_name,
+                permissions,
+                actions,
+            ])
+        else:
+            # Data Section
+            data.append([
+                user.username,
+                user.first_name+" "+user.last_name,
+                permissions,
+            ])
+        
     dev = {
         "data": data,
         "recordsTotal": objs.count(),

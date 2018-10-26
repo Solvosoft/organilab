@@ -1,5 +1,6 @@
 {% load static i18n datasets %}
 {% load staticfiles %}
+{% load guardian_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +34,8 @@
     {% block content %}
 
 <body>
+    <!-- Loading Permissions -->
+    {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
     <div id="pageLoading"></div>
     <header>
@@ -282,8 +285,24 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i>
-                                <span class="side-menu-title">&nbsp;{% trans 'Contacts' %}</span></a>
+                            {% if "changeContacts_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-users"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Contacts' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">View
+                                        and Edit Contacts</a>
+                                </li>
+                                <li>
+                                    <a href="#">Add Contacts</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i><span
+                                    class="side-menu-title">&nbsp;
+                                    {% trans 'Contacts' %}</span></a>
+                            {% endif %}
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
@@ -336,7 +355,9 @@
                                         <th>{% trans 'User name' %}</th>
                                         <th>{% trans 'Name' %}</th>
                                         <th>{% trans 'Permissions to edit' %}</th>
+                                        {% if "changeContacts_printObject" in printObject_perms %}
                                         <th>{% trans 'Actions' %}</th>
+                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -344,7 +365,9 @@
                                         <th>{% trans 'User name' %}</th>
                                         <th>{% trans 'Name' %}</th>
                                         <th>{% trans 'Permissions to edit' %}</th>
+                                        {% if "changeContacts_printObject" in printObject_perms %}
                                         <th>{% trans 'Actions' %}</th>
+                                        {% endif %}
                                     </tr>
                                 </tfoot>
                             </table>

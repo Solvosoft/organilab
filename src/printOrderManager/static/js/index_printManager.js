@@ -1,10 +1,28 @@
+// GLOBAL VARS
+const tableId = "printObjects";
+
 // This functions is called when the document is ready
 $(document).ready(function () {
     // Get each element from a li with the id=messages
+    loadTable();
     $("#messages li").each(function (index) {
         swal("Print registered!", $(this).text(), "success");
     });
 });
+
+
+function loadTable() {
+    $('#' + tableId).DataTable({
+        "ajax": '/printOrderManager/list_printObject',
+        "destroy": true, // Allow reload table
+        responsive: true,
+        "fixedHeader": true,
+        "language": {
+            "url": "/get_dataset_translation"
+        }
+    });
+    //table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
+}
 
 // 2A. Define the method for the onclick (myFunction())
 function deletePrint(printName, printId) {
@@ -27,11 +45,11 @@ function deletePrint(printName, printId) {
             success: function (json) { //If the result is success return a JSON value
                 if (json.status == 0) {
                     swal("Print Deleted!", json.msg, "success");
-                    updateTable();
+                    loadTable();
                 } else {
                     if (json.status == 1) {
                         swal("Print Undeleted!", json.msg, "info");
-                        updateTable();
+                        loadTable();
                     } else {
                         swal("Print Undeleted!", json.msg, "error");
                     }
