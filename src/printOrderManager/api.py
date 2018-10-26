@@ -64,6 +64,7 @@ class ContactSerializer(serializers.ModelSerializer):
 
 # Viewset for the Contact Model
 
+
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()  # All the contacts
     serializer_class = ContactSerializer  # Serializer

@@ -1,14 +1,37 @@
 // GLOBAL VARS
-const tableId = "printObjects";
+var tableId = "printObjects";
+var messages = new Array();
+var typeMessages = new Array();
+var tittleMessages = new Array();
+
 
 // This functions is called when the document is ready
+
+
 $(document).ready(function () {
     // Get each element from a li with the id=messages
+    defineMessages();
     loadTable();
     $("#messages li").each(function (index) {
-        swal("Print registered!", $(this).text(), "success");
+        swal(tittleMessages[$(this).text()], messages[$(this).text()], typeMessages[$(this).text()]);
     });
 });
+
+// Define the several arrays with the messages
+
+
+function defineMessages() {
+    // MESSAGE 1
+    tittleMessages["MESSAGE1"] = "Print registered!";
+    messages["MESSAGE1"] = "Your print has been successfully registered";
+    typeMessages["MESSAGE1"] = "success";
+    // MESSAGE 2
+    tittleMessages["MESSAGE2"] = "No access!";
+    messages["MESSAGE2"] = "You dont't have permissions to access to the attempt print";
+    typeMessages["MESSAGE2"] = "error";
+}
+
+// Load the table
 
 
 function loadTable() {
@@ -25,6 +48,8 @@ function loadTable() {
 }
 
 // 2A. Define the method for the onclick (myFunction())
+
+
 function deletePrint(printName, printId) {
     swal({
         title: 'Are you sure?',
