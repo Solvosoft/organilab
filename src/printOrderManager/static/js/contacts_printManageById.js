@@ -33,15 +33,18 @@ function loadTable() {
                 "pk": printObjectId,
             }
         }, // Data sent with the delete request
-        "destroy": true, // Permite reinicializar la tabla
+        "destroy": true, // Allow reload table
         responsive: true,
         "fixedHeader": true,
-        "columnDefs": [{
+        "language": {
+            "url": "/get_dataset_translation"
+        }
+        /*"columnDefs": [{
             "width": "58%",
             "targets": 2
         }]
-        //"scrollY": 200,
-        //"scrollX": true
+        "scrollY": 200,
+        "scrollX": true*/
     });
 }
 

@@ -1,5 +1,6 @@
 {% load static i18n datasets %}
 {% load staticfiles %}
+{% load guardian_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +28,8 @@
     {% block content %}
 
 <body>
+    <!-- Loading Permissions -->
+    {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
     <div id="pageLoading"></div>
     <header>
@@ -267,8 +270,8 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i class="fa fa-home"></i><span
-                                    class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
+                            <a class="active" href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i
+                                    class="fa fa-home"></i><span class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-info-circle"></i><span class="side-menu-title">&nbsp;
@@ -276,13 +279,28 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i>
-                                <span class="side-menu-title">&nbsp;{% trans 'Contacts' %}</span></a>
+                            {% if "changeContacts_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-users"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Contacts' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">View
+                                        and Edit Contacts</a>
+                                </li>
+                                <li>
+                                    <a href="#">Add Contacts</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i><span
+                                    class="side-menu-title">&nbsp;
+                                    {% trans 'Contacts' %}</span></a>
+                            {% endif %}
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Paper Types' %}</span></a>
-
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-calendar-alt"></i><span class="side-menu-title"> &nbsp;

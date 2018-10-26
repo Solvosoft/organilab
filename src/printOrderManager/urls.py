@@ -24,7 +24,7 @@ router.register(r'contacts', ContactViewSet)
 urlpatterns = printObjectCRUD.get_urls() + [
     url(r'index_printOrderManager', index_printOrderManager,
         name='index_printOrderManager'),
-    url(r'^list$', get_list_printObject, name="list_printObject"),
+    url(r'^list_printObject$', get_list_printObject, name="list_printObject"),
     url(r'index_printManager', index_printManager,
         name='index_printManager'),
     url(r'^printLogin$', PrintLogin.as_view(),

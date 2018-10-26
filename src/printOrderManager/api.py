@@ -65,17 +65,9 @@ class ContactSerializer(serializers.ModelSerializer):
 # Viewset for the Contact Model
 
 class ContactViewSet(viewsets.ModelViewSet):
-    """
-    Example empty viewset demonstrating the standard
-    actions that will be handled by a router class.
-
-    If you're using format suffixes, make sure to also include
-    the `format=None` keyword argument for each action.
-    """
-
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-    permission_classes = [IsAuthenticated, ]  # Aqui van todos los permisos
+    queryset = Contact.objects.all()  # All the contacts
+    serializer_class = ContactSerializer  # Serializer
+    permission_classes = [IsAuthenticated, ]  # Required permissions
 
     """
     def list(self, request):
