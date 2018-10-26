@@ -23,7 +23,7 @@ from django.utils.decorators import method_decorator
 # Import for messages
 from django.contrib import messages
 # Import for response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 # Import JSON
 import json
 # Import for the reverse lazy, reverse, get_object_or_404 and redirect
@@ -76,7 +76,7 @@ class PrintRegister(FormView):
     #  This method is called when the data inserted in the form is valid and saved
     def get_success_url(self):
         text_message = _(
-            'Your print has been successfully registered.')
+            'MESSAGE1')
         messages.add_message(self.request, messages.SUCCESS, text_message)
         dev = reverse('printOrderManager:index_printManager')
         return dev
@@ -214,16 +214,41 @@ def delete_print_byId(request):
         # Redirect to other site
         return redirect('printOrderManager:index_printOrderManager')
 
+
 # METHODS FOR THE PRINT MANAGER
 # Enter to the Print Manager (SB Admin 2: https://startbootstrap.com/template-overviews/sb-admin-2/) 
+# Method to verify if the user is the owner of the print or is a contact
 
+
+def have_permissions(printObject, userId):
+    permission = False
+    if ((printObject.responsible_user).id == userId):
+        permission = True
+        return permission
+    else:
+        contacts = printObject.contacts.all()
+        try:
+            user = contacts.get(assigned_user_id = userId)
+            permission = True
+            return permission
+        except Contact.DoesNotExist: # printOrderManager.models.DoesNotExist
+            return permission
+
+
+# Method to display the index page of the Print Manager
 
 @login_required
 def index_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
-    return render(request, 'printManageById/index_printManageById.html', {
-            'printObject': printObject,  # Parametros enviados con la vista.
-        })
+    userId = request.user.id
+    if(have_permissions(printObject, userId) is True):
+        return render(request, 'printManageById/index_printManageById.html', {
+                'printObject': printObject,  # Parameters send with the view
+            })
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
 
 # Method to give or drop permissions to a user
 

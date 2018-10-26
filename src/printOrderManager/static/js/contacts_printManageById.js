@@ -1,8 +1,12 @@
 // GLOBAL VARS
+
 // Django REST Framework
 const coreapi = window.coreapi // Loaded by `coreapi.js`
 const schema = window.schema // Loaded by `schema.js`
+
 // Initialize a client
+
+
 let auth = new coreapi.auth.SessionAuthentication({
     csrfCookieName: 'csrftoken',
     csrfHeaderName: 'X-CSRFToken'
@@ -16,14 +20,22 @@ const object = "contact";
 const tableId = "contacts";
 
 // This functions is called when the document is ready
+
+
 $(document).ready(function () {
     loadTable();
     defineErrors();
 });
 
+// Define the errors for the contact page
+
+
 function defineErrors() {
     errors["404 Not Found"] = "The " + object + " has not been found and therefore has not been deleted";
 }
+
+// Load the table
+
 
 function loadTable() {
     $('#' + tableId).DataTable({
@@ -47,6 +59,9 @@ function loadTable() {
         "scrollX": true*/
     });
 }
+
+// Set the permissions to an user
+
 
 function permissionsUser(printId, userId, permission) {
     $.ajax({
@@ -112,6 +127,9 @@ function permissionsUser(printId, userId, permission) {
     });
 }
 
+// Return the icon in accordance with the permission
+
+
 function getIcon(permission) {
     if (permission == 'i') {
         return 'fas fa-info-circle';
@@ -135,6 +153,9 @@ function getIcon(permission) {
     }
 }
 
+// Return the notify in accordance with the value
+
+
 function getTypeNotify(value) {
     if (value == true) {
         return 'info';
@@ -142,6 +163,8 @@ function getTypeNotify(value) {
         return 'success';
     }
 }
+
+// Function to delete a contact from a printObject
 
 function deleteContact(pkContact, userName) {
     swal({
