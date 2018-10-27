@@ -1,5 +1,5 @@
 from rest_framework import viewsets, serializers
-from printOrderManager.models import RequestLabelPrint, Contact
+from printOrderManager.models import RequestLabelPrint, Contact, PrintObject
 from rest_framework.permissions import IsAuthenticated
 
 # DJANGO REST FRAMEWORK
@@ -59,7 +59,7 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact  # Model Created
         # Needed fields of the model
-        fields = ('id', 'phone', 'assigned_user')
+        fields = ('id', 'phone', 'assigned_user', 'state')
 
 
 # Viewset for the Contact Model
@@ -68,6 +68,46 @@ class ContactSerializer(serializers.ModelSerializer):
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()  # All the contacts
     serializer_class = ContactSerializer  # Serializer
+    permission_classes = [IsAuthenticated, ]  # Required permissions
+
+    """
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+    """
+
+
+# Serializer for the Print Object Model
+
+
+class PrintObjectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PrintObject  # Model Created
+        # Needed fields of the model
+        fields = ('responsible_user', 'email', 'phone', 'location', 'geolocation', 'name', 'logo', 'qualification',
+                  'creation_date', 'state', 'paperType', 'contacts', 'schedules', 'description', 'advertisement')
+
+# Viewset for the Contact Model
+
+
+class PrintObjectViewSet(viewsets.ModelViewSet):
+    queryset = PrintObject.objects.all()  # All the contacts
+    serializer_class = PrintObjectSerializer  # Serializer
     permission_classes = [IsAuthenticated, ]  # Required permissions
 
     """
