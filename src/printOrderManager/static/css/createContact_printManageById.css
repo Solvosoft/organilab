@@ -1,0 +1,19 @@
+.title {
+    color: rgb(78, 137, 189) !important;
+    size: 40;
+    font-size: 20px !important;
+}
+
+.subtitle {
+    font-size: 200%;
+    color: #284675;
+}
+
+.colorIcon {
+    color: white !important;
+    background-color: #93c3eb !important;
+}
+
+.colorStatic {
+    color: #4894d3 !important;
+}

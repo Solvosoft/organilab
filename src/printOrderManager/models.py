@@ -21,6 +21,7 @@ class Contact(models.Model):     # Fixed: Use user for the contacts
         validators=[phone_regex], max_length=15, blank=True, verbose_name=_("Phone"))  # validators should be a list
     assigned_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='Assigned_User')
+    state = models.TextField(_('State'), default='Enabled', max_length=255)
 
     class Meta:
         ordering = ('pk',)

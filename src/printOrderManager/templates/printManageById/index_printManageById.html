@@ -50,9 +50,8 @@
 
                 </div>
 
-                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">ORGANILAB -
-                    PRINT
-                    MANAGER</a>
+                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">
+                    {% trans 'ORGANILAB - PRINT MANAGER' %} </a>
 
 
                 <ul class="nav navbar-top-links navbar-right">
@@ -108,7 +107,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>Read All Qualifications</strong>
+                                    <strong>{% trans 'Read All Qualifications' %}</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -174,7 +173,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>See All Orders</strong>
+                                    <strong>{% trans 'See All Orders' %}</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -190,7 +189,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-users fa-fw"></i>&nbsp Total Contacts
+                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -199,7 +198,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp Advertisement
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp {% trans 'Advertisement' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -208,7 +207,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp Schedule
+                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp {% trans 'Schedule' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -217,7 +216,8 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp Most Requested Paper Type
+                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp
+                                        {% trans 'Most Requested Paper Type' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -226,7 +226,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-star fa-fw"></i>&nbsp Most qualification given
+                                        <i class="fas fa-star fa-fw"></i>&nbsp {% trans 'Most qualification given' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -285,11 +285,12 @@
                                 </span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">View
-                                        and Edit Contacts</a>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Contacts' %}</a>
                                 </li>
                                 <li>
-                                    <a href="#">Add Contacts</a>
+                                    <a href="{% url 'printOrderManager:createContact_printManageById' printObject.id %}">
+                                        {% trans 'Add Contacts' %}</a>
                                 </li>
                             </ul>
                             {% else %}
