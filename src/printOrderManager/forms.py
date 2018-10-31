@@ -25,6 +25,8 @@ from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 # Forms for the severals models
 
 
+# Form to register a print , it have the several widgets and location
+
 class PrintRegisterForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Print Name (Ex: Print)'}))
@@ -44,6 +46,8 @@ class PrintRegisterForm(forms.ModelForm):
             'description': CKEditorWidget(attrs={'class': 'form-control center', 'lang': settings.LANGUAGE_CODE}),
         }
 
+# Form to login a print , it have the several widgets and location
+
 
 class PrintLoginForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(
@@ -60,6 +64,8 @@ class PrintLoginForm(forms.ModelForm):
             'location': GooglePointFieldWidget,
             'geolocation': GoogleStaticOverlayMapWidget,
         }
+
+# Form to register a print , without field specification
 
 
 class FormPrintObject(forms.ModelForm):

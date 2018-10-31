@@ -21,6 +21,7 @@ class Contact(models.Model):     # Fixed: Use user for the contacts
         validators=[phone_regex], max_length=15, blank=True, verbose_name=_("Phone"))  # validators should be a list
     assigned_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='Assigned_User')
+    state = models.TextField(_('State'), default='Enabled', max_length=255)
 
     class Meta:
         ordering = ('pk',)
@@ -141,3 +142,21 @@ class PrintObject(models.Model):
             ("changeAdvertisements_printObject", _(
                 "Can edit the print advertisements")),
         )
+
+# DJANGO REST FRAMEWORK
+
+
+class RequestLabelPrint(models.Model):
+    STATUS_CHOICES = (
+        (0, 'Requested'),
+        (1, 'Preparing'),
+        (2, 'Done'),
+        (3, 'Rejected'),
+        (4, 'Delivered'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    printer = models.ForeignKey(PrintObject, on_delete=models.CASCADE)
+    add_date = models.DateTimeField(auto_now_add=True)
+    status = models.SmallIntegerField(default=0, choices=STATUS_CHOICES)
+
+    def str(self):
+        return str(self.user) + " -- " + str(self.print)
