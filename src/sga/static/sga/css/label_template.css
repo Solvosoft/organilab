@@ -91,10 +91,10 @@
 }
 /* Pre designed template color no selected */
 .pre_designed_template{
-    border:1px solid black;
+    border:2px solid black;
 }
 .pre_designed_template_horizontal{
-    border:1px solid black;
+    border:2px solid black;
     margin-top: 26%;
     margin-bottom: 20%;
 }
