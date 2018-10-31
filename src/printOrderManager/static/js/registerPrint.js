@@ -1,5 +1,4 @@
-// A $( document ).ready() block.
+// This functions is called when the document is ready
 $(document).ready(function () {
-    //    console.log("Readyyyy!!");
-    //    $("#id_phone").val("+506");
+
 });

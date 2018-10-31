@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'constance',
     'constance.backends.database',
     'rest_framework',
-    'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
     'msds',
     'sga',
@@ -84,7 +83,7 @@ if FULL_APPS:
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.TokenAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
         ),
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
