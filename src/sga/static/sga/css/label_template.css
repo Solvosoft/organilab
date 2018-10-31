@@ -9,38 +9,38 @@
 
 /* Label Creator Card */
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.400) !important;
     transition: 0.3s;
     width: 100%;
 }
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.500) !important;
 }
 .container {
     padding: 8px 16px;
 }
 /* Template option Card */
 .template_card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
     transition: 0.3s;
     width: 20%;
     display: inline-block;
     margin-top: 10px;
     margin-left: 40px;
     border-style: solid;
-    border-color:#add8e6;
+    border-color:#76a1c3;
     border-width: thin;
 }
 /* Template option Card selected */
 .template_card_selected {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
     transition: 0.3s;
     width: 20%;
     display: inline-block;
     margin-top: 10px;
     margin-left: 40px;
     border-style: solid;
-    border-color:#64e115;
+    border-color:#005392;
     border-width: thin;
 }
 /* Center label */
@@ -85,16 +85,16 @@
 }
 /* Button border color selected */
 .button_border_selected{
-    border-color: #64e115 !important;
-    background-color: #64e115 !important;
+    border-color: #005392 !important;
+    background-color: #005392 !important;
     color:white !important;
 }
 /* Pre designed template color no selected */
 .pre_designed_template{
-    border:1px solid black;
+    border:2px solid black;
 }
 .pre_designed_template_horizontal{
-    border:1px solid black;
+    border:2px solid black;
     margin-top: 26%;
     margin-bottom: 20%;
 }
