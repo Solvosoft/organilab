@@ -137,7 +137,7 @@ def getSubstanceInformation(request):
                 pass
             elif ('H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412'):
                 index = dangerIndicationsCodeSubstance.index('H402')
-                dangerIndicationsCodeSubstance.pop(index)
+                dangerIndicatfionsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
@@ -171,7 +171,8 @@ def getSubstanceInformation(request):
                     if (str(pictogram.name) in pictogramasNameSubstance):
                         pass
                     else:
-                        pictogramasNameSubstance.append(str(pictogram.name))
+                        if(str(pictogram.name) != 'Sin Pictograma'):
+                            pictogramasNameSubstance.append(str(pictogram.name))
         substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
         substanceInformation['Pictograms'] = pictogramasNameSubstance
         # ---------------------------------------------------------------------
