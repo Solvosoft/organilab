@@ -3,6 +3,7 @@ var tableId = "printObjects";
 var messages = new Array();
 var typeMessages = new Array();
 var tittleMessages = new Array();
+var table = undefined;
 
 
 // This functions is called when the document is ready
@@ -29,21 +30,29 @@ function defineMessages() {
     tittleMessages["MESSAGE2"] = "No access!";
     messages["MESSAGE2"] = "You dont't have permissions to access to the attempt print";
     typeMessages["MESSAGE2"] = "error";
+    // MESSAGE 3
+    tittleMessages["MESSAGE3"] = "No access!";
+    messages["MESSAGE3"] = "Your contact is disabled, contact the responsible user of the print";
+    typeMessages["MESSAGE3"] = "error";
 }
 
 // Load the table
 
 
 function loadTable() {
-    $('#' + tableId).DataTable({
-        "ajax": '/printOrderManager/list_printObject',
-        "destroy": true, // Allow reload table
-        responsive: true,
-        "fixedHeader": true,
-        "language": {
-            "url": "/get_dataset_translation"
-        }
-    });
+    if (table == undefined) {
+        table = $('#' + tableId).DataTable({
+            "ajax": '/printOrderManager/list_printObject',
+            "destroy": true, // Allow reload table
+            responsive: true,
+            "fixedHeader": true,
+            "language": {
+                "url": "/get_dataset_translation"
+            }
+        });
+    } else {
+        table.ajax.reload(null, false);
+    }
     //table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
 }
 

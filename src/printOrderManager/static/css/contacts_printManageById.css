@@ -8,3 +8,16 @@
     font-size: 200%;
     color: #284675;
 }
+
+.colorIcon {
+    color: white !important;
+    background-color: #93c3eb !important;
+}
+
+.colorStatic {
+    color: #4894d3 !important;
+}
+
+.colorError {
+    color: rgb(185, 8, 8) !important;
+}
