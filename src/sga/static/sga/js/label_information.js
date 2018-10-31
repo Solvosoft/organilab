@@ -8,6 +8,10 @@
 
 // Control label information validation
 var errorsValidation = $('.wizard-card form');
+// Control loading message
+var stopLoadingMessageHorizontal = 0;
+var stopLoadingMessageVertical = 0;
+var labelElements = 7;
 
 
 $(document).ready(function () {
@@ -79,11 +83,13 @@ $(document).ready(function () {
         if (hasClass(label_information, 'active')) {
             errorsValidation.validate();
             if(errorsValidation.valid()==false){
+                /*
                 swal({
                     type: 'error',
                     title: 'Información incompleta',
                     text: 'Por favor, compruebe los datos solicitados.'
                 })
+                */
             }else{
                 //Label properties
                 // #1: Substance
@@ -119,13 +125,13 @@ $(document).ready(function () {
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('label_information', label_JSON_String);
 
-                /*var obj = JSON.parse(localStorage.getItem('label_information'));
-                alert(JSON.stringify(obj));*/
-
-                /* Set blank templates images according to recipient size */
-                set_blank_templates();
-
-                /* Set pre designed templates according to selected substance */
+                // Show loading message
+                $('#loadingMessage').modal("show");
+                // Set blank templates and pre designed templates according to provided information 
+                stopLoadingMessageHorizontal = 0;
+                stopLoadingMessageVertical =0;
+                labelElements = 7;
+                set_blank_templates(); 
                 set_pre_designed_templates();
             }
         }
@@ -136,6 +142,7 @@ $(document).ready(function () {
 function changePlaceHolder(sel) {
     sel.style.cssText = 'color: #000 !important';
 }
+
 // Element contains a class 
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
