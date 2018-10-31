@@ -435,6 +435,49 @@ def createContact_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
+# Methods to simplify the contacts options
+
+
+def define_dict_permissions(numero):
+    dictionaryPermissions = {}
+    if(numero == 1):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-info-circle"',
+            'symbolPermission': 'i',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Information')+'"><i '+'class="fas fa-info-circle"'+'></i></div> '
+        }
+    elif(numero == 2):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-users"',
+            'symbolPermission': 'c',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Contacts')+'"><i '+'class="fas fa-users"'+'></i></div> '
+        }
+    elif(numero == 3):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-paper-plane"',
+            'symbolPermission': 'p',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            _('Paper Types')+'"><i '+'class="fas fa-paper-plane"'+'></i></div> '
+        }
+    elif(numero == 4):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-calendar-alt"',
+            'symbolPermission': 's',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            _('Schedules')+'"><i '+'class="fas fa-calendar-alt"'+'></i></div> '
+        }
+    elif(numero == 5):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-bell"',
+            'symbolPermission': 'a',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            _('Advertisements')+'"><i '+'class="fas fa-bell"'+'></i></div> '
+        }                
+    return dictionaryPermissions
+
+
 # Method that return the list of contacts of an specific print
 
 
@@ -487,60 +530,14 @@ def get_list_contactByPrint(request):
         else:
             permissions = ""
 
-        symbol = 'class="fas fa-info-circle"'
-        symbolPermission = 'i'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Information')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='i"+str(user.id)+"' data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='i"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-users"'
-        symbolPermission = 'c'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Contacts')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-paper-plane"'
-        symbolPermission = 'p'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Paper Types')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='p"+str(user.id)+"'  data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='p"+str(user.id)+"'  data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-calendar-alt"'
-        symbolPermission = 's'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Schedules')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='s"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='s"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-bell"'
-        symbolPermission = 'a'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Advertisements')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='a"+str(user.id)+"'  data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='a"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
+        # Loop the permissions getting each dictionarie
+        for x in range(1, 6):
+            dict = define_dict_permissions(x) # Get the dictionarie
+            checked = ''
+            if(user.has_perm(nameOfThePermission(dict['symbolPermission']), printObject) is True): # Check if the user has permissions
+                checked = 'checked'
+            permissions += "<input "+checked+" "+toggle+" id='"+dict['symbolPermission']+str(user.id)+"' data-off='"+dict['textInput']+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(
+            printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(dict['symbolPermission']) + "\" )'  data-size='small'  data-on='"+dict['textInput']+"'   data-onstyle='primary'>&nbsp;"
 
         state = None
         actionState = None
@@ -557,8 +554,6 @@ def get_list_contactByPrint(request):
             actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
             actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + user.username + "\",\"" + name + "\" ,\"" + obj.state + "\",\"" + obj.phone + "\" ,\"" + str(obj.id) + "\" )' data-toggle='modal' data-target='#formUpdateContact'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
                 _('Edit')+"</a></li>"
-            # actions += "<li><a  href='#' ><span id='state' class='far fa-eye' aria-hidden='true'></span>&nbsp; " + \
-            #    _(actionState)+"</a></li>"
             actions += "<li><a  href='#' onclick='deleteContact(\"" + str(obj.id) + "\" ,\"" + user.username + \
                 "\"  )' ><span id='delete' class='fas fa-user-minus' aria-hidden='true'></span>&nbsp; " + \
                 _('Delete')+"</a></li>"
