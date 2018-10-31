@@ -18,6 +18,7 @@ let client = new coreapi.Client({
 var errors = new Array();
 const object = "contact";
 const tableId = "users";
+var table = undefined;
 
 
 
@@ -26,13 +27,18 @@ const tableId = "users";
 var formValues = new Array();
 
 
+// Define the errors validation of the form
+
+var errorsValidation = $('.createContact-card form');
+
 // This functions is called when the document is ready
 
 
 $(document).ready(function () {
     loadTable();
     defineErrors();
-    defineFormValues(0, 0, "", "");
+    defineValues(0, 0, "", "");
+    defineValidations();
 
     $('.tooltip-demo').tooltip({
         selector: "[data-toggle=tooltip]",
@@ -43,6 +49,47 @@ $(document).ready(function () {
         .popover()
 });
 
+
+// This function define the validations
+
+function defineValidations() {
+    /**
+     * Custom validator for phone number
+     */
+    $.validator.addMethod("phoneNumberS", function (value, element) {
+        return this.optional(element) || /^\+?1?\d{9,15}$/i.test(value);
+    }, "Phone number must be entered in the format: '+55577777777'");
+
+    errorsValidation.validate({
+        rules: {
+            userPhoneNumber: {
+                required: false,
+                maxlength: 15,
+                phoneNumberS: true,
+                //regex: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{6,}$/",
+            },
+        },
+        errorElement: 'span',
+        errorClass: 'help-block colorError',
+        errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+                error.insertAfter(element.parent());
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        highlight: function (element) {
+            $(element).closest('.form-group, .has-feedback').removeClass('has-success').addClass('has-error');
+        },
+
+        unhighlight: function (element) {
+            $(element).closest('.form-group, .has-feedback').removeClass('has-error').addClass('has-success');
+        }
+    });
+
+}
+
+
 // Define the errors for the contact page
 
 
@@ -52,7 +99,7 @@ function defineErrors() {
 
 // Define the values of the form
 
-function defineFormValues(printId, userId, userName, userFullName) {
+function defineValues(printId, userId, userName, userFullName) {
     formValues["printId"] = printId;
     formValues["userId"] = userId;
     formValues["userName"] = userName;
@@ -61,36 +108,58 @@ function defineFormValues(printId, userId, userName, userFullName) {
     formValues["contactState"] = 0;
 }
 
+// Clean the inputs of the form
+
+function cleanForm() {
+    $('#userPhoneNumber').val("");
+    var validations = errorsValidation.validate(); //Validate the form
+    validations.resetForm();
+    $('.form-group').each(function () {
+        $(this).removeClass('has-success');
+    });
+    $('.form-group').each(function () {
+        $(this).removeClass('has-error');
+    });
+    $('.form-group').each(function () {
+        $(this).removeClass('has-feedback');
+    });
+}
+
 // Load the table
 
 
 function loadTable() {
-    $('#' + tableId).DataTable({
-        "ajax": {
-            "url": '/printOrderManager/list_usersNotRelatedToPrint',
-            "data": { //Parameters send it in a POST
-                "pk": printObjectId,
-            }
-        }, // Data sent with the delete request
-        "destroy": true, // Allow reload table
-        responsive: true,
-        "fixedHeader": true,
-        "language": {
-            "url": "/get_dataset_translation"
-        }
-        /*"columnDefs": [{
-            "width": "58%",
-            "targets": 2
-        }]
-        "scrollY": 200,
-        "scrollX": true*/
-    });
+    if (table == undefined) {
+        table = $('#' + tableId).DataTable({
+            "ajax": {
+                "url": '/printOrderManager/list_usersNotRelatedToPrint',
+                "data": { //Parameters send it in a POST
+                    "pk": printObjectId,
+                }
+            }, // Data sent with the delete request
+            "destroy": true, // Allow reload table
+            responsive: true,
+            "fixedHeader": true,
+            "language": {
+                "url": "/get_dataset_translation"
+            },
+            /*"columnDefs": [{
+                "width": "58%",
+                "targets": 2
+            }]
+            "scrollY": 200,
+            "scrollX": true*/
+        });
+    } else {
+        table.ajax.reload(null, false);
+    }
 }
 
 // Set the values to the form
 
 function defineValuesForm(printId, userId, userName, userFullName) {
-    defineFormValues(printId, userId, userName, userFullName);
+    cleanForm();
+    defineValues(printId, userId, userName, userFullName);
     if (userFullName != " ") {
         $('#userId').text(userName + " : " + userFullName);
     } else {
@@ -102,8 +171,9 @@ function defineValuesForm(printId, userId, userName, userFullName) {
 // Save the contact of the form
 
 function saveContact() {
+    errorsValidation.validate(); //Validate the form
     var idSavedContact = 0;
-    if (true) {
+    if (errorsValidation.valid() == true) {
         //Reload the values
         formValues["contactPhoneNumber"] = $('#userPhoneNumber').val();
         formValues["contactState"] = $('#stateContact').val();

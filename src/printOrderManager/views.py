@@ -257,6 +257,26 @@ def have_permissions(printObject, userId):
             return permission
 
 
+# Method to verify if the contact is enabled
+
+def isEnabled_contact(printObject, userId):
+    permission = False
+    if ((printObject.responsible_user).id == userId):
+        permission = True
+        return permission
+    else:
+        contacts = printObject.contacts.all()
+        try:
+            user = contacts.get(assigned_user_id=userId)
+            if(user.state == "Enabled"):
+                permission = True
+            else:
+                permission = False
+            return permission
+        except Contact.DoesNotExist:  # printOrderManager.models.DoesNotExist
+            return permission
+
+
 # Method to display the index page of the Print Manager
 
 @login_required
@@ -266,9 +286,15 @@ def index_printManageById(request, pk):
         user = request.user
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
-        return render(request, 'printManageById/index_printManageById.html', {
-            'printObject': printObject,  # Parameters send with the view
-        })
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/index_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
@@ -296,22 +322,22 @@ def giveDropPermissionsById(request):
                     PrintObject, pk=int(request.GET.get('pk')))
                 if (str(request.GET.get('action')) == "true"):  # Otorgar Permisos
                     if (user.has_perm(permission, print)):
-                        response_data['msg'] = '&nbsp; The user already has permission to edit the '+messageOfThePermission(
+                        response_data['msg'] = '&nbsp; The user already has permission to edit and add the '+messageOfThePermission(
                             str(request.GET.get('permissionType')))  # { 'msg': 'Post was deleted'}    response_data[]
                         response_data['status'] = '1'
                     else:
-                        response_data['msg'] = '&nbsp; Permission to edit the '+messageOfThePermission(str(request.GET.get(
+                        response_data['msg'] = '&nbsp; Permission to edit and add the '+messageOfThePermission(str(request.GET.get(
                             'permissionType')))+' has been assigned'  # { 'msg': 'Post was deleted'}    response_data[]
                         assign_perm(permission, user, print)
                         response_data['status'] = '0'
                 else:  # Quitar Permisos
                     if (user.has_perm(permission, print)):
-                        response_data['msg'] = '&nbsp; Permission to edit the '+messageOfThePermission(str(request.GET.get(
+                        response_data['msg'] = '&nbsp; Permission to edit and add the '+messageOfThePermission(str(request.GET.get(
                             'permissionType')))+' has been removed'  # { 'msg': 'Post was deleted'}    response_data[]
                         remove_perm(permission, user, print)
                         response_data['status'] = '0'
                     else:
-                        response_data['msg'] = '&nbsp; The user already hasn\'t permission to edit the '+messageOfThePermission(
+                        response_data['msg'] = '&nbsp; The user already hasn\'t permission to edit and add the '+messageOfThePermission(
                             str(request.GET.get('permissionType')))  # { 'msg': 'Post was deleted'}    response_data[]
                         response_data['status'] = '1'
                 return HttpResponse(json.dumps(response_data), content_type="application/json")
@@ -371,10 +397,15 @@ def contacts_printManageById(request, pk):
         user = request.user
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
-        return render(request, 'printManageById/contacts_printManageById.html', {
-            'printObject': printObject,  # Parametros enviados con la vista.
-            'user': user,
-        })
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/contacts_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
@@ -390,10 +421,15 @@ def createContact_printManageById(request, pk):
         user = request.user
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
-        return render(request, 'printManageById/createContact_printManageById.html', {
-            'printObject': printObject,  # Parametros enviados con la vista.
-            'user': user,
-        })
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/createContact_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
@@ -433,8 +469,10 @@ def get_list_contactByPrint(request):
     data = []
     cont = 0
     permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
+
     for obj in page.object_list:
         user = User.objects.get(pk=int(obj.assigned_user_id))
+        name = user.first_name+" "+user.last_name
         toggle = ""
 
         # Set disable the bootstrap toogle
@@ -504,20 +542,30 @@ def get_list_contactByPrint(request):
             permissions += "<input "+toggle+" id='a"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
                 printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
 
+        state = None
+        actionState = None
+        if(obj.state == "Enabled"):
+            state = "<span class='label label-success'>Enabled</span>"
+            actionState = "Disabled"
+        else:
+            state = "<span class='label label-default'>Disabled</span>"
+            actionState = "Enabled"
+
         # Actions Section
         if(request.user.has_perm('changeContacts_printObject'), printObject is True):
             # 1A. Define the onclick method
             actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
-            actions += "<li><a  href='#' ><span id='edit' class='fas fa-edit' aria-hidden='true'></span>&nbsp; " + \
+            actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + user.username + "\",\"" + name + "\" ,\"" + obj.state + "\",\"" + obj.phone + "\" ,\"" + str(obj.id) + "\" )' data-toggle='modal' data-target='#formUpdateContact'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
                 _('Edit')+"</a></li>"
-            actions += "<li><a  href='#' ><span id='state' class='far fa-eye' aria-hidden='true'></span>&nbsp; " + \
-                _('Disable')+"</a></li>"
-            actions += "<li><a  onclick='deleteContact(\"" + str(obj.id) + "\" ,\"" + user.username + \
+            # actions += "<li><a  href='#' ><span id='state' class='far fa-eye' aria-hidden='true'></span>&nbsp; " + \
+            #    _(actionState)+"</a></li>"
+            actions += "<li><a  href='#' onclick='deleteContact(\"" + str(obj.id) + "\" ,\"" + user.username + \
                 "\"  )' ><span id='delete' class='fas fa-user-minus' aria-hidden='true'></span>&nbsp; " + \
                 _('Delete')+"</a></li>"
             actions += "</ul></div>"
             # Data Section
             data.append([
+                state,
                 user.username,
                 user.first_name+" "+user.last_name,
                 permissions,
@@ -526,6 +574,7 @@ def get_list_contactByPrint(request):
         else:
             # Data Section
             data.append([
+                obj.state,
                 user.username,
                 user.first_name+" "+user.last_name,
                 permissions,
@@ -566,16 +615,20 @@ def get_list_usersNotRelatedToPrint(request):
     # Filter Section
     if q:
         listOfUsers = User.objects.all().filter(
-            Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q) | Q(username__icontains=q).order_by('username')) 
+            Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q) | Q(username__icontains=q).order_by('username'))
     else:
         listOfUsers = User.objects.all()
 
-    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk'))) # Get an specific Print Object acording with the pk
-    objs = printObject.contacts.all() # Get all the contacts from a print
-    listOfId = objs.values_list('assigned_user_id', flat=True)  # Return all the id from the objs, Flat True means that is a single value
+    # Get an specific Print Object acording with the pk
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+    objs = printObject.contacts.all()  # Get all the contacts from a print
+    # Return all the id from the objs, Flat True means that is a single value
+    listOfId = objs.values_list('assigned_user_id', flat=True)
     for obj in listOfId:
         print("Obj "+str(obj))
-    finalUserList = listOfUsers.exclude(id__in=listOfId).exclude(id=printObject.responsible_user.id) # Exclude from the Query Set the elements with the id on listOfId
+    # Exclude from the Query Set the elements with the id on listOfId
+    finalUserList = listOfUsers.exclude(id__in=listOfId).exclude(
+        id=printObject.responsible_user.id)
     recordsFiltered = finalUserList.count()
     p = Paginator(finalUserList, length)
     if pgnum > p.num_pages:
@@ -585,7 +638,8 @@ def get_list_usersNotRelatedToPrint(request):
     cont = 0
     for userObject in page.object_list:
         name = userObject.first_name+" "+userObject.last_name
-        action = "<button type='button' onclick='defineValuesForm(\"" + str(printObject.id) + "\" ,\"" + str(userObject.id) + "\" ,\"" + userObject.username + "\",\"" + name + "\" )' class='btn btn-info btn-sm' data-toggle='modal' data-target='#myModal'>Add Contact</button>"
+        action = "<button type='button' onclick='defineValuesForm(\"" + str(printObject.id) + "\" ,\"" + str(userObject.id) + "\" ,\"" + userObject.username + "\",\"" + \
+            name + "\" )' class='btn btn-info btn-sm' data-toggle='modal' data-target='#formAddContact'><i class='fas fa-user-plus'></i>&nbsp; Add Contact</button>"
         # Data Section
         data.append([
             userObject.username,

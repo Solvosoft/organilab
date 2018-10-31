@@ -17,3 +17,7 @@
 .colorStatic {
     color: #4894d3 !important;
 }
+
+.colorError {
+    color: rgb(185, 8, 8) !important;
+}
