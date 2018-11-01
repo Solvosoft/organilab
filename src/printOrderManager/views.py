@@ -435,6 +435,30 @@ def createContact_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
+# Method that return the vie to add a paper type on the Print Manager
+
+
+@login_required
+def createPaperType_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/createPaperType_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
 # Methods to simplify the contacts options
 
 

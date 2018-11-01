@@ -29,6 +29,7 @@ class Contact(models.Model):     # Fixed: Use user for the contacts
         verbose_name_plural = _('Contacts')
 
 
+# Reference to the creation of the Paper Type model: https://beatrizxe.com/es/blog/tipos-papel-impresion-mas-comunes.html
 class PaperType(models.Model):
     UNITS = (
         ('mm', _('Milimeters')),
@@ -41,6 +42,9 @@ class PaperType(models.Model):
     widthSize = models.FloatField(_('Width Size'))
     longSize = models.FloatField(_('Long Size'))
     name = models.TextField(_('Name'), default='', max_length=255)
+    grams = models.FloatField(_('Grams'))
+    available = models.TextField(
+        _('State'), default='Available', max_length=255)
     description = models.TextField(
         _('Description'), default='', max_length=255)
 
