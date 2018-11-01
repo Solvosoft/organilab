@@ -386,7 +386,7 @@
                                             {% trans '*' %}
                                             <div class="form-group input-group">
                                                 <span class="input-group-addon colorIcon"><i class="fas fa-balance-scale"></i></span>
-                                                <input id="gramsPaperType" name="gramsPaperType" type="number" class="form-control"
+                                                <input id="gramsPaperType" name="gramsPaperType" type="text" class="form-control"
                                                     placeholder='0'>
                                             </div>
                                         </div>
@@ -410,8 +410,7 @@
                                             {% trans '*' %}
                                             <div class="form-group input-group">
                                                 <span class="input-group-addon colorIcon"><i class="fas fa-font"></i></span>
-                                                <textarea placeholder='Description' class="form-control" id="descriptionPaperType"
-                                                    class="form-control" rows="4"></textarea>
+                                                <textarea placeholder='Description' class="form-control" id="descriptionPaperType" name="descriptionPaperType" rows="4"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -421,7 +420,7 @@
                                             {% trans '*' %}
                                             <div class="form-group input-group">
                                                 <span class="input-group-addon colorIcon"><i class="fas fa-exclamation-circle"></i></span>
-                                                <select class="form-control" id="stateContact">
+                                                <select class="form-control" id="unitSize">
                                                     <option value="Milimeters"> Milimeters (mm)</option>
                                                     <option value="Centimeters">Centimeters (cm)</option>
                                                     <option value="inch">Inch (inch)</option>
@@ -431,22 +430,22 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label>{% trans 'Width Size' %}</label>
+                                            <label>{% trans 'Long Size' %}</label>
                                             {% trans '*' %}
                                             <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-h"></i></span>
-                                                <input id="widthSize" name="widthSize" type="number" class="form-control"
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-v"></i></span>
+                                                <input id="longSize" name="longSize" type="text" class="form-control"
                                                     placeholder='0'>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label>{% trans 'Long Size' %}</label>
+                                            <label>{% trans 'Width Size' %}</label>
                                             {% trans '*' %}
                                             <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-v"></i></span>
-                                                <input id="longSize" name="longSize" type="number" class="form-control"
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-h"></i></span>
+                                                <input id="widthSize" name="widthSize" type="text" class="form-control"
                                                     placeholder='0'>
                                             </div>
                                         </div>
@@ -454,12 +453,11 @@
                                 </form>
                             </div>
                         </div>
-                        <br>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <button id="resetForm" type="button" class="btn btn-default">
                             {% trans 'Reset Form' %}</button>
                         &nbsp;&nbsp;
-                        <button type="button" class="btn btn-info" onclick="saveContact()">
+                        <button type="button" class="btn btn-info" onclick="savePaperType()">
                             {% trans 'Create Paper Type' %}</button>
                         <br>
                         <br>
@@ -502,7 +500,7 @@
     <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
     <!-- Jquery Validation lenguage -->
     <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/createContact_printManageById.js' %}"></script>
+    <script src="{% static 'js/createPaperType_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
