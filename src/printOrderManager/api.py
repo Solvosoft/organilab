@@ -1,5 +1,5 @@
 from rest_framework import viewsets, serializers
-from printOrderManager.models import RequestLabelPrint, Contact, PrintObject
+from printOrderManager.models import RequestLabelPrint, Contact, PrintObject, PaperType
 from rest_framework.permissions import IsAuthenticated
 
 # DJANGO REST FRAMEWORK
@@ -108,6 +108,46 @@ class PrintObjectSerializer(serializers.ModelSerializer):
 class PrintObjectViewSet(viewsets.ModelViewSet):
     queryset = PrintObject.objects.all()  # All the contacts
     serializer_class = PrintObjectSerializer  # Serializer
+    permission_classes = [IsAuthenticated, ]  # Required permissions
+
+    """
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+    """
+
+
+# Serializer for the Paper Type Model
+
+
+class PaperTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaperType  # Model Created
+        # Needed fields of the model
+        fields = ('unit_size', 'widthSize', 'longSize',
+                  'name', 'grams', 'available', 'description')
+
+
+# Viewset for the Paper Type Model
+
+
+class PaperTypeViewSet(viewsets.ModelViewSet):
+    queryset = PaperType.objects.all()  # All the paper types
+    serializer_class = PaperTypeSerializer  # Serializer
     permission_classes = [IsAuthenticated, ]  # Required permissions
 
     """

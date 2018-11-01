@@ -13,6 +13,7 @@
 
     {% block meta-keywords %} {% endblock %}
     {% block extrameta%} {% endblock %}
+    <title>Organilab | Print Manager</title>
 
     {% block css %}
     <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
@@ -300,8 +301,24 @@
                             {% endif %}
                         </li>
                         <li>
+                            {% if "changePaper_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-paper-plane"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Paper Types' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Paper Types' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createPaperType_printManageById' printObject.id %}">
+                                        {% trans 'Create Paper Type' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
                             <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Paper Types' %}</span></a>
+                            {% endif %}
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-calendar-alt"></i><span class="side-menu-title"> &nbsp;
