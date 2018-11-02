@@ -411,6 +411,29 @@ def contacts_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
+#  Method that enter to the section of Paper Types on the Print Manager
+
+@login_required
+def paperTypes_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/paperTypes_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))   
+
+
 # Method that return view to add contacts on the Print Manager
 
 
@@ -521,12 +544,11 @@ def get_list_contactByPrint(request):
 
     # Filter Section
     if q:
-        objs = PrintObject.objects.all().filter(Q(creation_date__icontains=q) |
-                                                Q(name__icontains=q) | Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) |
-                                                Q(responsible_user__first_name__icontains=q) | Q(responsible_user__last_name__icontains=q), Q(responsible_user_id=request.user.id)).order_by('creation_date')
+        printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+        objs = printObject.contacts.all().filter(Q(state__icontains=q) | Q(assigned_user_id__username__icontains=q) | Q(first_name_username__icontains=q) | Q(last_name__icontains=q)).order_by('assigned_user_id__username')
     else:
         printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
-        objs = printObject.contacts.all()
+        objs = printObject.contacts.all().order_by('assigned_user_id__username')
 
     recordsFiltered = objs.count()
     p = Paginator(objs, length)
@@ -666,6 +688,89 @@ def get_list_usersNotRelatedToPrint(request):
             userObject.email,
             action,
         ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
+
+# Method that return the list of paper types of an specific print
+
+
+@login_required
+def get_list_paperTypesByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.paperType.all.filter(
+            Q(unit_size__icontains=q) | Q(widthSize__icontains=q) | Q(longSize__icontains=q) | Q(name__icontains=q) | Q(grams__icontains=q) | Q(available__icontains=q)).order_by('name')
+    else:
+        objs = printObject.paperType.all().order_by('name')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.available == "Available"):
+            state = "<span class='label label-success'>Available</span>"
+        else:
+            state = "<span class='label label-default'>Not Available</span>"
+
+        # Actions Section
+        if(request.user.has_perm('changePaper_printObject'), printObject is True):
+            actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
+            actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(obj.id) + "\" ,\"" + obj.name + "\" ,\"" + str(obj.grams) + "\",\"" + (obj.available) + "\" ,\"" + obj.description + "\",\"" + obj.unit_size + "\" ,\"" + str(obj.longSize) + "\" ,\"" + str(obj.widthSize) + "\")' data-toggle='modal' data-target='#formUpdatePaperType'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
+                _('Edit')+"</a></li>"
+            actions += "<li><a  href='#' onclick='deletePaperType(\"" + str(obj.id) + "\" ,\"" + obj.name + \
+                "\"  )' ><span id='delete' class='fas fa-minus-circle' aria-hidden='true'></span>&nbsp; " + \
+                _('Delete')+"</a></li>"
+            actions += "</ul></div>"
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                str(obj.grams)+" g/m2",
+                str(obj.longSize)+" X "+str(obj.widthSize)+" "+obj.unit_size,
+                actions,
+            ])
+        else:
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                str(obj.grams)+" g",
+                str(obj.longSize)+" X "+str(obj.widthSize)+" "+obj.unit_size,
+            ])
 
     dev = {
         "data": data,

@@ -13,6 +13,7 @@
 
     {% block meta-keywords %} {% endblock %}
     {% block extrameta%} {% endblock %}
+    <title>Organilab | Print Manager</title>
 
     {% block css %}
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
@@ -76,12 +77,15 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button id="closeModal" type="button" class="btn btn-default" data-dismiss="modal">
-                        {% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" onclick="updateContact()">
-                        {% trans 'Update Contact' %}</button>
-                </div>
+                <div class="modal-footer"></div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="closeModal" type="button" class="btn btn-default" data-dismiss="modal">
+                    {% trans 'Close' %}</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-info" onclick="updateContact()">
+                    {% trans 'Update Contact' %}</button>
+                <br>
+                <br>
             </div>
             <!-- /.modal-content -->
         </div>
@@ -367,7 +371,7 @@
                                 </span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
+                                    <a href="{% url 'printOrderManager:paperTypes_printManageById' printObject.id %}">
                                         {% trans 'View and Edit Paper Types' %}</a>
                                 </li>
                                 <li>
