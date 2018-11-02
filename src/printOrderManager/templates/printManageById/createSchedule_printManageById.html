@@ -16,17 +16,27 @@
     <title>Organilab | Print Manager</title>
 
     {% block css %}
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/metisMenu.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css" />
     <link href="{% static 'css/SB-Admin2.1/sb-admin-2.css' %}" rel="stylesheet">
-    <link href="{% static 'css/SB-Admin2.1/morris.css' %}" rel="stylesheet">
-    <link href="{% static 'css/index_printManageById.css' %}" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-        crossorigin="anonymous">{% endblock %}
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+        crossorigin="anonymous">
+    <link href="{% static 'css/createSchedule_printManageById.css' %}" rel="stylesheet">
+    <!-- Toogle Button -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <!--- Sweetalert2  -->
+    <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
+    <!--  Clock-Picker -->
+    <link href="{% static 'css/Clock-Picker/bootstrap-clockpicker.min.css' %}" rel="stylesheet">
+
+    {% endblock %}
 
     {% block content %}
+
+
 
 <body>
     <!-- Loading Permissions -->
@@ -271,8 +281,8 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a class="active" href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i
-                                    class="fa fa-home"></i><span class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
+                            <a href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i class="fa fa-home"></i><span
+                                    class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-info-circle"></i><span class="side-menu-title">&nbsp;
@@ -316,7 +326,7 @@
                                 </li>
                             </ul>
                             {% else %}
-                            <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
+                            <a href="{% url 'printOrderManager:paperTypes_printManageById' printObject.id %}"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Paper Types' %}</span></a>
                             {% endif %}
                         </li>
@@ -336,8 +346,7 @@
                                 </li>
                             </ul>
                             {% else %}
-                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-calendar-alt"></i><span
-                                    class="side-menu-title">&nbsp;
+                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-calendar-alt"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Schedules' %}</span></a>
                             {% endif %}
                         </li>
@@ -357,161 +366,177 @@
             <!-- /.navbar-static-side -->
         </nav>
 
+
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2 class="page-header subtitle">{% trans 'Home' %}</h2>
+                    <h2 class="page-header subtitle">{% trans 'Create Schedule' %}</h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+
             <!-- /.row -->
             <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
+                <div class="col-lg-12">
+                    <div class="panel panel-info  animated bounce faster">
                         <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-users fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">10</span>
-                                    <div>&nbsp;Online Contacts!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-print fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">35</span>
-                                    <div>Total Orders!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-exclamation-circle fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">20</span>
-                                    <div>Orders Request!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-paper-plane fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">4</span>
-                                    <div>Paper Types!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <i class="fas fa-paper-plane fa-fw"></i> Quantity of orders by paper type
+                            {% trans 'Enter the required data to create a schedule' %}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="animated bounce slow">
-                                <center>
-                                    <div id="paperType-Graph"></div>
-                                </center>
+                            <div class="createSchedule-card">
+                                <form role="form" id="createScheduleForm">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{% trans 'Name' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fab fa-pied-piper"></i></span>
+                                                <input id="nameSchedule" name="nameSchedule" type="text" class="form-control"
+                                                    placeholder='Name'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{% trans 'State' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-check-square"></i></span>
+                                                <select class="form-control" id="stateSchedule">
+                                                    <option value="Enabled"> Enabled</option>
+                                                    <option value="Disabled">Disabled</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>{% trans 'Description' %}</label>
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-font"></i></span>
+                                                <textarea placeholder='Description' class="form-control" id="descriptionSchedule"
+                                                    name="descriptionSchedule" rows="4"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{% trans 'Start Day' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-calendar-check"></i></span>
+                                                <select class="form-control" id="startDay">
+                                                    <option value="Monday"> {% trans 'Monday' %}</option>
+                                                    <option value="Tuesday"> {% trans 'Tuesday' %}</option>
+                                                    <option value="Wednesday"> {% trans 'Wednesday' %}</option>
+                                                    <option value="Thursday"> {% trans 'Thursday' %}</option>
+                                                    <option value="Friday"> {% trans 'Friday' %}</option>
+                                                    <option value="Saturday"> {% trans 'Saturday' %}</option>
+                                                    <option value="Sunday"> {% trans 'Sunday' %}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{% trans 'Close Day' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-calendar-times"></i></span>
+                                                <select class="form-control" id="closeDay">
+                                                    <option value="Monday"> {% trans 'Monday' %}</option>
+                                                    <option value="Tuesday"> {% trans 'Tuesday' %}</option>
+                                                    <option value="Wednesday"> {% trans 'Wednesday' %}</option>
+                                                    <option value="Thursday"> {% trans 'Thursday' %}</option>
+                                                    <option value="Friday"> {% trans 'Friday' %}</option>
+                                                    <option value="Saturday"> {% trans 'Saturday' %}</option>
+                                                    <option value="Sunday"> {% trans 'Sunday' %}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group clockpicker">
+                                            <label>{% trans 'Start Time' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-clock"></i></span>
+                                                <input id="startTime" name="startTime" type="text" class="form-control"
+                                                    placeholder='Click here to choose the time'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group clockpicker">
+                                            <label>{% trans 'Close Time' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-clock"></i></span>
+                                                <input id="closeTime" name="closeTime" type="text" class="form-control"
+                                                    placeholder='Click here to choose the time'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button id="resetForm" type="button" class="btn btn-default" onclick="cleanForm(1)">
+                            {% trans 'Reset Form' %}</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-info" onclick="saveSchedule()">
+                            {% trans 'Create Schedule' %}</button>
+                        <br>
+                        <br>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
-
                 </div>
-                <!-- /.col-lg-8 -->
-                <div class="col-lg-4">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <i class="fas fa-print fa-fw"></i> Orders by state
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="animated bounce slow">
-                                <div id="morris-donut-chart"></div>
-                            </div>
-                        </div>
-                        <!-- /.list-group -->
-                    </div>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.panel -->
+                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.col-lg-4 -->
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
-    </div>
-    <!-- /#page-wrapper -->
+        <!-- /#page-wrapper -->
 
     </div>
+
     <!-- /#wrapper -->
 
+    <!-- Loading the values on vars-->
     {% block js %}
+
+    <script>
+        userName = '{{ user.username }}'
+        printObjectId = '{{ printObject.id }}'
+    </script>
+
+    <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/raphael-min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/morris.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/morris-data.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/metisMenu.min.js' %}"></script>
+    <!-- Datatable JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
     <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
-    <script src="{% static 'js/index_printManageById.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <!--  Clock-Picker -->
+    <script src="{% static 'js/Clock-Picker/bootstrap-clockpicker.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/Clock-Picker/highlight.min.js' %}" type="text/javascript"></script>
+    <!--  More information about jquery.validate here: http://jqueryvalidation.org/   -->
+    <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
+    <!-- Jquery Validation lenguage -->
+    <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/createSchedule_printManageById.js' %}"></script>
+    <!-- Bootstrap Notify-->
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
     {% endblock %}
 
 </html>
