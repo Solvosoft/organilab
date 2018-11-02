@@ -55,23 +55,26 @@ class PaperType(models.Model):
 
 
 class Schedule(models.Model):
+    name = models.TextField(_('Name'), default=_(
+        'Normal Schedule'), max_length=255)
     DAYS = (
-        ('mon', _('Monday')),
-        ('tue', _('Tuesday')),
-        ('wed', _('Wednesday')),
-        ('thu', _('Thursday')),
-        ('fri', _('Friday')),
-        ('sat', _('Saturday')),
-        ('sun', _('Sunday')),
+        ('Monday', _('Monday')),
+        ('Tuesday', _('Tuesday')),
+        ('Wednesday', _('Wednesday')),
+        ('Thursday', _('Thursday')),
+        ('Friday', _('Friday')),
+        ('Saturday', _('Saturday')),
+        ('Sunday', _('Sunday')),
     )
-    startTime = models.TimeField(_("Start Time"))
-    closeTime = models.TimeField(_("Close Time"))
+    startTime = models.TextField(_('Start Time'),  max_length=255)
+    closeTime = models.TextField(_('Close Time'), max_length=255)
     startDay = models.CharField(
-        max_length=25, default='mon', verbose_name=_('Start Day'), choices=DAYS)
+        max_length=50, default='Monday', verbose_name=_('Start Day'), choices=DAYS)
     closeDay = models.CharField(
-        max_length=25, default='fri', verbose_name=_('Close Day'), choices=DAYS)
+        max_length=50, default='Friday', verbose_name=_('Close Day'), choices=DAYS)
     description = models.TextField(
-        _('Schedule Description'), default='Normal Schedule', max_length=255)
+        _('Schedule Description'), null=True, blank=True, max_length=255)
+    state = models.TextField(_('State'), default='Enabled', max_length=255)
 
     class Meta:
         ordering = ('pk',)

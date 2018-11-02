@@ -434,6 +434,29 @@ def paperTypes_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))   
 
 
+#   Method that enter to the section of Schedules on the Print Manager
+
+@login_required
+def schedules_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/schedules_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))   
+
+
 # Method that return view to add contacts on the Print Manager
 
 
@@ -458,7 +481,7 @@ def createContact_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
-# Method that return the vie to add a paper type on the Print Manager
+# Method that return the view to add a paper type on the Print Manager
 
 
 @login_required
@@ -470,6 +493,30 @@ def createPaperType_printManageById(request, pk):
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
             return render(request, 'printManageById/createPaperType_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+# Method that return the view to add a schedule on the Print Manager
+
+
+@login_required
+def createSchedule_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            return render(request, 'printManageById/createSchedule_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
@@ -785,6 +832,89 @@ def get_list_paperTypesByPrint(request):
     except:
         pass
     return JsonResponse(dev)
+
+
+# Method that return the list of schedules of an specific print
+
+
+@login_required
+def get_list_SchedulesByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.schedules.all.filter(
+            Q(name__icontains=q) | Q(startTime__icontains=q) | Q(closeTime__icontains=q) | Q(startDay__icontains=q) | Q(closeDay__icontains=q) | Q(description__icontains=q) | Q(state__icontains=q)).order_by('name')
+    else:
+        objs = printObject.schedules.all().order_by('name')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.state == "Enabled"):
+            state = "<span class='label label-success'>Enabled</span>"
+        else:
+            state = "<span class='label label-default'>Disabled</span>"
+
+        # Actions Section
+        if(request.user.has_perm('changeSchedules_printObject'), printObject is True):
+            actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
+            actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(obj.id) + "\" ,\"" + obj.name + "\" ,\"" + obj.startTime + "\" ,\"" + obj.closeTime + "\",\"" + obj.startDay + "\" ,\"" + obj.closeDay + "\" ,\"" + obj.description + "\"  ,\"" + obj.state + "\")' data-toggle='modal' data-target='#formUpdateSchedule'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
+                _('Edit')+"</a></li>"
+            actions += "<li><a  href='#' onclick='deleteSchedule(\"" + str(obj.id) + "\" ,\"" + obj.name + \
+                "\"  )' ><span id='delete' class='fas fa-minus-circle' aria-hidden='true'></span>&nbsp; " + \
+                _('Delete')+"</a></li>"
+            actions += "</ul></div>"
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                obj.startDay+" "+obj.startTime+" - "+obj.closeDay+" "+obj.closeTime,
+                actions,
+            ])
+        else:
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                obj.startDay+" "+obj.startTime+" - "+obj.closeDay+" "+obj.closeTime,
+                actions,
+            ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
 
 
 # Method to create a CRUDView
