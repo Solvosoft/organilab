@@ -5,7 +5,7 @@ Created on 14 sep. 2018
 '''
 
 from django.conf.urls import url, include
-from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById, createContact_printManageById, get_list_usersNotRelatedToPrint, createPaperType_printManageById
+from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById, createContact_printManageById, get_list_usersNotRelatedToPrint, createPaperType_printManageById, paperTypes_printManageById, get_list_paperTypesByPrint
 from printOrderManager.views import PrintObjectCRUD
 # DJANGO REST FRAMEWORK
 from rest_framework.routers import DefaultRouter
@@ -37,12 +37,16 @@ urlpatterns = printObjectCRUD.get_urls() + [
         name='index_printManageById'),
     url(r'contacts_printManageById/(?P<pk>\d+)$', contacts_printManageById,
         name='contacts_printManageById'),
+    url(r'paperTypes_printManageById/(?P<pk>\d+)$', paperTypes_printManageById,
+        name='paperTypes_printManageById'),
     url(r'createContact_printManageById/(?P<pk>\d+)$', createContact_printManageById,
         name='createContact_printManageById'),
     url(r'createPaperType_printManageById/(?P<pk>\d+)$', createPaperType_printManageById,
         name='createPaperType_printManageById'),
     url(r'^listContactByPrint$', get_list_contactByPrint,
         name="list_contactByPrint"),
+    url(r'^listPaperTypesByPrint$', get_list_paperTypesByPrint,
+        name="listPaperTypesByPrint"),
     # Methods in URL
     # Delete Print Object
     url(r'^printDelete$', delete_print_byId,

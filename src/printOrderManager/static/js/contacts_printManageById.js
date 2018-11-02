@@ -212,31 +212,6 @@ function deleteContact(pkContact, userName) {
     })
 }
 
-// Function to enable or disable contact
-
-
-function updatedContact(idContact, phoneNumber, state, userName) {
-    newState = "Enabled"
-    if (state == "Enabled") {
-        newState = "Disabled";
-    }
-
-    // Interact with the API endpoint
-    var action = ["contacts", "partial_update"]
-    var params = {
-        id: idContact,
-        phone: phoneNumber,
-        state: newState,
-    }
-    client.action(schema, action, params).then(function (result) {
-        swal("Contact updated!", "The " + object + " with the user name " + userName + " was updated successfully", "success");
-        loadTable();
-    }).catch(function (error) {
-        swal("Contact not updated!", errors[error.message], "error");
-        // Handle error case where eg. user provides incorrect credentials.
-    })
-}
-
 // This function define the validations
 
 function defineValidations() {

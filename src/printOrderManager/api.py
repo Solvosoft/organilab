@@ -138,7 +138,7 @@ class PaperTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaperType  # Model Created
         # Needed fields of the model
-        fields = ('unit_size', 'widthSize', 'longSize',
+        fields = ('id', 'unit_size', 'widthSize', 'longSize',
                   'name', 'grams', 'available', 'description')
 
 

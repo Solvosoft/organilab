@@ -24,19 +24,128 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">
-    <link href="{% static 'css/createPaperType_printManageById.css' %}" rel="stylesheet">
+    <link href="{% static 'css/paperTypes_printManageById.css' %}" rel="stylesheet">
     <!-- Toogle Button -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     {# Sweetalert2 #}
     <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
-
     {% endblock %}
 
     {% block content %}
 
-
-
 <body>
+    <!-- Bootstrap Modal-->
+
+    <div class="modal fade" id="formUpdatePaperType" tabindex="-1" role="dialog" aria-labelledby="formUpdatePaperTypeLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="formUpdatePaperTypeLabel">{% trans 'Paper Type Form' %}</h4>
+                </div>
+                <div class="modal-body updatePaperType-card">
+                    <form role="form" id="updatePaperTypeForm">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>{% trans 'Name' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fab fa-pied-piper"></i></span>
+                                    <input id="namePaperType" name="namePaperType" type="text" class="form-control"
+                                        placeholder='Name'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>{% trans 'Grams (g/m2)' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-balance-scale"></i></span>
+                                    <input id="gramsPaperType" name="gramsPaperType" type="text" class="form-control"
+                                        placeholder='0'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>{% trans 'Availability' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-check-square"></i></span>
+                                    <select class="form-control" id="availablePaper">
+                                        <option value="Available"> Available</option>
+                                        <option value="Not Available">Not Available</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>{% trans 'Description' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-font"></i></span>
+                                    <textarea placeholder='Description' class="form-control" id="descriptionPaperType"
+                                        name="descriptionPaperType" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>{% trans 'Unit Size' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-exclamation-circle"></i></span>
+                                    <select class="form-control" id="unitSize">
+                                        <option value="mm"> Milimeters (mm)</option>
+                                        <option value="cm">Centimeters (cm)</option>
+                                        <option value="inch">Inch (inch)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>{% trans 'Long Size' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-v"></i></span>
+                                    <input id="longSize" name="longSize" type="text" class="form-control" placeholder='0'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>{% trans 'Width Size' %}</label>
+                                {% trans '*' %}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-h"></i></span>
+                                    <input id="widthSize" name="widthSize" type="text" class="form-control" placeholder='0'>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <div class="modal-footer"></div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="closeModal" type="button" class="btn btn-default" data-dismiss="modal">
+                    {% trans 'Close' %}</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-info" onclick="updatePaperType()">
+                    {% trans 'Update Paper Type' %}</button>
+                <br>
+                <br>
+            </div>
+        </div>
+        <!--/.modal-content -->
+    </div>
+    <!--/.modal-dialog -->
+    </div>
+
+
     <!-- Loading Permissions -->
     {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
@@ -59,8 +168,9 @@
 
                 </div>
 
-                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">
-                    {% trans 'ORGANILAB - PRINT MANAGER' %} </a>
+                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">ORGANILAB -
+                    PRINT
+                    MANAGER</a>
 
 
                 <ul class="nav navbar-top-links navbar-right">
@@ -116,7 +226,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>{% trans 'Read All Qualifications' %}</strong>
+                                    <strong>Read All Qualifications</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -182,7 +292,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>{% trans 'See All Orders' %}</strong>
+                                    <strong>See All Orders</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -198,7 +308,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
+                                        <i class="fas fa-users fa-fw"></i>&nbsp Total Contacts
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -207,7 +317,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp {% trans 'Advertisement' %}
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp Advertisement
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -216,7 +326,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp {% trans 'Schedule' %}
+                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp Schedule
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -225,8 +335,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp
-                                        {% trans 'Most Requested Paper Type' %}
+                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp Most Requested Paper Type
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -235,7 +344,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-star fa-fw"></i>&nbsp {% trans 'Most qualification given' %}
+                                        <i class="fas fa-star fa-fw"></i>&nbsp Most qualification given
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -294,12 +403,12 @@
                                 </span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
-                                        {% trans 'View and Edit Contacts' %}</a>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">View
+                                        and Edit Contacts</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'printOrderManager:createContact_printManageById' printObject.id %}">
-                                        {% trans 'Add Contacts' %}</a>
+                                    <a href="{% url 'printOrderManager:createContact_printManageById' printObject.id %}">Add
+                                        Contacts</a>
                                 </li>
                             </ul>
                             {% else %}
@@ -349,11 +458,10 @@
             <!-- /.navbar-static-side -->
         </nav>
 
-
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2 class="page-header subtitle">{% trans 'Create Paper Type' %}</h2>
+                    <h2 class="page-header subtitle">{% trans 'Paper Types' %}</h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -364,104 +472,37 @@
                 <div class="col-lg-12">
                     <div class="panel panel-info  animated bounce faster">
                         <div class="panel-heading">
-                            {% trans 'Enter the required data to create a paper type' %}
+                            Manage the paper types of your print with this table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="createPaperType-card">
-                                <form role="form" id="createPaperTypeForm">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>{% trans 'Name' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fab fa-pied-piper"></i></span>
-                                                <input id="namePaperType" name="namePaperType" type="text" class="form-control"
-                                                    placeholder='Name'>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label>{% trans 'Grams (g/m2)' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-balance-scale"></i></span>
-                                                <input id="gramsPaperType" name="gramsPaperType" type="text" class="form-control"
-                                                    placeholder='0'>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label>{% trans 'Availability' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-check-square"></i></span>
-                                                <select class="form-control" id="availablePaper">
-                                                    <option value="Available"> Available</option>
-                                                    <option value="Not Available">Not Available</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>{% trans 'Description' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-font"></i></span>
-                                                <textarea placeholder='Description' class="form-control" id="descriptionPaperType" name="descriptionPaperType" rows="4"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label>{% trans 'Unit Size' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-exclamation-circle"></i></span>
-                                                <select class="form-control" id="unitSize">
-                                                    <option value="mm"> Milimeters (mm)</option>
-                                                    <option value="cm">Centimeters (cm)</option>
-                                                    <option value="inch">Inch (inch)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label>{% trans 'Long Size' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-v"></i></span>
-                                                <input id="longSize" name="longSize" type="text" class="form-control"
-                                                    placeholder='0'>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label>{% trans 'Width Size' %}</label>
-                                            {% trans '*' %}
-                                            <div class="form-group input-group">
-                                                <span class="input-group-addon colorIcon"><i class="fas fa-arrows-alt-h"></i></span>
-                                                <input id="widthSize" name="widthSize" type="text" class="form-control"
-                                                    placeholder='0'>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                            <table width="100%" class="table table-bordered table-hover" id="paperTypes">
+                                <caption>List of paper types</caption>
+                                <thead class="paperTypesList">
+                                    <tr>
+                                        <th>{% trans 'Available' %}</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Grams' %}</th>
+                                        <th>{% trans 'Size' %}</th>
+                                        {% if "changePaper_printObject" in printObject_perms %}
+                                        <th>{% trans 'Actions' %}</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>{% trans 'Available' %}</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Grams' %}</th>
+                                        <th>{% trans 'Size' %}</th>
+                                        {% if "changePaper_printObject" in printObject_perms %}
+                                        <th>{% trans 'Actions' %}</th>
+                                        {% endif %}
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <!-- /.table-responsive -->
                         </div>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button id="resetForm" type="button" class="btn btn-default" onclick="cleanForm(1)">
-                            {% trans 'Reset Form' %}</button>
-                        &nbsp;&nbsp;
-                        <button type="button" class="btn btn-info" onclick="savePaperType()">
-                            {% trans 'Create Paper Type' %}</button>
-                        <br>
-                        <br>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
@@ -473,7 +514,6 @@
         <!-- /#page-wrapper -->
 
     </div>
-
     <!-- /#wrapper -->
 
     <!-- Loading the values on vars-->
@@ -481,12 +521,13 @@
 
     <script>
         userName = '{{ user.username }}'
+        userEmail = '{{ user.email }}'
+        password = '{{ user.password }}'
         printObjectId = '{{ printObject.id }}'
     </script>
 
     <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/metisMenu.min.js' %}"></script>
     <!-- Datatable JS-->
@@ -501,7 +542,7 @@
     <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
     <!-- Jquery Validation lenguage -->
     <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/createPaperType_printManageById.js' %}"></script>
+    <script src="{% static 'js/paperTypes_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
