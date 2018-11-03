@@ -83,9 +83,18 @@ class Schedule(models.Model):
 
 
 class Advertisement(models.Model):
+    title = models.TextField(
+        _('Title'), default='Advertisement', max_length=255)
     description = models.TextField(
         _('Advertisement Description'), max_length=255)
+    typeOfAdvertisement = models.TextField(
+        _('Type of advertisement'), default='Default', max_length=255)
     published_date = models.DateField(_('Published Date'), auto_now=True)
+    state = models.TextField(_('State'), default='Enabled', max_length=100)
+    usersNotified = models.ManyToManyField(
+        User, verbose_name=_("Users Notified"))
+    creator = models.ForeignKey(  # Fixed: Create a model for the advertisement
+        User, on_delete=models.CASCADE, related_name='Creator', null=True, blank=True)
 
     class Meta:
         ordering = ('pk',)
@@ -130,8 +139,8 @@ class PrintObject(models.Model):
     description = models.TextField(
         _('Description'), default='', max_length=255)
     # Print model has an advertisement
-    advertisement = models.ForeignKey(  # Fixed: Create a model for the advertisement
-        Advertisement, on_delete=models.CASCADE,  related_name='advertisements', null=True, blank=True)
+    advertisements = models.ManyToManyField(
+        Advertisement, verbose_name=_("Advertisements"))
 
     class Meta:
         ordering = ('pk',)

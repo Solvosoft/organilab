@@ -22,7 +22,7 @@
     color: rgb(185, 8, 8) !important;
 }
 
-#ex4 .p1[data-count]:after{
+#dropAlerts .p1[data-count]:after{
     position:absolute;
     right:5%;
     top:0%;
@@ -37,3 +37,7 @@
     min-width: 1em;
     font-weight:bold;
   }
+
+.ff{
+    background-color: red;
+}

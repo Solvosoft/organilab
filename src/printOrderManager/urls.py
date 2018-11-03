@@ -5,11 +5,11 @@ Created on 14 sep. 2018
 '''
 
 from django.conf.urls import url, include
-from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById, createContact_printManageById, get_list_usersNotRelatedToPrint, createPaperType_printManageById, paperTypes_printManageById, get_list_paperTypesByPrint, createSchedule_printManageById, get_list_SchedulesByPrint, schedules_printManageById
+from .views import index_printOrderManager, get_list_printObject, index_printManager, PrintLogin, PrintRegister, delete_print_byId, index_printManageById, contacts_printManageById, get_list_contactByPrint, giveDropPermissionsById, createContact_printManageById, get_list_usersNotRelatedToPrint, createPaperType_printManageById, paperTypes_printManageById, get_list_paperTypesByPrint, createSchedule_printManageById, get_list_SchedulesByPrint, schedules_printManageById, createAdvertisement_printManageById
 from printOrderManager.views import PrintObjectCRUD
 # DJANGO REST FRAMEWORK
 from rest_framework.routers import DefaultRouter
-from printOrderManager.api import RequestLabelPrintViewSet, ContactViewSet, PrintObjectViewSet, PaperTypeViewSet, ScheduleViewSet
+from printOrderManager.api import RequestLabelPrintViewSet, ContactViewSet, PrintObjectViewSet, PaperTypeViewSet, ScheduleViewSet, AdvertisementViewSet
 from rest_framework_jwt.views import obtain_jwt_token
 
 
@@ -25,6 +25,7 @@ router.register(r'contacts', ContactViewSet)
 router.register(r'printObject', PrintObjectViewSet)
 router.register(r'paperType', PaperTypeViewSet)
 router.register(r'schedule', ScheduleViewSet)
+router.register(r'advertisement', AdvertisementViewSet)
 
 
 urlpatterns = printObjectCRUD.get_urls() + [
@@ -51,6 +52,8 @@ urlpatterns = printObjectCRUD.get_urls() + [
         name='createPaperType_printManageById'),
     url(r'createSchedule_printManageById/(?P<pk>\d+)$', createSchedule_printManageById,
         name='createSchedule_printManageById'),
+    url(r'createAdvertisement_printManageById/(?P<pk>\d+)$', createAdvertisement_printManageById,
+        name='createAdvertisement_printManageById'),
     url(r'^listContactByPrint$', get_list_contactByPrint,
         name="list_contactByPrint"),
     url(r'^listPaperTypesByPrint$', get_list_paperTypesByPrint,

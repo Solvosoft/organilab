@@ -402,6 +402,7 @@ def contacts_printManageById(request, pk):
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'contacts': printObject.contacts.all(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -431,7 +432,7 @@ def paperTypes_printManageById(request, pk):
             return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
-        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))   
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
 #   Method that enter to the section of Schedules on the Print Manager
@@ -454,7 +455,7 @@ def schedules_printManageById(request, pk):
             return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
-        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))   
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
 # Method that return view to add contacts on the Print Manager
@@ -529,6 +530,36 @@ def createSchedule_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
+# Method that return the view to add a advertisement on the Print Manager
+
+
+@login_required
+def createAdvertisement_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+
+            return render(request, 'printManageById/createAdvertisement_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
 # Methods to simplify the contacts options
 
 
@@ -552,23 +583,23 @@ def define_dict_permissions(numero):
         dictionaryPermissions = {
             'symbol': 'class="fas fa-paper-plane"',
             'symbolPermission': 'p',
-            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
             _('Paper Types')+'"><i '+'class="fas fa-paper-plane"'+'></i></div> '
         }
     elif(numero == 4):
         dictionaryPermissions = {
             'symbol': 'class="fas fa-calendar-alt"',
             'symbolPermission': 's',
-            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
             _('Schedules')+'"><i '+'class="fas fa-calendar-alt"'+'></i></div> '
         }
     elif(numero == 5):
         dictionaryPermissions = {
             'symbol': 'class="fas fa-bell"',
             'symbolPermission': 'a',
-            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' + \
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
             _('Advertisements')+'"><i '+'class="fas fa-bell"'+'></i></div> '
-        }                
+        }
     return dictionaryPermissions
 
 
@@ -592,7 +623,8 @@ def get_list_contactByPrint(request):
     # Filter Section
     if q:
         printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
-        objs = printObject.contacts.all().filter(Q(state__icontains=q) | Q(assigned_user_id__username__icontains=q) | Q(first_name_username__icontains=q) | Q(last_name__icontains=q)).order_by('assigned_user_id__username')
+        objs = printObject.contacts.all().filter(Q(state__icontains=q) | Q(assigned_user_id__username__icontains=q) | Q(
+            first_name_username__icontains=q) | Q(last_name__icontains=q)).order_by('assigned_user_id__username')
     else:
         printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
         objs = printObject.contacts.all().order_by('assigned_user_id__username')
@@ -625,12 +657,13 @@ def get_list_contactByPrint(request):
 
         # Loop the permissions getting each dictionarie
         for x in range(1, 6):
-            dict = define_dict_permissions(x) # Get the dictionarie
+            dict = define_dict_permissions(x)  # Get the dictionarie
             checked = ''
-            if(user.has_perm(nameOfThePermission(dict['symbolPermission']), printObject) is True): # Check if the user has permissions
+            # Check if the user has permissions
+            if(user.has_perm(nameOfThePermission(dict['symbolPermission']), printObject) is True):
                 checked = 'checked'
             permissions += "<input "+checked+" "+toggle+" id='"+dict['symbolPermission']+str(user.id)+"' data-off='"+dict['textInput']+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(
-            printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(dict['symbolPermission']) + "\" )'  data-size='small'  data-on='"+dict['textInput']+"'   data-onstyle='primary'>&nbsp;"
+                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(dict['symbolPermission']) + "\" )'  data-size='small'  data-on='"+dict['textInput']+"'   data-onstyle='primary'>&nbsp;"
 
         state = None
         actionState = None
@@ -749,7 +782,6 @@ def get_list_usersNotRelatedToPrint(request):
     except:
         pass
     return JsonResponse(dev)
-
 
 
 # Method that return the list of paper types of an specific print
@@ -913,8 +945,6 @@ def get_list_SchedulesByPrint(request):
     except:
         pass
     return JsonResponse(dev)
-
-
 
 
 # Method to create a CRUDView
