@@ -1,5 +1,5 @@
 from rest_framework import viewsets, serializers
-from printOrderManager.models import RequestLabelPrint, Contact, PrintObject, PaperType, Schedule
+from printOrderManager.models import RequestLabelPrint, Contact, PrintObject, PaperType, Schedule, Advertisement
 from rest_framework.permissions import IsAuthenticated
 
 # DJANGO REST FRAMEWORK
@@ -100,7 +100,7 @@ class PrintObjectSerializer(serializers.ModelSerializer):
         model = PrintObject  # Model Created
         # Needed fields of the model
         fields = ('responsible_user', 'email', 'phone', 'location', 'geolocation', 'name', 'logo', 'qualification',
-                  'creation_date', 'state', 'paperType', 'contacts', 'schedules', 'description', 'advertisement')
+                  'creation_date', 'state', 'paperType', 'contacts', 'schedules', 'description', 'advertisements')
 
 # Viewset for the Contact Model
 
@@ -188,6 +188,46 @@ class ScheduleSerializer(serializers.ModelSerializer):
 class ScheduleViewSet(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()  # All the schedules
     serializer_class = ScheduleSerializer  # Serializer
+    permission_classes = [IsAuthenticated, ]  # Required permissions
+
+    """
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+    """
+
+
+# Serializer for the Advertisement Model
+
+
+class AdvertisementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advertisement  # Model Created
+        # Needed fields of the model
+        fields = ('id', 'title', 'description', 'typeOfAdvertisement', 'published_date',
+                  'state', 'usersNotified', 'creator')
+
+
+# Viewset for the Advertisement Model
+
+
+class AdvertisementViewSet(viewsets.ModelViewSet):
+    queryset = Advertisement.objects.all()  # All the AdvertisementSerializer
+    serializer_class = AdvertisementSerializer  # Serializer
     permission_classes = [IsAuthenticated, ]  # Required permissions
 
     """

@@ -16,19 +16,61 @@
     <title>Organilab | Print Manager</title>
 
     {% block css %}
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/metisMenu.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css" />
     <link href="{% static 'css/SB-Admin2.1/sb-admin-2.css' %}" rel="stylesheet">
-    <link href="{% static 'css/SB-Admin2.1/morris.css' %}" rel="stylesheet">
-    <link href="{% static 'css/index_printManageById.css' %}" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-        crossorigin="anonymous">{% endblock %}
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+        crossorigin="anonymous">
+    <link href="{% static 'css/createAdvertisement_printManageById.css' %}" rel="stylesheet">
+    <!-- Toogle Button -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    {# Sweetalert2 #}
+    <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
+
+    {% endblock %}
 
     {% block content %}
 
+
+
 <body>
+
+
+    <!-- Bootstrap Modal-->
+    <div class="modal fade" id="formUpdateContact" tabindex="-1" role="dialog" aria-labelledby="formUpdateScheduleLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <center><h4 class="modal-title" id="formUpdateScheduleLabel">{% trans 'Schedule Form' %}</h4></center>
+                </div>
+                <div class="modal-body createSchedule-card">
+                    
+                </div>
+                <div class="modal-footer"></div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="closeModal" type="button" class="btn btn-default" data-dismiss="modal">
+                    {% trans 'Close' %}</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-info" onclick="updateSchedule()">
+                    {% trans 'Update Schedule' %}</button>
+                <br>
+                <br>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+
+
+
     <!-- Loading Permissions -->
     {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
@@ -108,7 +150,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>{% trans 'Read All Qualifications' %}</strong>
+                                    <strong>Read All Qualifications</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -174,7 +216,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>{% trans 'See All Orders' %}</strong>
+                                    <strong>See All Orders</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -184,21 +226,13 @@
                     <!-- /.dropdown -->
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <div id="ex4">
-                                <span class="p1 fa-stack fa-1x has-badge" data-count="4">
-                                    <!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
-                                    <i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse" data-count="4b"></i>
-                                </span>
-
-                                <i class="fa fa-caret-down icon-colorNavBar"></i>
-                            </div>
-
+                            <i class="fas fa-file-alt fa-fw icon-colorNavBar"></i> <i class="fa fa-caret-down icon-colorNavBar"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
+                                        <i class="fas fa-users fa-fw"></i>&nbsp Total Contacts
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -207,7 +241,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp {% trans 'Advertisement' %}
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp Advertisement
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -216,7 +250,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp {% trans 'Schedule' %}
+                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp Schedule
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -225,8 +259,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp
-                                        {% trans 'Most Requested Paper Type' %}
+                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp Most Requested Paper Type
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -235,7 +268,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-star fa-fw"></i>&nbsp {% trans 'Most qualification given' %}
+                                        <i class="fas fa-star fa-fw"></i>&nbsp Most qualification given
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -243,7 +276,54 @@
                         </ul>
                         <!-- /.dropdown-alerts -->
                     </li>
-
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <div id="dropAlerts">
+                                {% if countAdvertisements != 0 %}
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="{{ countAdvertisements }}">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse" data-count="{{ countAdvertisements }}"></i>
+                                </span>
+                                {% else %}
+                                <span class="p1 fa-stack fa-1x has-badge">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse"></i>
+                                </span>
+                                {% endif %}
+                                <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            {% if countAdvertisements == 0 %}
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <center>{% trans "You don't have new alerts" %}</center>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% else %}
+                            {% for advertisement in advertisements %}
+                            <li>
+                                <a data-toggle='modal' data-target='#formUpdateContact' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}')">
+                                    <div>
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% endfor %}
+                            {% endif %}
+                    </li>
+                    <li>
+                        <a class="text-center" href="#">
+                            <strong>{% trans 'See the record of notifications' %}</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-alerts -->
+                </li>
                 </ul>
                 <!-- /.navbar-top-links -->
                 <!-- /.dropdown-user -->
@@ -280,8 +360,8 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a class="active" href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i
-                                    class="fa fa-home"></i><span class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
+                            <a href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i class="fa fa-home"></i><span
+                                    class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-info-circle"></i><span class="side-menu-title">&nbsp;
@@ -349,6 +429,7 @@
                                     class="side-menu-title">&nbsp;
                                     {% trans 'Schedules' %}</span></a>
                             {% endif %}
+
                         </li>
                         <li>
                             {% if "changeAdvertisements_printObject" in printObject_perms %}
@@ -370,6 +451,7 @@
                                     class="side-menu-title">&nbsp;
                                     {% trans 'Advertisements' %}</span></a>
                             {% endif %}
+
                         </li>
                         <li>
                             <a href="{% url 'printOrderManager:index_printManager' %}"><i class="fas fa-chevron-circle-left"></i>
@@ -382,161 +464,139 @@
             <!-- /.navbar-static-side -->
         </nav>
 
+
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2 class="page-header subtitle">{% trans 'Home' %}</h2>
+                    <h2 class="page-header subtitle">{% trans 'Create Advertisement' %}</h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+
             <!-- /.row -->
             <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
+                <div class="col-lg-12">
+                    <div class="panel panel-info  animated bounce faster">
                         <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-users fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">10</span>
-                                    <div>&nbsp;Online Contacts!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-print fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">35</span>
-                                    <div>Total Orders!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-exclamation-circle fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">20</span>
-                                    <div>Orders Request!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fas fa-paper-plane fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <span class="huge count">4</span>
-                                    <div>Paper Types!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <i class="fas fa-paper-plane fa-fw"></i> Quantity of orders by paper type
+                            {% trans 'Enter the required data to create an advertisement' %}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="animated bounce slow">
-                                <center>
-                                    <div id="paperType-Graph"></div>
-                                </center>
+                            <div class="createAdvertisement-card">
+                                <form role="form" id="createAdvertisementForm">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{% trans 'Title' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fab fa-pied-piper"></i></span>
+                                                <input id="titleAdvertisement" name="titleAdvertisement" type="text"
+                                                    class="form-control" placeholder='Title'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>{% trans 'Type' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-check-square"></i></span>
+                                                <select class="form-control" id="typeAdvertisement">
+                                                    <option value="Information">Information</option>
+                                                    <option value="Success"> Success</option>
+                                                    <option value="Warning">Warning</option>
+                                                    <option value="Danger">Danger</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>{% trans 'State' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-check-square"></i></span>
+                                                <select class="form-control" id="stateAdvertisement">
+                                                    <option value="Enabled">Enabled</option>
+                                                    <option value="Disabled"> Disabled</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>{% trans 'Description' %}</label>
+                                            {% trans '*' %}
+                                            <div class="form-group input-group">
+                                                <span class="input-group-addon colorIcon"><i class="fas fa-font"></i></span>
+                                                <textarea placeholder='Description' class="form-control" id="descriptionAdvertisement"
+                                                    name="descriptionAdvertisement" rows="4"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-10">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkCreator">
+                                            {% trans 'Create the advertisement with your user as a creator' %}
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button id="resetForm" type="button" class="btn btn-default" onclick="cleanForm(1)">
+                            {% trans 'Reset Form' %}</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-info" onclick="saveAdvertisement()">
+                            {% trans 'Create Advertisement' %}</button>
+                        <br>
+                        <br>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
-
                 </div>
-                <!-- /.col-lg-8 -->
-                <div class="col-lg-4">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <i class="fas fa-print fa-fw"></i> Orders by state
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="animated bounce slow">
-                                <div id="morris-donut-chart"></div>
-                            </div>
-                        </div>
-                        <!-- /.list-group -->
-                    </div>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.panel -->
+                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.col-lg-4 -->
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
-    </div>
-    <!-- /#page-wrapper -->
+        <!-- /#page-wrapper -->
 
     </div>
+
     <!-- /#wrapper -->
 
+    <!-- Loading the values on vars-->
     {% block js %}
+
+    <script>
+        userName = '{{ user.username }}'
+        userId = '{{ user.id }}'
+        printObjectId = '{{ printObject.id }}'
+    </script>
+
+    <!-- Other JS-->
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/raphael-min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/morris.min.js' %}"></script>
-    <script src="{% static 'js/SB-Admin2.1/morris-data.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/metisMenu.min.js' %}"></script>
+    <!-- Datatable JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
     <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
-    <script src="{% static 'js/index_printManageById.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <!--  More information about jquery.validate here: http://jqueryvalidation.org/   -->
+    <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
+    <!-- Jquery Validation lenguage -->
+    <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/createAdvertisement_printManageById.js' %}"></script>
+    <!-- Bootstrap Notify-->
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
     {% endblock %}
 
 </html>
