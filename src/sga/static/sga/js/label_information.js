@@ -8,11 +8,6 @@
 
 // Control label information validation
 var errorsValidation = $('.wizard-card form');
-// Control loading message
-var stopLoadingMessageHorizontal = 0;
-var stopLoadingMessageVertical = 0;
-var labelElements = 7;
-
 
 $(document).ready(function () {
     //Search sustance with autocomplete
@@ -23,7 +18,7 @@ $(document).ready(function () {
         //Show important substance information and save id
         select: function (event, ui) {
             $('#substance_id').val(ui.item.value); // save selected id to hidden input
-            $('#substance_id').data("name",ui.item.label); // save the selected text to hidden input
+            $('#substance_id').data("name", ui.item.label); // save the selected text to hidden input
             $('#substance').val(ui.item.label); // display the selected text
             return false;
         }
@@ -42,11 +37,11 @@ $(document).ready(function () {
     */
     // Valid substance entered
     $.validator.addMethod("validSubstance", function () {
-      if($('#substance_id').data("name") != $('#substance').val() || $('#substance_id').data("name")=='No results'){
-          return false;
-      }else{
-          return true;
-      }
+        if ($('#substance_id').data("name") != $('#substance').val() || $('#substance_id').data("name") == 'No results') {
+            return false;
+        } else {
+            return true;
+        }
     }, "Por favor, ingrese una sustancia válida.");
     // Code for the Validator
     errorsValidation.validate({
@@ -68,7 +63,7 @@ $(document).ready(function () {
                 required: true,
                 maxlength: 15
             },
-            comercial_information:{
+            comercial_information: {
                 maxlength: 250
             },
             recipients: {
@@ -82,7 +77,7 @@ $(document).ready(function () {
         var label_JSON = {};
         if (hasClass(label_information, 'active')) {
             errorsValidation.validate();
-            if(errorsValidation.valid()==false){
+            if (errorsValidation.valid() == false) {
                 /*
                 swal({
                     type: 'error',
@@ -90,7 +85,7 @@ $(document).ready(function () {
                     text: 'Por favor, compruebe los datos solicitados.'
                 })
                 */
-            }else{
+            } else {
                 //Label properties
                 // #1: Substance
                 var substance = $('#substance').val();
@@ -121,28 +116,23 @@ $(document).ready(function () {
                 label_JSON.width = width;
                 var width_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width_unit');
                 label_JSON.width_unit = width_unit;
-
+                // Save label information in local storage
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('label_information', label_JSON_String);
-
+                // Set blank templates according to provided information 
+                set_blank_templates();
                 // Show loading message
                 $('#loadingMessage').modal("show");
-                // Set blank templates and pre designed templates according to provided information 
-                stopLoadingMessageHorizontal = 0;
-                stopLoadingMessageVertical =0;
-                labelElements = 7;
-                set_blank_templates(); 
-                set_pre_designed_templates();
+                // Set pre designed templates according to provided information 
+                setTimeout(set_pre_designed_templates, 0);
             }
         }
     });
 });
-
-// Select Box Place Holder 
+// Select box place holder 
 function changePlaceHolder(sel) {
     sel.style.cssText = 'color: #000 !important';
 }
-
 // Element contains a class 
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
