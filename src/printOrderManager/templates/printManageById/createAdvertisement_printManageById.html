@@ -37,40 +37,6 @@
 
 
 <body>
-
-
-    <!-- Bootstrap Modal-->
-    <div class="modal fade" id="formUpdateContact" tabindex="-1" role="dialog" aria-labelledby="formUpdateScheduleLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <center><h4 class="modal-title" id="formUpdateScheduleLabel">{% trans 'Schedule Form' %}</h4></center>
-                </div>
-                <div class="modal-body createSchedule-card">
-                    
-                </div>
-                <div class="modal-footer"></div>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button id="closeModal" type="button" class="btn btn-default" data-dismiss="modal">
-                    {% trans 'Close' %}</button>
-                &nbsp;&nbsp;
-                <button type="button" class="btn btn-info" onclick="updateSchedule()">
-                    {% trans 'Update Schedule' %}</button>
-                <br>
-                <br>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
-
-
-
-
-
     <!-- Loading Permissions -->
     {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
@@ -304,10 +270,24 @@
                             {% else %}
                             {% for advertisement in advertisements %}
                             <li>
-                                <a data-toggle='modal' data-target='#formUpdateContact' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}')">
+                                <a data-toggle='modal' data-target='#formNotification' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}','{{advertisement.creator}}','{{ printObject.logo.name}}')">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp {{ advertisement.title }}
+                                        {% ifequal advertisement.typeOfAdvertisement "Information" %}
+                                            <i class="fas fa-info-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                            <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Success" %}
+                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
                                         <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Warning" %}
+                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Danger" %}
+                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
                                     </div>
                                 </a>
                             </li>
@@ -592,6 +572,7 @@
     <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
     <!-- Jquery Validation lenguage -->
     <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
     <script src="{% static 'js/createAdvertisement_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>

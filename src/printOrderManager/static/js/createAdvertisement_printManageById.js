@@ -17,6 +17,7 @@ let client = new coreapi.Client({
 
 var errors = new Array();
 const object = "advertisement";
+var advertisementToUpdateId = 0;
 
 
 // Values required to register a contact
@@ -81,7 +82,7 @@ function defineErrors() {
 
 // Define the values of the form
 
-function defineValues(titleAdvertisement, typeAdvertisement, descriptionAdvertisement,stateAdvertisement) {
+function defineValues(titleAdvertisement, typeAdvertisement, descriptionAdvertisement, stateAdvertisement) {
     formValues["titleAdvertisement"] = titleAdvertisement;
     formValues["typeAdvertisement"] = typeAdvertisement;
     formValues["descriptionAdvertisement"] = descriptionAdvertisement;
@@ -92,9 +93,9 @@ function defineValues(titleAdvertisement, typeAdvertisement, descriptionAdvertis
 // Ask and then clean the inputs of the form
 
 function cleanForm(type) {
-    if(type == 1){ //Ask to clean the form if the user press reset
+    if (type == 1) { //Ask to clean the form if the user press reset
         askCleanForm();
-    }else{
+    } else {
         cleanTheForm();
     }
 }
@@ -103,7 +104,7 @@ function cleanForm(type) {
 // Ask to clean the form 
 
 
-function askCleanForm(){
+function askCleanForm() {
     swal({
         title: 'Are you sure?',
         text: "Once reset, you will not be able to recover the data",
@@ -126,7 +127,7 @@ function askCleanForm(){
 // Clean the inputs of the form
 
 
-function cleanTheForm(){
+function cleanTheForm() {
     document.getElementById("createAdvertisementForm").reset();
     var validations = errorsValidation.validate(); //Validate the form
     validations.resetForm(); // Reset the validations
@@ -146,17 +147,14 @@ function cleanTheForm(){
 // Save the advertisement of the form
 
 function saveAdvertisement() {
-    console.log($('#checkCreator').value);
-    if ($('#checkCreator').is(":checked")){
-        console.log("Checkeado ");
-    }
+
     var advertisementCreatedId = 0 // Save the id of the advertisement created
     if (errorsValidation.valid() == true) {
         var usersNotifiedArray = new Array();
         usersNotifiedArray.push(userId);
-        defineValues($('#titleAdvertisement').val(), $('#typeAdvertisement').val(), $('#descriptionAdvertisement').val(),$('#stateAdvertisement').val());
-        if ($('#checkCreator').is(":checked")){
-            formValues["idCreator"]= userId;
+        defineValues($('#titleAdvertisement').val(), $('#typeAdvertisement').val(), $('#descriptionAdvertisement').val(), $('#stateAdvertisement').val());
+        if ($('#checkCreator').is(":checked")) {
+            formValues["idCreator"] = userId;
         }
 
         // Save the advertisement with Django REST Framework
@@ -170,9 +168,9 @@ function saveAdvertisement() {
             usersNotified: usersNotifiedArray,
             creator: formValues["idCreator"],
         }
-        client.action(schema, action, params).then(function(result) {
+        client.action(schema, action, params).then(function (result) {
             // Return value is in 'result'
-            advertisementCreatedId=result.id;
+            advertisementCreatedId = result.id;
 
             // Interact with the API endpoint to read the print and get the paper types
             // When we get the advertisements we add the new id to the array with push 
@@ -180,16 +178,16 @@ function saveAdvertisement() {
             var params = {
                 id: printObjectId,
             }
-            client.action(schema, action, params).then(function(result) {
+            client.action(schema, action, params).then(function (result) {
                 var scheduleIds = result.advertisements;
                 scheduleIds.push(advertisementCreatedId);
-                
+
                 var action = ["printObject", "partial_update"]
                 var params = {
                     id: printObjectId,
                     advertisements: scheduleIds,
                 }
-                client.action(schema, action, params).then(function(result) {
+                client.action(schema, action, params).then(function (result) {
                     // Return value is in 'result'
                     swal("Advertisement created!", "The " + object + " was created successfully", "success");
                     cleanForm(0);
@@ -208,9 +206,3 @@ function saveAdvertisement() {
     }
 }
 
-
-// Method to update the advertisement and show a message
-
-function updateAndDisplayAdvertisement(advertisementId,advertisementTitle,advertisementDescription,advertisementType){
-
-}

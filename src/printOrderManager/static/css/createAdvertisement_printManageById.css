@@ -41,3 +41,19 @@
 .ff{
     background-color: red;
 }
+
+.titleNotification{
+    color: #0926ca;
+}
+
+.notificationCreator{
+    color: #4152b4e8;
+}
+
+.piePagina{
+    text-align: right;
+}
+
+.notificationIcon{
+    color: #4152b4e8 !important;
+}
