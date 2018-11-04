@@ -76,7 +76,7 @@
                     <img id="pre_designed_template_vertical" class="template_card_image_vertical" style="border:1px solid black;">
                 <!--==============================================-->
                 <!--==============================================-->
-                <!--Canvas Modal: Pre Designed Template Horizontal-->
+                <!--=Canvas Modal: Pre Designed Template vertical=-->
                 <a id="tag_pre_designed_template_vertical" data-toggle="modal" data-target="#ModalPreDesignedTemplate" href=""><i class="fas fa-eye  button_eye"></i></a>
                 <!--==============================================-->
                 <div class="card_button">
@@ -100,17 +100,19 @@
                     <a id="button_pre_designed_template_horizontal" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
                 </div>
             </div>
-            <!-- Working Canvas Area -->
+            <!---Working Canvas Area Horizontal-->
             <canvas id="working_canvas_area_horizontal" class="pre_designed_template" width="498" height="264"></canvas>
-             <!-- Working Canvas Area -->
+             <!---Working Canvas Area Vertical--->
+             <!--
              <br>
              <br>
+             -->
              <canvas id="working_canvas_area_vertical" class="pre_designed_template" width="400" height="550"></canvas>
         </div>
     </div>
-        <!--Testing Canvas-->
-        <!--<canvas id="working_canvas_area2" width="498" height="264"></canvas>-->
-        <!--<a id="testing_canvas">Click me</a>-->
+         <!--Testing Canvas-->
+         <!--<canvas id="working_canvas_area2" width="400" height="550"></canvas>-->
+         <!--<a id="testing_canvas">Click me</a> -->
 {% endblock content %}
 <!-- Label template JS -->
 <script src="{% static 'sga/js/label_template.js' %}"> </script>
