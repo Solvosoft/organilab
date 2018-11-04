@@ -544,7 +544,6 @@ def createAdvertisement_printManageById(request, pk):
             # Define the advertisements
             advertisements = printObject.advertisements.all()
             advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
-
             return render(request, 'printManageById/createAdvertisement_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
