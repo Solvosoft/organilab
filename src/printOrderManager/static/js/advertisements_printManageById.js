@@ -4,7 +4,7 @@
 var advertisementToUpdateId = 0;
 
 
-// Method to show the modal of the notification
+// Method to show the notification
 
 function updateAndDisplayAdvertisement(advertisementId, advertisementTitle, advertisementDescription, advertisementType, advertisementCreator, printObjectIcon) {
     advertisementToUpdateId = advertisementId;
@@ -15,8 +15,8 @@ function updateAndDisplayAdvertisement(advertisementId, advertisementTitle, adve
 
     swal.queue([{
         imageUrl: 'http://localhost:8000/media/'+printObjectIcon,
-        imageWidth: 100,
-        imageHeight: 100,
+        imageWidth: 90,
+        imageHeight: 90,
         title: advertisementTitle,
         confirmButtonText: 'Mark as read it',
         cancelButtonText: 'Close',

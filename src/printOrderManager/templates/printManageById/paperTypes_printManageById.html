@@ -460,8 +460,25 @@
 
                         </li>
                         <li>
-                            <a href="#"><i class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
+                            {% if "changeAdvertisements_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-bell"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Advertisements' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Advertisements' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createAdvertisement_printManageById' printObject.id %}">
+                                        {% trans 'Create Advertisement' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}"><i
+                                    class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Advertisements' %}</span></a>
+                            {% endif %}
 
                         </li>
                         <li>

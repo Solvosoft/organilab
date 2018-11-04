@@ -24,6 +24,7 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">
+    <link href="{% static 'css/advertisements_printManageById.css' %}" rel="stylesheet">
     <link href="{% static 'css/createAdvertisement_printManageById.css' %}" rel="stylesheet">
     <!-- Toogle Button -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
@@ -262,7 +263,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <center>{% trans "You don't have new alerts" %}</center>
+                                        <center>{% trans "You don't have new advertisements" %}</center>
                                     </div>
                                 </a>
                             </li>
@@ -273,19 +274,23 @@
                                 <a data-toggle='modal' data-target='#formNotification' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}','{{advertisement.creator}}','{{ printObject.logo.name}}')">
                                     <div>
                                         {% ifequal advertisement.typeOfAdvertisement "Information" %}
-                                            <i class="fas fa-info-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
-                                            <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        <i class="fas fa-info-circle notificationIcon"></i>&nbsp 
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
                                         {% endifequal %}
                                         {% ifequal advertisement.typeOfAdvertisement "Success" %}
-                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp 
+                                        {{ advertisement.title }}
                                         <span class="pull-right text-muted small">{% trans 'View More' %}</span>
                                         {% endifequal %}
                                         {% ifequal advertisement.typeOfAdvertisement "Warning" %}
-                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp 
+                                        {{ advertisement.title }}
                                         <span class="pull-right text-muted small">{% trans 'View More' %}</span>
                                         {% endifequal %}
                                         {% ifequal advertisement.typeOfAdvertisement "Danger" %}
-                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp {{ advertisement.title }}
+                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp 
+                                        {{ advertisement.title }}
                                         <span class="pull-right text-muted small">{% trans 'View More' %}</span>
                                         {% endifequal %}
                                     </div>
@@ -296,8 +301,8 @@
                             {% endif %}
                     </li>
                     <li>
-                        <a class="text-center" href="#">
-                            <strong>{% trans 'See the record of notifications' %}</strong>
+                        <a class="text-center" href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                            <strong>{% trans 'See the record of advertisements' %}</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
@@ -418,7 +423,7 @@
                                 </span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}">
+                                    <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
                                         {% trans 'View and Edit Advertisements' %}</a>
                                 </li>
                                 <li>
@@ -427,8 +432,8 @@
                                 </li>
                             </ul>
                             {% else %}
-                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-bell"></i><span
-                                    class="side-menu-title">&nbsp;
+                            <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}"><i
+                                    class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Advertisements' %}</span></a>
                             {% endif %}
 
@@ -572,8 +577,8 @@
     <script src="{% static 'js/jquery.validate.min.js' %}" type="text/javascript"></script>
     <!-- Jquery Validation lenguage -->
     <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
     <script src="{% static 'js/createAdvertisement_printManageById.js' %}"></script>
+    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>

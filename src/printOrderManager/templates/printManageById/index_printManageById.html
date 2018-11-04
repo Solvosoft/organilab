@@ -357,7 +357,7 @@
                                 </span><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}">
+                                    <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
                                         {% trans 'View and Edit Advertisements' %}</a>
                                 </li>
                                 <li>
@@ -366,7 +366,7 @@
                                 </li>
                             </ul>
                             {% else %}
-                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-bell"></i><span
+                            <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}"><i class="fas fa-bell"></i><span
                                     class="side-menu-title">&nbsp;
                                     {% trans 'Advertisements' %}</span></a>
                             {% endif %}
