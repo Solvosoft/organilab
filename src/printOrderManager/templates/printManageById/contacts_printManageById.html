@@ -1,3 +1,13 @@
+<!--
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+-->
+
+
 {% load static i18n datasets %}
 {% load staticfiles %}
 {% load guardian_tags %}
@@ -24,6 +34,7 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">
+    <link href="{% static 'css/advertisements_printManageById.css' %}" rel="stylesheet">
     <link href="{% static 'css/contacts_printManageById.css' %}" rel="stylesheet">
     <!-- Toogle Button -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
@@ -301,38 +312,66 @@
                     </li>
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <div id="ex4">
-                                <span class="p1 fa-stack fa-1x has-badge" data-count="4">
-                                    <!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
-                                    <i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse" data-count="4b"></i>
+                            <div id="dropAlerts">
+                                {% if countAdvertisements != 0 %}
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="{{ countAdvertisements }}">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse" data-count="{{ countAdvertisements }}"></i>
                                 </span>
-
+                                {% else %}
+                                <span class="p1 fa-stack fa-1x has-badge">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse"></i>
+                                </span>
+                                {% endif %}
                                 <i class="fa fa-caret-down icon-colorNavBar"></i>
                             </div>
-
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
+                            {% if countAdvertisements == 0 %}
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
-                                        <span class="pull-right text-muted small">----</span>
+                                        <center>{% trans "You don't have new advertisements" %}</center>
                                     </div>
                                 </a>
                             </li>
-                            {% for contact in contacts %}
                             <li class="divider"></li>
+                            {% else %}
+                            {% for advertisement in advertisements %}
                             <li>
-                                <a href="#">
+                                <a data-toggle='modal' data-target='#formNotification' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}','{{advertisement.creator}}','{{ printObject.logo.name}}')">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp {{ contact.state }}
-                                        <span class="pull-right text-muted small">----</span>
+                                        {% ifequal advertisement.typeOfAdvertisement "Information" %}
+                                        <i class="fas fa-info-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Success" %}
+                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Warning" %}
+                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Danger" %}
+                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
                                     </div>
                                 </a>
                             </li>
+                            <li class="divider"></li>
                             {% endfor %}
-                        </ul>
-                        <!-- /.dropdown-alerts -->
+                            {% endif %}
+                    </li>
+                    <li>
+                        <a class="text-center" href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                            <strong>{% trans 'See the record of advertisements' %}</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
                     </li>
                 </ul>
                 <!-- /.navbar-top-links -->
@@ -538,6 +577,7 @@
     <script>
         userName = '{{ user.username }}'
         userEmail = '{{ user.email }}'
+        userId = '{{ user.id }}'
         password = '{{ user.password }}'
         printObjectId = '{{ printObject.id }}'
     </script>
@@ -559,6 +599,7 @@
     <!-- Jquery Validation lenguage -->
     <script src="{% static 'js/messages_es.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/contacts_printManageById.js' %}"></script>
+    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
     <!-- Bootstrap Notify-->
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
     <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>

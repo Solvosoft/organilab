@@ -1,3 +1,12 @@
+/*
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+*/
+
 // GLOBAL VARS
 
 // Django REST Framework
@@ -69,7 +78,7 @@ function loadTable() {
 
 function viewNotification(title, description, logo, creator) {
     if(creator != "")
-        creator = "Created by"+creator;
+        creator = "Created by "+creator;
 
     swal.queue([{
         imageUrl: 'http://localhost:8000/media/'+logo,

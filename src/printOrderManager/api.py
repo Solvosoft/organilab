@@ -1,3 +1,10 @@
+'''
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+'''
+
 from rest_framework import viewsets, serializers
 from printOrderManager.models import RequestLabelPrint, Contact, PrintObject, PaperType, Schedule, Advertisement
 from rest_framework.permissions import IsAuthenticated
