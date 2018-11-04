@@ -1,3 +1,12 @@
+/*
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+*/
+
 // GLOBAL VARS
 
 // Django REST Framework
@@ -34,7 +43,7 @@ var errorsValidation = $('.createAdvertisement-card form');
 
 $(document).ready(function () {
     defineErrors();
-    defineValues("", 0, "", "", 0, 0, 0);
+    defineValues("", 0, "", "", 0, 0);
     defineValidations();
 });
 
@@ -82,12 +91,11 @@ function defineErrors() {
 
 // Define the values of the form
 
-function defineValues(titleAdvertisement, typeAdvertisement, descriptionAdvertisement, stateAdvertisement) {
+function defineValues(titleAdvertisement, typeAdvertisement, descriptionAdvertisement) {
     formValues["titleAdvertisement"] = titleAdvertisement;
     formValues["typeAdvertisement"] = typeAdvertisement;
     formValues["descriptionAdvertisement"] = descriptionAdvertisement;
     formValues["idCreator"] = null;
-    formValues["stateAdvertisement"] = stateAdvertisement;
 }
 
 // Ask and then clean the inputs of the form
@@ -152,7 +160,7 @@ function saveAdvertisement() {
     if (errorsValidation.valid() == true) {
         var usersNotifiedArray = new Array();
         usersNotifiedArray.push(userId);
-        defineValues($('#titleAdvertisement').val(), $('#typeAdvertisement').val(), $('#descriptionAdvertisement').val(), $('#stateAdvertisement').val());
+        defineValues($('#titleAdvertisement').val(), $('#typeAdvertisement').val(), $('#descriptionAdvertisement').val());
         if ($('#checkCreator').is(":checked")) {
             formValues["idCreator"] = userId;
         }
@@ -164,7 +172,6 @@ function saveAdvertisement() {
             title: formValues["titleAdvertisement"],
             description: formValues["descriptionAdvertisement"],
             typeOfAdvertisement: formValues["typeAdvertisement"],
-            state: formValues["stateAdvertisement"],
             usersNotified: usersNotifiedArray,
             creator: formValues["idCreator"],
         }

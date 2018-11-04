@@ -1,7 +1,8 @@
 '''
-Created on 14 sep. 2018
-
-@author: luisfelipe7
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
 '''
 
 from django.http.response import JsonResponse
@@ -287,10 +288,15 @@ def index_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/index_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -398,11 +404,15 @@ def contacts_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/contacts_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
-                'contacts': printObject.contacts.all(),
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -422,10 +432,15 @@ def paperTypes_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/paperTypes_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -445,10 +460,15 @@ def schedules_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/schedules_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -498,10 +518,15 @@ def createContact_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/createContact_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -522,10 +547,15 @@ def createPaperType_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/createPaperType_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -546,10 +576,15 @@ def createSchedule_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/createSchedule_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
