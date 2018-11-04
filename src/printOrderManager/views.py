@@ -458,6 +458,35 @@ def schedules_printManageById(request, pk):
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
 
 
+#   Method that enter to the section of Advertisements on the Print Manager
+
+@login_required
+def advertisements_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/advertisements_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+
 # Method that return view to add contacts on the Print Manager
 
 
@@ -884,7 +913,7 @@ def get_list_SchedulesByPrint(request):
 
     # Filter Section
     if q:
-        objs = printObject.schedules.all.filter(
+        objs = printObject.schedules.all().filter(
             Q(name__icontains=q) | Q(startTime__icontains=q) | Q(closeTime__icontains=q) | Q(startDay__icontains=q) | Q(closeDay__icontains=q) | Q(description__icontains=q) | Q(state__icontains=q)).order_by('name')
     else:
         objs = printObject.schedules.all().order_by('name')
@@ -930,6 +959,77 @@ def get_list_SchedulesByPrint(request):
                 obj.startDay+" "+obj.startTime+" - "+obj.closeDay+" "+obj.closeTime,
                 actions,
             ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
+# Method that return the list of advertisements of an specific print
+
+
+@login_required
+def get_list_AdvertisementsByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.advertisements.all().filter(
+            Q(title__icontains=q) | Q(description__icontains=q) | Q(typeOfAdvertisement__icontains=q) | Q(published_date__icontains=q) | Q(state__icontains=q) | Q(creator__icontains=q)).order_by('published_date')
+    else:
+        objs = printObject.advertisements.all().order_by('published_date')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.state == "Enabled"):
+            state = "<span class='label label-success'>Enabled</span>"
+        else:
+            state = "<span class='label label-default'>Disabled</span>"
+
+        creator = ""
+        if(obj.creator != None):
+            creator = obj.creator.username
+
+        # Actions Section 
+        action = "<button type='button' class='btn btn-info'  onclick='viewNotification(\"" + obj.title + "\" ,\"" + obj.description + "\"  ,\"" + str(printObject.logo) + "\"  ,\"" + creator + "\")'>View Notification</button>"
+        # Data Section
+        data.append([
+            obj.published_date,
+            obj.title,
+            obj.typeOfAdvertisement,
+            creator,
+            action,
+        ])
 
     dev = {
         "data": data,

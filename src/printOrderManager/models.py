@@ -88,7 +88,7 @@ class Advertisement(models.Model):
     description = models.TextField(
         _('Advertisement Description'), max_length=255)
     typeOfAdvertisement = models.TextField(
-        _('Type of advertisement'), default='Default', max_length=255)
+        _('Type of advertisement'), default='Information', max_length=255)
     published_date = models.DateField(_('Published Date'), auto_now=True)
     state = models.TextField(_('State'), default='Enabled', max_length=100)
     usersNotified = models.ManyToManyField(
