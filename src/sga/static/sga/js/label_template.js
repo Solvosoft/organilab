@@ -602,8 +602,8 @@ function addSignalWordHorizontal(canvas, substance_information) {
 }
 // Add Signal Word in Vertical Canvas
 function addSignalWordVertical(canvas, substance_information) {
-    //Text size <=30
-    if (substance_information.signalWord.length <= 30) {
+    //Text size <=20
+    if (substance_information.signalWord.length <= 20) {
         signalWord = new fabric.Textbox(substance_information.signalWord, {
             width: 360,
             height: 5,
@@ -617,8 +617,8 @@ function addSignalWordVertical(canvas, substance_information) {
             objectCaching: false
         });
     } else {
-        //Text size >30
-        signal_word = new fabric.IText(substance_information.signalWord, {
+        //Text size >20
+        signalWord = new fabric.IText(substance_information.signalWord, {
             width: 360,
             left: 20,
             top: 150,
