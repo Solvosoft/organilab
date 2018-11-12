@@ -699,8 +699,10 @@ def get_list_contactByPrint(request):
     page = p.page(pgnum)
     data = []
     cont = 0
-    permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
-
+    
+    # Carga de libreria al pintar tabla con toogle buttons
+    # permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
+    permissions = ""
     for obj in page.object_list:
         user = User.objects.get(pk=int(obj.assigned_user_id))
         name = user.first_name+" "+user.last_name
