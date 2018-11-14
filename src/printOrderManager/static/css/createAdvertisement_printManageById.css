@@ -30,19 +30,3 @@ GitHub User luisfelipe7
 .colorError {
     color: rgb(185, 8, 8) !important;
 }
-
-#ex4 .p1[data-count]:after{
-    position:absolute;
-    right:5%;
-    top:0%;
-    content: attr(data-count);
-    font-size:90%;
-    padding:.2.5em;
-    border-radius:50%;
-    line-height:1em;
-    color: white;
-    background:rgba(2, 5, 204, 0.85);
-    text-align:center;
-    min-width: 1em;
-    font-weight:bold;
-  }

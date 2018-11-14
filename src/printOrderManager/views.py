@@ -1,7 +1,8 @@
 '''
-Created on 14 sep. 2018
-
-@author: luisfelipe7
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
 '''
 
 from django.http.response import JsonResponse
@@ -287,10 +288,15 @@ def index_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/index_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -398,10 +404,15 @@ def contacts_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/contacts_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -409,6 +420,91 @@ def contacts_printManageById(request, pk):
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+#  Method that enter to the section of Paper Types on the Print Manager
+
+@login_required
+def paperTypes_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/paperTypes_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+#   Method that enter to the section of Schedules on the Print Manager
+
+@login_required
+def schedules_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/schedules_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+#   Method that enter to the section of Advertisements on the Print Manager
+
+@login_required
+def advertisements_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/advertisements_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
 
 
 # Method that return view to add contacts on the Print Manager
@@ -422,10 +518,15 @@ def createContact_printManageById(request, pk):
     printObject = get_object_or_404(PrintObject, pk=pk)
     if(have_permissions(printObject, user.id) is True):
         if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
             return render(request, 'printManageById/createContact_printManageById.html', {
                 # Parametros enviados con la vista.
                 'printObject': printObject,
                 'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
             })
         else:
             messages.add_message(request, messages.ERROR, _("MESSAGE3"))
@@ -433,6 +534,136 @@ def createContact_printManageById(request, pk):
     else:
         messages.add_message(request, messages.ERROR, _("MESSAGE2"))
         return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+# Method that return the view to add a paper type on the Print Manager
+
+
+@login_required
+def createPaperType_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/createPaperType_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+# Method that return the view to add a schedule on the Print Manager
+
+
+@login_required
+def createSchedule_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/createSchedule_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+# Method that return the view to add a advertisement on the Print Manager
+
+
+@login_required
+def createAdvertisement_printManageById(request, pk):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    printObject = get_object_or_404(PrintObject, pk=pk)
+    if(have_permissions(printObject, user.id) is True):
+        if(isEnabled_contact(printObject, user.id) is True):
+            # Define the advertisements
+            advertisements = printObject.advertisements.all()
+            advertisements = advertisements.exclude(usersNotified__id=request.user.id).exclude(state="Disabled")
+            return render(request, 'printManageById/createAdvertisement_printManageById.html', {
+                # Parametros enviados con la vista.
+                'printObject': printObject,
+                'user': user,
+                'advertisements': advertisements,
+                'countAdvertisements': advertisements.count(),
+            })
+        else:
+            messages.add_message(request, messages.ERROR, _("MESSAGE3"))
+            return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+    else:
+        messages.add_message(request, messages.ERROR, _("MESSAGE2"))
+        return HttpResponseRedirect(reverse('printOrderManager:index_printManager'))
+
+
+# Methods to simplify the contacts options
+
+
+def define_dict_permissions(numero):
+    dictionaryPermissions = {}
+    if(numero == 1):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-info-circle"',
+            'symbolPermission': 'i',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Information')+'"><i '+'class="fas fa-info-circle"'+'></i></div> '
+        }
+    elif(numero == 2):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-users"',
+            'symbolPermission': 'c',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Contacts')+'"><i '+'class="fas fa-users"'+'></i></div> '
+        }
+    elif(numero == 3):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-paper-plane"',
+            'symbolPermission': 'p',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Paper Types')+'"><i '+'class="fas fa-paper-plane"'+'></i></div> '
+        }
+    elif(numero == 4):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-calendar-alt"',
+            'symbolPermission': 's',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Schedules')+'"><i '+'class="fas fa-calendar-alt"'+'></i></div> '
+        }
+    elif(numero == 5):
+        dictionaryPermissions = {
+            'symbol': 'class="fas fa-bell"',
+            'symbolPermission': 'a',
+            'textInput': '<div data-toggle="tooltip" data-placement="top" title="' +
+            _('Advertisements')+'"><i '+'class="fas fa-bell"'+'></i></div> '
+        }
+    return dictionaryPermissions
 
 
 # Method that return the list of contacts of an specific print
@@ -454,12 +685,12 @@ def get_list_contactByPrint(request):
 
     # Filter Section
     if q:
-        objs = PrintObject.objects.all().filter(Q(creation_date__icontains=q) |
-                                                Q(name__icontains=q) | Q(qualification__icontains=q) | Q(responsible_user__username__icontains=q) |
-                                                Q(responsible_user__first_name__icontains=q) | Q(responsible_user__last_name__icontains=q), Q(responsible_user_id=request.user.id)).order_by('creation_date')
+        printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+        objs = printObject.contacts.all().filter(Q(state__icontains=q) | Q(assigned_user_id__username__icontains=q) | Q(
+            first_name_username__icontains=q) | Q(last_name__icontains=q)).order_by('assigned_user_id__username')
     else:
         printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
-        objs = printObject.contacts.all()
+        objs = printObject.contacts.all().order_by('assigned_user_id__username')
 
     recordsFiltered = objs.count()
     p = Paginator(objs, length)
@@ -468,8 +699,10 @@ def get_list_contactByPrint(request):
     page = p.page(pgnum)
     data = []
     cont = 0
-    permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
-
+    
+    # Carga de libreria al pintar tabla con toogle buttons
+    # permissions = "<script src='https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js'></script>"
+    permissions = ""
     for obj in page.object_list:
         user = User.objects.get(pk=int(obj.assigned_user_id))
         name = user.first_name+" "+user.last_name
@@ -487,60 +720,15 @@ def get_list_contactByPrint(request):
         else:
             permissions = ""
 
-        symbol = 'class="fas fa-info-circle"'
-        symbolPermission = 'i'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Information')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='i"+str(user.id)+"' data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='i"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-users"'
-        symbolPermission = 'c'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Contacts')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='c"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-paper-plane"'
-        symbolPermission = 'p'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Paper Types')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='p"+str(user.id)+"'  data-off='"+textInput+"'   type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'  data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='p"+str(user.id)+"'  data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"'   data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-calendar-alt"'
-        symbolPermission = 's'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Schedules')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='s"+str(user.id)+"' data-off='"+textInput+"'  type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='s"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-
-        symbol = 'class="fas fa-bell"'
-        symbolPermission = 'a'
-        textInput = '<div data-toggle="tooltip" data-placement="top" title="' + \
-            _('Advertisements')+'"><i '+symbol+'></i></div> '
-        if(user.has_perm(nameOfThePermission(symbolPermission), printObject) is True):
-            permissions += "<input "+toggle+" checked id='a"+str(user.id)+"'  data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
-        else:
-            permissions += "<input "+toggle+" id='a"+str(user.id)+"' data-off='"+textInput+"' type='checkbox'  data-toggle='toggle'  onchange='permissionsUser(\"" + str(
-                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(symbolPermission) + "\" )'  data-size='small'  data-on='"+textInput+"' data-onstyle='primary'>&nbsp;"
+        # Loop the permissions getting each dictionarie
+        for x in range(1, 6):
+            dict = define_dict_permissions(x)  # Get the dictionarie
+            checked = ''
+            # Check if the user has permissions
+            if(user.has_perm(nameOfThePermission(dict['symbolPermission']), printObject) is True):
+                checked = 'checked'
+            permissions += "<input "+checked+" "+toggle+" id='"+dict['symbolPermission']+str(user.id)+"' data-off='"+dict['textInput']+"'  type='checkbox'  data-toggle='toggle' onchange='permissionsUser(\"" + str(
+                printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + str(dict['symbolPermission']) + "\" )'  data-size='small'  data-on='"+dict['textInput']+"'   data-onstyle='primary'>&nbsp;"
 
         state = None
         actionState = None
@@ -557,8 +745,6 @@ def get_list_contactByPrint(request):
             actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
             actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(printObject.id) + "\" ,\"" + str(user.id) + "\" ,\"" + user.username + "\",\"" + name + "\" ,\"" + obj.state + "\",\"" + obj.phone + "\" ,\"" + str(obj.id) + "\" )' data-toggle='modal' data-target='#formUpdateContact'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
                 _('Edit')+"</a></li>"
-            # actions += "<li><a  href='#' ><span id='state' class='far fa-eye' aria-hidden='true'></span>&nbsp; " + \
-            #    _(actionState)+"</a></li>"
             actions += "<li><a  href='#' onclick='deleteContact(\"" + str(obj.id) + "\" ,\"" + user.username + \
                 "\"  )' ><span id='delete' class='fas fa-user-minus' aria-hidden='true'></span>&nbsp; " + \
                 _('Delete')+"</a></li>"
@@ -645,6 +831,240 @@ def get_list_usersNotRelatedToPrint(request):
             userObject.username,
             name,
             userObject.email,
+            action,
+        ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
+# Method that return the list of paper types of an specific print
+
+
+@login_required
+def get_list_paperTypesByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.paperType.all.filter(
+            Q(unit_size__icontains=q) | Q(widthSize__icontains=q) | Q(longSize__icontains=q) | Q(name__icontains=q) | Q(grams__icontains=q) | Q(available__icontains=q)).order_by('name')
+    else:
+        objs = printObject.paperType.all().order_by('name')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.available == "Available"):
+            state = "<span class='label label-success'>Available</span>"
+        else:
+            state = "<span class='label label-default'>Not Available</span>"
+
+        # Actions Section
+        if(request.user.has_perm('changePaper_printObject'), printObject is True):
+            actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
+            actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(obj.id) + "\" ,\"" + obj.name + "\" ,\"" + str(obj.grams) + "\",\"" + (obj.available) + "\" ,\"" + obj.description + "\",\"" + obj.unit_size + "\" ,\"" + str(obj.longSize) + "\" ,\"" + str(obj.widthSize) + "\")' data-toggle='modal' data-target='#formUpdatePaperType'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
+                _('Edit')+"</a></li>"
+            actions += "<li><a  href='#' onclick='deletePaperType(\"" + str(obj.id) + "\" ,\"" + obj.name + \
+                "\"  )' ><span id='delete' class='fas fa-minus-circle' aria-hidden='true'></span>&nbsp; " + \
+                _('Delete')+"</a></li>"
+            actions += "</ul></div>"
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                str(obj.grams)+" g/m2",
+                str(obj.longSize)+" X "+str(obj.widthSize)+" "+obj.unit_size,
+                actions,
+            ])
+        else:
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                str(obj.grams)+" g",
+                str(obj.longSize)+" X "+str(obj.widthSize)+" "+obj.unit_size,
+            ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
+# Method that return the list of schedules of an specific print
+
+
+@login_required
+def get_list_SchedulesByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.schedules.all().filter(
+            Q(name__icontains=q) | Q(startTime__icontains=q) | Q(closeTime__icontains=q) | Q(startDay__icontains=q) | Q(closeDay__icontains=q) | Q(description__icontains=q) | Q(state__icontains=q)).order_by('name')
+    else:
+        objs = printObject.schedules.all().order_by('name')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.state == "Enabled"):
+            state = "<span class='label label-success'>Enabled</span>"
+        else:
+            state = "<span class='label label-default'>Disabled</span>"
+
+        # Actions Section
+        if(request.user.has_perm('changeSchedules_printObject'), printObject is True):
+            actions = "<div class='btn-group'><button type='button' class='btn btn-info  dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Actions &nbsp;<span class='caret'></span></button><ul class='dropdown-menu ' role='menu'>"
+            actions += "<li><a  href='#' onclick='defineValuesForm(\"" + str(obj.id) + "\" ,\"" + obj.name + "\" ,\"" + obj.startTime + "\" ,\"" + obj.closeTime + "\",\"" + obj.startDay + "\" ,\"" + obj.closeDay + "\" ,\"" + obj.description + "\"  ,\"" + obj.state + "\")' data-toggle='modal' data-target='#formUpdateSchedule'><span id='edit' class='fas fa-edit' aria-hidden='true' ></span>&nbsp; " + \
+                _('Edit')+"</a></li>"
+            actions += "<li><a  href='#' onclick='deleteSchedule(\"" + str(obj.id) + "\" ,\"" + obj.name + \
+                "\"  )' ><span id='delete' class='fas fa-minus-circle' aria-hidden='true'></span>&nbsp; " + \
+                _('Delete')+"</a></li>"
+            actions += "</ul></div>"
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                obj.startDay+" "+obj.startTime+" - "+obj.closeDay+" "+obj.closeTime,
+                actions,
+            ])
+        else:
+            # Data Section
+            data.append([
+                state,
+                obj.name,
+                obj.startDay+" "+obj.startTime+" - "+obj.closeDay+" "+obj.closeTime,
+                actions,
+            ])
+
+    dev = {
+        "data": data,
+        "recordsTotal": objs.count(),
+        "recordsFiltered": recordsFiltered
+    }
+
+    draw = request.GET.get('_', '')
+    try:
+        draw = int(draw)
+        dev['draw'] = draw
+    except:
+        pass
+    return JsonResponse(dev)
+
+
+# Method that return the list of advertisements of an specific print
+
+
+@login_required
+def get_list_AdvertisementsByPrint(request):
+    q = request.GET.get('search[value]')
+    length = request.GET.get('length', '10')
+    pgnum = request.GET.get('start', '0')
+    printObject = PrintObject.objects.get(pk=int(request.GET.get('pk')))
+
+    try:
+        length = int(length)
+        pgnum = 1 + (int(pgnum) / length)
+    except:
+        length = 10
+        pgnum = 1
+
+    # Filter Section
+    if q:
+        objs = printObject.advertisements.all().filter(
+            Q(title__icontains=q) | Q(description__icontains=q) | Q(typeOfAdvertisement__icontains=q) | Q(published_date__icontains=q) | Q(state__icontains=q) | Q(creator__icontains=q)).order_by('published_date')
+    else:
+        objs = printObject.advertisements.all().order_by('published_date')
+
+    recordsFiltered = objs.count()
+    p = Paginator(objs, length)
+    if pgnum > p.num_pages:
+        pgnum = 1
+    page = p.page(pgnum)
+    data = []
+    cont = 0
+
+    for obj in page.object_list:
+
+        state = None
+        actionState = None
+        if(obj.state == "Enabled"):
+            state = "<span class='label label-success'>Enabled</span>"
+        else:
+            state = "<span class='label label-default'>Disabled</span>"
+
+        creator = ""
+        if(obj.creator != None):
+            creator = obj.creator.username
+
+        # Actions Section 
+        action = "<button type='button' class='btn btn-info'  onclick='viewNotification(\"" + obj.title + "\" ,\"" + obj.description + "\"  ,\"" + str(printObject.logo) + "\"  ,\"" + creator + "\")'>View Notification</button>"
+        # Data Section
+        data.append([
+            obj.published_date,
+            obj.title,
+            obj.typeOfAdvertisement,
+            creator,
             action,
         ])
 
