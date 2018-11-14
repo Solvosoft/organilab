@@ -100,6 +100,8 @@ def getSubstanceInformation(request):
     prudenceAdvicesNameSubstance = []
     prudenceAdvicesCodeSubstance = []
     pictogramasNameSubstance = []
+    components = []
+    componentsCasNumbers = []
     if request.is_ajax():
         dangerIndications = DangerIndication.objects.filter(sustance__in=request.GET['substance_id'])
         # ---------------------------------------------------------------------
@@ -182,6 +184,16 @@ def getSubstanceInformation(request):
                             pictogramasNameSubstance.append(str(pictogram.name))
         substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
         substanceInformation['Pictograms'] = pictogramasNameSubstance
+        # ---------------------------------------------------------------------
+        # --------------------------Cas Numbers--------------------------------
+        components = Component.objects.filter(sustance=request.GET['substance_id'])
+        if(components):
+                for component in components:
+                    if (str(component.cas_number) in componentsCasNumbers):
+                        pass
+                    else:
+                        componentsCasNumbers.append(str(component.cas_number))
+        substanceInformation['CasNumbers'] = componentsCasNumbers
         # ---------------------------------------------------------------------
         # print(substanceInformation)
         data = json.dumps(substanceInformation)

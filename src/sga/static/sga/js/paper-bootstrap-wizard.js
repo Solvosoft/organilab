@@ -33,13 +33,13 @@ $(document).ready(function () {
             var $valid = $('.wizard-card form').valid();
             //Check if the user select a card template
             if (hasClass(label_template, 'active')) {
-                if (!$valid || !selectedCardTemplate) {
-                    $validator.focusInvalid();
+                if (!$valid || selectedCardTemplate==-1) {
+                    // $validator.focusInvalid();
                     return false;
                 }
             } else {
                 if (!$valid) {
-                    $validator.focusInvalid();
+                    // $validator.focusInvalid();
                     return false;
                 }
             }

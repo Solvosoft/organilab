@@ -6,8 +6,7 @@
 @email: guillermoestebancs@gmail.com
 */
 
-
-/* Label Creator Card */
+/* Label creator card */
 .card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.400) !important;
     transition: 0.3s;
@@ -19,7 +18,7 @@
 .container {
     padding: 8px 16px;
 }
-/* Template option Card */
+/* Template option card */
 .template_card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
     transition: 0.3s;
@@ -31,7 +30,7 @@
     border-color:#76a1c3;
     border-width: thin;
 }
-/* Template option Card selected */
+/* Template option card selected */
 .template_card_selected {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
     transition: 0.3s;
@@ -106,7 +105,7 @@
     margin-right: 10% !important;
     color: black !important;
 }
-/* Center Modal */
+/* Center modal */
 .modal {
     text-align: center;
 }
