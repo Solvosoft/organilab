@@ -6,20 +6,97 @@
 @email: guillermoestebancs@gmail.com
 */
 
-/* Canvas blank template vertical size */
-.border-canvas-vertical{
-    width: 265px !important;
-    height:500px !important;
-
-    margin: 12px !important;
-    border: 2px solid black !important;
-    background-color: white !important;
+/* Canvas editor options */
+.canvas_editor{
+    padding-right: 15px !important;
 }
-/* Canvas blank template horizontal size */
-.border-canvas-horizontal{
-    width: 500px !important;
-    height:265px !important;
-    margin: 12px !important;
-    border: 2px solid black !important;
-    background-color: white !important;
+/* Side menu canvas editor */
+#accordion{
+    border: 2px solid #337ab7;
+    border-radius: 20px;
+    overflow: hidden;
+}
+#accordion .panel{
+    border: none;
+    border-bottom: 2px solid #337ab7;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+}
+#accordion .panel:last-child{
+    border-bottom: none;
+}
+#accordion .panel-heading{
+    padding: 0;
+    border: none;
+}
+#accordion .panel-title a{
+    display: block;
+    padding: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    background: #337ab7;
+    text-align: right;
+    border: none;
+    border-radius: 0;
+    position: relative;
+    transition: all 0.3s ease 0s;
+}
+#accordion .panel-title a.collapsed{
+    background: #fff;
+    color: #337ab7;
+}
+#accordion .panel-title a.collapsed:hover{
+    background: #337ab7;
+    color: #fff;
+}
+#accordion .panel-title a:after,
+#accordion .panel-title a.collapsed:after{
+    font-family: 'Font Awesome\ 5 Free';
+    content: "\f078";
+    font-size: 15px;
+    color: #fff;
+    position: absolute;
+    top: 17px;
+    left: 20px;
+    transition: all 0.3s ease-in-out 0s;
+}
+#accordion .panel-title a.collapsed:after{
+    font-family: 'Font Awesome\ 5 Free';
+    content: "\f077";
+    color: #337ab7;
+}
+#accordion .panel-title a.collapsed:hover:after{
+    color: #fff;
+}
+#accordion .panel-body{
+    padding: 20px;
+    border: none;
+    font-size: 14px;
+    color: #888;
+    line-height: 25px;
+}
+/* Button group canvas editor */
+.btn-group button {
+    background-color: #337ab7; 
+    border: 1px solid #000000; 
+    color: white; 
+    padding: 10px 24px;
+    cursor: pointer; 
+    float: left;
+}
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.btn-group button:not(:last-child) {
+    border-right: none;
+}
+/* Add a background color on hover */
+.btn-group button:hover {
+    background-color: #007AA1;
 }
