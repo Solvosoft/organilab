@@ -7,31 +7,7 @@ GitHub User luisfelipe7
 
 */
 
-.title {
-    color: rgb(78, 137, 189) !important;
-    size: 40;
-    font-size: 20px !important;
-}
-
-.subtitle {
-    font-size: 200%;
-    color: #284675;
-}
-
-.colorIcon {
-    color: white !important;
-    background-color: #93c3eb !important;
-}
-
-.colorStatic {
-    color: #4894d3 !important;
-}
-
-.colorError {
-    color: rgb(185, 8, 8) !important;
-}
-
-#ex4 .p1[data-count]:after{
+#dropAlerts .p1[data-count]:after{
     position:absolute;
     right:5%;
     top:0%;
@@ -46,3 +22,23 @@ GitHub User luisfelipe7
     min-width: 1em;
     font-weight:bold;
   }
+
+.ff{
+    background-color: red;
+}
+
+.titleNotification{
+    color: #0926ca;
+}
+
+.notificationCreator{
+    color: #4152b4e8;
+}
+
+.piePagina{
+    text-align: right;
+}
+
+.notificationIcon{
+    color: #4152b4e8 !important;
+}

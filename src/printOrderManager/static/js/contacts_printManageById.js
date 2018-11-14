@@ -1,3 +1,12 @@
+/*
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+*/
+
 // GLOBAL VARS
 
 // Django REST Framework
@@ -209,31 +218,6 @@ function deleteContact(pkContact, userName) {
         if (dismiss === 'cancel' || dismiss === 'close') {
             swal("Contact Undeleted!", "The " + object + " with the user name " + userName + " hasn't been deleted!", "info");
         }
-    })
-}
-
-// Function to enable or disable contact
-
-
-function updatedContact(idContact, phoneNumber, state, userName) {
-    newState = "Enabled"
-    if (state == "Enabled") {
-        newState = "Disabled";
-    }
-
-    // Interact with the API endpoint
-    var action = ["contacts", "partial_update"]
-    var params = {
-        id: idContact,
-        phone: phoneNumber,
-        state: newState,
-    }
-    client.action(schema, action, params).then(function (result) {
-        swal("Contact updated!", "The " + object + " with the user name " + userName + " was updated successfully", "success");
-        loadTable();
-    }).catch(function (error) {
-        swal("Contact not updated!", errors[error.message], "error");
-        // Handle error case where eg. user provides incorrect credentials.
     })
 }
 
