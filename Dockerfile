@@ -3,6 +3,7 @@ FROM python:3.6.4-stretch
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /organilab/logs/
+RUN mkdir -p /crawlstatic
 WORKDIR /organilab
 
 # Copy the current directory contents into the container at /app
