@@ -14,16 +14,16 @@ RUN apt-get update && \
     apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor
 
         
-
-RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
-RUN pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
+RUN pip install --trusted-host pypi.python.org --no-cache-dir pip && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt && \
+pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
 
 
 RUN apt-get -y autoremove && \
      apt-get -y clean   && \
      rm -rf /var/lib/apt/lists/*
 
-RUN python manage.py collectstatic --settings=organilab.settings_docker
+RUN python manage.py collectstatic --settings=organilab.settings
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY docker/nginx-app.conf /etc/nginx/sites-available/default
