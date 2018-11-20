@@ -25,6 +25,7 @@ RUN apt-get -y autoremove && \
      rm -rf /var/lib/apt/lists/*
 
 RUN python manage.py collectstatic --settings=organilab.settings
+RUN chown -R www-data:www-data /organilab
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY docker/nginx-app.conf /etc/nginx/sites-available/default
