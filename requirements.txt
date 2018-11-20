@@ -43,7 +43,7 @@ django-json-rpc==0.6.1
 django-bootstrap-form
 pyEQL==0.4
 django-reservation==0.2.8
-celery==4.0.1
+celery==4.1.1
 redis==2.10.5
 django-ajax-selects==1.5.2
 django-cruds-adminlte
