@@ -1,11 +1,10 @@
 {% load i18n shelf_position laboratory %}
 
-
 {% index_permissions as userperms %}
 
-
 <nav class="navbar navbar-dark bg-inverse">
-  <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"><strong id="brand_id">ORGANILAB</strong></a>
+  <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"><strong
+      id="brand_id">ORGANILAB</strong></a>
   <ul class="nav navbar-nav">
   	{% if userperms.add_laboratory %}
       <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" title="{% trans 'Add Laboratory' %}">
@@ -26,17 +25,19 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" aria-labelledby="dropdownlaboratories">
+        {% for lab in mylabs %}
+        <li><a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
+            <span class="glyphicon {% cycle " glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop"
+              "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed"
+              "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank"
+              "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span>
+            {{ lab.name }}</a></li>
+        {% endfor %}
 
-    {% for lab in  mylabs %}
-      <li><a href="{% url 'laboratory:labindex' lab.pk %}"  title="{{ lab.name }}">
-      <span class="glyphicon {% cycle "glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span> 
-        {{ lab.name }}</a></li>
-    {% endfor %}
+      </ul>
+    </li>
 
-  </ul>
-</li>
-
-      {% if laboratory %}
+    {% if laboratory %}
 
         {% if userperms.admin_lab %} 
           <li class="dropdown">
@@ -119,33 +120,36 @@
         <li id="reservation_list_id"><a
           href="{% url 'reservation_list' %}">{% trans 'My reservations' %}  </a>
         </li>
-        <li id="reservation_admin_id">
-        {% if request.reservation %}
-          <a href="{% url 'finish_reservation' %}"> {% trans 'Finish reservation' %}  </a>
-        {% else %}
-          <a
-            href="{% url 'add_user_reservation' %}?next={% url 'laboratory:labindex' laboratory %}"> {% trans 'Create a reservation' %} </a>
         {% endif %}
-   	   </li>
+	   </li>
 	  {% endif %}
       {% endif %}
+    </li>
+    {% endif %}
 
     {% endif %}
   </ul>
   <ul class="nav navbar-nav pull-right">
-  
+  <!--GHS Labels-->
   <li id='block_id' class="nav-item">
-  <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}" >
-  {% trans 'Blog' %} </a> 
+  <a class="nav-link" href="{% url 'sga:index_sga' %}" title="{% trans 'GHS' %}" >
+  {% trans 'SGA' %} </a> 
   </li>
-    <li id='feedback_id' class="nav-item"><a class="nav-link"
-      href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
-      {% trans 'Feedback' %}</a></li>
+  <li id='block_id' class="nav-item">
+      <a class="nav-link" href="{% url 'printOrderManager:index_printOrderManager' %}" title="{% trans 'Prints and Orders Manager' %}">
+        {% trans 'Prints and Orders Manager' %} </a>
+  </li>
+  <li id='block_id' class="nav-item">
+      <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}">
+        {% trans 'Blog' %} </a>
+  </li>
+    <li id='feedback_id' class="nav-item"><a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
+        {% trans 'Feedback' %}</a></li>
     {% if request.user.is_authenticated %}
-      <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
-      <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">{% trans "Log out" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">{% trans "Log out" %}</a></li>
     {% else %}
-      <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
     {% endif %}
   </ul>
 </nav>
