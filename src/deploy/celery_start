@@ -5,15 +5,11 @@ DJANGODIR=/organilab # Django project directory
 NUM_WORKERS=2 # how many worker processes should Gunicorn spawn 
 DJANGO_SETTINGS_MODULE=organilab.settings # which settings file should Django use 
 DJANGO_WSGI_MODULE=organilab.wsgi  # WSGI module name 
-USER=www-data # the user to run as 
-GROUP=www-data # the group to run as 
 
-echo "Starting $NAME as solvoapps" 
- 
 # Activate the virtual environment 
 cd $DJANGODIR 
 
 # Start your Django Unicorn 
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon) 
-exec celery worker -A organilab -l info  -c $NUM_WORKERS --uid $USER --gid $GROUP 
+exec celery worker -A organilab -l info  -c $NUM_WORKERS
 
