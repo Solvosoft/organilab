@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'constance',
     'constance.backends.database',
     'rest_framework',
+    'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
     'msds',
     'sga',
@@ -207,6 +208,7 @@ MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, '../media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('index')
+STATIC_CRAWL = os.path.join(BASE_DIR, '/static/')
 
 # Email development settings
 DEFAULT_FROM_EMAIL = os.getenv(
@@ -265,9 +267,9 @@ CONSTANCE_CONFIG = {
     'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
                        'User Administrator of labotatory', int),
     'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
-                              'User Laboratorist/Professor of labotatory', int),
+                       'User Laboratorist/Professor of labotatory', int),
     'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
-                         'User Student of labotatory', int),
+                       'User Student of labotatory', int),
     'ADSENSE_ACTIVE': (True, 'Active the Ads', bool),
     'ADSENSE_PUB_TOKEN': ('ca-pub-1539451676311396', 'Google adsense public key'
                           'for monitarize the website', str),
@@ -288,6 +290,8 @@ DATASETS_SUPPORT_LANGUAGES = {
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
 
 from celery.schedules import crontab
+
+CELERY_MODULE='organilab.celery'
 
 CELERYBEAT_SCHEDULE = {
     # execute 12:30 pm
@@ -310,9 +314,13 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.template': {
+        'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'organilab': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
     },
 }
