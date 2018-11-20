@@ -7,4 +7,4 @@ DJANGO_WSGI_MODULE=organilab.wsgi                     # WSGI module name
 USER=www-data # the user to run as 
 GROUP=www-data # the group to run as 
 
-exec  celery beat -A organilab --schedule /organilab/beat.db --loglevel=INFO --uid $USER--gid $GROUP 
+exec  celery beat -A organilab --schedule /organilab/beat.db --loglevel=INFO --uid $USER --gid $GROUP 
