@@ -1,0 +1,283 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-27 11:43-0600\n"
+"PO-Revision-Date: 2018-08-27 11:43-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: admin.py:23
+msgid "Download Label"
+msgstr "Descargar etiquetas"
+
+#: models.py:11
+msgid "Type of danger"
+msgstr "Tipo de peligro"
+
+#: models.py:12
+msgid "Danger class"
+msgstr "Clase de peligro"
+
+#: models.py:13
+msgid "Danger Category"
+msgstr "Categoría de peligo"
+
+#: models.py:15 models.py:52 models.py:67 models.py:85 models.py:131
+#: models.py:183 models.py:206
+msgid "Name"
+msgstr "Nombre"
+
+#: models.py:18
+msgid "Danger type"
+msgstr "Clasificación de peligro"
+
+#: models.py:41
+msgid "Warning Class"
+msgstr "Clase de peligro"
+
+#: models.py:42
+msgid "Warning Classes"
+msgstr "Clases de peligro"
+
+#: models.py:44
+msgid "Can see available Warning Classes"
+msgstr "Puede ver clases de peligro disponibles"
+
+#: models.py:58
+msgid "Pictogram"
+msgstr "Pictograma"
+
+#: models.py:59 models.py:108
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+#: models.py:61
+msgid "Can see available pictograms"
+msgstr "Puede ver pictogramas disponibles"
+
+#: models.py:68
+msgid "Weigth"
+msgstr "Peso"
+
+#: models.py:74
+msgid "Warning Word"
+msgstr "Palabra de advertencia"
+
+#: models.py:75
+msgid "Warning Words"
+msgstr "Palabras de advertencia"
+
+#: models.py:77
+msgid "Can see available Warning Words"
+msgstr "Puede ver palabras de advertencia disponibles"
+
+#: models.py:84 models.py:103
+msgid "Code"
+msgstr "Código"
+
+#: models.py:88
+msgid "Help for prudence advice"
+msgstr "Ayuda en los consejos de prudencia"
+
+#: models.py:94
+msgid "Prudence Advice"
+msgstr "Consejo de prudencia"
+
+#: models.py:95
+msgid "Prudence Advices"
+msgstr "Consejos de prudencia"
+
+#: models.py:97
+msgid "Can see available prudence advice"
+msgstr "Puede ver los consejos de prudencia disponibles"
+
+#: models.py:104
+msgid "Description"
+msgstr "Descripción"
+
+#: models.py:106
+msgid "Warning words"
+msgstr "Palabras de advertencia"
+
+#: models.py:110
+msgid "Warning class"
+msgstr "Clase de peligro"
+
+#: models.py:115
+msgid "Warning category"
+msgstr "Categorías de peligro"
+
+#: models.py:117
+msgid "Prudence advice"
+msgstr "Consejos de prudencia"
+
+#: models.py:123
+msgid "Danger Indication"
+msgstr "Indicación de peligro"
+
+#: models.py:124
+msgid "Indication of Danger"
+msgstr "Indicaciones de peligro"
+
+#: models.py:126
+msgid "Can see available indication of danger"
+msgstr "Puede ver las indicaciones de peligro disponibles"
+
+#: models.py:132
+msgid "CAS number"
+msgstr "Número CAS"
+
+#: models.py:138
+msgid "Component"
+msgstr "Componente"
+
+#: models.py:139 models.py:149
+msgid "Components"
+msgstr "Componentes"
+
+#: models.py:141
+msgid "Can see available Component"
+msgstr "Puede ver los componentes disponibles"
+
+#: models.py:147
+msgid "Comercial name"
+msgstr "Nombre comercial"
+
+#: models.py:152
+msgid "Danger indications"
+msgstr "Indicación de peligro"
+
+#: models.py:153
+msgid "Synonymous"
+msgstr "Sinónimos"
+
+#: models.py:155
+msgid "Agrochemical"
+msgstr "Agroquímicos"
+
+#: models.py:171 models.py:229
+msgid "Sustance"
+msgstr "Sustancia"
+
+#: models.py:172
+msgid "Sustances"
+msgstr "Sustancias"
+
+#: models.py:174
+msgid "Can see available Sustance"
+msgstr "Puede ver las sustancias disponibles"
+
+#: models.py:184
+msgid "Phone"
+msgstr "Telefono"
+
+#: models.py:185
+msgid "Address"
+msgstr "Dirección"
+
+#: models.py:191 models.py:232
+msgid "Builder Information"
+msgstr "Información del fabricante"
+
+#: models.py:192
+msgid "Information of Builders"
+msgstr "Información de los fabricantes"
+
+#: models.py:194
+msgid "Can see available Builder Information"
+msgstr "Puede ver la información de los fabricantes"
+
+#: models.py:202
+msgid "Milimeters"
+msgstr "Milimetros"
+
+#: models.py:203
+msgid "Centimeters"
+msgstr "Centimetros"
+
+#: models.py:204
+msgid "inch"
+msgstr "Inches"
+
+#: models.py:207
+msgid "Height"
+msgstr "Alto"
+
+#: models.py:209
+msgid "Height Unit"
+msgstr "Alto en:"
+
+#: models.py:211
+msgid "Width"
+msgstr "Ancho"
+
+#: models.py:213
+msgid "Width Unit"
+msgstr "Ancho en: "
+
+#: models.py:220 models.py:237
+msgid "Recipient Size"
+msgstr "Tamaño de recipiente"
+
+#: models.py:221
+msgid "Size of recipients"
+msgstr "Tamaños de recipiente"
+
+#: models.py:223
+msgid "Can see available Recipient Size"
+msgstr "Puede ver los tamaños de recipiente disponibles"
+
+#: models.py:236
+msgid "Commercial Information"
+msgstr "Información comercial"
+
+#: models.py:243
+msgid "Label"
+msgstr "Etiqueta"
+
+#: models.py:244
+msgid "Labels"
+msgstr "Etiquetas"
+
+#: models.py:246
+msgid "Can see available labels"
+msgstr "Puede ver las etiquetas"
+
+#~ msgid "Size"
+#~ msgstr "Tamaño"
+
+#~ msgid "Can see available Warning Categories"
+#~ msgstr "Puede ver categorías de peligro disponibles"
+
+#~ msgid "Categories"
+#~ msgstr "Categorias"
+
+#~ msgid "Physic danger"
+#~ msgstr "Peligro físico"
+
+#~ msgid "Healty danger"
+#~ msgstr "Peligro a la salud"
+
+#~ msgid "Environment danger"
+#~ msgstr "Peligro ambiental"
+
+#~ msgid "Type"
+#~ msgstr "Tipo"
+
+#~ msgid "None"
+#~ msgstr "Ninguno"
+
+#~ msgid "Fill me"
+#~ msgstr "Llenar me por favor"

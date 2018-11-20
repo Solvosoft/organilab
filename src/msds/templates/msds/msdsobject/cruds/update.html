@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load bootstrap recaptcha2 i18n %}
+
+{% block css %} {% recaptcha_init 'es' %} {% endblock %}
+{% block content %}
+<div class="row">
+<div class="col-md-offset-3 col-md-6" >
+	<form method="post" action="{% url 'msds:msds_msdsobject_update' form.instance.pk %}" 
+	enctype="multipart/form-data" role="form">
+	    <legend>{% trans 'Add new MSDS' %}</legend>
+	    {% csrf_token %}
+	    {{ form|bootstrap }}
+	    <div class="form-group">
+	      <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+	    </div>
+	</form>
+</div>
+</div>
+
+
+{% endblock %}
