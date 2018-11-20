@@ -15,5 +15,5 @@ cd $DJANGODIR
 
 # Start your Django Unicorn 
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon) 
-exec celery worker -A organilab -l info  -c $NUM_WORKERS --uid $USER--gid $GROUP 
+exec celery worker -A organilab -l info  -c $NUM_WORKERS --uid $USER --gid $GROUP 
 
