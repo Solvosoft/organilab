@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-06-30 18:35-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: academic/models.py:10 academic/models.py:27
+msgid "Title"
+msgstr ""
+
+#: academic/models.py:11 academic/models.py:28 academic/models.py:70
+msgid "Description"
+msgstr ""
+
+#: academic/models.py:18 academic/models.py:26
+msgid "Procedure"
+msgstr ""
+
+#: academic/models.py:19
+msgid "Procedures"
+msgstr ""
+
+#: academic/models.py:21
+msgid "Can see available Procedure"
+msgstr ""
+
+#: academic/models.py:33
+msgid "No titled step"
+msgstr ""
+
+#: academic/models.py:37
+msgid "Procedure step"
+msgstr ""
+
+#: academic/models.py:38
+msgid "Procedure steps"
+msgstr ""
+
+#: academic/models.py:40
+msgid "Can see available ProcedureStep"
+msgstr ""
+
+#: academic/models.py:46
+msgid "Object"
+msgstr ""
+
+#: academic/models.py:47
+msgid "Material quantity"
+msgstr ""
+
+#: academic/models.py:49
+msgid "Measurement unit"
+msgstr ""
+
+#: academic/models.py:60
+msgid "Procedure Required Object"
+msgstr ""
+
+#: academic/models.py:61
+msgid "Procedure Required Objects"
+msgstr ""
+
+#: academic/models.py:64
+msgid "Can see available ProcedureRequiredObject"
+msgstr ""
+
+#: academic/models.py:77
+msgid "Procedure Observation"
+msgstr ""
+
+#: academic/models.py:78
+msgid "Procedure Observations"
+msgstr ""
+
+#: academic/models.py:81
+msgid "Can see available ProcedureObservations"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:4
+#: academic/templates/academic/procedure/cruds/detail.html:7
+msgid "Detail of"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:17
+#: academic/templates/academic/procedure/cruds/list.html:60
+msgid "Edit"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:31
+msgid "Steps"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:48
+msgid "Required objects"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:60
+msgid "Observations"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/detail.html:75
+msgid "Back to list"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:5
+#: academic/templates/academic/procedure/cruds/list.html:8
+msgid "List of"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:21
+msgid "Create new "
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:34
+msgid "Actions"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:53
+msgid "Steps Details"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:58
+msgid "New Steps"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:64
+msgid "Delete"
+msgstr ""
+
+#: academic/templates/academic/procedure/cruds/list.html:74
+msgid "No items yet."
+msgstr ""

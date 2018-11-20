@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static i18n datasets %}
+
+{% block css %}
+	<link href="{% static 'css/jquery.dataTables.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %} 
+<h1 class="header text-center">  {% trans 'Search MSDS' %} 
+<a class="btn btn-success pull-right" href="{% url 'msds:msds_msdsobject_create' %}">
+{% trans 'Upload your MSDS' %}
+</a>
+
+</h1>
+<table id="example" class="display" style="width: 100%">
+	<thead>
+		<tr>
+			<th>{% trans 'Provider' %}</th>
+			<th>{% trans 'Product' %}</th>
+			<th>{% trans 'Download' %}</th>
+
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>{% trans 'Provider' %}</th>
+			<th>{% trans 'Product' %}</th>
+			<th>{% trans 'Download' %}</th>
+		</tr>
+	</tfoot>
+</table>
+
+{% endblock %} 
+{% block js %}
+ <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
+ <script src="{% static 'js/jquery.dataTables.min.js' %}" ></script>
+
+<script>
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "ajax": '{% url "msds:list_msds" %}',
+       // "processing" : true,
+        "serverSide" : true,
+        "language": {
+            "url": "{% get_dataset_translation %}"
+        }
+        
+    } );
+} );
+</script>
+{% endblock %}
