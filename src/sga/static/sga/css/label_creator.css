@@ -8,24 +8,24 @@
 
 /* Title */
 .heading-1{
-position:relative;
-text-align: center
+    position:relative;
+    text-align: center;
 }
 .heading-1:before {
-content: "";
-display: block;
-border-top: solid 2px #76a1c3;
-width: 100%;
-height: 2px;
-position: absolute;
-top: 50%;
-z-index: 0;
+    content: "";
+    display: block;
+    border-top: solid 2px #76a1c3;
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    top: 50%;
+    z-index: 0;
 }
 .heading-1 span {
-background: #fff;
-padding: 0 10px;
-position: relative;
-z-index: 1;
+    background: #fff;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
 }
 /* Vertical divider */
 .v-divider{
@@ -39,14 +39,38 @@ z-index: 1;
     border-right: 1px solid #000;
     border-left: 1px solid #000;
 }
-/* Text Area borders */
+/* Text area borders */
 .shadow-textarea textarea.form-control::placeholder {
     font-weight: 300;
 }
 .shadow-textarea textarea.form-control {
     padding-left: 0.8rem;
 }
-/* Center Canvas in modal */
+/* Center canvas in modal */
 .canvas-container {
     margin:0 auto !important;
+}
+/* Modal loading message */
+.modal-loading-message
+{
+    color: #337ab7;
+}
+/* Help option */
+.help-tip{
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    text-align: center;
+    background-color: #337ab7;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 26px;
+    cursor: default;
+}
+.help-tip:before{
+    content:'?';
+    font-weight: bold;
+    color:#fff;
 }

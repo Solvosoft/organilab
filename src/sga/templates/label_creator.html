@@ -14,16 +14,8 @@
 {% block css %}
 <link href="{% static 'sga/css/label_creator.css' %}" rel="stylesheet">
 {# Paper Bootstrap Wizard #}
-<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"
-	/>
-<link href="{% static 'sga/css/paper-bootstrap-wizard-demo.css.css' %}"
-	rel="stylesheet" />
+<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet",/>
 {# Fonts and Icons #}
-<link
-	href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css"
-	rel="stylesheet">
-<link href='https://fonts.googleapis.com/css?family=Muli:400,300'
-	rel='stylesheet' type='text/css'>
 <link href="{% static 'sga/css/themify-icons.css' %}" rel="stylesheet">
 {# Django jQuery AJAX Autocomplete #}
 <link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
@@ -34,7 +26,7 @@
 {# Django jQuery AJAX Autocomplete #}
 <script type="text/javascript" src="{% static 'sga/js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'sga/js/jquery-ui.min.js' %}"></script>
-{# Fabric.js #}
+{# Fabric.js and complements #}
 <script src="{% static 'sga/js/fabric.min.js' %}"></script>
 <script src="{% static 'sga/js/canvas-toBlob.js' %}"></script>
 <script src="{% static 'sga/js/FileSaver.min.js' %}"></script>
@@ -44,8 +36,10 @@
 {% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
+<!-- Start Wizard Container-->
 <div class="card wizard-card div" data-color="blue" id="wizard">
 	<form action="" method="">
+		<div class="help-tip"></div>				
 		<div class="wizard-header">
 			<h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
 			<p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
@@ -72,14 +66,15 @@
 						{% trans 'Template' %}
 					</a>
 				</li>
-				<li id="label_customization" name="label_customization">
-					<a href="#customization" data-toggle="tab">
+				<li id="label_editor" name="label_editor">
+					<a href="#editor" data-toggle="tab">
 						<div class="icon-circle">
 							<i class="ti-pencil-alt"></i>
 						</div>
-						{% trans 'Customization' %}
+						{% trans 'Editor' %}
 					</a>
 				</li>
+				<!--
 				<li>
 					<a href="#description" data-toggle="tab">
 						<div class="icon-circle">
@@ -88,24 +83,27 @@
 						Comments
 					</a>
 				</li>
+				-->
 			</ul>
 		</div>
 		<div class="tab-content">
-			<!--===================================================================================================-->
-			<!--====================================Part #1 : Information==========================================-->
+			<!--======================================================-->
+			<!--================Part #1 : Information=================-->
 			<div class="tab-pane" id="information">
 				{% include "label_information.html" %}
 			</div>
-			<!--====================================Part #3 : Customization========================================-->
-			<div class="tab-pane" id="customization">
-				{% include "label_customization.html" %}
-			</div>
-			<!--===================================================================================================-->
-			<!--====================================Part #2 : Template=============================================-->
+			<!--======================================================-->
+			<!--================Part #2 : Template====================-->
 			<div class="tab-pane" id="template">
 				{% include "label_template.html" %}
 			</div>
-			<!--===================================================================================================-->
+			<!--======================================================-->
+			<!--================Part #3 : Editor======================-->
+			<div class="tab-pane" id="editor">
+				{% include "label_editor.html" %}
+			</div>
+			<!--======================================================-->
+		</div>
 			<div class="col-sm-6"></div>
 			<div class="wizard-footer">
 				<div class="pull-right">
@@ -117,7 +115,7 @@
 
 				<div class="pull-left">
 					<input type='button' class='btn btn-previous btn-info btn-wd'
-						name='previous' value='Previous' />
+						name='previous' id='Previous' value='Previous' />
 				</div>
 				<div class="clearfix"></div>
 				<div id="powered_by">
@@ -130,36 +128,34 @@
 				</div>
 			</div>
 		</form>
-	</div> <!-- wizard container -->
+	</div> 
+	<!-- End wizard container -->
 
 	<!--   Core JS Files   -->
-	<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}"
-		type="text/javascript"></script>
-
+	<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}" type="text/javascript"></script>
 	<!--  Plugin for the Wizard -->
-	<script src="{% static 'sga/js/paper-bootstrap-wizard.js' %}"
-		type="text/javascript"></script>
-
+	<script src="{% static 'sga/js/paper-bootstrap-wizard.js' %}" type="text/javascript"></script>
 	<!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
-	<script src="{% static 'sga/js/jquery.validate.min.js' %}"
-		type="text/javascript"></script>
+	<script src="{% static 'sga/js/jquery.validate.min.js' %}" type="text/javascript"></script>
 	<!-- Jquery Validation lenguage -->
 	<script src="{% static 'sga/js/messages_es.js' %}" type="text/javascript"></script>
 	<!-- Jquery Plugin For Bootstrap Loading Modal With Progress Bar -->
 	<script src="{% static 'sga/js/bootstrap-waitingfor.js' %}"
 		type="text/javascript"></script>
-	<!--============================================-->
-	<!--Canvas Modal: Pre Designed Template Vertical-->
-	<div class="modal fade" id="ModalPreDesignedTemplateVertical" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<!--==============================================-->
+	<!--======Canvas Modal: Pre Designed Template=====-->
+	<div class="modal fade" id="ModalPreDesignedTemplate" tabindex="-1"
+		role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="exampleModalCenterTitle">Pre designed Vertical template</h4>
+					<h4 align="center" class="modal-title" id="modalPreDesignedTemplateTitle">Pre designed template</h4>
 				</div>
-				<div id="modal_body_pre_designed_template_vertical" class="modal-body">
-					<img width="195" height="260" id="modal_pre_designed_template_vertical" class="img-center" src="//placehold.it/1000x600" >
+				<div id="modal_body_pre_designed_template" class="modal-body center">
+					<img id="modal_pre_designed_template" class="img-responsive pre_designed_template" >
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -168,26 +164,18 @@
 		</div>
 	</div>
 	<!--==============================================-->
-	<!--==============================================-->
-	<!--Canvas Modal: Pre Designed Template Horizontal-->
-	<div class="modal fade" id="ModalPreDesignedTemplateHorizontal" tabindex="-1"
-		role="dialog"
-		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="exampleModalCenterTitle">Pre designed horizontal template</h4>
-				</div>
-				<div id="modal_body_pre_designed_template_horizontal" class="modal-body center">
-					<img id="modal_pre_designed_template_horizontal" class="img-responsive pre_designed_template" >
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-				</div>
-			</div>
+	<!--============Modal:Loading message=============-->
+	<div class="modal fade bs-example-modal-sm" id="loadingMessage" tabindex="-1"
+	role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="stylo modal-dialog modal-sm">
+		<div class="modal-content">
+				<br>
+				<h1 class="modal-loading-message modal-title" align="center">
+					{% trans 'Loading' %}...
+				</h1 >
+				<br>
 		</div>
+	</div>
 	</div>
 	<!--==============================================-->
 	{% endblock content %}

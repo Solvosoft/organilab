@@ -6,7 +6,7 @@
 @email: guillermoestebancs@gmail.com
 */
 
-/* Select Box PlaceHolder */
+/* Select box placeHolder */
 select
 {
     color: #0000007c !important;
@@ -19,5 +19,7 @@ option:first-child
 {
     color: #0000007c !important;
 }
-
-
+/* Margin left */
+.col-margin-left {
+    margin-left: 5% !important;
+}

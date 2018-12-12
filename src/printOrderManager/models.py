@@ -1,7 +1,8 @@
 '''
-Created on 14 sep. 2018
-
-@author: luisfelipe7
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
 '''
 
 from django.db import models
@@ -21,6 +22,7 @@ class Contact(models.Model):     # Fixed: Use user for the contacts
         validators=[phone_regex], max_length=15, blank=True, verbose_name=_("Phone"))  # validators should be a list
     assigned_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='Assigned_User')
+    state = models.TextField(_('State'), default='Enabled', max_length=255)
 
     class Meta:
         ordering = ('pk',)
@@ -28,6 +30,7 @@ class Contact(models.Model):     # Fixed: Use user for the contacts
         verbose_name_plural = _('Contacts')
 
 
+# Reference to the creation of the Paper Type model: https://beatrizxe.com/es/blog/tipos-papel-impresion-mas-comunes.html
 class PaperType(models.Model):
     UNITS = (
         ('mm', _('Milimeters')),
@@ -40,6 +43,9 @@ class PaperType(models.Model):
     widthSize = models.FloatField(_('Width Size'))
     longSize = models.FloatField(_('Long Size'))
     name = models.TextField(_('Name'), default='', max_length=255)
+    grams = models.FloatField(_('Grams'))
+    available = models.TextField(
+        _('State'), default='Available', max_length=255)
     description = models.TextField(
         _('Description'), default='', max_length=255)
 
@@ -50,23 +56,26 @@ class PaperType(models.Model):
 
 
 class Schedule(models.Model):
+    name = models.TextField(_('Name'), default=_(
+        'Normal Schedule'), max_length=255)
     DAYS = (
-        ('mon', _('Monday')),
-        ('tue', _('Tuesday')),
-        ('wed', _('Wednesday')),
-        ('thu', _('Thursday')),
-        ('fri', _('Friday')),
-        ('sat', _('Saturday')),
-        ('sun', _('Sunday')),
+        ('Monday', _('Monday')),
+        ('Tuesday', _('Tuesday')),
+        ('Wednesday', _('Wednesday')),
+        ('Thursday', _('Thursday')),
+        ('Friday', _('Friday')),
+        ('Saturday', _('Saturday')),
+        ('Sunday', _('Sunday')),
     )
-    startTime = models.TimeField(_("Start Time"))
-    closeTime = models.TimeField(_("Close Time"))
+    startTime = models.TextField(_('Start Time'),  max_length=255)
+    closeTime = models.TextField(_('Close Time'), max_length=255)
     startDay = models.CharField(
-        max_length=25, default='mon', verbose_name=_('Start Day'), choices=DAYS)
+        max_length=50, default='Monday', verbose_name=_('Start Day'), choices=DAYS)
     closeDay = models.CharField(
-        max_length=25, default='fri', verbose_name=_('Close Day'), choices=DAYS)
+        max_length=50, default='Friday', verbose_name=_('Close Day'), choices=DAYS)
     description = models.TextField(
-        _('Schedule Description'), default='Normal Schedule', max_length=255)
+        _('Schedule Description'), null=True, blank=True, max_length=255)
+    state = models.TextField(_('State'), default='Enabled', max_length=255)
 
     class Meta:
         ordering = ('pk',)
@@ -75,9 +84,18 @@ class Schedule(models.Model):
 
 
 class Advertisement(models.Model):
+    title = models.TextField(
+        _('Title'), default='Advertisement', max_length=255)
     description = models.TextField(
         _('Advertisement Description'), max_length=255)
+    typeOfAdvertisement = models.TextField(
+        _('Type of advertisement'), default='Information', max_length=255)
     published_date = models.DateField(_('Published Date'), auto_now=True)
+    state = models.TextField(_('State'), default='Enabled', max_length=100)
+    usersNotified = models.ManyToManyField(
+        User, verbose_name=_("Users Notified"))
+    creator = models.ForeignKey(  # Fixed: Create a model for the advertisement
+        User, on_delete=models.CASCADE, related_name='Creator', null=True, blank=True)
 
     class Meta:
         ordering = ('pk',)
@@ -89,8 +107,7 @@ class PrintObject(models.Model):
     responsible_user = models.ForeignKey(
         User, verbose_name=_("Responsible User"))
     email = models.EmailField(_('Email address'), validators=[validate_email])
-    # The internationally standardized format E.164 :
-    # https://www.itu.int/rec/T-REC-E.164/es
+    # The internationally standardized format E.164 : https://www.itu.int/rec/T-REC-E.164/es
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_(
         "Phone number must be entered in the format: '+55577777777'. Up to 15 digits allowed."))
     phone = models.CharField(
@@ -112,22 +129,19 @@ class PrintObject(models.Model):
     creation_date = models.DateField(
         _('Creation Date'), auto_now=True)  # Fixed: Auto_Now
     state = models.TextField(_('State'), default='', max_length=255)
-    # The several paper types can be on multiple printers and each print has
-    # multiple paper types
+    # The several paper types can be on multiple printers and each print has multiple paper types
     paperType = models.ManyToManyField(
         PaperType, verbose_name=_("Paper Types"))
-    # The several contact can be on multiple printers and each print has
-    # multiple contacts
+    # The several contact can be on multiple printers and each print has multiple contacts
     contacts = models.ManyToManyField(Contact, verbose_name=_("Contacts"))
-    # The several horary can be on multiple print and each print has multiple
-    # horary
+    # The several horary can be on multiple print and each print has multiple horary
     schedules = models.ManyToManyField(Schedule, verbose_name=_(
         "Schedules"))  # Fixed: Create a model for the schedules
     description = models.TextField(
         _('Description'), default='', max_length=255)
     # Print model has an advertisement
-    advertisement = models.ForeignKey(  # Fixed: Create a model for the advertisement
-        Advertisement, on_delete=models.CASCADE,  related_name='advertisements', null=True, blank=True)
+    advertisements = models.ManyToManyField(
+        Advertisement, verbose_name=_("Advertisements"))
 
     class Meta:
         ordering = ('pk',)
@@ -145,6 +159,8 @@ class PrintObject(models.Model):
             ("changeAdvertisements_printObject", _(
                 "Can edit the print advertisements")),
         )
+
+# DJANGO REST FRAMEWORK
 
 
 class RequestLabelPrint(models.Model):

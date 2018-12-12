@@ -1,0 +1,140 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 4 oct. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% load i18n %}
+{% load static %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+{% endblock css %}
+
+
+{% block extrameta %}{% endblock extrameta %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h5 class="info-text">{% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
+        <div class="btn-group" style="width:100%">
+        <button style="width:10%" disabled><i class="fas fa-undo"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-redo"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-cut"></i></button>
+        <button style="width:10%" disabled><i class="far fa-copy"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-paste"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-trash"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-search-plus"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-search-minus"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-pencil-alt"></i></button>
+        <button style="width:10%" disabled><i class="fas fa-tint"></i></button>
+        </div>
+    </div>
+    <div id="addCanvas" class="col-md-4 col-sm-4">
+            <br>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h5 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    {% trans ' 1. Signal Word' %}
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h5 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    {% trans ' 2. Symbols (Hazard Statements)' %}
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingThree">
+                            <h5 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    {% trans ' 3. Product Name or Identifiers' %}
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <div class="panel-body">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingFour">
+                                <h5 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        {% trans ' 4. Hazard Statements' %}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                <div class="panel-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                                </div>
+                            </div>
+                    </div>
+
+                     <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingFive">
+                                <h5 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        {% trans ' 5. Precautionary Statements' %}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                <div class="panel-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingSix">
+                                <h5 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                        {% trans ' 6. Commercial Information' %}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                                <div class="panel-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+    </div>
+    <div class="col-sm-6 canvas_editor">
+        <br>
+        <canvas id="canvas_editor" class="pre_designed_template"></canvas>
+        <br>
+    </div>
+</div>
+{% endblock content %}
+{# Label editor JS #}
+<script src="{% static 'sga/js/label_editor.js' %}"> </script>

@@ -183,10 +183,9 @@ body {
 	color: #31708f;
 }
 
-#element .sidebar .nav-second-level,
+.sidebar .nav-second-level,
 .sidebar .nav-second-level .nav-third-level {
 	background-color: #f8f5f5;
-	;
 }
 
 
@@ -206,11 +205,12 @@ body {
 
 .sidebar ul li {
 	border-bottom: 1px solid #e7edee;
+	background-color: #fcfcfc;
 }
 
 /* Color Superior */
 .sidebar ul li:not(.backgroundPrint) a.active {
-	background-color: #e8ebebfa;
+	background-color: #f2f7f7fa;
 }
 
 .sidebar .arrow {
@@ -227,14 +227,14 @@ body {
 }
 
 .sidebar .sidebar-nav .nav li i {
-	#font-size: 1.3em;
+	font-size: 1.3em;
 	font-size: 18px;
 }
 
 .sidebar .nav-second-level li,
 .sidebar .nav-third-level li {
 	border-bottom: 0 !important;
-	border-top: 1px dotted #3D83C0;
+	border-top: 1px solid #e7edee;
 }
 
 .sidebar .nav-second-level li a {
