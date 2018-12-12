@@ -1,6 +1,3 @@
-coreapi
-pygments
-markdown
 django-guardian==1.4.9
 async_notifications==0.1.8 
 django-ckeditor==5.5.0
