@@ -1,5 +1,16 @@
+<!--
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+-->
+
+
 {% load static i18n datasets %}
 {% load staticfiles %}
+{% load guardian_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,21 +23,27 @@
 
     {% block meta-keywords %} {% endblock %}
     {% block extrameta%} {% endblock %}
+    <title>Organilab | Print Manager</title>
 
     {% block css %}
     <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/metisMenu.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/sb-admin-2.css' %}" rel="stylesheet">
     <link href="{% static 'css/SB-Admin2.1/morris.css' %}" rel="stylesheet">
+    <link href="{% static 'css/advertisements_printManageById.css' %}" rel="stylesheet">
     <link href="{% static 'css/index_printManageById.css' %}" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">{% endblock %}
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    {# Sweetalert2 #}
+    <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
 
     {% block content %}
 
 <body>
+    <!-- Loading Permissions -->
+    {% get_obj_perms request.user for printObject as "printObject_perms" %}
 
     <div id="pageLoading"></div>
     <header>
@@ -47,9 +64,8 @@
 
                 </div>
 
-                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">ORGANILAB -
-                    PRINT
-                    MANAGER</a>
+                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">
+                    {% trans 'ORGANILAB - PRINT MANAGER' %} </a>
 
 
                 <ul class="nav navbar-top-links navbar-right">
@@ -105,7 +121,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>Read All Qualifications</strong>
+                                    <strong>{% trans 'Read All Qualifications' %}</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -171,7 +187,7 @@
                             <li class="divider"></li>
                             <li>
                                 <a class="text-center" href="#">
-                                    <strong>See All Orders</strong>
+                                    <strong>{% trans 'See All Orders' %}</strong>
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -181,13 +197,21 @@
                     <!-- /.dropdown -->
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fas fa-file-alt fa-fw icon-colorNavBar"></i> <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            <div id="ex4">
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="4">
+                                    <!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
+                                    <i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse" data-count="4b"></i>
+                                </span>
+
+                                <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            </div>
+
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-users fa-fw"></i>&nbsp Total Contacts
+                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -196,7 +220,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-bell fa-fw"></i>&nbsp Advertisement
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp {% trans 'Advertisement' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -205,7 +229,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp Schedule
+                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp {% trans 'Schedule' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -214,7 +238,8 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp Most Requested Paper Type
+                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp
+                                        {% trans 'Most Requested Paper Type' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -223,7 +248,7 @@
                             <li>
                                 <a href="#">
                                     <div>
-                                        <i class="fas fa-star fa-fw"></i>&nbsp Most qualification given
+                                        <i class="fas fa-star fa-fw"></i>&nbsp {% trans 'Most qualification given' %}
                                         <span class="pull-right text-muted small">----</span>
                                     </div>
                                 </a>
@@ -231,6 +256,70 @@
                         </ul>
                         <!-- /.dropdown-alerts -->
                     </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <div id="dropAlerts">
+                                {% if countAdvertisements != 0 %}
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="{{ countAdvertisements }}">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse" data-count="{{ countAdvertisements }}"></i>
+                                </span>
+                                {% else %}
+                                <span class="p1 fa-stack fa-1x has-badge">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse"></i>
+                                </span>
+                                {% endif %}
+                                <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            {% if countAdvertisements == 0 %}
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <center>{% trans "You don't have new advertisements" %}</center>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% else %}
+                            {% for advertisement in advertisements %}
+                            <li>
+                                <a data-toggle='modal' data-target='#formNotification' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}','{{advertisement.creator}}','{{ printObject.logo.name}}')">
+                                    <div>
+                                        {% ifequal advertisement.typeOfAdvertisement "Information" %}
+                                        <i class="fas fa-info-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Success" %}
+                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Warning" %}
+                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Danger" %}
+                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% endfor %}
+                            {% endif %}
+                    </li>
+                    <li>
+                        <a class="text-center" href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                            <strong>{% trans 'See the record of advertisements' %}</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+
                 </ul>
                 <!-- /.navbar-top-links -->
                 <!-- /.dropdown-user -->
@@ -267,8 +356,8 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i class="fa fa-home"></i><span
-                                    class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
+                            <a class="active" href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i
+                                    class="fa fa-home"></i><span class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
                         </li>
                         <li>
                             <a href="#"><i class="fas fa-info-circle"></i><span class="side-menu-title">&nbsp;
@@ -276,23 +365,87 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i>
-                                <span class="side-menu-title">&nbsp;{% trans 'Contacts' %}</span></a>
+                            {% if "changeContacts_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-users"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Contacts' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Contacts' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createContact_printManageById' printObject.id %}">
+                                        {% trans 'Add Contacts' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i><span
+                                    class="side-menu-title">&nbsp;
+                                    {% trans 'Contacts' %}</span></a>
+                            {% endif %}
                         </li>
                         <li>
+                            {% if "changePaper_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-paper-plane"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Paper Types' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:paperTypes_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Paper Types' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createPaperType_printManageById' printObject.id %}">
+                                        {% trans 'Create Paper Type' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
                             <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Paper Types' %}</span></a>
-
+                            {% endif %}
                         </li>
                         <li>
-                            <a href="#"><i class="fas fa-calendar-alt"></i><span class="side-menu-title"> &nbsp;
+                            {% if "changeSchedules_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-calendar-alt"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Schedules' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Schedules' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createSchedule_printManageById' printObject.id %}">
+                                        {% trans 'Create Schedule' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-calendar-alt"></i><span
+                                    class="side-menu-title">&nbsp;
                                     {% trans 'Schedules' %}</span></a>
-
+                            {% endif %}
                         </li>
                         <li>
-                            <a href="#"><i class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
+                            {% if "changeAdvertisements_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-bell"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Advertisements' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Advertisements' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createAdvertisement_printManageById' printObject.id %}">
+                                        {% trans 'Create Advertisement' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}"><i
+                                    class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
                                     {% trans 'Advertisements' %}</span></a>
-
+                            {% endif %}
                         </li>
                         <li>
                             <a href="{% url 'printOrderManager:index_printManager' %}"><i class="fas fa-chevron-circle-left"></i>
@@ -452,6 +605,13 @@
     <!-- /#wrapper -->
 
     {% block js %}
+
+    <script>
+        userName = '{{ user.username }}'
+        printObjectId = '{{ printObject.id }}'
+        userId = '{{ user.id }}'
+    </script>
+
     <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
@@ -459,7 +619,18 @@
     <script src="{% static 'js/SB-Admin2.1/morris.min.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/morris-data.js' %}"></script>
     <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
     <script src="{% static 'js/index_printManageById.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <!-- Bootstrap Notify-->
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
     {% endblock %}
 
 </html>

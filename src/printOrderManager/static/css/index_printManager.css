@@ -1,3 +1,12 @@
+/*
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+*/
+
 .messages {
     display: none;
 }
@@ -16,9 +25,8 @@
 }
 
 .printList {
-    background-color: #729fe7 !important;
+    background-color: #6090ddfa !important;
     color: white !important;
-
 }
 
 h1 {
@@ -55,4 +63,9 @@ h1:after {
     line-height: 48px;
     font-size: 150%;
     color: #3961a0;
+}
+
+.colorStar {
+    color: rgba(11, 71, 201, 0.945);
+    border-color: black;
 }

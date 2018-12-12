@@ -10,7 +10,7 @@
 from django import forms
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
-from .models import Sustance, Component, RecipientSize, DangerIndication
+from .models import Sustance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram
 from django.http import HttpResponse
 from django.db.models.query_utils import Q
 import json
@@ -57,10 +57,10 @@ def label_template(request):
 })
 
 
-# SGA Label Customization Page
+# SGA Label Editor Page
 
-def label_customization(request):
-    return render(request, 'label_customization.html', {})
+def label_editor(request):
+    return render(request, 'label_editor.html', {})
 
 
 # SGA Search sustance with autocomplete
@@ -89,22 +89,115 @@ def search_autocomplete_sustance(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
+# SGA Obtain substance information
 
-def getSignalWord(request):
-    signalWord = ''
+
+def getSubstanceInformation(request):
+    substanceInformation = {}
+    signalWordSubstance = ''
+    dangerIndicationsDescriptionSubstance = []
+    dangerIndicationsCodeSubstance = []
+    prudenceAdvicesNameSubstance = []
+    prudenceAdvicesCodeSubstance = []
+    pictogramasNameSubstance = []
+    components = []
+    componentsCasNumbers = []
     if request.is_ajax():
-        ports = DangerIndication.objects.filter(
-            sustance__in=[request.GET['substance_id']])
-        for r in ports:
-            if(signalWord == 'Peligro'):
+        dangerIndications = DangerIndication.objects.filter(sustance__in=request.GET['substance_id'])
+        # ---------------------------------------------------------------------
+        # ----------------------------Signal Word------------------------------
+        for dangerIndication in dangerIndications:
+            # Set priority to Danger
+            if(str(signalWordSubstance) == 'Peligro'):
                 break
             else:
-                if(r.warning_words == 'Sin palabra de advertencia' and signalWord == 'atención'):
-                    break
+                # Set priority to Warning
+                if(str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(signalWordSubstance) == 'atención'):
+                    pass
                 else:
-                    # print(r.warning_words)
-                    signalWord = r.warning_words
-        data = signalWord
+                    signalWordSubstance = dangerIndication.warning_words
+        substanceInformation['signalWord'] = str(signalWordSubstance)
+        # ---------------------------------------------------------------------
+        # --------------------------Danger Indications-------------------------
+        for dangerIndication in dangerIndications:
+            if (str(dangerIndication.code) in dangerIndicationsCodeSubstance):
+                pass
+            # Special cases
+            # H410 > H400
+            elif ('H410' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H400'):
+                pass
+            elif ('H400' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H410'):
+                index = dangerIndicationsCodeSubstance.index('H400')
+                dangerIndicationsCodeSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+            # H411 > H401
+            elif ('H411' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H401'):
+                pass
+            elif ('H401' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H411'):
+                index = dangerIndicationsCodeSubstance.index('H401')
+                dangerIndicationsCodeSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+            # H412 > H402
+            elif ('H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402'):
+                pass
+            elif ('H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412'):
+                index = dangerIndicationsCodeSubstance.index('H402')
+                dangerIndicatfionsCodeSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+            # H314 > H318
+            elif ('H314' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H318'):
+                pass
+            elif ('H318' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H314'):
+                index = dangerIndicationsCodeSubstance.index('H318')
+                dangerIndicationsCodeSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.pop(index)
+                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+            else:
+                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+        substanceInformation['DangerIndications'] = dangerIndicationsDescriptionSubstance
+        # ---------------------------------------------------------------------
+        # ------------------Prudence Advices and Pictograms--------------------
+        for dangerIndicationCode in dangerIndicationsCodeSubstance:
+            prudenceAdvices = PrudenceAdvice.objects.filter(dangerindication=dangerIndicationCode)
+            pictograms= Pictogram.objects.filter(dangerindication=dangerIndicationCode)
+            if(prudenceAdvices):
+                for prudenceAdvice in prudenceAdvices:
+                    if (str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance):
+                        pass
+                    else:
+                        prudenceAdvicesNameSubstance.append(str(prudenceAdvice.name))
+                        dangerIndicationsCodeSubstance.append(str(prudenceAdvice.code))
+            if(pictograms):
+                for pictogram in pictograms:
+                    if (str(pictogram.name) in pictogramasNameSubstance):
+                        pass
+                    else:
+                        if(str(pictogram.name) != 'Sin Pictograma'):
+                            pictogramasNameSubstance.append(str(pictogram.name))
+        substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
+        substanceInformation['Pictograms'] = pictogramasNameSubstance
+        # ---------------------------------------------------------------------
+        # --------------------------Cas Numbers--------------------------------
+        components = Component.objects.filter(sustance=request.GET['substance_id'])
+        if(components):
+                for component in components:
+                    if (str(component.cas_number) in componentsCasNumbers):
+                        pass
+                    else:
+                        componentsCasNumbers.append(str(component.cas_number))
+        substanceInformation['CasNumbers'] = componentsCasNumbers
+        # ---------------------------------------------------------------------
+        # print(substanceInformation)
+        data = json.dumps(substanceInformation)
     else:
         data = 'fail'
-    return HttpResponse(data)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

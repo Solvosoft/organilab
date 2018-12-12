@@ -1,0 +1,25 @@
+#!/bin/bash 
+ 
+NAME="organilab" # Name of the application 
+DJANGODIR=/organilab # Django project directory 
+SOCKFILE=/organilab/gunicorn.sock # we will communicte using this unix socket 
+NUM_WORKERS=2 # how many worker processes should Gunicorn spawn 
+DJANGO_SETTINGS_MODULE=organilab.settings # which settings file should Django use 
+DJANGO_WSGI_MODULE=organilab.wsgi # WSGI module name 
+
+USER=www-data # the user to run as 
+GROUP=www-data # the group to run as 
+echo "Starting $NAME as solvoapps" 
+ 
+# Activate the virtual environment 
+cd $DJANGODIR 
+
+# Start your Django Unicorn 
+# Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon) 
+exec gunicorn ${DJANGO_WSGI_MODULE}:application --name $NAME \
+--user=$USER --group=$GROUP \
+--workers $NUM_WORKERS \
+--bind=unix:$SOCKFILE \
+--log-level=info \
+--log-file=-
+

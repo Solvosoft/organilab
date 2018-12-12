@@ -44,7 +44,6 @@ urlpatterns = auth_urls + [
     url(r'sga/', include(sga_urls, namespace='sga')),
     url(r'printOrderManager/',
         include(printOrderManager_urls, namespace='printOrderManager')),
-
     url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
 ]
 
