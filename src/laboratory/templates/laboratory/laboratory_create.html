@@ -7,10 +7,15 @@
 {% block content %}
 
   {%  has_perms "laboratory.add_laboratory" as perm_add_lab %}
-  <div class="header">
-    <center><h3 class="modal-title">{% trans 'Create laboratory' %}</h3></center>
-  </div>
 
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Create laboratory' %}</span></h3>
+        </div>
+</div>
+</div>
+<div class="row">
   {% if perm_add_lab %}
   <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
     <div class=" body ">
@@ -23,6 +28,7 @@
       <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
  
   </form>
+</div>
   {% else %} 
        {% include 'laboratory/action_denied.html' %} 
   {% endif %}	

@@ -59,7 +59,7 @@ pyexcel-ods3==0.5.2
 pyexcel-xls==0.5.4
 django-excel==0.0.9
 pyexcel-xlsx==0.5.4
-django-location-field==2.0.3
+django-location-field==2.0.6
 django-mptt==0.9.0
 django-constance[database]==2.1.0
 djangorestframework==3.7.7

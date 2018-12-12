@@ -1,0 +1,93 @@
+{% load static %}
+{% load i18n monitarize %}
+{% load shelf_position %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {# METADATA #}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% block meta-keywords %} {% endblock %}
+  {% block extrameta%} {% endblock %}
+  {# TITLE #}
+  <title>Organilab | {% block title %}Index{% endblock %}</title>
+
+  {# CSS #}
+  <link href="{% static 'css/organilab.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+  
+  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+ <style>
+ .cardbody {
+    /* box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); */
+    transition: 0.3s;
+    border-radius: 6px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    background-color: #FFFFFF;
+    color: #252422;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+ }
+ </style>
+
+  {% block css %}{% endblock %}
+
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+
+  {% adsense_header %}
+  {% block link %}{% endblock link %}
+  {% block script %}{% endblock script %}
+</head>
+
+<body {% block bodyklss %}{%endblock%}>
+  {# NAV #}
+  {% include 'partials/navbar.html' %}
+
+  {% include 'partials/sidebar.html' %}
+  {# MESSAGES #}
+  {% include 'partials/messages.html' %}
+
+  {# CONTENT #}
+  {% block wrapcontent %}
+  <div id="site_content"  >
+  <div id="page-wrapper"  class="cardbody" >
+      {% block content %}
+      {% endblock %}
+  </div>
+  </div>
+ {% endblock %}
+{# FOOTER #}
+{% include 'partials/footer.html' %}
+
+  <!-- En la carpeta static, del repo , datetimepicker, copiar-->
+  <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+  <script src="{% static 'js/organilab.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+  
+  <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+  <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+  <div class="jsmessage"></div>
+  {% block js %}{% endblock %}
+</body>
+
+</html>
