@@ -12,8 +12,11 @@
 	{%  has_perms "laboratory.delete_furniture" as perm_delete_furniture %}
 
   <div id="intro_title">
-
-    <h1 align="center">{% trans 'Furniture management' %}</h1>
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Furniture management' %}</span></h3>
+        </div>
+</div>
    
  {% if perm_furniture or perm_add_furniture or perm_change_furniture or perm_delete_furniture %}
     <br>

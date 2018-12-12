@@ -8,8 +8,14 @@
 {%  has_perms "laboratory.add_object" as perm_add_object %}
 {%  has_perms "laboratory.change_object" as perm_chage_object %}
 {%  has_perms "laboratory.delete_object" as perm_delete_object %}
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span> 
+  {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} 
+</span></h3>
+        </div>
+</div>
 
-  <div class="page-header"><h1> {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} </h1></div>
 {% if perm_object or perm_add_object or perm_chage_object  or perm_delete_object  %}
   <form class="form-inline" method="GET" action="">
     <div class="form-group">

@@ -2,11 +2,6 @@
 {% load i18n %}
 {% block content %}
 <div class="row">
-<a class="btn btn-success" href="{% url 'msds:index_msds'%}" > 
-{% trans 'MSDS: Security sheets' %}
- </a>
-</div>
-<div class="row">
 <div class="col-md-18 embed-responsive embed-responsive-16by9" >
 	<iframe class="embed-responsive-item" style="height: 70%;" src="{% url 'msds:organilab_tree' %}?content=1"> </iframe>
 </div>

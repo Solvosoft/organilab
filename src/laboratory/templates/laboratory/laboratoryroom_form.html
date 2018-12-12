@@ -13,7 +13,14 @@
 
  {% if perm_laboratoryroom or perm_add_laboratoryroom or  perm_add_laboratoryroom or perm_change_laboratoryroom %}
 	<div class="row">
-	<h1 align="center">{% trans 'Laboratory room management' %}</h1>
+	<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Laboratory room management' %}</span></h3>
+        </div>
+	</div>
+	</div>
+	
+	<div class="row">
        <div class="col-md-8 col-md-offset-2">
 	    {% if perm_add_laboratoryroom or perm_change_laboratoryroom %}
 		      <form class="form-horizontal" action="" method="post">{% csrf_token %}
@@ -32,10 +39,10 @@
 		      </form>
 	    {% endif %}
 	    </div>
-	  </div>
+	</div>
 	
 	  <div class="row">
-	    <ul class="list-group">
+	    <ul class="list-group" style="margin: 0px 10px;">
 	      {% for object in object_list %}
 	        <li class="row list-group-item">
 	

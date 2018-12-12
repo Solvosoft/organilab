@@ -3,12 +3,15 @@
 {%  has_perms "laboratory.do_report" as perm_do_report %}
 
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    {% trans 'Furniture' %}
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1"><span> {% trans 'Furniture' %}</span></h3>
+        </div>
   </div>
-
-  <div class="list-group">
+</div>
+<div class="row">
+  <ul class="list-group" style="margin: 0px 10px;">
     {% for furniture in object_list %}
       <li class="list-group-item">
         <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" href="#">
@@ -23,5 +26,5 @@
         {% endif %}
       </li>
     {% endfor %}
-  </div>
+    </ul>
 </div>

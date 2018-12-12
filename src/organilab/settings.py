@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'presentation',
     'django_ajax',
     'laboratory',
     'authentication',
@@ -276,8 +277,8 @@ CONSTANCE_CONFIG = {
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK',
-    'GROUP_STUDENT_PK', 'ADSENSE_ACTIVE',
-    'ADSENSE_PUB_TOKEN'),
+                       'GROUP_STUDENT_PK', 'ADSENSE_ACTIVE',
+                       'ADSENSE_PUB_TOKEN'),
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2

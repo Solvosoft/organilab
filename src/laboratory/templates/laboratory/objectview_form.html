@@ -7,11 +7,18 @@
 {% block content %}
 {%  has_perms "laboratory.add_object" as perm_add_object %}
 {%  has_perms "laboratory.chage_object" as perm_chage_object %}
+<div class="row">
 
+ <div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span>{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}</h1>
+      {% if perm_add_object or perm_chage_object  %}</span></h3>
+        </div>
+ </div>
+</div>
   <div class="row">
     <div class="col-md-6 col-md-offset-4">
-      <h1 align="center">{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}</h1>
-      {% if perm_add_object or perm_chage_object  %}
+      
 	      <form enctype="multipart/form-data" action="
 	        {% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
 	            method="post">{% csrf_token %}
