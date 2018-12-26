@@ -15,7 +15,7 @@
 <link href="{% static 'sga/css/label_information.css' %}" rel="stylesheet">
 {% endblock css %}
 
-{% block extrameta%}{% endblock extrameta %}
+{% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
 
@@ -29,14 +29,14 @@
         <div class="form-group">
             <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
             <!--Search substance with autocomplete-->
-            <input id="substance" name="substance" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
+            <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
                 aria-describedby="sustanceHelp">
-            <input type="hidden" id="substance_id" name="substance_id" />
+            <input type="hidden" id="substance_id" name="substance" />
             <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
             <div class="form-group">
                 <!--Add new sustance-->
                 <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
-                    href="{% url 'admin:sga_sustance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+                    href="{% url 'admin:sga_substance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             </div>
             <!-- View substance label information for a future implementation -->
             <!--
@@ -51,20 +51,20 @@
                 <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon
                             glyphicon-home"></i></span>
-                    <input name="company_name" id="company_name" placeholder="{% trans 'Name' %}" class="form-control"
+                    <input name="name" id="company_name" placeholder="{% trans 'Name' %}" class="form-control"
                         aria-describedby="sustanceHelp">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon
                             glyphicon-pushpin"></i></span><input
-                        name="company_address" id="company_address"
+                        name="address" id="company_address"
                         placeholder="{% trans 'Address' %}"
                         class="form-control" aria-describedby="sustanceHelp">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon
                             glyphicon-earphone"></i></span>
-                    <input name="company_phone" id="company_phone"
+                    <input name="phone" id="company_phone"
                         placeholder="{% trans 'Phone' %}" class="form-control"
                         aria-describedby="sustanceHelp">
                 </div>
@@ -76,11 +76,11 @@
         <!--============================================================================================================-->
         <!--=========================================Comercial information==============================================-->
         <div class="form-group">
-            <label><span class="label label-info">3</span>&nbsp;{% trans 'Comercial Information' %}</label>
+            <label><span class="label label-info">3</span>&nbsp;{% trans 'Commercial Information' %}</label>
             <div class="form-group shadow-textarea">
-                <textarea name="comercial_information" class="form-control
+                <textarea name="commercial_information" class="form-control
                     z-depth-1" id="commercial_information" rows="2"
-                    placeholder="Additionals product identifiers"></textarea>
+                    placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
             </div>
         </div>
         <!--============================================================================================================-->
@@ -96,7 +96,7 @@
     
                 {% if recipients != null %}
                 {% for recipient in recipients %}
-                <option data-name="{{recipient.name}}"
+                <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
                     data-height="{{recipient.height}}"
                     data-height_unit="{{recipient.height_unit}}"
                     data-width="{{recipient.width}}"
@@ -114,5 +114,4 @@
 </div>
 {% endblock content %}
 
-<!-- Label information JS -->
-<script src="{% static 'sga/js/label_information.js' %}"> </script>
+

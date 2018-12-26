@@ -17,13 +17,11 @@
 <link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
 {% endblock css %}
 
-{% block title %}{% trans 'GHS' %}{% endblock title %}
+{% block title %}{% trans 'GHS Label Creator' %}{% endblock title %}
 
 {% block content %}
 {# Start wizard container #}
-<div class="card wizard-card div" data-color="blue" id="wizard">
-        <div class="help-tip"></div>
-        <div class="wizard-header">
+         <div class="wizard-header">
             <h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
             <p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
         </div>
@@ -31,7 +29,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <br>
-                    <img class="img-responsive" src="/static/sga/img/Label_example.jpg" title="Label example" alt="Label Example"/>
+                    <img class="img-responsive" src="{% static 'sga/img/Label_example.jpg' %}" title="Label example" alt="Label Example"/>
                     <p align="center" style="font-size:80%;"><strong>{% trans 'GHS Label Example and Requirements' %}</strong></p>
                 </div>
                 <div class="col-md-6">
@@ -63,6 +61,6 @@
                 <a href="http://fabricjs.com/">Fabric.js</a>
             </div>
         </div>
-</div> 
+
 {# End wizard container #}
 {% endblock content %}

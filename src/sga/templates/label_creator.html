@@ -6,116 +6,53 @@
 @email: guillermoestebancs@gmail.com
 -->
 
-{% extends 'base.html' %}
+{% extends 'label_index.html' %}
 {% load i18n bootstrap %}
-{% load static %}
-
-{# CSS #}
-{% block css %}
-<link href="{% static 'sga/css/label_creator.css' %}" rel="stylesheet">
-{# Paper Bootstrap Wizard #}
-<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet",/>
-{# Fonts and Icons #}
-<link href="{% static 'sga/css/themify-icons.css' %}" rel="stylesheet">
-{# Django jQuery AJAX Autocomplete #}
-<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
-{% endblock css %}
-
-{# JS #}
-{% block script %}
-{# Django jQuery AJAX Autocomplete #}
-<script type="text/javascript" src="{% static 'sga/js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'sga/js/jquery-ui.min.js' %}"></script>
-{# Fabric.js and complements #}
-<script src="{% static 'sga/js/fabric.min.js' %}"></script>
-<script src="{% static 'sga/js/canvas-toBlob.js' %}"></script>
-<script src="{% static 'sga/js/FileSaver.min.js' %}"></script>
-{% endblock script %}
-
-{% block title %}{% trans 'GHS' %}{% endblock title %}
-{% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
-<!-- Start Wizard Container-->
-<div class="card wizard-card div" data-color="blue" id="wizard">
-	<form action="" method="">
-		<div class="help-tip"></div>				
-		<div class="wizard-header">
-			<h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
-			<p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
-		</div>
-		<div class="wizard-navigation">
-			<div class="progress-with-circle">
-				<div class="progress-bar" role="progressbar" aria-valuenow="1"
-					aria-valuemin="1" aria-valuemax="4" style="width: 15%;"></div>
-			</div>
-			<ul>
-				<li id="label_information" name="label_information">
-					<a href="#information" data-toggle="tab">
-						<div class="icon-circle">
-							<i class="ti-info"></i>
-						</div>
-						{% trans 'Information' %}
-					</a>
-				</li>
-				<li id="label_template" name="label_template">
-					<a href="#template" data-toggle="tab">
-						<div class="icon-circle">
-							<i class="ti-pencil"></i>
-						</div>
-						{% trans 'Template' %}
-					</a>
-				</li>
-				<li id="label_editor" name="label_editor">
-					<a href="#editor" data-toggle="tab">
-						<div class="icon-circle">
-							<i class="ti-pencil-alt"></i>
-						</div>
-						{% trans 'Editor' %}
-					</a>
-				</li>
-				<!--
-				<li>
-					<a href="#description" data-toggle="tab">
-						<div class="icon-circle">
-							<i class="ti-comments"></i>
-						</div>
-						Comments
-					</a>
-				</li>
-				-->
-			</ul>
-		</div>
+<div>
+	{{ block.super }}
+	{% if step != 2 %}
+		<form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+	{% endif %}
+			<input type="hidden" value="{{step}}" name="step"> {% csrf_token %}
 		<div class="tab-content">
 			<!--======================================================-->
 			<!--================Part #1 : Information=================-->
-			<div class="tab-pane" id="information">
+			<div class="tab-pane {% if step == 0 %}active{% endif %}" id="information">
+				{% if step == 0 %}
 				{% include "label_information.html" %}
+				{% endif %}
 			</div>
 			<!--======================================================-->
 			<!--================Part #2 : Template====================-->
-			<div class="tab-pane" id="template">
+			<div class="tab-pane {% if step == 1 %}active{% endif %}" id="template">
+				{% if step == 1 %}
 				{% include "label_template.html" %}
+				{% endif %}
 			</div>
 			<!--======================================================-->
 			<!--================Part #3 : Editor======================-->
-			<div class="tab-pane" id="editor">
+			<div class="tab-pane {% if step == 2 %}active{% endif %}"  id="editor">
+				{% if step == 2 %}
 				{% include "label_editor.html" %}
+				{% endif %}
 			</div>
 			<!--======================================================-->
 		</div>
+
 			<div class="col-sm-6"></div>
 			<div class="wizard-footer">
 				<div class="pull-right">
-					<input type='button' class='btn btn-next btn-fill btn-info btn-wd'
-						name='next' value='Next' id="Next" />
+					<input type='submit' class='btn btn-next btn-fill btn-info btn-wd'
+						name='next' value='{% trans 'Next' %}' id="Next" />
 					<input type='button' class='btn btn-finish btn-fill btn-info btn-wd'
-						name='finish' value='Finish' />
+						name='finish' value='{% trans "Finish" %}' />
 				</div>
 
 				<div class="pull-left">
 					<input type='button' class='btn btn-previous btn-info btn-wd'
-						name='previous' id='Previous' value='Previous' />
+						name='previous' id='Previous' value='{% trans 'Previous' %}' />
 				</div>
 				<div class="clearfix"></div>
 				<div id="powered_by">
@@ -127,21 +64,10 @@
 					<a href="http://fabricjs.com/">Fabric.js</a>
 				</div>
 			</div>
+{% if step != 2 %}
 		</form>
-	</div> 
-	<!-- End wizard container -->
-
-	<!--   Core JS Files   -->
-	<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}" type="text/javascript"></script>
-	<!--  Plugin for the Wizard -->
-	<script src="{% static 'sga/js/paper-bootstrap-wizard.js' %}" type="text/javascript"></script>
-	<!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
-	<script src="{% static 'sga/js/jquery.validate.min.js' %}" type="text/javascript"></script>
-	<!-- Jquery Validation lenguage -->
-	<script src="{% static 'sga/js/messages_es.js' %}" type="text/javascript"></script>
-	<!-- Jquery Plugin For Bootstrap Loading Modal With Progress Bar -->
-	<script src="{% static 'sga/js/bootstrap-waitingfor.js' %}"
-		type="text/javascript"></script>
+{% endif %}
+</div>
 	<!--==============================================-->
 	<!--======Canvas Modal: Pre Designed Template=====-->
 	<div class="modal fade" id="ModalPreDesignedTemplate" tabindex="-1"
@@ -152,13 +78,14 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 align="center" class="modal-title" id="modalPreDesignedTemplateTitle">Pre designed template</h4>
+					<h4 align="center" class="modal-title" id="modalPreDesignedTemplateTitle">
+						{% trans 'Pre designed template' %}</h4>
 				</div>
 				<div id="modal_body_pre_designed_template" class="modal-body center">
 					<img id="modal_pre_designed_template" class="img-responsive pre_designed_template" >
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
 				</div>
 			</div>
 		</div>
