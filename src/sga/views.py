@@ -24,7 +24,7 @@ from rest_framework import serializers
 from django.core import serializers
 from django.http import JsonResponse
 register = Library()
-
+import json
 from django.contrib import messages
 # SGA Home Page
 
@@ -97,6 +97,8 @@ def label_creator(request, step=0):
 
 
 # SGA Label Information Page
+def clean_json_text(text):
+    return json.dumps(text)[1:-2]
 
 def show_editor_preview(request, pk):
     recipients = request.POST.get('recipients', '')
@@ -126,14 +128,14 @@ def show_editor_preview(request, pk):
         casnumber += component.cas_number
 
     template_context = {
-        '{{warningword}}': warningword,
-        '{{dangerindication}}': dangerindications,
-        '{{selername}}': request.POST.get('name', '{{selername}}'),
-        "{{selerphone}}": request.POST.get('phone', "{{selerphone}}"),
-        "{{seleraddress}}": request.POST.get('address', '{{seleraddress}}'),
-        "{{commercialinformation}}": request.POST.get('name', '{{commercialinformation}}'),
-        '{{casnumber}}': casnumber,
-        '{{prudenceadvice}}': prudenceAdvice
+        '{{warningword}}': clean_json_text(warningword),
+        '{{dangerindication}}': clean_json_text(dangerindications),
+        '{{selername}}': clean_json_text(request.POST.get('name', '{{selername}}')),
+        "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
+        "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
+        "{{commercialinformation}}": clean_json_text(request.POST.get('name', '{{commercialinformation}}')),
+        '{{casnumber}}': clean_json_text(casnumber),
+        '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
 
     }
 
