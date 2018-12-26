@@ -98,7 +98,7 @@ def label_creator(request, step=0):
 
 # SGA Label Information Page
 def clean_json_text(text):
-    return json.dumps(text)[1:-2]
+    return json.dumps(text)[1:-1]
 
 def show_editor_preview(request, pk):
     recipients = request.POST.get('recipients', '')
