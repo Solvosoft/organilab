@@ -8,12 +8,13 @@
 
 {% load i18n %}
 {% load static %}
-
+{% load bootstrap   %}
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 {% endblock css %}
+
+
 
 
 {% block extrameta %}{% endblock extrameta %}
@@ -21,120 +22,169 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-12">
-        <h5 class="info-text">{% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
+
+                    <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+            {% trans 'Available templates' %} <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+
+              {% for tem in templates %}
+             <li><a href="{% url 'sga:label_creator' step %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+              {% endfor %}
+
+          </ul>
+
+        </div>
+                  <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
-        <button style="width:10%" disabled><i class="fas fa-undo"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-redo"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-cut"></i></button>
-        <button style="width:10%" disabled><i class="far fa-copy"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-paste"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-trash"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-search-plus"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-search-minus"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-pencil-alt"></i></button>
-        <button style="width:10%" disabled><i class="fas fa-tint"></i></button>
+            <!-- <button style="width:10%" disabled><i class="fa fa-undo"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-redo"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-cut"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-copy"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-paste"></i></button>-->
+
+         <!--<button style="width:10%" disabled><i class="fa fa-search-plus"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-search-minus"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-edit"></i></button>
+        <button style="width:10%" disabled><i class="fa fa-tint"></i></button>
+            -->
         </div>
     </div>
-    <div id="addCanvas" class="col-md-4 col-sm-4">
-            <br>
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h5 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    {% trans ' 1. Signal Word' %}
-                                </a>
-                            </h5>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                            </div>
-                        </div>
-                    </div>
-        
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingTwo">
-                            <h5 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    {% trans ' 2. Symbols (Hazard Statements)' %}
-                                </a>
-                            </h5>
-                        </div>
-                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                            <div class="panel-body">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                            </div>
-                        </div>
-                    </div>
-        
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingThree">
-                            <h5 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    {% trans ' 3. Product Name or Identifiers' %}
-                                </a>
-                            </h5>
-                        </div>
-                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                            <div class="panel-body">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="col-sm-2 col-md-3">
 
-                    <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingFour">
-                                <h5 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                        {% trans ' 4. Hazard Statements' %}
-                                    </a>
-                                </h5>
-                            </div>
-                            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                                <div class="panel-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                                </div>
-                            </div>
-                    </div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+        {% trans 'General' %}
+    </a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+        {% trans 'Live' %}
+    </a></li>
+    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+        {% trans 'Generic' %} </a></li>
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
+        {% trans 'Pictogram' %}</a></li>
+  </ul>
+  <div class="tab-content" style="padding: 15px 20px 10px;">
+    <div role="tabpanel" class="tab-pane active" id="home">
 
-                     <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingFive">
-                                <h5 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                        {% trans ' 5. Precautionary Statements' %}
-                                    </a>
-                                </h5>
-                            </div>
-                            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-                                <div class="panel-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                                </div>
-                            </div>
-                    </div>
+        		<form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+                    {% csrf_token %}
+                    {% if templateinstance %}
+                        <input type="hidden" name="instance" value="{{templateinstance.pk}}">
+                    {% endif %}
+                    {{generalform|bootstrap}}
+                </form>
+         <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
 
-                    <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingSix">
-                                <h5 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                        {% trans ' 6. Commercial Information' %}
-                                    </a>
-                                </h5>
-                            </div>
-                            <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-                                <div class="panel-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl lorem, dictum id pellentesque at, vestibulum ut arcu. Curabitur erat libero, egestas eu tincidunt ac, rutrum ac justo. Vivamus condimentum laoreet lectus, blandit posuere tortor aliquam vitae. Curabitur molestie eros. </p>
-                                </div>
-                            </div>
-                    </div>
-                </div>
+        <button type="button" class="btn btn-sm" onclick="addLine()"> {% trans 'Line' %}</button>
+
+         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
+
+
+        <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
+        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#000"  class="btn" >
+        <input type="color"  style="width: 25%;" value="" id="text-bg-color"  value="#000" class="btn" >
+        <br>
+
+
+          <div class="form-group">
+            <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
+            <input type="range" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action"
+                bind-value-to="fontSize">
+              <p>{% trans 'actual' %}: <span id="font-size-label">20</span></p>
+          </div>
+        <div class="form-group">
+        <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
+            <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
+              <option value="arial">Arial</option>
+              <option value="helvetica" selected>Helvetica</option>
+              <option value="myriad pro">Myriad Pro</option>
+              <option value="delicious">Delicious</option>
+              <option value="verdana">Verdana</option>
+              <option value="georgia">Georgia</option>
+              <option value="courier">Courier</option>
+              <option value="comic sans ms">Comic Sans MS</option>
+              <option value="impact">Impact</option>
+              <option value="monaco">Monaco</option>
+              <option value="optima">Optima</option>
+              <option value="hoefler text">Hoefler Text</option>
+              <option value="plaster">Plaster</option>
+              <option value="engagement">Engagement</option>
+            </select>
+          </div>
+
+        <div class="form-group">
+           <label for="textalign" style="display:inline-block">Text align:</label>
+            <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
+              <option value="left" selected>Left</option>
+              <option value="center">Center</option>
+              <option value="right" >Right</option>
+              <option value="Justify">Justify</option>
+              <option value="Justify-left">Justify-left</option>
+              <option value="Justify-right">Justify-right</option>
+              <option value="Justify-center"> Justify-center</option>
+            </select>
+        </div>
+
+
     </div>
-    <div class="col-sm-6 canvas_editor">
-        <br>
-        <canvas id="canvas_editor" class="pre_designed_template"></canvas>
-        <br>
+    <div role="tabpanel" class="tab-pane" id="profile">
+        <label >{% trans 'Warning Words' %}</label>
+        <ul>
+        {% for word in warningwords %}
+        <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="textbox" href="#">{{word}}</a></li>
+        {% endfor %}
+        </ul>
+        {{form|bootstrap  }}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="messages">
+        <ul><li><a class="genericitem"  id="warningword" data-ftype="itext" href="#" id="warningword">
+            {% trans 'Warning Word' %}</a></li>
+        <li><a class="genericitem"  id="dangerindication"  data-ftype="textbox" href="#"> {% trans 'Danger Indication' %}</a></li>
+        <li><a class="genericitem"  id="prudenceadvice" data-ftype="textbox" href="#"> {% trans 'Prudence Advice' %}</a></li>
+        <li><a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a></li>
+        <li><a class="genericitem"  id="pictogram"  data-ftype="image"  href="#"  title="/static/sga/img/pictograms/example.gif" >
+            <img width="64px" height="64px" src="/static/sga/img/pictograms/example.gif" alt="pictogram" class="img-rounded"> </a></li>
+        <li><a class="genericitem"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a></li>
+        <li><a class="genericitem" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a></li>
+        <li><a class="genericitem" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a></li>
+        <li><a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a></li>
+        </ul>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="settings">
+        <div class="row">
+
+{% for pictogram in pictograms %}
+              <div class="col-md-4">
+                 <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                          src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
+
+              </div>{% endfor %}
+        </div>
+    </div>
+  </div>
+            {% trans 'Use save before finish' %}
+        <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
+
+        </div>
+    <div class="col-sm-6 col-md-9  ">
+        <div id="canvasContainer" class="canvas-container" >
+        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100%"></canvas>
+        </div>
     </div>
 </div>
+
+<div id="hiddencanvas" class="hide hidden">
+
+</div>
+
+<style>
+    .canvas-container canvas{
+        margin: 0 auto;
+        border: 1px solid #aaa;
+    }
+
+</style>
 {% endblock content %}
-{# Label editor JS #}
-<script src="{% static 'sga/js/label_editor.js' %}"> </script>

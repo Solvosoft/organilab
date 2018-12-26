@@ -8,9 +8,13 @@
 
 # Import functions of another modules
 from django import forms
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from .models import Sustance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram
+from django_ajax.decorators import ajax
+
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
+from sga.models import TemplateSGA
+from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
 from django.http import HttpResponse
 from django.db.models.query_utils import Q
 import json
@@ -21,7 +25,7 @@ from django.core import serializers
 from django.http import JsonResponse
 register = Library()
 
-
+from django.contrib import messages
 # SGA Home Page
 
 
@@ -30,15 +34,125 @@ def index_sga(request):
 
 # SGA Label Creator Page
 
+def get_step(step):
+    if step is None:
+        step = 0
+    try:
+        step = int(step)
+        if step not in [0, 1, 2]:
+            step = 0
+    except:
+        step = 0
 
-def label_creator(request):
-    recipients= RecipientSize.objects.all()
-    return render(request, 'label_creator.html', {'recipients': recipients,
-'laboratory': 1
-})
+    return step
+
+
+
+def label_creator(request, step=0):
+    step = get_step(step)
+    context = {
+        'laboratory': None,
+    }
+    form = None
+    if step == 0 or step == 1:
+        context['recipients'] = RecipientSize.objects.all()
+        if request.method == 'POST':
+            form = RecipientInformationForm(request.POST)
+            if form.is_valid():
+                step += 1
+    if step == 1:
+        if form is None:
+            form = RecipientInformationForm()
+        context.update({
+            'sgatemplates': TemplateSGA.objects.all(),
+            'form': form,
+        })
+
+    if step == 2:
+        finstance = None
+        if 'instance' in request.POST:
+            finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
+        if 'instance' in request.GET:
+            finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
+        sgaform = EditorForm(instance=finstance)
+        if request.method == "POST":
+            sgaform = EditorForm(request.POST, instance=finstance)
+            if sgaform.is_valid():
+                finstance = sgaform.save()
+                messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
+
+        context.update({
+        "form" : SGAEditorForm(),
+        "generalform": sgaform,
+        "pictograms": Pictogram.objects.all(),
+        "warningwords": WarningWord.objects.all(),
+        'templateinstance': finstance,
+        'templates': TemplateSGA.objects.all()
+        })
+
+    context.update({'step': step,
+        'next_step': step + 1,
+        'prev_step': step - 1 if step > 0 else step})
+    return render(request, 'label_creator.html', context)
 
 
 # SGA Label Information Page
+
+def show_editor_preview(request, pk):
+    recipients = request.POST.get('recipients', '')
+    substance =  get_object_or_404(Substance, pk= request.POST.get('substance', ''))
+    weigth = 10000
+    warningword = "{{warningword}}"
+    dangerindications = ''
+    casnumber = ''
+    pictograms = []
+    prudenceAdvice = ''
+    for di in substance.danger_indications.all():
+        if di.warning_words.weigth < weigth:
+            warningword = di.warning_words.name
+        if dangerindications != '':
+            dangerindications+='\n'
+        dangerindications += di.description
+        pictograms += list(di.pictograms.all())
+
+        for advice in di.prudence_advice.all():
+            if prudenceAdvice != '':
+                prudenceAdvice+= '\n'
+            prudenceAdvice += advice.name
+
+    for component in substance.components.all():
+        if casnumber != '':
+            casnumber+=' '
+        casnumber += component.cas_number
+
+    template_context = {
+        '{{warningword}}': warningword,
+        '{{dangerindication}}': dangerindications,
+        '{{selername}}': request.POST.get('name', '{{selername}}'),
+        "{{selerphone}}": request.POST.get('phone', "{{selerphone}}"),
+        "{{seleraddress}}": request.POST.get('address', '{{seleraddress}}'),
+        "{{commercialinformation}}": request.POST.get('name', '{{commercialinformation}}'),
+        '{{casnumber}}': casnumber,
+        '{{prudenceadvice}}': prudenceAdvice
+
+    }
+
+    obj = get_object_or_404(TemplateSGA, pk=pk)
+
+    representation = obj.json_representation
+    for key, value in template_context.items():
+        representation = representation.replace(key, value)
+
+    for image in pictograms:
+        representation = representation.replace(
+            "/static/sga/img/pictograms/example.gif",
+            "/static/sga/img/pictograms/"+image.name,
+            1)
+    context = {
+        'object': representation,
+        'preview': obj.preview
+    }
+    return JsonResponse(context)
 
 
 def label_information(request):
@@ -57,6 +171,15 @@ def label_template(request):
 })
 
 
+def get_sga_editor_options(request):
+    content = {
+        'warningword': list(WarningWord.objects.values('pk','name', 'weigth' )),
+        'dangerindication': list(DangerIndication.objects.values('pk', 'code', 'description')),
+        'prudenceadvice': list(PrudenceAdvice.objects.values('pk','code', 'name' ))
+    }
+
+    return JsonResponse(content, content_type='application/json')
+
 # SGA Label Editor Page
 
 def label_editor(request):
@@ -72,10 +195,10 @@ def search_autocomplete_sustance(request):
         # Contains the typed characters, is valid since the first character
         # Search Parameter: Comercial Name or CAS Number
         if(any(c.isalpha() for c in q)):
-            search_qs = Sustance.objects.filter(
+            search_qs = Substance.objects.filter(
                 Q(comercial_name__icontains=q) | Q(synonymous__icontains=q))
         else:
-            search_qs = Sustance.objects.filter(
+            search_qs = Substance.objects.filter(
                 components__cas_number__icontains=q)
         results = []
         for r in search_qs:
@@ -146,7 +269,7 @@ def getSubstanceInformation(request):
                 pass
             elif ('H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412'):
                 index = dangerIndicationsCodeSubstance.index('H402')
-                dangerIndicatfionsCodeSubstance.pop(index)
+                dangerIndicationsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))

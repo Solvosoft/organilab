@@ -7,12 +7,11 @@
 -->
 
 {% load i18n %}
-{% load static %}
+{% load static bootstrap %}
 
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 {% endblock css %}
 
 {% block extrameta%}{% endblock extrameta %}
@@ -20,99 +19,48 @@
 {% block content %}
     <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-        <!-- Save designs for a future implementation  -->
-        <!-- <li role="presentation" class="active"><a href="#saved" aria-controls="saved" role="tab" data-toggle="tab">{% trans 'Saved Designs' %}</a></li>-->
-        <!-- Blank Templates -->
-        <li role="presentation" class="active"><a href="#blank_template" aria-controls="blank_template" role="tab" data-toggle="tab">{% trans 'Blank templates' %}</a></li>
-        <!-- Pre Designed Templates -->
-        <li role="presentation"><a href="#pre_designed_template" aria-controls="pre_designed_template" role="tab" data-toggle="tab">{% trans 'Pre-Designed Templates' %}</a></li>
-    </ul>
-        <!-- Tab panels -->
-        <div class="tab-content tab_padding">
+<div class="row">
+    {% if form %}
 
-        <!-- Save designs for a future implementation  -->
-        <!--
-        <div role="tabpanel" class="tab-pane active" id="saved_template">
-        </div>
-        -->
+    <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseForm" aria-expanded="false"
+       aria-controls="collapseForm">
+  {% trans 'Edit basic information' %}
+</a>
 
-        <!-- Blank Templates -->
-        <div role="tabpanel" class="tab-pane active" id="blank_template">
-        {% csrf_token %}
-        <!-- Blank Template: Vertical -->
-            <div id="template_card_vertical" name="template_card_vertical" class="template_card">
-                <br>
-                <div class="container">
-                    <label class="center_label_vertical">{% trans 'Vertical' %}</label>
-                </div>
-                <img id="template_card_image_vertical" class="template_card_image_vertical" style="border:1px solid black;">
-                <div class="card_button">
-                        <a id="button_blank_template_vertical" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
-                </div>
-            </div>
-        <!-- Blank Template: Horizontal -->
-            <div id="template_card_horizontal" name="template_card_horizontal" class="template_card">
-                <br>
-                <div class="container">
-                    <label class="center_label_horizontal">{% trans 'Horizontal' %}</label>
-                </div>
-                <img id="template_card_image_horizontal" class="template_card_image_horizontal" style="border:1px solid black;">
-                <div class="card_button">
-                        <a id="button_blank_template_horizontal" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
-                </div>
-            </div>
-        </div>
-        <!--Pre-Designed Templates-->
-        <div role="tabpanel" class="tab-pane" id="pre_designed_template">
-        <!-- Pre-Designed Template: Vertical -->
-            <div id="pre_designed_template_card_vertical" name="pre_designed_template_card_vertical" class="template_card">
-                <br>
-                <div class="container">
-                    <label class="center_label_vertical">{% trans 'Vertical' %}</label>
-                </div>
-                <!--==============================================-->
-                <!--====Canvas: Pre Designed Template Vertical====-->
-                    <img id="pre_designed_template_vertical" class="template_card_image_vertical" style="border:1px solid black;">
-                <!--==============================================-->
-                <!--==============================================-->
-                <!--=Canvas Modal: Pre Designed Template vertical=-->
-                <a id="tag_pre_designed_template_vertical" data-toggle="modal" data-target="#ModalPreDesignedTemplate" href=""><i class="fas fa-eye  button_eye"></i></a>
-                <!--==============================================-->
-                <div class="card_button">
-                    <a id="button_pre_designed_template_vertical" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
-                </div>
-            </div>
-        <!-- Pre-Designed Template: Horizontal -->
-            <div id="pre_designed_template_card_horizontal" name="pre_designed_template_card_horizontal" class="template_card">
-                <br>
-                <div class="container">
-                    <label class="center_label_horizontal">{% trans 'Horizontal' %}</label>
-                </div>
-                <!--==============================================-->
-                <!--==Canvas: Pre Designed Template Horizontal====-->
-                    <img id="pre_designed_template_horizontal" class="template_card_image_horizontal" style="border:1px solid black;">
-                <!--==============================================-->
-                <!--Canvas Modal: Pre Designed Template Horizontal-->
-                    <a id="tag_pre_designed_template_horizontal" data-toggle="modal" data-target="#ModalPreDesignedTemplate" href=""><i class="fas fa-eye button_eye"></i></a>
-                <!--==============================================-->
-                <div class="card_button">
-                    <a id="button_pre_designed_template_horizontal" class="btn btn-block btn-sm" href="#">{% trans 'Select' %}</a>
-                </div>
-            </div>
-            <!---Working Canvas Area Horizontal-->
-            <canvas id="working_canvas_area_horizontal" class="pre_designed_template" width="498" height="264"></canvas>
-             <!---Working Canvas Area Vertical--->
-             <!--
-             <br>
-             <br>
-             -->
-             <canvas id="working_canvas_area_vertical" class="pre_designed_template" width="400" height="550"></canvas>
-        </div>
+    <div class="collapse" id="collapseForm">
+  <div class="well">
+      <form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+                    {% csrf_token %}
+            {{form|bootstrap}}
+            <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
+        </form>
     </div>
-         <!--Testing Canvas-->
-         <!--<canvas id="working_canvas_area2" width="400" height="550"></canvas>-->
-         <!--<a id="testing_canvas">Click me</a> -->
+  </div>
+    {% endif %}
+</div>
+<hr>
+<div class="row">
+    {% for template in sgatemplates %}
+      <div class="col-md-12">
+
+          <div class="panel panel-default">
+  <div class="panel-heading">
+                <a href="#" data-order="{{forloop.counter0}}" target="_blank" id="canvaspng_{{forloop.counter0}}"
+                   class="btn btn-default btn-sm canvaspng"> {% trans 'Get as Image'%}</a>
+       <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
+  </div>
+  <div class="panel-body">
+      <div class="canvas-container-preview" >
+      <canvas  class="templatepreview"   id="preview_{{template.pk}}"
+               data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>
+
+      </div>
+  </div>
+</div>
+      </div>
+
+    {% endfor %}
+</div>
+
 {% endblock content %}
-<!-- Label template JS -->
-<script src="{% static 'sga/js/label_template.js' %}"> </script>
+

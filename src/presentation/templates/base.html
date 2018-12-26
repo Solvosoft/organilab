@@ -19,11 +19,12 @@
   <link href="{% static 'css/organilab.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
-  
+
   <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-
+  <link href="{% static 'css/themify-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet" >
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -31,20 +32,6 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
- <style>
- .cardbody {
-    /* box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); */
-    transition: 0.3s;
-    border-radius: 6px;
-    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    background-color: #FFFFFF;
-    color: #252422;
-    padding: 10px 0;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
- }
- </style>
 
   {% block css %}{% endblock %}
 
@@ -67,7 +54,7 @@
   {# CONTENT #}
   {% block wrapcontent %}
   <div id="site_content"  >
-  <div id="page-wrapper"  class="cardbody" >
+  <div id="page-wrapper"   data-color="blue"   class="wizard-card div cardbody" >
       {% block content %}
       {% endblock %}
   </div>

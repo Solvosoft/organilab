@@ -89,21 +89,15 @@ $(document).ready(function () {
                 //Label properties
                 // #1: Substance
                 var substance = $('#substance').val();
-                var substance_name = substance.split(' : ');
-                substance_commercial_name = substance_name[0];
-                label_JSON.substance_commercial_name = substance_commercial_name;
-                var substance_id = $('#substance_id').val();
-                label_JSON.substance_id = substance_id;
+                label_JSON.substance_commercial_name = substance.split(' : ')[0];
+                label_JSON.substance_id =  $('#substance_id').val();
                 // #2: Supplier Identification
-                var company_name = $('#company_name').val();
-                label_JSON.company_name = company_name;
+                label_JSON.company_name = $('#company_name').val();
                 var company_address = $('#company_address').val();
                 label_JSON.company_address = company_address;
-                var company_phone = $('#company_phone').val();
-                label_JSON.company_phone = company_phone;
+                label_JSON.company_phone =  $('#company_phone').val();
                 // #3: Product Identification
-                var commercial_information = $('#commercial_information').val();
-                label_JSON.commercial_information = commercial_information;
+                label_JSON.commercial_information =  $('#commercial_information').val();
                 // #4: Recipient Size
                 var recipient_select_box = document.getElementById("recipients");
                 var recipient_name = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-name');
