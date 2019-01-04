@@ -32,6 +32,7 @@ from rest_framework.documentation import include_docs_urls
 
 
 urlpatterns = auth_urls + [
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
     url(r'^admin/', admin.site.urls),

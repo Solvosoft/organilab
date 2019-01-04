@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'tagging',
     'zinnia',
     'zinnia_ckeditor',
+    'ckeditor_uploader',
     #    'debug_toolbar',
     'printOrderManager',
     'mapwidgets',
@@ -279,7 +280,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2
-
+CKEDITOR_UPLOAD_PATH = 'editoruploads/'
 DATASETS_SUPPORT_LANGUAGES = {
     'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
 }
@@ -323,3 +324,4 @@ LOGGING = {
 }
 
 INTERNAL_IPS = ('127.0.0.1',)
+CKEDITOR_IMAGE_BACKEND = 'pillow'
