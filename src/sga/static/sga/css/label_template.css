@@ -1,0 +1,124 @@
+/*
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 4 oct. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+*/
+
+/* Label creator card */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.400) !important;
+    transition: 0.3s;
+    width: 100%;
+}
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.500) !important;
+}
+.container {
+    padding: 8px 16px;
+}
+/* Template option card */
+.template_card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
+    transition: 0.3s;
+    width: 20%;
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 40px;
+    border-style: solid;
+    border-color:#76a1c3;
+    border-width: thin;
+}
+/* Template option card selected */
+.template_card_selected {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
+    transition: 0.3s;
+    width: 20%;
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 40px;
+    border-style: solid;
+    border-color:#005392;
+    border-width: thin;
+}
+/* Center label */
+.center_label_vertical {
+    padding-left: 6% !important;
+}
+.center_label_horizontal {
+    padding-left: 5% !important;
+}
+/* Template card image */
+.template_card_image_vertical{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+.template_card_image_horizontal{
+    display: block;
+    margin-top: 25%;
+    margin-bottom: 20%;
+    margin-left: 5%;
+    width: 90%;
+}
+/* Template card button */
+.center_button{
+    margin-left: 50% !important;
+    margin-bottom: 20% !important;
+}
+.card_button {
+    padding-top: 8%;
+    padding-bottom: 8%;
+    margin-left:20%;
+    margin-right:20%;
+    font-size: 1.0em;
+}
+/* Tab padding */
+.tab_padding {
+    padding-top: 20px !important;
+    padding-right: 1px !important;
+    padding-bottom: 1px !important;
+    padding-left: 1px !important;
+}
+/* Button border color selected */
+.button_border_selected{
+    border-color: #005392 !important;
+    background-color: #005392 !important;
+    color:white !important;
+}
+/* Pre designed template color no selected */
+.pre_designed_template{
+    border:2px solid black;
+}
+.pre_designed_template_horizontal{
+    border:2px solid black;
+    margin-top: 26%;
+    margin-bottom: 20%;
+}
+/* Template card button eye */
+.button_eye{
+    font-size: 1.5em !important;
+    padding-top: 5% !important;
+    margin-left: 45% !important;
+    margin-right: 10% !important;
+    color: black !important;
+}
+/* Center modal */
+.modal {
+    text-align: center;
+}
+@media screen and (min-width: 768px) { 
+    .modal:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: " ";
+        height: 100%;
+    }
+}
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+}

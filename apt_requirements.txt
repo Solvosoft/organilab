@@ -11,3 +11,4 @@ libcairo2
 git
 libffi-dev
 libpq-dev
+python3-gdal

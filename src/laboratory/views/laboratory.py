@@ -227,6 +227,7 @@ class CreateLaboratoryFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CreateLaboratoryFormView,
                         self).get_context_data(**kwargs)
+        print(context)
         return context
 
     def form_valid(self, form):
@@ -237,7 +238,6 @@ class CreateLaboratoryFormView(FormView):
         return response
 
     def get_success_url(self):
-        print(self.object.pk)
         return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk})
 
 
