@@ -384,7 +384,7 @@ var SequentialLoader = function() {
                 inputField: el,
                 latLng: el.parent().find(':text').val() || '0,0',
                 suffix: options['search.suffix'],
-                path: options['resources.root_path'],
+                path:   (options['resources.root_path'] === undefined) ? "/static/location_field/" :  options['resources.root_path'],
                 provider: options['map.provider'],
                 searchProvider: options['search.provider'],
                 providerOptions: {

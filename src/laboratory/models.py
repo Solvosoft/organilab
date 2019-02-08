@@ -46,7 +46,6 @@ class ObjectFeatures(models.Model):
     def __str__(self):
         return self.name
 
-
 class Object(models.Model):
     REACTIVE = '0'
     MATERIAL = '1'

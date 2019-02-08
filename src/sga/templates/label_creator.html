@@ -1,0 +1,108 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 13 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% extends 'label_index.html' %}
+{% load i18n bootstrap %}
+
+{% block content %}
+<div>
+	{{ block.super }}
+	{% if step != 2 %}
+		<form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+	{% endif %}
+			<input type="hidden" value="{{step}}" name="step"> {% csrf_token %}
+		<div class="tab-content">
+			<!--======================================================-->
+			<!--================Part #1 : Information=================-->
+			<div class="tab-pane {% if step == 0 %}active{% endif %}" id="information">
+				{% if step == 0 %}
+				{% include "label_information.html" %}
+				{% endif %}
+			</div>
+			<!--======================================================-->
+			<!--================Part #2 : Template====================-->
+			<div class="tab-pane {% if step == 1 %}active{% endif %}" id="template">
+				{% if step == 1 %}
+				{% include "label_template.html" %}
+				{% endif %}
+			</div>
+			<!--======================================================-->
+			<!--================Part #3 : Editor======================-->
+			<div class="tab-pane {% if step == 2 %}active{% endif %}"  id="editor">
+				{% if step == 2 %}
+				{% include "label_editor.html" %}
+				{% endif %}
+			</div>
+			<!--======================================================-->
+		</div>
+
+			<div class="col-sm-6"></div>
+			<div class="wizard-footer">
+				<div class="pull-right">
+					<input type='submit' class='btn btn-next btn-fill btn-info btn-wd'
+						name='next' value='{% trans 'Next' %}' id="Next" />
+					<input type='button' class='btn btn-finish btn-fill btn-info btn-wd'
+						name='finish' value='{% trans "Finish" %}' />
+				</div>
+
+				<div class="pull-left">
+					<input type='button' class='btn btn-previous btn-info btn-wd'
+						name='previous' id='Previous' value='{% trans 'Previous' %}' />
+				</div>
+				<div class="clearfix"></div>
+				<div id="powered_by">
+					<a href="https://solvosoft.com/en/">
+						<img width="16" height="16"
+							src="https://solvosoft.com/static/img/Mascota_301x330.png" />
+					</a>
+					{% trans 'Powered by' %}
+					<a href="http://fabricjs.com/">Fabric.js</a>
+				</div>
+			</div>
+{% if step != 2 %}
+		</form>
+{% endif %}
+</div>
+	<!--==============================================-->
+	<!--======Canvas Modal: Pre Designed Template=====-->
+	<div class="modal fade" id="ModalPreDesignedTemplate" tabindex="-1"
+		role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 align="center" class="modal-title" id="modalPreDesignedTemplateTitle">
+						{% trans 'Pre designed template' %}</h4>
+				</div>
+				<div id="modal_body_pre_designed_template" class="modal-body center">
+					<img id="modal_pre_designed_template" class="img-responsive pre_designed_template" >
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==============================================-->
+	<!--============Modal:Loading message=============-->
+	<div class="modal fade bs-example-modal-sm" id="loadingMessage" tabindex="-1"
+	role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="stylo modal-dialog modal-sm">
+		<div class="modal-content">
+				<br>
+				<h1 class="modal-loading-message modal-title" align="center">
+					{% trans 'Loading' %}...
+				</h1 >
+				<br>
+		</div>
+	</div>
+	</div>
+	<!--==============================================-->
+	{% endblock content %}

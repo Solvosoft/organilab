@@ -1,0 +1,41 @@
+{% load i18n laboratory %}
+
+{%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
+{%  has_perms "academic.view_procedure" as perm_procedure  %}
+{%  has_perms "laboratory.view_solution" as perm_solution %}
+{%  has_perms "laboratory.change_laboratory" as perm_change_lab %}
+
+{% if laboratory %}
+ <li>
+ <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> {% trans 'Laboratory' %}  <span class="fa arrow"></span></a>
+<ul class="nav nav-second-level expand">
+    {% if perm_laboratoryroom %}
+        <li >
+        <a href="{% url 'laboratory:rooms_list' laboratory %}">
+        <strong>{% trans 'Laboratory view' %}</strong></a>
+        </li>
+    {% endif %}
+
+    {% if perm_procedure %}
+              <li >
+              <a href="{% url 'academic_procedure_list' %}">
+                {% trans 'Procedures' %}</a>
+              </li>
+    {% endif %}
+    {% if perm_solution %}
+			   <li>
+               <a href="{% url 'laboratory:solution_list' laboratory %}">
+                {% trans 'Dissolution calculator (experimental)' %}</a>
+            </li>
+    {% endif %}
+    {% if perm_change_lab %}               
+              <li>
+              <a href="{% url 'laboratory:access_list_students' laboratory %}">
+                {% trans 'Access list' %}
+              </a>
+              </li>
+    {% endif %}
+
+</ul>
+</li>
+{% endif %}
