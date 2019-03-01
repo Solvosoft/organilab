@@ -38,7 +38,12 @@ fa-fw"></i>
                             {% trans 'SGA Labeling' %} </a> 
                     </li>
                     <li>
-                    <a href="{% url 'printOrderManager:index_printOrderManager' %}" 
+                        <a   href="{% url 'sga:editor' %}" title="{% trans 'Editor' %}" >
+                            {% trans 'Editor' %} </a>
+                    </li>
+
+                    <li>
+                    <a href="{% url 'printOrderManager:index_printOrderManager' %}"
                     title="{% trans 'Prints and Orders Manager' %}">
                     {% trans 'Prints and Orders Manager' %} </a>
                     </li>
