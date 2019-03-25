@@ -74,7 +74,7 @@
   <div class="tab-content" style="padding: 15px 20px 10px;">
     <div role="tabpanel" class="tab-pane active" id="home">
 
-        		<form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+        		<form id="sgaform"  method="post" action="{% url 'sga:editor' %}">
                     {% csrf_token %}
                     {% if templateinstance %}
                         <input type="hidden" name="instance" value="{{templateinstance.pk}}">
