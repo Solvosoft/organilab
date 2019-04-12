@@ -196,69 +196,52 @@ zoomCanvas(20000/canvas_editor.getWidth()/100,  canvas2);
 
 
 
-function cm(cadena){
- sizecm=[];
- valueHeight=cadena[1].split("=");
- valueWidth=cadena[3].split("=");
- unitHeight=cadena[2].split("=");
- unitWidth=cadena[4].split("=");
- 
- if ((unitHeight[1]).localeCompare("mm")==0 && (unitWidth[1]).localeCompare("mm")==0){
-     sizecm.push(valueHeight[1]/10);
-     sizecm.push((valueWidth[1]/10));
-     return sizecm;
-     
- } else if ((unitHeight[1]).localeCompare("inch")==0 && (unitWidth[1]).localeCompare("inch")==0){
-     sizecm.push(valueHeight[1]*2.54);
-     sizecm.push(valueWidth[1]*2.54);
-     return sizecm;
- } else if ((unitHeight[1]).localeCompare("inch")==0 && (unitWidth[1]).localeCompare("mm")==0){
-     sizecm.push(valueHeight[1]*2.54);
-     sizecm.push((valueWidth[1]/10));
-     return sizecm;
+function convertionTocm(cadena) {
+    sizecm = [];
+    valueHeight =  cadena[1].split("=");
+    valueWidth  =  cadena[3].split("=");
+    unitHeight  =  cadena[2].split("=");
+    unitWidth   =  cadena[4].split("=");
+    if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
+        sizecm.push(valueHeight[1] / 10);
+        sizecm.push((valueWidth[1] / 10));
+    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
+        sizecm.push(valueHeight[1] * 2.54);
+        sizecm.push(valueWidth[1] * 2.54);
+    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
+        sizecm.push(valueHeight[1] * 2.54);
+        sizecm.push((valueWidth[1] / 10));
 
- } else if ((unitHeight[1]).localeCompare("mm")==0 && (unitWidth[1]).localeCompare("inch")==0){
-     sizecm.push(valueHeight[1]/10);
-     sizecm.push(valueWidth[1]*2.54);
-     return sizecm;
- } else if ((unitHeight[1]).localeCompare("cm")==0 && (unitWidth[1]).localeCompare("inch")==0){
-     sizecm.push(valueHeight[1]);
-     sizecm.push(valueWidth[1]*2.54);
-     return sizecm;
- } else if ((unitHeight[1]).localeCompare("inch")==0 && (unitWidth[1]).localeCompare("cm")==0){
-     sizecm.push(valueHeight[1]*2.54);
-     sizecm.push(valueWidth[1]);
-     return sizecm;
- } else if ((unitHeight[1]).localeCompare("cm")==0 && (unitWidth[1]).localeCompare("mm")==0){
-     sizecm.push(valueHeight[1]);
-     sizecm.push((valueWidth[1]/10));
-     return sizecm;
-} else if ((unitHeight[1]).localeCompare("mm")==0 && (unitWidth[1]).localeCompare("cm")==0){
-     sizecm.push(valueHeight[1]/10);
-     sizecm.push(valueWidth[1]);
-     return sizecm;
+    } else if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
+        sizecm.push(valueHeight[1] / 10);
+        sizecm.push(valueWidth[1] * 2.54);
+    } else if ((unitHeight[1]).localeCompare("cm") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
+        sizecm.push(valueHeight[1]);
+        sizecm.push(valueWidth[1] * 2.54);
+    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("cm") == 0) {
+        sizecm.push(valueHeight[1] * 2.54);
+        sizecm.push(valueWidth[1]);
+    } else if ((unitHeight[1]).localeCompare("cm") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
+        sizecm.push(valueHeight[1]);
+        sizecm.push((valueWidth[1] / 10));
+    } else if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("cm") == 0) {
+        sizecm.push(valueHeight[1] / 10);
+        sizecm.push(valueWidth[1]);
 
-} else {
- sizecm.push(valueHeight[1]);
- sizecm.push(valueWidth[1]);
- return sizecm;
+    } else {
+        sizecm.push(valueHeight[1]);
+        sizecm.push(valueWidth[1]);
 
+    }
+    return sizecm;
 }
 
-
-}
-
-
-function toPixel(cadena){
+function cmToPixel(cadena){
  sizeInPixel= [];
  sizeInPixel.push(cadena[0]*38);
  sizeInPixel.push(cadena[1]*38);
  return sizeInPixel;
-
-
 }
-
-
 
 $(document).ready(function () {
  $("#id_recipient_size").on('change', function(){
@@ -266,32 +249,54 @@ $(document).ready(function () {
  select = $(this);
  selectedOption = select.find("option:selected").text();
  comboBoxText=selectedOption.split(",");
- console.log(comboBoxText);
- x=cm(comboBoxText);
- values=toPixel(x);
+ x=convertionTocm(comboBoxText);
+ values=cmToPixel(x);
  HeightPix=values[0];
  WidthPix=values[1];
-   
-
- margen = 0.05;
- margenw = canvas_editor.getWidth()*margen;
- margenh = canvas_editor.getHeight()*margen;
- availpixel = canvas_editor.getWidth()-2*margenw;
- mooz = ( availpixel * 100 / WidthPix)/100;
- top1 = (canvas_editor.getHeight() - HeightPix*canvas_editor.getZoom()) / 2;
- canvas_editor.getObjects()[0].top=margenh;
- canvas_editor.getObjects()[0].left=margenw;
- canvas_editor.getObjects()[0].width=WidthPix;
- canvas_editor.getObjects()[0].height=WidthPix;
- canvas_editor.setZoom(mooz);
- canvas_editor.renderAll();
-
-  //console.log(widthxPix);
- //console.log($(this).find("option:selected").val())
- //console.log($(this).val());
- //console.log($(this));
+ y=setSize(WidthPix,HeightPix);
+Width2=y[0];
+height2=y[1];
+setNewCanvas(Width2,height2);
 
  });
+
+
+function setSize(widthP,heightP){
+sizeMaximum= [];
+originalWidth= canvas_editor.getWidth();
+originalHeight= canvas_editor.getHeight();
+if(widthP<originalWidth){
+    sizeMaximum.push(widthP+(originalWidth-widthP))
+}
+if(heightP<originalHeight){
+    sizeMaximum.push(heightP+(originalHeight-heightP))
+}
+if(widthP>originalWidth){
+    sizeMaximum.push(widthP -(widthP-originalWidth))
+}
+if(heightP>originalHeight){
+    sizeMaximum.push(heightP -(heightP-originalHeight))
+}
+else{
+    sizeMaximum.push(widthP);
+    sizeMaximum.push(heightP);
+}
+return sizeMaximum;
+}
+
+function setNewCanvas(widthP,heightP){
+    margen = 0.02;
+    margenw = widthP*margen;
+    margenh = heightP*margen;
+    canvas_editor.getObjects()[0].top=margenw;
+     canvas_editor.getObjects()[0].left=margenh;
+     canvas_editor.getObjects()[0].width=widthP-margenh;
+     canvas_editor.getObjects()[0].height=heightP -margenw;
+     canvas_editor.getObjects()[0].center();
+     canvas_editor.renderAll();
+    
+    }
+
 $("#editor_save").on('click', function(){
 //$("#hiddencanvas").removeClass("hidden");
 //$("#hiddencanvas").removeClass("hide");
@@ -351,10 +356,14 @@ if($("#id_json_representation").val() != ""){
 }
 else {
 
+originalWidth= canvas_editor.getWidth();
+originalHeight= canvas_editor.getHeight();
+ var fabricObject = new fabric.Rect({
 
- var red = new fabric.Rect({
- top: 100, left: 0, width: 80, height: 50, fill: 'red' });
- canvas_editor.add(red);
+ top: 0, left: 0, width:originalWidth , height:originalHeight , fill: '#fff' });
+ fabricObject.selectable=false;
+ canvas_editor.setBackgroundColor('#dcdcdc');
+ canvas_editor.add(fabricObject);
 }
 
 });
