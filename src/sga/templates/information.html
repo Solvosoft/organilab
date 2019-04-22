@@ -5,7 +5,8 @@
 @author: Guillermo Castro Sánchez
 @email: guillermoestebancs@gmail.com
 -->
-
+{% extends 'label_index.html' %}
+{% load i18n bootstrap %}
 {% load i18n %}
 {% load static %}
 {% load label_tags %}
@@ -13,12 +14,23 @@
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_information.css' %}" rel="stylesheet">
+<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
 {% endblock css %}
+{% block js %}
+<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}"> </script>
+<script src="{% static 'sga/js/jquery.validate.min.js' %}"> </script>
+<script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
+<script src="{% static 'sga/js/label_information.js' %}"> </script>
+<script src="{% static 'sga/js/messages_es.js' %}"> </script>
+{% endblock %}
+
 
 {% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
 
+<form id="sgaform"  method="post" action="{% url 'sga:template' %}">
+    {% csrf_token %}
 <div class="row">
     <div class="col-sm-12">
         <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
@@ -27,6 +39,7 @@
         <!--============================================================================================================-->
         <!--==============================================Substance=====================================================-->
         <div class="form-group">
+
             <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
             <!--Search substance with autocomplete-->
             <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
@@ -90,20 +103,20 @@
         <!--=========================================Recipient==========================================================-->
         <div class="form-group">
             <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
-            <!--<a>{{ recipients }}</a>--> 
+            <!--<a>{{ recipients }}</a>-->
             <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
                 <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
-    
+
                 {% if recipients != null %}
-                    {% for recipient in recipients %}
-                    <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
-                        data-height="{{recipient.height}}"
-                        data-height_unit="{{recipient.height_unit}}"
-                        data-width="{{recipient.width}}"
-                        data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
-                        - {{recipient.height}}{{recipient.height_unit}} x
-                        {{recipient.width}}{{recipient.width_unit}}</option>
-                    {% endfor %}
+                {% for recipient in recipients %}
+                <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
+                    data-height="{{recipient.height}}"
+                    data-height_unit="{{recipient.height_unit}}"
+                    data-width="{{recipient.width}}"
+                    data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
+                    - {{recipient.height}}{{recipient.height_unit}} x
+                    {{recipient.width}}{{recipient.width_unit}}</option>
+                {% endfor %}
                 {% endif %}
             </select>
         </div>
@@ -112,6 +125,15 @@
         <!--============================================================================================================-->
     </div>
 </div>
+
+<div class="wizard-footer">
+				<div class="pull-right">
+					<input type='submit' class='btn btn-next btn-fill btn-info btn-wd'
+						name='next' value='{% trans 'Next' %}' id="Next" />
+                    </div>
+</div>
+</form>
 {% endblock content %}
+
 
 
