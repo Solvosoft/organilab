@@ -22,7 +22,8 @@ import logging
 from django.template import Template, Library
 from rest_framework import serializers
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
+from django.urls import reverse
 register = Library()
 import json
 from django.contrib import messages
@@ -31,6 +32,62 @@ from django.contrib import messages
 
 def index_sga(request):
     return render(request, 'index_sga.html', {})
+
+
+def information_creator(request):
+    recipients = RecipientSize.objects.all()
+    context = {
+        'laboratory': None,
+        'recipients': recipients,
+    }
+    if request.method == 'POST':
+        form = RecipientInformationForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('index_sga.html'))
+        else:
+            form = RecipientInformationForm()
+
+    return render(request, 'information.html', context)
+
+
+def template(request):
+    sgatemplates = TemplateSGA.objects.all()
+    if request.method == 'POST':
+        form = RecipientInformationForm(request.POST)
+    else:
+        form: None
+    context = {
+        'laboratory': None,
+        'form': form,
+        'sgatemplates': sgatemplates,
+
+    }
+    return render(request, 'template.html', context)
+
+
+def editor(request):
+    finstance = None
+    if 'instance' in request.POST:
+        finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
+    if 'instance' in request.GET:
+        finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
+    sgaform = EditorForm(instance=finstance)
+    if request.method == "POST":
+        sgaform = EditorForm(request.POST, instance=finstance)
+        if sgaform.is_valid():
+            finstance = sgaform.save()
+            messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
+
+    context = {
+        'laboratory': None,
+        "form": SGAEditorForm(),
+        "generalform": sgaform,
+        "pictograms": Pictogram.objects.all(),
+        "warningwords": WarningWord.objects.all(),
+        'templateinstance': finstance,
+        'templates': TemplateSGA.objects.all()
+    }
+    return render(request, 'editor.html', context)
 
 # SGA Label Creator Page
 
@@ -102,7 +159,7 @@ def clean_json_text(text):
 
 def show_editor_preview(request, pk):
     recipients = request.POST.get('recipients', '')
-    substance =  get_object_or_404(Substance, pk= request.POST.get('substance', ''))
+    substance = get_object_or_404(Substance, pk= request.POST.get('substance', ''))
     weigth = 10000
     warningword = "{{warningword}}"
     dangerindications = ''

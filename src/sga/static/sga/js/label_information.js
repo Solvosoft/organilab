@@ -75,7 +75,7 @@ $(document).ready(function () {
     // Save label information in JSON
     $("#Next").click(function () {
         var label_JSON = {};
-        if (hasClass(label_information, 'active')) {
+        //if (hasClass(label_information, 'active')) {
             errorsValidation.validate();
             if (errorsValidation.valid() == false) {
                 /*
@@ -112,15 +112,15 @@ $(document).ready(function () {
                 label_JSON.width_unit = width_unit;
                 // Save label information in local storage
                 var label_JSON_String = JSON.stringify(label_JSON);
-                localStorage.setItem('label_information', label_JSON_String);
-                // Set blank templates according to provided information 
+                localStorage.setItem('information', label_JSON_String);
+                // Set blank templates according to provided information
                 set_blank_templates();
                 // Show loading message
                 $('#loadingMessage').modal("show");
                 // Set pre designed templates according to provided information 
                 setTimeout(set_pre_designed_templates, 0);
             }
-        }
+        //}
     });
 });
 // Select box place holder 
@@ -131,6 +131,4 @@ function changePlaceHolder(sel) {
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-
-
 

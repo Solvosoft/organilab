@@ -7,7 +7,8 @@
 '''
 
 # Import functions of another modules
-from sga.views import index_sga, label_creator, label_information, label_template, label_editor, get_sga_editor_options
+# TODO possibly change sga.views to .views
+from sga.views import index_sga, label_creator, label_information, label_template, label_editor, get_sga_editor_options,information_creator,template,editor
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -23,6 +24,8 @@ app_name = 'sga'
 urlpatterns = [
     # sga/index_sga/
     url(r'index_sga', index_sga, name='index_sga'),
+    url(r'information', information_creator, name='information'),
+    url(r'template', template, name='template'),
     url(r'sga_editor_options', get_sga_editor_options, name='get_sga_editor_options'),
     url(r'show_editor_preview/(?P<pk>\d+)$', views.show_editor_preview, name='show_editor_preview'),
     # sga/label_creator/
@@ -39,4 +42,5 @@ urlpatterns = [
     url(r'label_editor', views.label_editor, name='label_editor'),
     # sga/getSubstanceInformation/
     url(r'getSubstanceInformation', views.getSubstanceInformation, name='getSubstanceInformation'),
+    url(r'editor', editor, name='editor'),
 ]

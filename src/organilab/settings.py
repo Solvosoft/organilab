@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     'zinnia_ckeditor',
     'ckeditor_uploader',
     #    'debug_toolbar',
-    'printOrderManager',
     'mapwidgets',
     'guardian',
 ]
