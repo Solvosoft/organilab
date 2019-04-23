@@ -1,32 +1,26 @@
-'''
+"""
 @organization: Solvo
 @license: GNU General Public License v3.0
 @date: Created on 13 sept. 2018
 @author: Guillermo Castro Sánchez
 @email: guillermoestebancs@gmail.com
-'''
+"""
 
 # Import functions of another modules
-from django import forms
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django_ajax.decorators import ajax
 
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
 from django.http import HttpResponse
 from django.db.models.query_utils import Q
-import json
-import logging
-from django.template import Template, Library
-from rest_framework import serializers
-from django.core import serializers
+from django.template import Library
 from django.http import JsonResponse,HttpResponseRedirect
 from django.urls import reverse
-register = Library()
 import json
 from django.contrib import messages
+register = Library()
 # SGA Home Page
 
 
@@ -55,7 +49,7 @@ def template(request):
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
-        form: None
+        form = None
     context = {
         'laboratory': None,
         'form': form,
@@ -91,6 +85,7 @@ def editor(request):
 
 # SGA Label Creator Page
 
+
 def get_step(step):
     if step is None:
         step = 0
@@ -98,11 +93,10 @@ def get_step(step):
         step = int(step)
         if step not in [0, 1, 2]:
             step = 0
-    except:
+    except ValueError:
         step = 0
 
     return step
-
 
 
 def label_creator(request, step=0):
@@ -139,23 +133,24 @@ def label_creator(request, step=0):
                 messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
 
         context.update({
-        "form" : SGAEditorForm(),
-        "generalform": sgaform,
-        "pictograms": Pictogram.objects.all(),
-        "warningwords": WarningWord.objects.all(),
-        'templateinstance': finstance,
-        'templates': TemplateSGA.objects.all()
-        })
+            "form": SGAEditorForm(),
+            "generalform": sgaform,
+            "pictograms": Pictogram.objects.all(),
+            "warningwords": WarningWord.objects.all(),
+            'templateinstance': finstance,
+            'templates': TemplateSGA.objects.all()
+            })
 
     context.update({'step': step,
-        'next_step': step + 1,
-        'prev_step': step - 1 if step > 0 else step})
+                    'next_step': step + 1,
+                    'prev_step': step - 1 if step > 0 else step})
     return render(request, 'label_creator.html', context)
 
 
 # SGA Label Information Page
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
+
 
 def show_editor_preview(request, pk):
     recipients = request.POST.get('recipients', '')
@@ -170,18 +165,18 @@ def show_editor_preview(request, pk):
         if di.warning_words.weigth < weigth:
             warningword = di.warning_words.name
         if dangerindications != '':
-            dangerindications+='\n'
+            dangerindications += '\n'
         dangerindications += di.description
         pictograms += list(di.pictograms.all())
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
-                prudenceAdvice+= '\n'
+                prudenceAdvice += '\n'
             prudenceAdvice += advice.name
 
     for component in substance.components.all():
         if casnumber != '':
-            casnumber+=' '
+            casnumber += ' '
         casnumber += component.cas_number
 
     template_context = {
@@ -223,11 +218,11 @@ def label_information(request):
 # SGA Label Template Page
 
 def label_template(request):
-    recipients= RecipientSize.objects.all()
+    recipients = RecipientSize.objects.all()
 
     return render(request, 'label_template.html', {'recipients': recipients,
-'laboratory': None
-})
+                                                   'laboratory': None
+                                                   })
 
 
 def get_sga_editor_options(request):
@@ -241,6 +236,7 @@ def get_sga_editor_options(request):
 
 # SGA Label Editor Page
 
+
 def label_editor(request):
     return render(request, 'label_editor.html', {})
 
@@ -253,7 +249,7 @@ def search_autocomplete_sustance(request):
         q = request.GET.get('term', '')
         # Contains the typed characters, is valid since the first character
         # Search Parameter: Comercial Name or CAS Number
-        if(any(c.isalpha() for c in q)):
+        if any(c.isalpha() for c in q):
             search_qs = Substance.objects.filter(
                 Q(comercial_name__icontains=q) | Q(synonymous__icontains=q))
         else:
@@ -263,7 +259,7 @@ def search_autocomplete_sustance(request):
         for r in search_qs:
             results.append({'label': r.comercial_name +
                             ' : '+r.synonymous, 'value': r.id})
-        if(not results):
+        if not results:
             results.append('No results')
         data = json.dumps(results)
     else:
@@ -274,6 +270,7 @@ def search_autocomplete_sustance(request):
 # SGA Obtain substance information
 
 
+# TODO not to pep8 standard
 def getSubstanceInformation(request):
     substanceInformation = {}
     signalWordSubstance = ''

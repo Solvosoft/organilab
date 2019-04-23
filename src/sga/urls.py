@@ -1,18 +1,14 @@
-'''
+"""
 @organization: Solvo
 @license: GNU General Public License v3.0
 @date: Created on 13 sept. 2018
 @author: Guillermo Castro Sánchez
 @email: guillermoestebancs@gmail.com
-'''
+"""
 
 # Import functions of another modules
-# TODO possibly change sga.views to .views
-from sga.views import index_sga, label_creator, label_information, label_template, label_editor, get_sga_editor_options,information_creator,template,editor
+from .views import index_sga, label_creator, get_sga_editor_options, information_creator, template, editor
 from django.conf.urls import url, include
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.conf import settings
 from ajax_select import urls as ajax_select_urls
 from . import views
 

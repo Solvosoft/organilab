@@ -20,7 +20,6 @@ class TagsLookup(LookupChannel):
         return u"<span class='tag' data-pk=\"%s\"> %s</span>" % (item.pk, item.name)
 
 
-
 @register('dangerindication')
 class TagsLookup(LookupChannel):
     model = DangerIndication
@@ -34,10 +33,10 @@ class TagsLookup(LookupChannel):
         return self.model.objects.filter(Q(description__icontains=q)|Q(code__icontains=q)).order_by('code')[:8]
 
     def format_item_display(self, item):
-        texto ="""
+        texto = """
         <a class="tagcode btn btn-xs" id="%(code)s" title="%(code)s" data-ftype="itext">%(code)s</a>
         <a class='tag' id="%(code)s"  title="%(description)s" data-ftype="textbox"> %(description)s</a>
-        """ % {'code': item.code, 'description': item.description }
+        """ % {'code': item.code, 'description': item.description}
 
         return texto
 
@@ -52,13 +51,13 @@ class TagsLookup(LookupChannel):
         return False
 
     def get_query(self, q, request):
-        return self.model.objects.filter(Q(name__icontains=q) | Q(code__icontains=q)|Q(
+        return self.model.objects.filter(Q(name__icontains=q) | Q(code__icontains=q) | Q(
             prudence_advice_help__icontains=q)).order_by('code')[:8]
 
     def format_item_display(self, item):
-        texto ="""<a class="tagcode btn btn-xs" id="%(code)s" title="%(code)s" data-ftype="itext" >%(code)s</a>
+        texto = """<a class="tagcode btn btn-xs" id="%(code)s" title="%(code)s" data-ftype="itext" >%(code)s</a>
         <a class='tag' id="%(code)s"  title="%(description)s" data-ftype="textbox"> %(description)s</a> """ % {
-            'code': item.code, 'description': item.name }
+            'code': item.code, 'description': item.name}
 
         return texto
 
