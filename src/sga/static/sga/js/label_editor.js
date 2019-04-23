@@ -286,7 +286,7 @@ $("#id_dangerindication_on_deck").bind('added', function() {
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
 
-    let obj = $("#id_dangerindication_on_deck .tagcode");
+    obj = $("#id_dangerindication_on_deck .tagcode");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
@@ -300,7 +300,7 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
 
-    let obj = $("#id_prudenceadvice_on_deck .tagcode");
+    obj = $("#id_prudenceadvice_on_deck .tagcode");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);

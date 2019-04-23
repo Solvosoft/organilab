@@ -11,12 +11,12 @@
 {% load bootstrap   %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
+    <link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
 {% endblock css %}
 {% block js %}
-<script src="{% static 'js/bootstrap-colorpicker.js' %}"> </script>
-<script src="{% static 'sga/js/fabric.min.js' %}"> </script>
-<script src="{% static 'sga/js/label_editor.js' %}"> </script>
+    <script src="{% static 'js/bootstrap-colorpicker.js' %}"> </script>
+    <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
+    <script src="{% static 'sga/js/label_editor.js' %}"> </script>
 {{form.media}}
 {% endblock %}
 
@@ -29,9 +29,9 @@
     <div class="col-sm-12">
 
                     <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
-            {% trans 'Available templates' %} <span class="caret"></span>
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                          {% trans 'Available templates' %} <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
 
@@ -42,7 +42,7 @@
           </ul>
 
         </div>
-                  <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
+        <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
             <!-- <button style="width:10%" disabled><i class="fa fa-undo"></i></button>
         <button style="width:10%" disabled><i class="fa fa-redo"></i></button>
@@ -57,20 +57,26 @@
             -->
         </div>
     </div>
-        <div class="col-sm-2 col-md-3">
+    <div class="col-sm-2 col-md-3">
 
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-        {% trans 'General' %}
-    </a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
-        {% trans 'Live' %}
-    </a></li>
-    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
-        {% trans 'Generic' %} </a></li>
-    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-        {% trans 'Pictogram' %}</a></li>
-  </ul>
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+            {% trans 'General' %}</a>
+        </li>
+        <li role="presentation">
+            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+            {% trans 'Live' %}</a>
+        </li>
+        <li role="presentation">
+            <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+            {% trans 'Generic' %} </a>
+        </li>
+        <li role="presentation">
+            <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
+            {% trans 'Pictogram' %}</a>
+        </li>
+      </ul>
   <div class="tab-content" style="padding: 15px 20px 10px;">
     <div role="tabpanel" class="tab-pane active" id="home">
 
@@ -81,11 +87,11 @@
                     {% endif %}
                     {{generalform|bootstrap}}
                 </form>
-         <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
+        <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
 
         <button type="button" class="btn btn-sm" onclick="addLine()"> {% trans 'Line' %}</button>
 
-         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
+        <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
 
 
         <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
@@ -94,12 +100,12 @@
         <br>
 
 
-          <div class="form-group">
-            <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
-            <input type="range" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action"
-                bind-value-to="fontSize">
-              <p>{% trans 'actual' %}: <span id="font-size-label">20</span></p>
-          </div>
+        <div class="form-group">
+        <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
+        <input type="range" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action"
+            bind-value-to="fontSize">
+          <p>{% trans 'actual' %}: <span id="font-size-label">20</span></p>
+        </div>
         <div class="form-group">
         <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
             <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
@@ -121,7 +127,7 @@
           </div>
 
         <div class="form-group">
-           <label for="textalign" style="display:inline-block">Text align:</label>
+            <label for="textalign" style="display:inline-block">Text align:</label>
             <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
               <option value="left" selected>Left</option>
               <option value="center">Center</option>
@@ -139,23 +145,42 @@
         <label >{% trans 'Warning Words' %}</label>
         <ul>
         {% for word in warningwords %}
-        <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="textbox" href="#">{{word}}</a></li>
+            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="textbox" href="#">{{word}}</a></li>
         {% endfor %}
         </ul>
         {{form|bootstrap  }}
     </div>
     <div role="tabpanel" class="tab-pane" id="messages">
-        <ul><li><a class="genericitem"  id="warningword" data-ftype="itext" href="#" id="warningword">
-            {% trans 'Warning Word' %}</a></li>
-        <li><a class="genericitem"  id="dangerindication"  data-ftype="textbox" href="#"> {% trans 'Danger Indication' %}</a></li>
-        <li><a class="genericitem"  id="prudenceadvice" data-ftype="textbox" href="#"> {% trans 'Prudence Advice' %}</a></li>
-        <li><a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a></li>
-        <li><a class="genericitem"  id="pictogram"  data-ftype="image"  href="#"  title="/static/sga/img/pictograms/example.gif" >
-            <img width="64px" height="64px" src="/static/sga/img/pictograms/example.gif" alt="pictogram" class="img-rounded"> </a></li>
-        <li><a class="genericitem"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a></li>
-        <li><a class="genericitem" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a></li>
-        <li><a class="genericitem" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a></li>
-        <li><a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a></li>
+        <ul>
+            <li>
+                <a class="genericitem"  id="warningword" data-ftype="itext" href="#" id="warningword">
+                {% trans 'Warning Word' %}</a>
+            </li>
+            <li>
+                <a class="genericitem"  id="dangerindication"  data-ftype="textbox" href="#"> {% trans 'Danger Indication' %}</a>
+            </li>
+            <li>
+                <a class="genericitem"  id="prudenceadvice" data-ftype="textbox" href="#"> {% trans 'Prudence Advice' %}</a>
+            </li>
+            <li>
+                <a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a>
+            </li>
+            <li>
+                <a class="genericitem"  id="pictogram"  data-ftype="image"  href="#"  title="/static/sga/img/pictograms/example.gif" >
+                <img width="64px" height="64px" src="/static/sga/img/pictograms/example.gif" alt="pictogram" class="img-rounded"> </a>
+            </li>
+            <li>
+                <a class="genericitem"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a>
+            </li>
+            <li>
+                <a class="genericitem" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a>
+            </li>
+            <li>
+                <a class="genericitem" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a>
+            </li>
+            <li>
+                <a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
+            </li>
         </ul>
     </div>
     <div role="tabpanel" class="tab-pane" id="settings">
@@ -173,7 +198,7 @@
             {% trans 'Use save before finish' %}
         <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
 
-        </div>
+    </div>
     <div class="col-sm-6 col-md-9  ">
         <div id="canvasContainer" class="canvas-container" >
         <canvas id="canvas_editor" class="pre_designed_template" style="width: 100%"></canvas>
