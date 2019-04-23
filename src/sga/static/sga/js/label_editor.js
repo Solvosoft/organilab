@@ -48,8 +48,8 @@ function handleDragEnd(e) {
 
  //Control zoom and panning in canvas editor
  canvas_editor.on('mouse:wheel', function (opt) {
-     var delta = opt.e.deltaY;
-     var zoom = canvas_editor.getZoom();
+     let delta = opt.e.deltaY;
+     let zoom = canvas_editor.getZoom();
      zoom = zoom + delta / 200;
      if (zoom > 20) zoom = 20;
      if (zoom < 0.01) zoom = 0.01;
@@ -68,10 +68,10 @@ function handleDragEnd(e) {
      return e.layerY;
  }
  function get_fabric_element(e){
-     var data = e.dataTransfer.getData("label");
-     var ftype = e.dataTransfer.getData('type');
+     let data = e.dataTransfer.getData("label");
+     let ftype = e.dataTransfer.getData('type');
      if(ftype == "textbox"){
-         var name_label = new fabric.Textbox(data, {
+         let name_label = new fabric.Textbox(data, {
              width: 180,
              height: 20,
              left: get_position_x(e),
@@ -86,7 +86,7 @@ function handleDragEnd(e) {
          });
          canvas_editor.add(name_label);
      }else if (ftype == "itext"){
-         var name_label = new fabric.IText(data, {
+         let name_label = new fabric.IText(data, {
              width: 280,
              left: get_position_x(e),
              top: get_position_y(e),
@@ -141,14 +141,14 @@ function handleDragEnd(e) {
      get_fabric_element(e);
 
      /**
-     var img = document.querySelector('.furniture img.img_dragging');
+     let img = document.querySelector('.furniture img.img_dragging');
      console.log('event: ', e);
 
-     var offset = $(canvasObject).offset();
-     var y = e.clientY - (offset.top + imageOffsetY);
-     var x = e.clientX - (offset.left + imageOffsetX);
+     let offset = $(canvasObject).offset();
+     let y = e.clientY - (offset.top + imageOffsetY);
+     let x = e.clientX - (offset.left + imageOffsetX);
 
-     var newImage = new fabric.Image(img, {
+     let newImage = new fabric.Image(img, {
          width: img.width,
          height: img.height,
          left: x,
@@ -165,7 +165,7 @@ function handleDragEnd(e) {
          obj.addEventListener('dragend', handleDragEnd, false);
        });
 
-    var canvasContainer = document.getElementById("canvasContainer");
+    let canvasContainer = document.getElementById("canvasContainer");
 
    canvasContainer.addEventListener('dragenter', handleDragEnter, false);
    canvasContainer.addEventListener('dragover', handleDragOver, false);
@@ -185,160 +185,133 @@ function zoomCanvas(factorX,   canvas) {
 
 
 function build_canvas_preview(){
-$("#hiddencanvas").append("<canvas id='canvas2' ></canvas>");
-canvas2 = new fabric.Canvas('canvas2');
-canvas2.loadFromJSON(JSON.stringify(canvas_editor), function(){
-canvas2.renderAll();
-// build preview from 200 px x 200px
-zoomCanvas(20000/canvas_editor.getWidth()/100,  canvas2);
-});
+    $("#hiddencanvas").append("<canvas id='canvas2' ></canvas>");
+    canvas2 = new fabric.Canvas('canvas2');
+    canvas2.loadFromJSON(JSON.stringify(canvas_editor), function(){
+        canvas2.renderAll();
+        // build preview from 200 px x 200px
+        zoomCanvas(20000/canvas_editor.getWidth()/100,  canvas2);
+    });
 }
 
 
+function get_conversion_factor(unit){
+    const factors = {"mm": 0.1, "inch": 2.54};
+   return factors[unit] !== undefined ? factors[unit] : 1;
+}
 
 function convertionTocm(cadena) {
-    sizecm = [];
-    valueHeight =  cadena[1].split("=");
-    valueWidth  =  cadena[3].split("=");
-    unitHeight  =  cadena[2].split("=");
-    unitWidth   =  cadena[4].split("=");
-    if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
-        sizecm.push(valueHeight[1] / 10);
-        sizecm.push((valueWidth[1] / 10));
-    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
-        sizecm.push(valueHeight[1] * 2.54);
-        sizecm.push(valueWidth[1] * 2.54);
-    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
-        sizecm.push(valueHeight[1] * 2.54);
-        sizecm.push((valueWidth[1] / 10));
+    let valueHeight =  cadena[1].split("=")[1];
+    let valueWidth  =  cadena[3].split("=")[1];
+    let unitHeight  =  cadena[2].split("=")[1];
+    let unitWidth   =  cadena[4].split("=")[1];
 
-    } else if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
-        sizecm.push(valueHeight[1] / 10);
-        sizecm.push(valueWidth[1] * 2.54);
-    } else if ((unitHeight[1]).localeCompare("cm") == 0 && (unitWidth[1]).localeCompare("inch") == 0) {
-        sizecm.push(valueHeight[1]);
-        sizecm.push(valueWidth[1] * 2.54);
-    } else if ((unitHeight[1]).localeCompare("inch") == 0 && (unitWidth[1]).localeCompare("cm") == 0) {
-        sizecm.push(valueHeight[1] * 2.54);
-        sizecm.push(valueWidth[1]);
-    } else if ((unitHeight[1]).localeCompare("cm") == 0 && (unitWidth[1]).localeCompare("mm") == 0) {
-        sizecm.push(valueHeight[1]);
-        sizecm.push((valueWidth[1] / 10));
-    } else if ((unitHeight[1]).localeCompare("mm") == 0 && (unitWidth[1]).localeCompare("cm") == 0) {
-        sizecm.push(valueHeight[1] / 10);
-        sizecm.push(valueWidth[1]);
-
-    } else {
-        sizecm.push(valueHeight[1]);
-        sizecm.push(valueWidth[1]);
-
-    }
-    return sizecm;
+    valueHeight *= get_conversion_factor(unitHeight);
+    valueWidth *= get_conversion_factor(unitWidth);
+    return [valueHeight, valueWidth];
 }
 
 function cmToPixel(cadena){
- sizeInPixel= [];
- sizeInPixel.push(cadena[0]*38);
- sizeInPixel.push(cadena[1]*38);
- return sizeInPixel;
+    sizeInPixel= [];
+    sizeInPixel.push(cadena[0]*38);
+    sizeInPixel.push(cadena[1]*38);
+    return sizeInPixel;
 }
 
 $(document).ready(function () {
- $("#id_recipient_size").on('change', function(){
+    $("#id_recipient_size").on('change', function(){
 
- select = $(this);
- selectedOption = select.find("option:selected").text();
- comboBoxText=selectedOption.split(",");
- x=convertionTocm(comboBoxText);
- values=cmToPixel(x);
- HeightPix=values[0];
- WidthPix=values[1];
- y=setSize(WidthPix,HeightPix);
-Width2=y[0];
-height2=y[1];
-setNewCanvas(Width2,height2);
+    let select = $(this);
+    let selectedOption = select.find("option:selected").text();
+    let comboBoxText = selectedOption.split(",");
+    let dimensions = convertionTocm(comboBoxText);
+    dimensions = cmToPixel(dimensions);
+    let HeightPix = dimensions[0];
+    let WidthPix = dimensions[1];
+    let y = setSize(WidthPix, HeightPix);
+    let Width2 = y[0];
+    let height2 = y[1];
+    setNewCanvas(Width2,height2);
 
  });
 
-
+// FIXME this function with always return originalWidth and originalHeight no matter the parameters
 function setSize(widthP,heightP){
-sizeMaximum= [];
-originalWidth= canvas_editor.getWidth();
-originalHeight= canvas_editor.getHeight();
-if(widthP<originalWidth){
-    sizeMaximum.push(widthP+(originalWidth-widthP))
-}
-if(heightP<originalHeight){
-    sizeMaximum.push(heightP+(originalHeight-heightP))
-}
-if(widthP>originalWidth){
-    sizeMaximum.push(widthP -(widthP-originalWidth))
-}
-if(heightP>originalHeight){
-    sizeMaximum.push(heightP -(heightP-originalHeight))
-}
-else{
-    sizeMaximum.push(widthP);
-    sizeMaximum.push(heightP);
-}
-return sizeMaximum;
+    let sizeMaximum = [];
+    let originalWidth = canvas_editor.getWidth();
+    let originalHeight = canvas_editor.getHeight();
+    if(widthP<originalWidth){
+        sizeMaximum.push(widthP+(originalWidth-widthP))
+    }
+    if(heightP<originalHeight){
+        sizeMaximum.push(heightP+(originalHeight-heightP))
+    }
+    if(widthP>originalWidth){
+        sizeMaximum.push(widthP -(widthP-originalWidth))
+    }
+    if(heightP>originalHeight){
+        sizeMaximum.push(heightP -(heightP-originalHeight))
+    }else{
+        sizeMaximum.push(widthP);
+        sizeMaximum.push(heightP);
+    }
+    return sizeMaximum;
 }
 
 function setNewCanvas(widthP,heightP){
-    margen = 0.02;
-    margenw = widthP*margen;
-    margenh = heightP*margen;
-    canvas_editor.getObjects()[0].top=margenw;
-     canvas_editor.getObjects()[0].left=margenh;
-     canvas_editor.getObjects()[0].width=widthP-margenh;
-     canvas_editor.getObjects()[0].height=heightP -margenw;
-     canvas_editor.getObjects()[0].center();
-     canvas_editor.renderAll();
-    
-    }
+    let margin = 0.02;
+    let marginw = widthP*margin;
+    let marginh = heightP*margin;
+    canvas_editor.getObjects()[0].top = marginw;
+    canvas_editor.getObjects()[0].left = marginh;
+    canvas_editor.getObjects()[0].width = widthP-marginh;
+    canvas_editor.getObjects()[0].height = heightP -marginw;
+    canvas_editor.getObjects()[0].center();
+    canvas_editor.renderAll();
+}
 
-$("#editor_save").on('click', function(){
+    $("#editor_save").on('click', function(){
 //$("#hiddencanvas").removeClass("hidden");
 //$("#hiddencanvas").removeClass("hide");
- $("#id_json_representation").val(JSON.stringify(canvas_editor));
- $("#id_preview").val(20000/canvas_editor.getWidth()/100);
-  document.getElementById("sgaform").submit();
+    $("#id_json_representation").val(JSON.stringify(canvas_editor));
+    $("#id_preview").val(20000/canvas_editor.getWidth()/100);
+    document.getElementById("sgaform").submit();
 //  $("#id_preview").val(canvas_editor.toDataURL('png'));
 // $("#sgaform").submit();
 });
 
 $("#id_dangerindication_on_deck").bind('added', function() {
- var obj = $("#id_dangerindication_on_deck .tag");
- obj.attr('draggable', 'True');
- obj[0].addEventListener('dragstart', handleDragStart, false);
- obj[0].addEventListener('dragend', handleDragEnd, false);
+    let obj = $("#id_dangerindication_on_deck .tag");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
 
- var obj = $("#id_dangerindication_on_deck .tagcode");
- obj.attr('draggable', 'True');
- obj[0].addEventListener('dragstart', handleDragStart, false);
- obj[0].addEventListener('dragend', handleDragEnd, false);
+    let obj = $("#id_dangerindication_on_deck .tagcode");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
 
 });
 
 $("#id_prudenceadvice_on_deck").bind('added', function() {
 
- var obj = $("#id_prudenceadvice_on_deck .tag");
- obj.attr('draggable', 'True');
- obj[0].addEventListener('dragstart', handleDragStart, false);
- obj[0].addEventListener('dragend', handleDragEnd, false);
+    let obj = $("#id_prudenceadvice_on_deck .tag");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
 
- var obj = $("#id_prudenceadvice_on_deck .tagcode");
- obj.attr('draggable', 'True');
- obj[0].addEventListener('dragstart', handleDragStart, false);
- obj[0].addEventListener('dragend', handleDragEnd, false);
+    let obj = $("#id_prudenceadvice_on_deck .tagcode");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
 });
 
 
- var height = $(".canvas-container").height();
+ let height = $(".canvas-container").height();
  if (height < 400){
      height = 400;
  }
- var width = $(".canvas-container").width();
+ let width = $(".canvas-container").width();
  if(width < 400 ){
      width = 400;
  }
@@ -350,22 +323,21 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
  });
 
 if($("#id_json_representation").val() != ""){
- canvas_editor.loadFromJSON($("#id_json_representation").val(), function(){
-   canvas_editor.renderAll();
- });
+    canvas_editor.loadFromJSON($("#id_json_representation").val(), function(){
+        canvas_editor.renderAll();
+    });
 }
 else {
 
-originalWidth= canvas_editor.getWidth();
-originalHeight= canvas_editor.getHeight();
- var fabricObject = new fabric.Rect({
+    originalWidth= canvas_editor.getWidth();
+    originalHeight= canvas_editor.getHeight();
+    let fabricObject = new fabric.Rect({
 
- top: 0, left: 0, width:originalWidth , height:originalHeight , fill: '#fff' });
- fabricObject.selectable=false;
- canvas_editor.setBackgroundColor('#dcdcdc');
- canvas_editor.add(fabricObject);
+     top: 0, left: 0, width:originalWidth , height:originalHeight , fill: '#fff' });
+     fabricObject.selectable=false;
+     canvas_editor.setBackgroundColor('#dcdcdc');
+     canvas_editor.add(fabricObject);
 }
->>>>>>> 40558df057d1bbae7d0c7ea6a52a8bdf81b642ea
 
 });
 
