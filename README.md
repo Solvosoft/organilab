@@ -29,6 +29,7 @@ Create a virtualenv
 Install requirements 
 
 	$ pip install -r requirements.txt
+	$ cat apt_requirements.txt | xargs sudo apt install -y
 	
 # Run in development
 

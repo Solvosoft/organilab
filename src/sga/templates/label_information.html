@@ -1,0 +1,117 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 26 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% load i18n %}
+{% load static %}
+{% load label_tags %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_information.css' %}" rel="stylesheet">
+{% endblock css %}
+
+{% block extrameta %}{% endblock extrameta %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h5 class="info-text">{% trans 'Enter all required label and recipient information' %}</h5>
+    </div>
+    <div class="col-sm-5 col-sm-offset-1 col-margin-left">
+        <!--============================================================================================================-->
+        <!--==============================================Substance=====================================================-->
+        <div class="form-group">
+            <label><span class="label label-info">1</span>&nbsp;{% trans 'Substance' %}</label>
+            <!--Search substance with autocomplete-->
+            <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
+                aria-describedby="sustanceHelp">
+            <input type="hidden" id="substance_id" name="substance" />
+            <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
+            <div class="form-group">
+                <!--Add new sustance-->
+                <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
+                    href="{% url 'admin:sga_substance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+            </div>
+            <!-- View substance label information for a future implementation -->
+            <!--
+                <div class="form-group">
+                <button type="button" id="substanceInformation" class="btn btn-primary btn-rounded">{% trans 'View substance label information' %}</button>
+                </div>
+            -->
+            <!--============================================================================================================-->
+            <!--=========================================Supplier Identification============================================-->
+            <div class="form-group">
+                <label><span class="label label-info">2</span>&nbsp;{% trans 'Supplier Identification' %}</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-home"></i></span>
+                    <input name="name" id="company_name" placeholder="{% trans 'Name' %}" class="form-control"
+                        aria-describedby="sustanceHelp">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-pushpin"></i></span><input
+                        name="address" id="company_address"
+                        placeholder="{% trans 'Address' %}"
+                        class="form-control" aria-describedby="sustanceHelp">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon
+                            glyphicon-earphone"></i></span>
+                    <input name="phone" id="company_phone"
+                        placeholder="{% trans 'Phone' %}" class="form-control"
+                        aria-describedby="sustanceHelp">
+                </div>
+            </div>
+        </div>
+        <!--============================================================================================================-->
+    </div>
+    <div class="col-sm-6">
+        <!--============================================================================================================-->
+        <!--=========================================Comercial information==============================================-->
+        <div class="form-group">
+            <label><span class="label label-info">3</span>&nbsp;{% trans 'Commercial Information' %}</label>
+            <div class="form-group shadow-textarea">
+                <textarea name="commercial_information" class="form-control
+                    z-depth-1" id="commercial_information" rows="2"
+                    placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
+            </div>
+        </div>
+        <!--============================================================================================================-->
+    </div>
+    <div class="col-sm-6">
+        <!--============================================================================================================-->
+        <!--=========================================Recipient==========================================================-->
+        <div class="form-group">
+            <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
+            <!--<a>{{ recipients }}</a>--> 
+            <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
+                <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
+    
+                {% if recipients != null %}
+                    {% for recipient in recipients %}
+                    <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
+                        data-height="{{recipient.height}}"
+                        data-height_unit="{{recipient.height_unit}}"
+                        data-width="{{recipient.width}}"
+                        data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
+                        - {{recipient.height}}{{recipient.height_unit}} x
+                        {{recipient.width}}{{recipient.width_unit}}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+        <!--Add new recipient-->
+        <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+        <!--============================================================================================================-->
+    </div>
+</div>
+{% endblock content %}
+
+
