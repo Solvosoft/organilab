@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'presentation',
     'django_ajax',
     'laboratory',
     'authentication',
@@ -70,8 +71,11 @@ INSTALLED_APPS = [
     'django_comments',
     'tagging',
     'zinnia',
-    'zinnia_ckeditor'
+    'zinnia_ckeditor',
+    'ckeditor_uploader',
     #    'debug_toolbar',
+    'mapwidgets',
+    'guardian',
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -81,7 +85,7 @@ if FULL_APPS:
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.TokenAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
         ),
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
@@ -150,6 +154,15 @@ DATABASES = {
     }
 }
 
+# TEST - DJANGO:GUARDIAN
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+# END TEST
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -185,17 +198,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
-STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
-STATIC_CRAWL = os.path.join(BASE_DIR, '../crawlstatic/')
-STATICFILES_DIRS = [
-    #os.path.join(BASE_DIR, "static"),
-    STATIC_CRAWL
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_CRAWL = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, '../media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('index')
+
 
 # Email development settings
 DEFAULT_FROM_EMAIL = os.getenv(
@@ -236,24 +246,40 @@ LOCATION_FIELD = {
     'provider.google.map.type': 'ROADMAP',
 }
 
+# TEST
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 8),
+        ("mapCenterLocationName", "Costa_Rica"),
+    ),
+    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
+}
+
+
+# END TEST
+
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
     'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
                        'User Administrator of labotatory', int),
     'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
-                              'User Laboratorist/Professor of labotatory', int),
+                       'User Laboratorist/Professor of labotatory', int),
     'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
-                         'User Student of labotatory', int),
+                       'User Student of labotatory', int),
     'ADSENSE_ACTIVE': (True, 'Active the Ads', bool),
     'ADSENSE_PUB_TOKEN': ('ca-pub-1539451676311396', 'Google adsense public key'
                           'for monitarize the website', str),
 }
+
 CONSTANCE_CONFIG_FIELDSETS = {
-    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK', 'GROUP_STUDENT_PK'),
+    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK',
+                       'GROUP_STUDENT_PK', 'ADSENSE_ACTIVE',
+                       'ADSENSE_PUB_TOKEN'),
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2
-
+CKEDITOR_UPLOAD_PATH = 'editoruploads/'
 DATASETS_SUPPORT_LANGUAGES = {
     'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
 }
@@ -261,6 +287,8 @@ DATASETS_SUPPORT_LANGUAGES = {
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
 
 from celery.schedules import crontab
+
+CELERY_MODULE='organilab.celery'
 
 CELERYBEAT_SCHEDULE = {
     # execute 12:30 pm
@@ -283,11 +311,16 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.template': {
+        'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'organilab': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
     },
 }
 
 INTERNAL_IPS = ('127.0.0.1',)
+CKEDITOR_IMAGE_BACKEND = 'pillow'

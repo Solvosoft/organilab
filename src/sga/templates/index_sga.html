@@ -1,0 +1,66 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 13 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+{% load static %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
+{# Paper Bootstrap Wizard #}
+<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
+{% endblock css %}
+
+{% block title %}{% trans 'GHS Label Creator' %}{% endblock title %}
+
+{% block content %}
+{# Start wizard container #}
+         <div class="wizard-header">
+            <h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
+            <p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
+        </div>
+        <div class="tab-content tab-index-sga">
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <img class="img-responsive" src="{% static 'sga/img/Label_example.jpg' %}" title="Label example" alt="Label Example"/>
+                    <p align="center" style="font-size:80%;"><strong>{% trans 'GHS Label Example and Requirements' %}</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <p style="font-size:100%;"><strong>{% trans 'Online GHS Solution' %}</strong></p>
+                    <p align="justify" style="font-size:100%;">{% trans 'Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance.' %}</p>
+                    <p style="font-size:100%;">{% trans 'Moreover, the solution contains multiples features:' %}</p>
+                    <ul style="list-style-type:square">
+                       <li><p style="font-size:100%;">{% trans 'Container Management.' %}</p></li>
+                       <li><p style="font-size:100%;">{% trans 'Social Media Options.' %}</p></li>
+                       <li><p style="font-size:100%;">{% trans 'Printing Management.' %}</p></li>
+                     </ul>
+                <br>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style" id="createLabel">
+                    <a type="button" class="btn btn-info btn-fill" href="{% url 'sga:information' %}" >{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div>
+        </div>
+        <div class="wizard-footer">
+            <div class="clearfix"></div>
+            <div id="powered_by">
+                <a href="https://solvosoft.com/en/">
+                    <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
+                </a>
+                {% trans 'Powered by' %}
+                <a href="http://fabricjs.com/">Fabric.js</a>
+            </div>
+        </div>
+
+{# End wizard container #}
+{% endblock content %}
