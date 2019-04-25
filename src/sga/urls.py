@@ -7,7 +7,7 @@
 """
 
 # Import functions of another modules
-from .views import index_sga, label_creator, get_sga_editor_options, information_creator, template, editor
+from .views import index_sga, label_creator, get_sga_editor_options, information_creator, template, editor,render_pdf_view
 from django.conf.urls import url, include
 from ajax_select import urls as ajax_select_urls
 from . import views
@@ -39,4 +39,5 @@ urlpatterns = [
     # sga/getSubstanceInformation/
     url(r'getSubstanceInformation', views.getSubstanceInformation, name='getSubstanceInformation'),
     url(r'editor', editor, name='editor'),
+    url(r'download', render_pdf_view, name='rendd'),
 ]
