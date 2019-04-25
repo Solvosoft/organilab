@@ -7,11 +7,7 @@
 """
 
 # Import functions of another modules
-<<<<<<< HEAD
-from .views import index_sga, label_creator, get_sga_editor_options, information_creator, template, editor
-=======
 from .views import index_sga, label_creator, get_sga_editor_options, information_creator, template, editor,render_pdf_view
->>>>>>> 9c8200d334558207be179ae7283e83cf085f7a55
 from django.conf.urls import url, include
 from ajax_select import urls as ajax_select_urls
 from . import views
