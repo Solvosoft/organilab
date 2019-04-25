@@ -13,66 +13,41 @@ from django.utils.translation import ugettext_lazy as _
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.db.models.query_utils import Q
 from django.template import Library
 from django.http import JsonResponse,HttpResponseRedirect
 from django.urls import reverse
 import json
 from django.contrib import messages
-<<<<<<< HEAD
-register = Library()
-# SGA Home Page
+from weasyprint import HTML
+from django.core.files import temp as tempfile
 
-
-=======
 
 #pdf
-import os
-from django.conf import settings
-from django.template import Context
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-
+from .json2html import json2html
 
 register = Library()
 
-def link_callback(uri, rel):
-    sUrl = settings.STATIC_URL
-    sRoot = settings.STATIC_ROOT
-    mUrl = settings.MEDIA_URL
-    mRoot = settings.MEDIA_ROOT
-    if uri.startswith(mUrl):
-        path = os.path.join(mRoot, uri.replace(mUrl, ""))
-    elif uri.startswith(sUrl):
-        path = os.path.join(sRoot, uri.replace(sUrl, ""))
-    else:
-        return uri
-    if not os.path.isfile(path):
-        raise Exception(
-            'media URI must start with %s or %s' % (sUrl, mUrl)
-            )
-    return path
+
+# TODO this whole file is unfinished, needs cleanup and refactoring
 def render_pdf_view(request):
-    template_path = 'index_sga.html'
-    context = {'myvar': 'this is your template context'}
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback)
-    if pisaStatus.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    json_data = TemplateSGA.objects.first().json_representation
+    json_data = json2html(json_data)
+    file_name = "report.pdf"
+    pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
+    HTML(string=json_data).write_pdf(pdf_absolute_path)
+    try:
+        with open(pdf_absolute_path, "rb") as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+    except IOError:
+        return HttpResponseNotFound()
+    response['Content-Disposition'] = 'attachment; filename='+file_name
+    #return HttpResponse(json_data, content_type='text/html')
     return response
 
 
-
-
-
-
 # SGA Home Page
->>>>>>> 9c8200d334558207be179ae7283e83cf085f7a55
 def index_sga(request):
     return render(request, 'index_sga.html', {})
 
