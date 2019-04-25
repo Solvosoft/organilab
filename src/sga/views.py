@@ -20,10 +20,59 @@ from django.http import JsonResponse,HttpResponseRedirect
 from django.urls import reverse
 import json
 from django.contrib import messages
+<<<<<<< HEAD
 register = Library()
 # SGA Home Page
 
 
+=======
+
+#pdf
+import os
+from django.conf import settings
+from django.template import Context
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+
+register = Library()
+
+def link_callback(uri, rel):
+    sUrl = settings.STATIC_URL
+    sRoot = settings.STATIC_ROOT
+    mUrl = settings.MEDIA_URL
+    mRoot = settings.MEDIA_ROOT
+    if uri.startswith(mUrl):
+        path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    elif uri.startswith(sUrl):
+        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    else:
+        return uri
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+            )
+    return path
+def render_pdf_view(request):
+    template_path = 'index_sga.html'
+    context = {'myvar': 'this is your template context'}
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+
+
+
+# SGA Home Page
+>>>>>>> 9c8200d334558207be179ae7283e83cf085f7a55
 def index_sga(request):
     return render(request, 'index_sga.html', {})
 
