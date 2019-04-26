@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 from django.db.models.query_utils import Q
 from django.template import Library
 from django.http import JsonResponse,HttpResponseRedirect
@@ -22,7 +22,7 @@ import json
 from django.contrib import messages
 from weasyprint import HTML
 from django.core.files import temp as tempfile
-
+from rest_framework.decorators import api_view
 
 #pdf
 from .json2html import json2html
@@ -30,20 +30,24 @@ from .json2html import json2html
 register = Library()
 
 
-# TODO this whole file is unfinished, needs cleanup and refactoring
+@api_view(["POST"])
 def render_pdf_view(request):
-    json_data = TemplateSGA.objects.first().json_representation
-    json_data = json2html(json_data)
+    json_data = request.POST.get("json_data", None)
+    html_data = json2html(json_data)
+    response = html2pdf(html_data)
+    return response
+
+
+def html2pdf(json_data):
     file_name = "report.pdf"
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
     HTML(string=json_data).write_pdf(pdf_absolute_path)
     try:
-        with open(pdf_absolute_path, "rb") as pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
+        pdf = open(pdf_absolute_path, "rb")
+        response = FileResponse(pdf, content_type='application/pdf')
     except IOError:
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename='+file_name
-    #return HttpResponse(json_data, content_type='text/html')
     return response
 
 
