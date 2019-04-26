@@ -39,5 +39,5 @@ urlpatterns = [
     # sga/getSubstanceInformation/
     url(r'getSubstanceInformation', views.getSubstanceInformation, name='getSubstanceInformation'),
     url(r'editor', editor, name='editor'),
-    url(r'download', render_pdf_view, name='rendd'),
+    url(r'download/', render_pdf_view, name='download'),
 ]

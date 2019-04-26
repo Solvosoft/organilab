@@ -11,7 +11,6 @@ def json2html(json_data):
                 html_data += ending_of_styles()
                 html_data += render_body(parsed_json[elem])
         html_data += ending_of_html()
-        print(html_data)
         return html_data
     else:
         raise ValueError("The parameter json_data should be a string encoded json")
@@ -41,7 +40,7 @@ def get_hr_specific_styles(json_data):
 def get_styles(json_data):
     styles = "position:absolute;"
     available_css_mappings = ("left", "top", "width", "height", "fill")
-    unformatted_mappings = ("fontSize", "fontFamily", "fontWeight", "textAlign")
+    unformatted_mappings = ("fontSize", "fontFamily", "fontWeight", "fontStyle", "textAlign", "lineHeight", "strokeWidth")
     if "scaleX" in json_data:
         styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"], json_data["scaleY"])
     for elem in json_data:
@@ -51,7 +50,7 @@ def get_styles(json_data):
             styles += "{}:{};".format(css_key, css_value)
         elif elem in unformatted_mappings:
             css_key = format_to_css(elem)
-            css_value = json_data[elem]
+            css_value = str(json_data[elem])
             css_value += append_unit(css_key)
             styles += "{}:{};".format(css_key, css_value)
     return styles
@@ -90,4 +89,8 @@ def ending_of_html():
 
 
 def ending_of_styles():
-    return "</style></head><body>"
+    ending_tags = "</style></head><body>"
+    size = "Letter"
+    margin = "1mm"
+    ending_tags = "@page {size: %s;margin: %s;} %s" % (size, margin, ending_tags)
+    return ending_tags

@@ -1,16 +1,16 @@
+let _canvases = [];
 (function( ) {
-    _canvases = [];
-    var formdata = $("#sgaform").serializeArray();
+    let formdata = $("#sgaform").serializeArray();
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,
           formdata,
           function(data, status){
-             var newcanvas = canvas_editor = new fabric.Canvas(element.id);
+             let newcanvas = canvas_editor = new fabric.Canvas(element.id);
              _canvases.push(newcanvas);
                newcanvas.loadFromJSON(data.object, function() {
                newcanvas.on('mouse:wheel', function (opt) {
-                    var delta = opt.e.deltaY;
-                    var zoom = newcanvas.getZoom();
+                    let delta = opt.e.deltaY;
+                    let zoom = newcanvas.getZoom();
                     zoom = zoom + delta / 200;
                     if (zoom > 20) zoom = 20;
                     if (zoom < 0.01) zoom = 0.01;
@@ -18,12 +18,12 @@
                     opt.e.preventDefault();
                     opt.e.stopPropagation();
                 });
-
-                 var height = $(".canvas-container-preview").height();
+                let canvas_container_preview = $(".canvas-container-preview");
+                 let height = canvas_container_preview.height();
                     if (height < 400){
                         height = 400;
                     }
-                    var width = $(".canvas-container-preview").width();
+                    let width = canvas_container_preview.width();
                     if(width < 400 ){
                         width = 400;
                     }
@@ -37,17 +37,27 @@
     });
 })();
 
-function saveImage(canvas) {
-    this.href =
-
-    this.download = 'label.png'
-}
 
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
-         var canvas =  _canvases[this.dataset.order];
+         let canvas =  _canvases[this.dataset.order];
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
 
     });
 
 });
+
+ function get_canvas(pk){
+     for(let canvas of _canvases){
+         let id = canvas.lowerCanvasEl.id;
+         if (id === "preview_" + pk.toString())
+             return canvas;
+     }
+ }
+
+function get_as_pdf(pk){
+    const canvas = get_canvas(pk);
+    const json_data = JSON.stringify(canvas);
+    $('#json_data').attr('value',json_data);
+    document.download_pdf.submit();
+}
