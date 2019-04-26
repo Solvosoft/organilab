@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='laboratoryroom',
-            options={'permissions': (('view_shelf', 'Can see available shelf'),), 'verbose_name': 'Laboratory Room', 'verbose_name_plural': 'Laboratory Rooms'},
+            options={'permissions': (('view_laboratoryroom', 'Can see available laboratory Room'),), 'verbose_name': 'Laboratory Room', 'verbose_name_plural': 'Laboratory Rooms'},
         ),
         migrations.AlterModelOptions(
             name='object',
@@ -54,11 +54,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='shelfobject',
-            options={'permissions': (('view_shelfobjects', 'Can see available shelf objects'),), 'verbose_name': 'Shelf object', 'verbose_name_plural': 'Shelf objects'},
+            options={'permissions': (('view_shelfobject', 'Can see available shelf objects'),), 'verbose_name': 'Shelf object', 'verbose_name_plural': 'Shelf objects'},
         ),
         migrations.AlterModelOptions(
             name='solution',
-            options={'permissions': (('view_Solution', 'Can see available Solution'),), 'verbose_name': 'Solution', 'verbose_name_plural': 'Solutions'},
+            options={'permissions': (('view_solution', 'Can see available Solution'),), 'verbose_name': 'Solution', 'verbose_name_plural': 'Solutions'},
         ),
         migrations.RemoveField(
             model_name='laboratory',

@@ -33,7 +33,6 @@ function handleDragEnd(e) {
 }
 
 
-
 (function( ) {
  this.__canvases = [];
  fabric.Object.prototype.transparentCorners = false;

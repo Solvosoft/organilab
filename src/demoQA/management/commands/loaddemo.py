@@ -216,7 +216,7 @@ class Command(BaseCommand):
             phone_number = "88-0000-"+str(random.randint(1000, 9999)),
             id_card = "8-%d-7890"%(random.randint(1000, 9999)),
             email = "usch4@organilab.org",
-            organization = self.root,
+            organization = self.school4,
             assigned=self.lab5            
 
             )
