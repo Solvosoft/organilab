@@ -14,7 +14,6 @@
 <link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
 {% endblock css %}
 {% block js %}
-<script src="{% static 'sga/js/jquery.cookie.js' %}"> </script>
 <script src="{% static 'sga/js/label_template.js' %}"> </script>
 <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
 {% endblock %}
@@ -78,7 +77,7 @@
             <a href="http://fabricjs.com/">Fabric.js</a>
         </div>
     </div>
-    <form action="{% url 'sga:download' %}" method="post" name="download_pdf">
+    <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
         {% csrf_token %}
         <input type="hidden" value="" name="json_data" id="json_data">
     </form>
