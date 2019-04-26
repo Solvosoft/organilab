@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
 from django.template import Library
 from django.http import JsonResponse,HttpResponseRedirect
@@ -22,7 +22,7 @@ import json
 from django.contrib import messages
 from weasyprint import HTML
 from django.core.files import temp as tempfile
-from rest_framework.decorators import api_view
+from django.views.decorators.http import require_http_methods
 
 #pdf
 from .json2html import json2html
@@ -30,7 +30,7 @@ from .json2html import json2html
 register = Library()
 
 
-@api_view(["POST"])
+@require_http_methods(["POST"])
 def render_pdf_view(request):
     json_data = request.POST.get("json_data", None)
     html_data = json2html(json_data)
