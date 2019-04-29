@@ -156,7 +156,7 @@ class ShelfObject(models.Model):
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
         permissions = (
-            ("view_shelfobjects", _("Can see available shelf objects")),
+            ("view_shelfobject", _("Can see available shelf objects")),
         )
 
     def __str__(self):
@@ -171,7 +171,7 @@ class LaboratoryRoom(models.Model):
         verbose_name = _('Laboratory Room')
         verbose_name_plural = _('Laboratory Rooms')
         permissions = (
-            ("view_shelf", _("Can see available shelf")),
+            ("view_laboratoryroom", _("Can see available laboratory Room")),
         )
 
     def __str__(self):
@@ -466,6 +466,8 @@ class Laboratory(models.Model):
         verbose_name_plural = _('Laboratories')
         permissions = (
             ("view_laboratory", _("Can see available laboratory")),
+            ("view_report", _("Can see available reports")),
+            ("do_report", _("Can download available reports")),
         )
 
     class MPTTMeta:
@@ -492,7 +494,7 @@ class Solution(models.Model):
         verbose_name = _('Solution')
         verbose_name_plural = _('Solutions')
         permissions = (
-            ("view_Solution", _("Can see available Solution")),
+            ("view_solution", _("Can see available Solution")),
         )
 
     def __str__(self):

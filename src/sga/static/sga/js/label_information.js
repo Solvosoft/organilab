@@ -113,7 +113,7 @@ $(document).ready(function () {
                 // Save label information in local storage
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('information', label_JSON_String);
-                // Set blank templates according to provided information 
+                // Set blank templates according to provided information
                 set_blank_templates();
                 // Show loading message
                 $('#loadingMessage').modal("show");
@@ -131,6 +131,4 @@ function changePlaceHolder(sel) {
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-
-
 

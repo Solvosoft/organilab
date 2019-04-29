@@ -117,7 +117,7 @@ class DangerIndication(models.Model):
         PrudenceAdvice, verbose_name=_("Prudence advice"))
 
     def __str__(self):
-        return "(%s) %s"%(self.code, self.description)
+        return "(%s) %s" % (self.code, self.description)
 
     class Meta:
         verbose_name = _('Danger Indication')
@@ -214,7 +214,9 @@ class RecipientSize(models.Model):
                                   choices=CHOICES)
 
     def __str__(self):
-        return 'name={0}, height={1}, height_unit={2}, width={3}, width_unit={4}'.format(self.name, self.height, self.height_unit, self.width, self.width_unit)
+        return 'name={0}, height={1}, height_unit={2}, width={3}, width_unit={4}'.format(self.name, self.height,
+                                                                                         self.height_unit, self.width,
+                                                                                         self.width_unit)
 
     class Meta:
         verbose_name = _('Recipient Size')

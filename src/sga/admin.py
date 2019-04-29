@@ -6,12 +6,8 @@ from .models import DangerIndication, BuilderInformation, Substance, Label, \
     RecipientSize
 from .utils import render_pdf_view
 # Register your models here.
-from django.utils.safestring import mark_safe
-from django import forms
 #from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
-from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -30,7 +26,7 @@ class AdminLabels(admin.ModelAdmin):
 
 
 class AdminDangerIndication(admin.ModelAdmin):
-    #form = DangerIndicationForm
+    # form = DangerIndicationForm
     filter_horizontal = ['pictograms', 'warning_class',
                          'warning_category', 'prudence_advice']
 
@@ -38,8 +34,8 @@ class AdminDangerIndication(admin.ModelAdmin):
         form = super(AdminDangerIndication, self).get_form(*args, **kwargs)
 
         class MyForm(form):
-            def __init__(self, *args, **kwargs):
-                super(MyForm, self).__init__(*args, **kwargs)
+            def __init__(self, *args_myform, **kwargs_myform):
+                super(MyForm, self).__init__(*args_myform, **kwargs_myform)
                 self.fields['warning_class'].queryset = \
                     WarningClass.objects.filter(
                     danger_type="class"

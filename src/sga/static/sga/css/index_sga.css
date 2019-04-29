@@ -22,18 +22,6 @@
   z-index: 0;
 }
 .heading-1 span {
-<<<<<<< HEAD
-background: #fff;
-padding: 0 10px;
-position: relative;
-z-index: 1;
-}
-/* Image */
-img {
-    padding:1px;
-    border:1px solid #021a40;
- }
-=======
   background: #fff;
   padding: 0 10px;
   position: relative;
@@ -89,4 +77,3 @@ img {
   font-weight: bold;
   color:#fff;
 }
->>>>>>> 7a2b2c139c3131d387b67388c2bf9a79c4dd599b
