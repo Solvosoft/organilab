@@ -95,15 +95,15 @@
                 <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
     
                 {% if recipients != null %}
-                {% for recipient in recipients %}
-                <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
-                    data-height="{{recipient.height}}"
-                    data-height_unit="{{recipient.height_unit}}"
-                    data-width="{{recipient.width}}"
-                    data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
-                    - {{recipient.height}}{{recipient.height_unit}} x
-                    {{recipient.width}}{{recipient.width_unit}}</option>
-                {% endfor %}
+                    {% for recipient in recipients %}
+                    <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
+                        data-height="{{recipient.height}}"
+                        data-height_unit="{{recipient.height_unit}}"
+                        data-width="{{recipient.width}}"
+                        data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
+                        - {{recipient.height}}{{recipient.height_unit}} x
+                        {{recipient.width}}{{recipient.width_unit}}</option>
+                    {% endfor %}
                 {% endif %}
             </select>
         </div>

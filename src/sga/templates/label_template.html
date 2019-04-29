@@ -17,26 +17,26 @@
 {% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
-    <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
+<h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
     <!-- Nav tabs -->
 <div class="row">
-    {% if form %}
+{% if form %}
 
     <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseForm" aria-expanded="false"
        aria-controls="collapseForm">
-  {% trans 'Edit basic information' %}
-</a>
+      {% trans 'Edit basic information' %}
+    </a>
 
     <div class="collapse" id="collapseForm">
-  <div class="well">
-      <form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
-                    {% csrf_token %}
-            {{form|bootstrap}}
-            <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
-        </form>
+      <div class="well">
+          <form id="sgaform"  method="post" action="{% url 'sga:label_creator' step %}">
+                {% csrf_token %}
+                {{form|bootstrap}}
+                <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
+            </form>
+        </div>
     </div>
-  </div>
-    {% endif %}
+{% endif %}
 </div>
 <hr>
 <div class="row">
@@ -44,21 +44,19 @@
       <div class="col-md-12">
 
           <div class="panel panel-default">
-  <div class="panel-heading">
+              <div class="panel-heading">
                 <a href="#" data-order="{{forloop.counter0}}" target="_blank" id="canvaspng_{{forloop.counter0}}"
                    class="btn btn-default btn-sm canvaspng"> {% trans 'Get as Image'%}</a>
-       <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
-  </div>
-  <div class="panel-body">
-      <div class="canvas-container-preview" >
-      <canvas  class="templatepreview"   id="preview_{{template.pk}}"
-               data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>
-
+                <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
+              </div>
+          <div class="panel-body">
+          <div class="canvas-container-preview" >
+              <canvas  class="templatepreview"   id="preview_{{template.pk}}"
+                   data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>
+          </div>
+          </div>
+        </div>
       </div>
-  </div>
-</div>
-      </div>
-
     {% endfor %}
 </div>
 

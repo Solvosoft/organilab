@@ -25,7 +25,6 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
-from printOrderManager.urls import urlpatterns as printOrderManager_urls
 
 from sga import urls as sga_urls
 from rest_framework.documentation import include_docs_urls
@@ -43,8 +42,6 @@ urlpatterns = auth_urls + [
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'sga/', include(sga_urls, namespace='sga')),
-    url(r'printOrderManager/',
-        include(printOrderManager_urls, namespace='printOrderManager')),
     url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
 ]
 

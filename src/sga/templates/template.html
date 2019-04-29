@@ -50,9 +50,9 @@
 
           <div class="panel panel-default">
   <div class="panel-heading">
-                <a href="#" data-order="{{forloop.counter0}}" target="_blank" id="canvaspng_{{forloop.counter0}}"
-                   class="btn btn-default btn-sm canvaspng"> {% trans 'Get as Image'%}</a>
-       <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
+                <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
+                   class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ template.pk }})"> {% trans 'Get as PDF'%}</button>
+               <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
   </div>
   <div class="panel-body">
       <div class="canvas-container-preview" >
@@ -67,14 +67,19 @@
     {% endfor %}
 </div>
 
-<div class="wizard-footer">
-            <div class="clearfix"></div>
-            <div id="powered_by">
-                <a href="https://solvosoft.com/en/">
-                    <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
-                </a>
-                {% trans 'Powered by' %}
-                <a href="http://fabricjs.com/">Fabric.js</a>
-            </div>
+    <div class="wizard-footer">
+        <div class="clearfix"></div>
+        <div id="powered_by">
+            <a href="https://solvosoft.com/en/">
+                <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
+            </a>
+            {% trans 'Powered by' %}
+            <a href="http://fabricjs.com/">Fabric.js</a>
         </div>
+    </div>
+    <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
+        {% csrf_token %}
+        <input type="hidden" value="" name="json_data" id="json_data">
+    </form>
+
 {% endblock content %}

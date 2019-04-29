@@ -83,7 +83,7 @@ class ObjectView(object):
         )), 'laboratory.delete_object')
 
         @method_decorator(login_required, name='dispatch')
-        @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')
+        @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')    
         class ObjectListView(ListView):
 
             def get_queryset(self):
