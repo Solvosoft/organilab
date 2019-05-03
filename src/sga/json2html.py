@@ -1,14 +1,14 @@
 import json
 
 
-def json2html(json_data):
+def json2html(json_data, info_recipient):
     if type(json_data) == str:
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
         for i, elem in enumerate(parsed_json):
             if elem == "objects":
-                html_data += ending_of_styles()
+                html_data += ending_of_styles(info_recipient)
                 html_data += render_body(parsed_json[elem])
         html_data += ending_of_html()
         return html_data
@@ -47,6 +47,7 @@ def get_styles(json_data):
         if elem in available_css_mappings:
             css_key = elem
             css_value = str(json_data[elem]) + append_unit(elem)
+            print(css_value)
             styles += "{}:{};".format(css_key, css_value)
         elif elem in unformatted_mappings:
             css_key = format_to_css(elem)
@@ -88,9 +89,11 @@ def ending_of_html():
     return "</body></html>"
 
 
-def ending_of_styles():
+def ending_of_styles(info_recipient):
     ending_tags = "</style></head><body>"
-    size = "Letter"
+    size = str(info_recipient[0])+info_recipient[1]+' '+str(info_recipient[2])+info_recipient[3]
+    size2= "Letter"
     margin = "1mm"
-    ending_tags = "@page {size: %s;margin: %s;} %s" % (size, margin, ending_tags)
+    margin2= "auto 0"
+    ending_tags = "@page {size: %s;margin: %s;} %s" % (size, margin2, ending_tags)
     return ending_tags

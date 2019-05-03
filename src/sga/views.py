@@ -11,7 +11,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
-from sga.models import TemplateSGA
+from sga.models import TemplateSGA,RecipientSize
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
@@ -33,7 +33,7 @@ register = Library()
 @require_http_methods(["POST"])
 def render_pdf_view(request):
     json_data = request.POST.get("json_data", None)
-    html_data = json2html(json_data)
+    html_data = json2html(json_data, global_info_recipient)
     response = html2pdf(html_data)
     return response
 
@@ -180,8 +180,11 @@ def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
 
+
 def show_editor_preview(request, pk):
-    recipients = request.POST.get('recipients', '')
+    recipients = get_object_or_404(RecipientSize,pk=request.POST.get('recipients', ''))
+    global global_info_recipient
+    global_info_recipient=[recipients.height,recipients.height_unit,recipients.width,recipients.width_unit]
     substance = get_object_or_404(Substance, pk= request.POST.get('substance', ''))
     weigth = 10000
     warningword = "{{warningword}}"
@@ -221,6 +224,7 @@ def show_editor_preview(request, pk):
 
     obj = get_object_or_404(TemplateSGA, pk=pk)
 
+
     representation = obj.json_representation
     for key, value in template_context.items():
         representation = representation.replace(key, value)
@@ -235,6 +239,7 @@ def show_editor_preview(request, pk):
         'preview': obj.preview
     }
     return JsonResponse(context)
+
 
 
 def label_information(request):
