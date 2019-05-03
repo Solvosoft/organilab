@@ -92,8 +92,6 @@ def ending_of_html():
 def ending_of_styles(info_recipient):
     ending_tags = "</style></head><body>"
     size = str(info_recipient[0])+info_recipient[1]+' '+str(info_recipient[2])+info_recipient[3]
-    size2= "Letter"
     margin = "1mm"
-    margin2= "auto 0"
-    ending_tags = "@page {size: %s;margin: %s;} %s" % (size, margin2, ending_tags)
+    ending_tags = "@page {size: %s;margin: %s;} %s" % (size, margin, ending_tags)
     return ending_tags
