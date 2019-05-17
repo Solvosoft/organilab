@@ -4,6 +4,6 @@ from sga.models import RecipientSize
 register = template.Library()
 
 
-@register.assignment_tag
+@register.simple_tag
 def permissionsUser():
     return 'Permissions Test'

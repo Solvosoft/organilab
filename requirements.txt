@@ -1,7 +1,7 @@
 alabaster==0.7.12
 amqp==2.4.2
 argh==0.26.2
-async-notifications==0.1.10
+async-notifications==0.1.9
 Babel==2.6.0
 backports-abc==0.5
 beautifulsoup4==4.7.1
@@ -43,7 +43,7 @@ django-recaptcha2==1.4.1
 django-reservation==0.2.9
 django-tagging==0.4.6
 django-xmlrpc==0.1.8
-djangoajax==3.1
+djangoajax==2.4.5
 djangorestframework==3.9.2
 djangorestframework-jwt==1.11.0
 docutils==0.14

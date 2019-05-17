@@ -131,9 +131,9 @@ class ShelfObject(models.Model):
         (ML, _('Mililiters')),
         (U, _('Unit'))
     )
-    shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"))
+    shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
-        "Equipment or reactive or sustance"))
+        "Equipment or reactive or sustance"), on_delete=models.CASCADE)
     quantity = models.FloatField(_('Material quantity'))
     limit_quantity = models.FloatField(_('Limit material quantity'))
     measurement_unit = models.CharField(
@@ -186,10 +186,10 @@ class Shelf(models.Model):
         (CRATE, _('Space')),
         (DRAWER, _('Drawer'))
     )
-    furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"))
+    furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"), on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
-                                        verbose_name=_("Container shelf"))
+                                        verbose_name=_("Container shelf"), on_delete=models.CASCADE)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
 
     def get_objects(self):
@@ -233,7 +233,7 @@ class Furniture(models.Model):
         (FURNITURE, _('Furniture')),
         (DRAWER, _('Drawer'))
     )
-    labroom = models.ForeignKey('LaboratoryRoom')
+    labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
     dataconfig = models.TextField(_('Data configuration'))
@@ -376,7 +376,7 @@ class OrganizationStructure(MPTTModel):
 
     parent = TreeForeignKey(
         'self', blank=True, null=True, verbose_name=_("Parent"),
-        related_name='children')
+        related_name='children', on_delete=models.CASCADE)
 
     os_manager = OrganizationStructureManager()
 
@@ -417,7 +417,7 @@ class PrincipalTechnician(models.Model):
 
     organization = TreeForeignKey(OrganizationStructure,
                                   verbose_name=_("Organization"),
-                                  blank=True, null=True)
+                                  blank=True, null=True, on_delete=models.CASCADE)
     assigned = models.ForeignKey(
         'Laboratory', verbose_name=_("Assigned to"),
         blank=True, null=True, on_delete=models.SET_NULL)
@@ -450,7 +450,7 @@ class Laboratory(models.Model):
         default='9.895804362670006,-84.1552734375', zoom=15)
 
     organization = TreeForeignKey(
-        OrganizationStructure, verbose_name=_("Organization"))
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)

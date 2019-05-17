@@ -15,7 +15,7 @@ class FeedbackEntry(models.Model):
     laboratory_id = models.IntegerField(
         default=0, null=True, verbose_name=_("Laboratory id"))
     user = models.ForeignKey(
-        User, verbose_name=_("User"), null=True, blank=True)
+        User, verbose_name=_("User"), null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('Feedback entry')
