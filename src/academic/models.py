@@ -23,7 +23,7 @@ class Procedure(models.Model, HTMLPresentation):
 
 
 class ProcedureStep(models.Model, HTMLPresentation):
-    procedure = models.ForeignKey(Procedure, verbose_name=_("Procedure"))
+    procedure = models.ForeignKey(Procedure, verbose_name=_("Procedure"), on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=500, null=True)
     description = models.TextField(_('Description'), null=True)
 
@@ -42,8 +42,8 @@ class ProcedureStep(models.Model, HTMLPresentation):
 
 
 class ProcedureRequiredObject(models.Model):
-    step = models.ForeignKey(ProcedureStep)
-    object = models.ForeignKey(Object, verbose_name=_('Object'))
+    step = models.ForeignKey(ProcedureStep, on_delete=models.CASCADE)
+    object = models.ForeignKey(Object, verbose_name=_('Object'), on_delete=models.CASCADE)
     quantity = models.FloatField(_('Material quantity'))
     measurement_unit = models.CharField(
         _('Measurement unit'), max_length=2, choices=ShelfObject.CHOICES)
@@ -66,7 +66,7 @@ class ProcedureRequiredObject(models.Model):
 
 
 class ProcedureObservations(models.Model):
-    step = models.ForeignKey(ProcedureStep)
+    step = models.ForeignKey(ProcedureStep, on_delete=models.CASCADE)
     description = models.TextField(_('Description'))
 
     def __str__(self):

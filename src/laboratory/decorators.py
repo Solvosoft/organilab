@@ -1,7 +1,7 @@
 from django.db.models.query_utils import Q
 from laboratory.models import Laboratory, OrganizationStructure
 from django.shortcuts import redirect, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_technician_student
 
 

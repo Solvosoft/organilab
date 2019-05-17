@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django_ajax.decorators import ajax
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
