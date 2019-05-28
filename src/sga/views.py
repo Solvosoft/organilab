@@ -11,12 +11,12 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
-from sga.models import TemplateSGA,RecipientSize
-from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice,Pictogram, WarningWord
+from sga.models import TemplateSGA, RecipientSize
+from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
 from django.template import Library
-from django.http import JsonResponse,HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 import json
 from django.contrib import messages
@@ -24,7 +24,7 @@ from weasyprint import HTML
 from django.core.files import temp as tempfile
 from django.views.decorators.http import require_http_methods
 
-#pdf
+# pdf
 from .json2html import json2html
 
 register = Library()
@@ -38,6 +38,7 @@ def render_pdf_view(request):
     return response
 
 
+# Return html rendered in pdf o return a html
 def html2pdf(json_data):
     file_name = "report.pdf"
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
@@ -47,7 +48,8 @@ def html2pdf(json_data):
         response = FileResponse(pdf, content_type='application/pdf')
     except IOError:
         return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename='+file_name
+    response['Content-Disposition'] = 'attachment; filename=' + file_name
+    # return HttpResponse(json_data, content_type='text/html')
     return response
 
 
@@ -56,6 +58,7 @@ def index_sga(request):
     return render(request, 'index_sga.html', {})
 
 
+# SGA information
 def information_creator(request):
     recipients = RecipientSize.objects.all()
     context = {
@@ -72,6 +75,7 @@ def information_creator(request):
     return render(request, 'information.html', context)
 
 
+# SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
     if request.method == 'POST':
@@ -87,6 +91,7 @@ def template(request):
     return render(request, 'template.html', context)
 
 
+# SGA editor
 def editor(request):
     finstance = None
     if 'instance' in request.POST:
@@ -110,6 +115,7 @@ def editor(request):
         'templates': TemplateSGA.objects.all()
     }
     return render(request, 'editor.html', context)
+
 
 # SGA Label Creator Page
 
@@ -167,7 +173,7 @@ def label_creator(request, step=0):
             "warningwords": WarningWord.objects.all(),
             'templateinstance': finstance,
             'templates': TemplateSGA.objects.all()
-            })
+        })
 
     context.update({'step': step,
                     'next_step': step + 1,
@@ -180,12 +186,13 @@ def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
 
-
+# TODO make sure that global_info_recipient is not used in another function or search other way to send info_recipient
 def show_editor_preview(request, pk):
-    recipients = get_object_or_404(RecipientSize,pk=request.POST.get('recipients', ''))
+    recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
     global global_info_recipient
-    global_info_recipient=[recipients.height,recipients.height_unit,recipients.width,recipients.width_unit]
-    substance = get_object_or_404(Substance, pk= request.POST.get('substance', ''))
+    global_info_recipient = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
+                             'width_value': recipients.width, 'width_unit': recipients.width_unit}
+    substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
     weigth = 10000
     warningword = "{{warningword}}"
     dangerindications = ''
@@ -224,7 +231,6 @@ def show_editor_preview(request, pk):
 
     obj = get_object_or_404(TemplateSGA, pk=pk)
 
-
     representation = obj.json_representation
     for key, value in template_context.items():
         representation = representation.replace(key, value)
@@ -232,14 +238,13 @@ def show_editor_preview(request, pk):
     for image in pictograms:
         representation = representation.replace(
             "/static/sga/img/pictograms/example.gif",
-            "/static/sga/img/pictograms/"+image.name,
+            "/static/sga/img/pictograms/" + image.name,
             1)
     context = {
         'object': representation,
         'preview': obj.preview
     }
     return JsonResponse(context)
-
 
 
 def label_information(request):
@@ -260,12 +265,13 @@ def label_template(request):
 
 def get_sga_editor_options(request):
     content = {
-        'warningword': list(WarningWord.objects.values('pk','name', 'weigth' )),
+        'warningword': list(WarningWord.objects.values('pk', 'name', 'weigth')),
         'dangerindication': list(DangerIndication.objects.values('pk', 'code', 'description')),
-        'prudenceadvice': list(PrudenceAdvice.objects.values('pk','code', 'name' ))
+        'prudenceadvice': list(PrudenceAdvice.objects.values('pk', 'code', 'name'))
     }
 
     return JsonResponse(content, content_type='application/json')
+
 
 # SGA Label Editor Page
 
@@ -291,7 +297,7 @@ def search_autocomplete_sustance(request):
         results = []
         for r in search_qs:
             results.append({'label': r.comercial_name +
-                            ' : '+r.synonymous, 'value': r.id})
+                                     ' : ' + r.synonymous, 'value': r.id})
         if not results:
             results.append('No results')
         data = json.dumps(results)
@@ -299,6 +305,7 @@ def search_autocomplete_sustance(request):
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
 
 # SGA Obtain substance information
 
@@ -320,11 +327,12 @@ def getSubstanceInformation(request):
         # ----------------------------Signal Word------------------------------
         for dangerIndication in dangerIndications:
             # Set priority to Danger
-            if(str(signalWordSubstance) == 'Peligro'):
+            if (str(signalWordSubstance) == 'Peligro'):
                 break
             else:
                 # Set priority to Warning
-                if(str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(signalWordSubstance) == 'atención'):
+                if (str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(
+                        signalWordSubstance) == 'atención'):
                     pass
                 else:
                     signalWordSubstance = dangerIndication.warning_words
@@ -379,32 +387,32 @@ def getSubstanceInformation(request):
         # ------------------Prudence Advices and Pictograms--------------------
         for dangerIndicationCode in dangerIndicationsCodeSubstance:
             prudenceAdvices = PrudenceAdvice.objects.filter(dangerindication=dangerIndicationCode)
-            pictograms= Pictogram.objects.filter(dangerindication=dangerIndicationCode)
-            if(prudenceAdvices):
+            pictograms = Pictogram.objects.filter(dangerindication=dangerIndicationCode)
+            if (prudenceAdvices):
                 for prudenceAdvice in prudenceAdvices:
                     if (str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance):
                         pass
                     else:
                         prudenceAdvicesNameSubstance.append(str(prudenceAdvice.name))
                         dangerIndicationsCodeSubstance.append(str(prudenceAdvice.code))
-            if(pictograms):
+            if (pictograms):
                 for pictogram in pictograms:
                     if (str(pictogram.name) in pictogramasNameSubstance):
                         pass
                     else:
-                        if(str(pictogram.name) != 'Sin Pictograma'):
+                        if (str(pictogram.name) != 'Sin Pictograma'):
                             pictogramasNameSubstance.append(str(pictogram.name))
         substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
         substanceInformation['Pictograms'] = pictogramasNameSubstance
         # ---------------------------------------------------------------------
         # --------------------------Cas Numbers--------------------------------
         components = Component.objects.filter(sustance=request.GET['substance_id'])
-        if(components):
-                for component in components:
-                    if (str(component.cas_number) in componentsCasNumbers):
-                        pass
-                    else:
-                        componentsCasNumbers.append(str(component.cas_number))
+        if (components):
+            for component in components:
+                if (str(component.cas_number) in componentsCasNumbers):
+                    pass
+                else:
+                    componentsCasNumbers.append(str(component.cas_number))
         substanceInformation['CasNumbers'] = componentsCasNumbers
         # ---------------------------------------------------------------------
         # print(substanceInformation)
