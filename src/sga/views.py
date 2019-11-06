@@ -26,20 +26,15 @@ from .json2html import json2html
 
 register = Library()
 
+
 @require_http_methods(["POST"])
 def render_pdf_view(request):
     json_data = request.POST.get("json_data", None)
+    global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
     response = html2pdf(html_data)
     return response
 
-
-@require_http_methods(["POST"])
-def render_pdf_view(request):
-    json_data = request.POST.get("json_data", None)
-    html_data = json2html(json_data)
-    response = html2pdf(html_data)
-    return response
 
 # Return html rendered in pdf o return a html
 def html2pdf(json_data):
@@ -188,11 +183,9 @@ def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
 
-# TODO make sure that global_info_recipient is not used in another function or search other way to send info_recipient
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
-    global global_info_recipient
-    global_info_recipient = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
+    request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
                              'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
 
@@ -330,7 +323,7 @@ def getSubstanceInformation(request):
         # ----------------------------Signal Word------------------------------
         for dangerIndication in dangerIndications:
             # Set priority to Danger
-            if (str(signalWordSubstance) == 'Peligro'):
+            if str(signalWordSubstance) == 'Peligro':
                 break
             else:
                 # Set priority to Warning
@@ -343,40 +336,40 @@ def getSubstanceInformation(request):
         # ---------------------------------------------------------------------
         # --------------------------Danger Indications-------------------------
         for dangerIndication in dangerIndications:
-            if (str(dangerIndication.code) in dangerIndicationsCodeSubstance):
+            if str(dangerIndication.code) in dangerIndicationsCodeSubstance:
                 pass
             # Special cases
             # H410 > H400
-            elif ('H410' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H400'):
+            elif 'H410' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H400':
                 pass
-            elif ('H400' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H410'):
+            elif 'H400' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H410':
                 index = dangerIndicationsCodeSubstance.index('H400')
                 dangerIndicationsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
             # H411 > H401
-            elif ('H411' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H401'):
+            elif 'H411' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H401':
                 pass
-            elif ('H401' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H411'):
+            elif 'H401' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H411':
                 index = dangerIndicationsCodeSubstance.index('H401')
                 dangerIndicationsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
             # H412 > H402
-            elif ('H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402'):
+            elif 'H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402':
                 pass
-            elif ('H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412'):
+            elif 'H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412':
                 index = dangerIndicationsCodeSubstance.index('H402')
                 dangerIndicationsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
             # H314 > H318
-            elif ('H314' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H318'):
+            elif 'H314' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H318':
                 pass
-            elif ('H318' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H314'):
+            elif 'H318' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H314':
                 index = dangerIndicationsCodeSubstance.index('H318')
                 dangerIndicationsCodeSubstance.pop(index)
                 dangerIndicationsDescriptionSubstance.pop(index)
@@ -391,28 +384,28 @@ def getSubstanceInformation(request):
         for dangerIndicationCode in dangerIndicationsCodeSubstance:
             prudenceAdvices = PrudenceAdvice.objects.filter(dangerindication=dangerIndicationCode)
             pictograms = Pictogram.objects.filter(dangerindication=dangerIndicationCode)
-            if (prudenceAdvices):
+            if prudenceAdvices:
                 for prudenceAdvice in prudenceAdvices:
-                    if (str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance):
+                    if str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance:
                         pass
                     else:
                         prudenceAdvicesNameSubstance.append(str(prudenceAdvice.name))
                         dangerIndicationsCodeSubstance.append(str(prudenceAdvice.code))
-            if (pictograms):
+            if pictograms:
                 for pictogram in pictograms:
-                    if (str(pictogram.name) in pictogramasNameSubstance):
+                    if str(pictogram.name) in pictogramasNameSubstance:
                         pass
                     else:
-                        if (str(pictogram.name) != 'Sin Pictograma'):
+                        if str(pictogram.name) != 'Sin Pictograma':
                             pictogramasNameSubstance.append(str(pictogram.name))
         substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
         substanceInformation['Pictograms'] = pictogramasNameSubstance
         # ---------------------------------------------------------------------
         # --------------------------Cas Numbers--------------------------------
         components = Component.objects.filter(sustance=request.GET['substance_id'])
-        if (components):
+        if components:
             for component in components:
-                if (str(component.cas_number) in componentsCasNumbers):
+                if str(component.cas_number) in componentsCasNumbers:
                     pass
                 else:
                     componentsCasNumbers.append(str(component.cas_number))
