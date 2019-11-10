@@ -38,7 +38,7 @@ def render_pdf_view(request):
 
 # Return html rendered in pdf o return a html
 def html2pdf(json_data):
-    file_name = "report.pdf"
+    file_name = "reprt.pdf"
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
     HTML(string=json_data).write_pdf(pdf_absolute_path)
     try:
@@ -49,6 +49,9 @@ def html2pdf(json_data):
     response['Content-Disposition'] = 'attachment; filename=' + file_name
  
     return response
+
+
+
 
 
 # SGA Home Page
@@ -175,6 +178,7 @@ def label_creator(request, step=0):
     context.update({'step': step,
                     'next_step': step + 1,
                     'prev_step': step - 1 if step > 0 else step})
+
     return render(request, 'label_creator.html', context)
 
 

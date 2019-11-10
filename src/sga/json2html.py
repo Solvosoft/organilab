@@ -11,7 +11,7 @@ def json2html(json_data, info_recipient):
         for i, elem in enumerate(parsed_json):
             if elem == "objects":
                 html_data += ending_of_styles(info_recipient)
-                html_data += render_body(parsed_json[elem])
+                html_data += render_body(parsed_json[elem], info_recipient)
         html_data += ending_of_html()
         return html_data
     else:
@@ -42,14 +42,14 @@ def ending_of_styles(info_recipient):
 
 
 # Convert Json elements inside html
-def render_body(json_elements):
+def render_body(json_elements, info_recipient):
     body_data = ""
     for elem in json_elements:
         if elem["type"] == "i-text" or elem["type"] == "textbox":
             tag = "<p style=\"%s\">%s</p>" % (get_styles(elem), elem["text"])
             body_data += tag
         elif elem["type"] == "image":
-            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem), elem["src"])
+            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, info_recipient), elem["src"])
             body_data += tag
         elif elem["type"] == "line":
             tag = "<hr style=\"%s;%s\">" % (get_styles(elem), get_hr_specific_styles(elem))
@@ -65,24 +65,26 @@ def get_hr_specific_styles(json_data):
 
 
 # Define position and Style of the elements in html
-def get_styles(json_data):
+def get_styles(json_data, info_recipient=None):
     styles = "position:absolute;"
-    available_css_mappings = ("left", "top", "width", "height", "fill")
-    unformatted_mappings = (
-        "fontSize", "fontFamily", "fontWeight", "fontStyle", "textAlign", "lineHeight", "strokeWidth")
-
+    available_css_mappings = ("width", "height", "fill")
+    left_top = ("left", "top")
     if "scaleX" in json_data:
-        styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"], json_data["scaleY"])
+        styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"] , json_data["scaleY"])
     for elem in json_data:
         if elem in available_css_mappings:
             css_key = elem
             css_value = str(json_data[elem]) + append_unit(elem)
-            styles += "{}:{};".format(css_key, css_value)
-        elif elem in unformatted_mappings:
+        elif elem in left_top:
+            css_key = elem
+            css_value = str(json_data[elem]) + append_unit(elem)
+            if info_recipient:
+                css_key = elem
+                css_value = str(-300) + append_unit(elem)#modificar el scales y esta linea propórcional
+        else:
             css_key = format_to_css(elem)
-            css_value = str(json_data[elem])
-            css_value += append_unit(css_key)
-            styles += "{}:{};".format(css_key, css_value)
+            css_value = str(json_data[elem]) + append_unit(css_key)
+        styles += "{}:{};".format(css_key, css_value)
     return styles
 
 
