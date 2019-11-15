@@ -56,8 +56,11 @@ $(document).ready(function(){
  }
 
 function get_as_pdf(pk){
+    console.log(pk);
     const canvas = get_canvas(pk);
     const json_data = JSON.stringify(canvas);
     $('#json_data').attr('value',json_data);
+    $('#template_sga_pk').attr('value',pk);
+
     document.download_pdf.submit();
 }

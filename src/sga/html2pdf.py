@@ -1,4 +1,6 @@
 from pdf2image import convert_from_path
+
+from django.http import HttpResponseNotFound
 from django.core.files import temp as tempfile
 
 def pdf2tiff(pdf_path):
@@ -24,5 +26,8 @@ def pdf2tiff(pdf_path):
     """
     output_file = tempfile.gettempdir() + "/resultiff.tiff"  # path final tiff
     format = "tiff"
-    convert_from_path(pdf_path=pdf_path, fmt=format, output_file=output_file)
+    try:
+        convert_from_path(pdf_path=pdf_path, fmt=format, output_file=output_file)
+    except IOError:
+        return HttpResponseNotFound()
     return output_file

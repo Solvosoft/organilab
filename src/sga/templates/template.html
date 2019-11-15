@@ -80,6 +80,7 @@
     <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
         {% csrf_token %}
         <input type="hidden" value="" name="json_data" id="json_data">
+        <input type="hidden" value="" name="template_sga_pk" id="template_sga_pk">
     </form>
 
 {% endblock content %}

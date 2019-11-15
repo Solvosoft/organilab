@@ -10,7 +10,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
-from sga.models import TemplateSGA, RecipientSize
+from sga.models import TemplateSGA, RecipientSize , Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
@@ -29,16 +29,20 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
+
+    label_pk= request.POST.get("template_sga_pk", None)
+    recipient_object = TemplateSGA.objects.filter(
+        pk=label_pk).first().recipient_size
+    label_info_recipient = {"height_value":recipient_object.height, "width_value":recipient_object.width}
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
-    html_data = json2html(json_data, global_info_recipient)
+    html_data = json2html(json_data, global_info_recipient, label_info_recipient)
     response = html2pdf(html_data)
     return response
 
-
 # Return html rendered in pdf o return a html
 def html2pdf(json_data):
-    file_name = "reprt.pdf"
+    file_name = "report.pdf"
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
     HTML(string=json_data).write_pdf(pdf_absolute_path)
     try:

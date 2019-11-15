@@ -2,8 +2,7 @@ import json
 
 
 # Prepare and convert json objects into python objects
-def json2html(json_data, info_recipient):
-
+def json2html(json_data, info_recipient, label_info_recipient):
     if type(json_data) == str:
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
@@ -11,9 +10,10 @@ def json2html(json_data, info_recipient):
         for i, elem in enumerate(parsed_json):
             if elem == "objects":
                 html_data += ending_of_styles(info_recipient)
-                html_data += render_body(parsed_json[elem], info_recipient)
+                html_data += render_body(parsed_json[elem], info_recipient, label_info_recipient)
         html_data += ending_of_html()
         return html_data
+
     else:
         raise ValueError("The parameter json_data should be a string encoded json")
 
@@ -40,20 +40,20 @@ def ending_of_styles(info_recipient):
         page_size, margin, height, width, margin, ending_tags)
     return ending_tags
 
-
 # Convert Json elements inside html
-def render_body(json_elements, info_recipient):
+def render_body(json_elements, info_recipient, label_info_recipient):
     body_data = ""
     for elem in json_elements:
         if elem["type"] == "i-text" or elem["type"] == "textbox":
-            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem), elem["text"])
+            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, info_recipient, label_info_recipient, "t"), elem["text"])
             body_data += tag
         elif elem["type"] == "image":
-            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, info_recipient), elem["src"])
+            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, info_recipient, label_info_recipient, "i"), elem["src"])
             body_data += tag
         elif elem["type"] == "line":
-            tag = "<hr style=\"%s;%s\">" % (get_styles(elem), get_hr_specific_styles(elem))
+            tag = "<hr style=\"%s;%s\">" % (get_styles(elem, info_recipient, label_info_recipient, "l"), get_hr_specific_styles(elem))
             body_data += tag
+
     return body_data
 
 
@@ -65,25 +65,34 @@ def get_hr_specific_styles(json_data):
 
 
 # Define position and Style of the elements in html
-def get_styles(json_data, info_recipient=None):
+def get_styles(json_data, info_recipient, label_info_recipient, type):
     styles = "position:absolute;"
     available_css_mappings = ("width", "height", "fill")
-    left_top = ("left", "top")
+    height_label = label_info_recipient["height_value"]
+    width_label = label_info_recipient["width_value"]
+    scaleX = info_recipient["width_value"] / width_label
+    scaleY = info_recipient["height_value"] / height_label ##value for the proportion, 12 must be the initial template size
+    all_types = {"t":0,"i":-300,"l":0}
+    int_to_ubic = all_types[type]
     if "scaleX" in json_data:
-        styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"] , json_data["scaleY"])
+            styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"] * scaleX , json_data["scaleY"] * scaleY)
     for elem in json_data:
-        if elem in available_css_mappings:
-            css_key = elem
-            css_value = str(json_data[elem]) + append_unit(elem)
-        elif elem in left_top:
-            css_key = elem
-            css_value = str(json_data[elem]) + append_unit(elem)
-            if info_recipient:
-                css_key = elem
-                css_value = str(-300) + append_unit(elem)#modificar el scales y esta linea propórcional
+        if "scaleX" in json_data:
+            pass
+        css_key = elem
+        if elem == "left":
+            css_value = str(int_to_ubic + json_data[elem] * scaleX) + append_unit(
+                elem)
+        elif elem == "top":
+            css_value = str(int_to_ubic + json_data[elem] * scaleY) + append_unit(
+                elem)
         else:
-            css_key = format_to_css(elem)
-            css_value = str(json_data[elem]) + append_unit(css_key)
+            css_value = str(json_data[elem])
+            if not elem in available_css_mappings:
+                css_key = format_to_css(elem)
+                css_value += append_unit(css_key)
+            else:
+                css_value += append_unit(elem)
         styles += "{}:{};".format(css_key, css_value)
     return styles
 
