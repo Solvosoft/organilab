@@ -57,7 +57,9 @@ $(document).ready(function(){
 
 function get_as_pdf(pk){
     const canvas = get_canvas(pk);
+    console.log(canvas);
     const json_data = JSON.stringify(canvas);
+    console.log(json_data);
     $('#json_data').attr('value',json_data);
     document.download_pdf.submit();
 }

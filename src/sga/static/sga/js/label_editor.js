@@ -200,13 +200,13 @@ function get_conversion_factor(unit){
 }
 
 function convertionTocm(cadena) {
-    let valueHeight =  cadena[1].split("=")[1];
-    let valueWidth  =  cadena[3].split("=")[1];
-    let unitHeight  =  cadena[2].split("=")[1];
-    let unitWidth   =  cadena[4].split("=")[1];
-
+    let valueHeight =  cadena[0].split("=")[1];
+    let valueWidth  =  cadena[2].split("=")[1];
+    let unitHeight  =  cadena[1].split("=")[1];
+    let unitWidth   =  cadena[3].split("=")[1];
     valueHeight *= get_conversion_factor(unitHeight);
     valueWidth *= get_conversion_factor(unitWidth);
+
     return [valueHeight, valueWidth];
 }
 
@@ -222,15 +222,16 @@ $(document).ready(function () {
 
     let select = $(this);
     let selectedOption = select.find("option:selected").text();
-    let comboBoxText = selectedOption.split(",");
-    let dimensions = convertionTocm(comboBoxText);
+    let comboBoxText = selectedOption.split("|");
+    let comboBoxTextCleaned = comboBoxText[1].split(",");
+    let dimensions = convertionTocm(comboBoxTextCleaned);
     dimensions = cmToPixel(dimensions);
     let HeightPix = dimensions[0];
     let WidthPix = dimensions[1];
-    let y = setSize(WidthPix, HeightPix);
-    let Width2 = y[0];
-    let height2 = y[1];
-    setNewCanvas(Width2,height2);
+    // let y = setSize(WidthPix, HeightPix);
+    // let Width2 = y[0];
+    // let height2 = y[1];
+    setNewCanvas(WidthPix,HeightPix);
 
  });
 
