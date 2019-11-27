@@ -203,10 +203,11 @@ def show_editor_preview(request, pk):
             else:
                 warningword = di.warning_words.name
             weight = di.warning_words.weigth
-        if dangerindications != '':
-            dangerindications += ' '
-        dangerindications += di.description
-        pictograms += list(di.pictograms.all())
+        if di.description == "Sin indicación de peligro":
+            dangerindications = ""
+        else:
+            dangerindications = di.description
+        pictograms.append(list(di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
@@ -238,10 +239,20 @@ def show_editor_preview(request, pk):
         representation = representation.replace(key, value)
 
     for image in pictograms:
-        representation = representation.replace(
-            "/static/sga/img/pictograms/example.gif",
-            "/static/sga/img/pictograms/" + image.name,
-            1)
+        for picts in image:
+            if picts == 'Sin Pictograma':
+                representation = representation.replace(
+                    "/static/sga/img/pictograms/example.gif",
+                    "",
+                    1)
+            else:
+                representation = representation.replace(
+                    "/static/sga/img/pictograms/example.gif",
+                    "/static/sga/img/pictograms/" + picts.name,
+                    1)
+    representation = representation.replace(
+        "/static/sga/img/pictograms/example.gif",
+        "")
     context = {
         'object': representation,
         'preview': obj.preview
