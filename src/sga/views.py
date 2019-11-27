@@ -190,24 +190,27 @@ def show_editor_preview(request, pk):
                              'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
     request.session['substanceinfo'] = substance.comercial_name
-    weight = 10000
+    weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
     casnumber = ''
     pictograms = []
     prudenceAdvice = ''
-    # FIXME all weights in WarningWord model are 0, so atribute is not working as intended
     for di in substance.danger_indications.all():
-        if di.warning_words.weigth < weight:
-            warningword = di.warning_words.name
+        if di.warning_words.weigth > weight:
+            if di.warning_words.name == "Sin palabra de advertencia":
+                warningword = ""
+            else:
+                warningword = di.warning_words.name
+            weight = di.warning_words.weigth
         if dangerindications != '':
-            dangerindications += '\n'
+            dangerindications += ' '
         dangerindications += di.description
         pictograms += list(di.pictograms.all())
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
-                prudenceAdvice += '\n'
+                prudenceAdvice += ' '
             prudenceAdvice += advice.name
 
     for component in substance.components.all():
