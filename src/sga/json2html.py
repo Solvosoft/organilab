@@ -1,16 +1,48 @@
 import json
 
+from xhtml2pdf.util import getSize
+
+
+class WorkArea:
+    def __init__(self, width, height):
+        self.ref_left = 0
+        self.ref_top = 0
+        self.ref_width = 0
+        self.ref_height = 0
+        self.pro_y = 0
+        self.pro_x = 0
+        self.initial_width = getSize(width)
+        self.initial_height = getSize(height)
+
+    def set_reference_instance(self, width, height, top=0, left=0):
+        self.ref_left = getSize("%.2fpx" % left)
+        self.ref_top = getSize("%.2fpx" % top)
+        self.ref_width = getSize("%.2fpx" % width)
+        self.ref_height = getSize("%.2fpx" % height)
+
+        self.pro_y = self.ref_height / self.initial_height
+        self.pro_x = self.ref_width / self.initial_width
+
 
 # Prepare and convert json objects into python objects
-def json2html(json_data, info_recipient, label_info_recipient):
+def json2html(json_data, info_recipient):
     if type(json_data) == str:
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
-        for i, elem in enumerate(parsed_json):
-            if elem == "objects":
-                html_data += ending_of_styles(info_recipient)
-                html_data += render_body(parsed_json[elem], info_recipient, label_info_recipient)
+        html_data += ending_of_styles(info_recipient)
+        workarea = WorkArea(
+            width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
+            height="%.2f%s" % (info_recipient['height_value'], info_recipient['height_unit']),
+        )
+        if 'objects' in parsed_json:
+            dataobjs = iter(parsed_json['objects'])
+            base = next(dataobjs)
+            workarea.set_reference_instance(
+                base['width'], base['height'], base['top'], base['left']
+            )
+            html_data += render_body(dataobjs, workarea)
+
         html_data += ending_of_html()
         return html_data
 
@@ -31,27 +63,32 @@ def add_background(color):
 # Setting page size with Css to render to pdf size, @media print is other way to render size properly in Css
 def ending_of_styles(info_recipient):
     ending_tags = '</style></head><body>'
-    page_size = str(info_recipient['height_value']) + info_recipient['height_unit'] + ' ' + str(
-        info_recipient['width_value']) + info_recipient['width_unit']
     height = str(info_recipient['height_value']) + info_recipient['height_unit']
     width = str(info_recipient['width_value']) + info_recipient['width_unit']
+    page_size = height + ' ' + width
     margin = "1mm"
     ending_tags = "@page {size: %s;margin: %s;} @media print{body{ width: %s; height: %s;margin:%s;}} %s" % (
         page_size, margin, height, width, margin, ending_tags)
     return ending_tags
 
+
 # Convert Json elements inside html
-def render_body(json_elements, info_recipient, label_info_recipient):
+def render_body(json_elements, work_area):
     body_data = ""
     for elem in json_elements:
-        if elem["type"] == "i-text" or elem["type"] == "textbox":
-            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, info_recipient, label_info_recipient, "t"), elem["text"])
+        if elem["type"] == "i-text":
+            item = elem["text"]
+            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, work_area), item)
+            body_data += tag
+        elif elem["type"] == "textbox":
+            item = elem["text"]
+            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, work_area), item)
             body_data += tag
         elif elem["type"] == "image":
-            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, info_recipient, label_info_recipient, "i"), elem["src"])
+            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, work_area), elem["src"])
             body_data += tag
         elif elem["type"] == "line":
-            tag = "<hr style=\"%s;%s\">" % (get_styles(elem, info_recipient, label_info_recipient, "l"), get_hr_specific_styles(elem))
+            tag = "<hr style=\"%s;%s\">" % (get_styles(elem, work_area), get_hr_specific_styles(elem))
             body_data += tag
 
     return body_data
@@ -65,30 +102,30 @@ def get_hr_specific_styles(json_data):
 
 
 # Define position and Style of the elements in html
-def get_styles(json_data, info_recipient, label_info_recipient, type):
+def get_styles(json_data, work_area):
     styles = "position:absolute;"
-    available_css_mappings = ("width", "height", "fill")
-    height_label = label_info_recipient["height_value"]
-    width_label = label_info_recipient["width_value"]
-    scaleX = info_recipient["width_value"] / width_label
-    scaleY = info_recipient["height_value"] / height_label ##value for the proportion, 12 must be the initial template size
-    all_types = {"t":0,"i":-300,"l":0}
-    int_to_ubic = all_types[type]
+    available_css_mappings = ("height", "fill")
+    css_except = ("scale-x", "scale-y", "styles")
+    css_positions = ("left", "top")
+    scale_x = work_area.pro_x
+    scale_y = work_area.pro_y
     if "scaleX" in json_data:
-            styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"] * scaleX , json_data["scaleY"] * scaleY)
+        styles += "transform: scaleX({}) scaleY({});".format(
+            json_data["scaleX"] / scale_x,
+            json_data["scaleY"] / scale_y)
+        styles += "transform-origin: 0 0;"
     for elem in json_data:
-        if "scaleX" in json_data:
+        if elem in css_except:
             pass
         css_key = elem
-        if elem == "left":
-            css_value = str(int_to_ubic + json_data[elem] * scaleX) + append_unit(
-                elem)
-        elif elem == "top":
-            css_value = str(int_to_ubic + json_data[elem] * scaleY) + append_unit(
-                elem)
+        value = json_data[elem]
+        if elem == "fill":
+            css_key = "color"
+        if elem in css_positions:
+            css_value = str(value / scale_y) + append_unit(elem)
         else:
-            css_value = str(json_data[elem])
-            if not elem in available_css_mappings:
+            css_value = str(value)
+            if elem not in available_css_mappings:
                 css_key = format_to_css(elem)
                 css_value += append_unit(css_key)
             else:
@@ -108,7 +145,7 @@ def format_to_css(string):
 # Define size in px in html
 def append_unit(string):
     unit = ""
-    append_px = ("left", "top", "width", "height")
+    append_px = ("left", "top", "width", "height", "min-width")
     append_em = ("font-size",)
     if string in append_px:
         unit = "px"
