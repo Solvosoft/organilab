@@ -1,4 +1,40 @@
 import json
+from xhtml2pdf.util import getSize
+
+
+class WorkArea:
+    def __init__(self, width, height):
+        self.ref_left = 0  # pixel length
+        self.ref_top = 0
+        self.ref_width = 0
+        self.ref_height = 0
+
+        self.inital_width = getSize(width)
+        self.inital_height = getSize(height)
+
+    def set_reference_instance(self, width, height, top=0, left=0):
+        self.ref_left=getSize("%.2fpx"%(left))  # pixel length
+        self.ref_top=getSize("%.2fpx"%(top))
+        self.ref_width = getSize("%.2fpx"%(width))
+        self.ref_height = getSize("%.2fpx"%(height))
+
+        self.prop_y = (100*self.ref_height)/self.inital_height
+        self.prop_x = (100*self.ref_width)/self.inital_width
+
+    def convert_to_units(self, value):
+        return getSize("%.2fpx"%(value))
+
+    def get_position(self, data):
+        left=getSize("%.2fpx"%(data['left'])) # pixel length
+        top=getSize("%.2fpx"%(data['top']))
+        width = getSize("%.2fpx"%(data['width']))
+        height = getSize("%.2fpx"%(data['height']))
+        left = (left-self.ref_left)*self.prop_x
+        top = (top - self.ref_top)*self.prop_y
+        width = (width - self.ref_width)*self.prop_x
+        height = (height - self.ref_height)*self.prop_y
+
+        return (left, top, width, height)
 
 
 # Prepare and convert json objects into python objects
@@ -8,10 +44,19 @@ def json2html(json_data, info_recipient):
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
-        for i, elem in enumerate(parsed_json):
-            if elem == "objects":
-                html_data += ending_of_styles(info_recipient)
-                html_data += render_body(parsed_json[elem])
+        html_data += ending_of_styles(info_recipient)
+        workarea = WorkArea(
+            width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
+            height="%.2f%s" % (info_recipient['height_value'], info_recipient['height_unit']),
+        )
+        if 'objects' in parsed_json:
+            dataobjs = iter(parsed_json['objects'])
+            base = next(dataobjs)
+            workarea.set_reference_instance(
+                base['width'], base['height'], base['top'], base['left']
+            )
+            html_data += render_body(dataobjs, workarea)
+
         html_data += ending_of_html()
         return html_data
     else:
@@ -42,17 +87,17 @@ def ending_of_styles(info_recipient):
 
 
 # Convert Json elements inside html
-def render_body(json_elements):
+def render_body(json_elements, workarea):
     body_data = ""
     for elem in json_elements:
         if elem["type"] == "i-text" or elem["type"] == "textbox":
-            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem), elem["text"])
+            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, workarea), elem["text"])
             body_data += tag
         elif elem["type"] == "image":
-            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem), elem["src"])
+            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, workarea), elem["src"])
             body_data += tag
         elif elem["type"] == "line":
-            tag = "<hr style=\"%s;%s\">" % (get_styles(elem), get_hr_specific_styles(elem))
+            tag = "<hr style=\"%s;%s\">" % (get_styles(elem, workarea), get_hr_specific_styles(elem))
             body_data += tag
     return body_data
 
@@ -65,7 +110,7 @@ def get_hr_specific_styles(json_data):
 
 
 # Define position and Style of the elements in html
-def get_styles(json_data):
+def get_styles(json_data, workarea):
     styles = "position:absolute;"
     available_css_mappings = ("left", "top", "width", "height", "fill")
     unformatted_mappings = (
@@ -73,12 +118,11 @@ def get_styles(json_data):
 
     if "scaleX" in json_data:
         styles += "transform: scaleX({}) scaleY({});".format(json_data["scaleX"], json_data["scaleY"])
+
+    positions = workarea.get_position(json_data)
+    styles += "left: %0.3f; top: %0.3f; width: %0.3f; height: %0.3f"%(positions)
     for elem in json_data:
-        if elem in available_css_mappings:
-            css_key = elem
-            css_value = str(json_data[elem]) + append_unit(elem)
-            styles += "{}:{};".format(css_key, css_value)
-        elif elem in unformatted_mappings:
+        if elem in unformatted_mappings:
             css_key = format_to_css(elem)
             css_value = str(json_data[elem])
             css_value += append_unit(css_key)

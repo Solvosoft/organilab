@@ -219,18 +219,18 @@ function cmToPixel(cadena){
 
 $(document).ready(function () {
     $("#id_recipient_size").on('change', function(){
-
     let select = $(this);
     let selectedOption = select.find("option:selected").text();
     let comboBoxText = selectedOption.split(",");
+    console.log(comboBoxText)
     let dimensions = convertionTocm(comboBoxText);
     dimensions = cmToPixel(dimensions);
     let HeightPix = dimensions[0];
     let WidthPix = dimensions[1];
-    let y = setSize(WidthPix, HeightPix);
-    let Width2 = y[0];
-    let height2 = y[1];
-    setNewCanvas(Width2,height2);
+//    let y = setSize(WidthPix, HeightPix);
+//    let Width2 = y[0];
+//    let height2 = y[1];
+    setNewCanvas(WidthPix,HeightPix);
 
  });
 
