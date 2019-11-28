@@ -113,11 +113,9 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag):
                 self.json_props['scaleX'] / self.wa_scale_x,
                 self.json_props['scaleY'] / self.wa_scale_y)
             self.pop_from_dict(['scaleY', 'scaleX'])
-
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
             self.pop_from_dict(['originY', 'originX'])
-
         if self.json_props['top'] and self.json_props['left']:
             top_value = str(self.json_props['top'] / self.wa_scale_y) + 'px'
             left_value = str(self.json_props['left'] / self.wa_scale_y) + 'px'

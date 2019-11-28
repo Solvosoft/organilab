@@ -262,11 +262,11 @@ function setNewCanvas(widthP,heightP){
     let margin = 0.02;
     let marginw = widthP*margin;
     let marginh = heightP*margin;
-    canvas_editor.getObjects()[0].top = marginw;
-    canvas_editor.getObjects()[0].left = marginh;
+    canvas_editor.getObjects()[0].top = 0;
+    canvas_editor.getObjects()[0].left = 0;
     canvas_editor.getObjects()[0].width = widthP-marginh;
     canvas_editor.getObjects()[0].height = heightP -marginw;
-    canvas_editor.getObjects()[0].center();
+    canvas_editor.getObjects()[0].selectable = false;
     canvas_editor.renderAll();
 }
 
@@ -333,8 +333,7 @@ else {
     originalHeight= canvas_editor.getHeight();
     let fabricObject = new fabric.Rect({
 
-     top: 0, left: 0, width:originalWidth , height:originalHeight , fill: '#fff' });
-     fabricObject.selectable=false;
+     top: 0, left: 0, width:originalWidth , height:originalHeight ,selectable:false, fill: '#fff' });
      canvas_editor.setBackgroundColor('#dcdcdc');
      canvas_editor.add(fabricObject);
 }

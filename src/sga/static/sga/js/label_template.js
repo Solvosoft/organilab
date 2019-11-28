@@ -5,9 +5,12 @@ let _canvases = [];
         $.post(element.dataset.href,
           formdata,
           function(data, status){
+
              let newcanvas = canvas_editor = new fabric.Canvas(element.id);
+
              _canvases.push(newcanvas);
                newcanvas.loadFromJSON(data.object, function() {
+
                newcanvas.on('mouse:wheel', function (opt) {
                     let delta = opt.e.deltaY;
                     let zoom = newcanvas.getZoom();
@@ -18,7 +21,8 @@ let _canvases = [];
                     opt.e.preventDefault();
                     opt.e.stopPropagation();
                 });
-                let canvas_container_preview = $(".canvas-container-preview");
+               newcanvas.item(0)['selectable']=false;
+               let canvas_container_preview = $(".canvas-container-preview");
                  let height = canvas_container_preview.height();
                     if (height < 400){
                         height = 400;
@@ -57,9 +61,7 @@ $(document).ready(function(){
 
 function get_as_pdf(pk){
     const canvas = get_canvas(pk);
-    console.log(canvas);
     const json_data = JSON.stringify(canvas);
-    console.log(json_data);
     $('#json_data').attr('value',json_data);
     document.download_pdf.submit();
 }
