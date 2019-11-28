@@ -29,10 +29,6 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
-    label_pk = request.POST.get("template_sga_pk", None)
-    recipient_object = TemplateSGA.objects.filter(
-        pk=label_pk).first().recipient_size
-    # label_info_recipient = {"height_value":recipient_object.height, "width_value":recipient_object.width}
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
@@ -198,7 +194,7 @@ def show_editor_preview(request, pk):
     warningword = "{{warningword}}"
     dangerindications = ''
     casnumber = ''
-    pictograms = []
+    pictograms = {}
     prudenceAdvice = ''
     for di in substance.danger_indications.all():
         if di.warning_words.weigth < weigth:
@@ -206,7 +202,7 @@ def show_editor_preview(request, pk):
         if dangerindications != '':
             dangerindications += ' '
         dangerindications += di.description
-        pictograms += list(di.pictograms.all())
+        pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
@@ -238,16 +234,72 @@ def show_editor_preview(request, pk):
             value = " "
         representation = representation.replace(key, value)
 
-    for image in pictograms:
-        representation = representation.replace(
-            "/static/sga/img/pictograms/example.gif",
-            "/static/sga/img/pictograms/" + image.name,
-            1)
+    objects = representation.split("},{")
+    end_representation = ""
+    size_obj = len(objects)
+    dict_image, image_delete = ubic_pictograms(objects, pictograms, size_obj)
+    image_delete = image_delete[::-1]
+    try:
+        if image_delete[0] == size_obj-1:
+            end_representation = "}]," + objects[-1].split(",")[-1]
+    except:
+        pass
+
+    for key,value in dict_image.items():
+        objects[key] = objects[key].replace("/static/sga/img/pictograms/example.gif",
+                                            value, 1)
+
+    for pict_to_delete in image_delete:
+        objects.pop(pict_to_delete)
+
+    representation = "},{".join(x for x in objects)
+    representation += end_representation
     context = {
         'object': representation,
         'preview': obj.preview
     }
     return JsonResponse(context)
+
+
+def ubic_pictograms(objects, pictograms, cant_objects):
+    static_pict = 4
+    obj_json_ind = 1
+    ind_image = {}
+    ind_image_tmp = []
+    ind_pict_list = []
+
+    for key, value in pictograms.items():
+        ind_pict_list.append(key)
+
+    while obj_json_ind != cant_objects and static_pict:
+        attribute = objects[obj_json_ind].split(",")
+        steps = 0
+        for elem_a in attribute:
+            if "type" in elem_a:
+                if "image" in elem_a:
+                    steps = 1
+                else:
+                    break
+            elif steps == 1 and "src" in elem_a:
+                url_begging = elem_a.split(":", 1)[1]
+                url_end = url_begging.split("/")[-1][:-1]
+                if "example" in url_end:
+                    ind_image_tmp += [obj_json_ind]
+                else:
+                    static_pict -= 1
+                    if url_end in ind_pict_list:
+                        ind_pict_list.remove(url_end)
+                break
+        obj_json_ind += 1
+    max_pic = min(static_pict, len(ind_pict_list), len(ind_image_tmp))
+    total_img_add = list(range(max_pic))
+    for ind_example_gif in total_img_add:
+        url_pict = "/static/sga/img/pictograms/"
+        pos_pict = ind_pict_list[ind_example_gif]
+        url_pict += pictograms[pos_pict].name
+        ind_image.update({ind_image_tmp.pop(0): url_pict})
+
+    return ind_image, ind_image_tmp
 
 
 def label_information(request):

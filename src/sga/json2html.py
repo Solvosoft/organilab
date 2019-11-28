@@ -135,6 +135,12 @@ def get_styles(json_data, work_area):
 
 
 def format_to_css(string):
+    """
+    blackGroundColor -> blackground-color
+    strokeBackLine -> stroke-backline
+    :param string:
+    :return:
+    """
     formatted = string
     for i, letter in enumerate(string):
         if letter.isupper():
