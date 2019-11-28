@@ -1,16 +1,8 @@
-"""
-@organization: Solvo
-@license: GNU General Public License v3.0
-@date: Created on 13 sept. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
-"""
-
 # Import functions of another modules
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
-from sga.models import TemplateSGA, RecipientSize
+from sga.models import TemplateSGA, RecipientSize, Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
@@ -29,9 +21,11 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
+    label_pk = request.POST.get("template_sga_pk", None)
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
+    print(html_data)
     response = html2pdf(html_data)
     return response
 
@@ -47,7 +41,7 @@ def html2pdf(json_data):
     except IOError:
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename=' + file_name
- 
+
     return response
 
 
@@ -169,12 +163,12 @@ def label_creator(request, step=0):
             "warningwords": WarningWord.objects.all(),
             'templateinstance': finstance,
             'templates': TemplateSGA.objects.all()
-            })
- 
+        })
 
     context.update({'step': step,
                     'next_step': step + 1,
                     'prev_step': step - 1 if step > 0 else step})
+
     return render(request, 'label_creator.html', context)
 
 
@@ -185,8 +179,9 @@ def clean_json_text(text):
 
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
-    request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
-                             'width_value': recipients.width, 'width_unit': recipients.width_unit}
+    request.session['global_info_recipient'] = {'height_value': recipients.height,
+                                                'height_unit': recipients.height_unit,
+                                                'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
 
     weigth = 10000
@@ -199,13 +194,13 @@ def show_editor_preview(request, pk):
         if di.warning_words.weigth < weigth:
             warningword = di.warning_words.name
         if dangerindications != '':
-            dangerindications += '\n'
+            dangerindications += ' '
         dangerindications += di.description
         pictograms += list(di.pictograms.all())
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
-                prudenceAdvice += '\n'
+                prudenceAdvice += ' '
             prudenceAdvice += advice.name
 
     for component in substance.components.all():
@@ -229,6 +224,8 @@ def show_editor_preview(request, pk):
 
     representation = obj.json_representation
     for key, value in template_context.items():
+        if value == 'Sin palabra de advertencia':
+            value = " "
         representation = representation.replace(key, value)
 
     for image in pictograms:
