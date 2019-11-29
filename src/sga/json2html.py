@@ -83,20 +83,6 @@ def render_body(json_elements, work_area):
 
     return body_data
 
-#TODO check if we need this change  from px to em
-# Define size in px in html
-def append_unit(string):
-    unit = ""
-    append_px = ("left", "top", "width", "height", "min-width")
-    append_em = ("font-size",)
-    if string in append_px:
-        unit = "px"
-    elif string in append_em:
-        # TODO change to em when proportions are ready
-        unit = "px"
-    return unit
-
-
 # Ending tags of html
 def ending_of_html():
     return "</body></html>"
