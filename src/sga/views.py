@@ -1,6 +1,8 @@
 # Import functions of another modules
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+
+from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA, RecipientSize, Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
@@ -188,7 +190,7 @@ def show_editor_preview(request, pk):
     warningword = "{{warningword}}"
     dangerindications = ''
     casnumber = ''
-    pictograms = []
+    pictograms = {}
     prudenceAdvice = ''
     for di in substance.danger_indications.all():
         if di.warning_words.weigth > weight:
@@ -201,7 +203,7 @@ def show_editor_preview(request, pk):
             dangerindications = ""
         else:
             dangerindications = di.description
-        pictograms.append(list(di.pictograms.all()))
+        pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
@@ -231,21 +233,16 @@ def show_editor_preview(request, pk):
     for key, value in template_context.items():
         representation = representation.replace(key, value)
 
-    for image in pictograms:
-        for picts in image:
-            if picts == 'Sin Pictograma':
-                representation = representation.replace(
-                    "/static/sga/img/pictograms/example.gif",
-                    "",
-                    1)
-            else:
-                representation = representation.replace(
-                    "/static/sga/img/pictograms/example.gif",
-                    "/static/sga/img/pictograms/" + picts.name,
-                    1)
-    representation = representation.replace(
-        "/static/sga/img/pictograms/example.gif",
-        "")
+    obj = get_object_or_404(TemplateSGA, pk=pk)
+
+    representation = obj.json_representation
+    for key, value in template_context.items():
+        if value == 'Sin palabra de advertencia':
+            value = " "
+        representation = representation.replace(key, value)
+
+    representation = utils_pictograms.pic_selected(representation,
+                                                   pictograms)
     context = {
         'object': representation,
         'preview': obj.preview

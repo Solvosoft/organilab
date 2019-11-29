@@ -101,10 +101,11 @@ class LineTag():
         self.wa_scale_y = props["workarea"].pro_y
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
-    to_append_px = ("font-size", "width", "height")
+
     styles = "position:absolute;"
     tag = ""
     def __init__(self, props):
+        self.to_append_px = ("font-size", "width", "height")
         self.type = props['type']
         if(self.type == "textbox"):
             TextBoxTag.__init__(self, props)
@@ -116,17 +117,15 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             LineTag.__init__(self, props)
     def set_tag(self):
         if (self.type == "textbox"):
-            print('textbox')
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
         if (self.type == "image"):
-            print('image')
             self.tag = "<img style=\"%s\" src=\"%s\">" % (self.parse_data(), self.json_props['src'])
         if (self.type == "i-text"):
-            print('i-text')
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
         if (self.type == "line"):
             self.tag = "<hr style=\"%s;%s\">" % (self.parse_data(), self.get_hr_specific_styles())
         return self.tag
+
     def get_hr_specific_styles(self):
         css = ""
         css += "border-color: %s;" % self.json_props["stroke"]
@@ -134,6 +133,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     def pop_from_dict(self,items):
         for key in items:
             self.properties.pop(key)
+
     def parse_data(self):
         if self.json_props['scaleX'] and self.json_props['scaleY']:
             self.styles += "transform: scale({},{});".format(
