@@ -78,26 +78,12 @@ def ending_of_styles(info_recipient):
 def render_body(json_elements, work_area):
     body_data = ""
     for elem in json_elements:
-        print(elem)
         style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
         body_data += style_parser.set_tag()
 
     return body_data
 
-def format_to_css(string):
-    """
-    blackGroundColor -> blackground-color
-    strokeBackLine -> stroke-backline
-    :param string:
-    :return:
-    """
-    formatted = string
-    for i, letter in enumerate(string):
-        if letter.isupper():
-            formatted = string[:i] + "-" + string[i:]
-    return formatted.lower()
-
-
+#TODO check if we need this change  from px to em
 # Define size in px in html
 def append_unit(string):
     unit = ""
