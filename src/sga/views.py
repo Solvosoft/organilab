@@ -21,11 +21,9 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
-    label_pk = request.POST.get("template_sga_pk", None)
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
-    print(html_data)
     response = html2pdf(html_data)
     return response
 
@@ -408,7 +406,6 @@ def getSubstanceInformation(request):
                     componentsCasNumbers.append(str(component.cas_number))
         substanceInformation['CasNumbers'] = componentsCasNumbers
         # ---------------------------------------------------------------------
-        # print(substanceInformation)
         data = json.dumps(substanceInformation)
     else:
         data = 'fail'

@@ -24,6 +24,8 @@ class WorkArea:
         self.pro_y = self.ref_height / self.initial_height
         self.pro_x = self.ref_width / self.initial_width
 
+    def convert_to_units(self, value):
+        return getSize("%.2fpx"%(value))
 
 # Prepare and convert json objects into python objects
 def json2html(json_data, info_recipient):
@@ -82,6 +84,40 @@ def render_body(json_elements, work_area):
         body_data += style_parser.set_tag()
 
     return body_data
+
+# Define position and Style of the elements in html
+def get_styles(json_data, work_area):
+    styles = "position:absolute;"
+    available_css_mappings = ("height", "fill")
+    css_except = ("scale-x", "scale-y", "styles")
+    css_positions = ("left", "top")
+    scale_x = work_area.pro_x
+    scale_y = work_area.pro_y
+    if "scaleX" in json_data:
+        styles += "transform: scaleX({}) scaleY({});".format(
+            json_data["scaleX"] / scale_x,
+            json_data["scaleY"] / scale_y)
+        styles += "transform-origin: 0 0;"
+    for elem in json_data:
+        if elem in css_except:
+            pass
+        css_key = elem
+        value = json_data[elem]
+        if elem == "fill":
+            css_key = "color"
+        if "top" in elem:
+            css_value = str(work_area.convert_to_units(value) - work_area.ref_top) + append_unit(elem)
+        elif "left" in elem:
+            css_value = str(work_area.convert_to_units(value) - work_area.ref_left) + append_unit(elem)
+        else:
+            css_value = str(value)
+            if elem not in available_css_mappings:
+                css_key = format_to_css(elem)
+                css_value += append_unit(css_key)
+            else:
+                css_value += append_unit(elem)
+        styles += "{}:{};".format(css_key, css_value)
+    return styles
 
 def format_to_css(string):
     """
