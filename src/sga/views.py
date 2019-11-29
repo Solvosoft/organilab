@@ -213,7 +213,6 @@ def show_editor_preview(request, pk):
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
             prudenceAdvice += advice.name
-
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
