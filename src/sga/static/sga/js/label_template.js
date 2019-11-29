@@ -22,7 +22,7 @@ let _canvases = [];
                 newcanvas.on('mouse:up', function () {
                      newcanvas['panning'] = false;
                  });
-                newcanvas.on('mouse:down', function () {
+                newcanvas.on('mouse:dblclick', function () {
                      if (!newcanvas['onselected']) {
                          newcanvas['panning'] = true;
                      }

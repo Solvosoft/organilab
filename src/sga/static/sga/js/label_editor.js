@@ -61,7 +61,7 @@ function handleDragEnd(e) {
          canvas_editor.on()
      },'mouse:up': function (e) {
             panning = false;
-    },'mouse:down': function (e) {
+    },'mouse:dblclick': function (e) {
        if (!oselected) {
             panning = true;
         }
@@ -286,7 +286,6 @@ function setNewCanvas(widthP,heightP){
     canvas_editor.getObjects()[0].left = 0;
     canvas_editor.getObjects()[0].width = widthP-marginh;
     canvas_editor.getObjects()[0].height = heightP -marginw;
-    canvas_editor.getObjects()[0].selectable = false;
     canvas_editor.renderAll();
 }
 
@@ -344,6 +343,7 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
 
 if($("#id_json_representation").val() != ""){
     canvas_editor.loadFromJSON($("#id_json_representation").val(), function(){
+        canvas_editor.getObjects()[0].selectable = false;
         canvas_editor.renderAll();
     });
 }
