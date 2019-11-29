@@ -1,6 +1,8 @@
 # Import functions of another modules
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+
+from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA, RecipientSize, Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
@@ -227,6 +229,14 @@ def show_editor_preview(request, pk):
 
     representation = obj.json_representation
     for key, value in template_context.items():
+        representation = representation.replace(key, value)
+
+    obj = get_object_or_404(TemplateSGA, pk=pk)
+
+    representation = obj.json_representation
+    for key, value in template_context.items():
+        if value == 'Sin palabra de advertencia':
+            value = " "
         representation = representation.replace(key, value)
 
     representation = utils_pictograms.pic_selected(representation,
