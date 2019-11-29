@@ -22,7 +22,6 @@ class TextBoxTag():
             'linethrough': 'linethrough', 'textAlign': 'text-align',
             'charSpacing': 'letter-spaclefting', 'minWidth': 'min-width', 'styles': {}
         }
-
         self.json_props = props["json_data"]
         self.wa_scale_x = props["workarea"].pro_x
         self.wa_scale_y = props["workarea"].pro_y
@@ -51,10 +50,10 @@ class ITextBoxTag():
             'linethrough': 'linethrough', 'textAlign': 'text-align',
             'charSpacing': 'letter-spaclefting', 'styles': {}
         }
-
         self.json_props = props["json_data"]
         self.wa_scale_x = props["workarea"].pro_x
         self.wa_scale_y = props["workarea"].pro_y
+
 class ImageTag():
 
     def __init__(self,props):
@@ -77,10 +76,11 @@ class ImageTag():
         self.json_props = props["json_data"]
         self.wa_scale_x = props["workarea"].pro_x
         self.wa_scale_y = props["workarea"].pro_y
+
 class LineTag():
 
     def __init__(self,props):
-            self.properties = {
+        self.properties = {
             'type': 'line',
             'originX':'originX','originY': 'originY',
             'left': 'left', 'top': 'top',
@@ -95,10 +95,10 @@ class LineTag():
             'clipTo': 'clip', 'backgroundColor': 'background-color',
             'fillRule': 'fill-rule', 'paintFirst': 'first-paint',
             'skewX': 'skewX', 'skewY': 'skewY', 'x1': 'x1', 'x2': 'x2', 'y1': 'y1', 'y2': 'y2'
-            }
-            self.json_props = props["json_data"]
-            self.wa_scale_x = props["workarea"].pro_x
-            self.wa_scale_y = props["workarea"].pro_y
+        }
+        self.json_props = props["json_data"]
+        self.wa_scale_x = props["workarea"].pro_x
+        self.wa_scale_y = props["workarea"].pro_y
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     to_append_px = ("font-size", "width", "height")
@@ -114,8 +114,6 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             ITextBoxTag.__init__(self, props)
         if(self.type == "line"):
             LineTag.__init__(self, props)
-
-
     def set_tag(self):
         if (self.type == "textbox"):
             print('textbox')
@@ -129,17 +127,13 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         if (self.type == "line"):
             self.tag = "<hr style=\"%s;%s\">" % (self.parse_data(), self.get_hr_specific_styles())
         return self.tag
-
     def get_hr_specific_styles(self):
         css = ""
         css += "border-color: %s;" % self.json_props["stroke"]
         return css
-
     def pop_from_dict(self,items):
-
         for key in items:
             self.properties.pop(key)
-
     def parse_data(self):
         if self.json_props['scaleX'] and self.json_props['scaleY']:
             self.styles += "transform: scale({},{});".format(
@@ -155,14 +149,10 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             self.styles += "{}:{};".format('top', top_value)
             self.styles += "{}:{};".format('left', left_value)
             self.pop_from_dict(['top', 'left'])
-
         for key, value in self.properties.items():
-
-            print(key)
             if self.json_props[key]:
                 self.styles += "{}:{};".format(value, self.json_props[key] if key not in self.to_append_px else
                 str(self.json_props[key]) + 'px')
-
         return self.styles
 
 
