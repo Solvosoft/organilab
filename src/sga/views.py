@@ -1,11 +1,3 @@
-"""
-@organization: Solvo
-@license: GNU General Public License v3.0
-@date: Created on 13 sept. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
-"""
-
 # Import functions of another modules
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -29,9 +21,11 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
+    label_pk = request.POST.get("template_sga_pk", None)
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
+    print(html_data)
     response = html2pdf(html_data)
     return response
 

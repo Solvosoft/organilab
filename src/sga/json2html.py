@@ -2,6 +2,7 @@ import json
 
 from xhtml2pdf.util import getSize
 
+from sga.json2html_styleparser import TagStyleParser
 
 class WorkArea:
     def __init__(self, width, height):
@@ -76,63 +77,10 @@ def ending_of_styles(info_recipient):
 def render_body(json_elements, work_area):
     body_data = ""
     for elem in json_elements:
-        if elem["type"] == "i-text":
-            item = elem["text"]
-            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, work_area), item)
-            body_data += tag
-        elif elem["type"] == "textbox":
-            item = elem["text"]
-            tag = "<p style=\"%s\">%s</p>" % (get_styles(elem, work_area), item)
-            body_data += tag
-        elif elem["type"] == "image":
-            tag = "<img style=\"%s\" src=\"%s\">" % (get_styles(elem, work_area), elem["src"])
-            body_data += tag
-        elif elem["type"] == "line":
-            tag = "<hr style=\"%s;%s\">" % (get_styles(elem, work_area), get_hr_specific_styles(elem))
-            body_data += tag
+        style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
+        body_data += style_parser.set_tag()
 
     return body_data
-
-
-# Add border color that already define in json
-def get_hr_specific_styles(json_data):
-    css = ""
-    css += "border-color: %s;" % json_data["stroke"]
-    return css
-
-
-# Define position and Style of the elements in html
-def get_styles(json_data, work_area):
-    styles = "position:absolute;"
-    available_css_mappings = ("height", "fill")
-    css_except = ("scale-x", "scale-y", "styles")
-    css_positions = ("left", "top")
-    scale_x = work_area.pro_x
-    scale_y = work_area.pro_y
-    if "scaleX" in json_data:
-        styles += "transform: scaleX({}) scaleY({});".format(
-            json_data["scaleX"] / scale_x,
-            json_data["scaleY"] / scale_y)
-        styles += "transform-origin: 0 0;"
-    for elem in json_data:
-        if elem in css_except:
-            pass
-        css_key = elem
-        value = json_data[elem]
-        if elem == "fill":
-            css_key = "color"
-        if elem in css_positions:
-            css_value = str(value / scale_y) + append_unit(elem)
-        else:
-            css_value = str(value)
-            if elem not in available_css_mappings:
-                css_key = format_to_css(elem)
-                css_value += append_unit(css_key)
-            else:
-                css_value += append_unit(elem)
-        styles += "{}:{};".format(css_key, css_value)
-    return styles
-
 
 def format_to_css(string):
     """
