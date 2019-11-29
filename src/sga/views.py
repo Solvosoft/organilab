@@ -70,6 +70,8 @@ def information_creator(request):
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
+
+    request.session['commercial_information'] = request.POST.get('commercial_information','')
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
@@ -179,30 +181,32 @@ def clean_json_text(text):
 
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
-    request.session['global_info_recipient'] = {'height_value': recipients.height,
-                                                'height_unit': recipients.height_unit,
-                                                'width_value': recipients.width, 'width_unit': recipients.width_unit}
+    request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
+                             'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
-
-    weigth = 10000
+    weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
     casnumber = ''
     pictograms = {}
     prudenceAdvice = ''
     for di in substance.danger_indications.all():
-        if di.warning_words.weigth < weigth:
-            warningword = di.warning_words.name
-        if dangerindications != '':
-            dangerindications += ' '
-        dangerindications += di.description
+        if di.warning_words.weigth > weight:
+            if di.warning_words.name == "Sin palabra de advertencia":
+                warningword = ""
+            else:
+                warningword = di.warning_words.name
+            weight = di.warning_words.weigth
+        if di.description == "Sin indicación de peligro":
+            dangerindications = ""
+        else:
+            dangerindications = di.description
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
             prudenceAdvice += advice.name
-
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
@@ -214,7 +218,8 @@ def show_editor_preview(request, pk):
         '{{selername}}': clean_json_text(request.POST.get('name', '{{selername}}')),
         "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
-        "{{commercialinformation}}": clean_json_text(request.POST.get('name', '{{commercialinformation}}')),
+        "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
+        "{{substanceinfo}}": clean_json_text(substance.comercial_name),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
 
@@ -224,8 +229,6 @@ def show_editor_preview(request, pk):
 
     representation = obj.json_representation
     for key, value in template_context.items():
-        if value == 'Sin palabra de advertencia':
-            value = " "
         representation = representation.replace(key, value)
 
     representation = utils_pictograms.pic_selected(representation,

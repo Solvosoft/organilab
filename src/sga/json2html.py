@@ -77,6 +77,7 @@ def ending_of_styles(info_recipient):
 def render_body(json_elements, work_area):
     body_data = ""
     for elem in json_elements:
+        print(elem)
         style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
         body_data += style_parser.set_tag()
 
