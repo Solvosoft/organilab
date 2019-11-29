@@ -1,4 +1,40 @@
 import json
+from xhtml2pdf.util import getSize
+
+
+class WorkArea:
+    def __init__(self, width, height):
+        self.ref_left = 0  # pixel length
+        self.ref_top = 0
+        self.ref_width = 0
+        self.ref_height = 0
+
+        self.inital_width = getSize(width)
+        self.inital_height = getSize(height)
+
+    def set_reference_instance(self, width, height, top=0, left=0):
+        self.ref_left=getSize("%.2fpx"%(left))  # pixel length
+        self.ref_top=getSize("%.2fpx"%(top))
+        self.ref_width = getSize("%.2fpx"%(width))
+        self.ref_height = getSize("%.2fpx"%(height))
+
+        self.prop_y = (100*self.ref_height)/self.inital_height
+        self.prop_x = (100*self.ref_width)/self.inital_width
+
+    def convert_to_units(self, value):
+        return getSize("%.2fpx"%(value))
+
+    def get_position(self, data):
+        left=getSize("%.2fpx"%(data['left'])) # pixel length
+        top=getSize("%.2fpx"%(data['top']))
+        width = getSize("%.2fpx"%(data['width']))
+        height = getSize("%.2fpx"%(data['height']))
+        left = (left-self.ref_left)*self.prop_x
+        top = (top - self.ref_top)*self.prop_y
+        width = (width - self.ref_width)*self.prop_x
+        height = (height - self.ref_height)*self.prop_y
+
+        return (left, top, width, height)
 
 from xhtml2pdf.util import getSize
 
@@ -80,7 +116,6 @@ def render_body(json_elements, work_area):
     for elem in json_elements:
         style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
         body_data += style_parser.set_tag()
-
     return body_data
 
 # Ending tags of html

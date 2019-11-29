@@ -244,9 +244,9 @@ function cmToPixel(cadena){
 
 $(document).ready(function () {
     $("#id_recipient_size").on('change', function(){
-
     let select = $(this);
     let selectedOption = select.find("option:selected").text();
+<<<<<<< HEAD
     let comboBoxText = selectedOption.split("|");
     let comboBoxTextCleaned = comboBoxText[1].split(",");
     let dimensions = convertionTocm(comboBoxTextCleaned);
@@ -259,6 +259,17 @@ $(document).ready(function () {
     // let Width2 = y[0];
     // let height2 = y[1];
 >>>>>>> f273362455c04d116ac6935917132e10a95c0042
+=======
+    let comboBoxText = selectedOption.split(",");
+    console.log(comboBoxText)
+    let dimensions = convertionTocm(comboBoxText);
+    dimensions = cmToPixel(dimensions);
+    let HeightPix = dimensions[0];
+    let WidthPix = dimensions[1];
+//    let y = setSize(WidthPix, HeightPix);
+//    let Width2 = y[0];
+//    let height2 = y[1];
+>>>>>>> 34e7993f1aaff3c25628795693c71af7b286a9f3
     setNewCanvas(WidthPix,HeightPix);
 
  });

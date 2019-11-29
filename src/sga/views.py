@@ -70,7 +70,6 @@ def information_creator(request):
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
-
     request.session['commercial_information'] = request.POST.get('commercial_information','')
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
@@ -184,6 +183,7 @@ def show_editor_preview(request, pk):
     request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
                              'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
+    request.session['substanceinfo'] = substance.comercial_name
     weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
@@ -202,7 +202,6 @@ def show_editor_preview(request, pk):
         else:
             dangerindications = di.description
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
-
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
@@ -334,7 +333,7 @@ def getSubstanceInformation(request):
                 # Set priority to Warning
                 if (str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(
                         signalWordSubstance) == 'atención'):
-                    pass
+                    dangerIndication.warning_words = " "
                 else:
                     signalWordSubstance = dangerIndication.warning_words
         substanceInformation['signalWord'] = str(signalWordSubstance)
@@ -415,7 +414,6 @@ def getSubstanceInformation(request):
                 else:
                     componentsCasNumbers.append(str(component.cas_number))
         substanceInformation['CasNumbers'] = componentsCasNumbers
-        # ---------------------------------------------------------------------
         data = json.dumps(substanceInformation)
     else:
         data = 'fail'
