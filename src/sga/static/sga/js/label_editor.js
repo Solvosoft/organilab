@@ -38,25 +38,45 @@ function handleDragEnd(e) {
  fabric.Object.prototype.transparentCorners = false;
  canvas_editor = new fabric.Canvas('canvas_editor');
  canvas_editor.clear();
-
  canvas_editor.selectionColor = 'rgba(0, 122, 255, 0.2)';
  canvas_editor.selectionBorderColor = '#337ab7';
  canvas_editor.selectionLineWidth = 2;
+
  //Canvas background color
  canvas_editor.backgroundColor = 'rgba(255, 255, 255, 1)';
 
  //Control zoom and panning in canvas editor
- canvas_editor.on('mouse:wheel', function (opt) {
-     let delta = opt.e.deltaY;
-     let zoom = canvas_editor.getZoom();
-     zoom = zoom + delta / 200;
-     if (zoom > 20) zoom = 20;
-     if (zoom < 0.01) zoom = 0.01;
-     canvas_editor.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-     opt.e.preventDefault();
-     opt.e.stopPropagation();
- });
+ var panning = false;
+ var oselected = false;
+ canvas_editor.on({
+     'mouse:wheel': function(opt) {
+         let delta = opt.e.deltaY;
+         let zoom = canvas_editor.getZoom();
+         zoom = zoom + delta / 200;
+         if (zoom > 20) zoom = 20;
+         if (zoom < 0.01) zoom = 0.01;
+         canvas_editor.zoomToPoint({x: opt.e.offsetX, y: opt.e.offsetY}, zoom);
+         opt.e.preventDefault();
+         opt.e.stopPropagation();
+         canvas_editor.on()
+     },'mouse:up': function (e) {
+            panning = false;
+    },'mouse:down': function (e) {
+       if (!oselected) {
+            panning = true;
+        }
+    },'mouse:move': function (e) {
+        if (panning && e && e.e && !oselected) {
+            var delta = new fabric.Point(e.e.movementX, e.e.movementY);
+            canvas_editor.relativePan(delta);
+        }
+    },'object:selected': function (e) {
+         oselected = true;
+    },'before:selection:cleared': function (e) {
+         oselected = false;
+    },
 
+ });
 
  //Save changes in Canvas
  canvas_editor.renderAll();
