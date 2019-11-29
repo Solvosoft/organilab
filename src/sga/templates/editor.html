@@ -186,12 +186,13 @@
     <div role="tabpanel" class="tab-pane" id="settings">
         <div class="row">
 
-{% for pictogram in pictograms %}
+            {% for pictogram in pictograms %}
               <div class="col-md-4">
                  <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
                           src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
 
-              </div>{% endfor %}
+              </div>
+            {% endfor %}
         </div>
     </div>
   </div>

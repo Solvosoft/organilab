@@ -76,6 +76,7 @@ def information_creator(request):
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
+    request.session['commercial_information'] = request.POST['commercial_information']
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
@@ -189,26 +190,30 @@ def show_editor_preview(request, pk):
                                                 'height_unit': recipients.height_unit,
                                                 'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
-
-    weigth = 10000
+    request.session['substanceinfo'] = substance.comercial_name
+    weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
     casnumber = ''
     pictograms = {}
     prudenceAdvice = ''
     for di in substance.danger_indications.all():
-        if di.warning_words.weigth < weigth:
-            warningword = di.warning_words.name
-        if dangerindications != '':
-            dangerindications += ' '
-        dangerindications += di.description
+        if di.warning_words.weigth > weight:
+            if di.warning_words.name == "Sin palabra de advertencia":
+                warningword = ""
+            else:
+                warningword = di.warning_words.name
+            weight = di.warning_words.weigth
+        if di.description == "Sin indicación de peligro":
+            dangerindications = ""
+        else:
+            dangerindications = di.description
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
             prudenceAdvice += advice.name
-
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
@@ -220,7 +225,8 @@ def show_editor_preview(request, pk):
         '{{selername}}': clean_json_text(request.POST.get('name', '{{selername}}')),
         "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
-        "{{commercialinformation}}": clean_json_text(request.POST.get('name', '{{commercialinformation}}')),
+        "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
+        "{{substanceinfo}}": clean_json_text(request.session['substanceinfo']),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
 
@@ -329,7 +335,7 @@ def getSubstanceInformation(request):
                 # Set priority to Warning
                 if (str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(
                         signalWordSubstance) == 'atención'):
-                    pass
+                    dangerIndication.warning_words = " "
                 else:
                     signalWordSubstance = dangerIndication.warning_words
         substanceInformation['signalWord'] = str(signalWordSubstance)
@@ -410,8 +416,6 @@ def getSubstanceInformation(request):
                 else:
                     componentsCasNumbers.append(str(component.cas_number))
         substanceInformation['CasNumbers'] = componentsCasNumbers
-        # ---------------------------------------------------------------------
-        # print(substanceInformation)
         data = json.dumps(substanceInformation)
     else:
         data = 'fail'
