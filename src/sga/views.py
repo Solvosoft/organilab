@@ -76,7 +76,7 @@ def information_creator(request):
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
-    request.session['commercial_information'] = request.POST['commercial_information']
+    #request.session['commercial_information'] = request.POST['commercial_information']
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
@@ -190,7 +190,7 @@ def show_editor_preview(request, pk):
                                                 'height_unit': recipients.height_unit,
                                                 'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
-    request.session['substanceinfo'] = substance.comercial_name
+    #request.session['substanceinfo'] = substance.comercial_name
     weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
@@ -225,7 +225,7 @@ def show_editor_preview(request, pk):
         '{{selername}}': clean_json_text(request.POST.get('name', '{{selername}}')),
         "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
-        "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
+        #"{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
         "{{substanceinfo}}": clean_json_text(request.session['substanceinfo']),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
@@ -313,7 +313,7 @@ def search_autocomplete_sustance(request):
 
 
 # TODO not to pep8 standard
-def getSubstanceInformation(request):
+def     getSubstanceInformation(request):
     substanceInformation = {}
     signalWordSubstance = ''
     dangerIndicationsDescriptionSubstance = []
