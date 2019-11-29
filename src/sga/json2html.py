@@ -149,8 +149,8 @@ def get_styles(json_data, work_area):
     scale_y = work_area.pro_y
     if "scaleX" in json_data:
         styles += "transform: scaleX({}) scaleY({});".format(
-            work_area.convert_to_units(json_data["scaleX"]) / scale_x,
-            work_area.convert_to_units(json_data["scaleY"]) / scale_y)
+            json_data["scaleX"] / scale_x,
+            json_data["scaleY"] / scale_y)
         styles += "transform-origin: 0 0;"
     for elem in json_data:
         if elem in css_except:
