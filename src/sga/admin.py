@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import DangerIndication, BuilderInformation, Sustance, Label, \
+
+from sga.models import TemplateSGA
+from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
     RecipientSize
 from .utils import render_pdf_view
@@ -59,5 +61,6 @@ admin.site.register(
     [BuilderInformation, RecipientSize, PrudenceAdvice, Component,
      WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
-admin.site.register(Sustance,  AdminSustance)
+admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)
+admin.site.register(TemplateSGA)

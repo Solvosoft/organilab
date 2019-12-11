@@ -25,8 +25,14 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
+from printOrderManager.urls import urlpatterns as printOrderManager_urls
+
+from sga import urls as sga_urls
+from rest_framework.documentation import include_docs_urls
+
 
 urlpatterns = auth_urls + [
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
     url(r'^admin/', admin.site.urls),
@@ -36,6 +42,10 @@ urlpatterns = auth_urls + [
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
+    url(r'sga/', include(sga_urls, namespace='sga')),
+    url(r'printOrderManager/',
+        include(printOrderManager_urls, namespace='printOrderManager')),
+    url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
 ]
 
 if settings.FULL_APPS:

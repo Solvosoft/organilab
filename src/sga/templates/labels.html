@@ -64,7 +64,7 @@
     <div id="pictogram_content">
         {% for dind in obj.sustance.danger_indications.all %}
             {% for picto in dind.pictograms.all %}
-                <img width="100pt" heigth="100pt" src="/static/pictograms/{{picto.name}}" ></img>
+                <img width="100pt" heigth="100pt" src="/static/img/pictograms/{{picto.name}}" ></img>
             {% endfor %}
         {% endfor %}
     </div>

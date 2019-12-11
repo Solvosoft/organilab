@@ -117,7 +117,7 @@ class DangerIndication(models.Model):
         PrudenceAdvice, verbose_name=_("Prudence advice"))
 
     def __str__(self):
-        return self.code
+        return "(%s) %s"%(self.code, self.description)
 
     class Meta:
         verbose_name = _('Danger Indication')
@@ -142,7 +142,7 @@ class Component(models.Model):
         )
 
 
-class Sustance(models.Model):
+class Substance(models.Model):
     comercial_name = models.CharField(max_length=250,
                                       verbose_name=_("Comercial name"))
     components = models.ManyToManyField(
@@ -175,7 +175,7 @@ class Sustance(models.Model):
         )
 
 
-register(Sustance)
+register(Substance)
 # build information
 
 
@@ -214,7 +214,7 @@ class RecipientSize(models.Model):
                                   choices=CHOICES)
 
     def __str__(self):
-        return self.name
+        return 'name={0}, height={1}, height_unit={2}, width={3}, width_unit={4}'.format(self.name, self.height, self.height_unit, self.width, self.width_unit)
 
     class Meta:
         verbose_name = _('Recipient Size')
@@ -225,7 +225,7 @@ class RecipientSize(models.Model):
 
 
 class Label(models.Model):
-    sustance = models.ForeignKey(Sustance,
+    sustance = models.ForeignKey(Substance,
                                  verbose_name=_("Sustance"),
                                  on_delete=models.CASCADE)
     builderInformation = models.ForeignKey(
@@ -242,6 +242,24 @@ class Label(models.Model):
     class Meta:
         verbose_name = _('Label')
         verbose_name_plural = _('Labels')
+        permissions = (
+            ("view_label", _("Can see available labels")),
+        )
+
+
+class TemplateSGA(models.Model):
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    recipient_size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"))
+    json_representation = models.TextField()
+    community_share = models.BooleanField(default=True,  verbose_name=_("Share with community"))
+    preview = models.TextField(help_text="B64 preview image")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Template SGA')
+        verbose_name_plural = _('Templates SGA')
         permissions = (
             ("view_label", _("Can see available labels")),
         )
