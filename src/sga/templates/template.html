@@ -1,0 +1,80 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 26 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+{% extends 'label_index.html' %}
+{% load i18n %}
+{% load static bootstrap %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
+{% endblock css %}
+{% block js %}
+<script src="{% static 'sga/js/label_template.js' %}"> </script>
+<script src="{% static 'sga/js/fabric.min.js' %}"> </script>
+{% endblock %}
+
+
+{% block extrameta%}{% endblock extrameta %}
+
+{% block content %}
+    <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
+    <!-- Nav tabs -->
+<div class="row">
+    {% if form %}
+
+    <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseForm" aria-expanded="false"
+       aria-controls="collapseForm">
+  {% trans 'Edit basic information' %}
+</a>
+
+    <div class="collapse" id="collapseForm">
+  <div class="well">
+      <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
+                    {% csrf_token %}
+            {{form|bootstrap}}
+            <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
+        </form>
+    </div>
+  </div>
+    {% endif %}
+</div>
+<hr>
+<div class="row">
+    {% for template in sgatemplates %}
+      <div class="col-md-12">
+
+          <div class="panel panel-default">
+  <div class="panel-heading">
+                <a href="#" data-order="{{forloop.counter0}}" target="_blank" id="canvaspng_{{forloop.counter0}}"
+                   class="btn btn-default btn-sm canvaspng"> {% trans 'Get as Image'%}</a>
+       <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
+  </div>
+  <div class="panel-body">
+      <div class="canvas-container-preview" >
+      <canvas  class="templatepreview"   id="preview_{{template.pk}}"
+               data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>
+
+      </div>
+  </div>
+</div>
+      </div>
+
+    {% endfor %}
+</div>
+
+<div class="wizard-footer">
+            <div class="clearfix"></div>
+            <div id="powered_by">
+                <a href="https://solvosoft.com/en/">
+                    <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
+                </a>
+                {% trans 'Powered by' %}
+                <a href="http://fabricjs.com/">Fabric.js</a>
+            </div>
+        </div>
+{% endblock content %}
