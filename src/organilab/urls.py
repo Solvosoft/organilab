@@ -25,6 +25,11 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
+from printOrderManager.urls import urlpatterns as printOrderManager_urls
+
+from sga import urls as sga_urls
+from rest_framework.documentation import include_docs_urls
+
 
 from sga import urls as sga_urls
 from rest_framework.documentation import include_docs_urls

@@ -1,0 +1,637 @@
+<!--
+
+Created by Luis Felipe Castro Sanchez
+Universidad Nacional de Costa Rica 
+Practica Profesional Supervisada (Julio - Noviembre 2018)
+GitHub User luisfelipe7
+
+-->
+
+
+{% load static i18n datasets %}
+{% load staticfiles %}
+{% load guardian_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {# METADATA #}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block meta-keywords %} {% endblock %}
+    {% block extrameta%} {% endblock %}
+    <title>Organilab | Print Manager</title>
+
+    {% block css %}
+    <link href="{% static 'css/SB-Admin2.1/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/SB-Admin2.1/metisMenu.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/SB-Admin2.1/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="{% static 'css/SB-Admin2.1/morris.css' %}" rel="stylesheet">
+    <link href="{% static 'css/advertisements_printManageById.css' %}" rel="stylesheet">
+    <link href="{% static 'css/index_printManageById.css' %}" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">{% endblock %}
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    {# Sweetalert2 #}
+    <link href="{% static 'laboratory/css/sweetalert2.min.css' %}" rel="stylesheet">
+
+    {% block content %}
+
+<body>
+    <!-- Loading Permissions -->
+    {% get_obj_perms request.user for printObject as "printObject_perms" %}
+
+    <div id="pageLoading"></div>
+    <header>
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="menu-toggler sidebar-toggler">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+
+                </div>
+
+                <a class="navbar-brand" href="{% url 'printOrderManager:index_printManager' %}">
+                    {% trans 'ORGANILAB - PRINT MANAGER' %} </a>
+
+
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fas fa-star fa-fw icon-colorNavBar"></i> <i class="fa fa-caret-down icon-colorNavBar"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-messages">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <strong>Felipe Castro</strong>
+                                        <span class="pull-right text-muted">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                    </div>
+                                    <div>Perfect Service</div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <strong>Guillermo Castro</strong>
+                                        <span class="pull-right text-muted">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                    </div>
+                                    <div>Good Service</div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <strong>Luis Sanchez</strong>
+                                        <span class="pull-right text-muted">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                    </div>
+                                    <div>Long waiting time for delivery</div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>{% trans 'Read All Qualifications' %}</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-messages -->
+                    </li>
+                    <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fas fa-print fa-fw icon-colorNavBar"></i> <i class="fa fa-caret-down icon-colorNavBar"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-tasks">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <p>
+                                            <strong>Order 1</strong>
+                                            <span class="pull-right text-muted">100% Delivered</span>
+                                        </p>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-success" role="progressbar"
+                                                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                <span class="sr-only">100% Delivered</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <p>
+                                            <strong>Order 2</strong>
+                                            <span class="pull-right text-muted">30% In Process</span>
+                                        </p>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-info" role="progressbar"
+                                                aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                                <span class="sr-only">30% In Process</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <p>
+                                            <strong>Order 3</strong>
+                                            <span class="pull-right text-muted">65% On the way</span>
+                                        </p>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar"
+                                                aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 65%">
+                                                <span class="sr-only">65% On the way</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>{% trans 'See All Orders' %}</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-tasks -->
+                    </li>
+                    <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <div id="ex4">
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="4">
+                                    <!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
+                                    <i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse" data-count="4b"></i>
+                                </span>
+
+                                <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            </div>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fas fa-users fa-fw"></i>&nbsp {% trans 'Total Contacts' %}
+                                        <span class="pull-right text-muted small">----</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fas fa-bell fa-fw"></i>&nbsp {% trans 'Advertisement' %}
+                                        <span class="pull-right text-muted small">----</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fas fa-calendar-alt fa-fw"></i>&nbsp {% trans 'Schedule' %}
+                                        <span class="pull-right text-muted small">----</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp
+                                        {% trans 'Most Requested Paper Type' %}
+                                        <span class="pull-right text-muted small">----</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fas fa-star fa-fw"></i>&nbsp {% trans 'Most qualification given' %}
+                                        <span class="pull-right text-muted small">----</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-alerts -->
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <div id="dropAlerts">
+                                {% if countAdvertisements != 0 %}
+                                <span class="p1 fa-stack fa-1x has-badge" data-count="{{ countAdvertisements }}">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse" data-count="{{ countAdvertisements }}"></i>
+                                </span>
+                                {% else %}
+                                <span class="p1 fa-stack fa-1x has-badge">
+                                    <i class="p3 fas fa-bell fa-stack-1x xfa-inverse"></i>
+                                </span>
+                                {% endif %}
+                                <i class="fa fa-caret-down icon-colorNavBar"></i>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            {% if countAdvertisements == 0 %}
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <center>{% trans "You don't have new advertisements" %}</center>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% else %}
+                            {% for advertisement in advertisements %}
+                            <li>
+                                <a data-toggle='modal' data-target='#formNotification' onclick="updateAndDisplayAdvertisement('{{advertisement.id}}','{{advertisement.title}}','{{advertisement.description}}','{{advertisement.type}}','{{advertisement.creator}}','{{ printObject.logo.name}}')">
+                                    <div>
+                                        {% ifequal advertisement.typeOfAdvertisement "Information" %}
+                                        <i class="fas fa-info-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Success" %}
+                                        <i class="fas fa-check-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Warning" %}
+                                        <i class="fas fa-exclamation-circle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                        {% ifequal advertisement.typeOfAdvertisement "Danger" %}
+                                        <i class="fas fa-exclamation-triangle notificationIcon"></i>&nbsp
+                                        {{ advertisement.title }}
+                                        <span class="pull-right text-muted small">{% trans 'View More' %}</span>
+                                        {% endifequal %}
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            {% endfor %}
+                            {% endif %}
+                    </li>
+                    <li>
+                        <a class="text-center" href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                            <strong>{% trans 'See the record of advertisements' %}</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+
+                </ul>
+                <!-- /.navbar-top-links -->
+                <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+                </ul>
+                <!-- /.navbar-top-links -->
+            </div>
+            <!-- /.navbar-header -->
+
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+    </header>
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav role="navigation" style="margin-bottom: 0; margin-top: -1px;">
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse" id="sidebar-area">
+                    <ul class="nav" id="sidebar">
+                        <li class="backgroundPrint">
+                            <br>
+                            <center>
+                                <img id="imageTitle" class='imageAdmin' src='http://localhost:8000/media/{{ printObject.logo.name}}'>
+                            </center>
+                            <a class="backgroundPrint2">
+                                <div class="side-menu-title">
+                                    <center>{{ printObject.name }}</center>
+                                </div>
+                            </a>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a class="active" href="{% url 'printOrderManager:index_printManageById' printObject.id %}"><i
+                                    class="fa fa-home"></i><span class="side-menu-title">&nbsp;&nbsp;{% trans 'Home' %}</span></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fas fa-info-circle"></i><span class="side-menu-title">&nbsp;
+                                    {% trans 'Information' %}</span></a>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            {% if "changeContacts_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-users"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Contacts' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Contacts' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createContact_printManageById' printObject.id %}">
+                                        {% trans 'Add Contacts' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:contacts_printManageById' printObject.id %}"><i class="fas fa-users"></i><span
+                                    class="side-menu-title">&nbsp;
+                                    {% trans 'Contacts' %}</span></a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if "changePaper_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-paper-plane"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Paper Types' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:paperTypes_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Paper Types' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createPaperType_printManageById' printObject.id %}">
+                                        {% trans 'Create Paper Type' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="#"><i class="fas fa-paper-plane"></i><span class="side-menu-title">&nbsp;
+                                    {% trans 'Paper Types' %}</span></a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if "changeSchedules_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-calendar-alt"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Schedules' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Schedules' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createSchedule_printManageById' printObject.id %}">
+                                        {% trans 'Create Schedule' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:schedules_printManageById' printObject.id %}"><i class="fas fa-calendar-alt"></i><span
+                                    class="side-menu-title">&nbsp;
+                                    {% trans 'Schedules' %}</span></a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if "changeAdvertisements_printObject" in printObject_perms %}
+                            <a href="#" class="dropdown-collapse"><i class="fas fa-bell"></i> <span class="side-menu-title">
+                                    &nbsp;{% trans 'Advertisements' %}
+                                </span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}">
+                                        {% trans 'View and Edit Advertisements' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'printOrderManager:createAdvertisement_printManageById' printObject.id %}">
+                                        {% trans 'Create Advertisement' %}</a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <a href="{% url 'printOrderManager:advertisements_printManageById' printObject.id %}"><i
+                                    class="fas fa-bell"></i><span class="side-menu-title">&nbsp;
+                                    {% trans 'Advertisements' %}</span></a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            <a href="{% url 'printOrderManager:index_printManager' %}"><i class="fas fa-chevron-circle-left"></i>
+                                <span class="side-menu-title">&nbsp;{% trans 'Return to Print List Page' %}</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="page-header subtitle">{% trans 'Home' %}</h2>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fas fa-users fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <span class="huge count">10</span>
+                                    <div>&nbsp;Online Contacts!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fas fa-print fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <span class="huge count">35</span>
+                                    <div>Total Orders!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fas fa-exclamation-circle fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <span class="huge count">20</span>
+                                    <div>Orders Request!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fas fa-paper-plane fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <span class="huge count">4</span>
+                                    <div>Paper Types!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <i class="fas fa-paper-plane fa-fw"></i> Quantity of orders by paper type
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="animated bounce slow">
+                                <center>
+                                    <div id="paperType-Graph"></div>
+                                </center>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+
+                </div>
+                <!-- /.col-lg-8 -->
+                <div class="col-lg-4">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <i class="fas fa-print fa-fw"></i> Orders by state
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="animated bounce slow">
+                                <div id="morris-donut-chart"></div>
+                            </div>
+                        </div>
+                        <!-- /.list-group -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-4 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    {% block js %}
+
+    <script>
+        userName = '{{ user.username }}'
+        printObjectId = '{{ printObject.id }}'
+        userId = '{{ user.id }}'
+    </script>
+
+    <script src="{% static 'js/SB-Admin2.1/jquery.min.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/jquery.cookie.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/raphael-min.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/morris.min.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/morris-data.js' %}"></script>
+    <script src="{% static 'js/SB-Admin2.1/sb-admin-2.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <script src="{% static 'js/advertisements_printManageById.js' %}"></script>
+    <script src="{% static 'js/index_printManageById.js' %}"></script>
+    <!-- Load the JavaScript client library -->
+    <script src="/static/rest_framework/js/coreapi-0.1.1.js"></script>
+    <script src="/docs/schema.js"></script>
+    <!-- Bootstrap Notify-->
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-Notify/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'laboratory/js/sweetalert2.min.js' %}"></script>
+    {% endblock %}
+
+</html>
+{% endblock %}

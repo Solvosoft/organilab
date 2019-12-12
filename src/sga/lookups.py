@@ -19,7 +19,6 @@ class TagsLookup(LookupChannel):
     def format_item_display(self, item):
         return u"<span class='tag' data-pk=\"%s\"> %s</span>" % (item.pk, item.name)
 
-
 @register('dangerindication')
 class TagsLookup(LookupChannel):
     model = DangerIndication
@@ -51,6 +50,7 @@ class TagsLookup(LookupChannel):
         return False
 
     def get_query(self, q, request):
+
         return self.model.objects.filter(Q(name__icontains=q) | Q(code__icontains=q) | Q(
             prudence_advice_help__icontains=q)).order_by('code')[:8]
 

@@ -93,12 +93,10 @@
 
         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
 
-
         <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
         <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#000"  class="btn" >
         <input type="color"  style="width: 25%;" value="" id="text-bg-color"  value="#000" class="btn" >
         <br>
-
 
         <div class="form-group">
         <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
@@ -197,8 +195,8 @@
   </div>
             {% trans 'Use save before finish' %}
         <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
-
     </div>
+        </div>
     <div class="col-sm-6 col-md-9  ">
         <div id="canvasContainer" class="canvas-container" >
         <canvas id="canvas_editor" class="pre_designed_template" style="width: 100%"></canvas>

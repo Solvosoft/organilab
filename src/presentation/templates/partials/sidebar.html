@@ -4,6 +4,7 @@
         <ul class="nav in" id="side-menu">
             <li class="sidebar-search">
                 <form metod="get" action="/weblog/search/">
+<<<<<<< HEAD
                     <div class="input-group custom-search-form">
 
                         <input class="form-control" name="pattern"
@@ -16,6 +17,20 @@
 
                     </div>
                 </form>
+=======
+                <div class="input-group custom-search-form">
+
+                    <input class="form-control" name="pattern"
+                        placeholder="{% trans 'Search...' %}" type="text">
+                    <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+
+                </div>
+            </form>
+>>>>>>> mainorigin/master
                 <!-- /input-group -->
             </li>
             <li>
@@ -26,6 +41,7 @@ fa-fw"></i>
             
             {% include 'partials/laboratories_menu.html'%}
             <li>
+<<<<<<< HEAD
                 <a href="#">
                     <i class="fa fa-bar-chart-o fa-fw"></i>
                     {% trans 'SGA Management' %}  <span class="fa arrow"></span>
@@ -34,6 +50,14 @@ fa-fw"></i>
                 <li>
                     <a href="{% url 'msds:index_msds'%}" > 
                             {% trans 'MSDS: Security sheets' %}</a>
+=======
+                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 
+{% trans 'SGA Management' %}  <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level ">
+                <li>
+                    <a href="{% url 'msds:index_msds'%}" > 
+                {% trans 'MSDS: Security sheets' %}</a>
+>>>>>>> mainorigin/master
                 </li>
                     <li>
                         <a   href="{% url 'sga:index_sga' %}" title="{% trans 'GHS' %}" >
@@ -44,11 +68,21 @@ fa-fw"></i>
                             {% trans 'Editor' %} </a>
                     </li>
 
+<<<<<<< HEAD
+=======
+                    <li>
+                    <a href="{% url 'printOrderManager:index_printOrderManager' %}"
+                    title="{% trans 'Prints and Orders Manager' %}">
+                    {% trans 'Prints and Orders Manager' %} </a>
+                    </li>
+                    
+>>>>>>> mainorigin/master
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
 
             <li>
+<<<<<<< HEAD
                     <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}">
                         <i class="fa fa-edit fa-fw"></i>  {% trans 'Blog' %}
                     </a>
@@ -57,6 +91,15 @@ fa-fw"></i>
              <li>
                  <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
                  <i class="fa fa-wrench fa-fw"></i>  {% trans 'Feedback' %}</a>
+=======
+                    <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}"><i class="fa fa-edit 
+fa-fw"></i>  {% trans 'Blog' %} </a>
+            </li>
+            
+             <li>
+             <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
+      <i class="fa fa-wrench fa-fw"></i>  {% trans 'Feedback' %}</a>
+>>>>>>> mainorigin/master
             
              </li>
         </ul>

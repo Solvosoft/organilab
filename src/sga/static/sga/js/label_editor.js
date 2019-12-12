@@ -32,7 +32,6 @@ function handleDragEnd(e) {
     console.log('handleDragEnd');
 }
 
-
 (function( ) {
  this.__canvases = [];
  fabric.Object.prototype.transparentCorners = false;
@@ -301,23 +300,22 @@ function setNewCanvas(widthP,heightP){
 
 $("#id_dangerindication_on_deck").bind('added', function() {
     let obj = $("#id_dangerindication_on_deck .tag");
+
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
-
     obj = $("#id_dangerindication_on_deck .tagcode");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
-
 });
 
 $("#id_prudenceadvice_on_deck").bind('added', function() {
-
     let obj = $("#id_prudenceadvice_on_deck .tag");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
+
 
     obj = $("#id_prudenceadvice_on_deck .tagcode");
     obj.attr('draggable', 'True');
