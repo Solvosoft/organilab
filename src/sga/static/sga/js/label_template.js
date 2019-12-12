@@ -64,7 +64,6 @@ $(document).ready(function(){
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
 
     });
-
 });
 
 function get_canvas(pk){
@@ -81,3 +80,4 @@ function get_as_pdf(pk){
     $('#json_data').attr('value',json_data);
     document.download_pdf.submit();
 }
+

@@ -51,7 +51,6 @@ def html2pdf(json_data):
 def index_sga(request):
     return render(request, 'index_sga.html', {})
 
-
 # SGA information
 def information_creator(request):
     recipients = RecipientSize.objects.all()
@@ -67,7 +66,6 @@ def information_creator(request):
             form = RecipientInformationForm()
 
     return render(request, 'information.html', context)
-
 
 # SGA template visualize
 def template(request):
@@ -85,7 +83,6 @@ def template(request):
 
     }
     return render(request, 'template.html', context)
-
 
 # SGA editor
 def editor(request):
@@ -112,8 +109,8 @@ def editor(request):
     }
     return render(request, 'editor.html', context)
 
-
 # SGA Label Creator Page
+
 def get_step(step):
     if step is None:
         step = 0
@@ -123,9 +120,7 @@ def get_step(step):
             step = 0
     except ValueError:
         step = 0
-
     return step
-
 
 def label_creator(request, step=0):
     step = get_step(step)
@@ -180,7 +175,6 @@ def label_creator(request, step=0):
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
-
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
     request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
@@ -224,15 +218,11 @@ def show_editor_preview(request, pk):
         "{{substanceinfo}}": clean_json_text(substance.comercial_name),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
-
     }
-
     obj = get_object_or_404(TemplateSGA, pk=pk)
-
     representation = obj.json_representation
     for key, value in template_context.items():
         representation = representation.replace(key, value)
-
     obj = get_object_or_404(TemplateSGA, pk=pk)
 
     representation = obj.json_representation
@@ -266,26 +256,19 @@ def label_template(request):
                                                    })
 
 
+
 def get_sga_editor_options(request):
     content = {
         'warningword': list(WarningWord.objects.values('pk', 'name', 'weigth')),
         'dangerindication': list(DangerIndication.objects.values('pk', 'code', 'description')),
-        'prudenceadvice': list(PrudenceAdvice.objects.values('pk', 'code', 'name'))
-    }
-
+        'prudenceadvice': list(PrudenceAdvice.objects.values('pk', 'code', 'name'))}
     return JsonResponse(content, content_type='application/json')
 
-
 # SGA Label Editor Page
-
-
 def label_editor(request):
     return render(request, 'label_editor.html', {})
 
-
 # SGA Search sustance with autocomplete
-
-
 def search_autocomplete_sustance(request):
     if request.is_ajax():
         q = request.GET.get('term', '')
@@ -309,11 +292,8 @@ def search_autocomplete_sustance(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
-
 # SGA Obtain substance information
 
-
-# TODO not to pep8 standard
 def getSubstanceInformation(request):
     substanceInformation = {}
     signalWordSubstance = ''
@@ -365,6 +345,7 @@ def getSubstanceInformation(request):
                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
             # H412 > H402
+
             elif 'H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402':
                 pass
             elif 'H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412':
@@ -423,4 +404,5 @@ def getSubstanceInformation(request):
     else:
         data = 'fail'
     mimetype = 'application/json'
+
     return HttpResponse(data, mimetype)

@@ -17,6 +17,7 @@
 {% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
+
 <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
     <!-- Nav tabs -->
 <div class="row">
@@ -37,6 +38,7 @@
         </div>
     </div>
 {% endif %}
+
 </div>
 <hr>
 <div class="row">
@@ -44,6 +46,7 @@
       <div class="col-md-12">
 
           <div class="panel panel-default">
+
               <div class="panel-heading">
                 <a href="#" data-order="{{forloop.counter0}}" target="_blank" id="canvaspng_{{forloop.counter0}}"
                    class="btn btn-default btn-sm canvaspng"> {% trans 'Get as Image'%}</a>
@@ -57,6 +60,7 @@
           </div>
         </div>
       </div>
+
     {% endfor %}
 </div>
 

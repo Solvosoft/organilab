@@ -1,3 +1,4 @@
+
 """
 @organization: Solvo
 @license: GNU General Public License v3.0
@@ -13,7 +14,6 @@ from .views import index_sga, label_creator, get_sga_editor_options, information
 from django.conf.urls import url, include
 from ajax_select import urls as ajax_select_urls
 from . import views
-
 # SGA
 app_name = 'sga'
 
@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^ajax_select/', include(ajax_select_urls)),
     # sga/auto_complete_sustance/
     url(r'search_autocomplete_sustance', views.search_autocomplete_sustance, name='search_autocomplete_sustance'),
+
     url(r'label_information', views.label_information, name='label_information'),
     url(r'label_template', views.label_template, name='label_template'),
     # sga/label_editor/
@@ -43,3 +44,4 @@ urlpatterns = [
     url(r'editor', editor, name='editor'),
     url(r'download/', render_pdf_view, name='download'),
 ]
+
