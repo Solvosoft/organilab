@@ -27,7 +27,7 @@ def get_search_form(context):
 def has_perms(context, codename, lab_pk=None):
     if 'request' in context:
         user = context['request'].user
-<<<<<<< HEAD
+
         if user.has_perm(codename) or user.is_superuser:
             return True
         else:
@@ -36,11 +36,6 @@ def has_perms(context, codename, lab_pk=None):
             # Permit to redirect User to select form
             if not lab_pk:
                 return False
-=======
-        if 'laboratory' in context and context['laboratory']:
-            lab_pk=context['laboratory']
-
->>>>>>> mainorigin/master
             lab = get_object_or_404(Laboratory, pk=lab_pk)
             if check_lab_group_has_perm(
                     user, lab, codename,
