@@ -24,7 +24,7 @@ class CreateView(djCreateView):
 
     def get_context_data(self, **kwargs):
         context = djCreateView.get_context_data(self, **kwargs)
-        context['laboratory'] = self.lab
+        context['laboratory'] = int(self.lab)
         return context
 
 
