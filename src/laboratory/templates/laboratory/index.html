@@ -76,7 +76,7 @@
                {% endif %}
                {% if userperms.view_solutions %}
 			   <li class="list-group-item">
-              <a href="{% url 'laboratory:solution_list' laboratory %}">
+               <a href="{% url 'laboratory:solution_list' laboratory %}">
                 <strong>{% trans 'Dissolution calculator' %}</strong></a>
                 </li>
                {% endif %}
@@ -100,11 +100,7 @@
               <li class="list-group-item"><a
                 href="{% url 'laboratory:rooms_create' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a></li>
               {% endif %}
-              {% if userperms.add_furniture  %}
-              <li class="list-group-item"><a
-                href="{% url 'laboratory:furniture_create' laboratory %}"><strong>{% trans 'Furniture' %}</strong></a>
-              </li>
-               {% endif %} 
+
               {% if userperms.add_object %}                         
               <li class="list-group-item"><a
                 href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>

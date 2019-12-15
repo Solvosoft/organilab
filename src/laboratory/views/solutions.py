@@ -64,7 +64,8 @@ class SolutionDetailView(DetailView):
         context['laboratory'] = self.lab_pk
         context['solution_details'] = {}
         for key, has_unit, verbose_name in keys:
-            kallable = getattr(self.object.solution_object, 'get_{}'.format(key))
+            pysolution = self.object.solution_object
+            kallable = getattr(pysolution, 'get_{}'.format(key))
             try:
                 if has_unit:
                     context['solution_details'][key] = (verbose_name, '{} {}'.format(kallable().m, str(kallable().u)))
