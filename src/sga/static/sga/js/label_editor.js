@@ -226,12 +226,6 @@ function convertionTocm(cadena) {
     let unitWidth   =  cadena[3].split("=")[1];
     valueHeight *= get_conversion_factor(unitHeight);
     valueWidth *= get_conversion_factor(unitWidth);
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f273362455c04d116ac6935917132e10a95c0042
     return [valueHeight, valueWidth];
 }
 
@@ -253,12 +247,6 @@ $(document).ready(function () {
     dimensions = cmToPixel(dimensions);
     let HeightPix = dimensions[0];
     let WidthPix = dimensions[1];
-<<<<<<< HEAD
-=======
-    // let y = setSize(WidthPix, HeightPix);
-    // let Width2 = y[0];
-    // let height2 = y[1];
->>>>>>> f273362455c04d116ac6935917132e10a95c0042
     setNewCanvas(WidthPix,HeightPix);
 
  });
