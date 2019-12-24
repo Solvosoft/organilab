@@ -1,6 +1,8 @@
 {% load i18n shelf_position laboratory %}
 
+
 {% index_permissions as userperms %}
+
 
 <nav class="navbar navbar-dark bg-inverse">
   <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"><strong
@@ -46,10 +48,7 @@
                   <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
                     {% trans 'Laboratory management' %} </a></li>
                 {% endif %} 
-                {% if  userperms.add_furniture %} 
-                  <li><a href="{% url 'laboratory:furniture_create' laboratory %}">
-                    {% trans 'Furniture management' %}</a></li>
-                {% endif %} 
+
                 {% if userperms.add_object %} 
                   <li class="dropdown-submenu">
                     <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
@@ -119,6 +118,7 @@
 	   </li>
 	  {% endif %}
       {% endif %}
+
   </ul>
   <ul class="nav navbar-nav pull-right">
   

@@ -32,7 +32,6 @@ function handleDragEnd(e) {
     console.log('handleDragEnd');
 }
 
-
 (function( ) {
  this.__canvases = [];
  fabric.Object.prototype.transparentCorners = false;
@@ -61,7 +60,7 @@ function handleDragEnd(e) {
          canvas_editor.on()
      },'mouse:up': function (e) {
             panning = false;
-    },'mouse:down': function (e) {
+    },'mouse:dblclick': function (e) {
        if (!oselected) {
             panning = true;
         }
@@ -282,7 +281,6 @@ function setNewCanvas(widthP,heightP){
     canvas_editor.getObjects()[0].left = 0;
     canvas_editor.getObjects()[0].width = widthP-marginh;
     canvas_editor.getObjects()[0].height = heightP -marginw;
-    canvas_editor.getObjects()[0].selectable = false;
     canvas_editor.renderAll();
 }
 
@@ -298,23 +296,22 @@ function setNewCanvas(widthP,heightP){
 
 $("#id_dangerindication_on_deck").bind('added', function() {
     let obj = $("#id_dangerindication_on_deck .tag");
+
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
-
     obj = $("#id_dangerindication_on_deck .tagcode");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
-
 });
 
 $("#id_prudenceadvice_on_deck").bind('added', function() {
-
     let obj = $("#id_prudenceadvice_on_deck .tag");
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
+
 
     obj = $("#id_prudenceadvice_on_deck .tagcode");
     obj.attr('draggable', 'True');
@@ -340,6 +337,7 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
 
 if($("#id_json_representation").val() != ""){
     canvas_editor.loadFromJSON($("#id_json_representation").val(), function(){
+        canvas_editor.getObjects()[0].selectable = false;
         canvas_editor.renderAll();
     });
 }

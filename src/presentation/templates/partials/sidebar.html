@@ -32,7 +32,7 @@ fa-fw"></i>
                 </a>
                 <ul class="nav nav-second-level ">
                 <li>
-                    <a href="{% url 'msds:index_msds'%}" > 
+                    <a href="{% url 'msds:index_msds'%}" >
                             {% trans 'MSDS: Security sheets' %}</a>
                 </li>
                     <li>
@@ -43,21 +43,19 @@ fa-fw"></i>
                         <a   href="{% url 'sga:editor' %}" title="{% trans 'Editor' %}" >
                             {% trans 'Editor' %} </a>
                     </li>
-
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
 
             <li>
-                    <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}">
-                        <i class="fa fa-edit fa-fw"></i>  {% trans 'Blog' %}
-                    </a>
+                <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}">
+                    <i class="fa fa-edit fa-fw"></i>  {% trans 'Blog' %}
+                </a>
             </li>
             
              <li>
                  <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
                  <i class="fa fa-wrench fa-fw"></i>  {% trans 'Feedback' %}</a>
-            
              </li>
         </ul>
     </div>

@@ -60,3 +60,4 @@ admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)
 admin.site.register(TemplateSGA)
+

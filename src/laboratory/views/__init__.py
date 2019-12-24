@@ -15,7 +15,7 @@ from laboratory.registry import TOUR_STEPS_LAB_JSON, TOUR_STEPS_FURNITURE_JSON
 @login_required
 def lab_index(request, lab_pk):
     return render(request, 'laboratory/index.html',
-                  {'laboratory': lab_pk})
+                  {'laboratory': int(lab_pk)})
 
 
 @ajax

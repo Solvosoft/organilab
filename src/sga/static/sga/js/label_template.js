@@ -22,7 +22,7 @@ let _canvases = [];
                 newcanvas.on('mouse:up', function () {
                      newcanvas['panning'] = false;
                  });
-                newcanvas.on('mouse:down', function () {
+                newcanvas.on('mouse:dblclick', function () {
                      if (!newcanvas['onselected']) {
                          newcanvas['panning'] = true;
                      }
@@ -64,7 +64,6 @@ $(document).ready(function(){
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
 
     });
-
 });
 
 function get_canvas(pk){
@@ -83,3 +82,4 @@ function get_as_pdf(pk){
 
     document.download_pdf.submit();
 }
+

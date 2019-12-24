@@ -27,6 +27,7 @@ def get_search_form(context):
 def has_perms(context, codename, lab_pk=None):
     if 'request' in context:
         user = context['request'].user
+
         if user.has_perm(codename) or user.is_superuser:
             return True
         else:

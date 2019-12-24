@@ -134,7 +134,7 @@ class FurnitureDelete(DeleteView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:furniture_create', args=(self.lab,))
+        return reverse_lazy('laboratory:furniture_list', args=(self.lab,))
 
 
 @login_required

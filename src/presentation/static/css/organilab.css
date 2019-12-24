@@ -121,3 +121,7 @@ img {
 .canvas-container-preview canvas{
     border: 1px solid #000;
 }
+
+#page-wrapper{
+    padding: 20px 30px!important;
+}

@@ -22,6 +22,16 @@
   z-index: 0;
 }
 .heading-1 span {
+
+background: #fff;
+padding: 0 10px;
+position: relative;
+z-index: 1;
+}
+/* Image */
+img {
+    padding:1px;
+    border:1px solid #021a40;
   background: #fff;
   padding: 0 10px;
   position: relative;
@@ -77,3 +87,4 @@
   font-weight: bold;
   color:#fff;
 }
+
