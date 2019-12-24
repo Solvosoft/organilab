@@ -225,7 +225,6 @@ function convertionTocm(cadena) {
     let unitWidth   =  cadena[3].split("=")[1];
     valueHeight *= get_conversion_factor(unitHeight);
     valueWidth *= get_conversion_factor(unitWidth);
-
     return [valueHeight, valueWidth];
 }
 
