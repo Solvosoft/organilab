@@ -100,6 +100,7 @@ class LineTag():
         self.wa_scale_x = props["workarea"].pro_x
         self.wa_scale_y = props["workarea"].pro_y
 
+
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
     styles = "position:absolute;"
