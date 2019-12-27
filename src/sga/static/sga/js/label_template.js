@@ -1,10 +1,56 @@
 let _canvases = [];
+let state;
+let undo = [];
+let redo = [];
+
+function save(index){
+    redo = [];
+    $('#redo').prop('disabled', true);
+    if (state){
+        undo.push(state);
+        $('#undo').prop('disabled', false);
+    }
+    state = JSON.stringify(_canvases[index]);
+
+}
+function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
+    saveStack.push(state);
+    state = playStack.pop();
+    var on = $(buttonsOn);
+    var off = $(buttonsOff);
+    on.prop('disabled', true);
+    off.prop('disabled', true);
+    _canvases[index].clear();
+    _canvases[index].loadFromJSON(state, function(){
+        _canvases.renderAll();
+        on.prop('disabled', false);
+        if (playStack.length){
+            off.prop('disabled',false);
+        }
+    });
+
+}
 (function( ) {
     let formdata = $("#sgaform").serializeArray();
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
             let newcanvas = canvas_editor = new fabric.Canvas(element.id);
+
+            let idUndo = "undo" + index;
+            let idRedo = "redo" +  index;
+            $(idUndo).click(function(){
+                let index = $(idUndo).val();
+                console.log(index);
+                replay(undo,redo,'#redo',this, index);
+            });
+            $(idRedo).click(function(){
+                console.log("redo");
+                let index = $(idRedo).val();
+                console.log(index);
+                replay(redo,undo,'#undo',this, index);
+            });
             _canvases.push(newcanvas);
+            save( (index -1));
             newcanvas.loadFromJSON(data.object, function() {
                 newcanvas.item(0).selectable = false;
                 newcanvas['panning'] = false;
@@ -35,9 +81,14 @@ let _canvases = [];
                  });
                 newcanvas.on('object:selected', function () {
                      newcanvas['onselected'] = true;
+                     save(index);
                  });
                 newcanvas.on('before:selection:cleared', function () {
                      newcanvas['onselected'] = false;
+                 });
+                newcanvas.on('object:modified', function () {
+                    console.log("objeto modificado : " +  (index -1));
+                     save(index);
                  });
 
                 let canvas_container_preview = $(".canvas-container-preview");
@@ -53,6 +104,7 @@ let _canvases = [];
                 newcanvas.setWidth(width);
                 newcanvas.setHeight(height);
                 newcanvas.renderAll();
+                save(index);
             });
           });
     });
@@ -64,6 +116,22 @@ $(document).ready(function(){
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
 
     });
+    for (let x=0; x<_canvases.length; x++){
+        let idUndo = "undo" + x;
+        let idRedo = "redo" + x;
+        console.log(idUndo, idRedo);
+        $(idUndo).click(function(){
+            let index = $(idUndo).val();
+            console.log(index);
+            replay(undo,redo,'#redo',this, index);
+        });
+        $(idRedo).click(function(){
+            console.log("redo");
+            let index = $(idRedo).val();
+            console.log(index);
+            replay(redo,undo,'#undo',this, index);
+        });
+    }
 });
 
 function get_canvas(pk){
