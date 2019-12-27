@@ -11,6 +11,7 @@ function save(index){
         $('#undo').prop('disabled', false);
     }
     state = JSON.stringify(_canvases[index]);
+    console.log(state);
 
 }
 function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
@@ -20,14 +21,16 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     var off = $(buttonsOff);
     on.prop('disabled', true);
     off.prop('disabled', true);
+    console.log(_canvases[index]);
     _canvases[index].clear();
     _canvases[index].loadFromJSON(state, function(){
-        _canvases.renderAll();
+        _canvases[index].renderAll();
         on.prop('disabled', false);
         if (playStack.length){
             off.prop('disabled',false);
         }
     });
+    console.log(_canvases[index]);
 
 }
 (function( ) {
@@ -35,22 +38,8 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
             let newcanvas = canvas_editor = new fabric.Canvas(element.id);
-
-            let idUndo = "undo" + index;
-            let idRedo = "redo" +  index;
-            $(idUndo).click(function(){
-                let index = $(idUndo).val();
-                console.log(index);
-                replay(undo,redo,'#redo',this, index);
-            });
-            $(idRedo).click(function(){
-                console.log("redo");
-                let index = $(idRedo).val();
-                console.log(index);
-                replay(redo,undo,'#undo',this, index);
-            });
             _canvases.push(newcanvas);
-            save( (index -1));
+            save(index);
             newcanvas.loadFromJSON(data.object, function() {
                 newcanvas.item(0).selectable = false;
                 newcanvas['panning'] = false;
@@ -81,13 +70,11 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                  });
                 newcanvas.on('object:selected', function () {
                      newcanvas['onselected'] = true;
-                     save(index);
                  });
                 newcanvas.on('before:selection:cleared', function () {
                      newcanvas['onselected'] = false;
                  });
                 newcanvas.on('object:modified', function () {
-                    console.log("objeto modificado : " +  (index -1));
                      save(index);
                  });
 
@@ -110,28 +97,19 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     });
 })();
 
+function undoFunction(index){
+    replay(undo,redo,'#redo','#undo', index - 1);
+}
+
+function redoFunction(index){
+    replay(redo,undo,'#undo','#redo', index - 1);
+}
+
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
          let canvas =  _canvases[this.dataset.order];
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
-
     });
-    for (let x=0; x<_canvases.length; x++){
-        let idUndo = "undo" + x;
-        let idRedo = "redo" + x;
-        console.log(idUndo, idRedo);
-        $(idUndo).click(function(){
-            let index = $(idUndo).val();
-            console.log(index);
-            replay(undo,redo,'#redo',this, index);
-        });
-        $(idRedo).click(function(){
-            console.log("redo");
-            let index = $(idRedo).val();
-            console.log(index);
-            replay(redo,undo,'#undo',this, index);
-        });
-    }
 });
 
 function get_canvas(pk){
