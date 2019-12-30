@@ -14,7 +14,6 @@ class CanvasHandler
 }
 
 function save(index){
-    console.log("Guardando en el canvas #" + index)
     _canvases[index].redo = [];
     $('#redo').prop('disabled', true);
     if (_canvases[index].state){
@@ -115,7 +114,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 _canvases[index_temp].canv_obj.setWidth(width);
                 _canvases[index_temp].canv_obj.setHeight(height);
                 _canvases[index_temp].canv_obj.renderAll();
-                save(index);
+                save(index_temp);
             });
           });
     });
