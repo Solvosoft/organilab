@@ -125,7 +125,6 @@ function undoFunction(ele){
 }
 
 function redoFunction(ele){
-    console.log(ele)
     replay('redo','undo','#undo','#redo', ele.dataset.pk - 1);
 }
 
