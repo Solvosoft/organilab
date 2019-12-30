@@ -10,7 +10,6 @@ class CanvasHandler
         this.undo = [];
         this.redo = [];
     }
-
 }
 
 function save(index){
@@ -26,11 +25,13 @@ function save(index){
 function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     if(saveStack =='redo'){
         _canvases[index].redo.push(_canvases[index].state);
-        _canvases[index].state = _canvases[index].undo.pop();
+        if(_canvases[index].undo.length > 1)
+            _canvases[index].state = _canvases[index].undo.pop();
     }
     else{
         _canvases[index].undo.push(_canvases[index].state);
-        _canvases[index].state = _canvases[index].redo.pop();
+        if(_canvases[index].redo.length > 1)
+            _canvases[index].state = _canvases[index].redo.pop();
     }
     let on = $(buttonsOn);
     let off = $(buttonsOff);
@@ -50,7 +51,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 off.prop('disabled',false);
             }
         }
-
     });
 
 }
@@ -120,12 +120,13 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     });
 })();
 
-function undoFunction(index){
-    replay('undo','redo','#redo','#undo', index - 1);
+function undoFunction(ele){
+    replay('undo','redo','#redo','#undo', ele.dataset.pk - 1);
 }
 
-function redoFunction(index){
-    replay('redo','undo','#undo','#redo', index - 1);
+function redoFunction(ele){
+    console.log(ele)
+    replay('redo','undo','#undo','#redo', ele.dataset.pk - 1);
 }
 
 $(document).ready(function(){
