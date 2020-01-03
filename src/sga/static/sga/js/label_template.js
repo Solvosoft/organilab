@@ -25,29 +25,35 @@ function save(index){
 function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     if(saveStack =='redo'){
         _canvases[index].redo.push(_canvases[index].state);
-        if(_canvases[index].undo.length > 1)
+        if(_canvases[index].undo.length >= 2)
+        {
             _canvases[index].state = _canvases[index].undo.pop();
+        }
+
     }
-    else{
+    else if (saveStack == 'undo'){
         _canvases[index].undo.push(_canvases[index].state);
-        if(_canvases[index].redo.length > 1)
+        if(_canvases[index].redo.length >= 1)
+        {
             _canvases[index].state = _canvases[index].redo.pop();
+        }
     }
     let on = $(buttonsOn);
     let off = $(buttonsOff);
     on.prop('disabled', true);
     off.prop('disabled', true);
+
     _canvases[index].canv_obj.clear();
     _canvases[index].canv_obj.loadFromJSON(_canvases[index].state, function(){
         _canvases[index].canv_obj.renderAll();
         on.prop('disabled', false);
         if(playStack == 'undo'){
-            if (_canvases[index].undo.length){
+            if (_canvases[index].undo.length>=1){
                 off.prop('disabled',false);
             }
         }
         else{
-            if (_canvases[index].redo.length){
+            if (_canvases[index].redo.length>=1){
                 off.prop('disabled',false);
             }
         }
@@ -97,7 +103,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                      _canvases[index_temp].canv_obj['onselected'] = false;
                  });
                 _canvases[index_temp].canv_obj.on('object:modified', function () {
-                    console.log("Modificando el canvas #"+ index_temp);
                      save(index_temp);
                  });
 
@@ -110,7 +115,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 if(width < 400 ){
                 width = 400;
                 }
-         /*      newcanvas.setZoom(parseFloat(data.preview));*/
                 _canvases[index_temp].canv_obj.setWidth(width);
                 _canvases[index_temp].canv_obj.setHeight(height);
                 _canvases[index_temp].canv_obj.renderAll();
