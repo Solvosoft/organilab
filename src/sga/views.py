@@ -214,7 +214,8 @@ def show_editor_preview(request, pk):
         "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
         "{{substanceinfo}}": clean_json_text(substance.comercial_name),
         '{{casnumber}}': clean_json_text(casnumber),
-        '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
+        '{{prudenceadvice}}': clean_json_text(prudenceAdvice),
+        "{{subtancename}}": clean_json_text(request.session['substanceinfo'])
     }
     obj = get_object_or_404(TemplateSGA, pk=pk)
     representation = obj.json_representation
