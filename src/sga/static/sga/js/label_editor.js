@@ -239,6 +239,10 @@ $(document).ready(function () {
     $("#id_recipient_size").on('change', function(){
     let select = $(this);
     let selectedOption = select.find("option:selected").text();
+<<<<<<< HEAD
+=======
+
+>>>>>>> merge_stew_ale_sga
     let comboBoxText = selectedOption.split("|");
     let comboBoxTextCleaned = comboBoxText[1].split(",");
     let dimensions = convertionTocm(comboBoxTextCleaned);

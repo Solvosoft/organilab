@@ -177,7 +177,7 @@ def show_editor_preview(request, pk):
     request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
                              'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
-    request.session['substanceinfo'] = substance.comercial_name
+    #request.session['substanceinfo'] = substance.comercial_name
     weight = -1
     warningword = "{{warningword}}"
     dangerindications = ''
@@ -212,7 +212,7 @@ def show_editor_preview(request, pk):
         "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
         "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
-        "{{substanceinfo}}": clean_json_text(substance.comercial_name),
+        "{{substanceinfo}}": clean_json_text(request.session['substanceinfo']),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice),
         "{{subtancename}}": clean_json_text(request.session['substanceinfo'])
@@ -291,7 +291,6 @@ def search_autocomplete_sustance(request):
     return HttpResponse(data, mimetype)
 
 # SGA Obtain substance information
-
 def getSubstanceInformation(request):
     substanceInformation = {}
     signalWordSubstance = ''
