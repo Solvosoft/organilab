@@ -246,31 +246,7 @@ $(document).ready(function () {
     let HeightPix = dimensions[0];
     let WidthPix = dimensions[1];
     setNewCanvas(WidthPix,HeightPix);
-
  });
-
-// FIXME this function with always return originalWidth and originalHeight no matter the parameters
-function setSize(widthP,heightP){
-    let sizeMaximum = [];
-    let originalWidth = canvas_editor.getWidth();
-    let originalHeight = canvas_editor.getHeight();
-    if(widthP<originalWidth){
-        sizeMaximum.push(widthP+(originalWidth-widthP))
-    }
-    if(heightP<originalHeight){
-        sizeMaximum.push(heightP+(originalHeight-heightP))
-    }
-    if(widthP>originalWidth){
-        sizeMaximum.push(widthP -(widthP-originalWidth))
-    }
-    if(heightP>originalHeight){
-        sizeMaximum.push(heightP -(heightP-originalHeight))
-    }else{
-        sizeMaximum.push(widthP);
-        sizeMaximum.push(heightP);
-    }
-    return sizeMaximum;
-}
 
 function setNewCanvas(widthP,heightP){
     let margin = 0.02;
