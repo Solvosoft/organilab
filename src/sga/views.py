@@ -214,7 +214,7 @@ def show_editor_preview(request, pk):
         "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
         "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
-        "{{substanceinfo}}": clean_json_text(substance.comercial_name),
+        "{{substancename}}": clean_json_text(substance.comercial_name),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
     }
