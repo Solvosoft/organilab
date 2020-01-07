@@ -56,8 +56,8 @@
                <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
   </div>
   <div class="panel-body">
-        <button onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Undo</button>
-        <button onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Redo</button>
+        <button data-order="{{forloop.counter0}}" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Undo</button>
+        <button data-order="{{forloop.counter0}}" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Redo</button>
       <div class="canvas-container-preview" onkeydown="">
       <canvas tabindex="1"  class="templatepreview"   id="preview_{{template.pk}}"
                data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>

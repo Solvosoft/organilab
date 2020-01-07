@@ -125,11 +125,11 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
 })();
 
 function undoFunction(ele){
-    replay('undo','redo','#redo','#undo', ele.dataset.pk - 1);
+    replay('undo','redo','#redo','#undo', ele.dataset.order);
 }
 
 function redoFunction(ele){
-    replay('redo','undo','#undo','#redo', ele.dataset.pk - 1);
+    replay('redo','undo','#undo','#redo', ele.dataset.order );
 }
 
 $(document).ready(function(){
