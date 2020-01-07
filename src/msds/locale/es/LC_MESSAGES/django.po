@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-07 14:13-0600\n"
+"PO-Revision-Date: 2020-01-07 14:18-0600\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: forms.py:28 forms.py:61
+msgid "Not allowed filetype!"
+msgstr "¡Tipo de archivo no permitido!"
+
+#: models.py:9 templates/index_msds.html:18 templates/index_msds.html:26
+msgid "Provider"
+msgstr "Proveedor"
+
+#: models.py:10
+msgid "MSDS File"
+msgstr "Archivo MSDS"
+
+#: models.py:11 templates/index_msds.html:19 templates/index_msds.html:27
+msgid "Product"
+msgstr "Producto"
+
+#: models.py:15 models.py:16
+msgid "MSDS Object"
+msgstr "Objeto MSDS"
+
+#: models.py:39
+msgid "Regulation File"
+msgstr "Archivo de regulación"
+
+#: models.py:48
+msgid "Regulation document"
+msgstr "Documento regulatorio"
+
+#: models.py:49 templates/regulation/regulations_document.html:5
+msgid "Regulation documents"
+msgstr "Documentos y reglamentos"
+
+#: templates/index_msds.html:9
+msgid "Search MSDS"
+msgstr "Buscar MSDS"
+
+#: templates/index_msds.html:11
+msgid "Upload your MSDS"
+msgstr "Subir sus MSDS"
+
+#: templates/index_msds.html:20 templates/index_msds.html:28
+#: templates/msds/msdsobject/cruds/detail.html:15
+#: templates/regulation/regulations_document.html:13
+#: templates/regulation/regulations_document.html:22
+#: templates/regulation/regulations_document.html:30 views.py:23
+msgid "Download"
+msgstr "Descargar"
+
+#: templates/msds/msdsobject/cruds/create.html:9
+#: templates/msds/msdsobject/cruds/update.html:10
+msgid "Add new MSDS"
+msgstr "Añadir nuevo MSDS"
+
+#: templates/msds/msdsobject/cruds/create.html:13
+#: templates/msds/msdsobject/cruds/update.html:14
+msgid "Submit"
+msgstr "Enviar"
+
+#: templates/msds/msdsobject/cruds/delete.html:7
+msgid "Remove"
+msgstr "Eliminar"
+
+#: templates/msds/msdsobject/cruds/delete.html:13
+msgid "Confirm remove"
+msgstr "Confirme eliminación"
+
+#: templates/msds/msdsobject/cruds/detail.html:12
+msgid "by "
+msgstr "por "
+
+#: templates/msds/msdsobject/cruds/detail.html:30
+msgid "Prev"
+msgstr "Prev"
+
+#: templates/msds/msdsobject/cruds/detail.html:32
+msgid " of "
+msgstr " de "
+
+#: templates/msds/msdsobject/cruds/detail.html:35
+msgid "Next"
+msgstr "Siguiente"
+
+#: templates/regulation/regulations_document.html:11
+#: templates/regulation/regulations_document.html:28
+msgid "Name"
+msgstr "Nombre"
+
+#: templates/regulation/regulations_document.html:12
+#: templates/regulation/regulations_document.html:29
+msgid "Country"
+msgstr "País"
+
+#: views.py:28
+msgid "Edit"
+msgstr "Editar"
+
+#: views.py:33
+msgid "Delete"
+msgstr "Eliminar"
+
+#: views.py:106
+msgid "Your MSDS was uploaded successfully"
+msgstr "Su MSDS fue subido satisfactoriamente"
+
+#: views.py:118
+msgid "Your MSDS was updated successfully"
+msgstr "Su MSDS fue editado satisfactoriamente"
+
+#: views.py:131
+msgid "Your MSDS was delete successfully"
+msgstr "Su MSDS fue eliminado satisfactoriamente"

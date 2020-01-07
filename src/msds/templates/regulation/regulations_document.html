@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<h1 class="header text-center">  {% trans 'Regulation documents' %} </h1>
+
+<div class="table-responsive">
+<table class="table  " id="regulations" class="display" style="width: 100%">
+	<thead class="thead-dark">
+		<tr>
+			<th>{% trans 'Name' %}</th>
+			<th>{% trans 'Country' %}</th>
+			<th>{% trans 'Download' %}</th>
+
+		</tr>
+	</thead>
+
+    <tbody>
+    {% for doc in object_list %}
+	<tr>
+			<td>{{doc.name}}</td>
+			<td>{{doc.country}}</td>
+            <td><a href="{{ doc.file.url }}" title="{% trans 'Download' %} {{doc.name}}">{% trans 'Download' %}</a></td>
+	</tr>
+    {% endfor %}
+    </tbody>
+
+	<tfoot class="tfoot-dark">
+		<tr>
+			<th>{% trans 'Name' %}</th>
+			<th>{% trans 'Country' %}</th>
+			<th>{% trans 'Download' %}</th>
+		</tr>
+	</tfoot>
+</table>
+</div>
+{% endblock %}

@@ -52,7 +52,11 @@ fa-fw"></i>
                     <i class="fa fa-edit fa-fw"></i>  {% trans 'Blog' %}
                 </a>
             </li>
-            
+            <li>
+                <a class="nav-link" href="{% url 'msds:regulation_docs' %}" title="{% trans 'Regulation documents' %}">
+                    <i class="fa fa-flag fa-fw"></i>  {% trans 'Regulation documents' %}
+                </a>
+            </li>
              <li>
                  <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
                  <i class="fa fa-wrench fa-fw"></i>  {% trans 'Feedback' %}</a>
