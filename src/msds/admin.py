@@ -1,5 +1,5 @@
 from django.contrib import admin
-from msds.models import MSDSObject, OrganilabNode
+from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 #from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -21,3 +21,4 @@ class OrganilabNodeMPTTAdmin(DraggableMPTTAdmin):
 
 admin.site.register(OrganilabNode, OrganilabNodeMPTTAdmin)
 admin.site.register(MSDSObject, msdsAdmin)
+admin.site.register(RegulationDocument)

@@ -1,5 +1,5 @@
 from django.http.response import JsonResponse
-from msds.models import MSDSObject, OrganilabNode
+from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
@@ -150,3 +150,8 @@ def organilab_tree(request):
     if content:
         return organilab_tree_frame(request)
     return render(request, 'msds/organilab_tree.html')
+
+
+def regulation_view(request):
+    regulations = RegulationDocument.objects.all()
+    return render(request, 'regulation/regulations_document.html', {'object_list': regulations})

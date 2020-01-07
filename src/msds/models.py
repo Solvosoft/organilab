@@ -32,3 +32,18 @@ class OrganilabNode(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+
+class RegulationDocument(models.Model):
+    name = models.CharField(max_length=250)
+    file = models.FileField(upload_to='regulation/', verbose_name=_("Regulation File"))
+    country = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = _('Regulation document')
+        verbose_name_plural = _('Regulation documents')
