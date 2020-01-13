@@ -6,7 +6,7 @@ class TextBoxTag():
             'originX': 'originX', 'originY': 'originY',
             'left': 'left', 'top': 'top',
             'width': 'width', 'height': 'height',
-            'fill': 'color', 'stroke': 'stroke',
+            'fill': 'color', 'stroke': 'stroke', 'color': 'color',
             'strokeWidth': 'stroke-width', 'strokeDashArray': 'stroke-dasharray',
             'strokeLineCap': 'stroke-linecap', 'strokeLineJoin': 'stroke-linejoin',
             'strokeMiterLimit': 'stroke-miterlimit',
@@ -34,7 +34,7 @@ class ITextBoxTag():
             'originX': 'originX', 'originY': 'originY',
             'left': 'left', 'top': 'top',
             'width': 'width', 'height': 'height',
-            'fill': 'color', 'stroke': 'stroke',
+            'fill': 'color', 'stroke': 'stroke', 'color': 'color',
             'strokeWidth': 'stroke-width', 'strokeDashArray': 'stroke-dasharray',
             'strokeLineCap': 'stroke-linecap', 'strokeLineJoin': 'stroke-linejoin',
             'strokeMiterLimit': 'stroke-miterlimit',
@@ -105,6 +105,8 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
     styles = "position:absolute;"
     tag = ""
+    warningword = ['Peligro']
+
     def __init__(self, props):
         self.to_append_px = ("font-size", "width", "height")
         self.type = props['type']
@@ -116,6 +118,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             ITextBoxTag.__init__(self, props)
         if(self.type == "line"):
             LineTag.__init__(self, props)
+
     def set_tag(self):
         if (self.type == "textbox"):
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
@@ -131,7 +134,8 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         css = ""
         css += "border-color: %s;" % self.json_props["stroke"]
         return css
-    def pop_from_dict(self,items):
+
+    def pop_from_dict(self, items):
         for key in items:
             self.properties.pop(key)
 
@@ -151,7 +155,10 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             self.styles += "{}:{};".format('left', left_value)
             self.pop_from_dict(['top', 'left'])
         for key, value in self.properties.items():
-            if self.json_props[key]:
+            if key == 'color':
+                if self.json_props['text'] in self.warningword:
+                    self.styles += "{}:{};".format('color', 'red')
+            elif self.json_props[key]:
                 self.styles += "{}:{};".format(value, self.json_props[key] if key not in self.to_append_px else
                 str(self.json_props[key]) + 'px')
         return self.styles
