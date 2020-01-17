@@ -139,7 +139,7 @@ class MSDSObjectCRUD(CRUDView):
         return ODeleteView
 
 
-def organilab_tree_frame(request):
+def organilab_tree_frame(request):  
     context = {}
     context['sections'] = OrganilabNode.objects.all()
     return render(request, 'msds/organilab_tree_frame.html', context)
