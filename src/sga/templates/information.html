@@ -29,7 +29,7 @@
 
 {% block content %}
 
-<form id="sgaform"  method="post" action="{% url 'sga:template' %}">
+<form id="sgaform"  method="POST" action="{% url 'sga:template' %}" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
         <div class="col-sm-12">
@@ -102,7 +102,7 @@
             <!--============================================================================================================-->
             <!--=========================================Recipient==========================================================-->
             <div class="form-group">
-                <label><span class="label label-info">4</span>&nbsp;{% trans 'Recipient' %}</label><br>
+                <label><span class="label label-info">5</span>&nbsp;{% trans 'Recipient' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
                 <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
                     <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
@@ -124,7 +124,23 @@
             <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             <!--============================================================================================================-->
         </div>
+        <div class="col-sm-6" style="margin-top:1%">
+            <!--============================================================================================================-->
+            <!--=========================================Recipient==========================================================-->
+            <div class="form-group">
+                <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo and Bar Code' %}</label><br>
+                <br>
+                <!--<a>{{ recipients }}</a>-->
+                <input type="file" id="logo" name="logo">
+                <br>
+                <input type="file" id="barcode" name="barcode">
+            </div>
+
+            <!--============================================================================================================-->
+        </div>
+
     </div>
+    <br>
 
     <div class="wizard-footer">
                     <div class="pull-right">
