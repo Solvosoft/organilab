@@ -182,17 +182,39 @@
             <li>
                 <a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
             </li>
+            <li>
+                <a class="genericitem"  id="logo"  data-ftype="image" title="{{  logo_file_url.name }}" href="#">
+                <img width="64px" height="64px" src="{{ logo_file_url.name }}" alt="{{ logo_file_url.name }}" class="img-rounded"></a>
+            </li>
+            <li>
+                <a class="genericitem"  id="barcode"  data-ftype="image" title="{{  barcode_file_url }}"  href="#">
+                <img width="64px" height="64px" src="{{ barcode_file_url.name }}" alt="{{ barcode_file_url.name }}" class="img-rounded"> </a>
+            </li>
         </ul>
     </div>
     <div role="tabpanel" class="tab-pane" id="settings">
         <div class="row">
 
-{% for pictogram in pictograms %}
-              <div class="col-md-4">
-                 <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                          src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
 
-              </div>{% endfor %}
+{% if barcode_file_url %}
+    <div class="col-md-4">
+        <a class="genericitem" id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
+    </div>
+{% endif%}
+{% if logo_file_url %}
+    <div class="col-md-4">
+         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
+    </div>
+{%  endif %}
+{% for pictogram in pictograms %}
+        <div class="col-md-4">
+             <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                      src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
+
+          </div>
+      {% endfor %}
         </div>
     </div>
   </div>

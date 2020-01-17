@@ -22,6 +22,14 @@
 {% block content %}
 {# Start wizard container #}
          <div class="wizard-header">
+
+            <div class="col-sm-12" style="text-align:right">
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style" id="editLabel">
+                    <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
+                    <a type="button" class="btn btn-info btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
+                </div>
+            </div>
+            <br>
             <h2 class="heading-1" center><span>{% trans 'GHS Label Creator' %}</span></h2>
             <p class="category">{% trans 'Create your own chemical label according to the Globally Harmonized System (GHS).' %}</p>
         </div>
@@ -42,7 +50,7 @@
                        <li><p style="font-size:100%;">{% trans 'Social Media Options.' %}</p></li>
                        <li><p style="font-size:100%;">{% trans 'Printing Management.' %}</p></li>
                      </ul>
-                <br>
+                    <p style="font-size:15px; font-weight:bold">{% trans 'Do you have templates already created, print them!' %}</p>
                 </div>
             </div>
         </div>

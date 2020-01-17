@@ -17,6 +17,7 @@ from weasyprint import HTML
 from django.core.files import temp as tempfile
 from django.views.decorators.http import require_http_methods
 from .json2html import json2html
+from django.core.files.storage import FileSystemStorage, Storage
 
 register = Library()
 
@@ -50,6 +51,7 @@ def html2pdf(json_data):
 def index_sga(request):
     return render(request, 'index_sga.html', {})
 
+
 # SGA information
 def information_creator(request):
     recipients = RecipientSize.objects.all()
@@ -66,11 +68,23 @@ def information_creator(request):
 
     return render(request, 'information.html', context)
 
+
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
+    # barcode_file_url = logo_file_url = False
+    # request.session['commercial_information'] = request.POST.get('commercial_information', '')
+    # if request.method == 'POST' and request.FILES.get('logo', False):
+    #     logo = request.FILES.get('logo', False)
+    #     fs_logo = FileSystemStorage
+    #     logo_filename = fs_logo.save(logo.name, logo)
+    #     logo_file_url = fs_logo.url(logo_filename)
+    # if request.FILES.get('barcode', False):
+    #     barcode = request.FILES.get('barcode', False)
+    #     fs_barcode = FileSystemStorage
+    #     barcode_filename = fs_barcode.save(barcode.name, barcode)
+    #     barcode_file_url = fs_barcode.url(barcode_filename)
 
-    request.session['commercial_information'] = request.POST.get('commercial_information','')
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
@@ -79,6 +93,7 @@ def template(request):
         'laboratory': None,
         'form': form,
         'sgatemplates': sgatemplates,
+        # 'files': [logo_file_url, barcode_file_url]
 
     }
     return render(request, 'template.html', context)
