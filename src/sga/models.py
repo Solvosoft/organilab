@@ -47,22 +47,6 @@ class WarningClass(MPTTModel):
 # Pictograma de precaución
 
 
-class Pictogram(models.Model):
-    name = models.CharField(max_length=150, primary_key=True,
-                            verbose_name=_("Name"))
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Pictogram')
-        verbose_name_plural = _('Pictograms')
-        permissions = (
-            ("view_pictogram", _("Can see available pictograms")),
-        )
-# palabras de advertencia
-
-
 class WarningWord(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     weigth = models.SmallIntegerField(default=0, verbose_name=_("Weigth"))
@@ -77,6 +61,23 @@ class WarningWord(models.Model):
             ("view_warningword", _("Can see available Warning Words")),
         )
 # Indicación de peligro
+
+
+class Pictogram(models.Model):
+    name = models.CharField(max_length=150, primary_key=True,
+                            verbose_name=_("Name"))
+    warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Pictogram')
+        verbose_name_plural = _('Pictograms')
+        permissions = (
+            ("view_pictogram", _("Can see available pictograms")),
+        )
+# palabras de advertencia
 
 
 class PrudenceAdvice(models.Model):
