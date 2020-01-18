@@ -1,7 +1,11 @@
 # Import functions of another modules
+import os
+
+from django.core.files.base import ContentFile
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
+from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
 from sga.models import TemplateSGA, RecipientSize, Substance
@@ -72,19 +76,20 @@ def information_creator(request):
 # SGA template visualize
 def template(request):
     sgatemplates = TemplateSGA.objects.all()
-    # barcode_file_url = logo_file_url = False
-    # request.session['commercial_information'] = request.POST.get('commercial_information', '')
-    # if request.method == 'POST' and request.FILES.get('logo', False):
-    #     logo = request.FILES.get('logo', False)
-    #     fs_logo = FileSystemStorage
-    #     logo_filename = fs_logo.save(logo.name, logo)
-    #     logo_file_url = fs_logo.url(logo_filename)
-    # if request.FILES.get('barcode', False):
-    #     barcode = request.FILES.get('barcode', False)
-    #     fs_barcode = FileSystemStorage
-    #     barcode_filename = fs_barcode.save(barcode.name, barcode)
-    #     barcode_file_url = fs_barcode.url(barcode_filename)
-
+    barcode_file_url = logo_file_url = False
+    request.session['commercial_information'] = request.POST.get('commercial_information', '')
+    if request.method == 'POST' and request.FILES.get('logo', False):
+        logo = request.FILES['logo']
+        fs_logo = FileSystemStorage()
+        logo_filename = fs_logo.save(logo.name, logo)
+        logo_file_url = fs_logo.url(logo_filename)
+    if request.FILES.get('barcode', False):
+        barcode = request.FILES['barcode']
+        fs_barcode = FileSystemStorage()
+        barcode_filename = fs_barcode.save(barcode.name, barcode)
+        barcode_file_url = fs_barcode.url(barcode_filename)
+    request.session['logo_file_url'] = logo_file_url
+    request.session['barcode_file_url'] = barcode_file_url
     if request.method == 'POST':
         form = RecipientInformationForm(request.POST)
     else:
@@ -93,7 +98,7 @@ def template(request):
         'laboratory': None,
         'form': form,
         'sgatemplates': sgatemplates,
-        # 'files': [logo_file_url, barcode_file_url]
+        'files': [logo_file_url, barcode_file_url]
 
     }
     return render(request, 'template.html', context)
@@ -245,8 +250,11 @@ def show_editor_preview(request, pk):
             value = " "
         representation = representation.replace(key, value)
 
+    context = {'logo_url': request.session['logo_file_url'],
+               'barcode_url': request.session['barcode_file_url']}
+
     representation = utils_pictograms.pic_selected(representation,
-                                                   pictograms)
+                                                   pictograms, context)
     context = {
         'object': representation,
         'preview': obj.preview
