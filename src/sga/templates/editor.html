@@ -28,18 +28,18 @@
 <div class="row">
     <div class="col-sm-12">
 
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                              aria-expanded="false">
-                          {% trans 'Available templates' %} <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+              {% trans 'Available templates' %} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
 
               {% for tem in templates %}
-             <li><a href="{% url 'sga:editor' %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li><a href="{% url 'sga:editor' %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
 
-          </ul>
+            </ul>
 
         </div>
         <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
@@ -183,12 +183,12 @@
                 <a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
             </li>
             <li>
-                <a class="genericitem"  id="logo"  data-ftype="image" title="{{  logo_file_url.name }}" href="#">
-                <img width="64px" height="64px" src="{{ logo_file_url.name }}" alt="{{ logo_file_url.name }}" class="img-rounded"></a>
+                <a class="genericitem"  id="logo"  data-ftype="image"  href="#"  title="/static/sga/img/logogen.jpg" >
+                <img width="64px" height="64px" src="/static/sga/img/logogen.jpg" alt="pictogram" class="img-rounded"> </a>
             </li>
             <li>
-                <a class="genericitem"  id="barcode"  data-ftype="image" title="{{  barcode_file_url }}"  href="#">
-                <img width="64px" height="64px" src="{{ barcode_file_url.name }}" alt="{{ barcode_file_url.name }}" class="img-rounded"> </a>
+                <a class="genericitem"  id="barcode"  data-ftype="image"  href="#"  title="/static/sga/img/barcodegen.jpg" >
+                <img width="64px" height="64px" src="/static/sga/img/barcodegen.jpg" alt="pictogram" class="img-rounded"> </a>
             </li>
         </ul>
     </div>
