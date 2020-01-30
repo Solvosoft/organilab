@@ -324,7 +324,6 @@ def getSubstanceInformation(request):
     prudenceAdvicesNameSubstance = []
     prudenceAdvicesCodeSubstance = []
     pictogramasNameSubstance = []
-    components = []
     componentsCasNumbers = []
     if request.is_ajax():
         dangerIndications = DangerIndication.objects.filter(sustance__in=request.GET['substance_id'])

@@ -12,14 +12,21 @@ class CanvasHandler
     }
 }
 
-function save(index){
-    _canvases[index].redo = [];
+function save(index_temp, index_local){
+    _canvases[index_temp].redo = [];
     $('#redo').prop('disabled', true);
-    if (_canvases[index].state){
-        _canvases[index].undo.push(_canvases[index].state);
+    if (_canvases[index_temp].state){
+        _canvases[index_temp].undo.push(_canvases[index_temp].state);
         $('#undo').prop('disabled', false);
     }
-    _canvases[index].state = JSON.stringify(_canvases[index].canv_obj);
+    _canvases[index_temp].state = JSON.stringify(_canvases[index_temp].canv_obj);
+    if ( window.localStorage.getItem(index_local)){
+        window.localStorage.removeItem(index_local)
+        window.localStorage.setItem(index_local, _canvases[index_temp].state)
+    }
+    else{
+        window.localStorage.setItem(index_local, _canvases[index_temp].state)
+    }
 
 }
 function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
@@ -64,11 +71,20 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     let formdata = $("#sgaform").serializeArray();
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
+            let json_object = '';
             let newcanvas = new fabric.Canvas(element.id);
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
             _canvases.push(handler);
             let index_temp = _canvases.length - 1;
-            _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
+
+            if( window.localStorage.getItem(element.id)){
+                temp = window.localStorage.getItem(element.id);
+                json_object = JSON.parse(temp)
+            }
+            else{
+                json_object = data.object;
+            }
+            _canvases[index_temp].canv_obj.loadFromJSON(json_object, function() {
                 _canvases[index_temp].canv_obj.item(0).selectable = false;
                 _canvases[index_temp].canv_obj['panning'] = false;
                 _canvases[index_temp].canv_obj['onselected'] = false;
@@ -103,7 +119,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                      _canvases[index_temp].canv_obj['onselected'] = false;
                  });
                 _canvases[index_temp].canv_obj.on('object:modified', function () {
-                     save(index_temp);
+                     save(index_temp,element.id);
                  });
 
                 let canvas_container_preview = $(".canvas-container-preview");
