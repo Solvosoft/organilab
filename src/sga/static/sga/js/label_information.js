@@ -131,4 +131,3 @@ function changePlaceHolder(sel) {
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-s
