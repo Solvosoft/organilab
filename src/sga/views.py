@@ -194,10 +194,11 @@ def label_creator(request, step=0):
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
+
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
     request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
-                             'width_value': recipients.width, 'width_unit': recipients.width_unit}
+                                                'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
     weight = -1
     warningword = "{{warningword}}"
@@ -212,10 +213,15 @@ def show_editor_preview(request, pk):
             else:
                 warningword = di.warning_words.name
             weight = di.warning_words.weigth
+        # get danger indications from substance here
         if di.description == "Sin indicación de peligro":
-            dangerindications = ""
+            dangerindications += ""
         else:
-            dangerindications = di.description
+            if dangerindications == '':
+                dangerindications += di.description
+            else:
+                dangerindications += ". " + di.description
+
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
@@ -238,27 +244,25 @@ def show_editor_preview(request, pk):
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
     }
-    obj = get_object_or_404(TemplateSGA, pk=pk)
-    representation = obj.json_representation
-    for key, value in template_context.items():
-        representation = representation.replace(key, value)
-    obj = get_object_or_404(TemplateSGA, pk=pk)
 
+    obj = get_object_or_404(TemplateSGA, pk=pk)
     representation = obj.json_representation
     for key, value in template_context.items():
         if value == 'Sin palabra de advertencia':
             value = " "
         representation = representation.replace(key, value)
 
-    context = {'logo_url': request.session['logo_file_url'],
-               'barcode_url': request.session['barcode_file_url']}
+    files = {'logo_url': request.session['logo_file_url'],
+             'barcode_url': request.session['barcode_file_url']}
 
     representation = utils_pictograms.pic_selected(representation,
-                                                   pictograms, context)
+                                                   pictograms, files)
+
     context = {
         'object': representation,
         'preview': obj.preview
     }
+
     return JsonResponse(context)
 
 
@@ -278,7 +282,6 @@ def label_template(request):
                                                    })
 
 
-
 def get_sga_editor_options(request):
     content = {
         'warningword': list(WarningWord.objects.values('pk', 'name', 'weigth')),
@@ -286,9 +289,11 @@ def get_sga_editor_options(request):
         'prudenceadvice': list(PrudenceAdvice.objects.values('pk', 'code', 'name'))}
     return JsonResponse(content, content_type='application/json')
 
+
 # SGA Label Editor Page
 def label_editor(request):
     return render(request, 'label_editor.html', {})
+
 
 # SGA Search sustance with autocomplete
 def search_autocomplete_sustance(request):
@@ -316,114 +321,115 @@ def search_autocomplete_sustance(request):
 
 # SGA Obtain substance information
 
-def getSubstanceInformation(request):
-    substanceInformation = {}
-    signalWordSubstance = ''
-    dangerIndicationsDescriptionSubstance = []
-    dangerIndicationsCodeSubstance = []
-    prudenceAdvicesNameSubstance = []
-    prudenceAdvicesCodeSubstance = []
-    pictogramasNameSubstance = []
-    componentsCasNumbers = []
-    if request.is_ajax():
-        dangerIndications = DangerIndication.objects.filter(sustance__in=request.GET['substance_id'])
-        # ---------------------------------------------------------------------
-        # ----------------------------Signal Word------------------------------
-        for dangerIndication in dangerIndications:
-            # Set priority to Danger
-            if str(signalWordSubstance) == 'Peligro':
-                break
-            else:
-                # Set priority to Warning
-                if (str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(
-                        signalWordSubstance) == 'atención'):
-                    pass
-                else:
-                    signalWordSubstance = dangerIndication.warning_words
-        substanceInformation['signalWord'] = str(signalWordSubstance)
-        # ---------------------------------------------------------------------
-        # --------------------------Danger Indications-------------------------
-        for dangerIndication in dangerIndications:
-            if str(dangerIndication.code) in dangerIndicationsCodeSubstance:
-                pass
-            # Special cases
-            # H410 > H400
-            elif 'H410' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H400':
-                pass
-            elif 'H400' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H410':
-                index = dangerIndicationsCodeSubstance.index('H400')
-                dangerIndicationsCodeSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
-                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
-            # H411 > H401
-            elif 'H411' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H401':
-                pass
-            elif 'H401' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H411':
-                index = dangerIndicationsCodeSubstance.index('H401')
-                dangerIndicationsCodeSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
-                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
-            # H412 > H402
-
-            elif 'H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402':
-                pass
-            elif 'H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412':
-                index = dangerIndicationsCodeSubstance.index('H402')
-                dangerIndicationsCodeSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
-                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
-            # H314 > H318
-            elif 'H314' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H318':
-                pass
-            elif 'H318' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H314':
-                index = dangerIndicationsCodeSubstance.index('H318')
-                dangerIndicationsCodeSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.pop(index)
-                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
-                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
-            else:
-                dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
-                dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
-        substanceInformation['DangerIndications'] = dangerIndicationsDescriptionSubstance
-        # ---------------------------------------------------------------------
-        # ------------------Prudence Advices and Pictograms--------------------
-        for dangerIndicationCode in dangerIndicationsCodeSubstance:
-            prudenceAdvices = PrudenceAdvice.objects.filter(dangerindication=dangerIndicationCode)
-            pictograms = Pictogram.objects.filter(dangerindication=dangerIndicationCode)
-            if prudenceAdvices:
-                for prudenceAdvice in prudenceAdvices:
-                    if str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance:
-                        pass
-                    else:
-                        prudenceAdvicesNameSubstance.append(str(prudenceAdvice.name))
-                        dangerIndicationsCodeSubstance.append(str(prudenceAdvice.code))
-            if pictograms:
-                for pictogram in pictograms:
-                    if str(pictogram.name) in pictogramasNameSubstance:
-                        pass
-                    else:
-                        if str(pictogram.name) != 'Sin Pictograma':
-                            pictogramasNameSubstance.append(str(pictogram.name))
-        substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
-        substanceInformation['Pictograms'] = pictogramasNameSubstance
-        # ---------------------------------------------------------------------
-        # --------------------------Cas Numbers--------------------------------
-        components = Component.objects.filter(sustance=request.GET['substance_id'])
-        if components:
-            for component in components:
-                if str(component.cas_number) in componentsCasNumbers:
-                    pass
-                else:
-                    componentsCasNumbers.append(str(component.cas_number))
-        substanceInformation['CasNumbers'] = componentsCasNumbers
-        # ---------------------------------------------------------------------
-        # print(substanceInformation)
-        data = json.dumps(substanceInformation)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-
-    return HttpResponse(data, mimetype)
+# def getSubstanceInformation(request):
+#     substanceInformation = {}
+#     signalWordSubstance = ''
+#     dangerIndicationsDescriptionSubstance = []
+#     dangerIndicationsCodeSubstance = []
+#     prudenceAdvicesNameSubstance = []
+#     prudenceAdvicesCodeSubstance = []
+#     pictogramasNameSubstance = []
+#     componentsCasNumbers = []
+#     if request.is_ajax():
+#         dangerIndications = DangerIndication.objects.filter(sustance__in=request.GET['substance_id'])
+#         # ---------------------------------------------------------------------
+#         # ----------------------------Signal Word------------------------------
+#         for dangerIndication in dangerIndications:
+#             # Set priority to Danger
+#             if str(signalWordSubstance) == 'Peligro':
+#                 break
+#             else:
+#                 # Set priority to Warning
+#                 if (str(dangerIndication.warning_words) == 'Sin palabra de advertencia' and str(
+#                         signalWordSubstance) == 'atención'):
+#                     pass
+#                 else:
+#                     signalWordSubstance = dangerIndication.warning_words
+#         substanceInformation['signalWord'] = str(signalWordSubstance)
+#         # ---------------------------------------------------------------------
+#         # --------------------------Danger Indications-------------------------
+#         for dangerIndication in dangerIndications:
+#             print(dangerIndication)
+#             if str(dangerIndication.code) in dangerIndicationsCodeSubstance:
+#                 pass
+#             # Special cases
+#             # H410 > H400
+#             elif 'H410' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H400':
+#                 pass
+#             elif 'H400' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H410':
+#                 index = dangerIndicationsCodeSubstance.index('H400')
+#                 dangerIndicationsCodeSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+#                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+#             # H411 > H401
+#             elif 'H411' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H401':
+#                 pass
+#             elif 'H401' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H411':
+#                 index = dangerIndicationsCodeSubstance.index('H401')
+#                 dangerIndicationsCodeSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+#                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+#             # H412 > H402
+#
+#             elif 'H412' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H402':
+#                 pass
+#             elif 'H402' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H412':
+#                 index = dangerIndicationsCodeSubstance.index('H402')
+#                 dangerIndicationsCodeSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+#                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+#             # H314 > H318
+#             elif 'H314' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H318':
+#                 pass
+#             elif 'H318' in dangerIndicationsCodeSubstance and str(dangerIndication.code) == 'H314':
+#                 index = dangerIndicationsCodeSubstance.index('H318')
+#                 dangerIndicationsCodeSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.pop(index)
+#                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+#                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+#             else:
+#                 dangerIndicationsDescriptionSubstance.append(str(dangerIndication.description))
+#                 dangerIndicationsCodeSubstance.append(str(dangerIndication.code))
+#         substanceInformation['DangerIndications'] = dangerIndicationsDescriptionSubstance
+#         # ---------------------------------------------------------------------
+#         # ------------------Prudence Advices and Pictograms--------------------
+#         for dangerIndicationCode in dangerIndicationsCodeSubstance:
+#             prudenceAdvices = PrudenceAdvice.objects.filter(dangerindication=dangerIndicationCode)
+#             pictograms = Pictogram.objects.filter(dangerindication=dangerIndicationCode)
+#             if prudenceAdvices:
+#                 for prudenceAdvice in prudenceAdvices:
+#                     if str(prudenceAdvice.code) in prudenceAdvicesCodeSubstance:
+#                         pass
+#                     else:
+#                         prudenceAdvicesNameSubstance.append(str(prudenceAdvice.name))
+#                         dangerIndicationsCodeSubstance.append(str(prudenceAdvice.code))
+#             if pictograms:
+#                 for pictogram in pictograms:
+#                     if str(pictogram.name) in pictogramasNameSubstance:
+#                         pass
+#                     else:
+#                         if str(pictogram.name) != 'Sin Pictograma':
+#                             pictogramasNameSubstance.append(str(pictogram.name))
+#         substanceInformation['PrudenceAdvices'] = prudenceAdvicesNameSubstance
+#         substanceInformation['Pictograms'] = pictogramasNameSubstance
+#         # ---------------------------------------------------------------------
+#         # --------------------------Cas Numbers--------------------------------
+#         components = Component.objects.filter(sustance=request.GET['substance_id'])
+#         if components:
+#             for component in components:
+#                 if str(component.cas_number) in componentsCasNumbers:
+#                     pass
+#                 else:
+#                     componentsCasNumbers.append(str(component.cas_number))
+#         substanceInformation['CasNumbers'] = componentsCasNumbers
+#         # ---------------------------------------------------------------------
+#         # print(substanceInformation)
+#         data = json.dumps(substanceInformation)
+#     else:
+#         data = 'fail'
+#     mimetype = 'application/json'
+#
+#     return HttpResponse(data, mimetype)

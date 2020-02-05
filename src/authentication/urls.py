@@ -17,8 +17,7 @@ urlpatterns = [
     url(r'^signup$', signup, name='signup'),
     url(r'^accounts/login/$', OrgLoginView.as_view(),
         {'template_name': 'registration/login.html'}, name='login'),
-    url(r'^accounts/logout/$', auth_views.LogoutView, {
-        'next_page': reverse_lazy('index')},
+    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(),
         name='logout'),
 
     url(r'^permission_denied$', PermissionDeniedView.as_view(),
