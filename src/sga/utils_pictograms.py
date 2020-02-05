@@ -18,7 +18,10 @@ def pic_selected(representation, pictograms, context):
             if 'example.gif' in obj['src']:
                 if index < size_obj:
                     path_to_file = var + "sga/img/pictograms/"
-                    obj['src'] = path_to_file + temp_picts[index]
+                    if 'Sin Pictograma' in temp_picts[index]:
+                        obj['src'] = ''
+                    else:
+                        obj['src'] = path_to_file + temp_picts[index]
                     index += 1
                 else:
                     obj['src'] = ''

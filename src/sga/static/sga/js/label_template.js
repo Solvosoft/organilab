@@ -22,10 +22,10 @@ function save(index_temp, index_local){
     _canvases[index_temp].state = JSON.stringify(_canvases[index_temp].canv_obj);
     if ( window.localStorage.getItem(index_local)){
         window.localStorage.removeItem(index_local)
-        window.localStorage.setItem(index_local, _canvases[index_temp].state)
+        window.localStorage.setItem(index_local, _canvases[index_temp].canv_obj)
     }
     else{
-        window.localStorage.setItem(index_local, _canvases[index_temp].state)
+        window.localStorage.setItem(index_local, _canvases[index_temp].canv_obj)
     }
 
 }
@@ -51,7 +51,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     off.prop('disabled', true);
 
     _canvases[index].canv_obj.clear();
-    _canvases[index].canv_obj.loadFromJSON(_canvases[index].state, function(){
+    _canvases[index].canv_obj.loadFromJSON(JSON.parse(_canvases[index].state), function(){
         _canvases[index].canv_obj.renderAll();
         on.prop('disabled', false);
         if(playStack == 'undo'){
@@ -71,32 +71,33 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     let formdata = $("#sgaform").serializeArray();
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
-            let json_object = '';
+            let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
             _canvases.push(handler);
             let index_temp = _canvases.length - 1;
-
-            if( window.localStorage.getItem(element.id)){
+           /* if( window.localStorage.getItem(element.id)){
                 temp = window.localStorage.getItem(element.id);
                 json_object = JSON.parse(temp)
             }
-            else{
-                json_object = data.object;
-            }
-            _canvases[index_temp].canv_obj.loadFromJSON(json_object, function() {
+            else{*/
+            json_object = data.object;
+           // }
+           console.log(data.object);
+           console.log('--------------------');
+            _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
                 _canvases[index_temp].canv_obj.item(0).selectable = false;
                 _canvases[index_temp].canv_obj['panning'] = false;
                 _canvases[index_temp].canv_obj['onselected'] = false;
                 _canvases[index_temp].canv_obj.on('mouse:wheel', function (opt) {
-                     let delta = opt.e.deltaY;
-                     let zoom = _canvases[index_temp].canv_obj.getZoom();
-                     zoom = zoom + delta / 200;
-                     if (zoom > 20) zoom = 20;
-                     if (zoom < 0.01) zoom = 0.01;
-                     _canvases[index_temp].canv_obj.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-                     opt.e.preventDefault();
-                     opt.e.stopPropagation();
+                    let delta = opt.e.deltaY;
+                    let zoom = _canvases[index_temp].canv_obj.getZoom();
+                    zoom = zoom + delta / 200;
+                    if (zoom > 20) zoom = 20;
+                    if (zoom < 0.01) zoom = 0.01;
+                    _canvases[index_temp].canv_obj.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                    opt.e.preventDefault();
+                    opt.e.stopPropagation();
                  });
                 _canvases[index_temp].canv_obj.on('mouse:up', function () {
                      _canvases[index_temp].canv_obj['panning'] = false;
@@ -125,16 +126,16 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 let canvas_container_preview = $(".canvas-container-preview");
                 let height = canvas_container_preview.height();
                 if (height < 400){
-                height = 400;
+                    height = 400;
                 }
                 let width = canvas_container_preview.width();
                 if(width < 400 ){
-                width = 400;
+                    width = 400;
                 }
                 _canvases[index_temp].canv_obj.setWidth(width);
                 _canvases[index_temp].canv_obj.setHeight(height);
                 _canvases[index_temp].canv_obj.renderAll();
-                save(index_temp);
+                save(index_temp,element.id);
             });
           });
     });
