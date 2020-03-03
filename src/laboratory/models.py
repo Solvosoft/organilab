@@ -78,6 +78,7 @@ class Object(models.Model):
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
     type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    is_public = models.BooleanField(default=True, verbose_name=_('Share with others'))
     description = models.TextField(_('Description'))
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
                                          validators=[validate_molecular_formula], null=True, blank=True)
@@ -87,7 +88,10 @@ class Object(models.Model):
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
     imdg_code = models.CharField(
-        _("IMDG code"), choices=IDMG_CHOICES, max_length=1, null=True, blank=True)
+        _("IMDG code"), choices=IDMG_CHOICES, max_length=1,
+        help_text="* Eliminado en la próxima versión", null=True, blank=True)
+
+    h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
 
     features = models.ManyToManyField(
         ObjectFeatures, verbose_name=_("Object features"))
@@ -96,6 +100,8 @@ class Object(models.Model):
     serie = models.CharField(_('Serie'),  max_length=50, null=True, blank=True)
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
+
+    laboratory = models.ManyToManyField('Laboratory', blank=True)
 
     @property
     def is_reactive(self):
@@ -123,13 +129,21 @@ class ShelfObject(models.Model):
     L = '3'
     ML = '4'
     U = "5"
+    G = '6'
+    KG = '7'
+    MG ='8'
+    M3 = '9'
     CHOICES = (
         (M, _('Meters')),
         (MM, _('Milimeters')),
         (CM, _('Centimeters')),
         (L, _('Liters')),
         (ML, _('Mililiters')),
-        (U, _('Unit'))
+        (U, _('Unit')),
+        (G, _('Gram')),
+        (KG, _('Kilogram')),
+        (MG, _('Miligram')),
+        (M3, _("Cubic Meter"))
     )
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(

@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 from django.conf.urls import url, include
 from rest_framework.authtoken import views
 
-
+from .reactive import ReactiveMolecularFormulaAPIView
 from .views import (LaboratoryRoomAPIView,
                     FurnitureAPIView,
                     ShelfAPIView,
@@ -47,6 +47,7 @@ shelfobject_api_urls = [
 ]
 
 object_api_urls = [
+    url(r'reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     url(r'^$', ObjectAPIView.as_view(), name='api_object'),
     url(r'^(?P<pk>\d+)/$', ObjectAPIView.as_view(), name='api_object_updates'),
 ]

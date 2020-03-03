@@ -28,6 +28,7 @@ class LaboratoryRoomsList(ListView):
     def get_queryset(self):
         lab = get_object_or_404(
             Laboratory, pk=self.lab)
+        self.request.session['search_lab'] = self.lab
         return lab.rooms.all()
 
 

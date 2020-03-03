@@ -23,8 +23,13 @@ class TagsLookup(LookupChannel):
 
         
     def get_query(self, q, request):
-        return self.model.objects.filter(Q(code__icontains=q) | Q(
-            name__icontains=q)|Q(cas_id_number__icontains=q)).order_by('name')[:8]
+        query= self.model.objects.filter(Q(code__icontains=q) | Q(
+            name__icontains=q)|Q(cas_id_number__icontains=q)).order_by('name')
+
+        if 'search_lab' in request.session:
+            lab_pk = request.session['search_lab']
+            query = query.filter(Q(laboratory__in=[lab_pk])|Q(is_public=True)).distinct()
+        return query[:8]
 
     def format_item_display(self, item):
         return u"<span class='tag'>(%s) %s</span>" % (item.code, item.name)

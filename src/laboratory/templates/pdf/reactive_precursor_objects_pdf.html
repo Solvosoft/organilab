@@ -17,7 +17,7 @@
           {% for features in obj.features.all %}
             <ul>
               <li>
-                {{ features.get_name_display }}
+                {{ features.name }}
               </li>
             </ul>
           {% empty %}
@@ -37,6 +37,17 @@
             {% trans "No Data" %}
           {% endfor %}
         </li>
+        {% if obj.h_code.exists %}
+      <li>
+        <p>{% trans "Danger indication:" %}</p>
+        <ul>
+        {% for code in obj.h_code.all %}
+          <li>{{code}} </li>
+        {% endfor %}
+        </ul>
+      </li>
+        {% endif %}
+
         <li>{% trans "Description:" %} {{ obj.description }}</li>
         <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
         <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
@@ -45,6 +56,8 @@
               href="{{ obj.clinventory_entry.url }}">{% trans 'Reference link' %}</a>)
           </li>
         {% endif %}
+
+
       </ul>
     {% empty %}
       {% trans "No Objects Elements" %}

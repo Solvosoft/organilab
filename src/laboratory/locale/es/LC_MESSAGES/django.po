@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-21 17:16-0600\n"
+"POT-Creation-Date: 2020-03-03 14:50-0600\n"
 "PO-Revision-Date: 2017-10-31 15:14-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -56,12 +56,12 @@ msgstr "Correo electrónico"
 msgid "Can %s"
 msgstr ""
 
-#: models.py:19 models.py:36 models.py:79 models.py:168 models.py:190
-#: models.py:237 models.py:372 models.py:413 models.py:483
+#: models.py:19 models.py:36 models.py:79 models.py:182 models.py:204
+#: models.py:251 models.py:386 models.py:427 models.py:499
 #: templates/laboratory/solution_detail.html:51
 #: templates/pdf/laboratoryroom_pdf.html:18 views/reports.py:28
 #: views/reports.py:120 views/reports.py:218 views/reports.py:280
-#: views/reports.py:430 views/solutions.py:79
+#: views/reports.py:430 views/solutions.py:80
 msgid "Name"
 msgstr "Nombre"
 
@@ -87,7 +87,7 @@ msgstr "Inventario C&L"
 msgid "Can see available C&L Inventory"
 msgstr ""
 
-#: models.py:37 models.py:81 templates/laboratory/search.html:67
+#: models.py:37 models.py:82 templates/laboratory/search.html:67
 msgid "Description"
 msgstr "Descripción"
 
@@ -95,7 +95,7 @@ msgstr "Descripción"
 msgid "Object feature"
 msgstr "Característica del objeto"
 
-#: models.py:41 models.py:93 templates/laboratory/index.html:125
+#: models.py:41 models.py:97 templates/laboratory/index.html:111
 msgid "Object features"
 msgstr "Características del objeto"
 
@@ -160,228 +160,256 @@ msgstr ""
 msgid "Code"
 msgstr "Código"
 
-#: models.py:80 models.py:193 models.py:238 templates/laboratory/search.html:53
+#: models.py:80 models.py:207 models.py:252 templates/laboratory/search.html:53
 #: views/reports.py:280
 msgid "Type"
 msgstr "Tipo"
 
-#: models.py:82 views/reports.py:285
+#: models.py:81
+msgid "Share with others"
+msgstr ""
+
+#: models.py:83 views/reports.py:285
 msgid "Molecular formula"
 msgstr "Formula molecular"
 
-#: models.py:85
+#: models.py:86
 msgid "Cas ID Number"
 msgstr "Número CAS"
 
-#: models.py:87
+#: models.py:88
 msgid "Security sheet"
 msgstr "Hoja de seguridad"
 
-#: models.py:88
+#: models.py:89
 msgid "Is precursor"
 msgstr "¿Es precursor"
 
-#: models.py:90 views/reports.py:125
+#: models.py:91 views/reports.py:125
 msgid "IMDG code"
 msgstr "Código IMDG"
 
-#: models.py:95
+#: models.py:94
+msgid "Danger Indication"
+msgstr ""
+
+#: models.py:99
 msgid "Model"
 msgstr ""
 
-#: models.py:96
+#: models.py:100
 msgid "Serie"
 msgstr ""
 
-#: models.py:98
+#: models.py:102
 msgid "Plaque"
 msgstr ""
 
-#: models.py:105
+#: models.py:111
 msgid "Object"
 msgstr "Objeto"
 
-#: models.py:106 templates/laboratory/index.html:120
-#: templates/laboratory/index.html:156
-#: templates/laboratory/partials/navbar.html:93
-#: templates/laboratory/partials/navbar.html:105
+#: models.py:112 templates/laboratory/index.html:106
+#: templates/laboratory/index.html:147
 msgid "Objects"
 msgstr "Objetos"
 
-#: models.py:108
+#: models.py:114
 msgid "Can see available object"
 msgstr ""
 
-#: models.py:127
+#: models.py:137
 msgid "Meters"
 msgstr "Metros"
 
-#: models.py:128
+#: models.py:138
 msgid "Milimeters"
 msgstr "Milímetros"
 
-#: models.py:129
+#: models.py:139
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: models.py:130
+#: models.py:140
 msgid "Liters"
 msgstr "Litros"
 
-#: models.py:131
+#: models.py:141
 msgid "Mililiters"
 msgstr "Mililitros"
 
-#: models.py:132
+#: models.py:142
 msgid "Unit"
 msgstr "Unidad"
 
-#: models.py:134 models.py:217
+#: models.py:143
+msgid "Gram"
+msgstr ""
+
+#: models.py:144
+msgid "Kilogram"
+msgstr ""
+
+#: models.py:145
+msgid "Miligram"
+msgstr ""
+
+#: models.py:146
+msgid "Cubic Meter"
+msgstr ""
+
+#: models.py:148 models.py:231
 #: templates/laboratory/report_laboratoryroom_list.html:61
 #: templates/pdf/laboratoryroom_pdf.html:20 views/reports.py:118
 #: views/reports.py:428
 msgid "Shelf"
 msgstr "Estante"
 
-#: models.py:136
+#: models.py:150
 #, fuzzy
 #| msgid "Equipments report"
 msgid "Equipment or reactive or sustance"
 msgstr "Reporte de Equipos"
 
-#: models.py:137
+#: models.py:151
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: models.py:138
+#: models.py:152
 msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
-#: models.py:140
+#: models.py:154
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: models.py:156 templates/laboratory/report_furniture_list.html:76
+#: models.py:170 templates/laboratory/report_furniture_list.html:76
 msgid "Shelf object"
 msgstr "Estante del objeto"
 
-#: models.py:157
+#: models.py:171
 msgid "Shelf objects"
 msgstr "Estante de los objetos"
 
-#: models.py:159
+#: models.py:173
 #, fuzzy
 #| msgid "Limited shelf objects"
 msgid "Can see available shelf objects"
 msgstr "Objetos en el límite"
 
-#: models.py:171
+#: models.py:185
 msgid "Laboratory Room"
 msgstr "Sala de laboratorio"
 
-#: models.py:172
+#: models.py:186
 msgid "Laboratory Rooms"
 msgstr "Salas de laboratorio"
 
-#: models.py:174 models.py:220
-msgid "Can see available shelf"
-msgstr ""
+#: models.py:188
+#, fuzzy
+#| msgid "Create laboratory"
+msgid "Can see available laboratory Room"
+msgstr "Crear un laboratorio"
 
-#: models.py:186
+#: models.py:200
 msgid "Space"
 msgstr "Espacio"
 
-#: models.py:187 models.py:234
+#: models.py:201 models.py:248
 msgid "Drawer"
 msgstr "Cajón"
 
-#: models.py:189 models.py:233 models.py:335
-#: templates/laboratory/furniture_list.html:8
+#: models.py:203 models.py:247 models.py:349
+#: templates/laboratory/furniture_list.html:9
 #: templates/laboratory/report_laboratoryroom_list.html:59 views/reports.py:117
 msgid "Furniture"
 msgstr "Mueble"
 
-#: models.py:192
+#: models.py:206
 #, fuzzy
 #| msgid "Create shelf"
 msgid "Container shelf"
 msgstr "Crear nuevo estante"
 
-#: models.py:218 templates/laboratory/shelf_list.html:9
+#: models.py:232 templates/laboratory/shelf_list.html:9
 msgid "Shelves"
 msgstr "Estantería"
 
-#: models.py:239
+#: models.py:234
+msgid "Can see available shelf"
+msgstr ""
+
+#: models.py:253
 msgid "Data configuration"
 msgstr "Configuración de datos"
 
-#: models.py:334 templates/laboratory/report_furniture_list.html:49
+#: models.py:348 templates/laboratory/report_furniture_list.html:49
 msgid "Piece of furniture"
 msgstr "Pieza de mueble"
 
-#: models.py:338
+#: models.py:352
 #, fuzzy
 #| msgid "Organilab Furniture Report"
 msgid "Can see available Furniture"
 msgstr "Organilab: Reporte de Muebles"
 
-#: models.py:374
+#: models.py:388
 msgid "Group"
 msgstr ""
 
-#: models.py:378
+#: models.py:392
 msgid "Parent"
 msgstr ""
 
-#: models.py:384 models.py:419 models.py:453
+#: models.py:398 models.py:433 models.py:467
 #, fuzzy
 #| msgid "Explanation"
 msgid "Organization"
 msgstr "Explicación"
 
-#: models.py:385
+#: models.py:399
 msgid "Organizations"
 msgstr ""
 
-#: models.py:388
+#: models.py:402
 msgid "Can see available OrganizationStructure"
 msgstr ""
 
-#: models.py:414 models.py:446
+#: models.py:428 models.py:460
 #: templates/laboratory/report_organizationlaboratory_list.html:59
 #: templates/pdf/organizationlaboratory_pdf.html:13 views/reports.py:28
 msgid "Phone"
 msgstr ""
 
-#: models.py:415
+#: models.py:429
 msgid "ID Card"
 msgstr ""
 
-#: models.py:416
+#: models.py:430
 msgid "Email address"
 msgstr ""
 
-#: models.py:422
+#: models.py:436
 msgid "Assigned to"
 msgstr ""
 
-#: models.py:429 views/reports.py:29
+#: models.py:443 views/reports.py:29
 msgid "Principal Technician"
 msgstr ""
 
-#: models.py:430
+#: models.py:444
 msgid "Principal Technicians"
 msgstr ""
 
-#: models.py:433
+#: models.py:447
 msgid "Can see available PrincipalTechnician"
 msgstr ""
 
-#: models.py:445
+#: models.py:459
 msgid "Laboratory name"
 msgstr "Nombre del laboratorio"
 
-#: models.py:448
+#: models.py:462
 #: templates/laboratory/report_organizationlaboratory_list.html:60
 #: templates/pdf/organizationlaboratory_pdf.html:14 views/reports.py:28
 #, fuzzy
@@ -389,66 +417,77 @@ msgstr "Nombre del laboratorio"
 msgid "Location"
 msgstr "Información"
 
-#: models.py:456
+#: models.py:470
 msgid "Rooms"
 msgstr ""
 
-#: models.py:459
+#: models.py:473
 #, fuzzy
 #| msgid "Laboratories"
 msgid "Laboratorists"
 msgstr "Laboratorios"
 
-#: models.py:462 templates/laboratory/access_list.html:12
+#: models.py:476 templates/laboratory/access_list.html:12
 msgid "Students"
 msgstr ""
 
-#: models.py:465 registry.py:13 templates/laboratory/index.html:116
-#: templates/laboratory/index.html:146
-#: templates/laboratory/partials/navbar.html:91 views/laboratory.py:156
+#: models.py:479 registry.py:13 templates/laboratory/index.html:101
+#: templates/laboratory/index.html:138 views/laboratory.py:156
 msgid "Laboratory"
 msgstr "Laboratorio"
 
-#: models.py:466
+#: models.py:480
 msgid "Laboratories"
 msgstr "Laboratorios"
 
-#: models.py:468
+#: models.py:482
 #, fuzzy
 #| msgid "Create laboratory"
 msgid "Can see available laboratory"
 msgstr "Crear un laboratorio"
 
-#: models.py:484 templates/laboratory/solution_detail.html:28
-#: views/solutions.py:80
+#: models.py:483
+#, fuzzy
+#| msgid "Create laboratory"
+msgid "Can see available reports"
+msgstr "Crear un laboratorio"
+
+#: models.py:484
+#, fuzzy
+#| msgid "Limited shelf objects"
+msgid "Can download available reports"
+msgstr "Objetos en el límite"
+
+#: models.py:500 templates/laboratory/solution_detail.html:28
+#: views/solutions.py:81
 msgid "Solutes"
 msgstr "Solutos"
 
-#: models.py:485 views/solutions.py:82
+#: models.py:501 views/solutions.py:83
 msgid "Volumen"
 msgstr "Volumen"
 
-#: models.py:487 views/solutions.py:54 views/solutions.py:83
+#: models.py:503 views/solutions.py:54 views/solutions.py:84
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: models.py:488 views/solutions.py:53 views/solutions.py:84
+#: models.py:504 views/solutions.py:53 views/solutions.py:85
 msgid "Pressure"
 msgstr "Presión"
 
-#: models.py:489 views/solutions.py:85
+#: models.py:505 views/solutions.py:86
 msgid "pH"
 msgstr "pH"
 
-#: models.py:492
+#: models.py:508
 msgid "Solution"
 msgstr "Solución"
 
-#: models.py:493
+#: models.py:509
 msgid "Solutions"
 msgstr "Soluciones"
 
-#: models.py:495
+#: models.py:511
 msgid "Can see available Solution"
 msgstr ""
 
@@ -485,9 +524,8 @@ msgstr ""
 "En las vistas de administración puedes encontrar todo lo que necesitas para "
 "controlar los componentes del laboratorio, desde las salas hasta objetos."
 
-#: registry.py:25 registry.py:49 templates/laboratory/index.html:56
-#: templates/laboratory/index.html:137
-#: templates/laboratory/partials/navbar.html:88
+#: registry.py:25 registry.py:49 templates/laboratory/index.html:46
+#: templates/laboratory/index.html:129
 msgid "Reports"
 msgstr "Reportes"
 
@@ -512,8 +550,8 @@ msgstr ""
 "Puedes tener acceso a multiples laboratorios, selecciona el que deseas "
 "haciendo click aquí"
 
-#: registry.py:37 templates/laboratory/index.html:46
-#: templates/laboratory/index.html:68 templates/laboratory/index.html:78
+#: registry.py:37 templates/laboratory/index.html:36
+#: templates/laboratory/index.html:58 templates/laboratory/index.html:68
 msgid "Laboratory view"
 msgstr "Vista de laboratorio"
 
@@ -545,7 +583,7 @@ msgstr ""
 "Aquí puedes ver y obtener los reportes generados a partir de los diferentes "
 "componentes manipulados y guardados en el sistema Organilab"
 
-#: registry.py:55 templates/laboratory/partials/navbar.html:128
+#: registry.py:55
 msgid "My reservations"
 msgstr "Mis reservaciones"
 
@@ -602,12 +640,12 @@ msgstr ""
 "un nombre y seleccionar el tipo de los muebles."
 
 #: registry.py:88 registry.py:100 templates/laboratory/edit.html:15
-#: templates/laboratory/furniture_form.html:30
-#: templates/laboratory/furniture_form.html:60
+#: templates/laboratory/furniture_form.html:33
+#: templates/laboratory/furniture_form.html:63
 #: templates/laboratory/laboratory_form.html:13
 #: templates/laboratory/object_form.html:14
-#: templates/laboratory/objectfeatures_form.html:24
-#: templates/laboratory/objectview_form.html:19
+#: templates/laboratory/objectfeatures_form.html:30
+#: templates/laboratory/objectview_form.html:25
 #: templates/laboratory/shelf_form.html:24
 msgid "Save"
 msgstr "Guardar"
@@ -631,51 +669,27 @@ msgstr "Presione el botón Grabar para guardar el mueble en el sistema"
 
 #: templates/ajax/lab_admins_create.html:4
 #: templates/laboratory/access_list.html:25
-#: templates/laboratory/objectview_list.html:19
-#: templates/laboratory/search_widget.html:28 templates/zinnia/base.html:36
-#: templates/zinnia/tags/search_form.html:13
+#: templates/laboratory/objectview_list.html:25
+#: templates/laboratory/search_widget.html:28
 msgid "Search"
 msgstr "Buscar"
 
 #: templates/ajax/lab_admins_create.html:9
 #: templates/ajax/lab_admins_list.html:9
 #: templates/laboratory/access_list.html:50
-#: templates/laboratory/laboratory_create.html:23
+#: templates/laboratory/laboratory_create.html:28
 msgid "Create"
 msgstr "Crear"
 
 #: templates/ajax/lab_admins_list.html:15
-#: templates/laboratory/furniture_form.html:82
+#: templates/laboratory/furniture_form.html:85
 #: templates/laboratory/laboratory_list.html:31
-#: templates/laboratory/laboratoryroom_form.html:88
-#: templates/laboratory/objectfeatures_form.html:51
-#: templates/laboratory/objectview_list.html:41
+#: templates/laboratory/laboratoryroom_form.html:95
+#: templates/laboratory/objectfeatures_form.html:57
+#: templates/laboratory/objectview_list.html:47
 #: templates/laboratory/shelfobject_confirm_delete.html:26
 msgid "Delete"
 msgstr "Eliminar"
-
-#: templates/comments/zinnia/entry/form.html:10
-msgid "Post your comment"
-msgstr ""
-
-#: templates/comments/zinnia/entry/form.html:33
-msgid "Comment as"
-msgstr ""
-
-#: templates/comments/zinnia/entry/form.html:33
-#: templates/laboratory/partials/navbar.html:160
-msgid "Log out"
-msgstr "Cerrar Sesión"
-
-#: templates/comments/zinnia/entry/form.html:37
-msgid "Post"
-msgstr ""
-
-#: templates/comments/zinnia/entry/form.html:38
-#, fuzzy
-#| msgid "Prev"
-msgid "Preview"
-msgstr "Anterior"
 
 #: templates/email/shelf_object_quantity_limit.html:2
 msgid "Hi,"
@@ -753,7 +767,7 @@ msgstr "Laboratorios"
 
 #: templates/laboratory/access_list.html:26
 #: templates/laboratory/laboratory_list.html:15
-#: templates/laboratory/objectview_list.html:24
+#: templates/laboratory/objectview_list.html:30
 msgid "Add"
 msgstr "Agregar"
 
@@ -767,8 +781,7 @@ msgstr "Crear usuarios"
 
 #: templates/laboratory/access_list.html:51
 #: templates/laboratory/admin_shelf_list.html:28
-#: templates/laboratory/laboratory_notperm.html:15
-#: templates/laboratory/laboratoryroom_form.html:114
+#: templates/laboratory/laboratoryroom_form.html:121
 #: templates/laboratory/shelf_form.html:22
 #: templates/laboratory/shelfobject_confirm_delete.html:31
 #: templates/laboratory/shelfobject_form.html:22
@@ -823,7 +836,7 @@ msgstr ""
 #: templates/laboratory/admin_shelf_list.html:7
 #: templates/laboratory/admin_shelf_list.html:15
 #: templates/laboratory/dataconfig.html:9
-#: templates/laboratory/furniture_form.html:100
+#: templates/laboratory/furniture_form.html:103
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
@@ -851,37 +864,37 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #: templates/laboratory/furniture_form.html:6
-#: templates/laboratory/furniture_form.html:16
+#: templates/laboratory/furniture_form.html:17
 msgid "Furniture management"
 msgstr "Administración de muebles"
 
-#: templates/laboratory/furniture_form.html:44
-#: templates/laboratory/furniture_form.html:52
+#: templates/laboratory/furniture_form.html:47
+#: templates/laboratory/furniture_form.html:55
 msgid "Row"
 msgstr ""
 
-#: templates/laboratory/furniture_form.html:47
-#: templates/laboratory/furniture_form.html:55
+#: templates/laboratory/furniture_form.html:50
+#: templates/laboratory/furniture_form.html:58
 #, fuzzy
 #| msgid "Volumen"
 msgid "Column"
 msgstr "Volumen"
 
-#: templates/laboratory/furniture_form.html:78
+#: templates/laboratory/furniture_form.html:81
 #: templates/laboratory/laboratory_list.html:26
-#: templates/laboratory/objectfeatures_form.html:26
-#: templates/laboratory/objectfeatures_form.html:47
-#: templates/laboratory/objectview_list.html:36
+#: templates/laboratory/objectfeatures_form.html:32
+#: templates/laboratory/objectfeatures_form.html:53
+#: templates/laboratory/objectview_list.html:42
 #: templates/laboratory/shelfObject.html:9
 #: templates/laboratory/shelf_details.html:18
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/laboratory/furniture_form.html:114
+#: templates/laboratory/furniture_form.html:117
 msgid "Create shelf"
 msgstr "Crear nuevo estante"
 
-#: templates/laboratory/furniture_list.html:21
+#: templates/laboratory/furniture_list.html:24
 #: templates/laboratory/limited_shelfobject_report_list.html:26
 #: templates/laboratory/limited_shelfobject_report_list.html:58
 #: templates/laboratory/reactive_precursor_objects_list.html:25
@@ -898,37 +911,35 @@ msgstr "Crear nuevo estante"
 msgid "PDF"
 msgstr "PDF"
 
-#: templates/laboratory/index.html:52 templates/laboratory/index.html:107
+#: templates/laboratory/index.html:42 templates/laboratory/index.html:92
 msgid "Laboratory administration"
 msgstr "Administración del laboratorio"
 
-#: templates/laboratory/index.html:84
+#: templates/laboratory/index.html:74
 msgid "Procedures"
 msgstr "Procedimientos"
 
-#: templates/laboratory/index.html:90
+#: templates/laboratory/index.html:80
 msgid "Dissolution calculator"
 msgstr "Calculadora de disoluciones"
 
-#: templates/laboratory/index.html:96
+#: templates/laboratory/index.html:117
 msgid "Access list"
 msgstr "Lista de acceso"
 
-#: templates/laboratory/index.html:151
-#: templates/laboratory/partials/navbar.html:100
+#: templates/laboratory/index.html:143
 msgid "Furnitures"
 msgstr "Muebles"
 
-#: templates/laboratory/index.html:171
+#: templates/laboratory/index.html:161
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-#: templates/laboratory/index.html:176
+#: templates/laboratory/index.html:166
 msgid "Login"
 msgstr "Inicio de sesión"
 
-#: templates/laboratory/laboratory_create.html:11
-#: templates/laboratory/laboratory_notperm.html:4
+#: templates/laboratory/laboratory_create.html:14
 #: templates/laboratory/select_lab.html:14
 msgid "Create laboratory"
 msgstr "Crear un laboratorio"
@@ -940,22 +951,21 @@ msgid "Delete laboratory"
 msgstr "Seleccione su laboratorio"
 
 #: templates/laboratory/laboratory_list.html:43
-#: templates/laboratory/objectfeatures_form.html:64
-#: templates/laboratory/objectview_list.html:52
+#: templates/laboratory/objectfeatures_form.html:70
+#: templates/laboratory/objectview_list.html:58
 msgid "Previous"
 msgstr "Anterior"
 
 #: templates/laboratory/laboratory_list.html:48
-#: templates/laboratory/objectfeatures_form.html:68
-#: templates/laboratory/objectview_list.html:57 templates/pdf/base_pdf.html:17
+#: templates/laboratory/objectfeatures_form.html:74
+#: templates/laboratory/objectview_list.html:63 templates/pdf/base_pdf.html:17
 #: templates/pdf/summaryfurniture_pdf.html:15
 msgid "Page"
 msgstr "Página"
 
 #: templates/laboratory/laboratory_list.html:53
-#: templates/laboratory/objectfeatures_form.html:72
-#: templates/laboratory/objectview_list.html:62
-#: templates/tour/tourtemplate.html:1
+#: templates/laboratory/objectfeatures_form.html:78
+#: templates/laboratory/objectview_list.html:68
 msgid "Next"
 msgstr "Siguiente"
 
@@ -976,27 +986,27 @@ msgid "Delete laboratory room"
 msgstr "Eliminar sala de laboratorio"
 
 #: templates/laboratory/laboratoryroom_form.html:6
-#: templates/laboratory/laboratoryroom_form.html:16
+#: templates/laboratory/laboratoryroom_form.html:18
 msgid "Laboratory room management"
 msgstr "Administración de sala de laboratorio"
 
-#: templates/laboratory/laboratoryroom_form.html:25
-#: templates/laboratory/laboratoryroom_form.html:84
+#: templates/laboratory/laboratoryroom_form.html:32
+#: templates/laboratory/laboratoryroom_form.html:91
 msgid "Update"
 msgstr "Editar"
 
-#: templates/laboratory/laboratoryroom_form.html:27
+#: templates/laboratory/laboratoryroom_form.html:34
 msgid "New"
 msgstr "Nuevo"
 
-#: templates/laboratory/laboratoryroom_form.html:69
+#: templates/laboratory/laboratoryroom_form.html:76
 #, fuzzy
 #| msgid "Delete furniture"
 msgid "Create Furniture"
 msgstr "Eliminar pieza de mueble"
 
-#: templates/laboratory/laboratoryroom_form.html:106
-#: templates/laboratory/laboratoryroom_form.html:116
+#: templates/laboratory/laboratoryroom_form.html:113
+#: templates/laboratory/laboratoryroom_form.html:123
 #, fuzzy
 #| msgid "Delete furniture"
 msgid "Create furniture"
@@ -1016,7 +1026,6 @@ msgstr "Los muebles se mostrarán aquí"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:4
 #: templates/laboratory/limited_shelfobject_report_list.html:11
-#: templates/laboratory/partials/navbar.html:122
 msgid "Limited shelf objects"
 msgstr "Objetos en el límite"
 
@@ -1083,10 +1092,10 @@ msgid "Xlsx"
 msgstr ""
 
 #: templates/laboratory/limited_shelfobject_report_list.html:65
-#: templates/laboratory/reactive_precursor_objects_list.html:77
+#: templates/laboratory/reactive_precursor_objects_list.html:73
 #: templates/laboratory/report_furniture_list.html:83
-#: templates/laboratory/report_object_list.html:83
-#: templates/pdf/furniture_pdf.html:33 templates/pdf/object_pdf.html:29
+#: templates/laboratory/report_object_list.html:88
+#: templates/pdf/furniture_pdf.html:33 templates/pdf/object_pdf.html:27
 #: templates/pdf/reactive_precursor_objects_pdf.html:27
 #: templates/pdf/shelf_object_pdf.html:14
 msgid "Quantity:"
@@ -1098,20 +1107,20 @@ msgid "Limit quantity:"
 msgstr "Cantidad límite:"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:73
-#: templates/laboratory/reactive_precursor_objects_list.html:100
-#: templates/laboratory/report_object_list.html:100
+#: templates/laboratory/reactive_precursor_objects_list.html:107
+#: templates/laboratory/report_object_list.html:105
 msgid "No objects"
 msgstr "No hay objetos"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:83
-#: templates/laboratory/reactive_precursor_objects_list.html:108
-#: templates/laboratory/report_object_list.html:106
+#: templates/laboratory/reactive_precursor_objects_list.html:115
+#: templates/laboratory/report_object_list.html:111
 msgid "All objects"
 msgstr "Todos los objetos"
 
 #: templates/laboratory/limited_shelfobject_report_list.html:86
-#: templates/laboratory/reactive_precursor_objects_list.html:111
-#: templates/laboratory/report_object_list.html:109
+#: templates/laboratory/reactive_precursor_objects_list.html:118
+#: templates/laboratory/report_object_list.html:114
 msgid "All objects in PDF"
 msgstr "Todos los objetos en PDF"
 
@@ -1124,18 +1133,17 @@ msgid "Delete object feature"
 msgstr "Eliminar características de objeto"
 
 #: templates/laboratory/objectfeatures_form.html:4
-#: templates/laboratory/objectfeatures_form.html:14
-#: templates/laboratory/partials/navbar.html:75
+#: templates/laboratory/objectfeatures_form.html:15
 msgid "Object features management"
 msgstr "Administración de características de objetos"
 
-#: templates/laboratory/objectfeatures_form.html:57
-#: templates/laboratory/reactive_precursor_objects_list.html:73
-#: templates/laboratory/report_object_list.html:79
+#: templates/laboratory/objectfeatures_form.html:63
+#: templates/laboratory/reactive_precursor_objects_list.html:68
+#: templates/laboratory/report_object_list.html:74
 msgid "No object features"
 msgstr "No hay características de objeto"
 
-#: templates/laboratory/objectfeatures_form.html:68
+#: templates/laboratory/objectfeatures_form.html:74
 #: templates/pdf/base_pdf.html:18 templates/pdf/summaryfurniture_pdf.html:16
 msgid "of"
 msgstr "de"
@@ -1145,107 +1153,106 @@ msgid "Delete object"
 msgstr "Borrar objeto"
 
 #: templates/laboratory/objectview_form.html:5
-#: templates/laboratory/objectview_form.html:13
+#: templates/laboratory/objectview_form.html:14
 #: templates/laboratory/objectview_list.html:4
-#: templates/laboratory/objectview_list.html:12
+#: templates/laboratory/objectview_list.html:14
 msgid "Reactive management"
 msgstr "Administración de Reactivos"
 
 #: templates/laboratory/objectview_form.html:5
-#: templates/laboratory/objectview_form.html:13
+#: templates/laboratory/objectview_form.html:14
 #: templates/laboratory/objectview_list.html:4
-#: templates/laboratory/objectview_list.html:12
+#: templates/laboratory/objectview_list.html:14
 msgid "Material management"
 msgstr "Administración de Materiales"
 
 #: templates/laboratory/objectview_form.html:5
-#: templates/laboratory/objectview_form.html:13
+#: templates/laboratory/objectview_form.html:14
 #: templates/laboratory/objectview_list.html:4
-#: templates/laboratory/objectview_list.html:12
+#: templates/laboratory/objectview_list.html:14
 msgid "Equipment management"
 msgstr "Administración de Equipos"
 
 #: templates/laboratory/objectview_form.html:5
-#: templates/laboratory/objectview_form.html:13
+#: templates/laboratory/objectview_form.html:14
 #: templates/laboratory/objectview_list.html:4
-#: templates/laboratory/objectview_list.html:12
-#: templates/laboratory/partials/navbar.html:62
+#: templates/laboratory/objectview_list.html:14
 msgid "Object management"
 msgstr "Administración de objetos"
 
-#: templates/laboratory/partials/navbar.html:18
+#: templates/laboratory/objectview_form.html:34
+msgid "Representing Chemical Substances in pyEQL"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:35
+msgid ""
+"pyEQL interprets the chemical formula of a substance to calculate its "
+"molecular\n"
+"weight and formal charge. The formula is also used as a key to search the\n"
+"database for parameters (e.g. diffusion coefficient) that are used in "
+"subsequent\n"
+"calculations."
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:40
+msgid "How to Enter Valid Chemical Formulas"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:41
+msgid ""
+"Generally speaking, type the chemical formula of your solute the “normal” "
+"way\n"
+"and pyEQL should be able to inerpret it. Here are some examples:"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:44
+msgid "Sodium Chloride - NaCl"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:45
+msgid "Sodium Sulfate - Na(SO4)2"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:46
+msgid "Methanol - CH4OH or CH5O"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:47
+msgid "Magnesium Ion - Mg+2"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:48
+msgid "Chloride Ion - Cl-"
+msgstr ""
+
+#: templates/laboratory/objectview_form.html:50
 #, fuzzy
-#| msgid "Laboratory"
-msgid "Add Laboratory"
-msgstr "Laboratorio"
+#| msgid "Formula"
+msgid "Formula Rules:"
+msgstr "Fórmula"
 
-#: templates/laboratory/partials/navbar.html:30
-#, fuzzy
-#| msgid "Laboratories"
-msgid "My laboratories"
-msgstr "Laboratorios"
-
-#: templates/laboratory/partials/navbar.html:54
-msgid "Administration"
-msgstr "Administración"
-
-#: templates/laboratory/partials/navbar.html:58
-msgid "Laboratory management"
-msgstr "Administración de sala de laboratorio"
-
-#: templates/laboratory/partials/navbar.html:79
-msgid "Dissolution management"
-msgstr "Administración de disoluciones"
-
-#: templates/laboratory/partials/navbar.html:118
-#: templates/laboratory/reactive_precursor_objects_list.html:4
-#: templates/laboratory/reactive_precursor_objects_list.html:10
-msgid "Reactive precursor objects"
-msgstr "Objetos reactivos precursores"
-
-#: templates/laboratory/partials/navbar.html:132
-msgid "Finish reservation"
-msgstr "Finalizar reservación"
-
-#: templates/laboratory/partials/navbar.html:135
-msgid "Create a reservation"
-msgstr "Crear reservación"
-
-#: templates/laboratory/partials/navbar.html:145
-msgid "GHS"
+#: templates/laboratory/objectview_form.html:52
+msgid "Are composed of valid atomic symbols that start with capital letters"
 msgstr ""
 
-#: templates/laboratory/partials/navbar.html:146
-msgid "SGA"
+#: templates/laboratory/objectview_form.html:53
+msgid "Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘"
 msgstr ""
 
-#: templates/laboratory/partials/navbar.html:149
-#: templates/laboratory/partials/navbar.html:150
-msgid "Prints and Orders Manager"
+#: templates/laboratory/objectview_form.html:54
+msgid ""
+"If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘\n"
+"(e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of\n"
+"charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’)"
 msgstr ""
 
-#: templates/laboratory/partials/navbar.html:153
-#, fuzzy
-#| msgid "Feedback entries"
-msgid "blog entries"
-msgstr "Entradas de retroalimentación"
-
-#: templates/laboratory/partials/navbar.html:154
-msgid "Blog"
+#: templates/laboratory/objectview_form.html:57
+msgid "Formula must contain matching numbers of ‘(‘ and ‘)’"
 msgstr ""
 
-#: templates/laboratory/partials/navbar.html:157
-msgid "Feedback"
-msgstr "Retroalimentación"
-
-#: templates/laboratory/partials/navbar.html:159 templates/pdf/base_pdf.html:22
-#: templates/pdf/summaryfurniture_pdf.html:19
-msgid "User:"
-msgstr "Usuario:"
-
-#: templates/laboratory/partials/navbar.html:162
-msgid "Log in"
-msgstr "Iniciar Sesión"
+#: templates/laboratory/objectview_form.html:58
+msgid "Open parentheses must precede closed parentheses"
+msgstr ""
 
 #: templates/laboratory/permission_denied.html:7
 msgid "You don't have the permissions required to access this section"
@@ -1263,6 +1270,11 @@ msgstr "seleccione"
 #: templates/laboratory/permission_denied.html:8
 msgid "one of your labs"
 msgstr "uno de sus laboratorios"
+
+#: templates/laboratory/reactive_precursor_objects_list.html:4
+#: templates/laboratory/reactive_precursor_objects_list.html:10
+msgid "Reactive precursor objects"
+msgstr "Objetos reactivos precursores"
 
 #: templates/laboratory/reactive_precursor_objects_list.html:11
 msgid "Not found? include all laboratories"
@@ -1286,47 +1298,56 @@ msgstr "Nombre:"
 msgid "Type:"
 msgstr "Tipo:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:65
-#: templates/laboratory/report_object_list.html:71
-#: templates/pdf/object_pdf.html:17
+#: templates/laboratory/reactive_precursor_objects_list.html:63
+#: templates/laboratory/report_object_list.html:69
+#: templates/pdf/object_pdf.html:15
 #: templates/pdf/reactive_precursor_objects_pdf.html:16
 msgid "Features:"
 msgstr "Características:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:87
-#: templates/pdf/object_pdf.html:39
+#: templates/laboratory/reactive_precursor_objects_list.html:83
+#: templates/pdf/object_pdf.html:37
 #: templates/pdf/reactive_precursor_objects_pdf.html:37
 msgid "No Data"
 msgstr "No hay datos"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:90
-#: templates/laboratory/report_object_list.html:97
-#: templates/pdf/object_pdf.html:43
-#: templates/pdf/reactive_precursor_objects_pdf.html:40
+#: templates/laboratory/reactive_precursor_objects_list.html:88
+#: templates/laboratory/report_object_list.html:80
+#: templates/pdf/reactive_precursor_objects_pdf.html:42
+#: templates/pdf/shelf_object_pdf.html:22
+#, fuzzy
+#| msgid "Description:"
+msgid "Danger indication:"
+msgstr "Descripción:"
+
+#: templates/laboratory/reactive_precursor_objects_list.html:97
+#: templates/laboratory/report_object_list.html:102
+#: templates/pdf/object_pdf.html:41
+#: templates/pdf/reactive_precursor_objects_pdf.html:51
 msgid "Description:"
 msgstr "Descripción:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:91
-#: templates/pdf/object_pdf.html:45
-#: templates/pdf/reactive_precursor_objects_pdf.html:41
+#: templates/laboratory/reactive_precursor_objects_list.html:98
+#: templates/pdf/object_pdf.html:43
+#: templates/pdf/reactive_precursor_objects_pdf.html:52
 msgid "Molecular formula:"
 msgstr "Fórmula molecular:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:92
-#: templates/pdf/object_pdf.html:46
-#: templates/pdf/reactive_precursor_objects_pdf.html:42
+#: templates/laboratory/reactive_precursor_objects_list.html:99
+#: templates/pdf/object_pdf.html:44
+#: templates/pdf/reactive_precursor_objects_pdf.html:53
 msgid "CAS ID Number:"
 msgstr "Número ID CAS"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:94
-#: templates/pdf/object_pdf.html:48
-#: templates/pdf/reactive_precursor_objects_pdf.html:44
+#: templates/laboratory/reactive_precursor_objects_list.html:101
+#: templates/pdf/object_pdf.html:46
+#: templates/pdf/reactive_precursor_objects_pdf.html:55
 msgid "Inventario C&L:"
 msgstr "Inventario C&L:"
 
-#: templates/laboratory/reactive_precursor_objects_list.html:95
-#: templates/pdf/object_pdf.html:49
-#: templates/pdf/reactive_precursor_objects_pdf.html:45
+#: templates/laboratory/reactive_precursor_objects_list.html:102
+#: templates/pdf/object_pdf.html:47
+#: templates/pdf/reactive_precursor_objects_pdf.html:56
 msgid "Reference link"
 msgstr "Enlace de referencia"
 
@@ -1418,7 +1439,7 @@ msgstr ""
 msgid "Without details Xlsx"
 msgstr ""
 
-#: templates/laboratory/report_object_list.html:93
+#: templates/laboratory/report_object_list.html:97
 msgid "No data"
 msgstr "No hay datos"
 
@@ -1573,6 +1594,10 @@ msgstr "Organilab: Reporte de Muebles"
 msgid "Date:"
 msgstr "Fecha:"
 
+#: templates/pdf/base_pdf.html:22 templates/pdf/summaryfurniture_pdf.html:19
+msgid "User:"
+msgstr "Usuario:"
+
 #: templates/pdf/furniture_pdf.html:12
 msgid "LaboratoryRoom:"
 msgstr "Sala de Laboratorio:"
@@ -1609,14 +1634,14 @@ msgstr "No hay laboratorios"
 msgid "Organilab Objects Report"
 msgstr "Organilab: Reporte de Objetos"
 
-#: templates/pdf/object_pdf.html:25
+#: templates/pdf/object_pdf.html:22
 #: templates/pdf/reactive_precursor_objects_pdf.html:24
 msgid "No Object Features"
 msgstr "Sin Características de objeto"
 
-#: templates/pdf/object_pdf.html:55
-#: templates/pdf/reactive_precursor_objects_pdf.html:50
-#: templates/pdf/shelf_object_pdf.html:21
+#: templates/pdf/object_pdf.html:53
+#: templates/pdf/reactive_precursor_objects_pdf.html:63
+#: templates/pdf/shelf_object_pdf.html:31
 msgid "No Objects Elements"
 msgstr "No hay Objetos"
 
@@ -1633,372 +1658,6 @@ msgstr "Organilab: Reporte de objetos de estante"
 #: templates/pdf/summaryfurniture_pdf.html:9
 msgid "Organilab Summary Furniture Report"
 msgstr "Organilab: Reporte de Muebles"
-
-#: templates/tour/tourtemplate.html:1
-msgid "Prev"
-msgstr "Anterior"
-
-#: templates/tour/tourtemplate.html:1
-msgid "Pause"
-msgstr "Pausa"
-
-#: templates/tour/tourtemplate.html:1
-msgid "End tour"
-msgstr "Finalizar"
-
-#: templates/zinnia/_entry_detail_base.html:17
-msgid "Written by"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:21
-#: templates/zinnia/author_list.html:11 templates/zinnia/tags/authors.html:6
-#, python-format
-msgid "Show all %(author)s's entries"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:23
-#: templates/zinnia/entry_detail_base.html:80
-#: templates/zinnia/entry_detail_base.html:125
-#: templates/zinnia/entry_detail_base.html:180
-msgctxt "on date"
-msgid "on"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:25
-msgid "Written on"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:35
-#: templates/zinnia/tags/comments_recent.html:8
-#: templates/zinnia/tags/linkbacks_recent.html:8
-msgid "in"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:38
-#: templates/zinnia/category_list.html:12
-#: templates/zinnia/tags/categories.html:6
-#, python-format
-msgid "Show all entries in %(category)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:47
-#, fuzzy
-#| msgid "Last name"
-msgid "Last update on"
-msgstr "Apellidos"
-
-#: templates/zinnia/_entry_detail_base.html:79
-#, python-format
-msgid "%(percent)s%% of %(object)s still remains to read."
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:81
-msgid "Continue reading"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:93 templates/zinnia/base.html:66
-msgid "Tags"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:96
-#: templates/zinnia/tag_list.html:11
-#, python-format
-msgid "Show all entries tagged by %(tag)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:99
-msgid "No tags"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:105
-msgid "Short url"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:107
-#, python-format
-msgid "Short URL to %(object)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:115
-msgid "Discussions"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:120
-#, fuzzy, python-format
-#| msgid "C&L Inventory"
-msgid "Comments on %(object)s"
-msgstr "Inventario C&L"
-
-#: templates/zinnia/_entry_detail_base.html:121
-#, python-format
-msgid "%(comment_count)s comment"
-msgid_plural "%(comment_count)s comments"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/zinnia/_entry_detail_base.html:125
-#: templates/zinnia/entry_detail_base.html:200
-#: templates/zinnia/tags/comments_recent.html:15
-#, fuzzy
-#| msgid "No solutions yet"
-msgid "No comments yet."
-msgstr "Todavía no hay soluciones"
-
-#: templates/zinnia/_entry_detail_base.html:127
-#, python-format
-msgid "Leave a comment on %(object)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:128
-msgid "Be first to comment!"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:131
-#: templates/zinnia/entry_detail_base.html:202
-msgid "Comments are closed."
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:139
-#, python-format
-msgid "Pingbacks on %(object)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:140
-#, python-format
-msgid "%(pingback_count)s pingback"
-msgid_plural "%(pingback_count)s pingbacks"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/zinnia/_entry_detail_base.html:148
-#, python-format
-msgid "Trackbacks on %(object)s"
-msgstr ""
-
-#: templates/zinnia/_entry_detail_base.html:149
-#, python-format
-msgid "%(trackback_count)s trackback"
-msgid_plural "%(trackback_count)s trackbacks"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/zinnia/author_list.html:5
-msgid "Author list"
-msgstr ""
-
-#: templates/zinnia/author_list.html:14 templates/zinnia/category_list.html:14
-#: templates/zinnia/tag_list.html:13 templates/zinnia/tags/authors.html:9
-#: templates/zinnia/tags/categories.html:8
-#, python-format
-msgid "%(entry_count)s entry"
-msgid_plural "%(entry_count)s entries"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/zinnia/author_list.html:19 templates/zinnia/tags/authors.html:15
-#, fuzzy
-#| msgid "No solutions yet"
-msgid "No authors yet."
-msgstr "Todavía no hay soluciones"
-
-#: templates/zinnia/base.html:12
-#, fuzzy
-#| msgid "Feedback entries"
-msgid "RSS feed of last entries"
-msgstr "Entradas de retroalimentación"
-
-#: templates/zinnia/base.html:13
-msgid "RSS feed of last discussions"
-msgstr ""
-
-#: templates/zinnia/base.html:34
-msgid "Keywords..."
-msgstr ""
-
-#: templates/zinnia/base.html:50
-#, fuzzy
-#| msgid "Feedback entries"
-msgid "Recent entries"
-msgstr "Entradas de retroalimentación"
-
-#: templates/zinnia/base.html:57
-#, fuzzy
-#| msgid "Laboratories"
-msgid "Categories"
-msgstr "Laboratorios"
-
-#: templates/zinnia/base.html:74
-msgid "Tools"
-msgstr ""
-
-#: templates/zinnia/base.html:78 templates/zinnia/base.html:79
-msgid "Dashboard"
-msgstr ""
-
-#: templates/zinnia/base.html:85 templates/zinnia/base.html:86
-msgid "Post an entry"
-msgstr ""
-
-#: templates/zinnia/category_list.html:6
-msgid "Category list"
-msgstr ""
-
-#: templates/zinnia/category_list.html:20
-#: templates/zinnia/tags/categories.html:14
-msgid "No categories yet."
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:17
-#, fuzzy
-#| msgid "Related file"
-msgid "Related entries"
-msgstr "Archivo relacionado"
-
-#: templates/zinnia/entry_detail_base.html:33
-msgid "Similar entries"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:69
-msgid "Pingbacks"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:86
-msgid "Direct link to this pingback"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:103
-msgid "Pingbacks are open."
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:105
-msgid "Pingbacks are closed."
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:114
-msgid "Trackbacks"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:131
-msgid "Direct link to this trackback"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:150
-msgid "Trackback URL"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:160
-msgid "Comments"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:186
-msgid "Direct link to this comment"
-msgstr ""
-
-#: templates/zinnia/entry_detail_base.html:210
-#: templates/zinnia/entry_detail_base.html:212
-msgid "Edit the entry"
-msgstr ""
-
-#: templates/zinnia/entry_search.html:6
-#, python-format
-msgid "Search results for '%(pattern)s'"
-msgstr ""
-
-#: templates/zinnia/entry_search.html:13 templates/zinnia/entry_search.html:14
-#, python-format
-msgid "RSS feed of search results for '%(pattern)s'"
-msgstr ""
-
-#: templates/zinnia/entry_search.html:21
-#, python-format
-msgid "%(entry_count)s entry found"
-msgid_plural "%(entry_count)s entries found"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/zinnia/entry_search.html:33
-#, fuzzy
-#| msgid "Not found"
-msgid "Nothing found."
-msgstr "No encontrado"
-
-#: templates/zinnia/sitemap.html:5
-msgid "Sitemap"
-msgstr ""
-
-#: templates/zinnia/sitemap.html:8
-msgid "Entries per categories"
-msgstr ""
-
-#: templates/zinnia/sitemap.html:17
-msgid "comment"
-msgstr ""
-
-#: templates/zinnia/sitemap.html:23
-#: templates/zinnia/tags/entries_popular.html:13
-#: templates/zinnia/tags/entries_random.html:9
-#: templates/zinnia/tags/entries_recent.html:9
-#, fuzzy
-#| msgid "No solutions yet"
-msgid "No entries yet."
-msgstr "Todavía no hay soluciones"
-
-#: templates/zinnia/sitemap.html:31
-msgid "Monthly archives"
-msgstr ""
-
-#: templates/zinnia/tag_list.html:5
-msgid "Tag list"
-msgstr ""
-
-#: templates/zinnia/tag_list.html:18
-#, fuzzy
-#| msgid "No solutions yet"
-msgid "No tags yet."
-msgstr "Todavía no hay soluciones"
-
-#: templates/zinnia/tags/comments_recent.html:7
-msgid "Comment on"
-msgstr ""
-
-#: templates/zinnia/tags/entries_similar.html:9
-msgid "No similar entries."
-msgstr ""
-
-#: templates/zinnia/tags/linkbacks_recent.html:7
-msgid "Linkback on"
-msgstr ""
-
-#: templates/zinnia/tags/linkbacks_recent.html:14
-#, fuzzy
-#| msgid "No solutions yet"
-msgid "No linkbacks yet."
-msgstr "Todavía no hay soluciones"
-
-#: templates/zinnia/tags/pagination.html:7
-#, fuzzy
-#| msgid "Feedback entries"
-msgid "More recent entries"
-msgstr "Entradas de retroalimentación"
-
-#: templates/zinnia/tags/pagination.html:17
-#: templates/zinnia/tags/pagination.html:32
-#: templates/zinnia/tags/pagination.html:48
-msgid "Entries page"
-msgstr ""
-
-#: templates/zinnia/tags/pagination.html:57
-#, fuzzy
-#| msgid "Feedback entries"
-msgid "More old entries"
-msgstr "Entradas de retroalimentación"
-
-#: templates/zinnia/tags/search_form.html:7
-msgid ""
-"You can use - to exclude words or phrases, &quot;double quotes&quot; for "
-"exact phrases and the AND/OR boolean operators combined with parenthesis for "
-"complex queries."
-msgstr ""
 
 #: validators.py:9
 #, python-format
@@ -2032,6 +1691,10 @@ msgid ""
 msgstr ""
 "Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
 "administrador y solicite que lo asigne a algún laboratorio."
+
+#: views/objects.py:156
+msgid "Available only on this laboratories if it is private"
+msgstr ""
 
 #: views/reports.py:122 views/reports.py:433
 #, fuzzy
@@ -2098,6 +1761,12 @@ msgstr "Código IMDG"
 #| msgid "Limit quantity:"
 msgid "Limit Quantity"
 msgstr "Cantidad límite:"
+
+#: views/shelfobject.py:63
+#, fuzzy
+#| msgid "Reactive management"
+msgid "Reactive/Material/Equipment"
+msgstr "Administración de Reactivos"
 
 #: views/shelfobject.py:71
 msgid "Object is required"
@@ -2183,35 +1852,158 @@ msgstr "Volumen"
 msgid "Water activity"
 msgstr "Actividad del agua"
 
-#: views/solutions.py:79
+#: views/solutions.py:80
 msgid "Descriptive name of the solution"
 msgstr "Nombre descriptivo para la solución"
 
-#: views/solutions.py:81
+#: views/solutions.py:82
 msgid ""
 "Write in each line the formula along with its amount, separated by a comma"
 msgstr ""
 "Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
 
-#: views/solutions.py:82
+#: views/solutions.py:83
 msgid "For example: 500 mL, 1 L"
 msgstr "Por ejemplo: 500 mL, 1 L"
 
-#: views/solutions.py:83
+#: views/solutions.py:84
 msgid "In degC"
 msgstr "En degC"
 
-#: views/solutions.py:84
+#: views/solutions.py:85
 msgid "In atm"
 msgstr "En atm"
 
-#: views/solutions.py:94 views/solutions.py:98
+#: views/solutions.py:95 views/solutions.py:99
 msgid "Incorrect solute definition"
 msgstr "Definición incorrecta de soluto"
 
-#: views/solutions.py:113
+#: views/solutions.py:114
 msgid "There are errors in the solution definition, please try again"
 msgstr "Hay errores en la definición de la solución, intente de nuevo"
+
+#~ msgid "Log out"
+#~ msgstr "Cerrar Sesión"
+
+#, fuzzy
+#~| msgid "Prev"
+#~ msgid "Preview"
+#~ msgstr "Anterior"
+
+#, fuzzy
+#~| msgid "Laboratory"
+#~ msgid "Add Laboratory"
+#~ msgstr "Laboratorio"
+
+#, fuzzy
+#~| msgid "Laboratories"
+#~ msgid "My laboratories"
+#~ msgstr "Laboratorios"
+
+#~ msgid "Administration"
+#~ msgstr "Administración"
+
+#~ msgid "Laboratory management"
+#~ msgstr "Administración de sala de laboratorio"
+
+#~ msgid "Dissolution management"
+#~ msgstr "Administración de disoluciones"
+
+#~ msgid "Finish reservation"
+#~ msgstr "Finalizar reservación"
+
+#~ msgid "Create a reservation"
+#~ msgstr "Crear reservación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "blog entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#~ msgid "Feedback"
+#~ msgstr "Retroalimentación"
+
+#~ msgid "Log in"
+#~ msgstr "Iniciar Sesión"
+
+#~ msgid "Prev"
+#~ msgstr "Anterior"
+
+#~ msgid "Pause"
+#~ msgstr "Pausa"
+
+#~ msgid "End tour"
+#~ msgstr "Finalizar"
+
+#, fuzzy
+#~| msgid "Last name"
+#~ msgid "Last update on"
+#~ msgstr "Apellidos"
+
+#, fuzzy
+#~| msgid "C&L Inventory"
+#~ msgid "Comments on %(object)s"
+#~ msgstr "Inventario C&L"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No comments yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No authors yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "RSS feed of last entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "Recent entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Laboratories"
+#~ msgid "Categories"
+#~ msgstr "Laboratorios"
+
+#, fuzzy
+#~| msgid "Related file"
+#~ msgid "Related entries"
+#~ msgstr "Archivo relacionado"
+
+#, fuzzy
+#~| msgid "Not found"
+#~ msgid "Nothing found."
+#~ msgstr "No encontrado"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No entries yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No tags yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No linkbacks yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "More recent entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "More old entries"
+#~ msgstr "Entradas de retroalimentación"
 
 #~ msgid "General use"
 #~ msgstr "Uso general"

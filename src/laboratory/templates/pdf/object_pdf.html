@@ -10,20 +10,18 @@
     </h3>
     <ul>
       <li>{% trans "Name:" %} {{ obj.name }}</li>
-      <li>{% trans "Type:" %}
-        {{ obj.get_type_display }}
-      </li>
+      <li>{% trans "Type:" %}  {{ obj.get_type_display }} </li>
 
       <li>{% trans "Features:" %}
-        {% for features in obj.features.all %}
           <ul>
+        {% for features in obj.features.all %}
             <li>
-              {{ features.get_name_display }}
+              {{ features.name  }}
             </li>
-          </ul>
         {% empty %}
-          {% trans "No Object Features" %}
+            <li>{% trans "No Object Features" %}</li>
         {% endfor %}
+              </ul>
       </li>
 
       <li>{% trans "Quantity:" %}
