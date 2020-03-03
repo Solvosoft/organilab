@@ -89,13 +89,15 @@ def get_create_admis_user(request, pk):
 def del_admins_user(request, pk, pk_user):
     lab = get_object_or_404(Laboratory, pk=pk)
     lab.lab_admins.filter(pk=pk_user).delete()
-    return render_admins_lab(request, lab.lab_admins.all(), lab)
+    return render_admins_lab(request, lab.laboratorists.all(), lab)
 
 
 @ajax
 def admin_users(request, pk):
     lab = get_object_or_404(Laboratory, pk=pk)
-    return render_admins_lab(request, lab.lab_admins.all(), lab)
+    user_org = OrganizationStructure.os_manager.filter_user(request.user)
+
+    return render_admins_lab(request, lab.laboratorists.all(), lab)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -103,12 +105,21 @@ def admin_users(request, pk):
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = 'laboratory/edit.html'
-    fields = ['name']
+    #fields = ['name', 'phone_number', 'location', 'geolocation']
+    form_class = LaboratoryCreate
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         context['laboratory'] = self.object.pk
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super(LaboratoryEdit, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('laboratory:labindex', kwargs={'lab_pk': self.object.pk})
 
 
 class LaboratoryView(object):
@@ -227,7 +238,7 @@ class CreateLaboratoryFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CreateLaboratoryFormView,
                         self).get_context_data(**kwargs)
-        print(context)
+
         return context
 
     def form_valid(self, form):
