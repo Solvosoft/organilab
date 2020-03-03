@@ -34,7 +34,14 @@
                 {% trans 'Access list' %}
               </a>
               </li>
+
+              <li>
+              <a href="{% url 'laboratory:laboratory_update' laboratory %}">
+                {% trans 'Edit laboratory' %}
+              </a>
+              </li>
     {% endif %}
+
 
 </ul>
 </li>

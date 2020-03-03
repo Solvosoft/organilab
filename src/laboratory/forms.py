@@ -53,7 +53,4 @@ class LaboratoryCreate(forms.ModelForm):
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
 
-#Traduccion (Multilenguaje)
-# Validacion()
-# Acomodar los imports
-#Admins, Laboraristas, Estudiantes
+
