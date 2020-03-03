@@ -109,7 +109,7 @@ class ObjectView(object):
                         )
                 else:
                     self.q = ''
-                return query
+                return query.distinct()
 
             def get_context_data(self, **kwargs):
                 context = ListView.get_context_data(self, **kwargs)
