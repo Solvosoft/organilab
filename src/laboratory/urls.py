@@ -12,6 +12,7 @@ from laboratory.search import SearchObject
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 
 
@@ -150,6 +151,8 @@ lab_access_urls = [
 
 '''MULTILAB'''
 urlpatterns += [
+    url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
+    url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
