@@ -24,6 +24,8 @@ from django.contrib import messages
 from laboratory.decorators import user_group_perms
 from django.urls.base import reverse
 
+from laboratory.utils import get_user_laboratories
+
 
 def render_admins_lab(request, object_list, lab, message=None):
     return {
@@ -271,3 +273,27 @@ class CreateLaboratoryView(CreateView):
                 _("Sorry, there is not available laboratory, please contact the administrator and request a laboratory enrollment"))
             # Translate
             return redirect(self.success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.delete_laboratory'), name='dispatch')
+class LaboratoryListView(ListView):
+    model = Laboratory
+    template_name= 'laboratory/laboratory_list.html'
+
+    def get_queryset(self):
+        return get_user_laboratories(self.request.user)
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.delete_laboratory'), name='dispatch')
+class LaboratoryDeleteView(DeleteView):
+    model = Laboratory
+    template_name= 'laboratory/laboratory_delete.html'
+
+    def get_success_url(self):
+        return  "/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['laboratory'] = self.object.pk
+        return context

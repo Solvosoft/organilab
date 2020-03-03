@@ -51,7 +51,7 @@ def index_permissions(context):
         'view_laboratory': has_perms(context, "laboratory.view_laboratory"), 
         'view_procedure':   has_perms(context, "academic.view_procedure"),
         'view_solutions': has_perms(context, "laboratory.view_solution"),
-
+        'delete_laboratory': has_perms(context, "laboratory.delete_laboratory"),
         'add_laboratory':  has_perms(context, "laboratory.add_laboratory"),  
         'manage_laboratory':  has_perms(context, "laboratory.change_laboratory"),
         'add_furniture':  has_perms(context, "laboratory.add_furniture"),
@@ -60,6 +60,7 @@ def index_permissions(context):
         'view_reports':  has_perms(context, "laboratory.view_report"),
         'do_reports': has_perms(context, "laboratory.do_report"),
         'add_reservation': has_perms(context, "djreservation.add_reservation"),
+
         }
     
     
