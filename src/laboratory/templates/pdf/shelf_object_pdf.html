@@ -17,6 +17,16 @@
     <li>{% trans "Limit quantity:" %}
       {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}
     </li>
+      {% if obj.object.h_code.exists %}
+    <li>
+      <p>{% trans "Danger indication:" %}</p>
+      <ul>
+      {% for code in obj.object.h_code.all %}
+        <li>{{code}} </li>
+      {% endfor %}
+      </ul>
+    </li>
+      {% endif %}
   {% empty %}
     {% trans "No Objects Elements" %}
   {% endfor %}

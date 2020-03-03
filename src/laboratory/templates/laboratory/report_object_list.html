@@ -64,34 +64,39 @@
 	    </h3>
 	    <ul>
 	      <li>{% trans "Name:" %} {{ obj.name }}</li>
-	      <li>{% trans "Type:" %}
-	        {{ obj.get_type_display }}
-	      </li>
+	      <li>{% trans "Type:" %}  {{ obj.get_type_display }} </li>
 	
 	      <li>{% trans "Features:" %}
+		  <ul>
 	        {% for features in obj.features.all %}
-	          <ul>
-	            <li>
-	              {{ features.get_name_display }}
-	            </li>
-	          </ul>
+	            <li>  {{ features.name }} </li>
 	        {% empty %}
-	          {% trans "No object features" %}
+	           <li>{% trans "No object features" %} </li>
 	        {% endfor %}
+		  </ul>
 	      </li>
-	
+			{% if obj.h_code.exists %}
+			<li>
+				      <p>{% trans "Danger indication:" %}</p>
+				<ul>
+				{% for hcode in obj.h_code.all %}
+					<li>{{hcode}} </li>
+				{% endfor %}
+				</ul>
+			</li>
+			{% endif %}
 	      <li>{% trans "Quantity:" %}
+		  <ul>
 	        {% for shelfobj in obj.shelfobject_set.all %}
-	          <ul>
 	            <li>
 	              {{ shelfobj.shelf }}:
 	              {{ shelfobj.quantity }}
 	              {{ shelfobj.get_measurement_unit_display }}
 	            </li>
-	          </ul>
 	        {% empty %}
-	          {% trans "No data" %}
+	           <li>{% trans "No data" %} </li>
 	        {% endfor %}
+		  </ul>
 	      </li>
 	
 	      <li>{% trans "Description:" %} {{ obj.description }}</li>
@@ -109,4 +114,5 @@
 	    {% trans "All objects in PDF" %}
 	  </a>
   {% endif %}
+<div class="clearfix"></div>
 {% endblock %}

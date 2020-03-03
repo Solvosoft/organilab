@@ -35,7 +35,9 @@ def filter_laboratorist_technician_student(user,user_org):
                                      Q (organization__in=user_org) 
                                     ).distinct() 
 
-def filter_laboratorist_technician(user, user_org):
+def filter_laboratorist_technician(user, user_org=None):
+    if user_org is None:
+        user_org = OrganizationStructure.os_manager.filter_user(user)
     return Laboratory.objects.filter( Q(laboratorists__pk=user.pk) |
                                       Q(principaltechnician__credentials=user.pk) |
                                       Q (organization__in=user_org) 

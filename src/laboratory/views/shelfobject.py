@@ -60,7 +60,7 @@ def list_shelfobject(request, lab_pk):
 class ShelfObjectForm(forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
-    object = AutoCompleteSelectField('objects',  required=False, help_text=_("Search by name, code or CAS number"))
+    object = AutoCompleteSelectField('objects',  required=False, label=_("Reactive/Material/Equipment"), help_text=_("Search by name, code or CAS number"))
 
     def clean_object(self):
         if hasattr(super(ShelfObjectForm, self), 'clean_object'):

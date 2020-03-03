@@ -8,20 +8,20 @@ Free as freedom will be 26/8/2016
 
 from __future__ import unicode_literals
 
+from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
-from django import forms
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-#from laboratory.decorators import check_lab_permissions, user_lab_perms
-from laboratory.models import Object
-from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
-
 from laboratory.decorators import user_group_perms, view_user_group_perms
-
+# from laboratory.decorators import check_lab_permissions, user_lab_perms
+from laboratory.models import Object
+from laboratory.utils import filter_laboratorist_technician
+from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
+from django.utils.translation import ugettext_lazy as _
 
 class ObjectView(object):
     model = Object
@@ -62,6 +62,7 @@ class ObjectView(object):
                 kwargs['request'] = self.request
                 return kwargs
 
+
         self.edit = view_user_group_perms(login_required(ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
@@ -87,7 +88,10 @@ class ObjectView(object):
         class ObjectListView(ListView):
 
             def get_queryset(self):
-                query = ListView.get_queryset(self)
+                query = ListView.get_queryset(self).filter(
+                    Q(laboratory__in = [self.lab])|Q(is_public=True)
+                )
+
                 if 'type_id' in self.request.GET:
                     self.type_id = self.request.GET.get('type_id', '')
                     if self.type_id:
@@ -148,6 +152,8 @@ class ObjectForm(ModelForm):
 
         super(ObjectForm, self).__init__(*args, **kwargs)
 
+        self.fields['laboratory'].queryset = filter_laboratorist_technician(self.request.user)
+        self.fields['laboratory'].label = _("Available only on this laboratories if it is private")
         if self.request:
             if 'type_id' in self.request.GET:
                 self.type_id = self.request.GET.get('type_id', '')
@@ -162,7 +168,7 @@ class ObjectForm(ModelForm):
             self.fields['molecular_formula'].required = True
             self.fields['cas_id_number'].required = True
             self.fields['security_sheet'].required = True
-            self.fields['imdg_code'].required = True
+            #self.fields['imdg_code'].required = False
 
         if data_type == Object.EQUIPMENT:
             self.fields['model'].required = True
@@ -179,4 +185,4 @@ class ObjectForm(ModelForm):
 
     class Meta:
         model = Object
-        fields = '__all__'
+        exclude = ['imdg_code' ]

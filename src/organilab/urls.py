@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+
+
 from laboratory import urls as laboratory_urls
 
 from djreservation import urls as djreservation_urls
@@ -53,6 +55,13 @@ if settings.FULL_APPS:
     urlpatterns += [
         url(r'^api/', include(api_urls))
     ]
+else:
+    from api.reactive import ReactiveMolecularFormulaAPIView
+    urlpatterns += [
+        url(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
+
+    ]
+
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls
 
