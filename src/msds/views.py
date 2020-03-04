@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.http.response import JsonResponse
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
@@ -9,7 +10,9 @@ from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render
-
+import zipfile
+from django.conf import settings
+import os
 
 def index_msds(request):
     return render(request, 'index_msds.html')
@@ -155,3 +158,22 @@ def organilab_tree(request):
 def regulation_view(request):
     regulations = RegulationDocument.objects.all()
     return render(request, 'regulation/regulations_document.html', {'object_list': regulations})
+
+
+def get_name(name, country, path):
+    ext = path.split('.')[-1]
+    return "%s_%s.%s"%(name, country, ext)
+
+def download_all_regulations(request):
+    response = HttpResponse(content_type='application/force-download')
+    z = zipfile.ZipFile(response, "w")
+    regulations = RegulationDocument.objects.all()
+    for doc in regulations:
+        doc.file.open('rb')
+        name = get_name(doc.name, doc.country, doc.file.url)
+        z.write(os.path.join(settings.MEDIA_ROOT, doc.file.path), name)
+    for file in z.filelist:
+        file.create_system = 0
+    z.close()
+    response['Content-Disposition'] = 'attachment; filename="regulations.zip"'
+    return response
