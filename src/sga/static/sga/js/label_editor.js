@@ -178,7 +178,7 @@ function handleDragEnd(e) {
      return false;
  }
 
-   $(".genericitem").each(function (i, obj) {
+       $(".genericitem").each(function (i, obj) {
          obj.addEventListener('dragstart', handleDragStart, false);
          obj.addEventListener('dragend', handleDragEnd, false);
        });
@@ -300,6 +300,30 @@ function setNewCanvas(widthP,heightP){
 
 $("#id_dangerindication_on_deck").bind('added', function() {
     let obj = $("#id_dangerindication_on_deck .tag");
+
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
+    obj = $("#id_dangerindication_on_deck .tagcode");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
+});
+
+$("#logo_on_deck").bind('added', function() {
+    let obj = $("#logo_on_deck .tag");
+
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
+    obj = $("#id_dangerindication_on_deck .tagcode");
+    obj.attr('draggable', 'True');
+    obj[0].addEventListener('dragstart', handleDragStart, false);
+    obj[0].addEventListener('dragend', handleDragEnd, false);
+});
+
+$("#barcode_on_deck").bind('added', function() {
+    let obj = $("#barcode_on_deck .tag");
 
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
