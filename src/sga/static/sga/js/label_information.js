@@ -114,11 +114,11 @@ $(document).ready(function () {
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('information', label_JSON_String);
                 // Set blank templates according to provided information
-                set_blank_templates();
+                //set_blank_templates();
                 // Show loading message
                 $('#loadingMessage').modal("show");
                 // Set pre designed templates according to provided information 
-                setTimeout(set_pre_designed_templates, 0);
+                //setTimeout(set_pre_designed_templates, 0);
             }
         //}
     });
@@ -131,4 +131,3 @@ function changePlaceHolder(sel) {
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
-s
