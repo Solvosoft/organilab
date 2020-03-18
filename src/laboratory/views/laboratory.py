@@ -121,7 +121,7 @@ class LaboratoryEdit(UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('laboratory:labindex', kwargs={'lab_pk': self.object.pk})
+        return reverse('laboratory:mylabs')
 
 
 class LaboratoryView(object):
@@ -280,9 +280,13 @@ class CreateLaboratoryView(CreateView):
 class LaboratoryListView(ListView):
     model = Laboratory
     template_name= 'laboratory/laboratory_list.html'
+    success_url = '/'
 
     def get_queryset(self):
-        return get_user_laboratories(self.request.user)
+        q = self.request.GET.get('search_fil', None)
+        if q == "":
+            q = None
+        return get_user_laboratories(self.request.user, q)
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.delete_laboratory'), name='dispatch')
