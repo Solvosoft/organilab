@@ -6,27 +6,33 @@
 <div class="col-sm-4">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3><strong>{{ lab.name }}</strong></h3>
+            <div class="" style="position:left;display:inline-block;">
+                <h3>
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                <a class=""
+                    href="{% url 'laboratory:laboratory_update' lab.pk %}"
+                   title="{% trans 'Edit laboratory'%}">
+                    {{ lab.name }}</a>
+                </h3>
+            </div>
+            {% if perm_change_laboratory %}
+                <div class="" style="position:absolute;display:inline-block;top:0;right:0;margin-right:6%;margin-top:2%">
+                    <a class="btn btn-danger btn-sm"
+                        href="{% url 'laboratory:laboratory_delete' lab.pk %}"
+                       title="{% trans 'Delete laboratory'%}"
+                       style="font-size:13px;text-align:left">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                </div>
+            {% endif %}
         </div>
         <div class="panel-body">
-        <h1 class="panel-title">
-            {{ lab.location }}</h1>
-        <h3>A disposicion de uso</h3>
-        <p>Materiales: {{lab|get_materiales_lab }}</p>
-        <p>Equipo: {{lab|get_equipo_lab}}</p>
-        <p>Reactivos: {{lab|get_reactivos_lab}}</p>
-
-
-        {% if perm_change_laboratory %}
-            <a class="btn btn-info"
-                href="{% url 'laboratory:laboratory_update' lab.pk %}">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
-        {% endif %}
-        {% if perm_change_laboratory %}
-            <a class="btn btn-danger"
-                href="{% url 'laboratory:laboratory_delete' lab.pk %}">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-        {% endif %}
+            <h3>A disposicion de uso</h3>
+            <p>Materiales: {{lab|get_materiales_lab }}</p>
+            <p>Equipo: {{lab|get_equipo_lab}}</p>
+            <p>Reactivos: {{lab|get_reactivos_lab}}</p>
+        </div>
+        <div class="panel-footer">
+            <h4>{{ lab.location }}</h4>
         </div>
     </div>
 </div>
