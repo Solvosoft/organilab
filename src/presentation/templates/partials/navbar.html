@@ -16,24 +16,8 @@
     {% if request.user.is_authenticated %}
 
     {% get_user_labs as mylabs %}
-        <li class="dropdown">
-         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-            aria-haspopup="true" aria-expanded="false" id='select_id' >
-         {% if laboratory and userperms.view_laboratory %}
-              <strong>{% get_laboratory_name %}</strong>
-         {% else %}
-           {% trans 'My laboratories' %}
-        {% endif %}
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownlaboratories">
-            {% for lab in mylabs %}
-            <li><a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
-                <span class="glyphicon {% cycle " glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span>
-                {{ lab.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
+        <li><a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
+                <strong>{% trans 'My laboratories' %}</strong></a></li>
 
     {% if laboratory %}
 

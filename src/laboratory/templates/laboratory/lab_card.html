@@ -1,0 +1,32 @@
+{% load static %}
+{% load i18n lab_data_retriever %}
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<div class="col-sm-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3><strong>{{ lab.name }}</strong></h3>
+        </div>
+        <div class="panel-body">
+        <h1 class="panel-title">
+            {{ lab.location }}</h1>
+        <h3>A disposicion de uso</h3>
+        <p>Materiales: {{lab|get_materiales_lab }}</p>
+        <p>Equipo: {{lab|get_equipo_lab}}</p>
+        <p>Reactivos: {{lab|get_reactivos_lab}}</p>
+
+
+        {% if perm_change_laboratory %}
+            <a class="btn btn-info"
+                href="{% url 'laboratory:laboratory_update' lab.pk %}">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
+        {% endif %}
+        {% if perm_change_laboratory %}
+            <a class="btn btn-danger"
+                href="{% url 'laboratory:laboratory_delete' lab.pk %}">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+        {% endif %}
+        </div>
+    </div>
+</div>
