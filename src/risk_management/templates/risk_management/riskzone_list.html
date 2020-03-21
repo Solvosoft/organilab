@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+
+{% block content %}
+  {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
+  {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
+  {%  has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
+
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Risk Zone Management'  %}
+                  {% if perm_add_riskzone %}
+          <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
+        {% endif %}</span></h3>
+
+        </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+<form metod="get" action="">
+    <div class="input-group custom-search-form">
+
+        <input class="form-control" name="q" value="{{q}}" placeholder="Search..." type="text">
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+
+    </div>
+</form>
+
+    </div>
+</div>
+
+
+
+<div class="row">
+<div class="col-md-12">
+  <ul class="list-group">
+    {% for object in object_list %}
+      <li class="row list-group-item">
+        <div class="col-md-9">
+            <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
+ {{ object }}</div>
+        <div class="col-md-3">
+         {% if perm_change_riskzone %}
+          <a class="btn btn-info"
+             href="{% url 'riskmanagement:riskzone_update' object.pk %}">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
+         {% endif %}
+         {% if perm_change_riskzone %}
+          <a class="btn btn-danger"
+             href="{% url 'riskmanagement:riskzone_delete' object.pk %}">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+         {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if is_paginated %}
+    <nav aria-label="...">
+      <ul class="pager">
+        {% if page_obj.has_previous %}
+          <li>
+            <a href="{{pgparams}}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+          </li>
+        {% endif %}
+
+        <li>
+          {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
+        </li>
+
+        {% if page_obj.has_next %}
+          <li>
+            <a href="{{pgparams}}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+  {% endif %}
+</div>
+</div>
+{% endblock %}
