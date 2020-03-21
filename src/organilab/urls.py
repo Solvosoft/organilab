@@ -32,6 +32,7 @@ from rest_framework.documentation import include_docs_urls
 
 
 from sga import urls as sga_urls
+from risk_management import urls as risk_urls
 from rest_framework.documentation import include_docs_urls
 
 
@@ -47,6 +48,7 @@ urlpatterns = auth_urls + [
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'sga/', include(sga_urls, namespace='sga')),
+    url(r'risk/', include(risk_urls, namespace='riskmanagement')),
     url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
 ]
 

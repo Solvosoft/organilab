@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     #    'debug_toolbar',
     'mapwidgets',
     'guardian',
+    'risk_management'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
