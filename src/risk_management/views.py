@@ -1,12 +1,15 @@
-from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
+from laboratory.decorators import user_group_perms
 from risk_management.forms import RiskZoneCreateForm
 from risk_management.models import RiskZone
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='risk_management.view_riskzone'), name='dispatch')
 class ListZone(ListView):
     model = RiskZone
     ordering = 'zone_type'
@@ -32,6 +35,8 @@ class ListZone(ListView):
             context['pgparams'] = '?'
         return context
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='risk_management.add_riskzone'), name='dispatch')
 class ZoneCreate(CreateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
@@ -42,6 +47,8 @@ class ZoneCreate(CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='risk_management.change_riskzone'), name='dispatch')
 class ZoneEdit(UpdateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
@@ -52,10 +59,14 @@ class ZoneEdit(UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='risk_management.delete_riskzone'), name='dispatch')
 class ZoneDelete(DeleteView):
     model = RiskZone
     success_url = reverse_lazy('riskmanagement:riskzone_list')
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='risk_management.view_riskzone'), name='dispatch')
 class ZoneDetail(DetailView):
     model = RiskZone
 
