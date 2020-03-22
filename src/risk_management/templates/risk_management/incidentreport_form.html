@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load laboratory bootstrap staticfiles i18n  %}
+
+{% block title %}{% trans 'Incident Management' %}{% endblock %}
+{% block content %}
+
+
+
+<div class="row">
+    <div class="col-md-offset-1 col-md-3">
+        <a href="{% url 'riskmanagement:incident_list' laboratory %}"> << {% trans 'Laboratory incidents' %}</a>
+    </div>
+
+</div>
+
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Incident Management' %}</span></h3>
+        </div>
+</div>
+
+<div class="col-md-offset-2 col-md-8">
+  <br>
+    {{ form.errors }}
+    <form class="form" action="" method="post">
+
+      {% csrf_token %}
+	      <div class="row">
+	          {{ form|bootstrap }}
+	        <div id="save_button1" class="col-md-1">
+	          <button class="btn btn-success" type="submit">
+	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+	          </button>
+	        </div>
+	      </div>
+    </form>
+</div>
+<div class="clearfix">  </div>
+{% endblock %}
+
+{% block js %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+$(function () {
+    $('#id_incident_date').datetimepicker({ format: 'MM/DD/YYYY'});
+    $('select[name="laboratories"]').select2();
+    CKEDITOR.replace('id_causes', {language: 'es',  });
+    CKEDITOR.replace('id_infraestructure_impact', {language: 'es', });
+    CKEDITOR.replace('id_people_impact', {language: 'es', });
+    CKEDITOR.replace('id_environment_impact', {language: 'es', });
+    CKEDITOR.replace('id_result_of_plans', {language: 'es', });
+    CKEDITOR.replace('id_mitigation_actions', {language: 'es', });
+    CKEDITOR.replace('id_recomendations', {language: 'es', });
+
+    CKEDITOR.config.toolbar = [
+       ['Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-',
+        'Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-',
+        'Outdent','Indent','-','Print', '-','NumberedList','BulletedList','-',
+        'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-',
+        'Image','Table','-','Link','Smiley'], ['Source']
+    ] ;
+
+});
+</script>
+{% endblock %}

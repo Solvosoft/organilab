@@ -9,9 +9,9 @@
 <div class="row">
 <div class="col-md-offset-2 col-md-8">
         <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Risk Zone Management'  %}
+          <h3 class="heading-1" center=""><span>{% trans 'Incidents Management'  %}
                   {% if perm_add_riskzone %}
-          <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
+          <a class="btn btn-success" href="{% url 'riskmanagement:incident_create' laboratory %}"> + </a>
         {% endif %}</span></h3>
 
         </div>
@@ -45,16 +45,16 @@
       <li class="row list-group-item">
         <div class="col-md-9">
             <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
-            <a href="{% url 'riskmanagement:riskzone_detail' object.pk %}">{{ object }}</a></div>
+            <a href="{% url 'riskmanagement:incident_detail' laboratory object.pk %}">{{ object }}</a></div>
         <div class="col-md-3">
          {% if perm_change_riskzone %}
           <a class="btn btn-info"
-             href="{% url 'riskmanagement:riskzone_update' object.pk %}">
+             href="{% url 'riskmanagement:incident_update' laboratory object.pk %}">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
          {% endif %}
          {% if perm_change_riskzone %}
           <a class="btn btn-danger"
-             href="{% url 'riskmanagement:riskzone_delete' object.pk %}">
+             href="{% url 'riskmanagement:incident_delete' laboratory object.pk %}">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
          {% endif %}
         </div>
