@@ -3,6 +3,12 @@
 
 {% block title %}{% trans 'Risk Zone Management' %}{% endblock %}
 {% block content %}
+<div class="row">
+    <div class="col-md-offset-1 col-md-3">
+        <a href="{% url 'riskmanagement:riskzone_list' %}"> << {% trans 'Zone list' %}</a>
+    </div>
+
+</div>
 
 <div class="col-md-offset-2 col-md-8">
         <div class="page-header col-xs-13" align="center">

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from risk_management.forms import RiskZoneCreateForm
 from risk_management.models import RiskZone
@@ -55,3 +55,8 @@ class ZoneEdit(UpdateView):
 class ZoneDelete(DeleteView):
     model = RiskZone
     success_url = reverse_lazy('riskmanagement:riskzone_list')
+
+class ZoneDetail(DetailView):
+    model = RiskZone
+
+

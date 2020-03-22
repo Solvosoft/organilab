@@ -59,3 +59,45 @@ class RiskZone(models.Model):
         verbose_name = _('Risk zone')
         verbose_name_plural = _('Risk zones')
         ordering = ('priority', 'pk')
+
+class IncidentReport(models.Model):
+    creation_date = models.DateTimeField(auto_now_add=True)
+    short_description = models.CharField(max_length=500, verbose_name=_("Descipción corta"),
+                                         help_text=_('Descipción corta de evento, max 500 caracteres'))
+    incident_date = models.DateField(verbose_name=_('Fecha del incidente'))
+    laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_('Laboratories'))
+
+    causes = models.TextField(
+        verbose_name=_('Causas del accidente')
+    )
+    infraestructure_impact = models.TextField(
+        verbose_name=_('Impacto a la infraestructura'),
+        help_text=_('Indicando las consecuencias a corto, mediano y largo plazo.')
+    )
+    people_impact = models.TextField(
+        verbose_name=_('Impacto a las personas (empleados, visitantes y comunidad afectada)'),
+        help_text=_('Indicando las consecuencias a corto, mediano y largo plazo.')
+    )
+    environment_impact = models.TextField(
+        verbose_name=_('Impacto ambiental'),
+        help_text=_('Indicando las consecuencias a corto, mediano y largo plazo.')
+    )
+    result_of_plans = models.TextField(
+        verbose_name=_('Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos.')
+    )
+
+    mitigation_actions = models.TextField(
+        verbose_name=_('Medidas adoptadas para corregir la situación y para atenuar sus efectos.')
+    )
+
+    recomendations = models.TextField(
+        verbose_name=_('Recomendaciones'),
+        help_text=_('''Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse.''')
+    )
+
+    notification_copy = models.FileField(upload_to='notifications/',
+                verbose_name=_('En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)'),
+                null=True, blank=True)
+
+    def __str__(self):
+        return self.short_description
