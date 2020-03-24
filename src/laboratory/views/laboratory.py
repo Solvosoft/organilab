@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.core.serializers import json
+from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -13,17 +15,14 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, Object, ShelfObject
 from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
-from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate
+from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate, H_CodeForm
 from django.contrib.auth.models import User
 from django.contrib import messages
-
-
 from laboratory.decorators import user_group_perms
 from django.urls.base import reverse
-
 from laboratory.utils import get_user_laboratories
 
 
@@ -297,3 +296,31 @@ class LaboratoryDeleteView(DeleteView):
         context = super().get_context_data()
         context['laboratory'] = self.object.pk
         return context
+
+
+@login_required
+def ReportView(request):
+    context = {}
+    context['lista_reactivos'] = []
+    if request.method == 'GET':
+        context['form'] = H_CodeForm
+    if request.method == 'POST':
+        context['form'] = H_CodeForm(request.POST)
+        q = request.POST.get('hcode', None)
+        if q:
+            user_labs = get_user_laboratories(request.user)
+            for lab in user_labs:
+                reactivos = lab.object_set.filter(Q(type='0') & Q(h_code=q))
+                temp_lista_reactivos = []
+                for reactivo in reactivos:
+                    shelfObjects = ShelfObject.objects.filter(object=reactivo)
+                    for shelfObj in shelfObjects:
+                        if shelfObj.quantity > 0:
+                            temp_lista_reactivos.append({'reactivo': reactivo.name,
+                                                         'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
+                                                         'cant': str(shelfObj.quantity) + " " +
+                                                                 shelfObj.get_units(shelfObj.measurement_unit)})
+                context['lista_reactivos'].append({'lab': lab.name,
+                                                   'reactivos': temp_lista_reactivos})
+
+    return render(request=request, template_name='laboratory/reportes.html', context=context)

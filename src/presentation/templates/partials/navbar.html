@@ -34,6 +34,9 @@
             {% endfor %}
           </ul>
         </li>
+      <li><a id='reports' href="{% url 'laboratory:report_h_code' %}" title="{% trans 'Report View' %}">
+           {% trans 'Reportes' %}</a>
+      </li>
 
     {% if laboratory %}
 

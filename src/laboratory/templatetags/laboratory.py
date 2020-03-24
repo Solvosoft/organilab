@@ -86,3 +86,7 @@ def get_user_labs(context):
         return []
 
     return get_user_laboratories(context['request'].user)
+
+
+
+

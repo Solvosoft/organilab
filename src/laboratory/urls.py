@@ -14,6 +14,7 @@ from laboratory.views import labroom, shelfobject, laboratory, solutions, organi
 from laboratory.views import access
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
+from ajax_select import urls as ajax_select_urls
 
 
 objviews = ObjectView()
@@ -165,4 +166,6 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
+    url(r'reportes_h$', laboratory.ReportView,
+        name='report_h_code'),
 ]

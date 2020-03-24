@@ -5,6 +5,8 @@ Created on 5 may. 2017
 '''
 
 from ajax_select import register, LookupChannel
+
+from sga.models import DangerIndication
 from .models import Object
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -44,7 +46,7 @@ class UserLookup(LookupChannel):
         if request.user.is_authenticated():
             return True
         return False
-    
+
     def get_query(self, q, request):
         qs = q.split(' ')
         _filter = None

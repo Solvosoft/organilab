@@ -1,4 +1,7 @@
 from django import forms
+from django.forms import ModelForm
+
+from sga.models import DangerIndication
 from .models import Laboratory
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -53,4 +56,9 @@ class LaboratoryCreate(forms.ModelForm):
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
 
+
+class H_CodeForm(forms.Form):
+    hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
+                                           widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+                                           label=_('Filter substances by H Code'))
 
