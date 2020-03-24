@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static%}
+
+{% block js %}
+<style>
+    #id_hcode
+    {
+        width: 400px;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<script>
+$(function () {
+$('select[name="hcode"]').select2();
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-inline" id="searchform"  method="POST" action="" accept-charset="utf-8">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form }}
+            </div>
+            <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+        </form>
+    </div>
+</div>
+{% if lista_reactivos %}
+    <br>
+    {% for reactivo in lista_reactivos %}
+        <h5>{{reactivo.lab}}</h5>
+        <table class="table">
+            <tr>
+                <th>{% trans 'Reactive'%}</th>
+                <th>{% trans 'H Codes'%}</th>
+                <th>{% trans 'Quantity'%}</th>
+            <tr>
+            {% for react in reactivo.reactivos %}
+            <tr>
+                <td>{{react.reactivo}}</td>
+                <td>{% for h_code in react.h_codes %} {{h_code}} {% endfor %}</td>
+                <td>{{react.cant}}</td>
+            <tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+{% else %}
+    <h5>{% trans 'Use above menu to filter reactives by H Codes' %}</h5>
+{% endif %}
+{% endblock %}
