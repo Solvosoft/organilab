@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: templates/information.html:48 templates/label_information.html:35
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-27 11:43-0600\n"
+"POT-Creation-Date: 2020-03-25 01:22-0600\n"
 "PO-Revision-Date: 2018-08-27 11:43-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,9 +19,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: admin.py:23
+#: admin.py:21
 msgid "Download Label"
 msgstr "Descargar etiquetas"
+
+#: forms.py:21 models.py:125 templates/editor.html:158
+#: templates/label_editor.html:142
+msgid "Danger Indication"
+msgstr "Indicación de peligro"
+
+#: forms.py:23 models.py:96
+msgid "Prudence Advices"
+msgstr "Consejos de prudencia"
 
 #: models.py:11
 msgid "Type of danger"
@@ -34,8 +44,9 @@ msgstr "Clase de peligro"
 msgid "Danger Category"
 msgstr "Categoría de peligo"
 
-#: models.py:15 models.py:52 models.py:67 models.py:85 models.py:131
-#: models.py:183 models.py:206
+#: models.py:15 models.py:51 models.py:68 models.py:86 models.py:133
+#: models.py:185 models.py:208 models.py:255 templates/information.html:67
+#: templates/label_information.html:54
 msgid "Name"
 msgstr "Nombre"
 
@@ -55,208 +66,489 @@ msgstr "Clases de peligro"
 msgid "Can see available Warning Classes"
 msgstr "Puede ver clases de peligro disponibles"
 
-#: models.py:58
-msgid "Pictogram"
-msgstr "Pictograma"
-
-#: models.py:59 models.py:108
-msgid "Pictograms"
-msgstr "Pictogramas"
-
-#: models.py:61
-msgid "Can see available pictograms"
-msgstr "Puede ver pictogramas disponibles"
-
-#: models.py:68
+#: models.py:52
 msgid "Weigth"
 msgstr "Peso"
 
-#: models.py:74
+#: models.py:58 templates/editor.html:155 templates/label_editor.html:141
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
-#: models.py:75
+#: models.py:59 templates/editor.html:143 templates/label_editor.html:131
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
-#: models.py:77
+#: models.py:61
 msgid "Can see available Warning Words"
 msgstr "Puede ver palabras de advertencia disponibles"
 
-#: models.py:84 models.py:103
+#: models.py:75 templates/editor.html:77 templates/label_editor.html:64
+msgid "Pictogram"
+msgstr "Pictograma"
+
+#: models.py:76 models.py:109
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+#: models.py:78
+msgid "Can see available pictograms"
+msgstr "Puede ver pictogramas disponibles"
+
+#: models.py:85 models.py:104
 msgid "Code"
 msgstr "Código"
 
-#: models.py:88
+#: models.py:89
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
 
-#: models.py:94
+#: models.py:95 templates/editor.html:161 templates/label_editor.html:143
 msgid "Prudence Advice"
 msgstr "Consejo de prudencia"
 
-#: models.py:95
-msgid "Prudence Advices"
-msgstr "Consejos de prudencia"
-
-#: models.py:97
+#: models.py:98
 msgid "Can see available prudence advice"
 msgstr "Puede ver los consejos de prudencia disponibles"
 
-#: models.py:104
+#: models.py:105
 msgid "Description"
 msgstr "Descripción"
 
-#: models.py:106
+#: models.py:107
 msgid "Warning words"
 msgstr "Palabras de advertencia"
 
-#: models.py:110
+#: models.py:111
 msgid "Warning class"
 msgstr "Clase de peligro"
 
-#: models.py:115
+#: models.py:116
 msgid "Warning category"
 msgstr "Categorías de peligro"
 
-#: models.py:117
+#: models.py:118
 msgid "Prudence advice"
 msgstr "Consejos de prudencia"
 
-#: models.py:123
-msgid "Danger Indication"
-msgstr "Indicación de peligro"
-
-#: models.py:124
+#: models.py:126
 msgid "Indication of Danger"
 msgstr "Indicaciones de peligro"
 
-#: models.py:126
+#: models.py:128
 msgid "Can see available indication of danger"
 msgstr "Puede ver las indicaciones de peligro disponibles"
 
-#: models.py:132
+#: models.py:134
 msgid "CAS number"
 msgstr "Número CAS"
 
-#: models.py:138
+#: models.py:140
 msgid "Component"
 msgstr "Componente"
 
-#: models.py:139 models.py:149
+#: models.py:141 models.py:151
 msgid "Components"
 msgstr "Componentes"
 
-#: models.py:141
+#: models.py:143
 msgid "Can see available Component"
 msgstr "Puede ver los componentes disponibles"
 
-#: models.py:147
+#: models.py:149
 msgid "Comercial name"
 msgstr "Nombre comercial"
 
-#: models.py:152
+#: models.py:154
 msgid "Danger indications"
 msgstr "Indicación de peligro"
 
-#: models.py:153
+#: models.py:155
 msgid "Synonymous"
 msgstr "Sinónimos"
 
-#: models.py:155
+#: models.py:157
 msgid "Agrochemical"
 msgstr "Agroquímicos"
 
-#: models.py:171 models.py:229
+#: models.py:173 models.py:233
 msgid "Sustance"
 msgstr "Sustancia"
 
-#: models.py:172
+#: models.py:174
 msgid "Sustances"
 msgstr "Sustancias"
 
-#: models.py:174
+#: models.py:176
 msgid "Can see available Sustance"
 msgstr "Puede ver las sustancias disponibles"
 
-#: models.py:184
+#: models.py:186 templates/information.html:81
+#: templates/label_information.html:68
 msgid "Phone"
 msgstr "Telefono"
 
-#: models.py:185
+#: models.py:187 templates/information.html:74
+#: templates/label_information.html:61
 msgid "Address"
 msgstr "Dirección"
 
-#: models.py:191 models.py:232
+#: models.py:193 models.py:236
 msgid "Builder Information"
 msgstr "Información del fabricante"
 
-#: models.py:192
+#: models.py:194
 msgid "Information of Builders"
 msgstr "Información de los fabricantes"
 
-#: models.py:194
+#: models.py:196
 msgid "Can see available Builder Information"
 msgstr "Puede ver la información de los fabricantes"
 
-#: models.py:202
+#: models.py:204
 msgid "Milimeters"
 msgstr "Milimetros"
 
-#: models.py:203
+#: models.py:205
 msgid "Centimeters"
 msgstr "Centimetros"
 
-#: models.py:204
+#: models.py:206
 msgid "inch"
 msgstr "Inches"
 
-#: models.py:207
+#: models.py:209
 msgid "Height"
 msgstr "Alto"
 
-#: models.py:209
+#: models.py:211
 msgid "Height Unit"
 msgstr "Alto en:"
 
-#: models.py:211
+#: models.py:213
 msgid "Width"
 msgstr "Ancho"
 
-#: models.py:213
+#: models.py:215
 msgid "Width Unit"
 msgstr "Ancho en: "
 
-#: models.py:220 models.py:237
+#: models.py:224 models.py:241 models.py:256
 msgid "Recipient Size"
 msgstr "Tamaño de recipiente"
 
-#: models.py:221
+#: models.py:225
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: models.py:223
+#: models.py:227
 msgid "Can see available Recipient Size"
 msgstr "Puede ver los tamaños de recipiente disponibles"
 
-#: models.py:236
+#: models.py:240 templates/editor.html:183 templates/information.html:92
+#: templates/label_editor.html:151 templates/label_information.html:79
 msgid "Commercial Information"
 msgstr "Información comercial"
 
-#: models.py:243
+#: models.py:247
 msgid "Label"
 msgstr "Etiqueta"
 
-#: models.py:244
+#: models.py:248
 msgid "Labels"
 msgstr "Etiquetas"
 
-#: models.py:246
+#: models.py:250 models.py:268
 msgid "Can see available labels"
 msgstr "Puede ver las etiquetas"
 
-#~ msgid "Size"
-#~ msgstr "Tamaño"
+#: models.py:258
+msgid "Share with community"
+msgstr ""
+
+#: models.py:265
+msgid "Template SGA"
+msgstr ""
+
+#: models.py:266
+msgid "Templates SGA"
+msgstr ""
+
+#: templates/editor.html:34 templates/label_editor.html:26
+#, fuzzy
+#| msgid "Can see available labels"
+msgid "Available templates"
+msgstr "Puede ver las etiquetas"
+
+#: templates/editor.html:45 templates/label_editor.html:37
+msgid "Customize the selected template using the canvas editor and it elements"
+msgstr ""
+
+#: templates/editor.html:65 templates/label_editor.html:56
+msgid "General"
+msgstr ""
+
+#: templates/editor.html:69 templates/label_editor.html:59
+msgid "Live"
+msgstr ""
+
+#: templates/editor.html:73 templates/label_editor.html:62
+msgid "Generic"
+msgstr ""
+
+#: templates/editor.html:90 templates/label_editor.html:76
+msgid "Delete"
+msgstr ""
+
+#: templates/editor.html:92 templates/label_editor.html:78
+msgid "Line"
+msgstr ""
+
+#: templates/editor.html:94 templates/label_editor.html:80
+msgid "Fill / Stroke / Background"
+msgstr ""
+
+#: templates/editor.html:102 templates/label_editor.html:90
+#, fuzzy
+#| msgid "Size"
+msgid "Font Size"
+msgstr "Tamaño"
+
+#: templates/editor.html:105 templates/label_editor.html:93
+msgid "actual"
+msgstr ""
+
+#: templates/editor.html:108 templates/label_editor.html:96
+msgid "Font family"
+msgstr ""
+
+#: templates/editor.html:164 templates/label_editor.html:144
+#, fuzzy
+#| msgid "Sustance"
+msgid "Substance Name"
+msgstr "Sustancia"
+
+#: templates/editor.html:167 templates/label_editor.html:145
+#, fuzzy
+#| msgid "CAS number"
+msgid "Cas number"
+msgstr "Número CAS"
+
+#: templates/editor.html:174 templates/label_editor.html:148
+msgid "Seler name"
+msgstr ""
+
+#: templates/editor.html:177 templates/label_editor.html:149
+msgid "Seler phone"
+msgstr ""
+
+#: templates/editor.html:180 templates/label_editor.html:150
+#, fuzzy
+#| msgid "Address"
+msgid "Seler address"
+msgstr "Dirección"
+
+#: templates/editor.html:221 templates/label_editor.html:170
+msgid "Use save before finish"
+msgstr ""
+
+#: templates/editor.html:222 templates/label_editor.html:171
+msgid "Save"
+msgstr ""
+
+#: templates/index_sga.html:20 templates/index_sga.html:32
+#: templates/label_index.html:52
+msgid "GHS Label Creator"
+msgstr ""
+
+#: templates/index_sga.html:27
+msgid ""
+"Doesn't have templates created yet, go to the editor and generate your "
+"custom templates!"
+msgstr ""
+
+#: templates/index_sga.html:28
+msgid "Go to Editor"
+msgstr ""
+
+#: templates/index_sga.html:33 templates/label_index.html:53
+msgid ""
+"Create your own chemical label according to the Globally Harmonized System "
+"(GHS)."
+msgstr ""
+
+#: templates/index_sga.html:40
+msgid "GHS Label Example and Requirements"
+msgstr ""
+
+#: templates/index_sga.html:44
+msgid "Online GHS Solution"
+msgstr ""
+
+#: templates/index_sga.html:45
+msgid ""
+"Create and customize a chemical label according to Globally Harmonized "
+"System (GHS).On the other hand, this tool helps suppliers and downstream "
+"users such as laboratories to quickly adopt the new standard and avoid the "
+"risk of non-compliance."
+msgstr ""
+
+#: templates/index_sga.html:46
+msgid "Moreover, the solution contains multiples features:"
+msgstr ""
+
+#: templates/index_sga.html:48
+msgid "Container Management."
+msgstr ""
+
+#: templates/index_sga.html:49
+msgid "Social Media Options."
+msgstr ""
+
+#: templates/index_sga.html:50
+msgid "Printing Management."
+msgstr ""
+
+#: templates/index_sga.html:52
+msgid "Do you have templates already created, print them!"
+msgstr ""
+
+#: templates/index_sga.html:58
+msgid "Create a GHS Label"
+msgstr ""
+
+#: templates/index_sga.html:67 templates/label_creator.html:55
+#: templates/template.html:78
+msgid "Powered by"
+msgstr ""
+
+#: templates/information.html:36 templates/label_information.html:24
+msgid "Enter all required label and recipient information"
+msgstr ""
+
+#: templates/information.html:43 templates/label_information.html:30
+#, fuzzy
+#| msgid "Sustance"
+msgid "Substance"
+msgstr "Sustancia"
+
+#: templates/information.html:45 templates/label_information.html:32
+#, fuzzy
+#| msgid "CAS number"
+msgid "Name or CAS number"
+msgstr "Número CAS"
+
+#: templates/information.html:51 templates/label_information.html:38
+msgid "Did you find the substance?"
+msgstr ""
+
+#: templates/information.html:52 templates/information.html:124
+#: templates/label_information.html:39 templates/label_information.html:111
+msgid "Create it Here!"
+msgstr ""
+
+#: templates/information.html:57 templates/label_information.html:44
+msgid "View substance label information"
+msgstr ""
+
+#: templates/information.html:63 templates/label_information.html:50
+#, fuzzy
+#| msgid "Builder Information"
+msgid "Supplier Identification"
+msgstr "Información del fabricante"
+
+#: templates/information.html:96 templates/label_information.html:83
+msgid "Additionals product identifiers"
+msgstr ""
+
+#: templates/information.html:105 templates/label_information.html:92
+#, fuzzy
+#| msgid "Recipient Size"
+msgid "Recipient"
+msgstr "Tamaño de recipiente"
+
+#: templates/information.html:108 templates/label_information.html:95
+msgid "Name - Height x Width"
+msgstr ""
+
+#: templates/information.html:124 templates/label_information.html:111
+#, fuzzy
+#| msgid "Size of recipients"
+msgid "Did you find the recipient?"
+msgstr "Tamaños de recipiente"
+
+#: templates/information.html:131
+msgid "Logo and Bar Code"
+msgstr ""
+
+#: templates/information.html:148 templates/label_creator.html:40
+msgid "Next"
+msgstr ""
+
+#: templates/label_creator.html:42
+msgid "Finish"
+msgstr ""
+
+#: templates/label_creator.html:47
+msgid "Previous"
+msgstr ""
+
+#: templates/label_creator.html:74
+msgid "Pre designed template"
+msgstr ""
+
+#: templates/label_creator.html:80
+msgid "Close"
+msgstr ""
+
+#: templates/label_creator.html:93
+msgid "Loading"
+msgstr ""
+
+#: templates/label_index.html:66
+#, fuzzy
+#| msgid "Builder Information"
+msgid "Information"
+msgstr "Información del fabricante"
+
+#: templates/label_index.html:74
+msgid "Template"
+msgstr ""
+
+#: templates/label_index.html:82
+msgid "Editor"
+msgstr ""
+
+#: templates/label_index.html:90
+msgid "GHS"
+msgstr ""
+
+#: templates/label_template.html:21 templates/template.html:26
+msgid ""
+"Create a new label template or select a pre-designed template in accordance "
+"with your needs"
+msgstr ""
+
+#: templates/label_template.html:28 templates/template.html:33
+msgid "Edit basic information"
+msgstr ""
+
+#: templates/label_template.html:36 templates/template.html:41
+#, fuzzy
+#| msgid "Danger indications"
+msgid "Change information"
+msgstr "Indicación de peligro"
+
+#: templates/label_template.html:52
+msgid "Get as Image"
+msgstr ""
+
+#: templates/template.html:55
+msgid "Get as PDF"
+msgstr ""
+
+#: views.py:118 views.py:175
+msgid "Tag Template saved successfully"
+msgstr ""
 
 #~ msgid "Can see available Warning Categories"
 #~ msgstr "Puede ver categorías de peligro disponibles"
