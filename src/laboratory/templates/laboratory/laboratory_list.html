@@ -5,28 +5,27 @@
   {%  has_perms "laboratory.change_laboratory" as perm_change_laboratory %}
   {%  has_perms "laboratory.delete_laboratory" as perm_delete_laboratory %}
 
-  <br> <br>
-  <ul class="list-group">
-    {% for object in object_list %}
-      <li class="row list-group-item">
-        <div class="col-md-9"> {{ object }}</div>
-        <div class="col-md-3">
-         {% if perm_change_laboratory %}
-          <a class="btn btn-info"
-             href="{% url 'laboratory:laboratory_update' object.pk %}">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
-         {% endif %}
-         {% if perm_change_laboratory %}  
-          <a class="btn btn-danger"
-             href="{% url 'laboratory:laboratory_delete' object.pk %}">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-         {% endif %}  
+  <label for="searchbox">Buscar Laboratorio</label>
+  <form id="searchform"  method="get" action="" accept-charset="utf-8">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="input-group">
+              <input id="searchbox" name="search_fil" type="text" class="form-control" style="height:40px">
+              <span class="input-group-btn" style="height:40px">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+              </span>
+            </div>
         </div>
-      </li>
+      </div>
+  </form>
+  <br>
+  <div class="row">
+    {% for lab in object_list %}
+    {% include 'laboratory/lab_card.html' with lab=lab  perm_change_laboratory=perm_change_laboratory  perm_change_laboratory=perm_change_laboratory %}
     {% endfor %}
-  </ul>
+  </div>
 
-  {% if is_paginated %}
+  {% if object_list %}
     <nav aria-label="...">
       <ul class="pager">
         {% if page_obj.has_previous %}
