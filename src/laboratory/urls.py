@@ -149,6 +149,11 @@ lab_access_urls = [
         name='access_list_students'),
 ]
 
+reports_all_lab=[
+    url(r'^reports/hcode$', laboratory.HCodeReports.as_view(), name='h_code_reports'),
+    url(r'^reports/download/hcode$', reports.report_h_code, name='download_h_code_reports'),
+]
+
 '''MULTILAB'''
 urlpatterns += [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
@@ -165,6 +170,5 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
-    url(r'reportes_h$', laboratory.HCodeReports.as_view(),
-        name='h_code_reports'),
-]
+
+] +reports_all_lab

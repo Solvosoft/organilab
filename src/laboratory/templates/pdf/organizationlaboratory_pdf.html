@@ -23,17 +23,17 @@
                          {% for assigned in laboratory.principaltechnician_set.all %}
                           {{ assigned.name }}</br>
                          {% endfor %}
-                 </dt>
+                 </td>
                  <td>                    
                          {% for assigned in laboratory.principaltechnician_set.all %}
                           {{ assigned.phone_number }}</br>
                          {% endfor %}    
-                 </dt>
+                 </td>
                  <td>
                          {% for assigned in laboratory.principaltechnician_set.all %}
                             {{ assigned.email }}</br>
                          {% endfor %}
-                 </dt>
+                 </td>
            </tr>
     </table>
         <br />

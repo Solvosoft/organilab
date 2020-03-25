@@ -3,25 +3,27 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf.urls import url
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.shortcuts import redirect, get_object_or_404, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.urls.base import reverse
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from django.utils.translation import ugettext_lazy as _
-from django.db.models.query_utils import Q
-from laboratory.models import Laboratory, OrganizationStructure, Object, ShelfObject
-from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
-from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate, H_CodeForm
-from django.contrib.auth.models import User
-from django.contrib import messages
+
 from laboratory.decorators import user_group_perms
-from django.urls.base import reverse
+from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate, H_CodeForm
+from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_user_laboratories
+from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
 def render_admins_lab(request, object_list, lab, message=None):
@@ -295,35 +297,31 @@ class LaboratoryDeleteView(DeleteView):
         context['laboratory'] = self.object.pk
         return context
 
-
 @method_decorator(login_required, name='dispatch')
 class HCodeReports(ListView):
-    paginate_by = 3
-    template_name = 'laboratory/reportes.html'
+    paginate_by = 5
+    template_name = 'laboratory/h_code_report.html'
 
     def get_queryset(self):
-        q = self.request.GET.get('hcode', None)
+        q = None
+        form = H_CodeForm(self.request.GET)
+        if form.is_valid():
+            q = form.cleaned_data['hcode']
         lista_reactivos = []
         if q:
-            user_labs = get_user_laboratories(self.request.user)
-            for lab in user_labs:
-                reactivos = lab.object_set.filter(Q(type='0') & Q(h_code=q))
-                if reactivos:
-                    temp_lista_reactivos = []
-                    for reactivo in reactivos:
-                        shelf_objects = ShelfObject.objects.filter(object=reactivo)
-                        for shelfObj in shelf_objects:
-                            if shelfObj.quantity > 0:
-                                temp_lista_reactivos.append({'reactivo': reactivo.name,
-                                                             'sala': shelfObj.shelf.furniture.labroom,
-                                                             'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
-                                                             'cant': str(shelfObj.quantity) + " " +
-                                                                     shelfObj.get_units(shelfObj.measurement_unit)})
-                    lista_reactivos.append({'lab': lab.name,
-                                            'reactivos': temp_lista_reactivos})
+            lista_reactivos= filter_by_user_and_hcode(self.request.user, q)
         return lista_reactivos
+
+    def get_filter_params(self):
+        dev = ''
+        form = H_CodeForm(self.request.GET)
+        if form.is_valid():
+            for code in form.cleaned_data['hcode']:
+                dev+='&hcode='+code.code
+        return dev
 
     def get_context_data(self, **kwargs):
         context = super(HCodeReports, self).get_context_data(**kwargs)
         context['form'] = H_CodeForm(self.request.GET)
+        context['params'] = self.get_filter_params()
         return context

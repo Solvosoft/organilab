@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n static%}
+
+{% block js %}
+<style>
+    #id_hcode
+    {
+        width: 100%;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<script>
+$(function () {
+$('select[name="hcode"]').select2();
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-inline" id="searchform"  method="GET" action="" accept-charset="utf-8">
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <center><button class="btn btn-primary" type="submit">{% trans 'Search' %}</button></center>
+        </form>
+    </div>
+</div>
+{% if page_obj %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="btn-group dropup pull-right">
+	  <button type="button" class="btn btn-danger">
+	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	   {% trans 'Download'%}</button>
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="caret"></span>
+	    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
+	  </button>
+	  <ul class="dropdown-menu">
+	  <li>  <a
+	       href="{% url 'laboratory:download_h_code_reports' %}?format=pdf{{params}}">{% trans "PDF" %} </a>
+	  </li><li>
+	     <a
+	       href="{% url 'laboratory:download_h_code_reports' %}?format=ods{{params}}">{% trans "Ods" %} </a>
+	   </li>
+	   <li>
+	     <a
+	       href="{% url 'laboratory:download_h_code_reports' %}?format=xls{{params}}">{% trans "Xls" %} </a>
+	   </li>
+	   <li>
+	     <a
+	       href="{% url 'laboratory:download_h_code_reports' %}?format=xlsx{{params}}">{% trans "Xlsx" %} </a>
+	   </li>
+	  </ul>
+	</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+    {% for reactive in page_obj %}
+            <tr>
+                <td colspan="5"><h2 class="text-center">{{reactive.lab}}</h2></td>
+            </tr>
+            <tr>
+                <th>{% trans 'Reactive'%}</th>
+                <th>{% trans 'Room'%}</th>
+                <th>{% trans 'Furniture'%}</th>
+                <th>{% trans 'H Codes'%}</th>
+                <th>{% trans 'Quantity'%}</th>
+            <tr>
+            {% for react in reactive.reactives %}
+            <tr>
+                <td>{{react.reactive}}</td>
+                <td>{{react.room}}</td>
+                <td>{{react.furniture}}</td>
+            <td>{% for h_code in react.h_codes %}
+                <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="{{h_code.1}}">{{h_code.0}}</button>
+                {% endfor %}
+            </td>
+                <td>{{react.quantity}} {{react.unit}}</td>
+            <tr>
+            {% endfor %}
+
+    {% endfor %}
+    </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?hcode={{ request.GET.hcode }}&page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?hcode={{ request.GET.hcode }}&page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+        </div>
+    </div>
+</div>
+
+{% else %}
+    <h5>{% trans 'Use above menu to filter reactives by H Codes' %}</h5>
+{% endif %}
+{% endblock %}
