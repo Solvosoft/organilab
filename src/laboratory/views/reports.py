@@ -16,11 +16,14 @@ from django.utils.decorators import method_decorator
 from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
+from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_group_perms
 import django_excel
 from django.db.models.aggregates import Sum, Min
+
+from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
 def make_book_organization_laboratory(objects):
@@ -483,6 +486,45 @@ def report_furniture(request, *args, **kwargs):
     response[
         'Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
     return response
+
+
+
+@login_required
+@user_group_perms(perm='laboratory.do_report')
+def report_h_code(request, *args, **kwargs):
+    form = H_CodeForm(request.GET)
+    q=[]
+    if form.is_valid():
+        q = form.cleaned_data['hcode']
+    fileformat = request.GET.get('format', 'pdf')
+    if fileformat in ['xls', 'xlsx', 'ods']:
+        object_list = filter_by_user_and_hcode(request.user, q, function='convert_hcodereport_list')
+        return django_excel.make_response_from_array(
+            object_list, fileformat, file_name="hcode_report.%s" % (fileformat,))
+    else:
+        object_list = filter_by_user_and_hcode(request.user, q, function='convert_hcodereport_table')
+
+    template = get_template('pdf/hcode_pdf.html')
+
+    context = {
+        'object_list': object_list,
+        'datetime': timezone.now(),
+        'request': request,
+
+    }
+
+    html = template.render(
+        context=context).encode("UTF-8")
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
+    return response
+
+
+
 
 
 @method_decorator(login_required, name='dispatch')

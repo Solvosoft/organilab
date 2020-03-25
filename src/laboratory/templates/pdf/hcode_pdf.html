@@ -1,0 +1,37 @@
+ {% extends 'pdf/base_pdf.html' %}
+{% load i18n %}
+
+{% block verbose_name %}{% trans "H code report" %}{% endblock %}
+
+{% block pdf_content %}
+
+          <table class="table">
+      {% for reactive in object_list %}
+            <tr>
+                <td colspan="5"><h2 class="text-center">{{reactive.lab}}</h2></td>
+            </tr>
+            <tr>
+                <th>{% trans 'Reactive'%}</th>
+                <th>{% trans 'Room'%}</th>
+                <th>{% trans 'Furniture'%}</th>
+                <th>{% trans 'H Codes'%}</th>
+                <th>{% trans 'Quantity'%}</th>
+            <tr>
+            {% for react in reactive.reactives %}
+            <tr>
+                <td>{{react.reactive}}</td>
+                <td>{{react.room}}</td>
+                <td>{{react.furniture}}</td>
+            <td>{% for h_code in react.h_codes %}
+                <button type="button" class="btn btn-default btn-xs"  title="{{h_code.1}}"> {{h_code.0}} </button>
+                {% endfor %}
+            </td>
+                <td>{{react.quantity}} {{react.unit}}</td>
+            <tr>
+            {% endfor %}
+     {% empty %}
+          <tr>  <td>{% trans "You have not assigned laboratories yet, or there is no laboratories registered" %}</td></tr>
+    {% endfor %}
+    </table>
+
+ {% endblock %}
