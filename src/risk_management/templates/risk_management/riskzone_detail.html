@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-offset-1 col-md-3">
+        <a href="{% url 'riskmanagement:riskzone_list' %}"> << {% trans 'Zone list' %}</a>
+    </div>
+    <div class="col-md-offset-4 col-md-3">
+        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}">   {% trans 'Edit' %}</a>
+    </div>
+</div>
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" center=""><span>
+             {{object}}
+                  {% if perm_add_riskzone %}
+          <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
+        {% endif %}</span></h3>
+
+        </div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+  <ul class="list-group">
+    {% for lab in object.laboratories.all %}
+      <li class="row list-group-item">
+
+         <a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
+            <span class="glyphicon {% cycle " glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span>
+            {{ lab.name }}
+         </a>
+<div class="pull-right">
+         <a href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
+             {{lab.incidentreport_set.all.count }}
+         </a>
+         <a href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
+            <span class="glyphicon glyphicon-plus">  </span>
+         </a>
+</div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+</div>
+{% endblock %}

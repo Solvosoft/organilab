@@ -7,6 +7,7 @@ Created on 26/12/2016
 from __future__ import unicode_literals
 
 from django.utils import timezone
+from django.views.generic import DetailView as djDetailView
 from django.views.generic.edit import CreateView as djCreateView
 from django.views.generic.edit import DeleteView as djDeleteView
 from django.views.generic.edit import UpdateView as djUpdateView
@@ -65,6 +66,17 @@ class ListView(djListView):
 
     def get_context_data(self, **kwargs):
         context = djListView.get_context_data(self, **kwargs)
+        context['laboratory'] = self.lab
+        context['datetime'] = timezone.now()
+        return context
+
+class DetailView(djDetailView):
+    def get(self, request, *args, **kwargs):
+        self.lab = kwargs['lab_pk']
+        return djDetailView.get(self, request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = djDetailView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
         context['datetime'] = timezone.now()
         return context

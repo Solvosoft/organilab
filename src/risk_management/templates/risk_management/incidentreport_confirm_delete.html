@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+
+
+
+{% block title %}{% trans 'Delete Incident report' %}{% endblock %}
+{% block content %}
+
+  {%  has_perms "risk_management.delete_incidentreport" as perm_del_incidentreport %}
+
+  {% if perm_del_incidentreport %}
+	<form action="" method="post">{% csrf_token %}
+	    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+	    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+	</form>
+	<br> <br>
+  {% else %} 
+       {% include 'laboratory/action_denied.html' %} 
+  {% endif %}	
+{% endblock%}
