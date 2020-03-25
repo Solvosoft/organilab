@@ -20,7 +20,7 @@ $('select[name="hcode"]').select2();
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <form class="form-inline" id="searchform"  method="POST" action="" accept-charset="utf-8">
+        <form class="form-inline" id="searchform"  method="GET" action="" accept-charset="utf-8">
             {% csrf_token %}
             <div class="form-group">
                 {{ form }}
@@ -31,23 +31,42 @@ $('select[name="hcode"]').select2();
 </div>
 {% if lista_reactivos %}
     <br>
-    {% for reactivo in lista_reactivos %}
+    {% for reactivo in page_obj %}
         <h5>{{reactivo.lab}}</h5>
         <table class="table">
             <tr>
                 <th>{% trans 'Reactive'%}</th>
+                <th>{% trans 'Room'%}</th>
                 <th>{% trans 'H Codes'%}</th>
                 <th>{% trans 'Quantity'%}</th>
             <tr>
             {% for react in reactivo.reactivos %}
             <tr>
                 <td>{{react.reactivo}}</td>
+                <td>{{react.sala}}</td>
                 <td>{% for h_code in react.h_codes %} {{h_code}} {% endfor %}</td>
                 <td>{{react.cant}}</td>
             <tr>
             {% endfor %}
         </table>
     {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 {% else %}
     <h5>{% trans 'Use above menu to filter reactives by H Codes' %}</h5>
 {% endif %}
