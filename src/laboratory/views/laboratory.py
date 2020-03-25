@@ -299,39 +299,33 @@ class LaboratoryDeleteView(DeleteView):
         return context
 
 
-@login_required
-def ReportView(request):
-    context = {}
-    context['lista_reactivos'] = []
-    if 'hcode' in request.GET:
-        context['form'] = H_CodeForm(request.GET)
-    else:
-        context['form'] = H_CodeForm()
-    q = request.GET.get('hcode', None)
-    if q:
-        user_labs = get_user_laboratories(request.user)
-        for lab in user_labs:
-            reactivos = lab.object_set.filter(Q(type='0') & Q(h_code=q))
-            temp_lista_reactivos = []
-            for reactivo in reactivos:
-                shelf_objects = ShelfObject.objects.filter(object=reactivo)
-                for shelfObj in shelf_objects:
-                    if shelfObj.quantity > 0:
-                        temp_lista_reactivos.append({'reactivo': reactivo.name,
-                                                     'sala': shelfObj.shelf.furniture.labroom,
-                                                     'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
-                                                     'cant': str(shelfObj.quantity) + " " +
-                                                             shelfObj.get_units(shelfObj.measurement_unit)})
-            context['lista_reactivos'].append({'lab': lab.name,
-                                               'reactivos': temp_lista_reactivos})
-    if context['lista_reactivos']:
-        paginator = Paginator(context['lista_reactivos'], 1)
-        page_number = request.GET.get('page', 1)
-        try:
-            context['page_obj'] = paginator.page(page_number)
-        except PageNotAnInteger:
-            context['page_obj'] = paginator.page(1)
-        except EmptyPage:
-            context['page_obj'] = paginator.page(paginator.num_pages)
+@method_decorator(login_required, name='dispatch')
+class ReportView2(ListView):
+    paginate_by = 3
+    template_name = 'laboratory/reportes.html'
 
-    return render(request=request, template_name='laboratory/reportes.html', context=context)
+    def get_queryset(self):
+        q = self.request.GET.get('hcode', None)
+        lista_reactivos = []
+        if q:
+            user_labs = get_user_laboratories(self.request.user)
+            for lab in user_labs:
+                reactivos = lab.object_set.filter(Q(type='0') & Q(h_code=q))
+                temp_lista_reactivos = []
+                for reactivo in reactivos:
+                    shelf_objects = ShelfObject.objects.filter(object=reactivo)
+                    for shelfObj in shelf_objects:
+                        if shelfObj.quantity > 0:
+                            temp_lista_reactivos.append({'reactivo': reactivo.name,
+                                                         'sala': shelfObj.shelf.furniture.labroom,
+                                                         'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
+                                                         'cant': str(shelfObj.quantity) + " " +
+                                                                 shelfObj.get_units(shelfObj.measurement_unit)})
+                lista_reactivos.append({'lab': lab.name,
+                                        'reactivos': temp_lista_reactivos})
+        return lista_reactivos
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportView2, self).get_context_data(**kwargs)
+        context['form'] = H_CodeForm(self.request.GET)
+        return context

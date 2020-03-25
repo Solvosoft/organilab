@@ -166,6 +166,6 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
-    url(r'reportes_h$', laboratory.ReportView,
+    url(r'reportes_h$', laboratory.ReportView2.as_view(),
         name='report_h_code'),
 ]
