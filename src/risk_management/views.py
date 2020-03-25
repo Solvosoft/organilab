@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -20,7 +21,8 @@ class ListZone(ListView):
         queryset = super().get_queryset()
         if 'q' in self.request.GET:
             q = self.request.GET['q']
-            queryset = queryset.filter(name__icontains=q)
+            queryset = queryset.filter(Q(name__icontains=q)|Q(
+                                       laboratories__name__icontains=q)).distinct()
         return queryset
 
 

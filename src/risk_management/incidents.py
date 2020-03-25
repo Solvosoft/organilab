@@ -1,5 +1,6 @@
 import django_excel
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -26,7 +27,9 @@ class IncidentReportList(djgeneric.ListView):
         queryset = super().get_queryset()
         if 'q' in self.request.GET:
             q = self.request.GET['q']
-            queryset = queryset.filter(short_description__icontains=q)
+            queryset = queryset.filter(Q(short_description__icontains=q)|Q(
+                laboratories__name__icontains=q
+            ))
         return queryset
 
 
