@@ -25,7 +25,7 @@
     {% endfor %}
   </div>
 
-  {% if is_paginated %}
+  {% if object_list %}
     <nav aria-label="...">
       <ul class="pager">
         {% if page_obj.has_previous %}

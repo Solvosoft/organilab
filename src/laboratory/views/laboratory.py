@@ -281,6 +281,7 @@ class LaboratoryListView(ListView):
     model = Laboratory
     template_name= 'laboratory/laboratory_list.html'
     success_url = '/'
+    paginate_by = 15
 
     def get_queryset(self):
         q = self.request.GET.get('search_fil', None)
