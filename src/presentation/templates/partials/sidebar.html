@@ -19,15 +19,14 @@
                 <!-- /input-group -->
             </li>
             <li>
-                <a href="/"><i class="fa fa-dashboard 
-fa-fw"></i> 
+                <a href="/"><i class="fa fa-dashboard fa-fw"></i>
                 {% trans "Dashboard" %}</a>
             </li>
             
             {% include 'partials/laboratories_menu.html'%}
             <li>
                 <a href="#">
-                    <i class="fa fa-bar-chart-o fa-fw"></i>
+                    <i class="fa fa-tags fa-fw"></i>
                     {% trans 'SGA Management' %}  <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level ">
@@ -44,6 +43,23 @@ fa-fw"></i>
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa fa-tasks fa-fw"></i>
+                    {% trans 'Risk Management' %}  <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level ">
+                    <li>
+                        <a href="{% url 'riskmanagement:riskzone_list' %}" >
+                                {% trans 'Risk zones' %}</a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+
 
             <li>
                 <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}" title="{% trans 'blog entries' %}">

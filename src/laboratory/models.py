@@ -8,7 +8,6 @@ from django.db import models
 from django.db.models import Q
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from pyEQL import Solution as PySolution
 from mptt.models import MPTTModel, TreeForeignKey
 from location_field.models.plain import PlainLocationField
 from laboratory.validators import validate_molecular_formula
@@ -520,6 +519,7 @@ class Solution(models.Model):
 
     @property
     def solution_object(self):
+        from pyEQL import Solution as PySolution
         return PySolution(
             solutes=self.solute_list,
             volume=self.volume,

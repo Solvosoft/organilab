@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     #    'debug_toolbar',
     'mapwidgets',
     'guardian',
+    'risk_management'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -190,7 +191,7 @@ TIME_ZONE = 'America/Costa_Rica'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
