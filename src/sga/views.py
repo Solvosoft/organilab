@@ -294,6 +294,7 @@ def get_sga_editor_options(request):
 def label_editor(request):
     return render(request, 'label_editor.html', {})
 
+
 # SGA Search sustance with autocomplete
 def search_autocomplete_sustance(request):
     if request.is_ajax():
