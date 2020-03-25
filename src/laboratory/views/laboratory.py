@@ -4,9 +4,6 @@ from __future__ import unicode_literals
 from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.serializers import json
-from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -300,7 +297,7 @@ class LaboratoryDeleteView(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ReportView2(ListView):
+class HCodeReports(ListView):
     paginate_by = 3
     template_name = 'laboratory/reportes.html'
 
@@ -311,21 +308,22 @@ class ReportView2(ListView):
             user_labs = get_user_laboratories(self.request.user)
             for lab in user_labs:
                 reactivos = lab.object_set.filter(Q(type='0') & Q(h_code=q))
-                temp_lista_reactivos = []
-                for reactivo in reactivos:
-                    shelf_objects = ShelfObject.objects.filter(object=reactivo)
-                    for shelfObj in shelf_objects:
-                        if shelfObj.quantity > 0:
-                            temp_lista_reactivos.append({'reactivo': reactivo.name,
-                                                         'sala': shelfObj.shelf.furniture.labroom,
-                                                         'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
-                                                         'cant': str(shelfObj.quantity) + " " +
-                                                                 shelfObj.get_units(shelfObj.measurement_unit)})
-                lista_reactivos.append({'lab': lab.name,
-                                        'reactivos': temp_lista_reactivos})
+                if reactivos:
+                    temp_lista_reactivos = []
+                    for reactivo in reactivos:
+                        shelf_objects = ShelfObject.objects.filter(object=reactivo)
+                        for shelfObj in shelf_objects:
+                            if shelfObj.quantity > 0:
+                                temp_lista_reactivos.append({'reactivo': reactivo.name,
+                                                             'sala': shelfObj.shelf.furniture.labroom,
+                                                             'h_codes': [hcode.code for hcode in reactivo.h_code.all()],
+                                                             'cant': str(shelfObj.quantity) + " " +
+                                                                     shelfObj.get_units(shelfObj.measurement_unit)})
+                    lista_reactivos.append({'lab': lab.name,
+                                            'reactivos': temp_lista_reactivos})
         return lista_reactivos
 
     def get_context_data(self, **kwargs):
-        context = super(ReportView2, self).get_context_data(**kwargs)
+        context = super(HCodeReports, self).get_context_data(**kwargs)
         context['form'] = H_CodeForm(self.request.GET)
         return context
