@@ -155,8 +155,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, verbose_name='Laboratory name')),
                 ('rooms', models.ManyToManyField(blank=True, to='laboratory.LaboratoryRoom')),
-                ('related_labs', models.ManyToManyField(blank=True, to='laboratory.Laboratory')),
-                ('lab_admins', models.ManyToManyField(blank=True, related_name='lab_admins', to=settings.AUTH_USER_MODEL)),
+              #  ('related_labs', models.ManyToManyField(blank=True, to='laboratory.Laboratory')),
+               # ('lab_admins', models.ManyToManyField(blank=True, related_name='lab_admins', to=settings.AUTH_USER_MODEL)),
                 ('laboratorists', models.ManyToManyField(blank=True, related_name='laboratorists', to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -325,10 +325,10 @@ class Migration(migrations.Migration):
             name='shelfobject',
             options={'permissions': (('view_shelfobject', 'Can see available shelf objects'),), 'verbose_name': 'Shelf object', 'verbose_name_plural': 'Shelf objects'},
         ),
-        migrations.RemoveField(
-            model_name='laboratory',
-            name='lab_admins',
-        ),
+        # migrations.RemoveField(
+        #     model_name='laboratory',
+        #     name='lab_admins',
+        # ),
         migrations.AlterField(
             model_name='principaltechnician',
             name='email',
@@ -337,10 +337,10 @@ class Migration(migrations.Migration):
         # migrations.RunPython(
         #     code=laboratory.migrations.0034_group_perms.load_group_perms,
         # ),
-        migrations.RemoveField(
-            model_name='laboratory',
-            name='related_labs',
-        ),
+        # migrations.RemoveField(
+        #     model_name='laboratory',
+        #     name='related_labs',
+        # ),
         migrations.AlterField(
             model_name='laboratory',
             name='organization',
