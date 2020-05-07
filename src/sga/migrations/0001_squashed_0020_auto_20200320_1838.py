@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Sustance',
+            name='Substance',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('comercial_name', models.CharField(max_length=250)),
@@ -97,9 +97,9 @@ class Migration(migrations.Migration):
                 ('danger_indications', models.ManyToManyField(to='sga.DangerIndication')),
             ],
             options={
-                'verbose_name_plural': 'Sustances',
-                'permissions': (('view_sustance', 'Can see available Sustance'),),
-                'verbose_name': 'Sustance',
+                'verbose_name_plural': 'Substances',
+                'permissions': (('view_substance', 'Can see available Sustance'),),
+                'verbose_name': 'Substance',
             },
         ),
         migrations.CreateModel(
@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='label',
             name='sustance',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.Sustance'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.Substance'),
         ),
         migrations.AddField(
             model_name='dangerindication',
@@ -149,7 +149,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.WarningWord'),
         ),
         migrations.RemoveField(
-            model_name='sustance',
+            model_name='substance',
             name='cas_number',
         ),
         migrations.RemoveField(
@@ -163,7 +163,7 @@ class Migration(migrations.Migration):
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='sustance',
+            model_name='substance',
             name='synonymous',
             field=tagging.fields.TagField(blank=True, max_length=255, verbose_name='Synonymous'),
         ),
@@ -225,7 +225,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='label',
             name='sustance',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.Sustance', verbose_name='Sustance'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.Substance', verbose_name='Substance'),
         ),
         migrations.AlterField(
             model_name='pictogram',
@@ -233,17 +233,17 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=150, primary_key=True, serialize=False, verbose_name='Name'),
         ),
         migrations.AlterField(
-            model_name='sustance',
+            model_name='substance',
             name='comercial_name',
             field=models.CharField(max_length=250, verbose_name='Comercial name'),
         ),
         migrations.AlterField(
-            model_name='sustance',
+            model_name='substance',
             name='components',
             field=models.ManyToManyField(to='sga.Component', verbose_name='Components'),
         ),
         migrations.AlterField(
-            model_name='sustance',
+            model_name='substance',
             name='danger_indications',
             field=models.ManyToManyField(to='sga.DangerIndication', verbose_name='Danger indications'),
         ),
@@ -349,14 +349,11 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(related_name='warningcategory', to='sga.WarningClass', verbose_name='Warning category'),
         ),
         migrations.AddField(
-            model_name='sustance',
+            model_name='substance',
             name='agrochemical',
             field=models.BooleanField(default=False, verbose_name='Agrochemical'),
         ),
-        migrations.RenameModel(
-            old_name='Sustance',
-            new_name='Substance',
-        ),
+
         migrations.CreateModel(
             name='TemplateSGA',
             fields=[

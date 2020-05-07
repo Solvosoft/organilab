@@ -1,5 +1,9 @@
 def create_pictograms(apps, schema_editor):
     Pictogram = apps.get_model('sga', 'Pictogram')
+    WarningWord = apps.get_model('sga', 'WarningWord')
+    ww = WarningWord.objects.create(
+        name='Sin palabra'
+    )
 
     for pic in ["5-2red.gif",
                 "acide8.gif",
@@ -26,4 +30,4 @@ def create_pictograms(apps, schema_editor):
                 "Trans.e1.4.gif",
                 "Trans.e1.5.gif",
                 "Trans.e1.6.gif"]:
-        Pictogram.objects.create(name=pic)
+        Pictogram.objects.create(name=pic, warning_word=ww)
