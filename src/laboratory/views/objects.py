@@ -18,7 +18,7 @@ from django.utils.decorators import method_decorator
 
 from laboratory.decorators import user_group_perms, view_user_group_perms
 # from laboratory.decorators import check_lab_permissions, user_lab_perms
-from laboratory.models import Object
+from laboratory.models import Object, SustanceCharacteristics
 from laboratory.utils import filter_laboratorist_technician
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 from django.utils.translation import ugettext_lazy as _
@@ -138,6 +138,17 @@ class ObjectView(object):
         ]
 
 
+
+def create_reactive(request):
+    pass
+
+
+class SustanceCharacteristicsForm(ModelForm):
+    class Meta:
+        model = SustanceCharacteristics
+        fields = '__all__'
+
+
 class ObjectForm(ModelForm):
     required_css_class = ''
 
@@ -163,11 +174,6 @@ class ObjectForm(ModelForm):
                         widget=forms.HiddenInput()
                     )
                 data_type = self.type_id
-
-        if data_type is not None and data_type == Object.REACTIVE:
-            self.fields['molecular_formula'].required = True
-            self.fields['cas_id_number'].required = True
-            self.fields['security_sheet'].required = True
 
         if data_type == Object.EQUIPMENT:
             self.fields['model'].required = True
