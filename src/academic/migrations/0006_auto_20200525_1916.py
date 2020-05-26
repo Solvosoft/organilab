@@ -4,11 +4,36 @@ from django.db import migrations
 import django.db.models.deletion
 import laboratory.catalog
 
+def change_procedurerequiredobject(apps, schema_editor):
+    ShelfObject = apps.get_model('laboratory', 'ProcedureRequiredObject')
+    mydata = ShelfObject.objects.all()
+    Catalog = apps.get_model('laboratory', 'Catalog')
+
+    units = dict((   #  ShelfObject   measurement_unit
+                ('0', Catalog.objects.filter(description='Metros').first().pk),
+                ('1', Catalog.objects.filter(description='Milímetros').first().pk),
+                ('2', Catalog.objects.filter(description='Centímetros').first().pk),
+                ('3', Catalog.objects.filter(description='Litros').first().pk),
+                ('4', Catalog.objects.filter(description='Mililitros').first().pk),
+                ("5", Catalog.objects.filter(description='Unidades').first().pk),
+                ('6', Catalog.objects.filter(description='Gramos').first().pk),
+                ('7', Catalog.objects.filter(description='Kilogramos').first().pk),
+                ('8', Catalog.objects.filter(description='Miligramos').first().pk),
+                ('9', Catalog.objects.filter(description='Metro cúbico').first().pk) )
+                )
+
+    for element in mydata:
+        if element.measurement_unit:
+            element.measurement_unit = str(units[str(element.measurement_unit)][1])
+            element.save()
+
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('academic', '0005_auto_20200302_2337'),
+        ('laboratory', '0003_pre_catalog'),
     ]
 
     operations = [
@@ -28,6 +53,8 @@ class Migration(migrations.Migration):
             name='procedurestep',
             options={'ordering': ('pk',), 'verbose_name': 'Procedure step', 'verbose_name_plural': 'Procedure steps'},
         ),
+
+        migrations.RunPython(change_procedurerequiredobject),
         migrations.AlterField(
             model_name='procedurerequiredobject',
             name='measurement_unit',
