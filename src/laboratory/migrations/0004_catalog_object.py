@@ -21,10 +21,10 @@ def load_sustancecharacteristic(apps, schema_editor):
             ('9', Catalog.objects.filter(description='Sustancias y artículos peligrosos diversos').first()))
             )
 
-    for obj in Object:
+    for obj in Object.objects.all():
         susc = SustanceCharacteristics.objects.create(
             obj= obj,
-            imdg= imdgs[obj.imdg_code],
+            imdg= imdgs[obj.imdg_code] if obj.imdg_code in imdgs else obj.imdg_code,
             molecular_formula= obj.molecular_formula,
             cas_id_number= obj.cas_id_number,
             security_sheet= obj.security_sheet,

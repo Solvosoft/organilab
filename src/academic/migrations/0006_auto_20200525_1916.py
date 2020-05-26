@@ -5,7 +5,7 @@ import django.db.models.deletion
 import laboratory.catalog
 
 def change_procedurerequiredobject(apps, schema_editor):
-    ShelfObject = apps.get_model('laboratory', 'ProcedureRequiredObject')
+    ShelfObject = apps.get_model('academic', 'ProcedureRequiredObject')
     mydata = ShelfObject.objects.all()
     Catalog = apps.get_model('laboratory', 'Catalog')
 
@@ -24,7 +24,7 @@ def change_procedurerequiredobject(apps, schema_editor):
 
     for element in mydata:
         if element.measurement_unit:
-            element.measurement_unit = str(units[str(element.measurement_unit)][1])
+            element.measurement_unit = str(units[str(element.measurement_unit)])
             element.save()
 
 

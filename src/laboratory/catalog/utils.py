@@ -87,7 +87,8 @@ def create_catalog(Catalog):
         ('IDMG', 'Sustancias y artículos peligrosos diversos'),
 
     ]
+    new_instances = []
     for key, description in list_catalog:
-        list_catalog.append(Catalog(key=key, description=description))
+        new_instances.append(Catalog(key=key, description=description))
 
-    Catalog.objects.bulk_create(list_catalog)
+    Catalog.objects.bulk_create(new_instances)

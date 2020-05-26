@@ -30,7 +30,7 @@ def change_ShelfObject(apps, schema_editor):
 
     for element in mydata:
         if element.measurement_unit:
-            element.measurement_unit = str(units[str(element.measurement_unit)][1])
+            element.measurement_unit = str(units[str(element.measurement_unit)])
             element.save()
 
 def change_Shelf(apps, schema_editor):
@@ -42,8 +42,8 @@ def change_Shelf(apps, schema_editor):
         ('D', Catalog.objects.filter(description='Gaveta').first().pk),
     ))
     for element in mydata:
-        if element.measurement_unit:
-            element.type = str(units[str(element.type)][1])
+        if element.type:
+            element.type = str(units[str(element.type)])
             element.save()
 
 def change_Furniture(apps, schema_editor):
@@ -57,8 +57,8 @@ def change_Furniture(apps, schema_editor):
 
 
     for element in mydata:
-        if element.measurement_unit:
-            element.type = str(units[str(element.type)][1])
+        if element.type:
+            element.type = str(units[str(element.type)])
             element.save()
 
 class Migration(migrations.Migration):
