@@ -52,26 +52,7 @@ class Object(models.Model):
         (MATERIAL, _('Material')),
         (EQUIPMENT, _('Equipment'))
     )
-    EXPLOSIVES = '1'
-    GASES = '2'
-    FLAMMABLE_LIQUIDS = '3'
-    FLAMMABLE_SOLIDS = '4'
-    OXIDIZING = '5'
-    TOXIC = '6'
-    RADIOACTIVE = '7'
-    CORROSIVE = '8'
-    MISCELLANEOUS = '9'
-    IDMG_CHOICES = (
-        (EXPLOSIVES, _('Explosives')),
-        (GASES, _('Gases')),
-        (FLAMMABLE_LIQUIDS, _('Flammable liquids')),
-        (FLAMMABLE_SOLIDS, _('Flammable solids')),
-        (OXIDIZING, _('Oxidizing substances and organic peroxides')),
-        (TOXIC, _('Toxic and infectious substances')),
-        (RADIOACTIVE, _('Radioactive material')),
-        (CORROSIVE, _('Corrosive substances')),
-        (MISCELLANEOUS, _('Miscellaneous dangerous substances and articles'))
-    )
+
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
     synonym = models.CharField(_('Synonym'), max_length=255, help_text=_('Comma separed name'), null=True, blank=True)
@@ -133,30 +114,6 @@ class SustanceCharacteristics(models.Model):
 
 
 class ShelfObject(models.Model):
-    """
-    M = '0'
-    MM = '1'
-    CM = '2'
-    L = '3'
-    ML = '4'
-    U = "5"
-    G = '6'
-    KG = '7'
-    MG ='8'
-    M3 = '9'
-    CHOICES = (
-        (M, _('Meters')),
-        (MM, _('Milimeters')),
-        (CM, _('Centimeters')),
-        (L, _('Liters')),
-        (ML, _('Mililiters')),
-        (U, _('Unit')),
-        (G, _('Gram')),
-        (KG, _('Kilogram')),
-        (MG, _('Miligram')),
-        (M3, _("Cubic Meter"))
-    )
-    """
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
