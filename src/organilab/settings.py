@@ -76,7 +76,8 @@ INSTALLED_APPS = [
     #    'debug_toolbar',
     'mapwidgets',
     'guardian',
-    'risk_management'
+    'risk_management',
+    'markitup'
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -325,3 +326,7 @@ LOGGING = {
 
 INTERNAL_IPS = ('127.0.0.1',)
 CKEDITOR_IMAGE_BACKEND = 'pillow'
+ASYNC_SMTP_DEBUG=False
+ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
+MARKITUP_SET = 'markitup/sets/markdown/'

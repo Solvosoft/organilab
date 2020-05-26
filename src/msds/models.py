@@ -14,9 +14,6 @@ class MSDSObject(models.Model):
         ordering = ('pk',)
         verbose_name = _('MSDS Object')
         verbose_name_plural = _('MSDS Object')
-        permissions = (
-            ("view_msdsobject", "Can see available MSDSObject"),
-        )
 
 
 class OrganilabNode(MPTTModel):

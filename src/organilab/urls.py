@@ -41,14 +41,14 @@ urlpatterns = auth_urls + [
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(laboratory_urls, namespace='laboratory')),
+    url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'msds/', include(msds_urls, namespace='msds')),
+    url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
-    url(r'sga/', include(sga_urls, namespace='sga')),
-    url(r'risk/', include(risk_urls, namespace='riskmanagement')),
+    url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
+    url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
     url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
 ]
 
