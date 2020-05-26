@@ -131,8 +131,8 @@ def make_book_laboratory(rooms):
         for furniture in labroom.furniture_set.all():
             for obj in furniture.get_objects():
                 imdg = ""
-                if obj.object.imdg_code is not None:
-                    imdg = obj.object.get_imdg_code_display()
+                if obj.object.gt_imdg.imdg is not None:
+                    imdg = str(obj.object.gt_imdg.imdg)
                 labobj.append([
                     furniture.name,
                     obj.shelf.name,
@@ -309,7 +309,7 @@ def make_book_objects(objects, summary=False, type_id=None):
                 object.molecular_formula,
                 object.cas_id_number,
                 object.is_precursor,
-                object.get_imdg_code_display()]
+                str(object.gt_imdg.imdg)]
 
         content['objects'].append(obj_info)
         if not summary:

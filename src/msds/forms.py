@@ -21,6 +21,7 @@ class FormMSDSobject(forms.ModelForm):
     ext_whitelist = ['.pdf', '.odt', '.docx', '.doc']
 
     def clean_file(self):
+
         name = self.cleaned_data['file'].name
         ext = os.path.splitext(name)[1]
         ext = ext.lower()

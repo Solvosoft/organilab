@@ -5,7 +5,7 @@ from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
 from cruds_adminlte.crud import CRUDView
-from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
+#from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -83,7 +83,7 @@ def get_list_msds(request):
         pass
     return JsonResponse(dev)
 
-
+"""
 class MSDSObjectCRUD(CRUDView):
     model = MSDSObject
     views_available = ['create', 'update', 'detail', 'delete']
@@ -141,7 +141,7 @@ class MSDSObjectCRUD(CRUDView):
                 return query
         return ODeleteView
 
-
+"""
 def organilab_tree_frame(request):  
     context = {}
     context['sections'] = OrganilabNode.objects.all()

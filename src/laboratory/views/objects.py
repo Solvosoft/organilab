@@ -168,7 +168,6 @@ class ObjectForm(ModelForm):
             self.fields['molecular_formula'].required = True
             self.fields['cas_id_number'].required = True
             self.fields['security_sheet'].required = True
-            #self.fields['imdg_code'].required = False
 
         if data_type == Object.EQUIPMENT:
             self.fields['model'].required = True
@@ -185,4 +184,4 @@ class ObjectForm(ModelForm):
 
     class Meta:
         model = Object
-        exclude = ['imdg_code' ]
+        fields = '__all__'
