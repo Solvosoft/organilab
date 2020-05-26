@@ -5,28 +5,27 @@ Created on 5 may. 2017
 '''
 
 from ajax_select import register, LookupChannel
-
-from sga.models import DangerIndication
-from .models import Object
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 
+from .models import Object
 
 
 @register('objects')
-class TagsLookup(LookupChannel):
+class ObjectLookup(LookupChannel):
 
     model = Object
     
     def check_auth(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 
         
     def get_query(self, q, request):
         query= self.model.objects.filter(Q(code__icontains=q) | Q(
-            name__icontains=q)|Q(cas_id_number__icontains=q)).order_by('name')
+            name__icontains=q)|Q(synonym__icontains=q)|Q(
+            sustancecharacteristics__cas_id_number__icontains=q)).order_by('name')
 
         if 'search_lab' in request.session:
             lab_pk = request.session['search_lab']
@@ -43,7 +42,7 @@ class UserLookup(LookupChannel):
 
 
     def check_auth(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 
