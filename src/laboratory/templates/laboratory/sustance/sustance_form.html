@@ -4,9 +4,23 @@
 
 <div class="row">
   <div class="col-md-offset-2 col-md-8">
-    {{ objform }}
-
+    <form action="{% url 'laboratory:sustance_manage'%}" method="POST">
+    {% csrf_token %}
+    {{objform}}
     {{ suschacform }}
+      <input type="submit" value="Submit">
+    </form>
+<!--    {{objform.name}}-->
+<!--    {{objform.code}}-->
+<!--    {{objform.description}}-->
+<!--    {{objform.synonym}}-->
+<!--    {{objform.is_public}}-->
+<!--    {{ objform.features }}-->
+<!--    {{ objform.model}}-->
+<!--    {{ objform.serie}}-->
+<!--    {{ objform.plaque}}-->
+<!--    {{ objform.laboratory}}-->
+
   </div>
 </div>
 
