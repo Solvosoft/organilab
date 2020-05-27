@@ -18,11 +18,12 @@ def create_edit_sustance(request, pk=None):
     if instance:
         suscharobj = instance.sustancecharacteristics
     postdata=None
+    filesdata = None
     if request.method == 'POST':
         postdata = request.POST
-
+        filesdata = request.FILES
     objform = SustanceObjectForm(postdata, instance=instance)
-    suschacform = SustanceCharacteristicsForm(postdata, instance=suscharobj)
+    suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
 
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
@@ -32,7 +33,7 @@ def create_edit_sustance(request, pk=None):
             suscharinst = suschacform.save(commit=False)
             suscharinst.obj = obj
             suscharinst.save()
-            messages.succes(request, _("Sustance saved successfully"))
+            messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list'))
 
     return render(request, 'laboratory/sustance/sustance_form.html', {
@@ -77,9 +78,9 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
             bioaccumulable = '<i class="fa fa-dashboard fa-fw"></i>'
             if item.sustancecharacteristics.bioaccumulable:
                 bioaccumulable = '<i class="fa fa-dashboard fa-fw text-warning"></i>'
-            is_public = '<i class="fa fa-check-circle-o"  aria-hidden="true"></i>'
+            is_public = '<i class="fa fa-circle-o "  aria-hidden="true"></i>'
             if item.is_public:
-                is_public = '<i class="fa fa-circle-o text-warning" aria-hidden="true"></i>'
+                is_public = '<i class="fa fa-check-circle-o text-warning" aria-hidden="true"></i>'
 
             json_data.append([
                 is_public+precursor+bioaccumulable,
