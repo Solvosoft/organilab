@@ -24,6 +24,7 @@ def create_edit_sustance(request, pk=None):
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
 
     if request.method == 'POST':
+
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
             obj.type = Object.REACTIVE
@@ -33,6 +34,9 @@ def create_edit_sustance(request, pk=None):
             suscharinst.save()
             messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list'))
+        else:
+            print(objform.__dict__)
+            messages.error(request, _("Given information with errors"))
 
     return render(request, 'laboratory/sustance/sustance_form.html', {
         'objform': objform,
