@@ -3,12 +3,12 @@ Created on 1/8/2016
 
 @author: nashyra
 '''
-from __future__ import unicode_literals
 
 from django.conf.urls import url, include
 from laboratory import views
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
+from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
@@ -154,8 +154,15 @@ reports_all_lab=[
     url(r'^reports/download/hcode$', reports.report_h_code, name='download_h_code_reports'),
 ]
 
+sustance_urls = [
+    url('sustance/edit/(?P<pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
+    url('sustance/$', sustance_list, name='sustance_list'),
+    url('sustance/json$', SustanceListJson.as_view(), name='sustance_list_json'),
+]
+
+
 '''MULTILAB'''
-urlpatterns += [
+urlpatterns += sustance_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
     url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
