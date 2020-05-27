@@ -3,8 +3,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import UpdateView
-from django.views.generic.edit import CreateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from laboratory.models import Object
