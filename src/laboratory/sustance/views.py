@@ -24,7 +24,6 @@ def create_edit_sustance(request, pk=None):
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
 
     if request.method == 'POST':
-
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
             obj.type = Object.REACTIVE
@@ -34,9 +33,6 @@ def create_edit_sustance(request, pk=None):
             suscharinst.save()
             messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list'))
-        else:
-            print(objform.__dict__)
-            messages.error(request, _("Given information with errors"))
 
     return render(request, 'laboratory/sustance/sustance_form.html', {
         'objform': objform,
@@ -83,10 +79,13 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
             is_public = '<i class="fa fa-circle-o "  aria-hidden="true"></i>'
             if item.is_public:
                 is_public = '<i class="fa fa-check-circle-o text-warning" aria-hidden="true"></i>'
+            name_url = """<a href="{0}" class="label label-info">{1}</a>""".format(reverse('laboratory:sustance_manage',
+                                                                                         kwargs={'pk': item.id}),
+                                                                                 item.name)
 
             json_data.append([
                 is_public+precursor+bioaccumulable,
-                item.name,
+                name_url,
                 item.sustancecharacteristics.cas_id_number,
                 'edit'
             ])
