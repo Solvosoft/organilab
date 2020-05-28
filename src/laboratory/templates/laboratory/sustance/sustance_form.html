@@ -1,27 +1,26 @@
 {% extends 'base.html' %}
+{% load static i18n bootstrap %}
 
 {% block content %}
-
+<div class="container">
 <div class="row">
-  <div class="col-md-offset-2 col-md-8">
-    <form action="{% url 'laboratory:sustance_manage'%}" method="POST">
+    <form class="form-horizontal" action="{% url 'laboratory:sustance_manage'%}" method="POST">
     {% csrf_token %}
-    {{objform}}
-    {{ suschacform }}
-      <input type="submit" value="Submit">
-    </form>
-<!--    {{objform.name}}-->
-<!--    {{objform.code}}-->
-<!--    {{objform.description}}-->
-<!--    {{objform.synonym}}-->
-<!--    {{objform.is_public}}-->
-<!--    {{ objform.features }}-->
-<!--    {{ objform.model}}-->
-<!--    {{ objform.serie}}-->
-<!--    {{ objform.plaque}}-->
-<!--    {{ objform.laboratory}}-->
+    <div class="row">
+      <div class="col-md-5">
+            {{ objform|bootstrap }}
+      </div>
+      <div class="col-md-5">
+        {{ suschacform|bootstrap }}
 
-  </div>
+      </div>
+    </div>
+    <div class="row">
+      <input type="submit" value="Submit">
+    </div>
+    </form>
+
+</div>
 </div>
 
 {% endblock %}
