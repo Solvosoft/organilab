@@ -8,7 +8,7 @@ from django.conf.urls import url, include
 from laboratory import views
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
-from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson
+from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
@@ -156,6 +156,7 @@ reports_all_lab=[
 
 sustance_urls = [
     url('sustance/edit/(?P<pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
+    url('sustance/delete/(?P<pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
     url('sustance/$', sustance_list, name='sustance_list'),
     url('sustance/json$', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
