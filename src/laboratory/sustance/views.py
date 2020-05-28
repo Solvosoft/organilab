@@ -78,15 +78,17 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
-            precursor = '<i class="fa fa-tags fa-fw"></i>'
-            if item.sustancecharacteristics.is_precursor:
-                precursor = '<i class="fa fa-tags fa-fw text-warning"></i>'
-            bioaccumulable = '<i class="fa fa-dashboard fa-fw"></i>'
-            if item.sustancecharacteristics.bioaccumulable:
-                bioaccumulable = '<i class="fa fa-dashboard fa-fw text-warning"></i>'
-            is_public = '<i class="fa fa-circle-o "  aria-hidden="true"></i>'
-            if item.is_public:
-                is_public = '<i class="fa fa-check-circle-o text-warning" aria-hidden="true"></i>'
+
+            warning_precursor = 'fa fa-thumbs-up fa-fw text-success' if item.sustancecharacteristics.is_precursor \
+                else 'fa fa-thumbs-down fa-fw text-warning'
+            warning_bioaccumulable = 'fa fa-exclamation-triangle fa-fw text-success' if item.sustancecharacteristics.bioaccumulable \
+                else 'fa fa-exclamation-triangle fa-fw text-warning'
+            warning_is_public = 'fa fa-toggle-on fa-fw text-success' if item.is_public \
+                else 'fa fa-toggle-off fa-fw text-warning'
+
+            precursor = '<i class="{0}"></i>'.format(warning_precursor)
+            bioaccumulable = '<i class="{0}"></i>'.format(warning_bioaccumulable)
+            is_public = '<i class="{0}" aria-hidden="true"></i>'.format(warning_is_public)
             name_url = """<a href="{0}" class="label label-info">{1}</a>""".format(reverse('laboratory:sustance_manage',
                                                                                          kwargs={'pk': item.id}),
                                                                                  item.name)
