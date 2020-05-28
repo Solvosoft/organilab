@@ -89,13 +89,12 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
             precursor = '<i class="{0}"></i>'.format(warning_precursor)
             bioaccumulable = '<i class="{0}"></i>'.format(warning_bioaccumulable)
             is_public = '<i class="{0}" aria-hidden="true"></i>'.format(warning_is_public)
-            name_url = """<a href="{0}" class="label label-info">{1}</a>""".format(reverse('laboratory:sustance_manage',
-                                                                                         kwargs={'pk': item.id}),
-                                                                                 item.name)
-            # FIXME needs to use custom deleteview?
-            delete = """<a href="{0}" class="label label-danger">{1}</a>""".format(reverse('laboratory:sustance_delete',
-                                                                                         kwargs={'pk': item.id}),
-                                                                                 _('Delete'))
+            name_url = """<a href="{0}">{1}</a>""".format(reverse('laboratory:sustance_manage',
+                                                                  kwargs={'pk': item.id}),
+                                                          item.name)
+            delete = """<a href="{0}" ><i class="fa fa-trash-o" style="color:red"></i></a>"""\
+                .format(reverse('laboratory:sustance_delete',
+                                kwargs={'pk': item.id}))
 
             json_data.append([
                 is_public+precursor+bioaccumulable,
