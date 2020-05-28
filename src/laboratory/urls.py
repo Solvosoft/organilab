@@ -144,7 +144,7 @@ solutions_urls = [
 
 lab_access_urls = [
     url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(),
-        name='access_list_laboratorits'),
+        name='access_list_laboratorits'),  # reverse(laboratory:access_list_laboratorist)
     url(r'^students$', access.AccessListStudentsView.as_view(),
         name='access_list_students'),
 ]
