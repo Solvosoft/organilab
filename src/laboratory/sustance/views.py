@@ -12,6 +12,7 @@ from laboratory.models import Object, ObjectFeatures, Laboratory, Catalog
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
 from django.utils.translation import ugettext_lazy as _
 
+from laboratory.utils import filter_laboratorist_technician
 from sga.models import DangerIndication
 
 
@@ -149,7 +150,8 @@ def search_autocomplete_sustance_laboratory(request):
         # Contains the typed characters, is valid since the first character
         # Search Parameter: Laboratory name and user in laboratorists list
         if any(c.isalpha() for c in q):
-            search_qs = Laboratory.objects.filter(name__icontains=q, laboratorists__in=[request.user])
+            search_temp = filter_laboratorist_technician(request.user)
+            search_qs = search_temp.filter(name__icontains=q)
         results = []
         for r in search_qs:
             results.append({'label': r.name, 'value': r.pk})
