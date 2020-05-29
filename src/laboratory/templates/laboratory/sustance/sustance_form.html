@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% load static i18n bootstrap %}
 
+{% block css %}
+<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
+{% endblock css %}
+{% block js %}
+<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}"> </script>
+<script src="{% static 'sga/js/jquery.validate.min.js' %}"> </script>
+<script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
+<script src="{% static 'laboratory/js/substance_creation.js' %}"> </script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <a href="{% url 'laboratory:sustance_list' %}" class="btn btn-danger">Volver</a>
@@ -12,18 +22,34 @@
     {% csrf_token %}
     <div class="row-md-10">
         <div class="col-md-4">
-            {{ objform|bootstrap }}
+            {% for field in objform %}
+                {% if field.name == 'laboratory' or field.name == 'features' %}
+                    {{ field|bootstrap }}
+                    <input type="hidden" id="{{field.name}}_id" name="{{field.name}}_name" />
+                    <small id="{{field.name}}Help" class="text-muted">{% trans '' %}</small>
+                {% else %}
+                    {{ field|bootstrap }}
+                {% endif %}
+            {% endfor %}
         </div>
         <div class="col-md-5 col-md-offset-1">
-            {{ suschacform|bootstrap }}
+            {% for field in suschacform %}
+                {% if field.name == 'white_organ' or field.name == 'h_code' %}
+                    {{ field|bootstrap }}
+                    <input type="hidden" id="{{field.name}}_id" name="{{field.name}}_name" />
+                    <small id="{{field.name}}Help" class="text-muted">{% trans '' %}</small>
+                {% else %}
+                    {{ field|bootstrap }}
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
-    </form>
     <div class="col-md-11" style="display:inline-block">
     <input type="submit" class="btn btn-info" value="Submit">
     <a role="button" class="collapsed" data-toggle="collapse" href="#collapseExample"
        aria-expanded="false" aria-controls="collapseExample" style="float:right;font-size:30px;"><i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i></a>
     <br>
+    </form>
     </div>
     <div class="col-md-10 jumbotron collapse" id="collapseExample" aria-expanded="false">
         <div class="section" id="representing-chemical-substances-in-pyeql">
