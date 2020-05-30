@@ -1,5 +1,10 @@
 $(document).ready(function () {
     //Search sustance with autocomplete
+    $('select[name="features"]').select2();
+    $('select[name="laboratory"]').select2();
+    $('select[name="h_code"]').select2();
+    $('select[name="white_organ"]').select2();
+
     $('#id_features').attr("aria-describedby", "featuresHelp");
     $('#id_laboratory').attr("aria-describedby", "laboratoryHelp")
     $('#id_white_organ').attr("aria-describedby", "white_organHelp");

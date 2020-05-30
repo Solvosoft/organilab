@@ -31,21 +31,21 @@ def create_edit_sustance(request, pk=None):
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
-            format_h_code = suschacform.cleaned_data['h_code'].split(":")
-            lab = Laboratory.objects.filter(name=objform.cleaned_data['laboratory']).first()
-            obf_feat = ObjectFeatures.objects.filter(name=objform.cleaned_data['features']).first()
-            white_organ = Catalog.objects.filter(description=suschacform.cleaned_data['white_organ']).first()
-            h_code = DangerIndication.objects.filter(code=format_h_code[0]).first()
+            # format_h_code = suschacform.cleaned_data['h_code'].split(":")
+            # lab = Laboratory.objects.filter(name=objform.cleaned_data['laboratory']).first()
+            # obf_feat = ObjectFeatures.objects.filter(name=objform.cleaned_data['features']).first()
+            # white_organ = Catalog.objects.filter(description=suschacform.cleaned_data['white_organ']).first()
+            # h_code = DangerIndication.objects.filter(code=format_h_code[0]).first()
             obj = objform.save(commit=False)
             obj.type = Object.REACTIVE
             obj.save()
-            obj.laboratory.add(lab)
-            obj.features.add(obf_feat)
+            obj.laboratory.add(*list(objform.cleaned_data['laboratory']))
+            obj.features.add(*list(objform.cleaned_data['features']))
             suscharinst = suschacform.save(commit=False)
             suscharinst.obj = obj
             suscharinst.save()
-            suscharinst.white_organ.add(white_organ)
-            suscharinst.h_code.add(h_code)
+            suscharinst.white_organ.add(*list(suschacform.cleaned_data['white_organ']))
+            suscharinst.h_code.add(*list(suschacform.cleaned_data['h_code']))
             messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list'))
         else:
