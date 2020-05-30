@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from laboratory.models import OrganizationStructure, Laboratory
 
 
-class DataMixin(object):
+class OrganizationalStructureDataMixin(object):
     """
                         -------------------------
                         |          root         |         * = GROUP_STUDENT
@@ -20,25 +20,25 @@ class DataMixin(object):
     """
 
     def setUp(self):
-        self.root = OrganizationStructure.objects.create(
+        self.root_organization = OrganizationStructure.objects.create(
             name="the university",
             group=Group.objects.get(pk=config.GROUP_ADMIN_PK)
         )
         self.dep1 = OrganizationStructure.objects.create(
             name="departament 1",
             group=Group.objects.get(pk=config.GROUP_ADMIN_PK),
-            parent=self.root
+            parent=self.root_organization
         )
         self.dep2 = OrganizationStructure.objects.create(
             name="departament 2",
             group=Group.objects.get(pk=config.GROUP_ADMIN_PK),
-            parent=self.root
+            parent=self.root_organization
         )
 
         self.dep3 = OrganizationStructure.objects.create(
             name="departament 3",
             group=Group.objects.get(pk=config.GROUP_ADMIN_PK),
-            parent=self.root
+            parent=self.root_organization
         )
 
         self.school1 = OrganizationStructure.objects.create(
