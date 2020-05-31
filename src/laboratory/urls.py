@@ -8,9 +8,7 @@ from django.conf.urls import url, include
 from laboratory import views
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
-from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete, \
-    search_autocomplete_sustance_features, search_autocomplete_sustance_laboratory, \
-    search_autocomplete_sustance_white_organ, search_autocomplete_sustance_danger_indication
+from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views import access
@@ -161,14 +159,6 @@ sustance_urls = [
     url('sustance/delete/(?P<pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
     url('sustance/$', sustance_list, name='sustance_list'),
     url('sustance/json$', SustanceListJson.as_view(), name='sustance_list_json'),
-    url(r'search_autocomplete_sustance_features', search_autocomplete_sustance_features,
-        name='search_autocomplete_sustance_features'),
-    url(r'search_autocomplete_sustance_laboratory', search_autocomplete_sustance_laboratory,
-        name='search_autocomplete_sustance_laboratory'),
-    url(r'search_autocomplete_sustance_white_organ', search_autocomplete_sustance_white_organ,
-        name='search_autocomplete_sustance_white_organ'),
-    url(r'search_autocomplete_sustance_danger_indication', search_autocomplete_sustance_danger_indication,
-        name='search_autocomplete_sustance_danger_indication'),
 ]
 
 

@@ -1,7 +1,6 @@
-
 from django import forms
 
-from laboratory.models import Object, SustanceCharacteristics, Laboratory, ObjectFeatures
+from laboratory.models import Object, SustanceCharacteristics
 
 
 class SustanceObjectForm(forms.ModelForm):
