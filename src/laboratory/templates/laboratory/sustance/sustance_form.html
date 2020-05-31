@@ -3,47 +3,48 @@
 
 {% block content %}
 <div class="container">
-    <a href="{% url 'laboratory:sustance_list' %}" class="btn btn-danger">Volver</a>
-    <div class="row"
-    style="margin-left:25%">
-        <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
+    <div class="row">
+        <div class="col-md-10">
+            <a href="{% url 'laboratory:sustance_list' %}" class="btn btn-danger">Volver</a>
+            <a role="button" class="btn btn-primary pull-right" data-toggle="modal" href="#helpModal"
+               aria-expanded="false">
+                <i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i>
+                {% trans 'Help' %}
+            </a>
+            <div class="row" style="margin-left:25%">
+                <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
+            </div>
+        </div>
     </div>
-    <form class="form-horizontal" action="{% url 'laboratory:sustance_manage'%}" method="POST">
+    <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row-md-10">
         <div class="col-md-4">
-            {% for field in objform %}
-                {% if field.name == 'laboratory' or field.name == 'features' %}
-                    {{ field|bootstrap }}
-                    <input type="hidden" id="{{field.name}}_id" name="{{field.name}}_name" />
-                    <small id="{{field.name}}Help" class="text-muted">{% trans '' %}</small>
-                {% else %}
-                    {{ field|bootstrap }}
-                {% endif %}
-            {% endfor %}
+            {{objform|bootstrap }}
+
         </div>
         <div class="col-md-5 col-md-offset-1">
-            {% for field in suschacform %}
-                {% if field.name == 'white_organ' or field.name == 'h_code' %}
-                    {{ field|bootstrap }}
-                    <input type="hidden" id="{{field.name}}_id" name="{{field.name}}_name" />
-                    <small id="{{field.name}}Help" class="text-muted">{% trans '' %}</small>
-                {% else %}
-                    {{ field|bootstrap }}
-                {% endif %}
-            {% endfor %}
+           {{ suschacform|bootstrap  }}
         </div>
     </div>
     <div class="col-md-11" style="display:inline-block">
     <input type="submit" class="btn btn-info" value="Submit">
-    <a role="button" class="collapsed" data-toggle="collapse" href="#collapseExample"
-       aria-expanded="false" aria-controls="collapseExample" style="float:right;font-size:30px;"><i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i></a>
-    <br>
+    </div>
     </form>
     </div>
-    <div class="col-md-10 jumbotron collapse" id="collapseExample" aria-expanded="false">
-        <div class="section" id="representing-chemical-substances-in-pyeql">
-            <h2>{% trans 'Representing Chemical Substances in pyEQL' %} </h2>
+
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans 'Representing Chemical Substances in pyEQL' %}</h4>
+      </div>
+      <div class="modal-body">
+          <div class="section" >
+
             <p>{% blocktrans %}pyEQL interprets the chemical formula of a substance to calculate its molecular
             weight and formal charge. The formula is also used as a key to search the
             database for parameters (e.g. diffusion coefficient) that are used in subsequent
@@ -72,20 +73,22 @@
             </div>
 
         </div>
-    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+            {% trans 'Close' %}
+        </button>
 
-</div>
-
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}
 
 {% block css %}
-<link href="{% static 'sga/css/jquery-ui.css' %}" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock css %}
 {% block js %}
-<script src="{% static 'sga/js/jquery.bootstrap.wizard.js' %}"> </script>
-<script src="{% static 'sga/js/jquery.validate.min.js' %}"> </script>
-<script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
-<script src="{% static 'laboratory/js/substance_creation.js' %}"> </script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="{% static 'laboratory/js/substance_creation.js' %}"> </script>
 {% endblock %}

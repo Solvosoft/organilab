@@ -1,19 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
-import json
 from django.db.models import Q
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from laboratory.models import Object, ObjectFeatures, Laboratory, Catalog
+from laboratory.models import Object
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
-from django.utils.translation import ugettext_lazy as _
-
-from laboratory.utils import filter_laboratorist_technician
-from sga.models import DangerIndication
 
 
 def create_edit_sustance(request, pk=None):
@@ -31,30 +26,23 @@ def create_edit_sustance(request, pk=None):
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
-            # format_h_code = suschacform.cleaned_data['h_code'].split(":")
-            # lab = Laboratory.objects.filter(name=objform.cleaned_data['laboratory']).first()
-            # obf_feat = ObjectFeatures.objects.filter(name=objform.cleaned_data['features']).first()
-            # white_organ = Catalog.objects.filter(description=suschacform.cleaned_data['white_organ']).first()
-            # h_code = DangerIndication.objects.filter(code=format_h_code[0]).first()
             obj = objform.save(commit=False)
             obj.type = Object.REACTIVE
             obj.save()
-            obj.laboratory.add(*list(objform.cleaned_data['laboratory']))
-            obj.features.add(*list(objform.cleaned_data['features']))
+            objform.save_m2m()
             suscharinst = suschacform.save(commit=False)
             suscharinst.obj = obj
             suscharinst.save()
-            suscharinst.white_organ.add(*list(suschacform.cleaned_data['white_organ']))
-            suscharinst.h_code.add(*list(suschacform.cleaned_data['h_code']))
+            suschacform.save_m2m()
             messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list'))
         else:
             messages.warning(request, _("Pending information in form"))
 
-
     return render(request, 'laboratory/sustance/sustance_form.html', {
         'objform': objform,
-        'suschacform': suschacform
+        'suschacform': suschacform,
+        'instance': instance
     })
 
 def sustance_list(request):
@@ -93,112 +81,43 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
+            is_bioaccumulable = hasattr(item, 'sustancecharacteristics')\
+                and item.sustancecharacteristics and item.sustancecharacteristics.bioaccumulable
+            is_precursor = hasattr(item, 'sustancecharacteristics')\
+                and item.sustancecharacteristics and item.sustancecharacteristics.is_precursor
 
-            warning_precursor = 'fa fa-thumbs-up fa-fw text-success' if item.sustancecharacteristics.is_precursor \
-                else 'fa fa-thumbs-down fa-fw text-warning'
-            warning_bioaccumulable = 'fa fa-exclamation-triangle fa-fw text-success' if item.sustancecharacteristics.bioaccumulable \
-                else 'fa fa-exclamation-triangle fa-fw text-warning'
-            warning_is_public = 'fa fa-toggle-on fa-fw text-success' if item.is_public \
-                else 'fa fa-toggle-off fa-fw text-warning'
 
-            precursor = '<i class="{0}"></i>'.format(warning_precursor)
-            bioaccumulable = '<i class="{0}"></i>'.format(warning_bioaccumulable)
-            is_public = '<i class="{0}" aria-hidden="true"></i>'.format(warning_is_public)
-            name_url = """<a href="{0}">{1}</a>""".format(reverse('laboratory:sustance_manage',
-                                                                  kwargs={'pk': item.id}),
-                                                          item.name)
-            delete = """<a href="{0}" ><i class="fa fa-trash-o" style="color:red"></i></a>"""\
+            warning_precursor = 'fa fa-check-circle fa-fw text-success' if is_precursor else  \
+                'fa fa-times-circle fa-fw text-warning'
+            warning_bioaccumulable = 'fa fa-leaf fa-fw text-success' if is_bioaccumulable else \
+                'fa fa-flask text-warning'
+            warning_is_public = 'fa fa-users fa-fw text-success' if item.is_public \
+                else 'fa fa-user-times fa-fw text-warning'
+
+            precursor = '<i class="{0}" title="{1} {2}"></i>'.format(warning_precursor, _('Is precursor?'),
+                                                                     _("Yes") if is_precursor else _("No") )
+            bioaccumulable = '<i class="{0}" title="{1} {2}"></i>'.format(warning_bioaccumulable,
+                            _('Is bioaccumulable?'), _("Yes") if is_bioaccumulable else _("No"))
+            is_public = '<i class="{0}"  title="{1} {2}" aria-hidden="true"></i>'.format(
+                warning_is_public, _('Is public?'), _("Yes") if item.is_public else _("No"))
+            name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
+                reverse('laboratory:sustance_manage', kwargs={'pk': item.id}),
+                item.synonym or item.name, item.name)
+            delete = """<a href="{0}" title="{1}" class="pull-right"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
-                                kwargs={'pk': item.id}))
+                                kwargs={'pk': item.id}), _('Delete sustance'))
+            if hasattr(item, 'sustancecharacteristics') and item.sustancecharacteristics and \
+                    item.sustancecharacteristics.security_sheet:
+                download = """<a href="{0}" title="{1}"><i class="fa fa-download" ></i></a>""" \
+                    .format(item.sustancecharacteristics.security_sheet.url, _("Download security sheet"))
+                delete = download+delete
 
             json_data.append([
                 is_public+precursor+bioaccumulable,
                 name_url,
-                item.sustancecharacteristics.cas_id_number,
+                item.sustancecharacteristics.cas_id_number if hasattr(item, 'sustancecharacteristics')\
+                and item.sustancecharacteristics else "",
                 delete
             ])
         return json_data
 
-
-"""
-    Ajax views for autocomplete fields
-"""
-
-
-def search_autocomplete_sustance_features(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        # Contains the typed characters, is valid since the first character
-        # Search Parameter: Object Feature Name
-        if any(c.isalpha() for c in q):
-            search_qs = ObjectFeatures.objects.filter(name__icontains=q)
-        results = []
-        for r in search_qs:
-            results.append({'label': r.name, 'value': r.pk})
-        if not results:
-            results.append('No results')
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
-
-
-def search_autocomplete_sustance_laboratory(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        # Contains the typed characters, is valid since the first character
-        # Search Parameter: Laboratory name and user in laboratorists list
-        if any(c.isalpha() for c in q):
-            search_temp = filter_laboratorist_technician(request.user)
-            search_qs = search_temp.filter(name__icontains=q)
-        results = []
-        for r in search_qs:
-            results.append({'label': r.name, 'value': r.pk})
-        if not results:
-            results.append('No results')
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
-
-
-def search_autocomplete_sustance_white_organ(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        # Contains the typed characters, is valid since the first character
-        # Search Parameter: White Organ Description
-        if any(c.isalpha() for c in q):
-            search_qs = Catalog.objects.filter(key="white_organ", description__icontains=q)
-        results = []
-        for r in search_qs:
-            results.append({'label': r.description, 'value': r.pk})
-        if not results:
-            results.append('No results')
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
-
-
-def search_autocomplete_sustance_danger_indication(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        # Contains the typed characters, is valid since the first character
-        # Search Parameter: Danger Indication Code
-        if any(c.isalpha() for c in q):
-            search_qs = DangerIndication.objects.filter(description__icontains=q)
-        else:
-            search_qs = DangerIndication.objects.filter(code__icontains=q)
-        results = []
-        for r in search_qs:
-            results.append({'label': r.code + ": " + r.description, 'value': r.pk})
-        if not results:
-            results.append('No results')
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
