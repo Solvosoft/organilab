@@ -15,7 +15,7 @@ from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristic
 
 
 @login_required(login_url='login')
-@user_group_perms(perm='laboratory.add_object')
+@user_group_perms(perm='laboratory.edit_object')
 def create_edit_sustance(request, pk=None):
     instance = Object.objects.filter(pk=pk).first()
 
@@ -52,7 +52,7 @@ def create_edit_sustance(request, pk=None):
 
 
 @login_required(login_url='login')
-@user_group_perms(perm='laboratory.add_object')
+@user_group_perms(perm='laboratory.view_object')
 def sustance_list(request):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
     return render(request, 'laboratory/sustance/list.html', {

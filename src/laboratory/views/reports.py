@@ -17,7 +17,8 @@ from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
 from laboratory.forms import H_CodeForm
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
+    OrganizationStructure, PrincipalTechnician, SustanceCharacteristics
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_group_perms
 import django_excel
@@ -355,10 +356,13 @@ def report_objects(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_objects(objects, summary=detail, type_id=type_id), fileformat, file_name="objects.%s" % (fileformat,))
 
+
     for obj in objects:
-        clentry = CLInventory.objects.filter(
-            cas_id_number=obj.cas_id_number).first()
-        setattr(obj, 'clinventory_entry', clentry)
+        sus_char = SustanceCharacteristics.objects.filter(obj=obj).first()
+        if sus_char is not None:
+            clentry = CLInventory.objects.filter(
+                cas_id_number=sus_char.cas_id_number).first()
+            setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
 
