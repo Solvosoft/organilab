@@ -29,7 +29,7 @@ def get_user_laboratories(user, q=None):
     return filter_laboratorist_technician_student(user, user_org, q)
 
 
-def filter_laboratorist_technician_student(user,user_org, q):
+def filter_laboratorist_technician_student(user,user_org, q=None):
     queryset = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                      Q(laboratorists__pk=user.pk) |
                                      Q(principaltechnician__credentials=user.pk) |
