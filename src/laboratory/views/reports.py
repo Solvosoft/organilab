@@ -355,7 +355,7 @@ def report_objects(request, *args, **kwargs):
 
     for obj in objects:
         clentry = CLInventory.objects.filter(
-            cas_id_number=obj.cas_id_number).first()
+            cas_id_number=get_cas(obj, 0)).first()
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
