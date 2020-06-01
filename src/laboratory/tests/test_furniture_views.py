@@ -41,8 +41,9 @@ class FurnitureViewTestCase(TestCase):
         user = User.objects.filter(username="est_1").first()
         room = LaboratoryRoom.objects.create(name="test_room")
         lab.rooms.add(room)
-        kwargs = { "lab_pk": lab.id, "labroom": room.id, "name": "test_furniture", "type": "F" }
+        kwargs = { "lab_pk": lab.id, "labroom": room.id }
         request = RequestFactory().post(reverse("laboratory:furniture_create", kwargs=kwargs))
+        kwargs.update({"name": "test_furniture", "type": "F"})
         request.user = user 
         response = FurnitureCreateView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 403)
