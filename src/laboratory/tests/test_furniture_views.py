@@ -23,8 +23,8 @@ class FurnitureViewTestCase(TestCase):
         response = FurnitureReportView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 403)
 
-    def test_furniture_create_view_permissions(self):
-        """tests that users without permissions can't create a furniture"""
+    def test_furniture_create_view_get_permissions(self):
+        """tests that users without permissions can't get to this view"""
         lab = Laboratory.objects.filter(name="Laboratory 5").first()
         user = User.objects.filter(username="est_1").first()
         room = LaboratoryRoom.objects.create(name="test_room")
@@ -47,6 +47,6 @@ class FurnitureViewTestCase(TestCase):
         response = FurnitureCreateView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 403)
     
-    
+
 
     
