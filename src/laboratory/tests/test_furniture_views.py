@@ -4,12 +4,16 @@ from django.urls import reverse
 from django.test import TestCase, RequestFactory
 from demoQA.management import commands
 from .utils import TestUtil
-from ..models import Laboratory, LaboratoryRoom
+from ..models import ( 
+    Laboratory, 
+    LaboratoryRoom,
+    Furniture,
+)
 from ..views.furniture import ( 
-                                FurnitureReportView, 
-                                FurnitureCreateView,
-                                FurnitureUpdateView
-                            )
+    FurnitureReportView, 
+    FurnitureCreateView,
+    FurnitureUpdateView
+)
 
 class FurnitureViewTestCase(TestCase):
 
@@ -58,6 +62,7 @@ class FurnitureViewTestCase(TestCase):
         user = User.objects.filter(username="est_1").first()
         room = LaboratoryRoom.objects.create(name="test_room")
         lab.rooms.add(room)
+        #TODO fix type class must be Catalog
         furniture = Furniture.objects.create(labroom=room, name="test_furniture", type="F")
         kwargs = { "pk": furniture.id }
         request = RequestFactory().get(reverse("laboratory:furniture_update", kwargs=kwargs))
