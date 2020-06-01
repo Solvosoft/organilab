@@ -1,5 +1,5 @@
 
-from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.models import OrganizationStructure, Laboratory, PrincipalTechnician
 from django.contrib.auth.models import User, Group
 from django.test import RequestFactory
 from constance import config
