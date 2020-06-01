@@ -1,19 +1,14 @@
 from django.test import TestCase
 
 from laboratory.test.utils import OrganizationalStructureDataMixin
-from laboratory.views.reports import report_organization_building, report_labroom_building, report_shelf_objects
+from laboratory.views.reports import report_organization_building, report_labroom_building, report_shelf_objects, \
+    report_limited_shelf_objects
 
 
 class ReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
     """
         test for report view
     """
-
-    # laboratory.do_report
-    # /lab/55/organizations/reports/list >> listview
-
-    def setUp(self):
-        super(ReportViewTestCase, self).setUp()
 
     def check_simple_view_if_admin_has_permissions(self, function=None, resource=None, permission=None, pk=None):
 
@@ -69,7 +64,7 @@ class ReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
             'laboratory.do_report' permission is required to reach this resource
         """
         pk = self.root_organization.pk
-        path = f"lab/{pk}/reports/shelf_objects$"
+        path = f"lab/{pk}/reports/shelf_objects"
 
         self.check_simple_view_if_admin_has_permissions(
             function=report_shelf_objects,
@@ -78,4 +73,17 @@ class ReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
             pk=pk
         )
 
+    def test_admin_has_authorization_to_see_limits_shelf_objects_report(self):
+        """
+            'laboratory.do_report' permission is required to reach this resource
+        """
+        pk = self.root_organization.pk
+        path = f"lab/{pk}/reports/limited_shelf_objects"
+
+        self.check_simple_view_if_admin_has_permissions(
+            function=report_limited_shelf_objects,
+            resource=path,
+            permission='laboratory.do_report',
+            pk=pk
+        )
 
