@@ -1,3 +1,4 @@
+from django.urls import reverse
 
 from laboratory.test.utils import OrganizationalStructureDataMixin
 from laboratory.views.organizations import OrganizationReportView
@@ -30,11 +31,13 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin,TestCase):
         request.user = self.user_laboratoris
         self.assertFalse(self.user_laboratoris.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=pk)
-        self.assertNotEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("permission_denied"))
 
         # student neither
         request.user = self.user_student
         self.assertFalse(self.user_student.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=pk)
-        self.assertNotEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("permission_denied"))
 
