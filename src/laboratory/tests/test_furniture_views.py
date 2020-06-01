@@ -5,7 +5,11 @@ from django.test import TestCase, RequestFactory
 from demoQA.management import commands
 from .utils import TestUtil
 from ..models import Laboratory, LaboratoryRoom
-from ..views.furniture import FurnitureReportView, FurnitureCreateView
+from ..views.furniture import ( 
+                                FurnitureReportView, 
+                                FurnitureCreateView,
+                                FurnitureUpdateView
+                            )
 
 class FurnitureViewTestCase(TestCase):
 
@@ -48,6 +52,16 @@ class FurnitureViewTestCase(TestCase):
         response = FurnitureCreateView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 403)
     
-
-
+    def test_furniture_update_view_get_permissions(self):
+        """tests that users without permissions can't get to the update view"""
+        lab = Laboratory.objects.filter(name="Laboratory 5").first()
+        user = User.objects.filter(username="est_1").first()
+        room = LaboratoryRoom.objects.create(name="test_room")
+        lab.rooms.add(room)
+        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type="F")
+        kwargs = { "pk": furniture.id }
+        request = RequestFactory().get(reverse("laboratory:furniture_update", kwargs=kwargs))
+        request.user = user 
+        response = FurnitureUpdateView.as_view()(request, **kwargs)
+        self.assertEqual(response.status_code, 403)
     
