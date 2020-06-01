@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from laboratory.test.utils import OrganizationalStructureDataMixin
 from laboratory.views.reports import report_organization_building, report_labroom_building, report_shelf_objects, \
-    report_limited_shelf_objects
+    report_limited_shelf_objects, report_objects
 
 
 class ReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
@@ -86,4 +86,18 @@ class ReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
             permission='laboratory.do_report',
             pk=pk
         )
+    def test_admin_has_authorization_to_see_objects_report(self):
+        """
+            'laboratory.do_report' permission is required to reach this resource
+        """
+        pk = self.root_organization.pk
+        path = f"lab/{pk}/reports/objects"
 
+        self.check_simple_view_if_admin_has_permissions(
+            function=report_objects,
+            resource=path,
+            permission='laboratory.do_report',
+            pk=pk
+        )
+
+    #
