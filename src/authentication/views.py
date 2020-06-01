@@ -41,12 +41,12 @@ class FeedbackView(CreateView):
         except:
             lab_pk = None
         dev = reverse('index')
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             self.object.user = self.request.user
         if lab_pk:
             self.object.laboratory_id = lab_pk
             dev = reverse('laboratory:labindex', kwargs={'lab_pk': lab_pk})
-        if self.request.user.is_authenticated() or lab_pk:
+        if self.request.user.is_authenticated or lab_pk:
             self.object.save()
 
         send_email_from_template("New feedback",

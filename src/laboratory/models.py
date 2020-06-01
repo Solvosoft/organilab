@@ -79,6 +79,7 @@ class Object(models.Model):
             return self.sustancecharacteristics.is_precursor
         return False
 
+
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
@@ -128,11 +129,17 @@ class ShelfObject(models.Model):
 
     @staticmethod
     def get_units(unit):
-        return Catalog.objects.filter(pk=unit).first() or ''
-
+        if isinstance(unit, (int, str)):
+            unit = Catalog.objects.filter(pk=unit).first() or ''
+        return str(unit)
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
+
+
+    def get_measurement_unit_display(self):
+        return str(self.measurement_unit)
+
 
     class Meta:
         verbose_name = _('Shelf object')
