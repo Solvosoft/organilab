@@ -8,6 +8,7 @@ from ..models import (
     Laboratory, 
     LaboratoryRoom,
     Furniture,
+    Catalog
 )
 from ..views.furniture import ( 
     FurnitureReportView, 
@@ -62,10 +63,24 @@ class FurnitureViewTestCase(TestCase):
         user = User.objects.filter(username="est_1").first()
         room = LaboratoryRoom.objects.create(name="test_room")
         lab.rooms.add(room)
-        #TODO fix type class must be Catalog
-        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type="F")
-        kwargs = { "pk": furniture.id }
+        catalog = Catalog.objects.filter(key="furniture_type").first()
+        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
+        kwargs = { "lab_pk": lab.id, "pk": furniture.id }
         request = RequestFactory().get(reverse("laboratory:furniture_update", kwargs=kwargs))
+        request.user = user 
+        response = FurnitureUpdateView.as_view()(request, **kwargs)
+        self.assertEqual(response.status_code, 403)
+    
+    def test_furniture_update_view_post_permissions(self):
+        """tests that users without permissions can't post to the update view"""
+        lab = Laboratory.objects.filter(name="Laboratory 5").first()
+        user = User.objects.filter(username="est_1").first()
+        room = LaboratoryRoom.objects.create(name="test_room")
+        lab.rooms.add(room)
+        catalog = Catalog.objects.filter(key="furniture_type").first()
+        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
+        kwargs = { "lab_pk": lab.id, "pk": furniture.id }
+        request = RequestFactory().post(reverse("laboratory:furniture_update", kwargs=kwargs))
         request.user = user 
         response = FurnitureUpdateView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 403)
