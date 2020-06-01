@@ -304,7 +304,7 @@ class LaboratoryDeleteView(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class HCodeReports(ListView):
-    paginate_by = 5
+    paginate_by = 15
     template_name = 'laboratory/h_code_report.html'
 
     def get_queryset(self):

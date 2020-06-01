@@ -44,7 +44,7 @@ def get_function(name):
 def filter_by_user_and_hcode(user, q, function='convert_hcodereport_table'):
     functiont = get_function(function)
     user_labs = get_user_laboratories(user)
-    labs = user_labs.filter(rooms__furniture__shelf__shelfobject__object__h_code__in=q)
+    labs = user_labs.filter(rooms__furniture__shelf__shelfobject__object__sustancecharacteristics__h_code__in=q)
     # 'rooms__furniture__shelf__shelfobject__object__h_code__code'
     result = labs.annotate(
         room=F('rooms__name'),
