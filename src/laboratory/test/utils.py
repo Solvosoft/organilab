@@ -2,7 +2,6 @@ import random
 
 from laboratory.models import OrganizationStructure, Laboratory, PrincipalTechnician
 from django.contrib.auth.models import User, Group
-from django.test import RequestFactory
 from constance import config
 
 
@@ -30,7 +29,8 @@ class OrganizationalStructureDataMixin(object):
         self.create_principal_technicians()
 
     def create_organization(self):
-        """         -------------------------
+        """
+                     -------------------------
                     |          root         |     * = GROUP_STUDENT
                     -------------------------
                     /             |         \
@@ -136,26 +136,26 @@ class OrganizationalStructureDataMixin(object):
                                                "supervisor@organillab.org",
                                                self.PASSWORD)
 
-        self.lab_1 = User.objects.create_user("lab_1",
+        self.user_lab_1 = User.objects.create_user("lab_1",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
-        self.lab_2 = User.objects.create_user("lab_2",
+        self.user_lab_2 = User.objects.create_user("lab_2",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
-        self.lab_3 = User.objects.create_user("lab_3",
+        self.user_lab_3 = User.objects.create_user("lab_3",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
 
-        self.est_1 = User.objects.create_user("est_1",
+        self.user_est_1 = User.objects.create_user("user_est_1",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
-        self.est_2 = User.objects.create_user("est_2",
+        self.user_est_2 = User.objects.create_user("user_est_2",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
-        self.est_3 = User.objects.create_user("est_3",
+        self.user_est_3 = User.objects.create_user("user_est_3",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
-        self.est_4 = User.objects.create_user("est_4",
+        self.user_est_4 = User.objects.create_user("user_est_4",
                                               "supervisor@organillab.org",
                                               self.PASSWORD)
 
@@ -172,14 +172,14 @@ class OrganizationalStructureDataMixin(object):
         self.udep1_2.groups.add(gpa)
         self.udep_3.groups.add(gpa)
 
-        self.lab_1.groups.add(gpl)
-        self.lab_2.groups.add(gpl)
-        self.lab_3.groups.add(gpl)
+        self.user_lab_1.groups.add(gpl)
+        self.user_lab_2.groups.add(gpl)
+        self.user_lab_3.groups.add(gpl)
 
-        self.est_1.groups.add(gpe)
-        self.est_2.groups.add(gpe)
-        self.est_3.groups.add(gpe)
-        self.est_4.groups.add(gpe)
+        self.user_est_1.groups.add(gpe)
+        self.user_est_2.groups.add(gpe)
+        self.user_est_3.groups.add(gpe)
+        self.user_est_4.groups.add(gpe)
 
     def create_principal_technicians(self):
         """
@@ -218,20 +218,19 @@ class OrganizationalStructureDataMixin(object):
             )
             ptusch1_2_6.credentials.add(self.usch1_2_6)
 
-        usch4 = PrincipalTechnician.objects.create(
+        pusch4 = PrincipalTechnician.objects.create(
             name="Jorge Madrigal",
             phone_number="88-0000-" + str(random.randint(1000, 9999)),
             id_card="8-%d-7890" % (random.randint(1000, 9999)),
             email="usch4@organilab.org",
             organization=self.school4,
             assigned=self.lab5
-
         )
-        usch4.credentials.add(self.usch4)
+        pusch4.credentials.add(self.usch4)
 
         for i, org, lab in [(1, self.school3, self.lab4),
                             (2, self.school5, self.lab8)]:
-            usch3_5 = PrincipalTechnician.objects.create(
+            pusch3_5 = PrincipalTechnician.objects.create(
                 name="Lola Cardenas " + str(i),
                 phone_number="88-0000-" + str(random.randint(1000, 9999)),
                 id_card="8-%d-7890" % (random.randint(1000, 9999)),
@@ -239,9 +238,9 @@ class OrganizationalStructureDataMixin(object):
                 organization=org,
                 assigned=lab,
             )
-            usch3_5.credentials.add(self.usch3_5)
+            pusch3_5.credentials.add(self.usch3_5)
 
-        uschi1 = PrincipalTechnician.objects.create(
+        puschi1 = PrincipalTechnician.objects.create(
             name="Marco atencio",
             phone_number="88-0000-" + str(random.randint(1000, 9999)),
             id_card="8-%d-7890" % (random.randint(1000, 9999)),
@@ -250,9 +249,9 @@ class OrganizationalStructureDataMixin(object):
             assigned=self.lab6
 
         )
-        uschi1.credentials.add(self.uschi1)
+        puschi1.credentials.add(self.uschi1)
 
-        uschi1 = PrincipalTechnician.objects.create(
+        puschi1 = PrincipalTechnician.objects.create(
             name="Juan Carmona",
             phone_number="88-0000-" + str(random.randint(1000, 9999)),
             id_card="8-%d-7890" % (random.randint(1000, 9999)),
@@ -261,13 +260,13 @@ class OrganizationalStructureDataMixin(object):
             assigned=self.lab7
 
         )
-        uschi1.credentials.add(self.uschi1)
+        puschi1.credentials.add(self.uschi1)
 
         for i, org, lab in [(1, self.school6, self.lab9),
                             (2, self.interschool, self.lab6),
                             (3, self.interschool, self.lab7)
                             ]:
-            usch6_i1 = PrincipalTechnician.objects.create(
+            pusch6_i1 = PrincipalTechnician.objects.create(
                 name="Keylor Vargas " + str(i),
                 phone_number="88-0000-" + str(random.randint(1000, 9999)),
                 id_card="8-%d-7890" % (random.randint(1000, 9999)),
@@ -275,10 +274,10 @@ class OrganizationalStructureDataMixin(object):
                 organization=org,
                 assigned=lab
             )
-            usch6_i1.credentials.add(self.usch6_i1)
+            pusch6_i1.credentials.add(self.usch6_i1)
 
         for i, org in enumerate([self.dep1, self.dep2]):
-            udep1_2 = PrincipalTechnician.objects.create(
+            pudep1_2 = PrincipalTechnician.objects.create(
                 name="Julio Volio " + str(i),
                 phone_number="88-0000-" + str(random.randint(1000, 9999)),
                 id_card="8-%d-7890" % (random.randint(1000, 9999)),
@@ -286,9 +285,9 @@ class OrganizationalStructureDataMixin(object):
                 organization=org
                 # assigned  FK a laboratory
             )
-            udep1_2.credentials.add(self.udep1_2)
+            pudep1_2.credentials.add(self.udep1_2)
 
-        udep_3 = PrincipalTechnician.objects.create(
+        pudep_3 = PrincipalTechnician.objects.create(
             name="Julia Obando",
             phone_number="88-0120-0940",
             id_card="8-4513-7890",
@@ -297,7 +296,7 @@ class OrganizationalStructureDataMixin(object):
             # assigned  FK a laboratory
 
         )
-        udep_3.credentials.add(self.udep_3)
+        pudep_3.credentials.add(self.udep_3)
 
     def create_labs(self):
         """
@@ -372,37 +371,37 @@ class OrganizationalStructureDataMixin(object):
             organization=self.school6
         )
 
-        self.lab1.laboratorists.add(self.lab_1)
-        self.lab2.laboratorists.add(self.lab_2)
-        self.lab2.laboratorists.add(self.lab_3)
-        self.lab3.laboratorists.add(self.lab_3)
-        self.lab4.laboratorists.add(self.lab_2)
-        self.lab5.laboratorists.add(self.lab_1)
-        self.lab6.laboratorists.add(self.lab_1)
-        self.lab7.laboratorists.add(self.lab_2)
-        self.lab8.laboratorists.add(self.lab_3)
-        self.lab9.laboratorists.add(self.lab_1)
+        self.lab1.laboratorists.add(self.user_lab_1)
+        self.lab2.laboratorists.add(self.user_lab_2)
+        self.lab2.laboratorists.add(self.user_lab_3)
+        self.lab3.laboratorists.add(self.user_lab_3)
+        self.lab4.laboratorists.add(self.user_lab_2)
+        self.lab5.laboratorists.add(self.user_lab_1)
+        self.lab6.laboratorists.add(self.user_lab_1)
+        self.lab7.laboratorists.add(self.user_lab_2)
+        self.lab8.laboratorists.add(self.user_lab_3)
+        self.lab9.laboratorists.add(self.user_lab_1)
 
-        self.lab1.students.add(self.est_1)
-        self.lab2.students.add(self.est_2)
-        self.lab3.students.add(self.est_3)
-        self.lab4.students.add(self.est_4)
-        self.lab5.students.add(self.est_1)
-        self.lab6.students.add(self.est_2)
-        self.lab7.students.add(self.est_3)
-        self.lab8.students.add(self.est_4)
-        self.lab9.students.add(self.est_1)
+        self.lab1.students.add(self.user_est_1)
+        self.lab2.students.add(self.user_est_2)
+        self.lab3.students.add(self.user_est_3)
+        self.lab4.students.add(self.user_est_4)
+        self.lab5.students.add(self.user_est_1)
+        self.lab6.students.add(self.user_est_2)
+        self.lab7.students.add(self.user_est_3)
+        self.lab8.students.add(self.user_est_4)
+        self.lab9.students.add(self.user_est_1)
 
-        self.lab1.students.add(self.est_2)
-        self.lab2.students.add(self.est_3)
-        self.lab3.students.add(self.est_4)
-        self.lab4.students.add(self.est_1)
-        self.lab5.students.add(self.est_2)
-        self.lab6.students.add(self.est_3)
-        self.lab7.students.add(self.est_4)
-        self.lab8.students.add(self.est_1)
-        self.lab9.students.add(self.est_2)
-        self.lab1.students.add(self.est_3)
-        self.lab2.students.add(self.est_4)
-        self.lab3.students.add(self.est_3)
-        self.lab4.students.add(self.est_2)
+        self.lab1.students.add(self.user_est_2)
+        self.lab2.students.add(self.user_est_3)
+        self.lab3.students.add(self.user_est_4)
+        self.lab4.students.add(self.user_est_1)
+        self.lab5.students.add(self.user_est_2)
+        self.lab6.students.add(self.user_est_3)
+        self.lab7.students.add(self.user_est_4)
+        self.lab8.students.add(self.user_est_1)
+        self.lab9.students.add(self.user_est_2)
+        self.lab1.students.add(self.user_est_3)
+        self.lab2.students.add(self.user_est_4)
+        self.lab3.students.add(self.user_est_3)
+        self.lab4.students.add(self.user_est_2)
