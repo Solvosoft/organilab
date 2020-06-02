@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'snowpenguin.django.recaptcha2',
     'msds',
     'sga',
-    'monitarize',
     'async_notifications',
     'ckeditor',
     'fontawesome',
