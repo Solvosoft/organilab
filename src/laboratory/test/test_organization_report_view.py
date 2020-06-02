@@ -1,5 +1,5 @@
 from django.urls import reverse
-from laboratory.models import PrincipalTechnician
+from laboratory.models import PrincipalTechnician, OrganizationStructure
 from laboratory.test.utils import OrganizationalStructureDataMixin
 from laboratory.views.organizations import OrganizationReportView
 from django.test import TestCase, RequestFactory
@@ -32,10 +32,22 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         """
             almost the  same as the previous test, the different is that
             the method is 'POST' in this case it was use for filter the report
+
+                        -------------------------
+                        |          root         |         * = GROUP_STUDENT
+                        -------------------------
+                        /             |         \
+                      dep1           dep2       dep3       GROUP_ADMIN
+                   /   \    \      /    \        |  \
+                sch1     sch2  sch3    sch4   sch5   sch6  GROUP_LABORATORIST
+                /  \      |     |     / |       |      |
+              lab1 lab2  lab3  lab4  /isch1    lab8   lab9
+                                   lab5 / \
+                                     lab6 lab7
         """
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": 52} # with this filter is supposed to return one element
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="school 6").first().pk}
         request = self.factory.post(path, data, content_type='application/json')
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
@@ -43,7 +55,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.get(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
-        print(response.context_data["object_list"].count(), 1)
+        self.assertEqual(response.context_data["object_list"].count(), 1) # school 6 is suppose to return just lab9
+
 
     def test_redirect_unathorization_groups(self):
         """
