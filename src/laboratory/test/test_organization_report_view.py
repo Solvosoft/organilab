@@ -99,6 +99,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         #   Group: GROUP_ADMIN
         #   school: isch1
         #   labs: 6,7
+        allocated_labs = [p.assigned.name for p in PrincipalTechnician.objects.filter(credentials__id=self.uschi1.pk)]
+
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
         data = {"filter_organization": OrganizationStructure.objects.filter(name="Inter School 1").first().pk}
@@ -109,8 +111,9 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
-        self.assertEqual(response.context_data["object_list"].count(), 2,
-                         msg=f"interschool is suppose to return lab 6 and 7")
+        self.assertEqual(response.context_data["object_list"].count(), len(allocated_labs))
+        lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
+        self.assertTrue(all([True if name in allocated_labs else False for name in lab_names]))
 
         # this case must return 0, as the principal is not allocated to School 6 or any lab there
         lab_pk = self.lab6.id
@@ -123,7 +126,6 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).count(), 0)
-        # one lab can be manage for many principals
         self.assertEqual(response.context_data["object_list"].count(), 0,
                          msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a donde esta asignado
 
