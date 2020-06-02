@@ -7,32 +7,9 @@ from django.test import TestCase, RequestFactory
 
 class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
     """
-        This is the test for OrganizationReportView class-based view
-    """
+        This is the test for OrganizationReportView class-based view.
 
-    def setUp(self):
-        super(OrganizationReportViewTestCase, self).setUp()
-        self.factory = RequestFactory()
-
-    def test_group_admin_can_see_organization_report(self):
-        """
-            'laboratory.view_report' permission is required to see this report
-            The laboratory administrator's group (GROUP_ADMIN) has this permission.
-        """
-        lab_pk = self.lab6.id
-        request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
-        request.user = self.uschi1
-        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
-        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(PrincipalTechnician.objects.get(
-            credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
-
-    def test_group_admin_can_apply_filters_to_the_organization_report(self):
-        """
-            almost the  same as the previous test, the different is that
-            the method is 'POST' in this case it was use for filter the report
-
+                    This is the organization structure
                         -------------------------
                         |          root         |         * = GROUP_STUDENT
                         -------------------------
@@ -44,6 +21,74 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
               lab1 lab2  lab3  lab4  /isch1    lab8   lab9
                                    lab5 / \
                                      lab6 lab7
+
+        Here we are going to test the access level for the different nodes of the tree in order to reach a resource.
+        To see the organization report of the specific lab, the user must have 'laboratory.view_report' permission and
+        the only group that have this permission is the admin's group.
+    """
+
+    def setUp(self):
+        super(OrganizationReportViewTestCase, self).setUp()
+        self.factory = RequestFactory()
+
+    def test_user_root_can_see_all_the_organization_laboratories_report(self):
+        """
+            User root belongs to admin's group, is a Principal Technician and is assigned to the root of the
+            organization structure. He is the only one who can see the entire organization labs reports.
+
+            Testing 'GET' method.
+        """
+
+        lab_pk = self.lab6.id
+        request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
+        request.user = self.uroot
+        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(PrincipalTechnician.objects.filter(
+            credentials__id=self.uroot.pk, assigned__id=lab_pk).first())
+        self.assertEqual(response.context_data["object_list"].count(), 9,
+                         msg=f"user root can see all labs, and they are 9")
+
+    def test_user_principal_admin_can_see_organization_report_of_the_allocated_labs(self):
+        """
+            Principal is supposed to see only the allocated labs.
+
+            Testing 'GET' method.
+        """
+        # first case:
+        #   PricipalTechnician: puschi1
+        #   User: uschi1
+        #   Group: GROUP_ADMIN
+        #   school: isch1
+        #   labs: 6,7
+        lab_pk = self.lab6.id
+        request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
+        request.user = self.uschi1
+        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(PrincipalTechnician.objects.filter(
+            credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
+        self.assertEqual(response.context_data["object_list"].count(), 2,
+                         msg=f"interschool is suppose to return lab 6 and 7")
+
+        # second case:
+        #   the user try to access a lab from other school in which he doesn't have permissions
+        #   the resource must be restricted and the user must be redirected
+        lab_pk = self.lab1.id # other lab
+        request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
+        request.user = self.uschi1
+        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("permission_denied"))
+
+    def test_principal_can_see_just_assigned_labs_after_apply_filter(self):
+        """
+            Testing 'POST' method. This method was use to perform the report filter.
+            In the first case the user must be able to see report from allocated labs.
+            In the second case the user must be restricted as he doesn't have permission in other school labs.
         """
         # first case:
         #   PricipalTechnician: puschi1
@@ -59,19 +104,47 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(PrincipalTechnician.objects.get(
-            credentials__id=self.uschi1.pk, assigned__id=lab_pk),
-            msg="The Principals is the only one who belongs to admin's group and is assigned to a specific lab")
-        # one lab can be manage for many principals
+        self.assertIsNotNone(PrincipalTechnician.objects.filter(
+            credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
         self.assertEqual(response.context_data["object_list"].count(), 2,
                          msg=f"interschool is suppose to return lab 6 and 7")
 
-        # second case:
+        # this case must return 0, as the principal is not allocated to School 6 or any lab there
+        lab_pk = self.lab6.id
+        path = f"/lab/{lab_pk}/organizations/reports/list"
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 6").first().pk}
+        request = self.factory.post(path, data, content_type='application/json')
+        request.user = self.uschi1
+        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(PrincipalTechnician.objects.filter(
+            credentials__id=self.uschi1.pk, assigned__id=lab_pk).count(), 0)
+        # one lab can be manage for many principals
+        self.assertEqual(response.context_data["object_list"].count(), 0,
+                         msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a donde esta asignado
+
+    def test_root_user_can_apply_filters_for_each_shcool(self):
+        """
+            Testing 'POST' method.
+            Root user has the permission to apply filters for any school.
+        """
+        # data:
         #   PricipalTechnician: pturoot
         #   User: uroot
         #   Group: GROUP_ADMIN
         #   school/Dep: root
-        #   labs: must be able to see all the labs, 9
+        #   labs: must be able to see all the labs, they are nine
+        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+        lab_pk = self.lab1.id
+        path = f"/lab/{lab_pk}/organizations/reports/list"
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 1").first().pk}
+        request = self.factory.post(path, data, content_type='application/json')
+        request.user = self.uroot
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data["object_list"].count(), 2,
+                         msg=f"interschool is suppose to return lab 6 and 7")
 
 
     def test_redirect_unathorization_groups(self):
