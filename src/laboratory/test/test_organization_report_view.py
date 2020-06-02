@@ -45,9 +45,15 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
                                    lab5 / \
                                      lab6 lab7
         """
+        # first case:
+        #   PricipalTechnician: puschi1
+        #   User: uschi1
+        #   Group: GROUP_ADMIN
+        #   school: isch1
+        #   labs: 6,7
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 6").first().pk}
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="Inter School 1").first().pk}
         request = self.factory.post(path, data, content_type='application/json')
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
@@ -57,8 +63,15 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
             credentials__id=self.uschi1.pk, assigned__id=lab_pk),
             msg="The Principals is the only one who belongs to admin's group and is assigned to a specific lab")
         # one lab can be manage for many principals
-        self.assertEqual(response.context_data["object_list"].count(), 1,
-                         msg=f"school 6 is suppose to return just one lab, lab9 and return: {response.context_data['object_list']}")
+        self.assertEqual(response.context_data["object_list"].count(), 2,
+                         msg=f"interschool is suppose to return lab 6 and 7")
+
+        # second case:
+        #   PricipalTechnician: pturoot
+        #   User: uroot
+        #   Group: GROUP_ADMIN
+        #   school/Dep: root
+        #   labs: must be able to see all the labs, 9
 
 
     def test_redirect_unathorization_groups(self):
