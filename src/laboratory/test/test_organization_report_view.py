@@ -47,15 +47,18 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         """
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": OrganizationStructure.objects.filter(name="school 6").first().pk}
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 6").first().pk}
         request = self.factory.post(path, data, content_type='application/json')
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.get(
-            credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
-        self.assertEqual(response.context_data["object_list"].count(), 1) # school 6 is suppose to return just lab9
+            credentials__id=self.uschi1.pk, assigned__id=lab_pk),
+            msg="The Principals is the only one who belongs to admin's group and is assigned to a specific lab")
+        # one lab can be manage for many principals
+        self.assertEqual(response.context_data["object_list"].count(), 1,
+                         msg=f"school 6 is suppose to return just one lab, lab9 and return: {response.context_data['object_list']}")
 
 
     def test_redirect_unathorization_groups(self):
