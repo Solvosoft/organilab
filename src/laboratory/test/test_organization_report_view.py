@@ -1,3 +1,6 @@
+import random
+from django.contrib.auth.models import Group
+from constance import config
 from django.urls import reverse
 from laboratory.models import PrincipalTechnician, OrganizationStructure, Laboratory
 from laboratory.test.utils import OrganizationalStructureDataMixin
@@ -6,6 +9,7 @@ from django.test import TestCase, RequestFactory
 
 
 class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
+    # https://user-images.githubusercontent.com/20632410/83575365-8fcc7600-a4ec-11ea-82f9-f2f0cd087dff.png
     """
         This is the test for OrganizationReportView class-based view.
 
@@ -30,6 +34,25 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
     def setUp(self):
         super(OrganizationReportViewTestCase, self).setUp()
         self.factory = RequestFactory()
+
+        # extra case
+        # principal who manage labs from other school
+
+        for i, org, lab in [(1, self.school1, self.lab1),
+                            (2, self.school1, self.lab2),
+                            ]:
+            usch6_i1 = PrincipalTechnician.objects.create(
+                name="Keylor Vargas " + str(i),
+                phone_number="88-0000-" + str(random.randint(1000, 9999)),
+                id_card="8-%d-7890" % (random.randint(1000, 9999)),
+                email="usch6_i1@organilab.org",
+                organization=org,
+                assigned=lab
+            )
+            usch6_i1.credentials.add(self.usch6_i1)
+
+        gpa = Group.objects.get(pk=config.GROUP_ADMIN_PK)
+        self.usch6_i1.groups.add(gpa)
 
     def test_user_root_can_see_all_the_organization_laboratories_report(self):
         """
@@ -74,7 +97,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.context_data["object_list"].count(), len(allocated_labs))
         lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
 
-        self.assertTrue(all([True if name in allocated_labs else False for name in lab_names]))
+        self.assertListEqual(lab_names, allocated_labs)
 
         # second case:
         #   the user try to access a lab from other school in which he doesn't have permissions
@@ -104,14 +127,14 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
         data = {"filter_organization": OrganizationStructure.objects.filter(name="Inter School 1").first().pk}
-        request = self.factory.post(path, data, content_type='application/json')
+        request = self.factory.post(path, data, content_type='application/json') # cambiar a www-url-form-encode
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
-        self.assertEqual(response.context_data["object_list"].count(), 2) # constant '2' because the user can manage lab from other schools
+        self.assertEqual(response.context_data["object_list"].count(), 2) # constant '2' because the user can manage labs from other schools
         lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
         self.assertTrue(all([True if name in allocated_labs else False for name in lab_names]))
 
@@ -199,3 +222,10 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("permission_denied"))
 
+
+
+
+"""
+    root en la mitad del arbol, y quiero ver laboratios de otro arbol
+    url encode
+"""
