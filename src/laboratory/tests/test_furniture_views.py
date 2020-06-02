@@ -29,7 +29,7 @@ class FurnitureViewTestCase(TestCase):
         self.room = LaboratoryRoom.objects.create(name="test_room")
         self.lab.rooms.add(self.room)
         catalog = Catalog.objects.filter(key="furniture_type").first()
-        self.furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
+        self.furniture = Furniture.objects.create(labroom=self.room, name="test_furniture", type=catalog)
     
     def test_furniture_report_view_permissions(self):
         """tests that users without permissions can't access furniture report view"""
@@ -90,7 +90,7 @@ class FurnitureViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
     
     def test_furniture_create_view_get_admin(self):
-        """tests that users without permissions can't get to this view"""
+        """tests that admin user can get to the create furniture view"""
         kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
         self.client.force_login(self.admin)
