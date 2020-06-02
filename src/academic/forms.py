@@ -1,6 +1,6 @@
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 from .models import ProcedureStep, Procedure
-from cruds_adminlte.widgets import CKEditorWidget
 from django.conf import settings
 
 

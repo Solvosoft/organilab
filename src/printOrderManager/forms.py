@@ -10,16 +10,9 @@ from django.contrib.gis.db import models
 from django import forms
 from .models import PrintObject
 # Imports for the widgets
-from cruds_adminlte.widgets import CKEditorWidget
-from cruds_adminlte.widgets import DatePickerWidget
-from cruds_adminlte import TimePickerWidget
+from ckeditor.widgets import CKEditorWidget
 from django.conf import settings
-from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget, GooglePointFieldInlineWidget
-from location_field.models.plain import PlainLocationField
-# Import the logging library
-import logging
-# Import the validators
-from .validators import validate_email
+from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
 # Import for the captcha
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget

@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
-from cruds_adminlte.crud import CRUDView
+from djgentelella.cruds.base  import CRUDView
 from printOrderManager.forms import FormPrintObject
 from django.urls.base import reverse
 from django.contrib import messages
@@ -1087,6 +1087,7 @@ def get_list_AdvertisementsByPrint(request):
 
 
 class PrintObjectCRUD(CRUDView):
+    template_father = "base.html"
     model = PrintObject
     views_available = ['create', 'delete', 'update', 'detail']
     namespace = "printOrderManager"  # Necesario, si se pone en URL
