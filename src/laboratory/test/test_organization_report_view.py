@@ -45,8 +45,6 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(PrincipalTechnician.objects.filter(
-            credentials__id=self.uroot.pk, assigned__id=lab_pk).first())
         self.assertEqual(response.context_data["object_list"].count(), 9,
                          msg=f"user root can see all labs, and they are 9")
 
@@ -124,30 +122,53 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.context_data["object_list"].count(), 0,
                          msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a donde esta asignado
 
-    def test_root_user_can_apply_filters_for_each_shcool(self):
+    def test_root_user_can_apply_filters_for_each_school(self):
         """
             Testing 'POST' method.
             Root user has the permission to apply filters for any school.
+
+            data:
+                PricipalTechnician: pturoot
+                User: uroot
+                Group: GROUP_ADMIN
+                school/Dep: root
+                labs: must be able to see all the labs, they are nine
         """
-        # data:
-        #   PricipalTechnician: pturoot
-        #   User: uroot
-        #   Group: GROUP_ADMIN
-        #   school/Dep: root
-        #   labs: must be able to see all the labs, they are nine
-        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+
+        # case one: School 1, return lab 1 and 2
+        self._check_case_schools_labs("School 1", ["Laboratory 1", "Laboratory 2"])
+
+        # case two: School 2, return lab 3 and 4
+        self._check_case_schools_labs("School 2", ["Laboratory 3", "Laboratory 4"])
+
+        # case three: School 3, return lab 4
+        self._check_case_schools_labs("School 3", ["Laboratory 4"])
+
+        # case four: School 4, return lab 5, 6 and 7
+        self._check_case_schools_labs("School 4",  ["Laboratory 5", "Laboratory 6", "Laboratory 7"])
+
+        # case four: School 5, return lab 8
+        self._check_case_schools_labs("School 5",  ["Laboratory 8"])
+
+        # case four: School 6, return lab 9
+        self._check_case_schools_labs("School 6", ["Laboratory 9"])
+
+    def _check_case_schools_labs(self, school, labs):
         lab_pk = self.lab1.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 1").first().pk}
+        data = {"filter_organization": OrganizationStructure.objects.filter(name=school).first().pk}
         request = self.factory.post(path, data, content_type='application/json')
         request.user = self.uroot
+        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data["object_list"].count(), 2,
-                         msg=f"interschool is suppose to return lab 6 and 7")
+        self.assertEqual(response.context_data["object_list"].count(), len(labs),
+                         msg=f"interschool is suppose to return lab 1 and 2: the response is:{response.context_data['object_list']}")
+        lab_names = [*map(lambda lab:lab.name, response.context_data["object_list"])]
 
+        self.assertTrue(all([True if name in labs else False for name in lab_names]))
 
-    def test_redirect_unathorization_groups(self):
+    def test_redirect_user_if_does_not_belong_to_admins_group(self):
         """
             'laboratory.view_report' permission belongs to GROUP_ADMIN.
             For groups Laboratorist and student the resource must be restricted.
