@@ -45,6 +45,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(PrincipalTechnician.objects.filter(
+            credentials__id=self.uroot.pk, organization__id=self.root.pk).first())
         self.assertEqual(response.context_data["object_list"].count(), 9,
                          msg=f"user root can see all labs, and they are 9")
 
@@ -69,7 +71,9 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertIsNotNone(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
         self.assertEqual(response.context_data["object_list"].count(), 2,
-                         msg=f"interschool is suppose to return lab 6 and 7")
+                         msg="pratical in charge of inter school is assigned to lab 6 and 7")
+        lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
+        self.assertTrue(all([True if name in ["Laboratory 6", "Laboratory 7"] else False for name in lab_names]))
 
         # second case:
         #   the user try to access a lab from other school in which he doesn't have permissions
