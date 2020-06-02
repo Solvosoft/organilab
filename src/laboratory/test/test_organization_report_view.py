@@ -147,10 +147,13 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         # case four: School 4, return lab 5, 6 and 7
         self._check_case_schools_labs("School 4",  ["Laboratory 5", "Laboratory 6", "Laboratory 7"])
 
-        # case four: School 5, return lab 8
+        # case five: School 4, return lab 5, 6 and 7
+        self._check_case_schools_labs("Inter School 1", ["Laboratory 6", "Laboratory 7"])
+
+        # case six: School 5, return lab 8
         self._check_case_schools_labs("School 5",  ["Laboratory 8"])
 
-        # case four: School 6, return lab 9
+        # case seven: School 6, return lab 9
         self._check_case_schools_labs("School 6", ["Laboratory 9"])
 
     def _check_case_schools_labs(self, school, labs):
@@ -163,7 +166,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data["object_list"].count(), len(labs),
-                         msg=f"interschool is suppose to return lab 1 and 2: the response is:{response.context_data['object_list']}")
+                         msg=f"{school} is suppose to return {labs} and return:{response.context_data['object_list']}")
         lab_names = [*map(lambda lab:lab.name, response.context_data["object_list"])]
 
         self.assertTrue(all([True if name in labs else False for name in lab_names]))
