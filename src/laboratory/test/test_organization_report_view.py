@@ -1,14 +1,11 @@
-from django.contrib.auth.models import User, Group
 from django.urls import reverse
-
-from laboratory.models import PrincipalTechnician, Laboratory
+from laboratory.models import PrincipalTechnician
 from laboratory.test.utils import OrganizationalStructureDataMixin
 from laboratory.views.organizations import OrganizationReportView
 from django.test import TestCase, RequestFactory
-from constance import config
 
 
-class OrganizationReportViewTestCase(OrganizationalStructureDataMixin,TestCase):
+class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
     """
         This is the test for OrganizationReportView class-based view
     """
@@ -22,7 +19,6 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin,TestCase):
             'laboratory.view_report' permission is required to see this report
             The laboratory administrator's group (GROUP_ADMIN) has this permission.
         """
-        # case A: principal technician in charge of laboratory 1
         lab_pk = self.lab6.id
         request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
         request.user = self.uschi1
@@ -32,6 +28,18 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin,TestCase):
         self.assertIsNotNone(PrincipalTechnician.objects.get(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
 
+    def test_group_admin_can_apply_filters_to_the_organization_report(self):
+        lab_pk = self.lab6.id
+        path = f"/lab/{lab_pk}/organizations/reports/list"
+        data = {"filter_organization": 52}
+        request = self.factory.post(path, data, content_type='application/json')
+        request.user = self.uschi1
+        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(PrincipalTechnician.objects.get(
+            credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
+        print(response.context_data["object_list"].count(),1)
 
     def test_redirect_unathorization_groups(self):
         """
