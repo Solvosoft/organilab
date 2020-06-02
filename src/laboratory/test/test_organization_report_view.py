@@ -52,7 +52,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
 
     def test_user_principal_admin_can_see_organization_report_of_the_allocated_labs(self):
         """
-            Principal is supposed to see only the allocated labs.
+            A Principal that is not a root is supposed to see only the allocated labs.
 
             Testing 'GET' method.
         """
@@ -111,7 +111,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
-        self.assertEqual(response.context_data["object_list"].count(), len(allocated_labs))
+        self.assertEqual(response.context_data["object_list"].count(), 2) # constant '2' because the user can manage lab from other schools
         lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
         self.assertTrue(all([True if name in allocated_labs else False for name in lab_names]))
 
