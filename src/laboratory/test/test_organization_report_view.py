@@ -1,5 +1,5 @@
 from django.urls import reverse
-from laboratory.models import PrincipalTechnician, OrganizationStructure
+from laboratory.models import PrincipalTechnician, OrganizationStructure, Laboratory
 from laboratory.test.utils import OrganizationalStructureDataMixin
 from laboratory.views.organizations import OrganizationReportView
 from django.test import TestCase, RequestFactory
@@ -47,8 +47,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.filter(
             credentials__id=self.uroot.pk, organization__id=self.root.pk).first())
-        self.assertEqual(response.context_data["object_list"].count(), 9,
-                         msg=f"user root can see all labs, and they are 9")
+        self.assertEqual(response.context_data["object_list"].count(), Laboratory.objects.all().count(),
+                         msg=f"user root can see all labs")
 
     def test_user_principal_admin_can_see_organization_report_of_the_allocated_labs(self):
         """
