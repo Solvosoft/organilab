@@ -127,9 +127,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         allocated_labs = [p.assigned.name for p in PrincipalTechnician.objects.filter(credentials__id=self.uschi1.pk)]
 
         lab_pk = self.lab6.id
-        path = f"/lab/{lab_pk}/organizations/reports/list"
         data = {"filter_organization": OrganizationStructure.objects.filter(name="Inter School 1").first().pk}
-        request = self.factory.post(path, data, content_type='application/json') # cambiar a www-url-form-encode
+        request = self.factory.post(f"/lab/{lab_pk}/organizations/reports/list", data)
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
@@ -142,9 +141,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
 
         # this case must return 0, as the principal is not allocated to School 6 or any lab there
         lab_pk = self.lab6.id
-        path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 6").first().pk}
-        request = self.factory.post(path, data, content_type='application/json')
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 6").first().pk} # this can be a weird case as the principal is not able to chose organization structure that are not allocated to him
+        request = self.factory.post(f"/lab/{lab_pk}/organizations/reports/list", data)
         request.user = self.uschi1
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
@@ -152,7 +150,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertNotEqual(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).count(), 0)
         self.assertEqual(response.context_data["object_list"].count(), 0,
-                         msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a donde esta asignado
+                         msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a que que departamento esta asinado el usuario
 
     def test_root_user_can_apply_filters_for_each_school(self):
         """
@@ -190,9 +188,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
 
     def _check_case_schools_labs(self, school, labs):
         lab_pk = self.lab1.id
-        path = f"/lab/{lab_pk}/organizations/reports/list"
         data = {"filter_organization": OrganizationStructure.objects.filter(name=school).first().pk}
-        request = self.factory.post(path, data)
+        request = self.factory.post(f"/lab/{lab_pk}/organizations/reports/list", data)
         request.user = self.uroot
         self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
