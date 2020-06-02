@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from cruds_adminlte.crud import CRUDView
+from djgentelella.cruds.base import CRUDView
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject,\
     ProcedureObservations
 from cruds_adminlte.inline_crud import InlineAjaxCRUD
@@ -11,6 +11,7 @@ from academic.forms import ProcedureForm, ProcedureStepForm
 class ProcedureView(CRUDView):
     model = Procedure
     template_father = "base.html"
+    template_name_base = 'academic/procedure/cruds'
     add_form = ProcedureForm
     update_form = ProcedureForm
     
