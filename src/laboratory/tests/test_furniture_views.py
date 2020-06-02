@@ -113,4 +113,15 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
     
+    def test_furniture_create_view_get_admin(self):
+        """tests that users without permissions can't get to this view"""
+        lab = Laboratory.objects.filter(name="Laboratory 5").first()
+        user = User.objects.filter(username="udep1_2").first()
+        room = LaboratoryRoom.objects.create(name="test_room")
+        lab.rooms.add(room)
+        kwargs = { "lab_pk": lab.id, "labroom": room.id }
+        url = reverse("laboratory:furniture_create", kwargs=kwargs)
+        self.client.force_login(user)  
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
     
