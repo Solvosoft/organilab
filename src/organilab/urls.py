@@ -27,14 +27,14 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
-from djgentelella.urls import urlpatterns as auth_urls_djgentelela
+from djgentelella.urls import base_urlpatterns as urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
 from rest_framework.documentation import include_docs_urls
 
 
-urlpatterns = auth_urls_djgentelela + auth_urls + [
+urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
