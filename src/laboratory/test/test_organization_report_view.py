@@ -22,24 +22,28 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         lab_pk = self.lab6.id
         request = self.factory.get(f"/lab/{lab_pk}/organizations/reports/list")
         request.user = self.uschi1
-        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.get(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
 
     def test_group_admin_can_apply_filters_to_the_organization_report(self):
+        """
+            almost the  same as the previous test, the different is that
+            the method is 'POST' in this case it was use for filter the report
+        """
         lab_pk = self.lab6.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
-        data = {"filter_organization": 52}
+        data = {"filter_organization": 52} # with this filter is supposed to return one element
         request = self.factory.post(path, data, content_type='application/json')
         request.user = self.uschi1
-        self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
+        self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(PrincipalTechnician.objects.get(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk))  # one lab can be manage for many principals
-        print(response.context_data["object_list"].count(),1)
+        print(response.context_data["object_list"].count(), 1)
 
     def test_redirect_unathorization_groups(self):
         """
