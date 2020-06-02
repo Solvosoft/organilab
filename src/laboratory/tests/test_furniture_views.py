@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.urls import reverse
@@ -67,10 +68,10 @@ class FurnitureViewTestCase(TestCase):
         catalog = Catalog.objects.filter(key="furniture_type").first()
         furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
         kwargs = { "lab_pk": lab.id, "pk": furniture.id }
-        request = RequestFactory().get(reverse("laboratory:furniture_update", kwargs=kwargs))
-        request.user = user 
-        response = FurnitureUpdateView.as_view()(request, **kwargs)
-        self.assertEqual(response.status_code, 403)
+        url = reverse("laboratory:furniture_update", kwargs=kwargs)
+        self.client.force_login(user)
+        response = self.client.get(url, follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_update_view_post_permissions(self):
         """tests that users without permissions can't post to the update view"""
@@ -85,5 +86,5 @@ class FurnitureViewTestCase(TestCase):
         self.client.force_login(user)
         data = urlencode({"name": "modified"})
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
