@@ -23,105 +23,77 @@ class FurnitureViewTestCase(TestCase):
     def setUp(self):
         util = TestUtil()
         util.populate_db()
+        self.admin =  User.objects.filter(username="udep1_2").first()
+        self.student = User.objects.filter(username="est_1").first()
+        self.lab = Laboratory.objects.filter(name="Laboratory 5").first()
+        self.room = LaboratoryRoom.objects.create(name="test_room")
+        self.lab.rooms.add(self.room)
+        catalog = Catalog.objects.filter(key="furniture_type").first()
+        self.furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
     
     def test_furniture_report_view_permissions(self):
         """tests that users without permissions can't access furniture report view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        kwargs = {"lab_pk": lab.id }
+        kwargs = {"lab_pk": self.lab.id }
         url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
-        self.client.force_login(user) 
+        self.client.force_login(self.student) 
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_furniture_create_view_get_permissions(self):
         """tests that users without permissions can't get to this view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        kwargs = { "lab_pk": lab.id, "labroom": room.id }
+        kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
-        self.client.force_login(user)  
+        self.client.force_login(self.student)  
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_create_view_post_permissions(self):
         """tests that submitting a form without permissions won't create a furniture"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        kwargs = { "lab_pk": lab.id, "labroom": room.id }
+        kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
         data = urlencode({"name": "test_furniture", "type": "F"})
-        self.client.force_login(user) 
+        self.client.force_login(self.student) 
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_update_view_get_permissions(self):
         """tests that users without permissions can't get to the update view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        catalog = Catalog.objects.filter(key="furniture_type").first()
-        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
-        kwargs = { "lab_pk": lab.id, "pk": furniture.id }
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
-        self.client.force_login(user)
+        self.client.force_login(self.student)
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_update_view_post_permissions(self):
         """tests that users without permissions can't post to the update view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        catalog = Catalog.objects.filter(key="furniture_type").first()
-        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
-        kwargs = { "lab_pk": lab.id, "pk": furniture.id }
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
-        self.client.force_login(user)
+        self.client.force_login(self.student)
         data = urlencode({"name": "modified"})
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_furniture_delete_view_permissions(self):
         """tests that users without permissions can't delete furnitures"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="est_1").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        catalog = Catalog.objects.filter(key="furniture_type").first()
-        furniture = Furniture.objects.create(labroom=room, name="test_furniture", type=catalog)
-        kwargs = { "lab_pk": lab.id, "pk": furniture.id }
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_delete", kwargs=kwargs)
-        self.client.force_login(user)
-        data = urlencode({"name": "modified"})
-        response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
+        self.client.force_login(self.student)
+        response = self.client.post(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_report_view_admin(self):
         """tests that the user udep1_2 is able to access the furniture report view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="udep1_2").first()
-        kwargs = {"lab_pk": lab.id }
+        kwargs = {"lab_pk": self.lab.id }
         url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
-        self.client.force_login(user) 
+        self.client.force_login(self.admin) 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
     
     def test_furniture_create_view_get_admin(self):
         """tests that users without permissions can't get to this view"""
-        lab = Laboratory.objects.filter(name="Laboratory 5").first()
-        user = User.objects.filter(username="udep1_2").first()
-        room = LaboratoryRoom.objects.create(name="test_room")
-        lab.rooms.add(room)
-        kwargs = { "lab_pk": lab.id, "labroom": room.id }
+        kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
-        self.client.force_login(user)  
+        self.client.force_login(self.admin)
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)
     
