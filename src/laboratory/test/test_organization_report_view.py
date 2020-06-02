@@ -1,3 +1,4 @@
+import json
 import random
 from django.contrib.auth.models import Group
 from constance import config
@@ -9,7 +10,6 @@ from django.test import TestCase, RequestFactory
 
 
 class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase):
-    # https://user-images.githubusercontent.com/20632410/83575365-8fcc7600-a4ec-11ea-82f9-f2f0cd087dff.png
     """
         This is the test for OrganizationReportView class-based view.
 
@@ -29,6 +29,9 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         Here we are going to test the access level for the different nodes of the tree in order to reach a resource.
         To see the organization report of the specific lab, the user must have 'laboratory.view_report' permission and
         the only group that have this permission is the admin's group.
+
+        Image that represents the data of the relationship between users, principals and the organization structure
+        see: https://user-images.githubusercontent.com/20632410/83577403-4f232b80-a4f1-11ea-85da-ea24228eea4f.png
     """
 
     def setUp(self):
@@ -37,7 +40,6 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
 
         # extra case
         # principal who manage labs from other school
-
         for i, org, lab in [(1, self.school1, self.lab1),
                             (2, self.school1, self.lab2),
                             ]:
@@ -169,7 +171,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self._check_case_schools_labs("School 1", ["Laboratory 1", "Laboratory 2"])
 
         # case two: School 2, return lab 3 and 4
-        self._check_case_schools_labs("School 2", ["Laboratory 3", "Laboratory 4"])
+        self._check_case_schools_labs("School 2", ["Laboratory 3"])
 
         # case three: School 3, return lab 4
         self._check_case_schools_labs("School 3", ["Laboratory 4"])
@@ -190,7 +192,7 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         lab_pk = self.lab1.id
         path = f"/lab/{lab_pk}/organizations/reports/list"
         data = {"filter_organization": OrganizationStructure.objects.filter(name=school).first().pk}
-        request = self.factory.post(path, data, content_type='application/json')
+        request = self.factory.post(path, data)
         request.user = self.uroot
         self.assertTrue(self.uroot.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
