@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
+from django.urls import re_path
 
 from laboratory import urls as laboratory_urls
 
@@ -27,16 +27,14 @@ from django.conf import settings
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
-from sga import urls as sga_urls
-from rest_framework.documentation import include_docs_urls
-
+from djgentelella.urls import urlpatterns as auth_urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
 from rest_framework.documentation import include_docs_urls
 
 
-urlpatterns = auth_urls + [
+urlpatterns = auth_urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy(
         'msds:organilab_tree')), name='index'),
@@ -50,6 +48,7 @@ urlpatterns = auth_urls + [
     url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
     url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
     url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
+
 ]
 
 if settings.FULL_APPS:

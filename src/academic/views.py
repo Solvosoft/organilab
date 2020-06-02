@@ -10,8 +10,7 @@ from academic.forms import ProcedureForm, ProcedureStepForm
 
 class ProcedureView(CRUDView):
     model = Procedure
-    template_father = "base.html"
-    template_name_base = 'academic/procedure/cruds'
+    template_father = 'base.html'
     add_form = ProcedureForm
     update_form = ProcedureForm
     

@@ -77,7 +77,10 @@ INSTALLED_APPS = [
     'mapwidgets',
     'guardian',
     'risk_management',
-    'markitup'
+    'markitup',
+    'djgentelella',
+    'chunked_upload',
+
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
