@@ -102,3 +102,15 @@ class FurnitureViewTestCase(TestCase):
         data = urlencode({"name": "modified"})
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    
+    def test_furniture_report_view_admin(self):
+        """tests that the user udep1_2 is able to access the furniture report view"""
+        lab = Laboratory.objects.filter(name="Laboratory 5").first()
+        user = User.objects.filter(username="udep1_2").first()
+        kwargs = {"lab_pk": lab.id }
+        url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
+        self.client.force_login(user) 
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+    
+    
