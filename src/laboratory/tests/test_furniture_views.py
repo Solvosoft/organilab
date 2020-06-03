@@ -122,3 +122,11 @@ class FurnitureViewTestCase(TestCase):
         self.client.force_login(self.admin)  
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
+    
+    def test_furniture_delete_view_admin(self):
+        """tests that admin users can delete furnitures"""
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        url = reverse("laboratory:furniture_delete", kwargs=kwargs)
+        self.client.force_login(self.admin)
+        response = self.client.get(url, follow=True)
+        self.assertEquals(response.status_code, 200)
