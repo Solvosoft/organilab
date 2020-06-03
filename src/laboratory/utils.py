@@ -80,3 +80,25 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_t
 
     
 check_lab_perms = check_lab_group_has_perm
+
+
+
+
+def get_cas(object, default=None):
+    result = default
+    if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
+        result = object.sustancecharacteristics.cas_id_number
+    return result
+
+
+def get_imdg(object, default=None):
+    result = default
+    if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
+        result = object.sustancecharacteristics.imdg
+    return result
+
+def get_molecular_formula(object, default=None):
+    result = default
+    if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
+        result = object.sustancecharacteristics.molecular_formula
+    return result
