@@ -98,7 +98,7 @@ class FurnitureViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
     
     def test_furniture_update_view_get_admin(self):
-        """tests that admin user can get to the create furniture view"""
+        """tests that admin user can get to the update furniture view"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
         self.client.force_login(self.admin)  
