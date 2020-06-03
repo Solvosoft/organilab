@@ -1,5 +1,5 @@
 {% load static %}
-{% load i18n monitarize %}
+{% load i18n %}
 {% load shelf_position %}
 <!DOCTYPE html>
 <html lang="en">
@@ -36,9 +36,6 @@
   {% block css %}{% endblock %}
 
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-
-
-  {% adsense_header %}
   {% block link %}{% endblock link %}
   {% block script %}{% endblock script %}
 </head>

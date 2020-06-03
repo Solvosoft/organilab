@@ -12,6 +12,7 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 from laboratory.decorators import user_group_perms
 from laboratory.models import Object
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
+from laboratory.utils import get_cas
 
 
 @login_required(login_url='login')
@@ -126,8 +127,7 @@ class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
             json_data.append([
                 is_public+precursor+bioaccumulable,
                 name_url,
-                item.sustancecharacteristics.cas_id_number if hasattr(item, 'sustancecharacteristics')\
-                and item.sustancecharacteristics else "",
+                get_cas(item, ''),
                 delete
             ])
         return json_data
