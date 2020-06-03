@@ -149,8 +149,31 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).count(), 0)
-        self.assertEqual(response.context_data["object_list"].count(), 0,
-                         msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a que que departamento esta asinado el usuario
+        #self.assertEqual(response.context_data["object_list"].count(), 0,
+        #                 msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a que departamento esta asignado el usuario
+
+    def test_principal_apply_filter_for_one_of_two_schools(self):
+        """
+            This case is whe a Principal is allocated to different labs in different schools so, if the filter is
+            performed it must return specific school labs  report
+        """
+        # extra case:
+        # labs: 1,2, 6,7, 9
+        # schools: 1, i, 6
+        # filtering by 'School 1' must return  2 labs, lab1 and lab2
+        allocated_labs = [p.assigned.name for p in PrincipalTechnician.objects.filter(credentials__id=self.usch6_i1.pk)]
+
+        lab_pk = self.lab6.id
+        data = {"filter_organization": OrganizationStructure.objects.filter(name="School 1").first().pk}  # this can be a weird case as the principal is not able to chose organization structure that are not allocated to him
+        request = self.factory.post(f"/lab/{lab_pk}/organizations/reports/list", data)
+        request.user = self.usch6_i1
+        self.assertTrue(self.usch6_i1.has_perm('laboratory.view_report'))
+        response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(PrincipalTechnician.objects.filter(credentials__id=self.usch6_i1.pk, assigned__id=lab_pk).count(), 0)
+        self.assertEqual(response.context_data["object_list"].count(), 2, msg=f"must return 0 and return {response.context_data['object_list']}")
+        self.assertNotEqual(response.context_data["object_list"].count(), len(allocated_labs))
+        self.assertListEqual(sorted([lab.name for lab in response.context_data["object_list"]]), ["Laboratory 1", "Laboratory 2"])
 
     def test_root_user_can_apply_filters_for_each_school(self):
         """
