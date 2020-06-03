@@ -125,8 +125,10 @@ class FurnitureViewTestCase(TestCase):
     
     def test_furniture_delete_view_admin(self):
         """tests that admin users can delete furnitures"""
-        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        saved_id = self.furniture.id
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id}
         url = reverse("laboratory:furniture_delete", kwargs=kwargs)
         self.client.force_login(self.admin)
-        response = self.client.get(url, follow=True)
+        response = self.client.post(url, follow=True)
         self.assertEquals(response.status_code, 200)
+        self.assertRaises(Furniture.DoesNotExist, Furniture.objects.get, id=saved_id)
