@@ -133,9 +133,8 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertTrue(self.uschi1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(PrincipalTechnician.objects.filter(
-            credentials__id=self.uschi1.pk, assigned__id=lab_pk).first())
-        self.assertEqual(response.context_data["object_list"].count(), 2) # constant '2' because the user can manage labs from other schools
+        self.assertNotEqual(len(PrincipalTechnician.objects.filter(credentials__id=self.uschi1.pk)), 0)
+        self.assertEqual(response.context_data["object_list"].count(), len(allocated_labs))
         lab_names = [*map(lambda lab: lab.name, response.context_data["object_list"])]
         self.assertTrue(all([True if name in allocated_labs else False for name in lab_names]))
 
@@ -149,13 +148,13 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(PrincipalTechnician.objects.filter(
             credentials__id=self.uschi1.pk, assigned__id=lab_pk).count(), 0)
-        #self.assertEqual(response.context_data["object_list"].count(), 0,
-        #                 msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a que departamento esta asignado el usuario
+        self.assertEqual(response.context_data["object_list"].count(), 0,
+                         msg=f"must return 0 and return {response.context_data['object_list']}") #### aunque retorne los labs asignados, no deberia devolver nada, ya que permite a un tercero saber a que departamento esta asignado el usuario
 
     def test_principal_apply_filter_for_one_of_two_schools(self):
         """
-            This case is whe a Principal is allocated to different labs in different schools so, if the filter is
-            performed it must return specific school labs  report
+            This case occurs when a Principal is allocated to different labs in different schools so, if the filter is
+            performed it must return specific school labs report
         """
         # extra case:
         # labs: 1,2, 6,7, 9
@@ -170,10 +169,12 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         self.assertTrue(self.usch6_i1.has_perm('laboratory.view_report'))
         response = OrganizationReportView.as_view()(request, lab_pk=lab_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(PrincipalTechnician.objects.filter(credentials__id=self.usch6_i1.pk, assigned__id=lab_pk).count(), 0)
-        self.assertEqual(response.context_data["object_list"].count(), 2, msg=f"must return 0 and return {response.context_data['object_list']}")
-        self.assertNotEqual(response.context_data["object_list"].count(), len(allocated_labs))
-        self.assertListEqual(sorted([lab.name for lab in response.context_data["object_list"]]), ["Laboratory 1", "Laboratory 2"])
+        self.assertNotEqual(len(allocated_labs), 0)
+        amount_labs_response = response.context_data["object_list"].count()
+        names_labs_response = [lab.name for lab in response.context_data["object_list"]]
+        self.assertEqual(amount_labs_response, 2)
+        self.assertNotEqual(amount_labs_response, len(allocated_labs))
+        self.assertListEqual(names_labs_response, ["Laboratory 2", "Laboratory 1"])
 
     def test_root_user_can_apply_filters_for_each_school(self):
         """
