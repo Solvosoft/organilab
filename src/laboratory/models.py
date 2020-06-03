@@ -75,9 +75,10 @@ class Object(models.Model):
 
     @property
     def is_precursor(self):
-        if self.sustancecharacteristics:
+        if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
             return self.sustancecharacteristics.is_precursor
         return False
+
 
     class Meta:
         verbose_name = _('Object')
@@ -106,6 +107,9 @@ class SustanceCharacteristics(models.Model):
     security_sheet = models.FileField(
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
+    precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor", on_delete=models.SET_NULL,
+                                null=True, blank=True, key_name="key", key_value="Precursor")
+
     h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
 
     class Meta:
@@ -125,11 +129,17 @@ class ShelfObject(models.Model):
 
     @staticmethod
     def get_units(unit):
-        return Catalog.objects.filter(pk=unit).first() or ''
-
+        if isinstance(unit, (int, str)):
+            unit = Catalog.objects.filter(pk=unit).first() or ''
+        return str(unit)
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
+
+
+    def get_measurement_unit_display(self):
+        return str(self.measurement_unit)
+
 
     class Meta:
         verbose_name = _('Shelf object')

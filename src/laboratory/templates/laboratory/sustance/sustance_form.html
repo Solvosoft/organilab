@@ -1,11 +1,93 @@
 {% extends 'base.html' %}
+{% load static i18n bootstrap %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <a href="{% url 'laboratory:sustance_list' %}" class="btn btn-danger">Volver</a>
+            <a role="button" class="btn btn-primary pull-right" data-toggle="modal" href="#helpModal"
+               aria-expanded="false">
+                <i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i>
+                {% trans 'Help' %}
+            </a>
+            <div class="row" style="margin-left:25%">
+                <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row-md-10">
+        <div class="col-md-4">
+            {{objform|bootstrap }}
+        </div>
+        <div class="col-md-5 col-md-offset-1">
+           {{ suschacform|bootstrap  }}
+        </div>
+    </div>
+    <div class="col-md-11" style="display:inline-block">
+    <input type="submit" class="btn btn-info" value="Submit">
+    </div>
+    </form>
+    </div>
 
-<div class="row">
-  <div class="col-md-offset-2 col-md-8">
-
-  </div>
 </div>
 
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans 'Representing Chemical Substances in pyEQL' %}</h4>
+      </div>
+      <div class="modal-body">
+          <div class="section" >
+
+            <p>{% blocktrans %}pyEQL interprets the chemical formula of a substance to calculate its molecular
+            weight and formal charge. The formula is also used as a key to search the
+            database for parameters (e.g. diffusion coefficient) that are used in subsequent
+            calculations.{% endblocktrans %}</p>
+            <div class="section" id="how-to-enter-valid-chemical-formulas">
+            <h3>{% trans 'How to Enter Valid Chemical Formulas' %}</h3>
+            <p>{% blocktrans %}Generally speaking, type the chemical formula of your solute the “normal” way
+            and pyEQL should be able to interpret it. Here are some examples:{% endblocktrans %}</p>
+            <ul class="simple">
+            <li>{% trans 'Sodium Chloride - NaCl' %}</li>
+            <li>{% trans 'Sodium Sulfate - Na(SO4)2' %}</li>
+            <li>{% trans 'Methanol - CH4OH or CH5O' %}</li>
+            <li>{% trans 'Magnesium Ion - Mg+2' %}</li>
+            <li>{% trans 'Chloride Ion - Cl-' %}</li>
+            </ul>
+            <p>{% trans 'Formula Rules:' %}</p>
+            <ol class="arabic simple">
+            <li>{% trans 'Are composed of valid atomic symbols that start with capital letters' %}</li>
+            <li>{% trans 'Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘' %}</li>
+            <li>{% blocktrans %}If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘
+            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of
+            charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’){% endblocktrans %}</li>
+            <li>{% trans 'Formula must contain matching numbers of ‘(‘ and ‘)’' %}</li>
+            <li>{% trans 'Open parentheses must precede closed parentheses' %}</li>
+            </ol>
+            </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+            {% trans 'Close' %}
+        </button>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}
+
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock css %}
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="{% static 'laboratory/js/substance_creation.js' %}"> </script>
 {% endblock %}

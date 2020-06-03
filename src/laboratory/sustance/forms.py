@@ -1,19 +1,16 @@
-
 from django import forms
 
 from laboratory.models import Object, SustanceCharacteristics
 
 
 class SustanceObjectForm(forms.ModelForm):
-
     class Meta:
         model = Object
         fields = [
             'name', 'synonym',
             'code', 'is_public',
-            'description', 'features',
-            'model', 'serie', 'plaque',
-            'laboratory'
+            'description',
+            'model', 'serie', 'plaque', 'laboratory', 'features'
         ]
 
 class SustanceCharacteristicsForm(forms.ModelForm):

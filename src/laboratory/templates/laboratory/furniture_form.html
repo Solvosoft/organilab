@@ -33,6 +33,12 @@
 	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
 	          </button>
 	        </div>
+              <div class="col-md-1 col-md-offset-2">
+                                 {% if perm_delete_furniture %}
+	                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
+	                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+	                  {% endif %}
+              </div>
 	      </div>
       {% endif %}
       {% if form.instance.pk %}
@@ -65,31 +71,8 @@
           </div>
         </div>
         {% endif %}
-      {% else %}
-	       <hr>
-	        <div class="list-group">
-	          {% for object in object_list %}
-	            <li class="row list-group-item">
-	              <div class="col-md-3">{{ object.labroom }}</div>
-	              <div class="col-md-6">
-	                {{ object }}
-	              </div>
-	              <div class="col-md-3">
-	                <div class="btn-group" role="group" aria-label="...">
-	                  {% if perm_change_furniture %}
-	                  <a href="{% url 'laboratory:furniture_update' laboratory object.pk %}" class="btn btn-info">
-	                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
-	                   {% endif %}
-	                   {% if perm_delete_furniture %}
-	                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
-	                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-	                  {% endif %}  
-	                </div>
-	              </div>
-	            </li>
-	          {% endfor %}
-	        </div>
-        {% endif %}
+
+      {% endif %}
     </form>
   {% else %}
        {% include 'laboratory/action_denied.html' %}   
