@@ -244,11 +244,3 @@ class OrganizationReportViewTestCase(OrganizationalStructureDataMixin, TestCase)
         response = OrganizationReportView.as_view()(request, lab_pk=pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("permission_denied"))
-
-
-
-
-"""
-    root en la mitad del arbol, y quiero ver laboratios de otro arbol
-    url encode
-"""
