@@ -132,3 +132,19 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.post(url, follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertRaises(Furniture.DoesNotExist, Furniture.objects.get, id=saved_id)
+    
+    def test_furniture_list_view_student(self):
+        """tests that student users can't see furniture lists"""
+        kwargs = { "lab_pk": self.lab.id}
+        url = reverse("laboratory:furniture_list", kwargs=kwargs)
+        self.client.force_login(self.student)
+        response = self.client.get(url, content_type='application/json',HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+
+    def test_furniture_list_view_admin(self):
+        """tests that admim users are able to see furniture lists"""
+        kwargs = { "lab_pk": self.lab.id}
+        url = reverse("laboratory:furniture_list", kwargs=kwargs)
+        self.client.force_login(self.admin)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
