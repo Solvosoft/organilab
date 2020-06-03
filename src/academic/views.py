@@ -7,7 +7,7 @@ from django.urls.base import reverse_lazy
 from academic.forms import ProcedureForm, ProcedureStepForm
 
 # Create your views here.
-
+from django.forms.models import BaseInlineFormSet
 
 class ProcedureView(CRUDView):
     model = Procedure
