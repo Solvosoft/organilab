@@ -113,3 +113,12 @@ class FurnitureViewTestCase(TestCase):
         self.client.force_login(self.admin)
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_furniture_update_view_post_admin(self):
+        """tests that admin user can post and update a furniture"""
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        url = reverse("laboratory:furniture_update", kwargs=kwargs)
+        data = urlencode({"name": "updated name"})
+        self.client.force_login(self.admin)  
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertEqual(response.status_code, 200)
