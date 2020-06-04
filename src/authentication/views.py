@@ -21,6 +21,8 @@ from django.views.generic.edit import CreateView
 from authentication.models import FeedbackEntry
 from async_notifications.utils import send_email_from_template
 from django.conf import settings
+from djgentelella.forms.forms import CustomForm
+from djgentelella.widgets import core as genwidgets
 
 
 class PermissionDeniedView(TemplateView):
@@ -65,12 +67,12 @@ def get_organization_admin_group():
     return Group.objects.get(pk=config.GROUP_ADMIN_PK)
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(UserCreationForm, CustomForm):
     ROLES = (
         (1, _('Organization administrator')),
         (2, _('Student'))
     )
-    role = forms.ChoiceField(choices=ROLES, widget=forms.RadioSelect())
+    role = forms.ChoiceField(choices=ROLES, widget=genwidgets.RadioSelect())
     organization_name = forms.CharField(
         max_length=120, required=False, help_text=_('Your organization name'))
 
