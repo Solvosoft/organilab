@@ -39,31 +39,31 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed('laboratory/laboratory_notperm.html')
     
-    # def test_laboratory_create_view_post_student(self):
-    #     """tests that submitting a form without permissions won't create a furniture"""
-    #     kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
-    #     url = reverse("laboratory:furniture_create", kwargs=kwargs)
-    #     data = urlencode({"name": "test_furniture", "type": "F"})
-    #     self.client.force_login(self.student) 
-    #     response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_create_view_post_student(self):
+        """tests that submitting a form with student user won't create a lab"""
+        url = reverse("laboratory:create_lab")
+        data = urlencode({"name": "test_laboratory", "phone_number": 5555555})
+        self.client.force_login(self.student) 
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertTemplateUsed('laboratory/laboratory_notperm.html')
     
-    # def test_laboratory_update_view_get_student(self):
-    #     """tests that users without permissions can't get to the update view"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     self.client.force_login(self.student)
-    #     response = self.client.get(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_update_view_get_student(self):
+        """tests that users without permissions can't get to the update view"""
+        kwargs = { "pk": self.lab5.id }
+        url = reverse("laboratory:laboratory_update", kwargs=kwargs)
+        self.client.force_login(self.student)
+        response = self.client.get(url, follow=True)
+        self.assertTemplateNotUsed('laboratory/edit.html')
+        self.assertTemplateUsed('laboratory/action_denied.html')
     
-    # def test_laboratory_update_view_post_student(self):
-    #     """tests that users without permissions can't post to the update view"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     self.client.force_login(self.student)
-    #     data = urlencode({"name": "modified"})
-    #     response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_update_view_post_student(self):
+        """tests that users without permissions can't post to the update view"""
+        kwargs = {"pk": self.lab5.id }
+        url = reverse("laboratory:laboratory_update", kwargs=kwargs)
+        self.client.force_login(self.student)
+        data = urlencode({"name": "modified"})
+        response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertTemplateUsed('laboratory/action_denied.html')
 
     # def test_laboratory_delete_view_student(self):
     #     """tests that users without permissions can't delete furnitures"""
