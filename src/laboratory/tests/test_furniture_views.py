@@ -23,7 +23,8 @@ class FurnitureViewTestCase(TestCase):
     def setUp(self):
         util = TestUtil()
         util.populate_db()
-        self.outside_admin = User.objects.filter(username="uschi1").first()
+        self.admin_dep3 = User.objects.filter(username="udep_3").first()
+        self.admin_schi1 = User.objects.filter(username="uschi1").first()
         self.admin =  User.objects.filter(username="udep1_2").first()
         self.student = User.objects.filter(username="est_1").first()
         self.lab = Laboratory.objects.filter(name="Laboratory 5").first()
@@ -154,7 +155,7 @@ class FurnitureViewTestCase(TestCase):
         """tests that an admin from isch1 can not get to the report in lab 5"""
         kwargs = {"lab_pk": self.lab.id }
         url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
-        self.client.force_login(self.outside_admin) 
+        self.client.force_login(self.admin_schi1) 
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
@@ -162,24 +163,24 @@ class FurnitureViewTestCase(TestCase):
         """tests that admin from isch1 can't get to this view in lab 5"""
         kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
-        self.client.force_login(self.outside_admin)  
+        self.client.force_login(self.admin_schi1)  
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_outside_admin_create_view_post(self):
-        """tests that admin from isch1 can't post to this view in lab 5"""
+        """tests that admin from dep3 can't post to this view in lab 5"""
         kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
         data = urlencode({"name": "test_furniture", "type": "F"})
-        self.client.force_login(self.outside_admin) 
+        self.client.force_login(self.admin_dep3) 
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_furniture_outside_admin_update_view_get(self):
-        """tests that admin from isch1 can't get to the update view in lab 5"""
+        """tests that admin from dep3 can't get to the update view in lab 5"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
-        self.client.force_login(self.outside_admin)
+        self.client.force_login(self.admin_dep3)
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
@@ -187,7 +188,7 @@ class FurnitureViewTestCase(TestCase):
         """tests that admin from isch1 can't post to the update view in lab 5"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
-        self.client.force_login(self.outside_admin)
+        self.client.force_login(self.admin_schi1)
         data = urlencode({"name": "modified"})
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
@@ -196,6 +197,6 @@ class FurnitureViewTestCase(TestCase):
         """tests that admins from other orgs can't delete furnitures"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_delete", kwargs=kwargs)
-        self.client.force_login(self.outside_admin)
+        self.client.force_login(self.admin_schi1)
         response = self.client.post(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
