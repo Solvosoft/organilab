@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 ADD requirements.txt /organilab
 
-RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip setuptools gunicorn && \
+RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
 pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 RUN apt-get -y autoremove && \
@@ -22,7 +22,7 @@ COPY docker/nginx-app.conf /etc/nginx/sites-available/default
 COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
 ADD src /organilab
-
+RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
