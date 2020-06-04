@@ -181,6 +181,6 @@ class ShelfViewTestCases(TestCase):
         self.assertEqual(response.status_code, 200)
         flatten_list = list(itertools.chain(*response.context["object_list"])) # ¿?
         self.assertEqual(len(flatten_list), 2)
-        self.assertEqual(len(response.context["object_list"]), 2)
+        self.assertEqual(len(response.context["object_list"]), 2, msg="list should be not nested")
 
 
