@@ -28,18 +28,34 @@ class ShelfViewTestCases(TestCase):
 
         self.student_user = infrastructure.usch4
         self.laboratorist_user = infrastructure.usch6_i1
-        self.technician_user = infrastructure.uschi1
+        self.professor_user = infrastructure.uschi1
         self.root_user = infrastructure.uroot
 
+        self.student_user.save()
+        self.laboratorist_user.save()
+        self.professor_user.save()
+        self.root_user.save()
 
-    def test_laboratorist_group_restricted(self):
+    def test_user_has_permission(self):
         """
-            laboratoris's group are restricted
+            showing the user permissions
+            permissions: laboratory.add_shelf and laboratory.change_shelf
+            groups                       they have these permission
+                Student                      no
+                Laboratory Administrator     no
+                Professor                    yes
         """
+        # laboratory.add_shelf
+        self.assertFalse(self.student_user.has_perm('laboratory.add_shelf'))
+        self.assertFalse(self.laboratorist_user.has_perm('laboratory.add_shelf'))
+        self.assertTrue(self.professor_user.has_perm('laboratory.add_shelf'))
 
-        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
-        data = urlencode({"row": 0, "col": 0, "furniture": self.furniture.id})
+        self.assertTrue(self.root_user.has_perm('laboratory.add_shelf'))
 
-        self.client.force_login(self.laboratorist_user)
-        response = self.client.get(f"{url}?{data}", follow=True)
-        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+        # laboratory.change_shelf
+        self.assertFalse(self.student_user.has_perm('laboratory.change_shelf'))
+        self.assertFalse(self.laboratorist_user.has_perm('laboratory.change_shelf'))
+        self.assertTrue(self.professor_user.has_perm('laboratory.change_shelf'))
+
+        self.assertTrue(self.root_user.has_perm('laboratory.change_shelf'))
+        
