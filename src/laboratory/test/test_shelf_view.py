@@ -183,7 +183,7 @@ class ShelfViewTestCases(TestCase):
         self.assertEqual(len(flatten_list), 2)
         self.assertEqual(len(response.context["object_list"]), 2, msg="list should be not nested")
 
-    def test_professor_can_delete_shelve(self):
+    def _user_can_delete_shelve(self, user, allowed=False):
 
         shelf_a = Shelf.objects.create(
             furniture=self.furniture_lab6,
@@ -206,8 +206,28 @@ class ShelfViewTestCases(TestCase):
             "pk": shelf_a.pk
         }
         url = reverse("laboratory:shelf_delete", kwargs=kwargs)
-        self.client.force_login(self.professor_user)
-        self.assertEqual(Shelf.objects.all().count(), 2)
+        self.client.force_login(user)
+        before = Shelf.objects.all().count() # 2
         response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Shelf.objects.all().count(), 1)
+        after = Shelf.objects.all().count() # 1
+        deleted = before - after == 1
+        self.assertEqual(deleted, allowed)
+
+    def test_professor_can_delete_shelves(self):
+        """
+            just the professor's group should be able to delete shelves
+        """
+        self._user_can_delete_shelve(self.professor_user, allowed=True)
+
+    def test_lab_user_can_not_delete_shelves(self):
+        """
+            lab user is not supposed to be able to delete shelves
+        """
+        self._user_can_delete_shelve(self.laboratorist_user, allowed=False)
+
+    def test_student_user_can_not_delete_shelves(self):
+        """
+            student is not supposed to be able to delete shelves
+        """
+        self._user_can_delete_shelve(self.student_user, allowed=False)
