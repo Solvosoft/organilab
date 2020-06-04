@@ -69,3 +69,14 @@ class ShelfViewTestCases(TestCase):
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+
+    def test_get_shelf_form_student_group_restricted(self):
+        """
+            assuming if the previous test is ok
+            the laboratorist's group must be restricted
+        """
+        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
+        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        self.client.force_login(self.student_user)
+        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
