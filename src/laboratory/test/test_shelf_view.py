@@ -31,10 +31,6 @@ class ShelfViewTestCases(TestCase):
         self.professor_user = infrastructure.uschi1
         self.root_user = infrastructure.uroot
 
-        self.student_user.save()
-        self.laboratorist_user.save()
-        self.professor_user.save()
-        self.root_user.save()
 
     def test_user_has_permission(self):
         """
@@ -68,7 +64,8 @@ class ShelfViewTestCases(TestCase):
         data = {"row": 0, "col": 0, "furniture": self.furniture.id}
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(self.laboratorist_user.has_perm('laboratory.add_shelf'))
 
     def test_get_shelf_form_student_group_restricted(self):
         """
@@ -88,7 +85,7 @@ class ShelfViewTestCases(TestCase):
         data = {"row": 0, "col": 0, "furniture": self.furniture.id}
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertTrue(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
 
     def test_professor_create_shelf(self):
@@ -106,7 +103,7 @@ class ShelfViewTestCases(TestCase):
         }
         self.client.force_login(self.professor_user)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertTrue(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Shelf.objects.all().first().name, shelf_name)
 
     def test_professor_can_not_create_shelf(self):
@@ -125,7 +122,7 @@ class ShelfViewTestCases(TestCase):
         }
         self.client.force_login(self.professor_user)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertTrue(response.status_code, 200)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
         self.assertEqual(Shelf.objects.all().count(), 0)
 
     def test_get_shelf_form_professor_restricted(self):
@@ -134,6 +131,25 @@ class ShelfViewTestCases(TestCase):
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab1.pk})
         data = {"row": 0, "col": 0, "furniture": self.furniture.id}
-        self.client.force_login(self.student_user)
+        self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+        self.assertEqual(Shelf.objects.all().count(), 0)
+
+    def test_student_can_not_create_shelf(self):
+        """
+            the student doesn't have privilege to create a shelf
+        """
+        shelf_name = "Gaveta A"
+        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab1.pk})
+        data = {
+            "row": 0,
+            "col": 0,
+            "furniture": self.furniture.id,
+            "name": shelf_name,
+            "type": Catalog.objects.filter(description="Gaveta").first().pk
+        }
+        self.client.force_login(self.student_user)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+        self.assertEqual(Shelf.objects.all().count(), 0)
