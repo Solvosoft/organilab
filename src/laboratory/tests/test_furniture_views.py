@@ -23,6 +23,7 @@ class FurnitureViewTestCase(TestCase):
     def setUp(self):
         util = TestUtil()
         util.populate_db()
+        self.outside_admin = User.objects.filter(username="uschi1").first()
         self.admin =  User.objects.filter(username="udep1_2").first()
         self.student = User.objects.filter(username="est_1").first()
         self.lab = Laboratory.objects.filter(name="Laboratory 5").first()
@@ -148,3 +149,20 @@ class FurnitureViewTestCase(TestCase):
         self.client.force_login(self.admin)
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+    
+    def test_furniture_outside_admin_report_view(self):
+        """tests that an admin from isch1 can not get to the report in lab 5"""
+        kwargs = {"lab_pk": self.lab.id }
+        url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
+        self.client.force_login(self.outside_admin) 
+        response = self.client.get(url, follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    
+    def test_furniture_outside_admin_create_view_get(self):
+        """tests that admin from isch1 can't get to this view in lab 5"""
+        kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
+        url = reverse("laboratory:furniture_create", kwargs=kwargs)
+        self.client.force_login(self.outside_admin)  
+        response = self.client.get(url, follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    
