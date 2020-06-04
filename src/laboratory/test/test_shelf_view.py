@@ -61,7 +61,7 @@ class ShelfViewTestCases(TestCase):
 
     def test_get_shelf_form_laboratorists_group_restricted(self):
         """
-            assuming if the previous test is ok
+            assuming that the previous test is ok
             the laboratorist's group must be restricted
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
@@ -72,11 +72,21 @@ class ShelfViewTestCases(TestCase):
 
     def test_get_shelf_form_student_group_restricted(self):
         """
-            assuming if the previous test is ok
-            the laboratorist's group must be restricted
+            students must be redirected to the permission denied page
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
         data = {"row": 0, "col": 0, "furniture": self.furniture.id}
         self.client.force_login(self.student_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+
+    def test_get_shelf_form_professors_group_allowed(self):
+        """
+             professors are allowed to get this form
+        """
+        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
+        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        self.client.force_login(self.professor_user)
+        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTrue(response.status_code, 200)
+        self.assertContains(response, "form")
