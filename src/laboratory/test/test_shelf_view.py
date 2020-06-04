@@ -17,13 +17,13 @@ class ShelfViewTestCases(TestCase):
         self.lab1 = infrastructure.lab1
         self.lab6 = infrastructure.lab6
 
-        self.room = LaboratoryRoom.objects.create(name="Laboratorio alfa")
+        self.room_lab6 = LaboratoryRoom.objects.create(name="Laboratorio alfa")
 
-        self.lab6.rooms.add(self.room)
+        self.lab6.rooms.add(self.room_lab6)
         self.lab6.save()
 
-        self.furniture = Furniture.objects.create(
-            labroom=self.room,
+        self.furniture_lab6 = Furniture.objects.create(
+            labroom=self.room_lab6,
             name="Mueble X",
             type=Catalog.objects.filter(key="furniture_type", description="Estante").first()
         )
@@ -56,13 +56,13 @@ class ShelfViewTestCases(TestCase):
 
         self.assertTrue(self.root_user.has_perm('laboratory.change_shelf'))
 
-    def test_get_shelf_form_laboratorists_group_restricted(self):
+    def test_get_shelf_form_lab_group_restricted(self):
         """
             assuming that the previous test is ok
             the laboratorist's group must be restricted
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
-        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
@@ -73,7 +73,7 @@ class ShelfViewTestCases(TestCase):
             students must be redirected to the permission denied page
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
-        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.student_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
@@ -83,7 +83,7 @@ class ShelfViewTestCases(TestCase):
              professors are allowed to get this form
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
-        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -98,7 +98,7 @@ class ShelfViewTestCases(TestCase):
         data = {
             "row": 0,
             "col": 0,
-            "furniture": self.furniture.id,
+            "furniture": self.furniture_lab6.id,
             "name": shelf_name,
             "type": Catalog.objects.filter(description="Gaveta").first().pk
         }
@@ -117,7 +117,7 @@ class ShelfViewTestCases(TestCase):
         data = {
             "row": 0,
             "col": 0,
-            "furniture": self.furniture.id,
+            "furniture": self.furniture_lab6.id,
             "name": shelf_name,
             "type": Catalog.objects.filter(description="Gaveta").first().pk
         }
@@ -131,7 +131,7 @@ class ShelfViewTestCases(TestCase):
             the professor is restricted to labs in wich he is not allocated
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab1.pk})
-        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
@@ -146,7 +146,7 @@ class ShelfViewTestCases(TestCase):
         data = {
             "row": 0,
             "col": 0,
-            "furniture": self.furniture.id,
+            "furniture": self.furniture_lab6.id,
             "name": shelf_name,
             "type": Catalog.objects.filter(description="Gaveta").first().pk
         }
@@ -155,27 +155,27 @@ class ShelfViewTestCases(TestCase):
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
         self.assertEqual(Shelf.objects.all().count(), 0)
 
-    def test_get_all_shelfs_by_lab_and_furniture(self):
+    def test_get_all_shelves_by_lab_and_furniture(self):
         """
             getting all the shelf from specific lab and furniture
             theirs ids are stored in the furniture data config
         """
         shelf_a = Shelf.objects.create(
-            furniture=self.furniture,
+            furniture=self.furniture_lab6,
             name="Gaveta A",
             type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
         )
         shelf_b = Shelf.objects.create(
-            furniture=self.furniture,
+            furniture=self.furniture_lab6,
             name="Gaveta B",
             type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
         )
 
-        self.furniture.dataconfig = f"[[[{shelf_a.id}],[{shelf_b.id}]]]"
-        self.furniture.save()
+        self.furniture_lab6.dataconfig = f"[[[{shelf_a.id}],[{shelf_b.id}]]]"
+        self.furniture_lab6.save()
 
-        url = reverse("laboratory:list_shelf", kwargs={"lab_pk": self.lab1.pk})
-        data = {"furniture": self.furniture.id}
+        url = reverse("laboratory:list_shelf", kwargs={"lab_pk": self.lab6.pk})
+        data = {"furniture": self.furniture_lab6.id}
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -183,4 +183,31 @@ class ShelfViewTestCases(TestCase):
         self.assertEqual(len(flatten_list), 2)
         self.assertEqual(len(response.context["object_list"]), 2, msg="list should be not nested")
 
+    def test_professor_can_delete_shelve(self):
 
+        shelf_a = Shelf.objects.create(
+            furniture=self.furniture_lab6,
+            name="Gaveta A",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+        shelf_b = Shelf.objects.create(
+            furniture=self.furniture_lab6,
+            name="Gaveta B",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+
+        self.furniture_lab6.dataconfig = f"[[[{shelf_a.id}],[{shelf_b.id}]]]"
+        self.furniture_lab6.save()
+
+        kwargs = {
+            "lab_pk": self.lab6.pk,
+            "row": 0,
+            "col": 0,
+            "pk": shelf_a.pk
+        }
+        url = reverse("laboratory:shelf_delete", kwargs=kwargs)
+        self.client.force_login(self.professor_user)
+        self.assertEqual(Shelf.objects.all().count(), 2)
+        response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Shelf.objects.all().count(), 1)
