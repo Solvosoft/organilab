@@ -65,13 +65,13 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertTemplateUsed('laboratory/action_denied.html')
 
-    # def test_laboratory_delete_view_student(self):
-    #     """tests that users without permissions can't delete furnitures"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_delete", kwargs=kwargs)
-    #     self.client.force_login(self.student)
-    #     response = self.client.post(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_delete_view_student(self):
+        """tests that users without permissions can't delete labs"""
+        kwargs = { "pk": self.lab5.id }
+        url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
+        self.client.force_login(self.student)
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed('laboratory/action_denied.html')
     
     # def test_laboratory_report_view_admin(self):
     #     """tests that the user udep1_2 is able to access the furniture report view"""
