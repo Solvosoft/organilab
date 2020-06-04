@@ -25,7 +25,7 @@ def convert_hcodereport_table(data):
         name = result.pop('name')
         reactive_id = result['reactive_id']
         result['unit'] = ShelfObject.get_units(result['unit'])
-        result['h_codes'] = Object.objects.filter(pk=reactive_id).values_list('h_code__code', 'h_code__description')
+        result['h_codes'] = Object.objects.filter(pk=reactive_id).values_list('sustancecharacteristics__h_code__code', 'sustancecharacteristics__h_code__description')
         if name not in context:
             context[name] = len(reactive_list)
             reactive_list.append({
