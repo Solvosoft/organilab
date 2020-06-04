@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.6.4-stretch
+FROM python:3.7-buster
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /organilab/logs/
@@ -10,9 +10,8 @@ RUN apt-get update && \
 
 ADD requirements.txt /organilab
 
-RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip && \
-pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt && \
-pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
+RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip setuptools gunicorn && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 RUN apt-get -y autoremove && \
      apt-get -y clean   && \
