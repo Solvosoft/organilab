@@ -212,7 +212,7 @@ class ShelfViewTestCases(TestCase):
         self.assertEqual(response.status_code, 200)
         after = Shelf.objects.all().count() # 1
         deleted = before - after == 1
-        self.assertEqual(deleted, allowed)
+        self.assertEqual(deleted, allowed, msg="this user is not allowed to delete shelves")
 
     def test_professor_can_delete_shelves(self):
         """
@@ -231,3 +231,43 @@ class ShelfViewTestCases(TestCase):
             student is not supposed to be able to delete shelves
         """
         self._user_can_delete_shelve(self.student_user, allowed=False)
+
+    def test_user_can_edit(self):
+        """
+            when the edit function is performed the form change
+        """
+
+        shelf_a = Shelf.objects.create(
+            furniture=self.furniture_lab6,
+            name="Gaveta A",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+        shelf_b = Shelf.objects.create(
+            furniture=self.furniture_lab6,
+            name="Gaveta B",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+
+        self.furniture_lab6.dataconfig = f"[[[{shelf_a.id}],[{shelf_b.id}]]]"
+        self.furniture_lab6.save()
+
+        kwargs = {
+            "lab_pk": self.lab6.pk,
+            "pk": shelf_a.pk,
+            "row": 0, # old position
+            "col": 0, # old position
+        }
+        data = {
+            "row": 2, # new position
+            "col": 2, # new position
+        }
+        url = reverse("laboratory:shelf_edit", kwargs=kwargs)
+
+        self.client.force_login(self.professor_user)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "form")
+
+
+
+
