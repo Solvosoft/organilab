@@ -128,4 +128,12 @@ class ShelfViewTestCases(TestCase):
         self.assertTrue(response.status_code, 200)
         self.assertEqual(Shelf.objects.all().count(), 0)
 
-    
+    def test_get_shelf_form_professor_restricted(self):
+        """
+            the professor is restricted to labs in wich he is not allocated
+        """
+        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab1.pk})
+        data = {"row": 0, "col": 0, "furniture": self.furniture.id}
+        self.client.force_login(self.student_user)
+        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
