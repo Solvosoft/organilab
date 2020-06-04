@@ -2,11 +2,11 @@
 FROM python:3.6.4-stretch
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /organilab/logs/
+RUN mkdir -p /organilab/logs/ /organilab/static/
 WORKDIR /organilab
 
 RUN apt-get update && \
-    apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal
+    apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal wkhtmltopdf
 
 ADD requirements.txt /organilab
 
@@ -24,7 +24,7 @@ COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
 ADD src /organilab
 
-RUN python manage.py collectstatic --settings=organilab.settings
+RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
 EXPOSE 80
