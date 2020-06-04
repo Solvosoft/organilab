@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.management import call_command
 from django.urls import reverse
 from django.utils.http import urlencode
-from django.test import TestCase, RequestFactory
-from demoQA.management import commands
+from django.test import TestCase
 from .utils import TestUtil
 from ..models import ( 
     Laboratory, 
