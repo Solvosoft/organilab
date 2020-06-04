@@ -62,3 +62,4 @@ git+https://github.com/luisza/django-gentelella-widgets.git#egg=djgentelella
 django-picklefield==2.1.1
 Markdown==3.2.2
 coreapi==2.3.3
+future==0.18.2
