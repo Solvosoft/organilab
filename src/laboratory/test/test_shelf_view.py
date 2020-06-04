@@ -12,6 +12,7 @@ class ShelfViewTestCases(TestCase):
         infrastructure = OrganizationalStructureData()
         infrastructure.setUp()
 
+        self.lab1 = infrastructure.lab1
         self.lab6 = infrastructure.lab6
 
         self.room = LaboratoryRoom.objects.create(name="Laboratorio alfa")
@@ -94,7 +95,7 @@ class ShelfViewTestCases(TestCase):
         """
             POST method create a new shelf
         """
-        shelf_name = "Estante A"
+        shelf_name = "Gaveta A"
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
         data = {
             "row": 0,
@@ -107,3 +108,24 @@ class ShelfViewTestCases(TestCase):
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertTrue(response.status_code, 200)
         self.assertEqual(Shelf.objects.all().first().name, shelf_name)
+
+    def test_professor_can_not_create_shelf(self):
+        """
+            if the professor try to create a shelf in other lab
+            in which he is now allocated he must be restricted
+        """
+        shelf_name = "Gaveta A"
+        url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab1.pk})
+        data = {
+            "row": 0,
+            "col": 0,
+            "furniture": self.furniture.id,
+            "name": shelf_name,
+            "type": Catalog.objects.filter(description="Gaveta").first().pk
+        }
+        self.client.force_login(self.professor_user)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTrue(response.status_code, 200)
+        self.assertEqual(Shelf.objects.all().count(), 0)
+
+    
