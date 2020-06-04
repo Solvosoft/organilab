@@ -31,7 +31,6 @@ class ShelfViewTestCases(TestCase):
         self.professor_user = infrastructure.uschi1
         self.root_user = infrastructure.uroot
 
-
     def test_user_has_permission(self):
         """
             showing the user permissions
@@ -64,7 +63,7 @@ class ShelfViewTestCases(TestCase):
         data = {"row": 0, "col": 0, "furniture": self.furniture.id}
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
         self.assertTrue(self.laboratorist_user.has_perm('laboratory.add_shelf'))
 
     def test_get_shelf_form_student_group_restricted(self):
