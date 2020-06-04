@@ -98,3 +98,8 @@ ENV/
 .settings
 
 media/
+
+#development ignore
+src/static
+src/beat.db
+*.backup
