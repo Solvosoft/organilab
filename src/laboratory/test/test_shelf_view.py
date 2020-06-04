@@ -1,3 +1,5 @@
+import itertools
+
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -152,3 +154,31 @@ class ShelfViewTestCases(TestCase):
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
         self.assertEqual(Shelf.objects.all().count(), 0)
+
+    def test_get_all_shelfs_by_lab_and_furniture(self):
+        """
+            getting all the shelf from specific lab and furniture
+            theirs ids are stored in the furniture data config
+        """
+        shelf_a = Shelf.objects.create(
+            furniture=self.furniture,
+            name="Gaveta A",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+        shelf_b = Shelf.objects.create(
+            furniture=self.furniture,
+            name="Gaveta B",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
+
+        self.furniture.dataconfig = f"[[[{shelf_a.id}],[{shelf_b.id}]]]"
+        self.furniture.save()
+
+        url = reverse("laboratory:list_shelf", kwargs={"lab_pk": self.lab1.pk})
+        data = {"furniture": self.furniture.id}
+        self.client.force_login(self.professor_user)
+        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        flatten_list = list(itertools.chain(*response.context["object_list"])) # ¿?
+        self.assertEqual(len(flatten_list), 2)
+
