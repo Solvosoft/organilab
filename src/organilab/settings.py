@@ -327,7 +327,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'basic',
+        'toolbar': 'Basic',
         'height': 500,
         'width': 875,
     },
