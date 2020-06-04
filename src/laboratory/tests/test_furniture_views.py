@@ -32,7 +32,7 @@ class FurnitureViewTestCase(TestCase):
         catalog = Catalog.objects.filter(key="furniture_type").first()
         self.furniture = Furniture.objects.create(labroom=self.room, name="test_furniture", type=catalog)
     
-    def test_furniture_report_view_permissions(self):
+    def test_furniture_report_view_student(self):
         """tests that users without permissions can't access furniture report view"""
         kwargs = {"lab_pk": self.lab.id }
         url = reverse("laboratory:reports_furniture_detail", kwargs=kwargs)
@@ -40,7 +40,7 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
-    def test_furniture_create_view_get_permissions(self):
+    def test_furniture_create_view_get_student(self):
         """tests that users without permissions can't get to this view"""
         kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
@@ -48,7 +48,7 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
-    def test_furniture_create_view_post_permissions(self):
+    def test_furniture_create_view_post_student(self):
         """tests that submitting a form without permissions won't create a furniture"""
         kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
         url = reverse("laboratory:furniture_create", kwargs=kwargs)
@@ -57,7 +57,7 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
-    def test_furniture_update_view_get_permissions(self):
+    def test_furniture_update_view_get_student(self):
         """tests that users without permissions can't get to the update view"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
@@ -65,7 +65,7 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
-    def test_furniture_update_view_post_permissions(self):
+    def test_furniture_update_view_post_student(self):
         """tests that users without permissions can't post to the update view"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_update", kwargs=kwargs)
@@ -74,7 +74,7 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
-    def test_furniture_delete_view_permissions(self):
+    def test_furniture_delete_view_student(self):
         """tests that users without permissions can't delete furnitures"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_delete", kwargs=kwargs)
@@ -166,3 +166,36 @@ class FurnitureViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
+    def test_furniture_outside_admin_create_view_post(self):
+        """tests that admin from isch1 can't post to this view in lab 5"""
+        kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
+        url = reverse("laboratory:furniture_create", kwargs=kwargs)
+        data = urlencode({"name": "test_furniture", "type": "F"})
+        self.client.force_login(self.outside_admin) 
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+
+    def test_furniture_outside_admin_update_view_get(self):
+        """tests that admin from isch1 can't get to the update view in lab 5"""
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        url = reverse("laboratory:furniture_update", kwargs=kwargs)
+        self.client.force_login(self.outside_admin)
+        response = self.client.get(url, follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    
+    def test_furniture_outside_admin_update_view_post(self):
+        """tests that admin from isch1 can't post to the update view in lab 5"""
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        url = reverse("laboratory:furniture_update", kwargs=kwargs)
+        self.client.force_login(self.outside_admin)
+        data = urlencode({"name": "modified"})
+        response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    
+    def test_furniture_outside_admin_delete_view(self):
+        """tests that admins from other orgs can't delete furnitures"""
+        kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
+        url = reverse("laboratory:furniture_delete", kwargs=kwargs)
+        self.client.force_login(self.outside_admin)
+        response = self.client.post(url, follow=True)
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
