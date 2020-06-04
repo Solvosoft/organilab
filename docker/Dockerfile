@@ -24,7 +24,7 @@ COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
 ADD src /organilab
 
-RUN python manage.py collectstatic --settings=organilab.settings
+RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
 ENV DBHOST 172.17.0.1
