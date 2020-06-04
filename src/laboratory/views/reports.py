@@ -353,6 +353,7 @@ def report_objects(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_objects(objects, summary=detail, type_id=type_id), fileformat, file_name="objects.%s" % (fileformat,))
 
+
     for obj in objects:
         clentry = CLInventory.objects.filter(
             cas_id_number=get_cas(obj, 0)).first()
