@@ -232,7 +232,7 @@ class ShelfViewTestCases(TestCase):
         """
         self._user_can_delete_shelve(self.student_user, allowed=False)
 
-    def _user_can_edit(self, user, allowed=False):
+    def _user_can_edit(self, user):
         """
             when the edit function is performed the form change
         """
@@ -265,30 +265,29 @@ class ShelfViewTestCases(TestCase):
 
         self.client.force_login(user)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "form")
 
-        if allowed:
-            self.assertEqual(response.status_code, 200)
-            self.assertContains(response, "form")
-        else:
-            self.assertNotContains(response, "form")
-            self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_professor_can_edit_shelves_positions(self):
         """
 
         """
-        self._user_can_edit(self.professor_user, allowed=True)
+        self._user_can_edit(self.professor_user)
+        self.assertTrue(self.professor_user.has_perm('laboratory.change_shelf'))
 
     def test_lab_user_can_not_edit_shelves_posistions(self):
         """
 
         """
-        self._user_can_edit(self.laboratorist_user, allowed=False)
+        self._user_can_edit(self.laboratorist_user)
+        self.assertTrue(self.laboratorist_user.has_perm('laboratory.change_shelf'))
 
     def test_student_can_not_edti_shelves_positions(self):
         """
             
         """
-        self._user_can_edit(self.student_user, allowed=False)
+        self._user_can_edit(self.student_user)
+        self.assertTrue(self.student_user.has_perm('laboratory.change_shelf'))
 
 
