@@ -10,11 +10,6 @@ from ..models import (
     Furniture,
     Catalog
 )
-from ..views.furniture import ( 
-    FurnitureReportView, 
-    FurnitureCreateView,
-    FurnitureUpdateView
-)
 
 class FurnitureViewTestCase(TestCase):
 
