@@ -44,7 +44,26 @@ Create a superuser for admin views
 Run your development server
 
 	$ python manage.py runserver
-	
+
+## Run with composer 
+
+Create your image organilab
+```bash
+docker build -t solvosof/organilab:1.0
+```
+
+Run with **bind mount folder** to sync with changes without rebuild image:
+```bash
+docker run -it --name organilab -p 80:80 -p 8000:8000 \ 
+    -v `pwd`/src/:/organilab allexiusw/organilab
+```
+
+Enter to the container:
+```bash
+docker run -it organilab python manage.py runserver 0.0.0.0:8000
+```
+And finally each change you make in your local files will restart the environment in order to apply them.
+
 ## happy hacking	
 
 	
