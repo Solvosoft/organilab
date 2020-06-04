@@ -78,6 +78,7 @@ class SignUpForm(UserCreationForm, CustomForm):
 
     captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
+
     def clean(self):
         dev = super(SignUpForm, self).clean()
         if self.cleaned_data['role'] == '1':
