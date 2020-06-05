@@ -138,55 +138,22 @@ class LaboratoryViewTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertRaises(Laboratory.DoesNotExist, Laboratory.objects.get, id=saved_id)
     
-    # def test_laboratory_list_view_student(self):
-    #     """tests that student users can't see furniture lists"""
-    #     kwargs = { "lab_pk": self.lab.id}
-    #     url = reverse("laboratory:furniture_list", kwargs=kwargs)
-    #     self.client.force_login(self.student)
-    #     response = self.client.get(url, content_type='application/json',HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_outside_admin_create_view(self):
+        """tests that admin from dep1_2 can't create a lab in dep3"""
+        url = reverse("laboratory:create_lab")
+        self.client.force_login(self.admin)
+        data = urlencode({
+            "name": "test_laboratory",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin_dep3).first().id
+            })
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertEqual(response.status_code, 200)
+        #should be redirected to the lab creation form (with errors)
+        self.assertTemplateUsed(response, "laboratory/laboratory_create.html")  
 
-    # def test_laboratory_list_view_admin(self):
-    #     """tests that admim users are able to see furniture lists"""
-    #     kwargs = { "lab_pk": self.lab.id}
-    #     url = reverse("laboratory:furniture_list", kwargs=kwargs)
-    #     self.client.force_login(self.admin)
-    #     response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-    #     self.assertEqual(response.status_code, 200)
-    
-    # def test_laboratory_outside_admin_report_view(self):
-    #     """tests that an admin from isch1 can not get to the report in lab 5"""
-    #     kwargs = {"lab_pk": self.lab.id }
-    #     url = reverse("laboratory:reports_laboratory_detail", kwargs=kwargs)
-    #     self.client.force_login(self.admin_schi1) 
-    #     response = self.client.get(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-    
-    # def test_laboratory_outside_admin_create_view_get(self):
-    #     """tests that admin from isch1 can't get to this view in lab 5"""
-    #     kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
-    #     url = reverse("laboratory:furniture_create", kwargs=kwargs)
-    #     self.client.force_login(self.admin_schi1)  
-    #     response = self.client.get(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-    
-    # def test_laboratory_outside_admin_create_view_post(self):
-    #     """tests that admin from dep3 can't post to this view in lab 5"""
-    #     kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
-    #     url = reverse("laboratory:furniture_create", kwargs=kwargs)
-    #     data = urlencode({"name": "test_furniture", "type": "F"})
-    #     self.client.force_login(self.admin_dep3) 
-    #     response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-
-    # def test_laboratory_outside_admin_update_view_get(self):
-    #     """tests that admin from dep3 can't get to the update view in lab 5"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     self.client.force_login(self.admin_dep3)
-    #     response = self.client.get(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-    
     # def test_laboratory_outside_admin_update_view_post(self):
     #     """tests that admin from isch1 can't post to the update view in lab 5"""
     #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
