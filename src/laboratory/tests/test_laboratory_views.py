@@ -67,9 +67,16 @@ class LaboratoryViewTestCase(TestCase):
         kwargs = {"pk": self.lab5.id }
         url = reverse("laboratory:laboratory_update", kwargs=kwargs)
         self.client.force_login(self.student)
-        data = urlencode({"name": "modified"})
+        data = urlencode({            
+            "name": "updated name",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.student).first().id
+            })
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
-        self.assertTemplateUsed(response, 'laboratory/action_denied.html')
+        self.assertTemplateUsed(response, 'laboratory/action_denied.html', 
+                                          "Was expecting to be redirected to action denied page")
 
     def test_laboratory_delete_view_student(self):
         """tests that users without permissions can't delete labs"""
@@ -157,19 +164,28 @@ class LaboratoryViewTestCase(TestCase):
         self.assertTemplateUsed(response, "laboratory/laboratory_create.html", 
                                           "Was expecting to be redirected to the creation form")  
 
-    # def test_laboratory_outside_admin_update_view_post(self):
-    #     """tests that admin from isch1 can't post to the update view in lab 5"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     self.client.force_login(self.admin_schi1)
-    #     data = urlencode({"name": "modified"})
-    #     response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_outside_admin_update_view(self):
+        """tests that admin from dep3 can't update a lab in dep2"""
+        kwargs = {"pk": self.lab5.id }
+        url = reverse("laboratory:laboratory_update", kwargs=kwargs)
+        self.client.force_login(self.admin_dep3)
+        data = urlencode({            
+            "name": "updated name",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin).first().id
+            })
+        response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertTemplateUsed(response, 'laboratory/edit.html', 
+                                          "Was expecting to be redirected to laboratory edit view")
     
-    # def test_laboratory_outside_admin_delete_view(self):
-    #     """tests that admins from other orgs can't delete furnitures"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_delete", kwargs=kwargs)
-    #     self.client.force_login(self.admin_schi1)
-    #     response = self.client.post(url, follow=True)
-    #     self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+    def test_laboratory_outside_admin_delete_view(self):
+        """tests that admins from other orgs can't delete furnitures"""
+        saved_id = self.lab5.id
+        kwargs = { "pk": self.lab5.id }
+        url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
+        self.client.force_login(self.admin_dep3)
+        response = self.client.post(url, follow=True)
+        self.assertNotEqual( Laboratory.objects.filter(id=saved_id).first(), None,
+                                                               "Was not expecting to delete a lab!")
