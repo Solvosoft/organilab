@@ -109,7 +109,8 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
         #should be redirected to the room creation form
-        self.assertTemplateUsed(response, "laboratory/laboratoryroom_form.html")  
+        self.assertTemplateUsed(response, "laboratory/laboratoryroom_form.html",
+                                          "was expencting to be redirected to the room creation form")  
 
     def test_laboratory_update_view_post_admin(self):
         """tests that admin user can post and update a laboratory"""
@@ -126,7 +127,8 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
         #should redirect to the laboratory list view
-        self.assertTemplateUsed(response, 'laboratory/laboratory_list.html')
+        self.assertTemplateUsed(response, 'laboratory/laboratory_list.html',
+                                          "Was expecting to be redirected to the laboratory list view")
     
     def test_laboratory_delete_view_admin(self):
         """tests that admin users can delete a lab"""
@@ -152,7 +154,8 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
         #should be redirected to the lab creation form (with errors)
-        self.assertTemplateUsed(response, "laboratory/laboratory_create.html")  
+        self.assertTemplateUsed(response, "laboratory/laboratory_create.html", 
+                                          "Was expecting to be redirected to the creation form")  
 
     # def test_laboratory_outside_admin_update_view_post(self):
     #     """tests that admin from isch1 can't post to the update view in lab 5"""
