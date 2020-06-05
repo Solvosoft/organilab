@@ -90,7 +90,6 @@ class LaboratoryViewTestCase(TestCase):
     
     def test_laboratory_hcodereport_view_student(self):
         """tests that the student is unable to access the hcode report view"""
-        kwargs = {"hcode": "H413"}
         url = reverse("laboratory:h_code_reports")
         self.client.force_login(self.student) 
         response = self.client.get(url, data=kwargs)
