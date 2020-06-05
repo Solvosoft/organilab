@@ -108,26 +108,25 @@ class LaboratoryViewTestCase(TestCase):
             })
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "laboratory/laboratoryroom_form.html")
-    
-    # def test_laboratory_update_view_get_admin(self):
-    #     """tests that admin user can get to the update furniture view"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     self.client.force_login(self.admin)  
-    #     response = self.client.get(url, follow=True)
-    #     self.assertEqual(response.status_code, 200)
-    
+        #should be redirected to the room creation form
+        self.assertTemplateUsed(response, "laboratory/laboratoryroom_form.html")  
 
-
-    # def test_laboratory_update_view_post_admin(self):
-    #     """tests that admin user can post and update a furniture"""
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
-    #     url = reverse("laboratory:furniture_update", kwargs=kwargs)
-    #     data = urlencode({"name": "updated name"})
-    #     self.client.force_login(self.admin)  
-    #     response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertEqual(response.status_code, 200)
+    def test_laboratory_update_view_post_admin(self):
+        """tests that admin user can post and update a laboratory"""
+        kwargs = {"pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_update", kwargs=kwargs)
+        data = urlencode({
+            "name": "updated_name",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin).first().id
+        })
+        self.client.force_login(self.admin)  
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertEqual(response.status_code, 200)
+        #should redirect to the laboratory list view
+        self.assertTemplateUsed(response, 'laboratory/laboratory_list.html')
     
     # def test_laboratory_delete_view_admin(self):
     #     """tests that admin users can delete furnitures"""
