@@ -1,9 +1,14 @@
-{% load i18n shelf_position laboratory %}
-<div class="navbar-default sidebar" role="navigation">
-    <div class="sidebar-nav navbar-collapse">
-        <ul class="nav in" id="side-menu">
+{% load i18n shelf_position laboratory static %}
+{% block css %}
+  <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+{% endblock %}
+<div class="col-md-3 left_col">
+<div class="left_col scroll-view">
+    <div class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+        <ul class="nav side_menu" id="side-menu">
             <li class="sidebar-search">
-                <form metod="get" action="/weblog/search/">
+                <form method="get" action="/weblog/search/">
                     <div class="input-group custom-search-form">
 
                         <input class="form-control" name="pattern"
@@ -18,21 +23,27 @@
                 </form>
                 <!-- /input-group -->
             </li>
+
             <li>
-                <a href="/"><i class="fa fa-dashboard fa-fw"></i>
-                {% trans "Dashboard" %}</a>
+                <a href="/">
+                    <i class="fa fa-dashboard fa-fw"></i>
+                    {% trans "Dashboard" %}
+                </a>
             </li>
             
             {% include 'partials/laboratories_menu.html'%}
             <li>
-                <a href="#">
-                    <i class="fa fa-tags fa-fw"></i>
-                    {% trans 'SGA Management' %}  <span class="fa arrow"></span>
+                <a>
+                    <i class="fa fa-tags"></i>
+                    {% trans 'SGA Management' %}
+                    <span class="fa fa-chevron-down">
+                    </span>
                 </a>
-                <ul class="nav nav-second-level ">
+                <ul class="nav child_menu">
                     <li>
                         <a href="{% url 'msds:index_msds'%}" >
-                                {% trans 'MSDS: Security sheets' %}</a>
+                            {% trans 'MSDS: Security sheets' %}
+                        </a>
                     </li>
                     <!--
                     {% if user.is_authenticated%}
@@ -47,18 +58,19 @@
             </li>
 
             <li>
-                <a href="#">
+                <a>
                     <i class="fa fa-tasks fa-fw"></i>
-                    {% trans 'Risk Management' %}  <span class="fa arrow"></span>
+                        {% trans 'Risk Management' %}
+                    <span class="fa fa-chevron-down"></span>
                 </a>
-                <ul class="nav nav-second-level ">
+                <ul class="nav child_menu">
                     <li>
                         <a href="{% url 'riskmanagement:riskzone_list' %}" >
                                 {% trans 'Risk zones' %}</a>
                     </li>
-      <li><a id='reports' href="{% url 'laboratory:h_code_reports' %}" title="{% trans 'Report View' %}">
-           {% trans 'H code Reports' %}</a>
-      </li>
+                    <li><a id='reports' href="{% url 'laboratory:h_code_reports' %}" title="{% trans 'Report View' %}">
+                       {% trans 'H code Reports' %}</a>
+                    </li>
                 </ul>
 
             </li>
@@ -78,5 +90,8 @@
              </li>
         </ul>
     </div>
+    </div>
+
     <!-- /.sidebar-collapse -->
+</div>
 </div>
