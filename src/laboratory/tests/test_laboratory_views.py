@@ -47,7 +47,7 @@ class LaboratoryViewTestCase(TestCase):
             "phone_number": 5555555,
             "location":"San Jose",
             "geolocation": "12345645, 1234455588",
-            "organization": OrganizationStructure.os_manager.filter_user(self.student).first().id
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin).first().id
             })
         self.client.force_login(self.student) 
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
@@ -72,7 +72,7 @@ class LaboratoryViewTestCase(TestCase):
             "phone_number": 5555555,
             "location":"San Jose",
             "geolocation": "12345645, 1234455588",
-            "organization": OrganizationStructure.os_manager.filter_user(self.student).first().id
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin).first().id
             })
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
         self.assertTemplateUsed(response, 'laboratory/action_denied.html', 
@@ -80,11 +80,13 @@ class LaboratoryViewTestCase(TestCase):
 
     def test_laboratory_delete_view_student(self):
         """tests that users without permissions can't delete labs"""
+        saved_id = self.lab5.id
         kwargs = { "pk": self.lab5.id }
         url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
         self.client.force_login(self.student)
         response = self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, 'laboratory/action_denied.html')
+        self.assertNotEqual( Laboratory.objects.filter(id=saved_id).first(), None,
+                                                               "Was not expecting to delete a lab!")
     
     def test_laboratory_hcodereport_view_student(self):
         """tests that the student is unable to access the hcode report view"""
@@ -92,7 +94,8 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:h_code_reports")
         self.client.force_login(self.student) 
         response = self.client.get(url, data=kwargs)
-        self.assertTemplateNotUsed(response, 'laboratory/h_code_report.html')
+        self.assertTemplateNotUsed(response, 'laboratory/h_code_report.html',
+                                             "was not expecting to access this view with student user")
     
     def test_laboratory_create_view_get_admin(self):
         """tests that admin user can get to the create laboratory view"""
@@ -181,7 +184,7 @@ class LaboratoryViewTestCase(TestCase):
                                           "Was expecting to be redirected to laboratory edit view")
     
     def test_laboratory_outside_admin_delete_view(self):
-        """tests that admins from other orgs can't delete furnitures"""
+        """tests that admins from other orgs can't delete labs"""
         saved_id = self.lab5.id
         kwargs = { "pk": self.lab5.id }
         url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
