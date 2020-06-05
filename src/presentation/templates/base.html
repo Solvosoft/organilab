@@ -1,3 +1,4 @@
+{% extends 'gentelella/base.html' %}
 {% load static %}
 {% load i18n %}
 {% load shelf_position %}
@@ -42,9 +43,9 @@
 
 <body {% block bodyklss %}{%endblock%}>
   {# NAV #}
-  {% include 'partials/navbar.html' %}
 
-  {% include 'partials/sidebar.html' %}
+
+
   {# MESSAGES #}
   {% include 'partials/messages.html' %}
 
