@@ -128,15 +128,15 @@ class LaboratoryViewTestCase(TestCase):
         #should redirect to the laboratory list view
         self.assertTemplateUsed(response, 'laboratory/laboratory_list.html')
     
-    # def test_laboratory_delete_view_admin(self):
-    #     """tests that admin users can delete furnitures"""
-    #     saved_id = self.furniture.id
-    #     kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id}
-    #     url = reverse("laboratory:furniture_delete", kwargs=kwargs)
-    #     self.client.force_login(self.admin)
-    #     response = self.client.post(url, follow=True)
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertRaises(Furniture.DoesNotExist, Furniture.objects.get, id=saved_id)
+    def test_laboratory_delete_view_admin(self):
+        """tests that admin users can delete a lab"""
+        saved_id = self.lab5.id
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
+        self.client.force_login(self.admin)
+        response = self.client.post(url, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertRaises(Laboratory.DoesNotExist, Laboratory.objects.get, id=saved_id)
     
     # def test_laboratory_list_view_student(self):
     #     """tests that student users can't see furniture lists"""
