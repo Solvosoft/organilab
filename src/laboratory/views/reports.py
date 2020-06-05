@@ -18,6 +18,7 @@ from django.utils.translation import ugettext as _
 
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
+from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_group_perms
 import django_excel
@@ -130,9 +131,6 @@ def make_book_laboratory(rooms):
 
         for furniture in labroom.furniture_set.all():
             for obj in furniture.get_objects():
-                imdg = ""
-                if obj.object.gt_imdg.imdg is not None:
-                    imdg = str(obj.object.gt_imdg.imdg)
                 labobj.append([
                     furniture.name,
                     obj.shelf.name,
@@ -141,8 +139,8 @@ def make_book_laboratory(rooms):
                     obj.quantity,
                     obj.get_measurement_unit_display(),
                     obj.object.get_type_display(),
-                    obj.object.cas_id_number or "",
-                    imdg
+                    get_cas(obj.object,""),
+                    str(get_imdg(obj.object,""))
                 ])
         if labobj:
             content[labroom.name] = labobj
@@ -306,10 +304,10 @@ def make_book_objects(objects, summary=False, type_id=None):
             ShelfObject.get_units(object.measurement_unit)]
         if type_id == '0':
             obj_info += [
-                object.molecular_formula,
-                object.cas_id_number,
+                get_molecular_formula(object),
+                get_cas(object, ''),
                 object.is_precursor,
-                str(object.gt_imdg.imdg)]
+                str(get_imdg(object, ''))]
 
         content['objects'].append(obj_info)
         if not summary:
@@ -355,9 +353,10 @@ def report_objects(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_objects(objects, summary=detail, type_id=type_id), fileformat, file_name="objects.%s" % (fileformat,))
 
+
     for obj in objects:
         clentry = CLInventory.objects.filter(
-            cas_id_number=obj.cas_id_number).first()
+            cas_id_number=get_cas(obj, 0)).first()
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
@@ -395,11 +394,11 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     else:
         rpo = Object.objects.all()
 
-    rpo = rpo.filter(type=Object.REACTIVE, is_precursor=True)
+    rpo = rpo.filter(type=Object.REACTIVE, sustancecharacteristics__is_precursor=True)
 
     for obj in rpo:
         clentry = CLInventory.objects.filter(
-            cas_id_number=obj.cas_id_number).first()
+            cas_id_number=get_cas(obj, 0)).first()
         setattr(obj, 'clinventory_entry', clentry)
 
     fileformat = request.GET.get('format', 'pdf')
@@ -599,13 +598,13 @@ class ReactivePrecursorObjectList(ListView):
         query = super(ReactivePrecursorObjectList, self).get_queryset()
 
         query = query.filter(type=Object.REACTIVE,
-                             is_precursor=True)
+                             sustancecharacteristics__is_precursor=True)
         if not self.all_labs:
             query = query.filter(
                 shelfobject__shelf__furniture__labroom__laboratory=self.lab).distinct()
 
         for obj in query:
             clentry = CLInventory.objects.filter(
-                cas_id_number=obj.cas_id_number).first()
+                cas_id_number=get_cas(obj, 0)).first()
             setattr(obj, 'clinventory_entry', clentry)
         return query

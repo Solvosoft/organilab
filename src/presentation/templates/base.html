@@ -1,5 +1,5 @@
 {% load static %}
-{% load i18n monitarize %}
+{% load i18n %}
 {% load shelf_position %}
 <!DOCTYPE html>
 <html lang="en">
@@ -36,9 +36,6 @@
   {% block css %}{% endblock %}
 
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-
-
-  {% adsense_header %}
   {% block link %}{% endblock link %}
   {% block script %}{% endblock script %}
 </head>
@@ -69,7 +66,7 @@
   <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
   <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
   <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-  
+
   <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
