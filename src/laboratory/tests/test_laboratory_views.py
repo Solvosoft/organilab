@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.test import TestCase
 from .utils import TestUtil
-from ..models import Laboratory
+from ..models import Laboratory, OrganizationStructure
 
 class LaboratoryViewTestCase(TestCase):
 
@@ -42,7 +42,13 @@ class LaboratoryViewTestCase(TestCase):
     def test_laboratory_create_view_post_student(self):
         """tests that submitting a form with student user won't create a lab"""
         url = reverse("laboratory:create_lab")
-        data = urlencode({"name": "test_laboratory", "phone_number": 5555555})
+        data = urlencode({            
+            "name": "test_laboratory",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.student).first().id
+            })
         self.client.force_login(self.student) 
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
         self.assertTemplateUsed(response, 'laboratory/laboratory_notperm.html')
@@ -78,16 +84,31 @@ class LaboratoryViewTestCase(TestCase):
         kwargs = {"hcode": "H413"}
         url = reverse("laboratory:h_code_reports")
         self.client.force_login(self.student) 
-        response = self.client.get(url, data=kwargs, follow=True)
+        response = self.client.get(url, data=kwargs)
         self.assertTemplateNotUsed(response, 'laboratory/h_code_report.html')
     
-    # def test_laboratory_create_view_get_admin(self):
-    #     """tests that admin user can get to the create furniture view"""
-    #     kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
-    #     url = reverse("laboratory:furniture_create", kwargs=kwargs)
-    #     self.client.force_login(self.admin)
-    #     response = self.client.get(url, follow=True)
-    #     self.assertEqual(response.status_code, 200)
+    def test_laboratory_create_view_get_admin(self):
+        """tests that admin user can get to the create laboratory view"""
+        url = reverse("laboratory:create_lab")
+        self.client.force_login(self.admin)  
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "laboratory/laboratory_create.html")
+    
+    def test_laboratory_create_view_post_admin(self):
+        """tests that admin user can post and create a new laboratory"""
+        url = reverse("laboratory:create_lab")
+        self.client.force_login(self.admin)
+        data = urlencode({
+            "name": "test_laboratory",
+            "phone_number": 5555555,
+            "location":"San Jose",
+            "geolocation": "12345645, 1234455588",
+            "organization": OrganizationStructure.os_manager.filter_user(self.admin).first().id
+            })
+        response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "laboratory/laboratoryroom_form.html")
     
     # def test_laboratory_update_view_get_admin(self):
     #     """tests that admin user can get to the update furniture view"""
@@ -97,14 +118,7 @@ class LaboratoryViewTestCase(TestCase):
     #     response = self.client.get(url, follow=True)
     #     self.assertEqual(response.status_code, 200)
     
-    # def test_laboratory_create_view_post_admin(self):
-    #     """tests that admin user can post and create a new furniture"""
-    #     kwargs = { "lab_pk": self.lab.id, "labroom": self.room.id }
-    #     url = reverse("laboratory:furniture_create", kwargs=kwargs)
-    #     data = urlencode({"name": "test_furniture", "type": "F"})
-    #     self.client.force_login(self.admin)
-    #     response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
-    #     self.assertEqual(response.status_code, 200)
+
 
     # def test_laboratory_update_view_post_admin(self):
     #     """tests that admin user can post and update a furniture"""
