@@ -191,3 +191,20 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.post(url, follow=True)
         self.assertNotEqual( Laboratory.objects.filter(id=saved_id).first(), None,
                                                                "Was not expecting to delete a lab!")
+
+    def test_laboratory_select_view_student(self):
+        """tests that students can access select lab view"""
+        url = reverse("laboratory:select_lab")
+        self.client.force_login(self.student) 
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "laboratory/select_lab.html")
+    
+    def test_laboratory_select_view_admin(self):
+        """tests that admins can access select lab view"""
+        url = reverse("laboratory:select_lab")
+        self.client.force_login(self.student) 
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "laboratory/select_lab.html")
+        
