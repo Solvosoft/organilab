@@ -37,7 +37,7 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:create_lab")
         self.client.force_login(self.student)  
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed('laboratory/laboratory_notperm.html')
+        self.assertTemplateUsed(response, 'laboratory/laboratory_notperm.html')
     
     def test_laboratory_create_view_post_student(self):
         """tests that submitting a form with student user won't create a lab"""
@@ -45,7 +45,7 @@ class LaboratoryViewTestCase(TestCase):
         data = urlencode({"name": "test_laboratory", "phone_number": 5555555})
         self.client.force_login(self.student) 
         response = self.client.post(url, data, content_type="application/x-www-form-urlencoded", follow=True)
-        self.assertTemplateUsed('laboratory/laboratory_notperm.html')
+        self.assertTemplateUsed(response, 'laboratory/laboratory_notperm.html')
     
     def test_laboratory_update_view_get_student(self):
         """tests that users without permissions can't get to the update view"""
@@ -54,7 +54,7 @@ class LaboratoryViewTestCase(TestCase):
         self.client.force_login(self.student)
         response = self.client.get(url, follow=True)
         self.assertTemplateNotUsed('laboratory/edit.html')
-        self.assertTemplateUsed('laboratory/action_denied.html')
+        self.assertTemplateUsed(response, 'laboratory/action_denied.html')
     
     def test_laboratory_update_view_post_student(self):
         """tests that users without permissions can't post to the update view"""
@@ -63,7 +63,7 @@ class LaboratoryViewTestCase(TestCase):
         self.client.force_login(self.student)
         data = urlencode({"name": "modified"})
         response = self.client.post(url, data,  content_type="application/x-www-form-urlencoded", follow=True)
-        self.assertTemplateUsed('laboratory/action_denied.html')
+        self.assertTemplateUsed(response, 'laboratory/action_denied.html')
 
     def test_laboratory_delete_view_student(self):
         """tests that users without permissions can't delete labs"""
@@ -71,15 +71,15 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
         self.client.force_login(self.student)
         response = self.client.post(url, follow=True)
-        self.assertTemplateUsed('laboratory/action_denied.html')
+        self.assertTemplateUsed(response, 'laboratory/action_denied.html')
     
-    # def test_laboratory_report_view_admin(self):
-    #     """tests that the user udep1_2 is able to access the furniture report view"""
-    #     kwargs = {"lab_pk": self.lab.id }
-    #     url = reverse("laboratory:reports_laboratory_detail", kwargs=kwargs)
-    #     self.client.force_login(self.admin) 
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, 200)
+    def test_laboratory_hcodereport_view_student(self):
+        """tests that the student is unable to access the hcode report view"""
+        kwargs = {"hcode": "H413"}
+        url = reverse("laboratory:h_code_reports")
+        self.client.force_login(self.student) 
+        response = self.client.get(url, data=kwargs, follow=True)
+        self.assertTemplateNotUsed(response, 'laboratory/h_code_report.html')
     
     # def test_laboratory_create_view_get_admin(self):
     #     """tests that admin user can get to the create furniture view"""
