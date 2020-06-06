@@ -94,7 +94,7 @@ class ShelfViewTestCases(TestCase):
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
-    def test_professor_create_shelf(self):
+    def test_laboratorist_create_shelf(self):
         """
             POST method create a new shelf
         """
@@ -107,7 +107,7 @@ class ShelfViewTestCases(TestCase):
             "name": shelf_name,
             "type": Catalog.objects.filter(description="Gaveta").first().pk
         }
-        self.client.force_login(self.professor_user)
+        self.client.force_login(self.laboratorist_user)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Shelf.objects.all().first().name, shelf_name)
