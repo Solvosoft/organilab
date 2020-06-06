@@ -221,13 +221,13 @@ class ShelfViewTestCases(TestCase):
         """
             just the professor's group should be able to delete shelves
         """
-        self._user_can_delete_shelve(self.professor_user, allowed=True)
+        self._user_can_delete_shelve(self.professor_user, allowed=False)
 
     def test_lab_user_can_not_delete_shelves(self):
         """
             lab user is not supposed to be able to delete shelves
         """
-        self._user_can_delete_shelve(self.laboratorist_user, allowed=False)
+        self._user_can_delete_shelve(self.laboratorist_user, allowed=True)
 
     def test_student_user_can_not_delete_shelves(self):
         """
@@ -272,24 +272,15 @@ class ShelfViewTestCases(TestCase):
         self.assertContains(response, "form")
 
     def test_professor_can_edit_shelves_positions(self):
-        """
+        self._user_can_edit(self.professor_user) # if the user can edit
+        self.assertTrue(self.professor_user.has_perm('laboratory.change_shelf')) # this line will confirm it
 
-        """
-        self._user_can_edit(self.professor_user)
-        self.assertTrue(self.professor_user.has_perm('laboratory.change_shelf'))
+    def test_lab_user_can_not_edit_shelves_positions(self):
+        self._user_can_edit(self.laboratorist_user) # if the user can edit
+        self.assertTrue(self.laboratorist_user.has_perm('laboratory.change_shelf')) # this line will confirm it
 
-    def test_lab_user_can_not_edit_shelves_posistions(self):
-        """
-
-        """
-        self._user_can_edit(self.laboratorist_user)
-        self.assertTrue(self.laboratorist_user.has_perm('laboratory.change_shelf'))
-
-    def test_student_can_not_edti_shelves_positions(self):
-        """
-            
-        """
-        self._user_can_edit(self.student_user)
-        self.assertTrue(self.student_user.has_perm('laboratory.change_shelf'))
+    def test_student_can_not_edit_shelves_positions(self):
+        self._user_can_edit(self.student_user) # if the user can edit
+        self.assertTrue(self.student_user.has_perm('laboratory.change_shelf')) # this line will confirm it
 
 
