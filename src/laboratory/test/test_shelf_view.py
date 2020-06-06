@@ -11,6 +11,19 @@ from laboratory.test.utils import OrganizationalStructureDataMixin as Organizati
 class ShelfViewTestCases(TestCase):
 
     def setUp(self):
+        """
+            research:
+                Coverage
+
+            feedback:
+                los datos deben de ser certeros
+                * no probar los datos del command
+
+            to do:
+                lab  : add, change, delete
+                stu  :
+                prof :
+        """
         infrastructure = OrganizationalStructureData()
         infrastructure.setUp()
 
@@ -35,12 +48,14 @@ class ShelfViewTestCases(TestCase):
 
     def test_user_has_permission(self):
         """
+            *** nunca adaptar la prueba ***
+
             showing the user permissions
             permissions: laboratory.add_shelf and laboratory.change_shelf
             groups                       they have these permission
-                Student                      no
-                Laboratory Administrator     no
-                Professor                    yes
+                Student                      no  x
+                Laboratory Administrator     no  x
+                Professor                    yes x
         """
         # laboratory.add_shelf
         self.assertFalse(self.student_user.has_perm('laboratory.add_shelf'))
@@ -267,7 +282,6 @@ class ShelfViewTestCases(TestCase):
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
-
 
     def test_professor_can_edit_shelves_positions(self):
         """
