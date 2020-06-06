@@ -62,18 +62,16 @@ class ShelfViewTestCases(TestCase):
         self.assertFalse(self.student_user.has_perm('laboratory.change_shelf'))
         self.assertFalse(self.professor_user.has_perm('laboratory.change_shelf'))
 
-
-    def test_get_shelf_form_lab_group_restricted(self):
+    def test_get_shelf_form_lab_group_allowed(self):
         """
-            assuming that the previous test is ok
-            the laboratorist's group must be restricted
+            laboratory's group must be the only ones
+            who can access this creation form
         """
         url = reverse("laboratory:shelf_create", kwargs={"lab_pk": self.lab6.pk})
         data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-        self.assertTrue(self.laboratorist_user.has_perm('laboratory.add_shelf'))
+        self.assertEqual(response.status_code, 200)
 
     def test_get_shelf_form_student_group_restricted(self):
         """
