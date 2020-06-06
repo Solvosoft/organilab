@@ -2,22 +2,19 @@
 {% load i18n %}
 {% load crud_tags %}
 {% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
-{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
 {% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
 {% block page_description %}{% trans "Detail of" %} {{ object }}{% endblock %}
 
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
+
 <div class="box-body">
   {% if url_update and 'update' in views_available and crud_perms.update %}
   <div class="box-header">
       <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
   </div>
   {% endif %}
-  
+
   <div class="page-header">
   <h1 class="text-center">{{object.title}}</h1>
 </div>
@@ -33,7 +30,7 @@
 {% for step in object.procedurestep_set.all %}
 <div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
   <div class="panel-heading">
-    <h3 class="panel-title">{{forloop.counter}} -- {{step.title}} 
+    <h3 class="panel-title">{{forloop.counter}} -- {{step.title}}
     {% if crud_perms.update %}
     <a class="btn pull-right" href="{% url 'academic_procedurestep_update' step.pk %}">
     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
@@ -41,7 +38,7 @@
     </h3>
   </div>
   <div class="panel-body">
-  
+
   	{{step.description|safe}}
      {% if step.procedurerequiredobject_set.all.count %}
     <hr>
@@ -75,7 +72,6 @@
       <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
    </div>
   {% endif %}
-  </div>
-  </div>
-  </div>
+
+
 {% endblock %}
