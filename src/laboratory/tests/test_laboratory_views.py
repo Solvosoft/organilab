@@ -224,10 +224,16 @@ class LaboratoryViewTestCase(TestCase):
         kwargs = { "pk": self.lab5.id}
         url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        for template in response.templates:
-            print(template.name)
-        print(response.content)
         self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
                                              "Was not expecting to get to this page without a logged in user")
+    
+    def test_laboratory_ajax_admins_users_list_admin(self):
+        """test that admin is able to access this view"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        self.client.force_login(self.admin)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was expecting to get to this page as a lab admin")
         
         
