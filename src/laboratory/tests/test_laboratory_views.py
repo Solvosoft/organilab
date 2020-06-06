@@ -244,4 +244,4 @@ class LaboratoryViewTestCase(TestCase):
         self.client.force_login(self.admin_schi1)
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
-                                             "Was not expecting to get to this page with admin schi1"")
+                                             "Was not expecting to get to this page with admin schi1")
