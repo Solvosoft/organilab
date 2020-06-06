@@ -34,7 +34,7 @@
 	          </button>
 	        </div>
               <div class="col-md-1 col-md-offset-2">
-                                 {% if perm_delete_furniture %}
+                                 {% if perm_delete_furniture and object %}
 	                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
 	                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
 	                  {% endif %}
