@@ -186,7 +186,7 @@ class FurnitureViewTestCase(TestCase):
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
     
     def test_furniture_outside_admin_delete_view(self):
-        """tests that admins from other orgs can't delete furnitures"""
+        """tests that admins from isch1 can't delete furnitures in lab 5"""
         kwargs = { "lab_pk": self.lab.id, "pk": self.furniture.id }
         url = reverse("laboratory:furniture_delete", kwargs=kwargs)
         self.client.force_login(self.admin_schi1)
