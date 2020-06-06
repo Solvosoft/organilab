@@ -67,7 +67,7 @@ def get_organization_admin_group():
     return Group.objects.get(pk=config.GROUP_ADMIN_PK)
 
 
-class SignUpForm(UserCreationForm, CustomForm):
+class SignUpForm(CustomForm, UserCreationForm):
     ROLES = (
         (1, _('Organization administrator')),
         (2, _('Student'))

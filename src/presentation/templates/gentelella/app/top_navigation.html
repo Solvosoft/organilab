@@ -5,9 +5,16 @@
 
 
 <nav class="nav_menu">
-  <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"><strong
-      id="brand_id">ORGANILAB</strong></a>
-  <ul class="nav navbar-nav">
+    <div class="nav toggle">
+      <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+    </div>
+
+
+
+
+
+
+  <ul class="nav navbar-nav navbar-right">
   	{% if userperms.add_laboratory %}
       <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" title="{% trans 'Add Laboratory' %}">
       	<span class="fa fa-plus"></span></a>
@@ -110,13 +117,7 @@
 	  {% endif %}
       {% endif %}
 
-  </ul>
-  <ul class="nav navbar-nav navbar-right">
-  
-    {% if request.user.is_authenticated %}
-    <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">{% trans "Log out" %}</a></li>
-    {% else %}
+    {% if not request.user.is_authenticated %}
     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
     {% endif %}
   </ul>

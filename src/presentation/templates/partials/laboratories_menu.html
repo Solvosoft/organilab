@@ -6,9 +6,12 @@
 {%  has_perms "laboratory.change_laboratory" as perm_change_lab %}
 
 {% if laboratory %}
+<div class="menu_section">
+<h3>{% trans 'Laboratory' %}</h3>
+<ul class="nav side-menu">
  <li>
- <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> {% trans 'Laboratory' %}  <span class="fa arrow"></span></a>
-<ul class="nav nav-second-level expand">
+
+
     {% if perm_laboratoryroom %}
         <li >
         <a href="{% url 'laboratory:rooms_list' laboratory %}">
@@ -44,5 +47,5 @@
 
 
 </ul>
-</li>
+</div>
 {% endif %}
