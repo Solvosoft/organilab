@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404, redirect
 from djgentelella.cruds.base import CRUDView
+from djgentelella.cruds.inline_crud import InlineAjaxCRUD
+
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject,\
     ProcedureObservations
-from cruds_adminlte.inline_crud import InlineAjaxCRUD
 from django.urls.base import reverse_lazy
 from academic.forms import ProcedureForm, ProcedureStepForm
 
