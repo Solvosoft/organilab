@@ -72,6 +72,7 @@ class ShelfViewTestCases(TestCase):
         self.client.force_login(self.laboratorist_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "form")
 
     def test_get_shelf_form_student_group_restricted(self):
         """
@@ -83,7 +84,7 @@ class ShelfViewTestCases(TestCase):
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
-    def test_get_shelf_form_professors_group_allowed(self):
+    def test_get_shelf_form_professors_group_restricted(self):
         """
              professors are allowed to get this form
         """
@@ -91,8 +92,7 @@ class ShelfViewTestCases(TestCase):
         data = {"row": 0, "col": 0, "furniture": self.furniture_lab6.id}
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form")
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_professor_create_shelf(self):
         """
