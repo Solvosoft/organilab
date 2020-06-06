@@ -14,6 +14,14 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from weasyprint import HTML
+
+#for xhtml2pdf
+from xhtml2pdf import pisa
+from django.template import Context
+import os
+import datetime
+from xhtml2pdf.config.httpconfig import httpConfig
+
 from django.utils.translation import ugettext as _
 
 from laboratory.forms import H_CodeForm
@@ -25,6 +33,37 @@ import django_excel
 from django.db.models.aggregates import Sum, Min
 
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from organilab import settings
+
+#Convert html URI to absolute
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    # use short variable names
+    sUrl = settings.STATIC_URL      # Typically /static/
+    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
+    mUrl = settings.MEDIA_URL       # Typically /static/media/
+    # Typically /home/userX/project_static/media/
+    mRoot = settings.MEDIA_ROOT
+
+    # convert URIs to absolute system paths
+    if uri.startswith(mUrl):
+        path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    elif uri.startswith(sUrl):
+        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    else:
+        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
+
+
 
 
 def make_book_organization_laboratory(objects):
@@ -162,22 +201,23 @@ def report_labroom_building(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_laboratory(rooms), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
-    template = get_template('pdf/laboratoryroom_pdf.html')
-
+    now = datetime.datetime.now()
     context = {
         'object_list': rooms,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
     }
-
-    html = template.render(context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+    httpConfig.save_keys('nosslcheck', True)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+    template = get_template('pdf/laboratoryroom_pdf.html')
+    html = template.render(context)
+    
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 

@@ -5,37 +5,62 @@
         <style>
             @page {
                 margin: 3cm 2cm; padding-left: 1.5cm;
-                @top-left {
-                    content: '{% block verbose_name %}{% trans "Organilab Furniture Report" %}'{%endblock %};
+                size: a4 portrait;
+                @frame header_frame {
+                    text-align: right;
+                    -pdf-frame-content: header_content;
+                    left: 50pt; width: 512pt; top: 50pt; height: 30pt;
                 }
-                
-                @top-right {
-                    content: "{% trans "Date:" %} {{ datetime }}";
-                }
-                
-                @bottom-right {
-                    content: "{% trans "Page" %} " counter(page)
-                    " {% trans "of" %} " counter(pages) ;
-                }
-                
-                @bottom-left {
-                    content:  "{% trans "User:" %} {{ request.user }}";
+                @frame footer_frame {
+                    -pdf-frame-content: footer_content;
+                    left: 50pt; width: 512pt; top: 772pt; height: 20pt;
                 }
             }
             
             body {
-                text-align: justify;
+                text-align: left;
                 font-family: "Arial", "sans-serif";
+                font-size: 1.5em;
+            }
+            th, td{
+                text-align: left;
             }
             {% block extra_css %}{% endblock%}
         </style>
     </head>
 
     <body>
+        <!-- Content for Static Frame 'header_frame' -->
+        <div id="header_content">
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left;">
+                        {% block verbose_name %}{% trans "Organilab Furniture Report" %}{%endblock %}
+                    </td>
+                    <td style="text-align:right;">
+                        {% trans "Date:" %} {% block date_header %}{{ datetime }}{% endblock %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Content for Static Frame 'footer_frame' -->
+        <div id="footer_content">
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left;">
+                        {% trans "User:" %} {{ request.user }}
+                    </td>
+                    <td style="text-align:right;">
+                       {% trans "Page" %} <pdf:pagenumber> {% trans "of" %} <pdf:pagecount>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-    {% block pdf_content %}
-        {# extend #}
-    {% endblock %}
-
+        <!-- HTML Content -->
+        <div>
+            {% block pdf_content %}{% endblock %}
+        </div>
     </body>
 </html>
