@@ -19,7 +19,7 @@ coreschema==0.0.4
 cssselect==1.0.3
 cssselect2==0.2.1
 defusedxml==0.6.0
-Django==1.11.28
+Django==1.11.29
 django-ajax-selects==1.7.1
 django-blog-zinnia==0.20
 django-bootstrap-form==3.4
