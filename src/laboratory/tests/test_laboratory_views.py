@@ -59,7 +59,7 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:laboratory_update", kwargs=kwargs)
         self.client.force_login(self.student)
         response = self.client.get(url, follow=True)
-        self.assertTemplateNotUsed('laboratory/edit.html')
+        self.assertTemplateNotUsed(response, 'laboratory/edit.html')
         self.assertTemplateUsed(response, 'laboratory/action_denied.html')
     
     def test_laboratory_update_view_post_student(self):
@@ -207,4 +207,27 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "laboratory/select_lab.html")
+    
+    """ajax views"""
+
+    def test_laboratory_ajax_admins_users_list_student(self):
+        """test that a student is not able to access this view"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        self.client.force_login(self.student)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was not expecting to get to this page as a student")
+    
+    def test_laboratory_ajax_admins_users_list_anonymous(self):
+        """test that anonymous user is not able to access this view"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        for template in response.templates:
+            print(template.name)
+        print(response.content)
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was not expecting to get to this page without a logged in user")
+        
         
