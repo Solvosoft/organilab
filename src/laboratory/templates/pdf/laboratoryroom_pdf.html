@@ -15,14 +15,14 @@
             </tr>
             <tr>
                 <th >{% trans "Code" %} </th>
-                <th >{% trans "Name" %} </th>
+                <th class="name" >{% trans "Name" %} </th>
                 <th >{% trans "Quantity" %} </th>
                 <th >{% trans "Shelf" %} </th>
             </tr>
             {% for obj in furniture.get_objects %}
                 <tr>
                     <td>{{obj.object.code }}</td>
-                    <td>{{obj.object.name }}</td>
+                    <td class="name">{{obj.object.name }}</td>
                     <td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
                     <td>{{obj.shelf.name}}</td>
                 </tr>
