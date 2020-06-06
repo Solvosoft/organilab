@@ -140,7 +140,6 @@ class ShelfViewTestCases(TestCase):
         self.client.force_login(self.professor_user)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-        self.assertEqual(Shelf.objects.all().count(), 0)
 
     def test_student_can_not_create_shelf(self):
         """
@@ -158,7 +157,6 @@ class ShelfViewTestCases(TestCase):
         self.client.force_login(self.student_user)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertRedirects(response, reverse('permission_denied'), 302, 200)
-        self.assertEqual(Shelf.objects.all().count(), 0)
 
     def test_get_all_shelves_by_lab_and_furniture(self):
         """
