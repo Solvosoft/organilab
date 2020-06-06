@@ -10,8 +10,6 @@ django-bootstrap-form==3.4
 django-ckeditor==5.6.1
 django-constance==2.6.0
 django-contrib-comments==1.9.1
-django-crispy-forms==1.7.2
-django-cruds-adminlte==0.0.16
 django-excel==0.0.10
 django-fontawesome==1.0
 django-guardian==1.5.0

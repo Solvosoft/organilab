@@ -4,13 +4,13 @@
 {% index_permissions as userperms %}
 
 
-<nav class="navbar navbar-dark bg-inverse">
+<nav class="nav_menu">
   <a class="navbar-brand" href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"><strong
       id="brand_id">ORGANILAB</strong></a>
   <ul class="nav navbar-nav">
   	{% if userperms.add_laboratory %}
       <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" title="{% trans 'Add Laboratory' %}">
-      	<span class="glyphicon glyphicon-plus"></span></a>
+      	<span class="fa fa-plus"></span></a>
       </li>
   	{% endif %}
     {% if request.user.is_authenticated %}
@@ -111,7 +111,7 @@
       {% endif %}
 
   </ul>
-  <ul class="nav navbar-nav pull-right">
+  <ul class="nav navbar-nav navbar-right">
   
     {% if request.user.is_authenticated %}
     <li class="nav-item"><a class="nav-link" href="#">{% trans 'User:' %} {{ request.user.get_username }}</a></li>
