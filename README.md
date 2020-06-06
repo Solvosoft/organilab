@@ -49,7 +49,7 @@ Run your development server
 
 Create your image organilab
 ```bash
-docker build -t solvosof/organilab:1.0
+docker build -f docker/Dockerfile -t solvosof/organilab
 ```
 
 Run with **bind mount folder** to sync with changes without rebuild image:

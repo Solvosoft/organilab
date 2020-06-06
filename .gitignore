@@ -103,3 +103,6 @@ media/
 src/static
 src/beat.db
 *.backup
+
+#vscode
+.vscode/
