@@ -50,26 +50,18 @@ class ShelfViewTestCases(TestCase):
         """
             *** nunca adaptar la prueba ***
 
-            showing the user permissions
-            permissions: laboratory.add_shelf and laboratory.change_shelf
-            groups                       they have these permission
-                Student                      no  x
-                Laboratory Administrator     no  x
-                Professor                    yes x
+            laboratory's group must be the ones who have this permission
         """
         # laboratory.add_shelf
+        self.assertTrue(self.laboratorist_user.has_perm('laboratory.add_shelf'))
         self.assertFalse(self.student_user.has_perm('laboratory.add_shelf'))
-        self.assertFalse(self.laboratorist_user.has_perm('laboratory.add_shelf'))
-        self.assertTrue(self.professor_user.has_perm('laboratory.add_shelf'))
-
-        self.assertTrue(self.root_user.has_perm('laboratory.add_shelf'))
+        self.assertFalse(self.professor_user.has_perm('laboratory.add_shelf'))
 
         # laboratory.change_shelf
+        self.assertTrue(self.laboratorist_user.has_perm('laboratory.change_shelf'))
         self.assertFalse(self.student_user.has_perm('laboratory.change_shelf'))
-        self.assertFalse(self.laboratorist_user.has_perm('laboratory.change_shelf'))
-        self.assertTrue(self.professor_user.has_perm('laboratory.change_shelf'))
+        self.assertFalse(self.professor_user.has_perm('laboratory.change_shelf'))
 
-        self.assertTrue(self.root_user.has_perm('laboratory.change_shelf'))
 
     def test_get_shelf_form_lab_group_restricted(self):
         """
