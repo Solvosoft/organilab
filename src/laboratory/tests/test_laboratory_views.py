@@ -16,6 +16,7 @@ class LaboratoryViewTestCase(TestCase):
         self.student = User.objects.filter(username="est_1").first()
         self.lab5 = Laboratory.objects.filter(name="Laboratory 5").first()
         self.lab3 = Laboratory.objects.filter(name="Laboratory 3").first()
+        self.lab4 = Laboratory.objects.filter(name="Laboratory 4").first()
         self.lab6 = Laboratory.objects.filter(name="Laboratory 6").first()
         self.lab7 = Laboratory.objects.filter(name="Laboratory 7").first()
     
@@ -228,12 +229,19 @@ class LaboratoryViewTestCase(TestCase):
                                              "Was not expecting to get to this page without a logged in user")
     
     def test_laboratory_ajax_admins_users_list_admin(self):
-        """test that admin is able to access this view"""
-        kwargs = { "pk": self.lab5.id}
+        """test that admin from dep2 is able to access this view"""
+        kwargs = { "pk": self.lab4.id}
         url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
         self.client.force_login(self.admin)
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertTemplateUsed(response, "ajax/lab_admins_list.html", 
                                              "Was expecting to get to this page as a lab admin")
         
-        
+    def test_laboratory_ajax_admins_users_list_outside_admin(self):
+        """test that admin from isch1 is not able to access admins in lab 4"""
+        kwargs = { "pk": self.lab4.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        self.client.force_login(self.admin_schi1)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was not expecting to get to this page with admin schi1"")
