@@ -201,6 +201,7 @@ def report_labroom_building(request, *args, **kwargs):
         
     
     context = {
+        #set your report title in verbose_name
         'verbose_name': "Organilab Laboratory Report",
         'object_list': rooms,
         'datetime': timezone.now(),
@@ -210,8 +211,8 @@ def report_labroom_building(request, *args, **kwargs):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     template = get_template('pdf/laboratoryroom_pdf.html')
-    #suggested change explicit is better than implicit
-    html = template.render(context)
+    #added explicit context
+    html = template.render(context=context)
     
     pisaStatus = pisa.CreatePDF(
         html, dest=response, link_callback=link_callback)

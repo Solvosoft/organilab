@@ -7,13 +7,18 @@
                 margin: 3cm 2cm; padding-left: 1.5cm;
                 size: a4 portrait;
                 @frame header_frame {
+                    /* margin-left equal as page-left*/
+                    margin-left: 2cm;
                     text-align: right;
                     -pdf-frame-content: header_content;
-                    left: 50pt; width: 512pt; top: 50pt; height: 30pt;
+                    /* left 0 to have the same left with the content */
+                    left: 0; width: 512pt; top: 50pt; height: 30pt;
                 }
                 @frame footer_frame {
+                    /* reproduced solution to have the same left*/
+                    margin-left: 2cm;
                     -pdf-frame-content: footer_content;
-                    left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+                    left: 0; width: 512pt; top: 772pt; height: 20pt;
                 }
             }
             
@@ -25,10 +30,7 @@
             th, td{
                 text-align: left;
             }
-            .name{
-                width: 50%;
-            }
-            {% block extra_css %}{% endblock%}
+            {% block extra_css %}{% endblock %}
         </style>
     </head>
 
@@ -38,10 +40,10 @@
             <table width="100%">
                 <tr>
                     <td style="text-align:left;">
-                        {% block verbose_name %}{% trans "Organilab Furniture Report" %}{%endblock %}
+                        {% trans verbose_name %}
                     </td>
                     <td style="text-align:right;">
-                        {% trans "Date:" %} {% block date_header %}{{ datetime }}{% endblock %}
+                        {% trans "Date:" %}{{ datetime }}
                     </td>
                 </tr>
             </table>
