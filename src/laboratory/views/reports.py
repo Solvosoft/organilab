@@ -19,8 +19,6 @@ from weasyprint import HTML
 from xhtml2pdf import pisa
 from django.template import Context
 import os
-import datetime
-from xhtml2pdf.config.httpconfig import httpConfig
 
 from django.utils.translation import ugettext as _
 
