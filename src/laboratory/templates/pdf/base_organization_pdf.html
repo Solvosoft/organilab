@@ -1,0 +1,85 @@
+{% load i18n %} 
+
+<html>
+    <head>
+        <style>
+            @page {
+                /* 5cm set the margin to the content */
+                margin: 5cm 2cm; padding-left: 1cm;
+                size: a4 portrait;
+                @frame header_frame {
+                    /*2cm equal to page */
+                    margin-left: 2cm;
+                    margin-botton: 2cm;
+                    padding-left: 1cm;
+                    text-align: right;
+                    -pdf-frame-content: header_content;
+                    /* left 0 to have the same left like page */
+                    /* set according to the text if it is left the header will not appear */
+                    left: 0; width: 512pt; top: 50pt; height: 100pt;
+                }
+                @frame footer_frame {
+                    -pdf-frame-content: footer_content;
+                    left: 40pt; width: 512pt; top: 772pt; height: 20pt;
+                }
+            }
+            
+            body {
+                text-align: left;
+                font-family: "Arial", "sans-serif";
+                font-size: 1.5em;
+            }
+            th, td{
+                text-align: left;
+            }
+            {% block extra_css %}{% endblock %}
+        </style>
+    </head>
+
+    <body>
+        <!-- Content for Static Frame 'header_frame' -->
+        <div id="header_content">
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left;">
+                        {% trans verbose_name %}
+                    </td>
+                    <td style="text-align:right;">
+                        {% trans "Date:" %}{{ datetime }}
+                    </td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                {% for laboratory in object_list %}
+                    <tr>
+                        <th colspan="1"><h3>{{ laboratory.name }}</h3></th>
+                    </tr>
+                    <tr>
+                        <th colspan="1">{% trans "Location" %}: {{ laboratory.location }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="1">{% trans "Phone" %}: {{ laboratory.phone_number }}</th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        
+        <!-- Content for Static Frame 'footer_frame' -->
+        <div id="footer_content">
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left;">
+                        {% trans "User:" %} {{ request.user }}
+                    </td>
+                    <td style="text-align:right;">
+                       {% trans "Page" %} <pdf:pagenumber> {% trans "of" %} <pdf:pagecount>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- HTML Content -->
+        <div>
+            {% block pdf_content %}{% endblock %}
+        </div>
+    </body>
+</html>

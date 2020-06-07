@@ -131,22 +131,22 @@ def report_organization_building(request, *args, **kwargs):
             make_book_organization_laboratory(labs), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
     context = {
+        #title of the report in verbose_name variable
+        'verbose_name': "Organilab Laboratory Report",
         'object_list': labs,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
     }
-
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
     template = get_template('pdf/organizationlaboratory_pdf.html')
+    html = template.render(context=context)
 
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -201,6 +201,7 @@ def report_labroom_building(request, *args, **kwargs):
         
     
     context = {
+        'verbose_name': "Organilab Laboratory Report",
         'object_list': rooms,
         'datetime': timezone.now(),
         'request': request,
@@ -209,6 +210,7 @@ def report_labroom_building(request, *args, **kwargs):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     template = get_template('pdf/laboratoryroom_pdf.html')
+    #suggested change explicit is better than implicit
     html = template.render(context)
     
     pisaStatus = pisa.CreatePDF(
