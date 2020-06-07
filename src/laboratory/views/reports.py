@@ -200,15 +200,14 @@ def report_labroom_building(request, *args, **kwargs):
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
             make_book_laboratory(rooms), fileformat, file_name="Laboratories.%s" % (fileformat,))
-
-    now = datetime.datetime.now()
+        
+    
     context = {
         'object_list': rooms,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk'),
     }
-    httpConfig.save_keys('nosslcheck', True)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     template = get_template('pdf/laboratoryroom_pdf.html')
