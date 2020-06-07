@@ -19,8 +19,11 @@
                     left: 0; width: 512pt; top: 50pt; height: 100pt;
                 }
                 @frame footer_frame {
+                    /* reproducing the solution to have the same margin as page has*/ 
+                     margin-left: 2cm;
                     -pdf-frame-content: footer_content;
-                    left: 40pt; width: 512pt; top: 772pt; height: 20pt;
+                    /* left 0 to start in the same place like content start*/
+                    left: 0; width: 512pt; top: 772pt; height: 20pt;
                 }
             }
             
