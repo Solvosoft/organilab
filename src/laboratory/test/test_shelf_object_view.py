@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from laboratory.models import LaboratoryRoom, Furniture, Catalog
+from laboratory.models import LaboratoryRoom, Furniture, Catalog, Shelf, ShelfObject
 from laboratory.test.utils import OrganizationalStructureDataMixin as OrganizationalStructureData
 
 
@@ -10,6 +10,11 @@ class ShelfObjectViewTestCases(TestCase):
     def setUp(self):
         self.infrastructure = OrganizationalStructureData()
         self.infrastructure.setUp()
+
+        self.student_user = self.infrastructure.usch4
+        self.laboratorist_user = self.infrastructure.usch6_i1
+        self.professor_user = self.infrastructure.uschi1
+        self.root_user = self.infrastructure.uroot
 
         self.room_lab6 = LaboratoryRoom.objects.create(name="Laboratorio alfa")
 
@@ -22,10 +27,11 @@ class ShelfObjectViewTestCases(TestCase):
             type=Catalog.objects.filter(key="furniture_type", description="Estante").first()
         )
 
-        self.student_user = self.infrastructure.usch4
-        self.laboratorist_user = self.infrastructure.usch6_i1
-        self.professor_user = self.infrastructure.uschi1
-        self.root_user = self.infrastructure.uroot
+        self.shelf = Shelf.objects.create(
+            furniture=self.furniture_lab6,
+            name="Gaveta B",
+            type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
+        )
 
     def test_permissions(self):
         """
@@ -47,9 +53,9 @@ class ShelfObjectViewTestCases(TestCase):
         self.assertTrue(self.professor_user.has_perm("laboratory.change_shelfobject"))
         self.assertTrue(self.professor_user.has_perm("laboratory.delete_shelfobject"))
 
-    def test_get_shelf_object_form_lab_group_allowed(self):
+    def test_lab_group_can_get_shelf_object_form(self):
         """
-            laboratory's group must be the only one
+            laboratory's group must be the only ones
             who can access this creation form
         """
         url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
@@ -57,3 +63,15 @@ class ShelfObjectViewTestCases(TestCase):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
+
+    def test_lab_group_can_post_shelf_object_form(self):
+        """
+            in order to create a shelfobject
+        """
+        data = {"row": 0, "col": 0, "shelf": self.shelf.id}
+        url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
+        self.client.force_login(self.laboratorist_user)
+        self.assertEqual(ShelfObject.objects.all().count(), 0)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ShelfObject.objects.all().count(), 1)
