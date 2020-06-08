@@ -14,6 +14,7 @@ class LaboratoryViewTestCase(TestCase):
         self.admin_schi1 = User.objects.filter(username="uschi1").first()
         self.admin =  User.objects.filter(username="udep1_2").first()
         self.student = User.objects.filter(username="est_1").first()
+        self.lab8 = Laboratory.objects.filter(name="Laboratory 8").first()
         self.lab5 = Laboratory.objects.filter(name="Laboratory 5").first()
         self.lab3 = Laboratory.objects.filter(name="Laboratory 3").first()
         self.lab4 = Laboratory.objects.filter(name="Laboratory 4").first()
@@ -263,4 +264,22 @@ class LaboratoryViewTestCase(TestCase):
         self.assertTemplateNotUsed(response, "ajax/lab_admins_create.html", 
                                              "Was not expecting to get to this page with a student user")
     
+    def test_laboratory_ajax_get_create_admins_user_admin(self):
+        """test that admin from dep3 is able to access this view in lab 8"""
+        kwargs = { "pk": self.lab8.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        self.client.force_login(self.admin_dep3)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was expecting to get to this page as a lab admin")
+
+    def test_laboratory_ajax_get_create_admins_user_dep3_admin(self):
+        """test that admin from dep3 is not able to access this view in lab 5"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
+        self.client.force_login(self.admin_dep3)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateUsed(response, "ajax/lab_admins_list.html", 
+                                             "Was not expecting to get to this page in lab5 as a dep3 admin")
+
     
