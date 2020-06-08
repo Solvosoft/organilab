@@ -1,30 +1,34 @@
 {% extends 'pdf/base_pdf.html' %}
-{% load i18n %}
-
-{% block verbose_name %}{% trans "Organilab Objects Report" %}{% endblock %}
-
+{% load i18n %} 
+{% block extra_css %}
+.bold{
+  font-weight:bold;
+}
+{% endblock %}
 {% block pdf_content %}
   {% for obj in object_list %}
-    <h3>
-      {% trans "Object Code:" %} {{ obj.code }}
-    </h3>
+    <h2>{% trans "Object Code:" %} {{ obj.code }}</h2>
     <ul>
-      <li>{% trans "Name:" %} {{ obj.name }}</li>
-      <li>{% trans "Type:" %}  {{ obj.get_type_display }} </li>
-
-      <li>{% trans "Features:" %}
+      <li><label class="bold">
+        {% trans "Name:" %}</label> {{ obj.name }}
+      </li>
+      <li>
+        <label class="bold">{% trans "Type:" %}</label>  
+        {{ obj.get_type_display }} </li>
+      <li><label class="bold">{% trans "Features:" %}</label>
           <ul>
-        {% for features in obj.features.all %}
-            <li>
-              {{ features.name  }}
-            </li>
-        {% empty %}
-            <li>{% trans "No Object Features" %}</li>
-        {% endfor %}
-              </ul>
+            {% for features in obj.features.all %}
+              <li>
+                {{ features.name  }}
+              </li>
+            {% empty %}
+              <li>{% trans "No Object Features" %}</li>
+            {% endfor %}
+          </ul>
       </li>
 
-      <li>{% trans "Quantity:" %}
+      <li>
+        <label class="bold">{% trans "Quantity:" %}</label>
         {% for shelfobj in obj.shelfobject_set.all %}
           <ul>
             <li>
@@ -38,12 +42,12 @@
         {% endfor %}
       </li>
 
-      <li>{% trans "Description:" %} {{ obj.description }}</li>
+      <li><label class="bold">{% trans "Description:" %}</label> {{ obj.description }}</li>
       {% if obj.is_reactive %}
-        <li>{% trans 'Molecular formula:' %} <code>{{ obj.molecular_formula | default:'-' }}</code></li>
-        <li>{% trans 'CAS ID Number:' %} {{ obj.cas_id_number | default:'Undefined' }}</li>
+        <li><label class="bold">{% trans 'Molecular formula:' %}</label> <code>{{ obj.molecular_formula | default:'-' }}</code></li>
+        <li><label class="bold">{% trans 'CAS ID Number:' %}</label> {{ obj.cas_id_number | default:'Undefined' }}</li>
         {% if obj.clinventory_entry %}
-          <li>{% trans 'Inventario C&L:' %} {{ obj.clinventory_entry.name | safe }} (<a
+          <li><label class="bold">{% trans 'Inventario C&L:' %}</label> {{ obj.clinventory_entry.name | safe }} (<a
               href="{{ obj.clinventory_entry.url }}">{% trans 'Reference link' %}</a>)
           </li>
         {% endif %}
