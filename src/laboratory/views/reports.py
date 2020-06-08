@@ -446,19 +446,21 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
             make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
+        'verbose_name': "Organilab Objects Report",
         'rpo': rpo,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': lab
     }
 
-    html = template.render(context=context).encode('UTF-8')
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    html = template.render(context=context)
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+	    html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
