@@ -106,3 +106,4 @@ src/beat.db
 
 #vscode
 .vscode/
+src/logs/

@@ -507,23 +507,22 @@ def report_furniture(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_furniture_objects(furniture), fileformat, file_name="Furniture.%s" % (fileformat,))
 
-    template = get_template('pdf/summaryfurniture_pdf.html')
 
     context = {
+        'verbose_name': "Organilab Summary Furniture Report",
         'object_list': furniture,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': lab
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+    template = get_template('pdf/summaryfurniture_pdf.html')
+    html = template.render(context=context)
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
