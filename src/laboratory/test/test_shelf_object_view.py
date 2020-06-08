@@ -48,26 +48,6 @@ class ShelfObjectViewTestCases(TestCase):
             description="Unidades"
         )
 
-    def test_permissions(self):
-        """
-            The lab's group is the only one that has this three permissions:
-            Laboratory: add_shelfobject, change_shelfobject, delete_shelfobject
-        """
-        # student
-        self.assertTrue(self.student_user.has_perm("laboratory.add_shelfobject"))
-        self.assertTrue(self.student_user.has_perm("laboratory.change_shelfobject"))
-        self.assertTrue(self.student_user.has_perm("laboratory.delete_shelfobject"))
-
-        # laboratoris
-        self.assertTrue(self.laboratorist_user.has_perm("laboratory.add_shelfobject"))
-        self.assertTrue(self.laboratorist_user.has_perm("laboratory.change_shelfobject"))
-        self.assertTrue(self.laboratorist_user.has_perm("laboratory.delete_shelfobject"))
-
-        # professor
-        self.assertTrue(self.professor_user.has_perm("laboratory.add_shelfobject"))
-        self.assertTrue(self.professor_user.has_perm("laboratory.change_shelfobject"))
-        self.assertTrue(self.professor_user.has_perm("laboratory.delete_shelfobject"))
-
     def test_lab_group_can_get_shelf_object_form(self):
         """
             laboratory's group must be the only ones
