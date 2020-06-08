@@ -245,3 +245,22 @@ class LaboratoryViewTestCase(TestCase):
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
                                              "Was not expecting to get to this page with admin schi1")
+    
+    def test_laboratory_ajax_get_create_admins_user_anonymous(self):
+        """test that anonymous users are not able to get to this view"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_get_create_admins_user", kwargs=kwargs)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_create.html", 
+                                             "Was not expecting to get to this page without a logged in user")
+    
+    def test_laboratory_ajax_get_create_admins_user_student(self):
+        """test that student users are not able to get to this view"""
+        kwargs = { "pk": self.lab5.id}
+        url = reverse("laboratory:laboratory_ajax_get_create_admins_user", kwargs=kwargs)
+        self.client.force_login(self.student)
+        response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_create.html", 
+                                             "Was not expecting to get to this page with a student user")
+    
+    
