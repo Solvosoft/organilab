@@ -402,20 +402,19 @@ def report_objects(request, *args, **kwargs):
     template = get_template('pdf/object_pdf.html')
 
     context = {
+        'verbose_name': "Organilab Objects Report",
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    html = template.render(context=context)
+    response['Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+	html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
