@@ -144,7 +144,7 @@ def report_organization_building(request, *args, **kwargs):
     html = template.render(context=context)
 
     pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback)
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
@@ -215,7 +215,7 @@ def report_labroom_building(request, *args, **kwargs):
     html = template.render(context=context)
     
     pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback)
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
@@ -519,7 +519,7 @@ def report_furniture(request, *args, **kwargs):
     template = get_template('pdf/summaryfurniture_pdf.html')
     html = template.render(context=context)
     pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback)
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
