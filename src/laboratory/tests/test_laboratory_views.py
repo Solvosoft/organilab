@@ -279,7 +279,6 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:laboratory_ajax_admins_users_list", kwargs=kwargs)
         self.client.force_login(self.admin_dep3)
         response = self.client.get(url, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertTemplateUsed(response, "ajax/lab_admins_list.html", 
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
                                              "Was not expecting to get to this page in lab5 as a dep3 admin")
 
-    
