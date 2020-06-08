@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from laboratory.models import LaboratoryRoom, Furniture, Catalog, Shelf, ShelfObject
+from laboratory.models import LaboratoryRoom, Furniture, Catalog, Shelf, ShelfObject, Object
 from laboratory.test.utils import OrganizationalStructureDataMixin as OrganizationalStructureData
 
 
@@ -32,6 +32,19 @@ class ShelfObjectViewTestCases(TestCase):
             name="Gaveta B",
             type=Catalog.objects.filter(key="container_type", description="Gaveta").first()
         )
+
+        self.object = Object.objects.create(
+            code ="CEL333",
+            name= "celdas espectronic 20",
+            type=1,
+            description="Equipo que permite realizar medidas de proporciones de longitud de onda absorbida, en un rango de trabajo comprendido entre 340 y 950 nm, con una precisi\u00f3n de 2,5 nm en longitud de onda y de 20 nm en banda espectral. Dispone de conexión a PC por puerto RS232.",
+        )
+
+        self.unit = Catalog.objects.create(
+            key="units",
+            description="Unidades"
+        )
+
 
     def test_permissions(self):
         """
@@ -64,11 +77,20 @@ class ShelfObjectViewTestCases(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
 
-    def test_lab_group_can_post_shelf_object_form(self):
+    def test_lab_group_can_create_shelf_object(self):
         """
-            in order to create a shelfobject
+            in order to create a shelfobject the laboratory.add_shelfobject permission
+            is required, just the lab's group must be able to create
         """
-        data = {"row": 0, "col": 0, "shelf": self.shelf.id}
+        data = {
+            "row": 0,
+            "col": 0,
+            "shelf": self.shelf.id,
+            "quantity": 100,
+            "limit_quantity": 10,
+            "object": self.object.id,
+            "measurement_unit": self.unit.id
+        }
         url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
         self.client.force_login(self.laboratorist_user)
         self.assertEqual(ShelfObject.objects.all().count(), 0)
