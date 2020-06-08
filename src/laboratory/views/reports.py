@@ -298,20 +298,20 @@ def report_limited_shelf_objects(request, *args, **kwargs):
             make_book_limited_reached(shelf_objects), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
     context = {
+        'verbose_name': "Organilab Shelf Objects Report",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    html = template.render(context=context)
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="report_limited_shelf_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
