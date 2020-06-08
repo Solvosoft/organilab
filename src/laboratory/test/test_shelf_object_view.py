@@ -59,7 +59,7 @@ class ShelfObjectViewTestCases(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
 
-    def test_professors_can_not_get_shelf_object_form(self):
+    def test_professor_can_not_get_shelf_object_form(self):
         """
             Professor's does not have laboratory.add_shelfobject
             permission they must be redirected
@@ -99,3 +99,43 @@ class ShelfObjectViewTestCases(TestCase):
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ShelfObject.objects.all().count(), 1)
+
+    def test_professor_group_can_not_create_shelf_object(self):
+        """
+            Professors's group are not supposed to be able to create a shelf-object
+        """
+        data = {
+            "row": 0,
+            "col": 0,
+            "shelf": self.shelf.id,
+            "quantity": 100,
+            "limit_quantity": 10,
+            "object": self.object.id,
+            "measurement_unit": self.unit.id
+        }
+        url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
+        self.client.force_login(self.laboratorist_user)
+        self.assertEqual(ShelfObject.objects.all().count(), 0)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ShelfObject.objects.all().count(), 0)
+
+    def test_student_group_can_not_create_shelf_object(self):
+        """
+            Students's group are not supposed to be able to create a shelf-object
+        """
+        data = {
+            "row": 0,
+            "col": 0,
+            "shelf": self.shelf.id,
+            "quantity": 100,
+            "limit_quantity": 10,
+            "object": self.object.id,
+            "measurement_unit": self.unit.id
+        }
+        url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
+        self.client.force_login(self.laboratorist_user)
+        self.assertEqual(ShelfObject.objects.all().count(), 0)
+        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ShelfObject.objects.all().count(), 0)
