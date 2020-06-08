@@ -6,6 +6,9 @@ from laboratory.test.utils import OrganizationalStructureDataMixin as Organizati
 
 
 class ShelfObjectViewTestCases(TestCase):
+    """
+        Tests for shelfobject view
+    """
 
     def setUp(self):
         self.infrastructure = OrganizationalStructureData()
@@ -45,7 +48,6 @@ class ShelfObjectViewTestCases(TestCase):
             description="Unidades"
         )
 
-
     def test_permissions(self):
         """
             The lab's group is the only one that has this three permissions:
@@ -76,6 +78,26 @@ class ShelfObjectViewTestCases(TestCase):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form")
+
+    def test_professors_can_not_get_shelf_object_form(self):
+        """
+            Professor's does not have laboratory.add_shelfobject
+            permission they must be redirected
+        """
+        url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
+        self.client.force_login(self.professor_user)
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
+
+    def test_student_can_not_get_shelf_object_form(self):
+        """
+            Student's does not have laboratory.add_shelfobject
+            permission they must be redirected
+        """
+        url = reverse("laboratory:shelfobject_create", kwargs={"lab_pk": self.infrastructure.lab6.pk})
+        self.client.force_login(self.student_user)
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertRedirects(response, reverse('permission_denied'), 302, 200)
 
     def test_lab_group_can_create_shelf_object(self):
         """
