@@ -45,17 +45,18 @@ Run your development server
 
 	$ python manage.py runserver
 
-## Run with composer 
+## Run with composer in development environment
 
 Create your image organilab
 ```bash
-docker build -f docker/Dockerfile -t solvosof/organilab
+docker build -f docker/Dockerfile -t solvosoft/organilab
 ```
 
 Run with **bind mount folder** to sync with changes without rebuild image:
 ```bash
 docker run -it --name organilab -p 80:80 -p 8000:8000 \ 
-    -v `pwd`/src/:/organilab allexiusw/organilab
+    -v `pwd`/src/:/organilab --env DBHOST=YOUR_PG_HOST \
+	solvosoft/organilab
 ```
 
 Enter to the container:
