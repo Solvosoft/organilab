@@ -132,7 +132,7 @@ def report_organization_building(request, *args, **kwargs):
 
     context = {
         #title of the report in verbose_name variable
-        'verbose_name': "Organilab Laboratory Report",
+        'verbose_name': 'Furniture report',
         'object_list': labs,
         'datetime': timezone.now(),
         'request': request,
@@ -298,7 +298,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
             make_book_limited_reached(shelf_objects), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
     context = {
-        'verbose_name': "Organilab Shelf Objects Report",
+        'verbose_name': "Limited shelf objects",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
@@ -446,7 +446,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
             make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
-        'verbose_name': "Organilab Objects Report",
+        'verbose_name': "Reactive precursor objects",
         'rpo': rpo,
         'datetime': timezone.now(),
         'request': request,
