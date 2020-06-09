@@ -132,7 +132,7 @@ def report_organization_building(request, *args, **kwargs):
 
     context = {
         #title of the report in verbose_name variable
-        'verbose_name': 'Furniture report',
+        'verbose_name': "Organization laboratory report",
         'object_list': labs,
         'datetime': timezone.now(),
         'request': request,
