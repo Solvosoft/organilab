@@ -6,7 +6,7 @@ RUN mkdir -p /organilab/logs/ /organilab/static/
 WORKDIR /organilab
 
 RUN apt-get update && \
-    apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal wkhtmltopdf
+    apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal
 
 ADD requirements.txt /organilab
 

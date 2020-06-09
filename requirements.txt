@@ -51,7 +51,6 @@ scipy==1.4.1
 six
 Sphinx==3.0.4
 sphinx-rtd-theme==0.4.3
-WeasyPrint==47
 webencodings==0.5.1
 xhtml2pdf==0.2.4
 xlrd==1.2.0
@@ -63,4 +62,3 @@ django-picklefield==2.1.1
 Markdown==3.2.2
 coreapi==2.3.3
 future==0.18.2
-pdfkit==0.6.1
