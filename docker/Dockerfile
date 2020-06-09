@@ -28,8 +28,6 @@ RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
-ENV DBHOST 172.17.0.1
-
 EXPOSE 80
 
 CMD ["supervisord", "-n"]
