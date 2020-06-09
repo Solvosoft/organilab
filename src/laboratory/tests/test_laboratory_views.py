@@ -87,17 +87,19 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
         self.client.force_login(self.student)
         response = self.client.post(url, follow=True)
-        self.assertNotEqual( Laboratory.objects.filter(id=saved_id).first(), None,
-                                                               "Was not expecting to delete a lab!")
+        self.assertIsNotNone(Laboratory.objects.filter(id=saved_id).first(),
+                             "Was not expecting to delete a lab!")
     
     def test_laboratory_hcodereport_view_student(self):
         """tests that the student is unable to access the hcode report view"""
         url = reverse("laboratory:h_code_reports")
         self.client.force_login(self.student) 
-        response = self.client.get(url, data=kwargs)
+        response = self.client.get(url)
         self.assertTemplateNotUsed(response, 'laboratory/h_code_report.html',
                                              "was not expecting to access this view with student user")
     
+    #TODO admin can do HCODEREPORT
+
     def test_laboratory_create_view_get_admin(self):
         """tests that admin user can get to the create laboratory view"""
         url = reverse("laboratory:create_lab")
@@ -191,8 +193,8 @@ class LaboratoryViewTestCase(TestCase):
         url = reverse("laboratory:laboratory_delete", kwargs=kwargs)
         self.client.force_login(self.admin_dep3)
         response = self.client.post(url, follow=True)
-        self.assertNotEqual( Laboratory.objects.filter(id=saved_id).first(), None,
-                                                               "Was not expecting to delete a lab!")
+        self.assertIsNotNone(Laboratory.objects.filter(id=saved_id).first(),
+                             "Was not expecting to delete a lab!")
 
     def test_laboratory_select_view_student(self):
         """tests that students can access select lab view"""
@@ -282,3 +284,18 @@ class LaboratoryViewTestCase(TestCase):
         self.assertTemplateNotUsed(response, "ajax/lab_admins_list.html", 
                                              "Was not expecting to get to this page in lab5 as a dep3 admin")
 
+    def test_laboratory_ajax_create_admins_user_anonymous(self):
+        """test that anonymous users are not able to post to this view and create a lab admin"""
+        #laboratory_ajax_create_admins_user is broken, we need to fix it, 
+        #'Laboratory' object has no attribute 'lab_admins'
+        kwargs = { "pk": self.lab5.id}
+        data = urlencode({            
+            'username': "test_admin",
+            'email': "patito@gmail.com",
+            'password': "supersecretpassword"
+            })
+        url = reverse("laboratory:laboratory_ajax_create_admins_user", kwargs=kwargs)
+        response = self.client.post(url, data, content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTemplateNotUsed(response, "ajax/lab_admins_create.html", 
+                                             "Was not expecting to create an admin without a logged in user")
+    
