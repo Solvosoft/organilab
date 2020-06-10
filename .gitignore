@@ -107,3 +107,6 @@ src/beat.db
 #vscode
 .vscode/
 src/logs/
+
+#avoid postgres directory
+docker/postgres
