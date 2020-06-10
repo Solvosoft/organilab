@@ -24,8 +24,8 @@ COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
 ADD src /organilab
 
-RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN python manage.py loaddevstatic --settings=organilab.settings
+RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
 EXPOSE 80
