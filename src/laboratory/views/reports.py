@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator
 
 #for xhtml2pdf
 from xhtml2pdf import pisa
-from django.template import Context
 import os
 
 from django.utils.translation import ugettext as _
