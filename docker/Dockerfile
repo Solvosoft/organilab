@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7-buster
+FROM python:3.6.4-stretch
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /organilab/logs/ /organilab/static/
@@ -10,8 +10,9 @@ RUN apt-get update && \
 
 ADD requirements.txt /organilab
 
-RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
-pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
+RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt && \
+pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
 
 RUN apt-get -y autoremove && \
      apt-get -y clean   && \
@@ -24,8 +25,7 @@ COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 ADD src /organilab
 
 RUN python manage.py loaddevstatic --settings=organilab.settings
-RUN python manage.py collectstatic  --noinput --settings=organilab.settings
-
+RUN python manage.py collectstatic --noinput --settings=organilab.settings
 RUN chown -R www-data:www-data /organilab
 
 EXPOSE 80

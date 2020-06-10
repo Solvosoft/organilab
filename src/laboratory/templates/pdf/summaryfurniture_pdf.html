@@ -1,42 +1,23 @@
+{% extends 'pdf/base_pdf.html' %}
 {% load i18n %} 
-
-<html>
-	<head>
-		<style>
-			@page {
-				margin: 3cm 2cm; padding-left: 1.5cm;
-				@top-left {
-					content: "{% trans "Organilab Summary Furniture Report" %}";
-				}
-				@top-right {
-					content: "{% trans "Date:" %} {{ datetime }}";
-				}
-				@bottom-right {
-					content: "{% trans "Page" %} " counter(page)
-					" {% trans "of" %} " counter(pages) ;
-				}
-				@bottom-left {
-					content:  "{% trans "User:" %} {{ request.user }}";
-					color: red;
-				}
-			}
-			
-			body {
-				text-align: justify
-			}
-			h3 {
-				margin-right: 150px;
-			}
-			h5 {
-				background: gainsboro; 
-				margin-right: 150px;
-			}
-
-		</style>
-	</head>
-
-	<body>
-
+{% block extra_css %}
+    .name {
+        width: 50%;
+    }	
+	body {
+		text-align: justify
+	}
+	h3 {
+		margin-right: 150px;
+	}
+	h5 {
+		background-color: gainsboro; 
+		margin-right: 150px;
+		line-height:12px;
+	}
+</style>
+{% endblock%}
+{% block pdf_content %}
 	{% for furniture in object_list %}
 		<h3>
         	{% trans "Furniture:" %} {{ furniture.name }}
@@ -57,6 +38,4 @@
 		{% endfor %}
 		<br />
 	{% endfor %}
-
-	</body>
-</html>
+{% endblock %}

@@ -1,8 +1,6 @@
 {% extends 'pdf/base_pdf.html' %}
 {% load i18n %}
 
-{% block verbose_name %}{% trans "Organilab Shelf Objects Report" %}{% endblock %}
-
 {% block pdf_content %}
   {% for obj in object_list %}
     <h3>{{ obj }}</h3>
