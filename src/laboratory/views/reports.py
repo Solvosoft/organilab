@@ -243,6 +243,7 @@ def report_shelf_objects(request, *args, **kwargs):
         shelf_objects = ShelfObject.objects.filter(pk=var)
 
     context = {
+        'verbose_name': "Organilab Shelf Objects Report",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
@@ -251,14 +252,17 @@ def report_shelf_objects(request, *args, **kwargs):
 
     template = get_template('pdf/shelf_object_pdf.html')
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition']='attachment; filename="report_shelf_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8'
+    )
+    if pisaStatus.err:
+        return HttpResponse(
+            'We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html)
+        )
     return response
 
 
