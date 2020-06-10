@@ -412,9 +412,11 @@ def report_objects(request, *args, **kwargs):
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
-
+    verbose_name =  'Reactives report' 
+    if type_id == "1": verbose_name = 'Materials report'
+    if type_id == "2": verbose_name = 'Equipments report'
     context = {
-        'verbose_name': "Organilab Objects Report",
+        'verbose_name':  verbose_name,
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
