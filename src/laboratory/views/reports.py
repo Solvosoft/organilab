@@ -558,20 +558,21 @@ def report_h_code(request, *args, **kwargs):
     template = get_template('pdf/hcode_pdf.html')
 
     context = {
+        'verbose_name': "H code report",
         'object_list': object_list,
         'datetime': timezone.now(),
         'request': request,
-
     }
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
