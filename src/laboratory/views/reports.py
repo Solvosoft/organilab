@@ -13,7 +13,6 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from weasyprint import HTML
 
 #for xhtml2pdf
 from xhtml2pdf import pisa
