@@ -415,7 +415,7 @@ def report_objects(request, *args, **kwargs):
     if type_id == "1": verbose_name = 'Materials report'
     if type_id == "2": verbose_name = 'Equipments report'
     context = {
-        'verbose_name':  verbose_name,
+        'verbose_name': verbose_name,
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
@@ -424,8 +424,7 @@ def report_objects(request, *args, **kwargs):
     response = HttpResponse(content_type='application/pdf')
     html = template.render(context=context)
     response['Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(
-	html, dest=response, link_callback=link_callback, encoding='utf-8')
+    pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
