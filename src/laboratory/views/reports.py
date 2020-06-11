@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator
 
 #for xhtml2pdf
 from xhtml2pdf import pisa
-from django.template import Context
 import os
 
 from django.utils.translation import ugettext as _
@@ -243,6 +242,7 @@ def report_shelf_objects(request, *args, **kwargs):
         shelf_objects = ShelfObject.objects.filter(pk=var)
 
     context = {
+        'verbose_name': "Organilab Shelf Objects Report",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
@@ -251,14 +251,17 @@ def report_shelf_objects(request, *args, **kwargs):
 
     template = get_template('pdf/shelf_object_pdf.html')
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition']='attachment; filename="report_shelf_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8'
+    )
+    if pisaStatus.err:
+        return HttpResponse(
+            'We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html)
+        )
     return response
 
 
@@ -408,9 +411,11 @@ def report_objects(request, *args, **kwargs):
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
-
+    verbose_name =  'Reactives report' 
+    if type_id == "1": verbose_name = 'Materials report'
+    if type_id == "2": verbose_name = 'Equipments report'
     context = {
-        'verbose_name': "Organilab Objects Report",
+        'verbose_name': verbose_name,
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
@@ -419,8 +424,7 @@ def report_objects(request, *args, **kwargs):
     response = HttpResponse(content_type='application/pdf')
     html = template.render(context=context)
     response['Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(
-	html, dest=response, link_callback=link_callback, encoding='utf-8')
+    pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
@@ -554,20 +558,21 @@ def report_h_code(request, *args, **kwargs):
     template = get_template('pdf/hcode_pdf.html')
 
     context = {
+        'verbose_name': "H code report",
         'object_list': object_list,
         'datetime': timezone.now(),
         'request': request,
-
     }
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
