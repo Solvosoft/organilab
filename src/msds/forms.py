@@ -17,7 +17,7 @@ from django.conf import settings
 
 class FormMSDSobject(forms.ModelForm):
     captcha = ReCaptchaField(widget=ReCaptchaWidget())
-    file = forms.FileField()
+    file = forms.FileField(widget=forms.FileInput)
     ext_whitelist = ['.pdf', '.odt', '.docx', '.doc']
 
     def clean_file(self):
@@ -34,8 +34,9 @@ class FormMSDSobject(forms.ModelForm):
         new_path = os.path.join(settings.STATIC_CRAWL, "%s%s" % (
             m.hexdigest(), ext))
 
-        with open(new_path, 'wb') as arch:
-            arch.write(data)
+        if os.path.exists(settings.STATIC_CRAWL):
+            with open(new_path, 'wb') as arch:
+               arch.write(data)
 
         return new_name
 
@@ -66,9 +67,9 @@ class FormMSDSobjectUpdate(forms.ModelForm):
             new_name = "%s%s" % (m.hexdigest(), ext)
             new_path = os.path.join(settings.STATIC_CRAWL, "%s%s" % (
                 m.hexdigest(), ext))
-
-            with open(new_path, 'wb') as arch:
-                arch.write(data)
+            if os.path.exists(settings.STATIC_CRAWL):
+                with open(new_path, 'wb') as arch:
+                    arch.write(data)
 
             dev = new_name
         elif self.instance.file:
