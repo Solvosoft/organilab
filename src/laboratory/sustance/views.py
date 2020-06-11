@@ -69,13 +69,10 @@ class SubstanceDelete(DeleteView):
 
 
 @method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')
-class SustanceListJson(BaseDatatableView, UserPassesTestMixin):
+class SustanceListJson(BaseDatatableView):
     model = Object
     columns = ['id','name','cas_code','action']
     max_display_length = 500
-
-    def test_func(self):
-        return True
 
     def filter_queryset(self, qs):
         qs = qs.filter(type=Object.REACTIVE)

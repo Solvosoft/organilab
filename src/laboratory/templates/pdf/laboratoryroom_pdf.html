@@ -1,39 +1,54 @@
 {% extends 'pdf/base_pdf.html' %}
 {% load i18n %} 
-
-{% block verbose_name %}{% trans "Organilab Laboratory Report" %}{% endblock %}
-
+{% block extra_css %}
+    .name {
+        width: 50%;
+    }
+</style>
+{% endblock%}
 {% block pdf_content %}
     {% for laboratory_room in object_list %}
-        <h3 id="h3-1">
-            {{ laboratory_room.name }}
-        </h3>
-            <table >
-        {% for furniture in laboratory_room.furniture_set.all %}
-            <tr id="h5-1" >
-                <th colspan="3" >{% trans "Furniture:" %} {{ furniture.name }}</th>
+        <table>
+            <tr>
+                <th colspan="3"><h2>{{ laboratory_room.name }}</h2></th>
             </tr>
-            <tr  >
-                <th >{% trans "Code" %} </th>
-                <th >{% trans "Name" %} </th>
-                <th >{% trans "Quantity" %} </th>
-                <th >{% trans "Shelf" %} </th>
-            </tr>
+            {% for furniture in laboratory_room.furniture_set.all %}            
+                <tr>
+                    <th colspan="3" >{% trans "Furniture:" %} {{ furniture.name }}</th>
+                </tr>
+                <tr>
+                    <th >{% trans "Code" %} </th>
+                    <th class="name" >{% trans "Name" %} </th>
+                    <th >{% trans "Quantity" %} </th>
+                    <th >{% trans "Shelf" %} </th>
+                </tr>
                 {% for obj in furniture.get_objects %}
-                        <tr>
-                            <td>{{obj.object.code }}</td>
-                            <td>{{obj.object.name }}</td>
-                            <td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
-                            <td>{{obj.shelf.name}}</td>
-                         </tr>
-
+                    <tr>
+                        <td>{{obj.object.code }}</td>
+                        <td class="name">{{obj.object.name }}</td>
+                        <td>{{obj.quantity}} {{obj.get_measurement_unit_display}}</td>
+                        <td>{{obj.shelf.name}}</td>
+                    </tr>
                 {% empty %}
-                    {% trans "No Shelf Elements" %}
+                    <tr>           
+                        <td colspan="3">{% trans "No Shelf Elements" %}</td>
+                    </tr>
                 {% endfor %}
-        {% endfor %}
-    </table>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+            {% empty %}
+                <tr>           
+                    <td colspan="3">{% trans "No data" %}</td>
+                </tr>
+            {% endfor %}
+        </table>
         <br />
-    {% empty %} 
-        {% trans "No Labs" %}   
+    {% empty %}
+        <table>
+            <tr> 
+                <th><h2>{% trans "No Labs" %}</h2><th>
+            </tr>
+        </table>
     {% endfor %}
 {% endblock %}

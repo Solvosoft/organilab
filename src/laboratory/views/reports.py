@@ -13,7 +13,11 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from weasyprint import HTML
+
+#for xhtml2pdf
+from xhtml2pdf import pisa
+import os
+
 from django.utils.translation import ugettext as _
 
 from laboratory.forms import H_CodeForm
@@ -25,6 +29,46 @@ import django_excel
 from django.db.models.aggregates import Sum, Min
 
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from organilab import settings
+from django.contrib.staticfiles import finders
+
+#Convert html URI to absolute
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+        result = list(os.path.realpath(path) for path in result)
+        path=result[0]
+    else:
+        sUrl = settings.STATIC_URL
+        sRoot = settings.STATIC_ROOT
+        mUrl = settings.MEDIA_URL
+        mRoot = settings.MEDIA_ROOT
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
+
+
 
 
 def make_book_organization_laboratory(objects):
@@ -94,22 +138,22 @@ def report_organization_building(request, *args, **kwargs):
             make_book_organization_laboratory(labs), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
     context = {
+        #title of the report in verbose_name variable
+        'verbose_name': "Organization laboratory report",
         'object_list': labs,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
     }
-
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
     template = get_template('pdf/organizationlaboratory_pdf.html')
+    html = template.render(context=context)
 
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -161,23 +205,26 @@ def report_labroom_building(request, *args, **kwargs):
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
             make_book_laboratory(rooms), fileformat, file_name="Laboratories.%s" % (fileformat,))
-
-    template = get_template('pdf/laboratoryroom_pdf.html')
-
+        
+    
     context = {
+        #set your report title in verbose_name
+        'verbose_name': "Organilab Laboratory Report",
         'object_list': rooms,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
     }
-
-    html = template.render(context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+    template = get_template('pdf/laboratoryroom_pdf.html')
+    #added explicit context
+    html = template.render(context=context)
+    
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -195,6 +242,7 @@ def report_shelf_objects(request, *args, **kwargs):
         shelf_objects = ShelfObject.objects.filter(pk=var)
 
     context = {
+        'verbose_name': "Organilab Shelf Objects Report",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
@@ -203,14 +251,17 @@ def report_shelf_objects(request, *args, **kwargs):
 
     template = get_template('pdf/shelf_object_pdf.html')
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition']='attachment; filename="report_shelf_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8'
+    )
+    if pisaStatus.err:
+        return HttpResponse(
+            'We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html)
+        )
     return response
 
 
@@ -258,20 +309,20 @@ def report_limited_shelf_objects(request, *args, **kwargs):
             make_book_limited_reached(shelf_objects), fileformat, file_name="Laboratories.%s" % (fileformat,))
 
     context = {
+        'verbose_name': "Limited shelf objects",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    html = template.render(context=context)
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="report_limited_shelf_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -360,22 +411,22 @@ def report_objects(request, *args, **kwargs):
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
-
+    verbose_name =  'Reactives report' 
+    if type_id == "1": verbose_name = 'Materials report'
+    if type_id == "2": verbose_name = 'Equipments report'
     context = {
+        'verbose_name': verbose_name,
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    html = template.render(context=context)
+    response['Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -407,19 +458,21 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
             make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
+        'verbose_name': "Reactive precursor objects",
         'rpo': rpo,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': lab
     }
 
-    html = template.render(context=context).encode('UTF-8')
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    html = template.render(context=context)
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
+    pisaStatus = pisa.CreatePDF(
+	    html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -467,23 +520,22 @@ def report_furniture(request, *args, **kwargs):
         return django_excel.make_response_from_book_dict(
             make_book_furniture_objects(furniture), fileformat, file_name="Furniture.%s" % (fileformat,))
 
-    template = get_template('pdf/summaryfurniture_pdf.html')
 
     context = {
+        'verbose_name': "Organilab Summary Furniture Report",
         'object_list': furniture,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': lab
     }
-
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+    template = get_template('pdf/summaryfurniture_pdf.html')
+    html = template.render(context=context)
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
@@ -506,20 +558,21 @@ def report_h_code(request, *args, **kwargs):
     template = get_template('pdf/hcode_pdf.html')
 
     context = {
+        'verbose_name': "H code report",
         'object_list': object_list,
         'datetime': timezone.now(),
         'request': request,
-
     }
 
-    html = template.render(
-        context=context).encode("UTF-8")
+    html = template.render(context=context)
 
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
+    pisaStatus = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
 
 
