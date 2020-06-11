@@ -69,8 +69,10 @@ def ending_of_styles(info_recipient):
     width = str(info_recipient['width_value']) + info_recipient['width_unit']
     page_size = height + ' ' + width
     margin = "1mm"
-    ending_tags = "@page {size: %s;margin: %s;} @media print{ body{ width: %s; height: %s;margin:%s;} body { -pdf-keep-in-frame-mode: shrink;} } %s" % (
-        page_size, margin, height, width, margin, ending_tags)
+    #body stretch is needed because we don't have the image scalated.
+    #You can take away the body stretch if you have properly size to the image you want to render
+    #Is a better solution not use body stretch, and keep the flow in different pages
+    ending_tags = "@page { margin: 3cm 2cm; padding-left: 1.5cm; size: a4 portrait; @frame header_frame { /* margin-left equal as page-left*/ margin-left: 2cm; text-align: right; -pdf-frame-content: header_content; /* left 0 to have the same left with the content */ left: 0; width: 512pt; top: 50pt; height: 30pt; } @frame footer_frame { /* reproduced solution to have the same left*/ margin-left: 2cm; -pdf-frame-content: footer_content; left: 0; width: 512pt; top: 772pt; height: 20pt; } } body { -pdf-keep-in-frame-mode: shrink;} %s" % (ending_tags)
     return ending_tags
 
 
@@ -80,7 +82,10 @@ def render_body(json_elements, work_area):
     for elem in json_elements:
         style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
         body_data += style_parser.set_tag()
-
+    header='<div id="header_content"><table width="100%"><tr><td style="text-align:left;">verbose title</td><td style="text-align:right;">Date here</td></tr></table></div>'
+    footer='<div id="footer_content"><table width="100%"><tr><td style="text-align:left;">user here</td><td style="text-align:right;"><pdf:pagenumber> of <pdf:pagecount></td></tr></table></div>'
+    body_data+=footer
+    body_data+=header
     return body_data
 
 #TODO check if we need this change  from px to em
