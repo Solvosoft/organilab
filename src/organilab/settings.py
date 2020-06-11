@@ -203,8 +203,10 @@ USE_TZ = True
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_CRAWL = os.path.join(BASE_DIR, 'static/')
+STATIC_CRAWL = os.path.join(BASE_DIR, 'static/msds/')
 
+if not os.path.exists(STATIC_CRAWL):
+    os.makedirs(STATIC_CRAWL)
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Authentication settings
