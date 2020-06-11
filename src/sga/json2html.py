@@ -69,7 +69,7 @@ def ending_of_styles(info_recipient):
     width = str(info_recipient['width_value']) + info_recipient['width_unit']
     page_size = height + ' ' + width
     margin = "1mm"
-    ending_tags = "@page {size: %s;margin: %s;} @media print{body{ width: %s; height: %s;margin:%s;}} %s" % (
+    ending_tags = "@page {size: %s;margin: %s;} @media print{ body{ width: %s; height: %s;margin:%s;} body { -pdf-keep-in-frame-mode: shrink;} } %s" % (
         page_size, margin, height, width, margin, ending_tags)
     return ending_tags
 
