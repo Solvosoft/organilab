@@ -2,23 +2,27 @@
 
 <html>
     <head>
-        <meta charset="UTF-8"> 
         <style>
             @page {
-                margin: 3cm 2cm; padding-left: 1.5cm;
+                /* 5cm set the margin to the content */
+                margin: 5cm 2cm; padding-left: 1cm;
                 size: a4 portrait;
                 @frame header_frame {
-                    /* margin-left equal as page-left*/
+                    /*2cm equal to page */
                     margin-left: 2cm;
+                    margin-botton: 2cm;
+                    padding-left: 1cm;
                     text-align: right;
                     -pdf-frame-content: header_content;
-                    /* left 0 to have the same left with the content */
-                    left: 0; width: 512pt; top: 50pt; height: 30pt;
+                    /* left 0 to have the same left like page */
+                    /* set according to the text if it is left the header will not appear */
+                    left: 0; width: 512pt; top: 50pt; height: 100pt;
                 }
                 @frame footer_frame {
-                    /* reproduced solution to have the same left*/
-                    margin-left: 2cm;
+                    /* reproducing the solution to have the same margin as page has*/ 
+                     margin-left: 2cm;
                     -pdf-frame-content: footer_content;
+                    /* left 0 to start in the same place like content start*/
                     left: 0; width: 512pt; top: 772pt; height: 20pt;
                 }
             }
@@ -47,6 +51,18 @@
                         {% trans "Date:" %} {{ datetime }}
                     </td>
                 </tr>
+                <tr><td>&nbsp;</td></tr>
+                {% for laboratory in object_list %}
+                    <tr>
+                        <th colspan="1"><h3>{{ laboratory.name }}</h3></th>
+                    </tr>
+                    <tr>
+                        <th colspan="1">{% trans "Location" %}: {{ laboratory.location }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="1">{% trans "Phone" %}: {{ laboratory.phone_number }}</th>
+                    </tr>
+                {% endfor %}
             </table>
         </div>
         

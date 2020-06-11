@@ -1639,6 +1639,10 @@ msgstr "No hay Objetos"
 msgid "Organilab Organization Laboratory Report"
 msgstr "Informe del laboratorio de la Organización Organilab"
 
+#: templates/pdf/organizationlaboratory_pdf.html:4
+msgid "Report Organization Laboratory"
+msgstr "Reporte de laboratorio Organización"
+
 #: templates/pdf/shelf_object_pdf.html:4
 msgid "Organilab Shelf Objects Report"
 msgstr "Organilab: Reporte de objetos de estante"
