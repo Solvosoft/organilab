@@ -1,13 +1,16 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from fontawesome.fields import IconField
 # Create your models here.
-from  django.conf import settings
+
 
 class MSDSObject(models.Model):
     provider = models.CharField(_("Provider"), max_length=300)
-    file = models.FilePathField(path=settings.STATIC_CRAWL, verbose_name=_("MSDS File"))
+    file = models.FileField(upload_to="msds", verbose_name=_("MSDS File"),
+                            validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+
     product = models.CharField(_("Product"), max_length=300)
 
     class Meta:

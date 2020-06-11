@@ -93,6 +93,7 @@ class MSDSObjectCRUD(CRUDView):
     update_form = FormMSDSobjectUpdate
     check_login = False
     check_perms = False
+    form_widget_exclude = ['file']
 
     def decorator_update(self, viewclass):
         return login_required(viewclass)
