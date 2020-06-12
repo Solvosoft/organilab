@@ -53,8 +53,6 @@ INSTALLED_APPS = [
     "djreservation",
     "celery",
     'ajax_select',
-    'crispy_forms',
-    'cruds_adminlte',
     'location_field.apps.DefaultConfig',
     'mptt',
     'constance',
@@ -107,7 +105,6 @@ RECAPTCHA_PRIVATE_KEY = os.getenv(
 RECAPTCHA_PUBLIC_KEY = os.getenv(
     'RECAPTCHA_PUBLIC_KEY', '6LdxAmAUAAAAAH2R-6v5EZUALYcqs8AJyrlkqo7_')
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
 IMAGE_CROPPING_JQUERY_URL = None
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -329,7 +326,6 @@ INTERNAL_IPS = ('127.0.0.1',)
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',
         'height': 500,
         'width': 875,
     },

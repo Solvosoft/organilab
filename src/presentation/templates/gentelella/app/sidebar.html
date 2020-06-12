@@ -1,0 +1,97 @@
+{% load i18n shelf_position laboratory static %}
+
+
+<div class="left_col scroll-view">
+    <div class="navbar nav_title" style="border: 0;  ">
+        <a href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"
+           class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
+    </div>
+    <div class="clearfix"></div>
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img src="{% static 'img/robot.png' %}" alt="{% trans 'user profile icon' %}"
+                 class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+            <span>{% trans 'Welcome,' %}</span>
+            {% if request.user.is_authenticate %}
+            <h2>request.user.get_username</h2>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+      {% include 'partials/laboratories_menu.html'%}
+        <div class="menu_section">
+            <ul class="nav side-menu">
+                <li>
+                    <a>
+                        <i class="fa fa-tags"></i>
+                        {% trans 'SGA Management' %}
+                        <span class="fa fa-chevron-down">
+                    </span>
+                    </a>
+                    <ul class="nav child_menu">
+                        <li>
+                            <a href="{% url 'msds:index_msds'%}">
+                                {% trans 'MSDS: Security sheets' %}
+                            </a>
+                        </li>
+                        <!--
+                        {% if user.is_authenticated%}
+                        <li>
+                            <a   href="{% url 'sga:index_sga' %}" title="{% trans 'GHS' %}" >
+                                {% trans 'SGA Labeling' %} </a>
+                        </li>
+                        {% endif %}
+                        -->
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+
+                <li>
+                    <a>
+                        <i class="fa fa-tasks fa-fw"></i>
+                        {% trans 'Risk Management' %}
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        <li>
+                            <a href="{% url 'riskmanagement:riskzone_list' %}">
+                                {% trans 'Risk zones' %}</a>
+                        </li>
+                        <li><a id='reports' href="{% url 'laboratory:h_code_reports' %}"
+                               title="{% trans 'Report View' %}">
+                            {% trans 'H code Reports' %}</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}"
+                       title="{% trans 'blog entries' %}">
+                        <i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'msds:regulation_docs' %}"
+                       title="{% trans 'Regulation documents' %}">
+                        <i class="fa fa-flag fa-fw"></i> {% trans 'Regulation documents' %}
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">
+                        <i class="fa fa-wrench fa-fw"></i> {% trans 'Feedback' %}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-footer hidden-print  nohidden">
+        {% if request.user.is_authenticated %}
+        <a id="fsb_50" title="" href="{% url 'logout' %}">
+            <span class="fa fa-power-off" aria-hidden="true"></span>
+        </a>
+        {% endif %}
+    </div>
+
+</div>

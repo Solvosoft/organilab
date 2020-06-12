@@ -1,77 +1,42 @@
-{% load static %}
-{% load i18n %}
-{% load shelf_position %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'gentelella/base.html' %}
 
-<head>
-  {# METADATA #}
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+{% load static i18n shelf_position %}
 
-  {% block meta-keywords %} {% endblock %}
-  {% block extrameta%} {% endblock %}
-  {# TITLE #}
-  <title>Organilab | {% block title %}Index{% endblock %}</title>
+{% block title %}Organilab {% endblock %}
 
-  {# CSS #}
+{% block extra_css %}
   <link href="{% static 'css/organilab.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
-
-  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-  <link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/themify-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet" >
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-
   {% block css %}{% endblock %}
 
-  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_head %}
   {% block link %}{% endblock link %}
   {% block script %}{% endblock script %}
-</head>
+{% endblock %}
 
-<body {% block bodyklss %}{%endblock%}>
-  {# NAV #}
-  {% include 'partials/navbar.html' %}
+{% block content_block_wrap %}
+  <div class="x_panel">
+      <div class="x_content">
+   {% block content %}
+    <!-- {{ content }} -->
+  {% endblock content %}
+      </div>
+  </div>
+{% endblock content_block_wrap %}
 
-  {% include 'partials/sidebar.html' %}
-  {# MESSAGES #}
+
+{% block messages %}
   {% include 'partials/messages.html' %}
+{% endblock %}
 
-  {# CONTENT #}
-  {% block wrapcontent %}
-  <div id="site_content"  >
-  <div id="page-wrapper"   data-color="blue"   class="wizard-card div cardbody" >
-      {% block content %}
-      {% endblock %}
-  </div>
-  </div>
- {% endblock %}
-{# FOOTER #}
-{% include 'partials/footer.html' %}
-
-  <!-- En la carpeta static, del repo , datetimepicker, copiar-->
+{% block javascripts %}
+  {{ block.super }}
   <script src="{% static 'js/sweetalert2.min.js' %}"></script>
   <script src="{% static 'js/organilab.js' %}"></script>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
-  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-
   <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-  <div class="jsmessage"></div>
-  {% block js %}{% endblock %}
-</body>
 
-</html>
+{% endblock %}
