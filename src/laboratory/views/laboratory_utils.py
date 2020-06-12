@@ -10,7 +10,7 @@ def convert_hcodereport_list(data):
     for result in data:
         reactive_id = result['reactive_id']
         result['unit'] = ShelfObject.get_units(result['unit'])
-        result['h_codes'] = ",".join(Object.objects.filter(pk=reactive_id).values_list('h_code__code', flat=True))
+        result['h_codes'] = ",".join(Object.objects.filter(pk=reactive_id).values_list('sustancecharacteristics__h_code__code', flat=True))
         context.append([
             result['name'], result['room'], result['furniture'],
             result['reactive'],  result['quantity'], result['unit'],
