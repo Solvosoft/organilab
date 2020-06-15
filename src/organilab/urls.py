@@ -43,7 +43,12 @@ urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     url(r'^ajax_select/', include(ajax_select_urls)),
+
     url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
+
+    url(r'^blog/', include('djgentelella.blog.urls', namespace='gentelella')),
+    url(r'^markitup/', include('markitup.urls')),
+
     url(r'^comments/', include('django_comments.urls')),
     url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
     url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),

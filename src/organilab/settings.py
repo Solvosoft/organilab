@@ -76,8 +76,8 @@ INSTALLED_APPS = [
     'risk_management',
     'markitup',
     'djgentelella',
+    'djgentelella.blog',
     'chunked_upload',
-
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -143,7 +143,7 @@ WSGI_APPLICATION = 'organilab.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -152,6 +152,14 @@ DATABASES = {
         'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
         'HOST': os.getenv('DBHOST', '127.0.0.1'),
         'PORT': os.getenv('DBPORT', '5432'),
+    }
+}
+"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'organilab.sqlite'),
     }
 }
 

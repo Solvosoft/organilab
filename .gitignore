@@ -98,3 +98,8 @@ ENV/
 .settings
 
 media/
+
+# DB
+*.sqlite
+*.db
+
