@@ -1,10 +1,10 @@
 {% extends 'pdf/base_pdf.html' %}
 {% load i18n %}
 {% block pdf_content %}
-    <table class="table">
+    <table>
         {% for reactive in object_list %}
             <tr>
-                <td colspan="5"><h2 class="text-center">{{reactive.lab}}</h2></td>
+                <td colspan="4"><h2 class="text-center">{{reactive.lab}}</h2></td>
             </tr>
             <tr>
                 <th>{% trans 'Reactive'%}</th>
@@ -12,7 +12,7 @@
                 <th>{% trans 'Furniture'%}</th>
                 <th>{% trans 'H Codes'%}</th>
                 <th>{% trans 'Quantity'%}</th>
-            <tr>
+            </tr>
             {% for react in reactive.reactives %}
                 <tr>
                     <td>{{react.reactive}}</td>
@@ -24,11 +24,11 @@
                         {% endfor %}
                     </td>
                     <td>{{react.quantity}} {{react.unit}}</td>
-                <tr>
+                </tr>
             {% endfor %}
         {% empty %}
             <tr>
-                <td>{% trans "You have not assigned laboratories yet, or there is no laboratories registered" %}</td>
+                <td colspan='4'>{% trans "You have not assigned laboratories yet, or there is no laboratories registered" %}</td>
             </tr>
         {% endfor %}
     </table>
