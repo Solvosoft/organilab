@@ -6,8 +6,6 @@ Free as freedom will be 26/8/2016
 @author: luisza
 ''' 
 
-from __future__ import unicode_literals
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator

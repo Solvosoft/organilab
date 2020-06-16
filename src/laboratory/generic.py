@@ -3,8 +3,6 @@ Created on 11/8/2016
 
 @author: natalia
 '''
-from __future__ import unicode_literals
-
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator

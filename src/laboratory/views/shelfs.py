@@ -4,7 +4,6 @@ Created on 26/12/2016
 
 @author: luisza
 '''
-from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.decorators import login_required

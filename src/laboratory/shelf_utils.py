@@ -6,7 +6,6 @@ Free as freedom will be 13/10/2016
 @author: luisza
 '''
 
-from __future__ import unicode_literals
 import json
 from laboratory.models import Shelf
 
