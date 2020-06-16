@@ -26,28 +26,28 @@ def check_user_has_perm(user, perm):
 
 def get_user_laboratories(user, q=None):
     user_org = OrganizationStructure.os_manager.filter_user(user) 
-    return filter_laboratorist_technician_student(user, user_org, q)
+    return filter_laboratorist_profile_student(user, user_org, q)
 
 
-def filter_laboratorist_technician_student(user,user_org, q=None):
+def filter_laboratorist_profile_student(user,user_org, q=None):
     queryset = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                      Q(laboratorists__pk=user.pk) |
-                                     Q(principaltechnician__credentials=user.pk) |
+                                     Q(profile__user=user.pk) |
                                      Q(organization__in=user_org)  ).distinct()
     if q is not None:
         queryset = queryset.filter(name__icontains=q)
     return queryset
 
 
-def filter_laboratorist_technician(user, user_org=None):
+def filter_laboratorist_profile(user, user_org=None):
     if user_org is None:
         user_org = OrganizationStructure.os_manager.filter_user(user)
     return Laboratory.objects.filter( Q(laboratorists__pk=user.pk) |
-                                      Q(principaltechnician__credentials=user.pk) |
+                                      Q(profile__user=user.pk) |
                                       Q (organization__in=user_org) 
                                     ).distinct()
 
-def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_technician):
+def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_profile):
     if not user or not lab:
         return False
     

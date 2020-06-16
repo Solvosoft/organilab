@@ -42,7 +42,7 @@ class SearchObject(ListView):
              organizations=[]
         labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                       Q(laboratorists__pk=user.pk) | 
-                                      Q(principaltechnician__credentials=user.pk) | 
+                                      Q(profile__user=user.pk) |
                                       Q (organization__in=organizations) 
                                       ).distinct()
         query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
