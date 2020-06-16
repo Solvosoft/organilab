@@ -58,7 +58,7 @@
 	                <tr  >
 	                <th >{% trans "Phone" %} </th>
 	                <th >{% trans "Location" %} </th>
-	                <th >{% trans "Technicians" %} </th>
+	                <th >{% trans "Profiles" %} </th>
 	                <th >{% trans "Phones" %} </th>
 	                <th >{% trans "Emails" %} </th>
 	            </tr>
@@ -66,13 +66,13 @@
 	                 <td>{{laboratory.phone_number }}</td>
 	                 <td>{{laboratory.location }}</td>
 	                 <td>  <ul>                      
-	                         {% for assigned in laboratory.principaltechnician_set.all %}
-	                          <li> {{ assigned.name }}</li>
+	                         {% for assigned in laboratory.profile_set.all %}
+	                          <li> {{ user.first_name }}</li>
 	                         {% endfor %}
 	                           </ul>    
 	                 </dt>
 	                 <td>  <ul>                      
-	                         {% for assigned in laboratory.principaltechnician_set.all %}
+	                         {% for assigned in laboratory.profile_set.all %}
 	                          <li> {{ assigned.phone_number }}</li>
 	                         {% endfor %}
 	                           </ul>    

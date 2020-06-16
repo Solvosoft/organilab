@@ -10,15 +10,15 @@
         <!-- repeat allow us to repeat the header in each new page-->
         <table repeat="1">
             <tr>
-                <th class="small">{% trans "Technicians" %} </th>
+                <th class="small">{% trans "Profiles" %} </th>
                 <th class="small">{% trans "Phones" %} </th>
                 <th>{% trans "Emails" %} </th>
             </tr>
-            {% for technician in laboratory.principaltechnician_set.all %}
+            {% for profile in laboratory.profile_set.all %}
                 <tr>
-                    <td>{{ technician.name }}</td>
-                    <td>{{ technician.phone_number }}</td>
-                    <td>{{ technician.email }}</td>
+                    <td>{{ profile.user.name }}</td>
+                    <td>{{ profile.phone_number }}</td>
+                    <td>{{ profile.user.email }}</td>
                 </tr>
             {% endfor %}
         </table>

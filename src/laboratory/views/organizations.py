@@ -46,7 +46,7 @@ class OrganizationReportView(ListView):
         context['form'] = self.form
 
         # start report checking  technician
-        if self.technician:
+        if self.profile:
             if self.organization:  # when a organizations is selected
                 organizations_child = OrganizationStructure.os_manager.filter_user(
                     self.user)

@@ -190,7 +190,7 @@ class SelectLaboratoryView(FormView):
             organizations = []
         labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
                                          Q(laboratorists__pk=user.pk) |
-                                         Q(principaltechnician__credentials=user.pk) |
+                                         Q(profile__user=user) |
                                          Q(organization__in=organizations)
                                          ).distinct()
         return labs
