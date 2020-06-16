@@ -21,7 +21,8 @@ import os
 from django.utils.translation import ugettext as _
 
 from laboratory.forms import H_CodeForm
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, OrganizationStructure, PrincipalTechnician
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
+    OrganizationStructure, Profile
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.views.djgeneric import ListView
 from laboratory.decorators import user_group_perms
@@ -74,25 +75,28 @@ def link_callback(uri, rel):
 def make_book_organization_laboratory(objects):
     dev = [
         [_("Name"), _("Phone"), _("Location"), _(
-            "Principal Technician"), _('Phones'), _('Emails')]
+            "Profile"), _('Phones'), _('Emails')]
     ]
     for object in objects:
-        principaltechnician = ""
+        profile = ""
         phones = ""
         emails = ""
-        for ptechnician in object.principaltechnician_set.all():
-            if principaltechnician != "":
-                principaltechnician += " \n"
+
+        profiles_list = Profile.objects.filter(laboratories__in=[object])
+
+        for pr in profiles_list:
+            if profile != "":
+                profile += " \n"
                 phones += " \n"
                 emails += " \n"
-            principaltechnician += ptechnician.name
-            phones += ptechnician.phone_number
-            emails += ptechnician.email
+            profile += pr.user.get_full_name()
+            phones += pr.phone_number
+            emails += pr.user__email
         dev.append([
             object.name,
             object.phone_number,
             object.location,
-            principaltechnician,
+            profile,
             phones,
             emails,
         ])
