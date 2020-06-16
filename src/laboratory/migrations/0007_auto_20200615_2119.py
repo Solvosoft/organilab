@@ -5,6 +5,31 @@ from django.db import migrations, models
 import django.db.models.deletion
 import mptt.fields
 
+def make_restructuration(apps, schema_editor):
+    PrincipalTechnician =   apps.get_model('laboratory', 'PrincipalTechnician')
+    Profile = apps.get_model('laboratory', 'Profile')
+    for pt in PrincipalTechnician.objects.all():
+        user = pt.credentials.all().first()
+        if user:
+            profile= Profile.objects.create(
+                phone_number=pt.phone_number,
+                id_card=pt.id_card,
+                user=user,
+            )
+        if pt.assigned:
+            profile.laboratories.add(pt.assigned)
+
+    OrganizationUserManagement =   apps.get_model('laboratory', 'OrganizationUserManagement')
+    OrganizationStructure =   apps.get_model('laboratory', 'OrganizationStructure')
+
+    for oos in OrganizationStructure.objects.all():
+        oum = OrganizationUserManagement.objects.create(
+            group=oos.group,
+            organization=oos,
+        )
+        for ptn in PrincipalTechnician.objects.filter(organization=oos):
+            for user in pt.credentials.all():
+                oum.users.add(user)
 
 class Migration(migrations.Migration):
 
@@ -22,6 +47,17 @@ class Migration(migrations.Migration):
                 ('group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='auth.Group', verbose_name='Group')),
             ],
         ),
+        migrations.AddField(
+            model_name='organizationusermanagement',
+            name='organization',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                             to='laboratory.OrganizationStructure', verbose_name='Organization'),
+        ),
+        migrations.AddField(
+            model_name='organizationusermanagement',
+            name='users',
+            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
+        ),
         migrations.CreateModel(
             name='Profile',
             fields=[
@@ -32,6 +68,7 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        migrations.RunPython(make_restructuration),
         migrations.RemoveField(
             model_name='organizationstructure',
             name='group',
@@ -39,14 +76,5 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name='PrincipalTechnician',
         ),
-        migrations.AddField(
-            model_name='organizationusermanagement',
-            name='organization',
-            field=mptt.fields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
-        ),
-        migrations.AddField(
-            model_name='organizationusermanagement',
-            name='users',
-            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
-        ),
+
     ]
