@@ -602,6 +602,9 @@ class ObjectList(ListView):
     def get_queryset(self):
         query = super(ObjectList, self).get_queryset()
         if self.get_type():
+            print(query.filter(
+                type=self.get_type(),
+                shelfobject__shelf__furniture__labroom__laboratory__pk=self.lab))
             return query.filter(
                 type=self.get_type(),
                 shelfobject__shelf__furniture__labroom__laboratory=self.lab)
