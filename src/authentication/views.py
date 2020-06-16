@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 from django import forms
 from django.core.exceptions import ValidationError
-from laboratory.models import OrganizationStructure, PrincipalTechnician
+from laboratory.models import OrganizationStructure, Profile
 from constance import config
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
@@ -96,14 +96,12 @@ class SignUpForm(CustomForm, UserCreationForm):
             group=group
         )
         org.save()
-        pt = PrincipalTechnician(name=instance.first_name + " " + instance.last_name,
-                                 phone_number="8888-8888",
-                                 id_card="0-0000-0000",
-                                 email=instance.email,
-                                 organization=org
-                                 )
+        pt = Profile(user=instance,
+                     phone_number="8888-8888",
+                     id_card="0-0000-0000",
+                     organization=org
+                     )
         pt.save()
-        pt.credentials.add(instance)
 
         instance.groups.add(group)
         return instance

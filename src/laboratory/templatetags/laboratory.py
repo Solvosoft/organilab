@@ -6,7 +6,7 @@ Created on 4 may. 2017
 from django import template
 from laboratory.forms import ObjectSearchForm
 from django.shortcuts import get_object_or_404
-from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_technician,\
+from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile,\
     get_user_laboratories
 from laboratory.models import Laboratory
 
@@ -39,7 +39,7 @@ def has_perms(context, codename, lab_pk=None):
             lab = get_object_or_404(Laboratory, pk=lab_pk)
             if check_lab_group_has_perm(
                     user, lab, codename,
-                    filter_laboratorist_technician):
+                    filter_laboratorist_profile):
                 return True
 
     return False
