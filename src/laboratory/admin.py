@@ -13,25 +13,10 @@ class Object_Admin(admin.ModelAdmin):
     list_display = ('code', 'name', 'type', 'is_precursor')
 
 
-class PrincipalTechnician_library_inline(admin.TabularInline):
-    model = models.PrincipalTechnician
-    exclude = ('organization', )
-
-
-class PrincipalTechnician_Organization_inline(admin.TabularInline):
-    model = models.PrincipalTechnician
-    exclude = ('laboratory', 'assigned')
-
-
 class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
     search_fields = ["name", 'laboratories']
     list_display = ["name", 'laboratories']
-    inlines = (PrincipalTechnician_Organization_inline,)
     mptt_level_indent = 20
-
-
-class LaboratoryAdmin(admin.ModelAdmin):
-    inlines = (PrincipalTechnician_library_inline, )
 
 
 class CustomConfigForm(ConstanceForm):
@@ -47,10 +32,12 @@ class ConfigAdmin(ConstanceAdmin):
 admin.site.unregister([Config])
 admin.site.register([Config], ConfigAdmin)
 
-admin.site.register(models.Laboratory, LaboratoryAdmin)
+admin.site.register(models.Laboratory)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
+admin.site.register(models.OrganizationUserManagement)
+admin.site.register(models.Profile)
 admin.site.register(models.ObjectFeatures)
 admin.site.register(models.Object, Object_Admin)
 admin.site.register(models.ShelfObject)
@@ -58,7 +45,6 @@ admin.site.register(models.Solution)
 admin.site.register(models.Catalog)
 
 
-admin.site.register(models.PrincipalTechnician)
 admin.site.register(models.OrganizationStructure,
                     OrganizationStrutureMPTTModelAdmin)
 
