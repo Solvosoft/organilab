@@ -187,9 +187,7 @@ class SelectLaboratoryView(FormView):
         # direct relationship
         if not organizations:
             organizations = []
-        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
-                                         Q(laboratorists__pk=user.pk) |
-                                         Q(profile__user=user) |
+        labs = Laboratory.objects.filter(Q(profile__user=user) |
                                          Q(organization__in=organizations)
                                          ).distinct()
         return labs

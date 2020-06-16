@@ -399,11 +399,6 @@ class Laboratory(models.Model):
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
-    laboratorists = models.ManyToManyField(
-        User, related_name='laboratorists', verbose_name=_("Laboratorists"), blank=True)
-
-    students = models.ManyToManyField(
-        User, related_name='students', verbose_name=_("Students"), blank=True)
 
     class Meta:
         verbose_name = _('Laboratory')

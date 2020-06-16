@@ -38,9 +38,7 @@ class SearchObject(ListView):
         # User have perm on that organization ?  else it use assigned User with direct relationship
         if not organizations:    
              organizations=[]
-        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
-                                      Q(laboratorists__pk=user.pk) | 
-                                      Q(profile__user=user.pk) |
+        labs = Laboratory.objects.filter(Q(profile__user=user.pk) |
                                       Q (organization__in=organizations) 
                                       ).distinct()
         query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
