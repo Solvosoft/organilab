@@ -2,7 +2,7 @@ from django.db.models.query_utils import Q
 from laboratory.models import Laboratory, OrganizationStructure
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
-from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_technician_student
+from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile_student
 
 
 def check_perms(lab_pk, request, perm):
@@ -21,7 +21,7 @@ def check_perms(lab_pk, request, perm):
 
     # check if user have perms over lab
     lab_perms = check_lab_group_has_perm(
-        user, lab, perm, filter_laboratorist_technician_student) if lab else False
+        user, lab, perm, filter_laboratorist_profile_student) if lab else False
 
     if not False in [lab_perms]:  # User have perms to all action level
         return True
