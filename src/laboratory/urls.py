@@ -5,16 +5,15 @@ Created on 1/8/2016
 '''
 
 from django.conf.urls import url, include
+
 from laboratory import views
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
-from laboratory.views import access
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
-
 
 objviews = ObjectView()
 
@@ -142,12 +141,6 @@ solutions_urls = [
         name='solution_detail')
 ]
 
-lab_access_urls = [
-    url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(),
-        name='access_list_laboratorits'),  # reverse(laboratory:access_list_laboratorist)
-    url(r'^students$', access.AccessListStudentsView.as_view(),
-        name='access_list_students'),
-]
 
 reports_all_lab=[
     url(r'^reports/hcode$', laboratory.HCodeReports.as_view(), name='h_code_reports'),
@@ -175,7 +168,6 @@ urlpatterns += sustance_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
 

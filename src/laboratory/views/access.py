@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 
 
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory, Profile
 from laboratory.forms import UserCreate, UserSearchForm
 
 from django.views.generic import FormView
@@ -121,32 +121,3 @@ class AccessListLabAdminsView(BaseAccessListLab):
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
 
-class AccessListLaboratoritsView(BaseAccessListLab):
-    role = '#tab_laboratorits'
-    group = config.GROUP_LABORATORIST_PK
-    success_url = 'laboratory:access_list_laboratorits'
-
-    def get_relationfield(self):
-        laboratory = get_object_or_404(Laboratory, pk=self.lab)
-        return laboratory.laboratorists
-
-    def remove_user_to_relation(self, user, relation, group_pk):
-        group = Group.objects.get(pk=group_pk)
-        relation.remove(user)
-        if not user.laboratorists.all().exists():
-            user.groups.remove(group)
-
-class AccessListStudentsView(BaseAccessListLab):
-    role = '#tab_students'
-    group = config.GROUP_STUDENT_PK
-    success_url = 'laboratory:access_list_students'
-
-    def get_relationfield(self):
-        laboratory = get_object_or_404(Laboratory, pk=self.lab)
-        return laboratory.students
-
-    def remove_user_to_relation(self, user, relation, group_pk):
-        group = Group.objects.get(pk=group_pk)
-        relation.remove(user)
-        if not user.students.all().exists():
-            user.groups.remove(group)
