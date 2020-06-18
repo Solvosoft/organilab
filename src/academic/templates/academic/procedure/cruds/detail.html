@@ -10,68 +10,67 @@
 
 <div class="box-body">
   {% if url_update and 'update' in views_available and crud_perms.update %}
-  <div class="box-header">
+    <div class="box-header">
       <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
-  </div>
+    </div>
   {% endif %}
 
   <div class="page-header">
-  <h1 class="text-center">{{object.title}}</h1>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-body">
-		{{object.description|safe}}
+    <h1 class="text-center">{{object.title}}</h1>
   </div>
-</div>
 
-    <h2>{% trans 'Steps' %} </h2>
-
-{% for step in object.procedurestep_set.all %}
-<div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{forloop.counter}} -- {{step.title}}
-    {% if crud_perms.update %}
-    <a class="btn pull-right" href="{% url 'academic_procedurestep_update' step.pk %}">
-    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
-    {% endif %}
-    </h3>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      {{object.description|safe}}
+    </div>
   </div>
-  <div class="panel-body">
 
-  	{{step.description|safe}}
-     {% if step.procedurerequiredobject_set.all.count %}
-    <hr>
-    <h3>{% trans 'Required objects' %} </h3>
-        	<ul class="list-group">
-    {% for obj in step.procedurerequiredobject_set.all %}
-		  <li class="list-group-item">
-		    <span class="badge">{{obj.quantity}} {{obj.get_measurement_unit_display}} </span>
-		    {{obj.object}}
-		  </li>
-    {% endfor %}
-    </ul>
-  </div>
-     {% if step.procedureobservations_set.all.count %}
-    	<div class="panel-footer ">
-    	<h2>{% trans 'Observations' %}</h2>
-    	<ol>
-    	{% for observation in step.procedureobservations_set.all %}
-    		<li>{{observation}}</li>
-    	{%endfor%}
-    	   </ol>
-    	</div>
-    {% endif %}
-	{% endif %}
-</div>
-</div>
-{% endfor %}
+  <h2>{% trans 'Steps' %} </h2>
+
+  {% for step in object.procedurestep_set.all %}
+    <div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{forloop.counter}} -- {{step.title}}
+          {% if crud_perms.update %}
+            <a class="btn pull-right" href="{% url 'academic_procedurestep_update' step.pk %}">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
+          {% endif %}
+        </h3>
+      </div>
+      <div class="panel-body">
+
+        {{step.description|safe}}
+        {% if step.procedurerequiredobject_set.all.count %}
+          <hr>
+          <h3>{% trans 'Required objects' %} </h3>
+          <ul class="list-group">
+            {% for obj in step.procedurerequiredobject_set.all %}
+              <li class="list-group-item">
+                <span class="badge">{{obj.quantity}} {{obj.get_measurement_unit_display}} </span>
+                {{obj.object}}
+              </li>
+            {% endfor %}
+          </ul>
+          {% if step.procedureobservations_set.all.count %}
+            <div class="panel-footer ">
+              <h2>{% trans 'Observations' %}</h2>
+              <ol>
+                {% for observation in step.procedureobservations_set.all %}
+                  <li>{{observation}}</li>
+                {%endfor%}
+              </ol>
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
 
   {% if url_list and 'list' in views_available %}
     <div class="box-footer">
       <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
-   </div>
+    </div>
   {% endif %}
 
-
+</div>
 {% endblock %}
