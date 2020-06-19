@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "djreservation",
     "celery",
     'ajax_select',
-    'location_field.apps.DefaultConfig',
+    'location_field',
     'mptt',
     'constance',
     'constance.backends.database',
@@ -71,13 +71,10 @@ INSTALLED_APPS = [
     'zinnia_ckeditor',
     'ckeditor_uploader',
     #    'debug_toolbar',
-    'mapwidgets',
-    'guardian',
     'risk_management',
     'markitup',
     'djgentelella',
     'chunked_upload',
-
 ]
 if FULL_APPS:
     INSTALLED_APPS += [
@@ -155,11 +152,10 @@ DATABASES = {
     }
 }
 
-# TEST - DJANGO:GUARDIAN
+# TEST - DJANGO
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
-    'guardian.backends.ObjectPermissionBackend',
 )
 
 # END TEST
@@ -234,30 +230,17 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-GOOGLE_MAPS_API_KEY = os.getenv(
-    'GOOGLE_MAPS_API_KEY', 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU')
 
+
+
+LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
-    'map.provider': 'google',
-    'map.zoom': 15,
-    'search.provider': 'google',
-    'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-    'provider.google.api_key': GOOGLE_MAPS_API_KEY,
-    'provider.google.map.type': 'ROADMAP',
+    'map.provider': 'openstreetmap',
+    'search.provider': 'nominatim',
+    'map.zoom': 13,
+    'search.suffix': '',
+    'resources.root_path': LOCATION_FIELD_PATH,
 }
-
-# TEST
-
-MAP_WIDGETS = {
-    "GooglePointFieldWidget": (
-        ("zoom", 8),
-        ("mapCenterLocationName", "Costa_Rica"),
-    ),
-    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
-}
-
-
-# END TEST
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
