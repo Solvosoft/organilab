@@ -21,31 +21,18 @@ urlpatterns = [
 
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
 
-    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
-        name='laboratory_update'),
-    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users,
-        name='laboratory_ajax_admins_users_list'),
-    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user,
-        name='laboratory_ajax_get_create_admins_user'),
-    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user,
-        name='laboratory_ajax_create_admins_user'),
-
-    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$',
-        laboratory.del_admins_user, name='laboratory_ajax_del_admins_users'),
-
+    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
+    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users, name='laboratory_ajax_admins_users_list'),
+    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user, name='laboratory_ajax_get_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user, name='laboratory_ajax_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$', laboratory.del_admins_user,
+        name='laboratory_ajax_del_admins_users'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    # CreateLaboratory
-    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),
-        name='create_lab'),
-
+    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),  name='create_lab'),
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
-    url(r'^_ajax/get_tour_steps_furniture$',
-        views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
-
-    url(r"reserve_object/(?P<modelpk>\d+)$",
-        ShelfObjectReservation.as_view(),
-        name="object_reservation")
+    url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
+    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation")
 ]
 
 lab_shelf_urls = [
