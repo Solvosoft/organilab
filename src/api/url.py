@@ -7,6 +7,7 @@ Created on 3/15/2018
 from django.conf.urls import url, include
 from rest_framework.authtoken import views
 
+from .access_management import OrganizationStructureView
 from .reactive import ReactiveMolecularFormulaAPIView
 from .views import (LaboratoryRoomAPIView,
                     FurnitureAPIView,
@@ -51,6 +52,11 @@ object_api_urls = [
     url(r'^$', ObjectAPIView.as_view(), name='api_object'),
     url(r'^(?P<pk>\d+)/$', ObjectAPIView.as_view(), name='api_object_updates'),
 ]
+
+organization_structure_api_urls = [
+    url(r'organization_structure', OrganizationStructureView.as_view(), name="api_organization_structure"),
+]
+
 # Main api urls
 urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms/', include(room_api_urls)),
                 url(r'^(?P<lab_pk>\d+)/furniture/',
@@ -59,4 +65,5 @@ urlpatterns += [url(r'^(?P<lab_pk>\d+)/rooms/', include(room_api_urls)),
                 url(r'^(?P<lab_pk>\d+)/shelfobject/',
                     include(shelfobject_api_urls)),
                 url(r'^(?P<lab_pk>\d+)/object/', include(object_api_urls)),
+                url(r'^(?P<lab_pk>\d+)/', include(organization_structure_api_urls)),
                 ]

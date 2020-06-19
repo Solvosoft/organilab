@@ -33,7 +33,7 @@
     {% endif %}
     {% if perm_change_lab %}               
               <li>
-              <a href="">
+              <a href="{% url 'laboratory:access_management' laboratory %}">
                 {% trans 'Access list' %}
               </a>
               </li>

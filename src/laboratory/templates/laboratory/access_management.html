@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load bootstrap i18n static laboratory%}
+
+{% block title %}{% trans 'Access List' %}{% endblock %}
+
+{% block content %}
+<style>
+  .node-treeview{
+    height: 52px;
+  }
+</style>
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span> {% trans 'Access List' %}</span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-2 col-sm-8">
+        <div id="treeview" class="treeview" data-url="{% url 'api:api_organization_structure' laboratory %}"></div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script src="{% static 'js/bootstrap-treeview.min.js' %}"></script>
+<script>
+$(function() {
+
+    var url = $('#treeview').data('url');
+    $.ajax({
+            url: url,
+            type : "GET",
+            dataType : 'json',
+            success : function(result) {
+
+                 $('#treeview').treeview({
+                    data: result
+                });
+            },
+            error: function(xhr, resp, text) {
+                console.log(xhr, resp, text);
+            }
+    });
+
+});
+</script>
+{% endblock %}
