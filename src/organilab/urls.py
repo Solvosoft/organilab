@@ -24,6 +24,8 @@ from academic.urls import urlpatterns as academic_urls
 from ajax_select import urls as ajax_select_urls
 from authentication.urls import urlpatterns as auth_urls
 from django.conf import settings
+
+from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
@@ -31,37 +33,24 @@ from djgentelella.urls import base_urlpatterns as urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
-from rest_framework.documentation import include_docs_urls
+
 
 
 urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'^$', RedirectView.as_view(url=reverse_lazy(
-        'msds:organilab_tree')), name='index'),
-    url(r'^admin/', admin.site.urls),
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='index'),
+
     url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'^weblog/', include('zinnia.urls', namespace='zinnia')),
-    url(r'^comments/', include('django_comments.urls')),
+    url(r'^weblog/', include('djgentelella.blog.urls')),
     url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
     url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
-    url(r'^docs/', include_docs_urls(title='ORGANILAB API', public=True)),
-
+    url(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
+    url(r'^markitup/', include('markitup.urls')),
+    url(r'^admin/', admin.site.urls),
 ]
-
-if settings.FULL_APPS:
-    from api import url as api_urls
-    urlpatterns += [
-        url(r'^api/', include(api_urls))
-    ]
-else:
-    from api.reactive import ReactiveMolecularFormulaAPIView
-    urlpatterns += [
-        url(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
-
-    ]
 
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls

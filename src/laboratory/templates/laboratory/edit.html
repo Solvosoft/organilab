@@ -16,19 +16,15 @@
 	      </form>
 	    </div>
 
-	    <div>
 	  </div>
-	  <br> <br>
+
 	{% else %} 
        {% include 'laboratory/action_denied.html' %} 
     {% endif %}
  {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-<script type="text/javascript" src="/static/admin/js/core.js"></script>
-<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
- <script type="text/javascript" src="/static/vendor/livequery/jquery.livequery.min.js"></script>
+
  {{ form.media }}
 
 {% endblock %}
