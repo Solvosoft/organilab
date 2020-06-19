@@ -12,6 +12,7 @@ from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations, access
+from laboratory.views.access import access_management
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 
@@ -135,6 +136,7 @@ reports_all_lab=[
 ]
 
 sustance_urls = [
+    url('access_list$', access_management, name="access_list"),
     url('sustance/edit/(?P<pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
     url('sustance/delete/(?P<pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
     url('sustance/$', sustance_list, name='sustance_list'),

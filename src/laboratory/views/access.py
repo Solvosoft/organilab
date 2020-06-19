@@ -1,26 +1,19 @@
 # encoding: utf-8
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
-
-
-from laboratory.models import Laboratory, Profile, OrganizationStructure
-from laboratory.forms import UserCreate, UserSearchForm
-
-from django.views.generic import FormView
-from laboratory.views.djgeneric import ListView
-
-from django.utils.translation import ugettext_lazy as _
-
-from django.contrib.auth.models import User, Group
-
-from django.contrib import messages
-from django.urls import reverse
-from django.shortcuts import render
-
-from django.utils.decorators import method_decorator
-
 from constance import config
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
+from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView
+
+from laboratory.forms import UserCreate, UserSearchForm
+from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.views.djgeneric import ListView
 
 
 @method_decorator(login_required, name='dispatch')
@@ -122,9 +115,5 @@ class AccessListLabAdminsView(BaseAccessListLab):
             user.groups.remove(group)
 
 
-class AccessManagement(ListView):
-    model = OrganizationStructure
-    template_name = 'laboratory/access_management.html'
-    success_url = 'laboratory:access_management'
-
-
+def access_management(request):
+    return render(request, 'laboratory/access_management.html')
