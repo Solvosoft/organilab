@@ -11,7 +11,7 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
+from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations, access
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 
@@ -23,6 +23,9 @@ urlpatterns = [
 
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
         name='laboratory_update'),
+
+    url(r'^(?P<lab_pk>\d+)/access_management$', access.AccessManagement.as_view(), name="access_management"),
+
     url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users,
         name='laboratory_ajax_admins_users_list'),
     url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user,
@@ -46,6 +49,7 @@ urlpatterns = [
     url(r"reserve_object/(?P<modelpk>\d+)$",
         ShelfObjectReservation.as_view(),
         name="object_reservation")
+
 ]
 
 lab_shelf_urls = [

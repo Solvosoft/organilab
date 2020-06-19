@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 
 
-from laboratory.models import Laboratory, Profile
+from laboratory.models import Laboratory, Profile, OrganizationStructure
 from laboratory.forms import UserCreate, UserSearchForm
 
 from django.views.generic import FormView
@@ -120,4 +120,11 @@ class AccessListLabAdminsView(BaseAccessListLab):
         relation.remove(user)
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
+
+
+class AccessManagement(ListView):
+    model = OrganizationStructure
+    template_name = 'laboratory/access_management.html'
+    success_url = 'laboratory:access_management'
+
 
