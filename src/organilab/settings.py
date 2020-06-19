@@ -280,8 +280,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
 
 ACCOUNT_ACTIVATION_DAYS = 2
 CKEDITOR_UPLOAD_PATH = 'editoruploads/'
-DATASETS_SUPPORT_LANGUAGES = {
-    'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+DATATABLES_SUPPORT_LANGUAGES = {
+    'es': '//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json'
 }
 
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
