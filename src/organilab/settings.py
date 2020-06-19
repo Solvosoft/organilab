@@ -65,37 +65,16 @@ INSTALLED_APPS = [
     'async_notifications',
     'ckeditor',
     'fontawesome',
-    'django_comments',
     'tagging',
-    'zinnia',
-    'zinnia_ckeditor',
     'ckeditor_uploader',
     #    'debug_toolbar',
     'risk_management',
     'markitup',
     'djgentelella',
+    'djgentelella.blog',
     'chunked_upload',
 ]
-if FULL_APPS:
-    INSTALLED_APPS += [
-        'api',
-        'demoQA'
-    ]
 
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
-        ),
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.IsAuthenticated',
-        ),
-        'DEFAULT_PARSER_CLASSES': (
-            'rest_framework.parsers.JSONParser',
-        ),
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-        'PAGE_SIZE': 50,
-        'TEST_REQUEST_DEFAULT_FORMAT': 'json'
-    }
 
 RECAPTCHA_PRIVATE_KEY = os.getenv(
     'RECAPTCHA_PRIVATE_KEY', '6LdxAmAUAAAAAMxAz4s9em2TgxXUb7MGCZMGRE8l')
@@ -230,9 +209,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-
-
-
 LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
     'map.provider': 'openstreetmap',
@@ -317,3 +293,4 @@ ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None

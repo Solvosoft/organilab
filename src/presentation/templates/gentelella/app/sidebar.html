@@ -37,14 +37,7 @@
                                 {% trans 'MSDS: Security sheets' %}
                             </a>
                         </li>
-                        <!--
-                        {% if user.is_authenticated%}
-                        <li>
-                            <a   href="{% url 'sga:index_sga' %}" title="{% trans 'GHS' %}" >
-                                {% trans 'SGA Labeling' %} </a>
-                        </li>
-                        {% endif %}
-                        -->
+
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
@@ -68,7 +61,7 @@
 
                 </li>
                 <li>
-                    <a class="nav-link" href="{% url 'zinnia:entry_archive_index' %}"
+                    <a class="nav-link" href="{% url 'blog:entrylist' %}"
                        title="{% trans 'blog entries' %}">
                         <i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
                     </a>
