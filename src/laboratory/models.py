@@ -54,7 +54,7 @@ class Object(models.Model):
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
     synonym = models.CharField(_('Synonym'), max_length=255, help_text=_('Comma separed name'), null=True, blank=True)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES, default=REACTIVE)
     is_public = models.BooleanField(default=True, verbose_name=_('Share with others'))
     description = models.TextField(_('Description'), null=True, blank=True)
 
