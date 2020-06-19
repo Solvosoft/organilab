@@ -27,6 +27,7 @@ from django.conf import settings
 
 from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
+from api.urls import urlpatterns as api_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
 from djgentelella.urls import base_urlpatterns as urls_djgentelela
@@ -41,6 +42,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^$', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='index'),
 
     url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
+    url(r'^', include((api_urls,'api'), namespace='api')),
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     url(r'^ajax_select/', include(ajax_select_urls)),
