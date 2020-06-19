@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n gtsettings %}
+
+{% block extra_css %}
+<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" />
+{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -36,9 +40,9 @@
 {% block js %}
 {{block.super}}
 
-<link href="{% static 'vendor/datatables/css/dataTables.bootstrap.min.css' %}">
-<script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
+
 <script>
 
 (function(){
@@ -46,6 +50,9 @@
         "processing": true,
         "serverSide": true,
         "ajax": "{% url 'laboratory:sustance_list_json' %}",
+        "language": {
+            "url": "{% get_datatables_translation %}"
+        }
     });
 })(jQuery);
 </script>

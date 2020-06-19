@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "djreservation",
     "celery",
     'ajax_select',
-    'location_field.apps.DefaultConfig',
+    'location_field',
     'mptt',
     'constance',
     'constance.backends.database',
@@ -65,40 +65,16 @@ INSTALLED_APPS = [
     'async_notifications',
     'ckeditor',
     'fontawesome',
-    'django_comments',
     'tagging',
-    'zinnia',
-    'zinnia_ckeditor',
     'ckeditor_uploader',
     #    'debug_toolbar',
-    'mapwidgets',
-    'guardian',
     'risk_management',
     'markitup',
     'djgentelella',
+    'djgentelella.blog',
     'chunked_upload',
-
 ]
-if FULL_APPS:
-    INSTALLED_APPS += [
-        'api',
-        'demoQA'
-    ]
 
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
-        ),
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.IsAuthenticated',
-        ),
-        'DEFAULT_PARSER_CLASSES': (
-            'rest_framework.parsers.JSONParser',
-        ),
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-        'PAGE_SIZE': 50,
-        'TEST_REQUEST_DEFAULT_FORMAT': 'json'
-    }
 
 RECAPTCHA_PRIVATE_KEY = os.getenv(
     'RECAPTCHA_PRIVATE_KEY', '6LdxAmAUAAAAAMxAz4s9em2TgxXUb7MGCZMGRE8l')
@@ -155,11 +131,10 @@ DATABASES = {
     }
 }
 
-# TEST - DJANGO:GUARDIAN
+# TEST - DJANGO
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
-    'guardian.backends.ObjectPermissionBackend',
 )
 
 # END TEST
@@ -234,30 +209,14 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-GOOGLE_MAPS_API_KEY = os.getenv(
-    'GOOGLE_MAPS_API_KEY', 'AIzaSyAcsEpjMLRGe752wNzZ6fE-ovBbyLw7gFU')
-
+LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
-    'map.provider': 'google',
-    'map.zoom': 15,
-    'search.provider': 'google',
-    'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-    'provider.google.api_key': GOOGLE_MAPS_API_KEY,
-    'provider.google.map.type': 'ROADMAP',
+    'map.provider': 'openstreetmap',
+    'search.provider': 'nominatim',
+    'map.zoom': 13,
+    'search.suffix': '',
+    'resources.root_path': LOCATION_FIELD_PATH,
 }
-
-# TEST
-
-MAP_WIDGETS = {
-    "GooglePointFieldWidget": (
-        ("zoom", 8),
-        ("mapCenterLocationName", "Costa_Rica"),
-    ),
-    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
-}
-
-
-# END TEST
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
@@ -280,8 +239,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
 
 ACCOUNT_ACTIVATION_DAYS = 2
 CKEDITOR_UPLOAD_PATH = 'editoruploads/'
-DATASETS_SUPPORT_LANGUAGES = {
-    'es': '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+DATATABLES_SUPPORT_LANGUAGES = {
+    'es': '//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json'
 }
 
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
@@ -334,3 +293,4 @@ ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None

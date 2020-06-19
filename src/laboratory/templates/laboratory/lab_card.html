@@ -15,10 +15,8 @@
             </div>
             {% if perm_change_laboratory %}
                 <div class="" style="position:absolute;display:inline-block;top:0;right:0;margin-right:6%;margin-top:2%">
-                    <a class="btn btn-danger btn-sm"
-                        href="{% url 'laboratory:laboratory_delete' lab.pk %}"
-                       title="{% trans 'Delete laboratory'%}"
-                       style="font-size:13px;text-align:left">
+                    <a class="btn btn-danger btn-sm"  href="{% url 'laboratory:laboratory_delete' lab.pk %}"
+                       title="{% trans 'Delete laboratory'%}"  style="font-size:13px;text-align:left">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                 </div>
             {% endif %}
