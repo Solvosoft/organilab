@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n recaptcha2 bootstrap %}
+{% load i18n bootstrap %}
 
 {% block title %}{% trans 'Login/SignUp' %}{% endblock %}
 {% block extra_css %}
@@ -15,6 +15,9 @@
         }
         body{
             height:auto;
+        }
+        .login_wrapper{
+            max-width: 400px;
         }
     </style>
 {% endblock extra_css %}
