@@ -3,16 +3,10 @@ from rest_framework.views import APIView
 
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
 
-organization_button = """
-    <button type='button' class='btn btn-success btn-sm'>
-    <i class='fa fa-university sm'></i></button>
-    """
 users_button = """
     <button type='button' class='btn btn-primary btn-sm'>
     <i class='fa fa-users'></i></button>
     """
-
-buttons_action = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
 
 def get_child(element, query):
 
@@ -21,10 +15,15 @@ def get_child(element, query):
 
     for x in query.filter(organization__parent=element):
 
-        buttons = "<div class='pull-right'>" +organization_button + users_button +"</div>"
+        organization_button = "<button type='button' class='btn btn-success btn-sm' " \
+                              "data-id-item="+str(x.organization.pk)+" data-toggle='modal'" \
+                                                                    " data-target='#reportsavemodal'>" \
+                                                                    "<i class='fa fa-university'></i></button>"
+
+        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
 
         info_orga = {
-            'text': x.organization.name + buttons_action,
+            'text': x.organization.name + buttons,
             'href': '#' + str(x.organization.pk)
         }
 
@@ -49,7 +48,13 @@ def get_data_parent(queryset, user):
         organization = queryset_orga_user.filter(organization=x.organization)
 
         if organization:
-            text = text + buttons_action
+            organization_button = "<button type='button' class='btn btn-success btn-sm' " \
+                                  "data-id-item="+str(x.organization.pk)+" data-toggle='modal'" \
+                                                                        " data-target='#reportsavemodal'>" \
+                                                                         "<i class='fa fa-university'></i></button>"
+
+            buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
+            text = text + buttons
 
         info_orga = {
             'text': text,

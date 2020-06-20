@@ -12,8 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
 from laboratory.decorators import user_group_perms
-from laboratory.forms import UserCreate, UserSearchForm
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from laboratory.views.djgeneric import ListView
 
 
@@ -115,6 +115,22 @@ class AccessListLabAdminsView(BaseAccessListLab):
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
 
-@method_decorator(login_required, name='dispatch')
+@login_required
 def access_management(request):
-    return render(request, 'laboratory/access_management.html')
+    context = {}
+
+    if request.method == 'POST':
+        user = request.user
+        form = OrganizationUserManagementForm(request.POST)
+        if form.is_valid():
+            parent = OrganizationStructure.objects.filter(pk=int(request.POST["pk"])).first()
+            orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
+            orga.save()
+            orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
+            orga_user.save()
+            orga_user.users.add(request.user)
+    else:
+        form = OrganizationUserManagementForm()
+
+    context['form'] = form
+    return render(request, 'laboratory/access_management.html', context=context)

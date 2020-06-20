@@ -22,7 +22,26 @@
         <div id="treeview" class="treeview" data-url="{% url 'api:api_organization_structure' %}"></div>
     </div>
 </div>
-
+<form action="{% url 'laboratory:access_list' %}" method="post"> {% csrf_token %}
+<div id="reportsavemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans 'Add descendant organization' %}</h4>
+      </div>
+      <div class="modal-body">
+          {{ form.as_horizontal }}
+          <input type="hidden" id="pk" name="pk" value=0/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
 {% endblock %}
 {% block js %}
 {{block.super}}
@@ -44,6 +63,10 @@ $(function() {
             error: function(xhr, resp, text) {
                 console.log(xhr, resp, text);
             }
+    });
+
+    $(".btn").on('click', function(){
+        $('#pk').val($(".btn").data('id-item'));
     });
 
 });
