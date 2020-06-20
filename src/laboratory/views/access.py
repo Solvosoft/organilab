@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
+from laboratory.decorators import user_group_perms
 from laboratory.forms import UserCreate, UserSearchForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.views.djgeneric import ListView
@@ -114,6 +115,6 @@ class AccessListLabAdminsView(BaseAccessListLab):
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
 
-
+@method_decorator(login_required, name='dispatch')
 def access_management(request):
     return render(request, 'laboratory/access_management.html')
