@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+
+{% block title %}{% trans 'Login/SignUp' %}{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
+    <style type="text/css">
+        #footer {
+            position: fixed;
+            height: 50px;
+            bottom: 0;
+            background-color: white;
+            width: 100%;
+            line-height:50px;
+        }
+        body{
+            height:auto;
+        }
+        .login_wrapper{
+            max-width: 500px;
+        }
+    </style>
+{% endblock extra_css %}
+{% block content_block_wrap %}{% endblock %}
+{% block body_class %}login{% endblock body_class%}
+{% block body %}
+    <div>
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section class="login_content">
+                    <form method="post" action="{% url 'demo' %}">
+                        <h1>Request Demo</h1>
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.first_name|bootstrap }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.last_name|bootstrap }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.business_email|bootstrap }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.company_name|bootstrap }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.country|bootstrap }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form_signup.phone_number|bootstrap }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <p class="change_link" style="line-height:2.5em;">Have an account?
+                                        <a href="{% url "login" %}" class="to_register"> Login </a>
+                                    </p>
+                                </div>
+                                <div class="form-group col-md-6 text-right">
+                                    <input type="submit" style="float:right; margin-right:0" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div id="footer">
+        {% include 'gentelella/app/footer.html' %}
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('.pull-right').parent().addClass('fixed-bottom').addClass('text-center');
+            $('.pull-right').removeClass('pull-right');
+            $("#id_username").attr("placeholder", 'Username');
+            $("#id_password").attr("placeholder", 'Password');
+        });
+    </script>
+{% endblock body %}

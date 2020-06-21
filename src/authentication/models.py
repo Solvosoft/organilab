@@ -21,3 +21,19 @@ class FeedbackEntry(models.Model):
 
     def __str__(self):
         return '%s' % (self.title,)
+
+class DemoRequest(models.Model):
+    first_name = models.CharField(_('First Name'), max_length=120)
+    last_name = models.TextField(_('Last Name'), max_length=120, null=True, blank=True)
+    business_email = models.EmailField(_('Business Email Address'),max_length=70)
+    company_name = models.CharField(_('Company Name'), max_length=120)
+    country = models.CharField(_('Country Name'), max_length=120)
+    phone_number = models.CharField(_('Phone Number'),max_length=12)
+
+    class Meta:
+        verbose_name = _('Demo Request')
+        verbose_name_plural = _('Demo Requests')
+
+
+    def __str__(self):
+        return '%s' % (self.company_name)

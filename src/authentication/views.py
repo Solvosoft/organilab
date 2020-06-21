@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 # Create your views here.
 from django.contrib.auth.models import User, Group
 from django import forms
 from django.core.exceptions import ValidationError
 from laboratory.models import OrganizationStructure, Profile
+from authentication.models import DemoRequest
 from constance import config
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
@@ -23,7 +25,7 @@ from async_notifications.utils import send_email_from_template
 from django.conf import settings
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
-
+from django import forms
 
 class PermissionDeniedView(TemplateView):
     template_name = 'laboratory/permission_denied.html'
@@ -138,10 +140,62 @@ def signup(request):
                   {'form_signup': form,
                    'form': form_login})
 
+@require_POST
+def demo(request):
+    form = DemoRequestForm(request.POST)
+
+    if form.is_valid():
+        form.save(commit=True)
+        luisza = User()
+        luisza = User.objects.get(username='luisza')
+        send_email_from_template("new user", luisza,
+                                 context={
+                                     'company': request.POST.get('company_name',None)
+                                 },
+                                 enqueued=True,
+                                 user=luisza,
+                                 upfile=None)
+        return redirect(reverse_lazy('index'))
+    
+    return render(request, 'registration/signup.html',
+                    {'form_signup': form})
+
 
 class OrgLoginView(LoginView):
+    
+    def get_context_data(self, **kwargs): 
+        self.context = LoginView.get_context_data(self, **kwargs)
+        return self.context
+
+
+class DemoLoginView(LoginView):
+    model = DemoRequest
+    template_name = 'registration/signup.html'
 
     def get_context_data(self, **kwargs):
         self.context = LoginView.get_context_data(self, **kwargs)
-        self.context['form_signup'] = SignUpForm()
+        self.context['form_signup'] = DemoRequestForm()
         return self.context
+
+
+
+class DemoRequestForm(forms.ModelForm):
+    first_name = forms.CharField(
+        max_length=120, required=True,)
+    last_name = forms.CharField(
+        max_length=120, required=True,)
+    business_email = forms.CharField(
+        max_length=70, required=True,)
+    company_name = forms.CharField(
+        max_length=120, required=True,)
+    country = forms.CharField(
+        max_length=120, required=True,)
+    phone_number = forms.CharField(
+        max_length=12, required=True,)
+
+    
+    class Meta:
+        model = DemoRequest
+        fields = ('first_name', 'last_name', 'business_email',
+                  'company_name', 'country', 'phone_number')
+
