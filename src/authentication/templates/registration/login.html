@@ -3,7 +3,6 @@
 
 {% block title %}{% trans 'Login/SignUp' %}{% endblock %}
 {% block extra_css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
     <style type="text/css">
         #footer {
             position: fixed;
@@ -24,7 +23,7 @@
 {% block content_block_wrap %}{% endblock %}
 {% block body_class %}login{% endblock body_class%}
 {% block body %}
-    <div>
+    <div id="authentication">
         <div class="login_wrapper">
             <div class="animate form login_form">
                 <section class="login_content">
