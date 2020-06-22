@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'rest_framework',
     'rest_framework.authtoken',
-    'snowpenguin.django.recaptcha2',
     'msds',
     'sga',
     'async_notifications',
