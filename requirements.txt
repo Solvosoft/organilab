@@ -12,7 +12,6 @@ django-excel==0.0.10
 django-js-asset==1.2.2
 django-json-rpc==0.7.2
 django-location-field==2.1.0
-django-recaptcha2==1.4.1
 django-reservation==0.2.9
 django-xmlrpc==0.1.8
 djangorestframework==3.11.0
