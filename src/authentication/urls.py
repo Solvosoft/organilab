@@ -9,12 +9,10 @@ Created on 20 jun. 2018
 from django.contrib.auth import views as auth_views
 from django.conf.urls import url
 from django.urls.base import reverse_lazy
-from authentication.views import signup, ask_demo_done, demo, OrgLoginView, DemoLoginView, PermissionDeniedView,\
+from authentication.views import ask_demo_done, demo, OrgLoginView, DemoLoginView, PermissionDeniedView,\
     FeedbackView
 
 urlpatterns = [
-
-    url(r'^signup$', signup, name='signup'),
     url(r'^demo$', demo, name='demo'),
     url(r'^accounts/ask_demo/$', DemoLoginView.as_view(),
         {'template_name': 'registration/signup.html'}, name='ask_demo'),

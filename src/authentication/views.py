@@ -118,34 +118,6 @@ class SignUpForm(CustomForm, UserCreationForm):
 def ask_demo_done(request):
     return render(request, 'registration/signup_done.html')
 
-
-
-@require_POST
-def signup(request):
-    form_login = AuthenticationForm()
-    form = SignUpForm(request.POST)
-    if form.is_valid():
-        form.save()
-        username = form.cleaned_data.get('username')
-        raw_password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=raw_password)
-        login(request, user)
-        send_email_from_template("new user", user.email,
-                                 context={
-                                     'user': user,
-                                     'role': form.cleaned_data['role'],
-                                     'organization': form.cleaned_data['organization_name']
-                                 },
-                                 enqueued=True,
-                                 user=user,
-                                 upfile=None)
-        return redirect(reverse_lazy('index'))
-    # else:
-    #    form = SignUpForm()
-    return render(request, 'registration/login.html',
-                  {'form_signup': form,
-                   'form': form_login})
-
 @require_POST
 def demo(request):
     form = DemoRequestForm(request.POST)
