@@ -26,6 +26,7 @@ from django.conf import settings
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from django import forms
+from django.core.mail import send_mail
 
 class PermissionDeniedView(TemplateView):
     template_name = 'laboratory/permission_denied.html'
@@ -146,15 +147,27 @@ def demo(request):
 
     if form.is_valid():
         form.save(commit=True)
-        luisza = User()
-        luisza = User.objects.get(username='luisza')
-        send_email_from_template("new user", luisza,
-                                 context={
-                                     'company': request.POST.get('company_name',None)
-                                 },
-                                 enqueued=True,
-                                 user=luisza,
-                                 upfile=None)
+        html_content = '<h1>New Demo request</h1>'+ \
+                '<p><label><b>Company Name: </b></label>'+form.cleaned_data['company_name']+'<br>'+ \
+                '<label><b>Employee Name: </b></label>'+form.cleaned_data['first_name']+' '+form.cleaned_data['last_name']+'<br>'+ \
+                '<label><b>Phone number: </b></label>'+form.cleaned_data['phone_number']+'<br>'+ \
+                '<label><b>Country: </b></label>'+form.cleaned_data['country']+"</p><br><br><br>"+ \
+                'Powered by Solvosoft\'s Team.'
+
+        text_content = 'New Demo request \n'+ \
+                'Company Name: '+form.cleaned_data['company_name']+'\n'+ \
+                'Employee Name: '+form.cleaned_data['first_name']+' '+form.cleaned_data['last_name']+'\n'+ \
+                'Phone number: '+form.cleaned_data['phone_number']+'\n'+ \
+                'Country: '+form.cleaned_data['country']+"\n\n\n\n\n"+ \
+                'Powered by Solvosoft\'s Team.'
+        send_mail(
+            'New Demo request Company: '+form.cleaned_data['company_name'],
+            text_content,
+            'from@localhost',
+            ['to@localhost'],
+            fail_silently=False,
+            html_message=html_content
+            )
         return redirect(reverse_lazy('index'))
     
     return render(request, 'registration/signup.html',
