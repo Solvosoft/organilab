@@ -115,6 +115,11 @@ class SignUpForm(CustomForm, UserCreationForm):
                   'email', 'password1', 'password2', )
 
 
+def ask_demo_done(request):
+    return render(request, 'registration/signup_done.html')
+
+
+
 @require_POST
 def signup(request):
     form_login = AuthenticationForm()
@@ -168,7 +173,7 @@ def demo(request):
             fail_silently=False,
             html_message=html_content
             )
-        return redirect(reverse_lazy('index'))
+        return redirect(reverse_lazy('ask_demo_done'))
     
     return render(request, 'registration/signup.html',
                     {'form_signup': form})
