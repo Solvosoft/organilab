@@ -6,7 +6,7 @@ ARG UID=1000
 ENV USER="organilab"
 RUN useradd -u $UID -ms /bin/bash $USER
 
-RUN mkdir -p /organilab/logs/ /organilab/static/ /run/
+RUN mkdir -p /run/logs/ /run/static/
 WORKDIR /organilab
 
 RUN apt-get update && \
@@ -32,12 +32,11 @@ ADD src /organilab
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
+ADD docker/entrypoint.sh /run/
 RUN chown -R organilab:organilab /run/
-ADD docker/entrypoint.sh /organilab
 
-#RUN chown -R organilab:organilab /organilab
-RUN chmod +x /organilab/entrypoint.sh
+RUN chmod +x /run/entrypoint.sh
 
-EXPOSE 80
+EXPOSE 80 8000
 
-CMD ["./entrypoint.sh"]
+CMD ["/run/entrypoint.sh"]
