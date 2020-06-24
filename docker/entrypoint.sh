@@ -1,8 +1,8 @@
 #!/bin/bash
 
-runuser -u organilab -c "mkdir -p /run/logs/"
-chown -R organilab:organilab /run /organilab
-runuser -u organilab -c "python manage.py migrate"
+mkdir -p /run/logs/
+chown -R organilab:organilab /run
+runuser -p  -c "python manage.py migrate" organilab
 
 if [ -z "$DEVELOPMENT" ]; then
   if [ ! -z "$FVAHOSTNAME" ]; then
@@ -10,7 +10,7 @@ if [ -z "$DEVELOPMENT" ]; then
   fi
   supervisord -n
 else
-  runuser -u organilab  -c "celery worker -A organilab -l info -b" &
-  runuser -u organilab -c "python manage.py runserver 0.0.0.0:80"
+  runuser -p -c "celery worker -A organilab -l info -b" organilab &
+  runuser -p -c "python manage.py runserver 0.0.0.0:80" organilab
 fi
 
