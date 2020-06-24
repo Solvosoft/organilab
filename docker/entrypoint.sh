@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /organilab
+
 mkdir -p /run/logs/
 chown -R organilab:organilab /organilab
 runuser -p  -c "python manage.py migrate" organilab
@@ -10,7 +12,7 @@ if [ -z "$DEVELOPMENT" ]; then
   fi
   supervisord -n
 else
-  runuser -p -c "celery worker -A organilab -l info -b" organilab &
-  runuser -p -c "python manage.py runserver 0.0.0.0:80" organilab
+  runuser -p -c "celery worker -A organilab -l info -B" organilab &
+  runuser -p -c "python manage.py runserver 0.0.0.0:8000" organilab
 fi
 

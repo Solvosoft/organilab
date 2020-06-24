@@ -1,0 +1,77 @@
+version: '2'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3"
+    container_name: "rabbitmq"
+    networks:
+      - apps
+    environment:
+      - RABBITMQ_DEFAULT_USER=organilab
+      - RABBITMQ_DEFAULT_PASS=0rg4n1l4b
+      - RABBITMQ_DEFAULT_VHOST=vhostorganilab
+  postgresdb:
+    image: postgres
+    restart: always
+    container_name: "postgresdb"
+    environment:
+      - POSTGRES_PASSWORD=password
+    networks:
+      - apps
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-files:/files
+    ports:
+      - 5431:5432
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: "pgadmin"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=contact@solvosoft.com
+      - PGADMIN_DEFAULT_PASSWORD=mypassword
+    networks:
+      - apps
+    volumes:
+      - db-backup:/var/lib/pgadmin/storage/
+    ports:
+      - 8088:80
+
+  mail:
+    image: mailhog/mailhog
+    restart: always
+    container_name: "mail"
+    ports:
+    - 1025:1025
+    - 8025:8025
+
+  organilab:
+    image: "organilab"
+    container_name: "organilab"
+    networks:
+      - apps
+    environment:
+      - DBHOST=postgresdb
+      - BROKER_URL=amqp://organilab:0rg4n1l4b@rabbitmq:5672/vhostorganilab
+      - DEVELOPMENT=true
+    ports:
+      - 8001:8000
+    volumes:
+      - vol-organilab:/organilab
+#      - /mnt/docker/organilab/settings.py:/organilab/organilab/settings.py
+
+networks:
+  apps:
+    driver: bridge
+
+volumes:
+  db-data:
+  db-files:
+  db-backup:
+  vol-organilab:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/user/organilab/src/
