@@ -6,7 +6,10 @@ services:
     container_name: "rabbitmq"
     networks:
       - apps
-
+    environment:
+      - RABBITMQ_DEFAULT_USER='organilab'
+      - RABBITMQ_DEFAULT_PASS='0rg4n1l4b'
+      - RABBITMQ_DEFAULT_VHOST='vhostorganilab'
   postgresdb:
     image: postgres
     restart: always
@@ -19,7 +22,7 @@ services:
       - db-data:/var/lib/postgresql/data
       - db-files:/files
     ports:
-      - 5432:5432
+      - 5431:5432
 
   pgadmin4:
     image: dpage/pgadmin4
@@ -32,6 +35,8 @@ services:
       - apps
     volumes:
       - db-backup:/var/lib/pgadmin/storage/
+    ports:
+      - 8088:80
 
   mail:
     image: mailhog/mailhog
@@ -47,8 +52,10 @@ services:
     networks:
       - apps
     environment:
-      - DBHOST: postgresdb
-      - BROKER_URL:  'amqp://guest:guest@rabbitmq:5672/'
+      - DBHOST=postgresdb
+      - BROKER_URL='amqp://organilab:0rg4n1l4b@rabbitmq:5672/vhostorganilab'
+    ports:
+      - 8001:80
 #    volumes:
 #      - /mnt/docker/organilab/media:/organilab/media
 #      - /mnt/docker/organilab/settings.py:/organilab/organilab/settings.py
