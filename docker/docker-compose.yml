@@ -7,9 +7,9 @@ services:
     networks:
       - apps
     environment:
-      - RABBITMQ_DEFAULT_USER='organilab'
-      - RABBITMQ_DEFAULT_PASS='0rg4n1l4b'
-      - RABBITMQ_DEFAULT_VHOST='vhostorganilab'
+      - RABBITMQ_DEFAULT_USER=organilab
+      - RABBITMQ_DEFAULT_PASS=0rg4n1l4b
+      - RABBITMQ_DEFAULT_VHOST=vhostorganilab
   postgresdb:
     image: postgres
     restart: always
@@ -53,7 +53,7 @@ services:
       - apps
     environment:
       - DBHOST=postgresdb
-      - BROKER_URL='amqp://organilab:0rg4n1l4b@rabbitmq:5672/vhostorganilab'
+      - BROKER_URL=amqp://organilab:0rg4n1l4b@rabbitmq:5672/vhostorganilab
     ports:
       - 8001:80
 #    volumes:

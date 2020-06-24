@@ -21,5 +21,6 @@ exec gunicorn ${DJANGO_WSGI_MODULE}:application --name $NAME \
 --workers $NUM_WORKERS \
 --bind=unix:$SOCKFILE \
 --log-level=info \
+-pid=/run/organilab_`date  +"%Y%m%d%H%M%S"`.pid \
 --log-file=-
 
