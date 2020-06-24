@@ -14,7 +14,6 @@ RUN apt-get update && \
 
 ADD requirements.txt /organilab
 
-
 RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
 pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
@@ -33,6 +32,7 @@ ADD src /organilab
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
+RUN chown -R organilab:organilab /run/
 ADD docker/entrypoint.sh /organilab
 
 #RUN chown -R organilab:organilab /organilab

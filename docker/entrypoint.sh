@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /run/logs/
-chown -R organilab:organilab /run
+chown -R organilab:organilab /organilab
 runuser -p  -c "python manage.py migrate" organilab
 
 if [ -z "$DEVELOPMENT" ]; then
