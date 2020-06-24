@@ -13,7 +13,7 @@ RUN apt-get update && \
     apt-get install -y  libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal
 
 ADD requirements.txt /organilab
-ADD docker/entrypoint.sh /organilab
+
 
 RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
 pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
@@ -33,7 +33,9 @@ ADD src /organilab
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
-RUN chown -R organilab:organilab /organilab
+ADD docker/entrypoint.sh /organilab
+
+#RUN chown -R organilab:organilab /organilab
 RUN chmod +x /organilab/entrypoint.sh
 
 EXPOSE 80
