@@ -23,7 +23,7 @@ RUN apt-get -y autoremove && \
      rm -rf /var/lib/apt/lists/*
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-RUN sed -i 's/user www-data;/user organilab;' /etc/nginx/nginx.conf
+RUN sed -i 's/user www-data;/user organilab;/g' /etc/nginx/nginx.conf
 
 COPY docker/nginx-app.conf /etc/nginx/sites-available/default
 COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
@@ -33,7 +33,8 @@ ADD src /organilab
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
-RUN chown -R www-data:www-data /organilab
+RUN chown -R organilab:organilab /organilab
+RUN chmod +x /organilab/entrypoint.sh
 
 EXPOSE 80
 
