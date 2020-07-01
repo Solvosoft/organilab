@@ -22,8 +22,9 @@
         <div id="treeview" class="treeview" data-url="{% url 'api:api_organization_structure' %}"></div>
     </div>
 </div>
-<form action="{% url 'laboratory:access_list' %}" method="post"> {% csrf_token %}
-<div id="reportsavemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+<form action="" method="post">
+    {% csrf_token %}
+<div id="organizationsavemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -55,7 +56,6 @@ $(function() {
             type : "GET",
             dataType : 'json',
             success : function(result) {
-
                  $('#treeview').treeview({
                     data: result
                 });
@@ -65,10 +65,10 @@ $(function() {
             }
     });
 
-    $(".btn").on('click', function(){
-        $('#pk').val($(".btn").data('id-item'));
-    });
-
 });
+
+function update_pK_parent(element){
+  $('#pk').val(parseInt($(element).attr('id')));
+}
 </script>
 {% endblock %}
