@@ -15,10 +15,12 @@ def get_child(element, query):
 
     for x in query.filter(organization__parent=element):
 
-        organization_button = "<button type='button' class='btn btn-success btn-sm' " \
-                              "data-id-item="+str(x.organization.pk)+" data-toggle='modal'" \
-                                                                    " data-target='#reportsavemodal'>" \
-                                                                    "<i class='fa fa-university'></i></button>"
+        if x.organization.pk ==14:
+            print(OrganizationStructure.objects.filter(parent__pk=14))
+
+        organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
+                              " id='"+str(x.organization.pk)+"' data-toggle='modal'" \
+                              " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
 
         buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
 
@@ -48,10 +50,9 @@ def get_data_parent(queryset, user):
         organization = queryset_orga_user.filter(organization=x.organization)
 
         if organization:
-            organization_button = "<button type='button' class='btn btn-success btn-sm' " \
-                                  "data-id-item="+str(x.organization.pk)+" data-toggle='modal'" \
-                                                                        " data-target='#reportsavemodal'>" \
-                                                                         "<i class='fa fa-university'></i></button>"
+            organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
+                                  " id='"+str(x.organization.pk)+"' data-toggle='modal'" \
+                                  " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
 
             buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
             text = text + buttons
