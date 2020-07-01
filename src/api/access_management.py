@@ -1,3 +1,5 @@
+from itertools import chain
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,9 +16,6 @@ def get_child(element, query):
     info_orga = {}
 
     for x in query.filter(organization__parent=element):
-
-        if x.organization.pk ==14:
-            print(OrganizationStructure.objects.filter(parent__pk=14))
 
         organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
                               " id='"+str(x.organization.pk)+"' data-toggle='modal'" \
@@ -72,17 +71,15 @@ def get_data_parent(queryset, user):
 
     return orga_structure
 
-def get_missing_parents(user, queryset):
+def get_all_organizations(queryset):
     list_organization = []
     for x in queryset:
+        list_organization.append(x.organization)
         if x.organization.parent:
             parent = queryset.filter(organization=x.organization.parent).first()
             if parent is None and parent not in list_organization:
                 parent = OrganizationStructure.objects.get(pk=x.organization.parent.pk)
                 list_organization.append(parent)
-                list_organization.append(x.organization)
-
-    list_organization = OrganizationUserManagement.objects.filter(organization__in=list_organization)
 
     return list_organization
 
@@ -90,8 +87,8 @@ def get_missing_parents(user, queryset):
 class OrganizationStructureView(APIView):
 
     def get(self, request, format=None):
-        queryset = OrganizationUserManagement.objects.filter(users__in=[request.user])
-        list_with_parent = get_data_parent(queryset, request.user)
-        list_without_parent = get_data_parent(get_missing_parents(request.user, queryset), request.user)
-        tree = list_with_parent + list_without_parent
-        return Response(tree)
+        organizations_user = OrganizationUserManagement.objects.filter(users__in=[request.user])
+        queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user))
+        if queryset:
+            tree = get_data_parent(queryset, request.user)
+            return Response(tree)
