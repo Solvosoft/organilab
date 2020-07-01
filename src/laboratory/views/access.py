@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
@@ -123,12 +123,15 @@ def access_management(request):
         user = request.user
         form = OrganizationUserManagementForm(request.POST)
         if form.is_valid():
-            parent = OrganizationStructure.objects.filter(pk=int(request.POST["pk"])).first()
-            orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
-            orga.save()
-            orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
-            orga_user.save()
-            orga_user.users.add(request.user)
+            pk = int(request.POST["pk"])
+            if pk and pk > 0:
+                parent = OrganizationStructure.objects.filter(pk=pk).first()
+                orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
+                orga.save()
+                orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
+                orga_user.save()
+                orga_user.users.add(user)
+                return redirect('laboratory:access_list')
     else:
         form = OrganizationUserManagementForm()
 
