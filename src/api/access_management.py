@@ -87,8 +87,17 @@ def get_all_organizations(queryset):
 class OrganizationStructureView(APIView):
 
     def get(self, request, format=None):
+        tree = {}
         organizations_user = OrganizationUserManagement.objects.filter(users__in=[request.user])
         queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user))
         if queryset:
             tree = get_data_parent(queryset, request.user)
+            new_orga_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
+                                  " id='0' data-toggle='modal'" \
+                                  " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
+            new_orga = {
+                'text': new_orga_button,
+                'href': '#'
+            }
+            tree.append(new_orga)
             return Response(tree)
