@@ -17,5 +17,11 @@
     </div>
 </div>
 
+
+{% endblock %}
+
+{% block js %}
+<script> var jq=$.noConflict();</script>
 {{ form.media }}
+<script> $=jq;</script>
 {% endblock %}

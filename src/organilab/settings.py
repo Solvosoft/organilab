@@ -67,8 +67,6 @@ INSTALLED_APPS = [
     'fontawesome',
     'django_comments',
     'tagging',
-    'zinnia',
-    'zinnia_ckeditor',
     'ckeditor_uploader',
     #    'debug_toolbar',
     'mapwidgets',
