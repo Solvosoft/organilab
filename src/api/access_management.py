@@ -10,18 +10,21 @@ users_button = """
     <i class='fa fa-users'></i></button>
     """
 
+def get_organization_button(pk_orga):
+    organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
+                          " id='" + str(pk_orga) + "' data-toggle='modal'" \
+                                                   " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
+
+    return organization_button
+
 def get_child(element, query):
 
     list_child = []
     info_orga = {}
 
     for x in query.filter(organization__parent=element):
-
-        organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
-                              " id='"+str(x.organization.pk)+"' data-toggle='modal'" \
-                              " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
-
-        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
+        pk = x.organization.pk
+        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(pk) + users_button + "</div>"
 
         info_orga = {
             'text': x.organization.name + buttons,
@@ -49,11 +52,9 @@ def get_data_parent(queryset, user):
         organization = queryset_orga_user.filter(organization=x.organization)
 
         if organization:
-            organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
-                                  " id='"+str(x.organization.pk)+"' data-toggle='modal'" \
-                                  " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
-
-            buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + organization_button + users_button + "</div>"
+            pk = x.organization.pk
+            buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
+                pk) + users_button + "</div>"
             text = text + buttons
 
         info_orga = {
@@ -92,11 +93,9 @@ class OrganizationStructureView(APIView):
         queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user))
         if queryset:
             tree = get_data_parent(queryset, request.user)
-            new_orga_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
-                                  " id='0' data-toggle='modal'" \
-                                  " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
+
             new_orga = {
-                'text': new_orga_button,
+                'text': get_organization_button(0),
                 'href': '#'
             }
             tree.append(new_orga)
