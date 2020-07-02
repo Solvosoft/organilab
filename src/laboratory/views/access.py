@@ -118,20 +118,23 @@ class AccessListLabAdminsView(BaseAccessListLab):
 @login_required
 def access_management(request):
     context = {}
+    parent = None
 
     if request.method == 'POST':
         user = request.user
         form = OrganizationUserManagementForm(request.POST)
         if form.is_valid():
             pk = int(request.POST["pk"])
-            if pk and pk > 0:
+
+            if pk > 0:
                 parent = OrganizationStructure.objects.filter(pk=pk).first()
-                orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
-                orga.save()
-                orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
-                orga_user.save()
-                orga_user.users.add(user)
-                return redirect('laboratory:access_list')
+
+            orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
+            orga.save()
+            orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
+            orga_user.save()
+            orga_user.users.add(user)
+            return redirect('laboratory:access_list')
     else:
         form = OrganizationUserManagementForm()
 
