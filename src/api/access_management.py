@@ -90,7 +90,7 @@ class OrganizationStructureView(APIView):
     def get(self, request, format=None):
         tree = {}
         organizations_user = OrganizationUserManagement.objects.filter(users__in=[request.user])
-        queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user))
+        queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user)).order_by('organization__name')
         if queryset:
             tree = get_data_parent(queryset, request.user)
 
