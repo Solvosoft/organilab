@@ -1,8 +1,12 @@
 # Use an official Python runtime as a parent image
-FROM python:3.6.4-stretch
+FROM python:3.7-buster
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /organilab/logs/ /organilab/static/
+ARG UID=1000
+ENV USER="organilab"
+RUN useradd -u $UID -ms /bin/bash $USER
+
+RUN mkdir -p /run/logs/ /run/static/
 WORKDIR /organilab
 
 RUN apt-get update && \
@@ -10,24 +14,29 @@ RUN apt-get update && \
 
 ADD requirements.txt /organilab
 
-RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip && \
-pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt && \
-pip install --trusted-host pypi.python.org --no-cache-dir gunicorn
+RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 RUN apt-get -y autoremove && \
      apt-get -y clean   && \
      rm -rf /var/lib/apt/lists/*
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN sed -i 's/user www-data;/user organilab;/g' /etc/nginx/nginx.conf
+
 COPY docker/nginx-app.conf /etc/nginx/sites-available/default
 COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
 ADD src /organilab
 
 RUN python manage.py loaddevstatic --settings=organilab.settings
-RUN python manage.py collectstatic --noinput --settings=organilab.settings
-RUN chown -R www-data:www-data /organilab
+RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
-EXPOSE 80
+ADD docker/entrypoint.sh /run/
+RUN chown -R organilab:organilab /run/
 
-CMD ["supervisord", "-n"]
+RUN chmod +x /run/entrypoint.sh
+
+EXPOSE 80 8000
+
+CMD ["/run/entrypoint.sh"]

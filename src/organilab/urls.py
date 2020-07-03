@@ -30,7 +30,7 @@ from msds.urls import urlpatterns as msds_urls
 from api.urls import urlpatterns as api_urls
 from django.views.generic.base import RedirectView
 from django.urls.base import reverse_lazy
-from djgentelella.urls import base_urlpatterns as urls_djgentelela
+from djgentelella.urls import urlpatterns as urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
