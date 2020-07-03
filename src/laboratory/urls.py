@@ -7,6 +7,7 @@ Created on 1/8/2016
 from django.conf.urls import url, include
 
 from laboratory import views
+from authentication import users
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
@@ -146,6 +147,7 @@ organization_urls = [
     url('access_list$', access_management, name="access_list"),
     url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
     url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
+    url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
 ]
 
 '''MULTILAB'''
