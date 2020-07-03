@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
@@ -65,3 +65,11 @@ class H_CodeForm(forms.Form):
 class OrganizationUserManagementForm(CustomForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
     group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True, label=_("Group"))
+
+class UserSearchForm(CustomForm):
+    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
+
+    def __init__(self, *args, **kwargs):
+        users_list = kwargs.pop('users_list')
+        super(UserSearchForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
