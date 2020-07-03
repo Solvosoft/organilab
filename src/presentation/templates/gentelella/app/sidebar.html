@@ -60,6 +60,16 @@
                     </ul>
 
                 </li>
+
+                {% if user.is_authenticated %}
+                <li>
+              <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
+                  <i class='fa fa-university'></i> {% trans 'Access list' %}
+
+              </a>
+              </li>
+                 {% endif %}
+
                 <li>
                     <a class="nav-link" href="{% url 'blog:entrylist' %}"
                        title="{% trans 'blog entries' %}">
