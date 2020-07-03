@@ -12,7 +12,7 @@ from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
-from laboratory.views.access import access_management
+from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 
@@ -144,6 +144,8 @@ sustance_urls = [
 
 organization_urls = [
     url('access_list$', access_management, name="access_list"),
+    url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
+    url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
 ]
 
 '''MULTILAB'''

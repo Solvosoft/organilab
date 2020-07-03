@@ -20,7 +20,7 @@ from laboratory.views.djgeneric import ListView
 @method_decorator(login_required, name='dispatch')
 class BaseAccessListLab(FormView, ListView):
     model = User
-    template_name = 'laboratory/access_list.html'
+    template_name = 'laboratory/users_management.html'
     form_class = UserSearchForm
     user_create_form = UserCreate
     paginate_by = 30
@@ -140,3 +140,22 @@ def access_management(request):
 
     context['form'] = form
     return render(request, 'laboratory/access_management.html', context=context)
+
+
+@login_required
+def users_management(request, pk):
+    context = {}
+    pk = int(pk)
+
+    users_list = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
+    if users_list:
+        context['users_list'] = users_list.users.all()
+        context['organization'] = users_list.organization
+    return render(request, 'laboratory/users_management.html', context=context)
+
+@login_required
+def delete_user(request, pk, user_pk):
+    user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
+    if user_orga_management:
+        user_orga_management.users.remove(user_pk)
+    return redirect('laboratory:users_management', pk=pk)
