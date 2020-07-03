@@ -70,5 +70,11 @@ $(function() {
 function update_pK_parent(element){
   $('#pk').val(parseInt($(element).attr('id')));
 }
+
+function users_management(element){
+    var pk = parseInt($(element).data('id'));
+  window.location.href = '/access_list/'+pk+'/users';
+}
+
 </script>
 {% endblock %}
