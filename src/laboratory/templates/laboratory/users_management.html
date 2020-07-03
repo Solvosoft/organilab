@@ -38,13 +38,19 @@
                                     {{ form.as_horizontal }}
                                   </div>
                                   <div class="col-md-4">
-                                            <button type="submit" class="btn btn-success">Agregar</button>
+                                            <button type="submit" class="btn btn-success">{% trans 'Add' %}</button>
 
                                   </div>
                               </div>
 
 
                         </form>
+
+                        <div class="col-md-12">
+                <a class="btn btn-primary"  href="{% url 'laboratory:add_user' organization.pk %}" >
+                    {% trans 'Add New User' %}
+                </a>
+            </div>
 
                     </div>
                 </div>
