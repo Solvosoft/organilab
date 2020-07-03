@@ -144,13 +144,27 @@ def access_management(request):
 
 @login_required
 def users_management(request, pk):
-    context = {}
-    pk = int(pk)
 
-    users_list = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
-    if users_list:
-        context['users_list'] = users_list.users.all()
-        context['organization'] = users_list.organization
+    context = {}
+    orga_user_managament = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
+    users_organization = orga_user_managament.users.all()
+    users_pk = [user.pk for user in users_organization]
+
+    if request.method == 'POST':
+        form = UserSearchForm(request.POST, users_list=users_pk)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            orga_user_managament.users.add(user)
+            return redirect('laboratory:users_management', pk=pk)
+    else:
+        form = UserSearchForm(users_list=users_pk)
+
+    context['form'] = form
+
+    if orga_user_managament:
+        context['users_list'] = users_organization
+        context['organization'] = orga_user_managament.organization
+
     return render(request, 'laboratory/users_management.html', context=context)
 
 @login_required
