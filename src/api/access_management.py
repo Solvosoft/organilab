@@ -1,14 +1,16 @@
-from itertools import chain
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
 
-users_button = """
-    <button type='button' class='btn btn-primary btn-sm'>
-    <i class='fa fa-users'></i></button>
-    """
+
+def get_users_button(pk_orga):
+    users_button = "<a class='btn btn-primary btn-sm'" \
+                   "onclick='users_management(this)'" \
+                    " data-id='" + str(pk_orga) +"'><i class='fa fa-users'></i></a>"
+
+    return users_button
+
 
 def get_organization_button(pk_orga):
     organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
@@ -17,14 +19,15 @@ def get_organization_button(pk_orga):
 
     return organization_button
 
-def get_child(element, query):
 
+def get_child(element, query):
     list_child = []
     info_orga = {}
 
     for x in query.filter(organization__parent=element):
         pk = x.organization.pk
-        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(pk) + users_button + "</div>"
+        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
+            pk) + get_users_button(pk) + "</div>"
 
         info_orga = {
             'text': x.organization.name + buttons,
@@ -40,8 +43,8 @@ def get_child(element, query):
 
     return list_child
 
-def get_data_parent(queryset, user):
 
+def get_data_parent(queryset, user):
     orga_structure = []
     info_orga = {}
     queryset_orga_user = OrganizationUserManagement.objects.filter(users__in=[user])
@@ -54,7 +57,7 @@ def get_data_parent(queryset, user):
         if organization:
             pk = x.organization.pk
             buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
-                pk) + users_button + "</div>"
+                pk) + get_users_button(pk) + "</div>"
             text = text + buttons
 
         info_orga = {
@@ -71,6 +74,7 @@ def get_data_parent(queryset, user):
         info_orga = {}
 
     return orga_structure
+
 
 def get_all_organizations(queryset):
     list_organization = []
@@ -90,7 +94,8 @@ class OrganizationStructureView(APIView):
     def get(self, request, format=None):
         tree = {}
         organizations_user = OrganizationUserManagement.objects.filter(users__in=[request.user])
-        queryset = OrganizationUserManagement.objects.filter(organization__in=get_all_organizations(organizations_user)).order_by('organization__name')
+        queryset = OrganizationUserManagement.objects.filter(
+            organization__in=get_all_organizations(organizations_user)).order_by('organization__name')
         if queryset:
             tree = get_data_parent(queryset, request.user)
 
