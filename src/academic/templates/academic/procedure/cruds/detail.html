@@ -10,20 +10,19 @@
 
 <div class="box-body">
   {% if url_update and 'update' in views_available and crud_perms.update %}
-  <div class="box-header">
+    <div class="box-header">
       <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
-  </div>
-  {% endif %}
+    </div>
+    {% endif %}
 
-  <div class="page-header">
-  <h1 class="text-center">{{object.title}}</h1>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-body">
-		{{object.description|safe}}
-  </div>
-</div>
+    <div class="page-header">
+      <h1 class="text-center">{{object.title}}</h1>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+            {{object.description|safe}}
+      </div>
+    </div>
 
     <h2>{% trans 'Steps' %} </h2>
 
@@ -52,26 +51,24 @@
     {% endfor %}
     </ul>
   </div>
-     {% if step.procedureobservations_set.all.count %}
-    	<div class="panel-footer ">
-    	<h2>{% trans 'Observations' %}</h2>
-    	<ol>
-    	{% for observation in step.procedureobservations_set.all %}
-    		<li>{{observation}}</li>
-    	{%endfor%}
-    	   </ol>
-    	</div>
+    {% if step.procedureobservations_set.all.count %}
+        <div class="panel-footer ">
+        <h2>{% trans 'Observations' %}</h2>
+        <ol>
+        {% for observation in step.procedureobservations_set.all %}
+            <li>{{observation}}</li>
+        {%endfor%}
+           </ol>
+        </div>
     {% endif %}
 	{% endif %}
 </div>
-</div>
 {% endfor %}
-
-  {% if url_list and 'list' in views_available %}
+{% if url_list and 'list' in views_available %}
     <div class="box-footer">
       <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
-   </div>
-  {% endif %}
+    </div>
+{% endif %}
 
-
+</div>
 {% endblock %}

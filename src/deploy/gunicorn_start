@@ -2,13 +2,13 @@
  
 NAME="organilab" # Name of the application 
 DJANGODIR=/organilab # Django project directory 
-SOCKFILE=/organilab/gunicorn.sock # we will communicte using this unix socket 
+SOCKFILE=/run/gunicorn.sock # we will communicte using this unix socket
 NUM_WORKERS=2 # how many worker processes should Gunicorn spawn 
 DJANGO_SETTINGS_MODULE=organilab.settings # which settings file should Django use 
 DJANGO_WSGI_MODULE=organilab.wsgi # WSGI module name 
 
-USER=www-data # the user to run as 
-GROUP=www-data # the group to run as 
+USER=organilab # the user to run as
+GROUP=organilab # the group to run as
 echo "Starting $NAME as solvoapps" 
  
 # Activate the virtual environment 
@@ -21,5 +21,6 @@ exec gunicorn ${DJANGO_WSGI_MODULE}:application --name $NAME \
 --workers $NUM_WORKERS \
 --bind=unix:$SOCKFILE \
 --log-level=info \
+--pid="/run/organilab_`date  +"%Y%m%d%H%M%S"`.pid" \
 --log-file=-
 

@@ -175,10 +175,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.getenv('STATIC_ROOT', '/run/static/')
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('index')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
@@ -295,3 +295,4 @@ ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
 JQUERY_URL = None
+

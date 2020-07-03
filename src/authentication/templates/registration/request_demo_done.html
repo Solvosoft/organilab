@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Thank you' %}{% endblock %}
+
+{% block content_block_wrap %}{% endblock %}
+{% block body_class %}login{% endblock body_class%}
+{% block body %}
+
+<div class="center-container">
+  <div class="row vertical-center">
+ <div class="col-xs-12 col-md-12">
+     <div class="">
+         <div class="x_title">
+                <p class="onep_title text-center">{% trans 'Demonstration Requested Successfully' %}</p>
+         <div class="clearfix"></div>
+         </div>
+
+         <div class="x_content ">
+
+                <p align="center">
+                    Thank you for your Interest in software demonstration  <br>
+                    We value your enquiry and we will make every effort to contact you as soon as possible.
+                </p>
+             <br>
+             <p align="center"> <a class="btn btn-success" href="/">{% trans 'Home' %}</a></p>
+         </div>
+     </div>
+ </div>
+  </div>
+    <div class="clearfix"></div>
+
+    <footer class="vertical-bottom footer_nosidebar">
+          {% include "gentelella/app/footer.html" %}
+    </footer>
+
+</div>
+
+
+
+{% endblock body %} 

@@ -2,7 +2,11 @@
 FROM python:3.7-buster
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /organilab/logs/ /organilab/static/
+ARG UID=1000
+ENV USER="organilab"
+RUN useradd -u $UID -ms /bin/bash $USER
+
+RUN mkdir -p /run/logs/ /run/static/
 WORKDIR /organilab
 
 RUN apt-get update && \
@@ -18,6 +22,8 @@ RUN apt-get -y autoremove && \
      rm -rf /var/lib/apt/lists/*
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN sed -i 's/user www-data;/user organilab;/g' /etc/nginx/nginx.conf
+
 COPY docker/nginx-app.conf /etc/nginx/sites-available/default
 COPY docker/supervisor-app.conf /etc/supervisor/conf.d/
 
@@ -26,8 +32,11 @@ ADD src /organilab
 RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
-RUN chown -R www-data:www-data /organilab
+ADD docker/entrypoint.sh /run/
+RUN chown -R organilab:organilab /run/
 
-EXPOSE 80
+RUN chmod +x /run/entrypoint.sh
 
-CMD ["supervisord", "-n"]
+EXPOSE 80 8000
+
+CMD ["/run/entrypoint.sh"]
