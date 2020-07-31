@@ -6,13 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
-from laboratory.decorators import user_group_perms
-from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm
+from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from laboratory.views.djgeneric import ListView
 
@@ -151,13 +150,13 @@ def users_management(request, pk):
     users_pk = [user.pk for user in users_organization]
 
     if request.method == 'POST':
-        form = UserSearchForm(request.POST, users_list=users_pk)
+        form = SearchUserForm(request.POST, users_list=users_pk)
         if form.is_valid():
             user = form.cleaned_data['user']
             orga_user_managament.users.add(user)
             return redirect('laboratory:users_management', pk=pk)
     else:
-        form = UserSearchForm(users_list=users_pk)
+        form = SearchUserForm(users_list=users_pk)
 
     context['form'] = form
 
