@@ -31,13 +31,8 @@
                 {% trans 'Dissolution calculator (experimental)' %}</a>
             </li>
     {% endif %}
-    {% if perm_change_lab %}               
-              <li>
-              <a href="">
-                {% trans 'Access list' %}
-              </a>
-              </li>
 
+ {% if perm_change_lab %}
               <li>
               <a href="{% url 'laboratory:laboratory_update' laboratory %}">
                 {% trans 'Edit laboratory' %}

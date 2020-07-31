@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load bootstrap i18n static laboratory%}
+
+{% block title %}{% trans 'Access List' %}{% endblock %}
+
+{% block content %}
+<style>
+  .node-treeview{
+    height: 52px;
+  }
+</style>
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span> {% trans 'Access List' %}</span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-2 col-sm-8">
+        <div id="treeview" class="treeview" data-url="{% url 'api:api_organization_structure' %}"></div>
+    </div>
+</div>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="pk" name="pk" value=0>
+<div id="organizationsavemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans 'Add descendant organization' %}</h4>
+      </div>
+      <div class="modal-body">
+
+              {{ form.as_horizontal }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script src="{% static 'vendors/bootstrap-tree/bootstrap-treeview.min.js' %}"></script>
+<script>
+$(function() {
+
+$('[data-toggle="tooltip"]').tooltip();
+
+    var url = $('#treeview').data('url');
+    $.ajax({
+            url: url,
+            type : "GET",
+            dataType : 'json',
+            success : function(result) {
+                 $('#treeview').treeview({
+                    data: result
+                });
+            },
+            error: function(xhr, resp, text) {
+                console.log(xhr, resp, text);
+            }
+    });
+
+});
+
+function update_pK_parent(element){
+  $('#pk').val(parseInt($(element).attr('id')));
+}
+   function users_management(element){
+    var pk = parseInt($(element).data('id'));
+  window.location.href = '/access_list/'+pk+'/users';
+}
+
+$(window).load(function() {
+  $('.select2-container').width('100%');
+});
+
+
+</script>
+
+{% endblock %}

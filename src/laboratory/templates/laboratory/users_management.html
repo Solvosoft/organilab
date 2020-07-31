@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load bootstrap i18n static laboratory%}
+{% load static %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
+
+{% block title %}{% trans 'Users Management' %}{% endblock %}
+{% block content %}
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span>{{ organization.name }}</span></h3>
+        </div>
+</div>
+</div>
+
+ <div class="row">
+            <div class='col-md-8 col-md-offset-2 col-xs-12'>
+                <div class="x_panel" >
+                    <div class="x_title"><h2>
+                        Busque e incorpore usuarios a la organización</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content"  >
+
+                          <form action="" method="post" id="user">
+                            {% csrf_token %}
+
+                              <div class="row">
+                                  <div class="col-md-8">
+                                    {{ form.as_horizontal }}
+                                  </div>
+                                  <div class="col-md-4">
+                                            <button type="submit" class="btn btn-success">{% trans 'Add' %}</button>
+
+                                  </div>
+                              </div>
+
+
+                        </form>
+
+                        <div class="col-md-12" align="center">
+                <a class="btn btn-primary"  href="{% url 'laboratory:add_user' organization.pk %}" >
+                    {% trans 'Add New User' %}
+                </a>
+            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+<hr>
+
+<div class="table-responsive">
+<table id="userstable" class="table table-striped table-bordered" style="width:100%">
+     <thead>
+     <tr>
+         <th>{% trans 'Username' %}</th>
+         <th>{% trans 'Full name' %}</th>
+         <th>{% trans 'Email' %}</th>
+         <th>{% trans 'Delete' %}</th>
+     </tr>
+     </thead>
+     <tbody>
+
+     {% if users_list %}
+
+         {% for obj in users_list %}
+
+            {% if not obj == user %}
+                <tr>
+                <td>{{ obj.username }}</td>
+                <td>{{ obj.get_full_name }}</td>
+                <td>{{ obj.email }}</td>
+                <td align="center">
+
+                    <a class="btn btn-danger pull-center delete_user" data-toggle="modal" data-target="#modalConfirmDelete"
+                       data-id="{{ obj.pk }}" data-name="{{ obj.get_full_name }}">
+                        <i class="fa fa-trash"></i></a>
+                </td>
+                </tr>
+            {% endif %}
+         {% endfor %}
+
+     {% endif %}
+
+     </tbody>
+ </table>
+</div>
+<div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">{% trans 'Are you sure?' %}</p>
+      </div>
+      <div class="modal-body modal_user">
+      </div>
+      <div class="modal-footer flex-center">
+        <a class="btn  btn-outline-danger" id="modal_delete_user">{% trans 'Yes' %}</a>
+        <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">{% trans 'No' %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+{{ block.super }}
+<script>
+(function(){
+    $("#userstable").DataTable();
+
+    $(".delete_user").on('click', function(){
+        var url = "{% url 'laboratory:delete_user' organization.pk %}".concat(String($(this).data('id')));
+        $("#modal_delete_user").attr('href', url);
+        $("div.modal_user").text($(this).data('name'));
+    });
+
+})(jQuery);
+</script>
+{% endblock %}
