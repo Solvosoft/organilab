@@ -2,7 +2,7 @@
 
 from constance import config
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
+from laboratory.decorators import user_group_perms
 from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from laboratory.views.djgeneric import ListView
@@ -115,6 +116,10 @@ class AccessListLabAdminsView(BaseAccessListLab):
             user.groups.remove(group)
 
 @login_required
+@permission_required('laboratory.add_organizationstructure')
+@permission_required('laboratory.view_organizationstructure')
+@permission_required('laboratory.add_organizationusermanagement')
+@permission_required('laboratory.view_organizationusermanagement')
 def access_management(request):
     context = {}
     parent = None
@@ -142,6 +147,8 @@ def access_management(request):
 
 
 @login_required
+@permission_required('laboratory.view_organizationstructure')
+@permission_required('laboratory.view_organizationusermanagement')
 def users_management(request, pk):
 
     context = {}
@@ -167,6 +174,8 @@ def users_management(request, pk):
     return render(request, 'laboratory/users_management.html', context=context)
 
 @login_required
+@permission_required('laboratory.change_organizationusermanagement')
+@permission_required('laboratory.view_organizationusermanagement')
 def delete_user(request, pk, user_pk):
     user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
     if user_orga_management:
