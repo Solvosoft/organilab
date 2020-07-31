@@ -2,7 +2,7 @@ async-notifications==0.1.19
 chardet==3.0.4
 coreschema==0.0.4
 defusedxml==0.6.0
-Django==2.2.12
+Django==2.2.13
 django-datatables-view==1.19.1
 django-ajax-selects==1.9.1
 django-bootstrap-form==3.4
