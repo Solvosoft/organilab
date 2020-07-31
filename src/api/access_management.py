@@ -15,7 +15,7 @@ def get_users_button(pk_orga):
 def get_organization_button(pk_orga):
     organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
                           " id='" + str(pk_orga) + "' data-toggle='modal'" \
-                                                   " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
+                          " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
 
     return organization_button
 
