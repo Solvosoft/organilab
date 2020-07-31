@@ -66,10 +66,10 @@ class OrganizationUserManagementForm(CustomForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
     group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True, label=_("Group"))
 
-class UserSearchForm(CustomForm):
+class SearchUserForm(CustomForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
 
     def __init__(self, *args, **kwargs):
         users_list = kwargs.pop('users_list')
-        super(UserSearchForm, self).__init__(*args, **kwargs)
+        super(SearchUserForm, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
