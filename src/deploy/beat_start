@@ -5,4 +5,4 @@ DJANGODIR=/organilab            # Django project directory
 DJANGO_SETTINGS_MODULE=organilab.settings             # which settings file should Django use
 DJANGO_WSGI_MODULE=organilab.wsgi                     # WSGI module name
 
-exec  celery beat -A organilab --schedule /organilab/beat.db --loglevel=INFO
+exec  celery beat -A organilab --schedule /run/beat.db --loglevel=INFO --pidfile="/run/bead_`date  +"%Y%m%d%H%M%S"`.pid"

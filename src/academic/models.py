@@ -1,5 +1,7 @@
 from django.db import models
-from laboratory.models import Object, ShelfObject
+
+from laboratory import catalog
+from laboratory.models import Object, ShelfObject, Catalog
 
 # Create your models here.
 from django.utils.translation import ugettext_lazy as _
@@ -17,9 +19,6 @@ class Procedure(models.Model, HTMLPresentation):
         ordering = ('pk',)
         verbose_name = _('Procedure')
         verbose_name_plural = _('Procedures')
-        permissions = (
-            ("view_procedure", _("Can see available Procedure")),
-        )
 
 
 class ProcedureStep(models.Model, HTMLPresentation):
@@ -36,33 +35,26 @@ class ProcedureStep(models.Model, HTMLPresentation):
         ordering = ('pk',)
         verbose_name = _('Procedure step')
         verbose_name_plural = _('Procedure steps')
-        permissions = (
-            ("view_procedurestep", _("Can see available ProcedureStep")),
-        )
+
 
 
 class ProcedureRequiredObject(models.Model):
     step = models.ForeignKey(ProcedureStep, on_delete=models.CASCADE)
     object = models.ForeignKey(Object, verbose_name=_('Object'), on_delete=models.CASCADE)
     quantity = models.FloatField(_('Material quantity'))
-    measurement_unit = models.CharField(
-        _('Measurement unit'), max_length=2, choices=ShelfObject.CHOICES)
-
+    measurement_unit = catalog.GTForeignKey(Catalog,  on_delete=models.DO_NOTHING,
+                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     def __str__(self):
         return "%s %.2f %s" % (
             self.object,
             self.quantity,
-            self.get_measurement_unit_display()
+            str(self.measurement_unit)
         )
 
     class Meta:
         ordering = ('pk',)
         verbose_name = _('Procedure Required Object')
         verbose_name_plural = _('Procedure Required Objects')
-        permissions = (
-            ("view_procedurerequiredobject", _(
-                "Can see available ProcedureRequiredObject")),
-        )
 
 
 class ProcedureObservations(models.Model):
@@ -76,7 +68,3 @@ class ProcedureObservations(models.Model):
         ordering = ('pk',)
         verbose_name = _('Procedure Observation')
         verbose_name_plural = _('Procedure Observations')
-        permissions = (
-            ("view_procedureobservations", _(
-                "Can see available ProcedureObservations")),
-        )

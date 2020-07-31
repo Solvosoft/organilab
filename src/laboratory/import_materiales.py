@@ -6,7 +6,6 @@ Free as freedom will be 10/10/2016
 @author: luisza
 '''
 
-from __future__ import unicode_literals
 from laboratory.models import LaboratoryRoom, Furniture, Shelf, Object,\
     ShelfObject
 import json

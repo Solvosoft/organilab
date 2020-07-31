@@ -1,19 +1,16 @@
-from __future__ import unicode_literals
-
 import ast
 import json
 
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Q
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from location_field.models.plain import PlainLocationField
 from laboratory.validators import validate_molecular_formula
+from . import catalog
 
 
-@python_2_unicode_compatible
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
     cas_id_number = models.TextField(_('CAS ID number'))
@@ -22,15 +19,17 @@ class CLInventory(models.Model):
     class Meta:
         verbose_name = _('C&L Inventory')
         verbose_name_plural = _('C&L Inventory objects')
-        permissions = (
-            ("view_clinventory", _("Can see available C&L Inventory")),
-        )
 
     def __str__(self):
         return '%s' % self.name
 
+class Catalog(models.Model):
+    key = models.CharField(max_length=150)
+    description = models.CharField(max_length=500)
 
-@python_2_unicode_compatible
+    def __str__(self):
+        return self.description
+
 class ObjectFeatures(models.Model):
     name = models.CharField(_('Name'), max_length=250,  unique=True)
     description = models.TextField(_('Description'))
@@ -38,9 +37,6 @@ class ObjectFeatures(models.Model):
     class Meta:
         verbose_name = _('Object feature')
         verbose_name_plural = _('Object features')
-        permissions = (
-            ("view_objectfeatures", _("Can see available objectfeatures")),
-        )
 
     def __str__(self):
         return self.name
@@ -54,46 +50,15 @@ class Object(models.Model):
         (MATERIAL, _('Material')),
         (EQUIPMENT, _('Equipment'))
     )
-    EXPLOSIVES = '1'
-    GASES = '2'
-    FLAMMABLE_LIQUIDS = '3'
-    FLAMMABLE_SOLIDS = '4'
-    OXIDIZING = '5'
-    TOXIC = '6'
-    RADIOACTIVE = '7'
-    CORROSIVE = '8'
-    MISCELLANEOUS = '9'
-    IDMG_CHOICES = (
-        (EXPLOSIVES, _('Explosives')),
-        (GASES, _('Gases')),
-        (FLAMMABLE_LIQUIDS, _('Flammable liquids')),
-        (FLAMMABLE_SOLIDS, _('Flammable solids')),
-        (OXIDIZING, _('Oxidizing substances and organic peroxides')),
-        (TOXIC, _('Toxic and infectious substances')),
-        (RADIOACTIVE, _('Radioactive material')),
-        (CORROSIVE, _('Corrosive substances')),
-        (MISCELLANEOUS, _('Miscellaneous dangerous substances and articles'))
-    )
+
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    synonym = models.CharField(_('Synonym'), max_length=255, help_text=_('Comma separed name'), null=True, blank=True)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES, default=REACTIVE)
     is_public = models.BooleanField(default=True, verbose_name=_('Share with others'))
-    description = models.TextField(_('Description'))
-    molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
-                                         validators=[validate_molecular_formula], null=True, blank=True)
-    cas_id_number = models.CharField(
-        _('Cas ID Number'), max_length=255, null=True, blank=True)
-    security_sheet = models.FileField(
-        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
-    is_precursor = models.BooleanField(_('Is precursor'), default=False)
-    imdg_code = models.CharField(
-        _("IMDG code"), choices=IDMG_CHOICES, max_length=1,
-        help_text="* Eliminado en la próxima versión", null=True, blank=True)
+    description = models.TextField(_('Description'), null=True, blank=True)
 
-    h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
-
-    features = models.ManyToManyField(
-        ObjectFeatures, verbose_name=_("Object features"))
+    features = models.ManyToManyField(ObjectFeatures, verbose_name=_("Object features"))
 
     model = models.CharField(_('Model'), max_length=50, null=True, blank=True)
     serie = models.CharField(_('Serie'),  max_length=50, null=True, blank=True)
@@ -106,12 +71,17 @@ class Object(models.Model):
     def is_reactive(self):
         return self.type == self.REACTIVE
 
+    @property
+    def is_precursor(self):
+        if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
+            return self.sustancecharacteristics.is_precursor
+        return False
+
+
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
-        permissions = (
-            ("view_object", _("Can see available object")),
-        )
+
 
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
@@ -120,90 +90,87 @@ class Object(models.Model):
         self.full_clean()
         return super(Object, self).save(*args, **kwargs)
 
+class SustanceCharacteristics(models.Model):
+    obj = models.OneToOneField(Object, on_delete=models.CASCADE)
+    iarc = catalog.GTForeignKey(Catalog, related_name="gt_iarcrel", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IARC")
+    imdg = catalog.GTForeignKey(Catalog, related_name="gt_imdg", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IDMG")
+    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key", key_value="white_organ")
+    bioaccumulable = models.NullBooleanField(default=False)
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
+                                         validators=[validate_molecular_formula], null=True, blank=True)
+    cas_id_number = models.CharField(
+        _('Cas ID Number'), max_length=255, null=True, blank=True)
+    security_sheet = models.FileField(
+        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+    is_precursor = models.BooleanField(_('Is precursor'), default=False)
+    precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor", on_delete=models.SET_NULL,
+                                null=True, blank=True, key_name="key", key_value="Precursor")
+
+    h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
+
+    class Meta:
+        verbose_name = _('Sustance characteristic')
+        verbose_name_plural = _('Sustance characteristics')
+
 
 class ShelfObject(models.Model):
-    M = '0'
-    MM = '1'
-    CM = '2'
-    L = '3'
-    ML = '4'
-    U = "5"
-    G = '6'
-    KG = '7'
-    MG ='8'
-    M3 = '9'
-    CHOICES = (
-        (M, _('Meters')),
-        (MM, _('Milimeters')),
-        (CM, _('Centimeters')),
-        (L, _('Liters')),
-        (ML, _('Mililiters')),
-        (U, _('Unit')),
-        (G, _('Gram')),
-        (KG, _('Kilogram')),
-        (MG, _('Miligram')),
-        (M3, _("Cubic Meter"))
-    )
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
     quantity = models.FloatField(_('Material quantity'))
     limit_quantity = models.FloatField(_('Limit material quantity'))
-    measurement_unit = models.CharField(
-        _('Measurement unit'), max_length=2, choices=CHOICES)
+    measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
+                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+
 
     @staticmethod
     def get_units(unit):
-        choices = dict(ShelfObject.CHOICES)
-        unit = str(unit)
-        if unit in choices:
-            return str(choices[unit])
-
-        return ''
-
+        if isinstance(unit, (int, str)):
+            unit = Catalog.objects.filter(pk=unit).first() or ''
+        return str(unit)
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
 
+
+    def get_measurement_unit_display(self):
+        return str(self.measurement_unit)
+
+
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
-        permissions = (
-            ("view_shelfobject", _("Can see available shelf objects")),
-        )
+
 
     def __str__(self):
-        return '%s - %s %s' % (self.object, self.quantity, self.CHOICES[int(self.measurement_unit)][1])
+        return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
 
 
-@python_2_unicode_compatible
+
 class LaboratoryRoom(models.Model):
     name = models.CharField(_('Name'), max_length=255)
 
     class Meta:
         verbose_name = _('Laboratory Room')
         verbose_name_plural = _('Laboratory Rooms')
-        permissions = (
-            ("view_laboratoryroom", _("Can see available laboratory Room")),
-        )
 
     def __str__(self):
         return '%s' % (self.name,)
 
 
-@python_2_unicode_compatible
+
 class Shelf(models.Model):
-    CRATE = 'C'
-    DRAWER = 'D'
-    TYPE_CHOICES = (
-        (CRATE, _('Space')),
-        (DRAWER, _('Drawer'))
-    )
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"), on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
                                         verbose_name=_("Container shelf"), on_delete=models.CASCADE)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+
+    # C space  D drawer
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,  verbose_name=_('Type'),
+                                key_name="key", key_value='container_type')
+
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -229,26 +196,19 @@ class Shelf(models.Model):
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
-        permissions = (
-            ("view_shelf", _("Can see available shelf")),
-        )
 
     def __str__(self):
-        return '%s %s %s' % (self.furniture, self.get_type_display(),
-                             self.name)
+        return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
 
-@python_2_unicode_compatible
+
 class Furniture(models.Model):
-    FURNITURE = 'F'
-    DRAWER = 'D'
-    TYPE_CHOICES = (
-        (FURNITURE, _('Furniture')),
-        (DRAWER, _('Drawer'))
-    )
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES)
+    # old  'F' Cajón   'D' Estante
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,  verbose_name=_('Type'),
+                                key_name="key", key_value='furniture_type')
+
     dataconfig = models.TextField(_('Data configuration'))
 
     def remove_shelf_dataconfig(self, shelf_pk):
@@ -347,9 +307,6 @@ class Furniture(models.Model):
         verbose_name = _('Piece of furniture')
         verbose_name_plural = _('Furniture')
         ordering = ['name']
-        permissions = (
-            ("view_furniture", _("Can see available Furniture")),
-        )
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
@@ -362,7 +319,7 @@ class OrganizationStructureManager(models.Manager):
 
     def filter_user(self, user):
         organizations = OrganizationStructure.objects.filter(
-            principaltechnician__credentials=user)
+            organizationusermanagement__users=user)
 
         orgs = None
         for org in organizations:
@@ -380,12 +337,9 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
 
 
-@python_2_unicode_compatible
+
 class OrganizationStructure(MPTTModel):
     name = models.CharField(_('Name'), max_length=255)
-    group = models.ForeignKey(
-        Group, blank=True, null=True, verbose_name=_("Group"),
-        on_delete=models.SET_NULL)
 
     parent = TreeForeignKey(
         'self', blank=True, null=True, verbose_name=_("Parent"),
@@ -396,10 +350,6 @@ class OrganizationStructure(MPTTModel):
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
-        permissions = (
-            ("view_organizationstructure", _(
-                "Can see available OrganizationStructure")),
-        )
 
     class MPTTMeta:
         order_insertion_by = ['name', ]
@@ -420,40 +370,21 @@ class OrganizationStructure(MPTTModel):
         return labs
 
 
-@python_2_unicode_compatible
-class PrincipalTechnician(models.Model):
-    credentials = models.ManyToManyField(User)
-    name = models.CharField(_('Name'), max_length=255)
-    phone_number = models.CharField(_('Phone'), default='', max_length=25)
-    id_card = models.CharField(_('ID Card'), max_length=100)
-    email = models.EmailField(_('Email address'))
-
-    organization = TreeForeignKey(OrganizationStructure,
-                                  verbose_name=_("Organization"),
-                                  blank=True, null=True, on_delete=models.CASCADE)
-    assigned = models.ForeignKey(
-        'Laboratory', verbose_name=_("Assigned to"),
-        blank=True, null=True, on_delete=models.SET_NULL)
+class OrganizationUserManagement(models.Model):
+    group = models.ForeignKey(
+        Group, blank=True, null=True, verbose_name=_("Group"),
+        on_delete=models.SET_NULL)
+    organization = models.ForeignKey(
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+    users = models.ManyToManyField(User, blank=True)
 
     class MPTTMeta:
-        order_insertion_by = ['name', ]
-
-    class Meta:
-        verbose_name = _('Principal Technician')
-        verbose_name_plural = _('Principal Technicians')
-        ordering = ['name']
-        permissions = (
-            ("view_principaltechnician", _("Can see available PrincipalTechnician")),
-        )
+        order_insertion_by = ['organization__name', ]
 
     def __str__(self):
-        return "%s" % self.name
-
-    def __repr__(self):
-        return self.__str__()
+        return "%s" % self.organization.name
 
 
-@python_2_unicode_compatible
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), default='', max_length=255)
     phone_number = models.CharField(_('Phone'), default='', max_length=25)
@@ -468,17 +399,11 @@ class Laboratory(models.Model):
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
-    laboratorists = models.ManyToManyField(
-        User, related_name='laboratorists', verbose_name=_("Laboratorists"), blank=True)
-
-    students = models.ManyToManyField(
-        User, related_name='students', verbose_name=_("Students"), blank=True)
 
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
         permissions = (
-            ("view_laboratory", _("Can see available laboratory")),
             ("view_report", _("Can see available reports")),
             ("do_report", _("Can download available reports")),
         )
@@ -493,7 +418,15 @@ class Laboratory(models.Model):
         return self.__str__()
 
 
-@python_2_unicode_compatible
+class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(_('Phone'), default='', max_length=25)
+    id_card = models.CharField(_('ID Card'), max_length=100)
+    laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
+
+    def __str__(self):
+        return '%s' % (self.user,)
+
 class Solution(models.Model):
     name = models.CharField(_('Name'), default='', max_length=255)
     solutes = models.TextField(_('Solutes'))
@@ -506,9 +439,6 @@ class Solution(models.Model):
     class Meta:
         verbose_name = _('Solution')
         verbose_name_plural = _('Solutions')
-        permissions = (
-            ("view_solution", _("Can see available Solution")),
-        )
 
     def __str__(self):
         return self.name

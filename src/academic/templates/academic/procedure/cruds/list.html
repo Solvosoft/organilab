@@ -3,80 +3,73 @@
 {% load crud_tags %}
 
 {% block title %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
-{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+
 {% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
 {% block page_description %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
 
 
 {% block content %}
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                {% if url_create %}
-                <div class="box-header">
-                	{% crud_url object "create" namespace as url %}
-                	{% if url and 'create' in views_available and crud_perms.create %}
-                    <a href="{{ url }}" class="btn btn-primary">
-                        {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
-                    {%endif%}
-                </div>
-                {% endif %}
-                <br>
-                <div class="box-body">
-                    <table id="datatable" class="table table-bordered table-hover">
-                    {% if object_list %}
-                        <thead>
-                            {% block thead %}
-                            {% for field, field_name in fields.items %}
-                            <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
-                            {% endfor %}
-                            <th>{% trans "Actions" %}</th>
-                            {% endblock thead %}
-                        </thead>
-                        <tbody>
-                          {% block tbody %}
-                          {% for object in object_list %}
-                            <tr>
-                              {% for field, field_name in fields.items %}
-                              <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
-                                {% with column=field_name.1|lower|add:".html" %}
-                                    {% include "cruds/columns/"|add:column %}
-                                {% endwith %}
-                                {# typefield #}
-                              </td>
-                              {% endfor %}
-                              <td>
-								
-							{% crud_url object "detail" namespace as url %}
-	                           {% if url and 'detail' in views_available and crud_perms.detail %}
-	                                   <a href="{{ url }}" class="btn btn-info">{{object.procedurestep_set.all.count }} {% trans "Steps Details" %}</a>
-	                           {% endif %}            
-                               {% crud_url object "update" namespace as url %}
-                               {% if url and 'update' in views_available and crud_perms.update %}
-                               <a href="{% url 'add_steps_wrapper' object.pk %}" class="btn btn-success">
-                               {% trans "New Steps" %}</a>
-               
-                               <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
-                               {% endif %}
-                               {% crud_url object "delete" namespace as url %}
-                               {% if url and 'delete' in views_available and crud_perms.delete %}
-                               <a href="{{ url }}" class="btn btn-danger">{% trans "Delete" %}</a>
-                               {% endif %}
+{% if url_create %}
+<h2>
+    {% crud_url object "create" namespace as url %}
+    {% if url and 'create' in views_available and crud_perms.create %}
+    <a href="{{ url }}" class="btn btn-primary">
+        {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
+    {%endif%}
+</h2>
+{% endif %}
+<br>
 
-                              </td>
-                            </tr>
-                          {% endfor %}
-                          {% endblock tbody %}
-                        </tbody>
-                    {% else %}
-                      <thead><th></th></thead>
-                      <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
-                    {% endif %}
-                    </table>
-                </div>
-                <div class="box-footer"></div>
-            </div>
-        </div>
-    </div>
+<table id="datatable" class="table table-bordered table-hover">
+    {% if object_list %}
+        <thead>
+            {% block thead %}
+            {% for field, field_name in fields.items %}
+            <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
+            {% endfor %}
+            <th>{% trans "Actions" %}</th>
+            {% endblock thead %}
+        </thead>
+        <tbody>
+          {% block tbody %}
+          {% for object in object_list %}
+            <tr>
+              {% for field, field_name in fields.items %}
+              <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
+                 {{ object|format_value:field }}
+                {# typefield #}
+              </td>
+              {% endfor %}
+              <td>
+
+            {% crud_url object "detail" namespace as url %}
+               {% if url and 'detail' in views_available and crud_perms.detail %}
+                       <a href="{{ url }}" class="btn btn-info">{{object.procedurestep_set.all.count }} {% trans "Steps Details" %}</a>
+               {% endif %}
+               {% crud_url object "update" namespace as url %}
+               {% if url and 'update' in views_available and crud_perms.update %}
+               <a href="{% url 'add_steps_wrapper' object.pk %}" class="btn btn-success">
+               {% trans "New Steps" %}</a>
+
+               <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
+               {% endif %}
+               {% crud_url object "delete" namespace as url %}
+               {% if url and 'delete' in views_available and crud_perms.delete %}
+               <a href="{{ url }}" class="btn btn-danger">{% trans "Delete" %}</a>
+               {% endif %}
+
+              </td>
+            </tr>
+          {% endfor %}
+          {% endblock tbody %}
+        </tbody>
+    {% else %}
+      <thead><th></th></thead>
+      <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
+    {% endif %}
+    </table>
+
+
+
 {% endblock content %}

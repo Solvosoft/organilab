@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-25 01:17-0600\n"
-"PO-Revision-Date: 2020-03-25 01:19-0600\n"
+"PO-Revision-Date: 2020-05-31 12:47-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -180,7 +180,7 @@ msgstr "Hoja de seguridad"
 
 #: models.py:88
 msgid "Is precursor"
-msgstr "¿Es precursor"
+msgstr "¿Es precursor?"
 
 #: models.py:90 views/reports.py:128
 msgid "IMDG code"
@@ -1638,6 +1638,10 @@ msgstr "No hay Objetos"
 #: templates/pdf/organizationlaboratory_pdf.html:4
 msgid "Organilab Organization Laboratory Report"
 msgstr "Informe del laboratorio de la Organización Organilab"
+
+#: templates/pdf/organizationlaboratory_pdf.html:4
+msgid "Report Organization Laboratory"
+msgstr "Reporte de laboratorio Organización"
 
 #: templates/pdf/shelf_object_pdf.html:4
 msgid "Organilab Shelf Objects Report"

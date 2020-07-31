@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django import forms
 from mptt.forms import TreeNodeChoiceField
-from laboratory.models import Laboratory, OrganizationStructure, PrincipalTechnician
+from laboratory.models import Laboratory, OrganizationStructure, Profile
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
 
 from .djgeneric import ListView
@@ -46,7 +46,7 @@ class OrganizationReportView(ListView):
         context['form'] = self.form
 
         # start report checking  technician
-        if self.technician:
+        if self.profile:
             if self.organization:  # when a organizations is selected
                 organizations_child = OrganizationStructure.os_manager.filter_user(
                     self.user)
@@ -64,8 +64,7 @@ class OrganizationReportView(ListView):
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)
                 else:    # show only assign laboratory
-                    labs = Laboratory.objects.filter(
-                        principaltechnician__credentials=self.user)
+                    labs = Profile.objects.filter(user=self.user).first().laboratories.all()
         #  when have nothing assign
         else:
             # Show all to admin user
@@ -87,8 +86,8 @@ class OrganizationReportView(ListView):
 
     def get(self, request, *args, **kwargs):
         self.user = request.user
-        self.technician = PrincipalTechnician.objects.filter(
-            credentials=request.user)
+        self.profile = Profile.objects.filter(
+            user=request.user)
         self.form = OrganizationSelectableForm(
             request.user, request.GET or None)
 
@@ -96,8 +95,8 @@ class OrganizationReportView(ListView):
 
     def post(self, request, *args, **kwargs):
         self.user = request.user
-        self.technician = PrincipalTechnician.objects.filter(
-            credentials=request.user)
+        self.profile = Profile.objects.filter(
+            user=request.user)
         self.form = OrganizationSelectableForm(
             request.user, request.POST or None)
 

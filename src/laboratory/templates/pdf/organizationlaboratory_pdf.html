@@ -1,42 +1,28 @@
-{% extends 'pdf/base_pdf.html' %}
+{% extends 'pdf/base_organization_pdf.html' %}
 {% load i18n %} 
-
-{% block verbose_name %}{% trans "Organilab Organization Laboratory Report" %}{% endblock %}
-
-{% block pdf_content %}     
-  {% for laboratory in object_list %}
-        <h3 id="h3-1">
-            {{ laboratory.name }}
-        </h3>
-    <table >
-                <tr  >
-                <th >{% trans "Phone" %} </th>
-                <th >{% trans "Location" %} </th>
-                <th >{% trans "Technicians" %} </th>
-                <th >{% trans "Phones" %} </th>
-                <th >{% trans "Emails" %} </th>
-            </tr>
+{% block extra_css %}
+.small {
+    width: 15%;
+}
+{% endblock %}
+{% block pdf_content %}
+    {% for laboratory in object_list %}
+        <!-- repeat allow us to repeat the header in each new page-->
+        <table repeat="1">
             <tr>
-                 <td>{{laboratory.phone_number }}</td>
-                 <td>{{laboratory.location }}</td>
-                 <td>  
-                         {% for assigned in laboratory.principaltechnician_set.all %}
-                          {{ assigned.name }}</br>
-                         {% endfor %}
-                 </td>
-                 <td>                    
-                         {% for assigned in laboratory.principaltechnician_set.all %}
-                          {{ assigned.phone_number }}</br>
-                         {% endfor %}    
-                 </td>
-                 <td>
-                         {% for assigned in laboratory.principaltechnician_set.all %}
-                            {{ assigned.email }}</br>
-                         {% endfor %}
-                 </td>
-           </tr>
-    </table>
-        <br />
+                <th class="small">{% trans "Profiles" %} </th>
+                <th class="small">{% trans "Phones" %} </th>
+                <th>{% trans "Emails" %} </th>
+            </tr>
+            {% for profile in laboratory.profile_set.all %}
+                <tr>
+                    <td>{{ profile.user.name }}</td>
+                    <td>{{ profile.phone_number }}</td>
+                    <td>{{ profile.user.email }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br/>
     {% empty %} 
         {% trans "You have not assigned laboratories yet, or there is no laboratories registered" %} 
     {% endfor %}

@@ -1,14 +1,15 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http.response import JsonResponse
+
+from djgentelella.cruds.base import CRUDView
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
-from cruds_adminlte.crud import CRUDView
 from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.shortcuts import render
 import zipfile
 from django.conf import settings
@@ -92,6 +93,7 @@ class MSDSObjectCRUD(CRUDView):
     update_form = FormMSDSobjectUpdate
     check_login = False
     check_perms = False
+    form_widget_exclude = ['file']
 
     def decorator_update(self, viewclass):
         return login_required(viewclass)

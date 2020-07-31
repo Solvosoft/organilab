@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from laboratory.models import ShelfObject, PrincipalTechnician
+from laboratory.models import ShelfObject, Profile
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 
@@ -23,8 +23,8 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
         'labroom': labroom,
         'laboratory': laboratory
     }
-    ptech = PrincipalTechnician.objects.filter(assigned=laboratory)
-    emails = [x['email'] for x in ptech.values('email')]
+    ptech = Profile.objects.filter(laboratories__in=[laboratory])
+    emails = [x for x in ptech.values('user__email')]
     if not emails:
         emails = [settings.DEFAULT_FROM_EMAIL]
     send_email_from_template("Shelf object in limit",

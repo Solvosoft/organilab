@@ -1,20 +1,24 @@
 {% extends 'pdf/base_pdf.html' %}
 {% load i18n %}
-
-{% block verbose_name %}{% trans "Organilab Shelf Objects Report" %}{% endblock %}
-
+{% block extra_css %}
+.bold{
+  font-weight:bold;
+}
+{% endblock %}
 {% block pdf_content %}
   {% for obj in object_list %}
-    <h3>{{ obj }}</h3>
+    <h2>{{ obj }}</h2>
     <ul>
-    <li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
-    <li>{% trans "Object:" %}
+    <li><label class="bold">{% trans "Shelf:" %}</label> {{ obj.shelf }}</li>
+    <li><label class="bold">{% trans "Object:" %}</label>
       {{ obj.object }}
     </li>
-    <li>{% trans "Quantity:" %}
+    <li>
+      <label class="bold">{% trans "Quantity:" %}</label>
       {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
     </li>
-    <li>{% trans "Limit quantity:" %}
+    <li>
+      <label class="bold">{% trans "Limit quantity:" %}</label> 
       {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}
     </li>
       {% if obj.object.h_code.exists %}

@@ -17,11 +17,11 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 import json
 from django.contrib import messages
-from weasyprint import HTML
 from django.core.files import temp as tempfile
 from django.views.decorators.http import require_http_methods
 from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
+from xhtml2pdf import pisa
 
 register = Library()
 
@@ -40,7 +40,11 @@ def render_pdf_view(request):
 def html2pdf(json_data):
     file_name = "report.pdf"
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
-    HTML(string=json_data).write_pdf(pdf_absolute_path)
+    result_file = open(pdf_absolute_path, "w+b")
+    pisa_status = pisa.CreatePDF(
+            json_data,                # the HTML to convert
+            dest=result_file)           # file handle to recieve result
+    result_file.close()
     try:
         pdf = open(pdf_absolute_path, "rb")
         response = FileResponse(pdf, content_type='application/pdf')
