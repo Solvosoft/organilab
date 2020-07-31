@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% load static i18n datasets %}
+{% load static i18n gtsettings %}
 
-{% block css %}
-	<link href="{% static 'css/jquery.dataTables.min.css' %}" rel="stylesheet">
+{% block extra_css %}
+	<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %} 
@@ -12,7 +12,7 @@
 </a>
 
 </h1>
-<table id="example" class="display" style="width: 100%">
+<table id="msdstable" class="display" style="width: 100%">
 	<thead>
 		<tr>
 			<th>{% trans 'Provider' %}</th>
@@ -32,17 +32,18 @@
 
 {% endblock %} 
 {% block js %}
- <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
- <script src="{% static 'js/jquery.dataTables.min.js' %}" ></script>
+
+<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
 
 <script>
 $(document).ready(function() {
-    $('#example').DataTable( {
+    $('#msdstable').DataTable( {
         "ajax": '{% url "msds:list_msds" %}',
        // "processing" : true,
         "serverSide" : true,
         "language": {
-            "url": "{% get_dataset_translation %}"
+            "url": "{% get_datatables_translation %}"
         }
         
     } );

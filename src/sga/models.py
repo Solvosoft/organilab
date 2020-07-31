@@ -40,9 +40,6 @@ class WarningClass(MPTTModel):
     class Meta:
         verbose_name = _('Warning Class')
         verbose_name_plural = _('Warning Classes')
-        permissions = (
-            ("view_warningclass", _("Can see available Warning Classes")),
-        )
 
 # Pictograma de precaución
 
@@ -57,9 +54,7 @@ class WarningWord(models.Model):
     class Meta:
         verbose_name = _('Warning Word')
         verbose_name_plural = _('Warning Words')
-        permissions = (
-            ("view_warningword", _("Can see available Warning Words")),
-        )
+
 # Indicación de peligro
 
 
@@ -74,9 +69,7 @@ class Pictogram(models.Model):
     class Meta:
         verbose_name = _('Pictogram')
         verbose_name_plural = _('Pictograms')
-        permissions = (
-            ("view_pictogram", _("Can see available pictograms")),
-        )
+
 # palabras de advertencia
 
 
@@ -94,9 +87,6 @@ class PrudenceAdvice(models.Model):
     class Meta:
         verbose_name = _('Prudence Advice')
         verbose_name_plural = _('Prudence Advices')
-        permissions = (
-            ("view_prudenceadvice", _("Can see available prudence advice")),
-        )
 
 
 class DangerIndication(models.Model):
@@ -124,9 +114,6 @@ class DangerIndication(models.Model):
     class Meta:
         verbose_name = _('Danger Indication')
         verbose_name_plural = _('Indication of Danger')
-        permissions = (
-            ("view_dangerindication", _("Can see available indication of danger")),
-        )
 
 
 class Component(models.Model):
@@ -139,9 +126,7 @@ class Component(models.Model):
     class Meta:
         verbose_name = _('Component')
         verbose_name_plural = _('Components')
-        permissions = (
-            ("view_component", _("Can see available Component")),
-        )
+
 
 
 class Substance(models.Model):
@@ -172,9 +157,6 @@ class Substance(models.Model):
     class Meta:
         verbose_name = _('Sustance')
         verbose_name_plural = _('Sustances')
-        permissions = (
-            ("view_sustance", _("Can see available Sustance")),
-        )
 
 
 register(Substance)
@@ -192,9 +174,6 @@ class BuilderInformation(models.Model):
     class Meta:
         verbose_name = _('Builder Information')
         verbose_name_plural = _('Information of Builders')
-        permissions = (
-            ("view_builderinformation", _("Can see available Builder Information")),
-        )
 
 # labels
 
@@ -223,9 +202,6 @@ class RecipientSize(models.Model):
     class Meta:
         verbose_name = _('Recipient Size')
         verbose_name_plural = _('Size of recipients')
-        permissions = (
-            ("view_recipientsize", _("Can see available Recipient Size")),
-        )
 
 
 class Label(models.Model):
@@ -246,9 +222,6 @@ class Label(models.Model):
     class Meta:
         verbose_name = _('Label')
         verbose_name_plural = _('Labels')
-        permissions = (
-            ("view_label", _("Can see available labels")),
-        )
 
 
 class TemplateSGA(models.Model):
@@ -264,6 +237,3 @@ class TemplateSGA(models.Model):
     class Meta:
         verbose_name = _('Template SGA')
         verbose_name_plural = _('Templates SGA')
-        permissions = (
-            ("view_label", _("Can see available labels")),
-        )

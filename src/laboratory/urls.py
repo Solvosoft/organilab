@@ -3,18 +3,19 @@ Created on 1/8/2016
 
 @author: nashyra
 '''
-from __future__ import unicode_literals
 
 from django.conf.urls import url, include
+
 from laboratory import views
+from authentication import users
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
+from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
-from laboratory.views import access
+from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
-
 
 objviews = ObjectView()
 
@@ -22,31 +23,18 @@ urlpatterns = [
 
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
 
-    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(),
-        name='laboratory_update'),
-    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users,
-        name='laboratory_ajax_admins_users_list'),
-    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user,
-        name='laboratory_ajax_get_create_admins_user'),
-    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user,
-        name='laboratory_ajax_create_admins_user'),
-
-    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$',
-        laboratory.del_admins_user, name='laboratory_ajax_del_admins_users'),
-
+    url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
+    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users, name='laboratory_ajax_admins_users_list'),
+    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user, name='laboratory_ajax_get_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user, name='laboratory_ajax_create_admins_user'),
+    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$', laboratory.del_admins_user,
+        name='laboratory_ajax_del_admins_users'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    # CreateLaboratory
-    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),
-        name='create_lab'),
-
+    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
-    url(r'^_ajax/get_tour_steps_furniture$',
-        views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
-
-    url(r"reserve_object/(?P<modelpk>\d+)$",
-        ShelfObjectReservation.as_view(),
-        name="object_reservation")
+    url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
+    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation")
 ]
 
 lab_shelf_urls = [
@@ -142,20 +130,28 @@ solutions_urls = [
         name='solution_detail')
 ]
 
-lab_access_urls = [
-    url(r'^laboratorists$', access.AccessListLaboratoritsView.as_view(),
-        name='access_list_laboratorits'),
-    url(r'^students$', access.AccessListStudentsView.as_view(),
-        name='access_list_students'),
-]
 
 reports_all_lab=[
     url(r'^reports/hcode$', laboratory.HCodeReports.as_view(), name='h_code_reports'),
     url(r'^reports/download/hcode$', reports.report_h_code, name='download_h_code_reports'),
 ]
 
+sustance_urls = [
+    url('sustance/edit/(?P<pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
+    url('sustance/delete/(?P<pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
+    url('sustance/$', sustance_list, name='sustance_list'),
+    url('sustance/json$', SustanceListJson.as_view(), name='sustance_list_json'),
+]
+
+organization_urls = [
+    url('access_list$', access_management, name="access_list"),
+    url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
+    url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
+    url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
+]
+
 '''MULTILAB'''
-urlpatterns += [
+urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
     url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
@@ -167,7 +163,6 @@ urlpatterns += [
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/access/', include(lab_access_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
 

@@ -1,16 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from cruds_adminlte.crud import CRUDView
+from django.shortcuts import get_object_or_404, redirect
+from djgentelella.cruds.base import CRUDView
+from djgentelella.cruds.inline_crud import InlineAjaxCRUD
+
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject,\
     ProcedureObservations
-from cruds_adminlte.inline_crud import InlineAjaxCRUD
 from django.urls.base import reverse_lazy
 from academic.forms import ProcedureForm, ProcedureStepForm
 
 # Create your views here.
+from django.forms.models import BaseInlineFormSet
 
 class ProcedureView(CRUDView):
     model = Procedure
-    template_father = "base.html"
+    template_father = 'base.html'
     add_form = ProcedureForm
     update_form = ProcedureForm
     
@@ -23,6 +25,7 @@ class ProcedureRequiredObjectView(InlineAjaxCRUD):
     fields = ['object', 'quantity', 'measurement_unit']
     list_fields = ['object', 'quantity', 'measurement_unit']
 
+
 class ProcedureObservationsView(InlineAjaxCRUD):    
     base_model = ProcedureStep
     model = ProcedureObservations
@@ -30,6 +33,7 @@ class ProcedureObservationsView(InlineAjaxCRUD):
     title = 'Observation'
     fields=['description']
     list_fields = ['description']
+
 
 class StepsView(CRUDView):
     model = ProcedureStep
@@ -54,6 +58,7 @@ class StepsView(CRUDView):
             def get_success_url(self):
                 return reverse_lazy('academic_procedure_list')
         return CSV
+
 
 def add_steps_wrapper(request, pk):
     procedure = get_object_or_404(Procedure, pk=pk)

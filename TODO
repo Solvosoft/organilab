@@ -1,0 +1,12 @@
+Bloques a eliminar
+
+
+  {% block link %}{% endblock link %}
+  {% block script %}{% endblock script %}
+  {% block css %}{% endblock %}
+
+  debe usarse extra_head
+
+
+
+      debe usarse extra_head

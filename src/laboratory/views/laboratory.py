@@ -1,5 +1,4 @@
 # encoding: utf-8
-from __future__ import unicode_literals
 
 from django import forms
 from django.conf.urls import url
@@ -188,9 +187,7 @@ class SelectLaboratoryView(FormView):
         # direct relationship
         if not organizations:
             organizations = []
-        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
-                                         Q(laboratorists__pk=user.pk) |
-                                         Q(principaltechnician__credentials=user.pk) |
+        labs = Laboratory.objects.filter(Q(profile__user=user) |
                                          Q(organization__in=organizations)
                                          ).distinct()
         return labs
@@ -304,7 +301,7 @@ class LaboratoryDeleteView(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class HCodeReports(ListView):
-    paginate_by = 5
+    paginate_by = 15
     template_name = 'laboratory/h_code_report.html'
 
     def get_queryset(self):

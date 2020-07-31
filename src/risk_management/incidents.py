@@ -7,11 +7,13 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 
+from xhtml2pdf import pisa
+from laboratory.views.reports import link_callback
+
 from laboratory.decorators import user_group_perms
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
-from weasyprint import HTML
 from django.utils.translation import ugettext as _
 
 
@@ -139,18 +141,19 @@ def report_incidentreport(request, *args, **kwargs):
     template = get_template('risk_management/incidentreport_pdf.html')
 
     context = {
+        'verbose_name': "Incident report",
         'object_list': incidentreport,
         'datetime': timezone.now(),
         'request': request,
         'laboratory': lab
     }
 
-    html = template.render(
-        context=context).encode("UTF-8")
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
+    html = template.render(context=context)
+    response = HttpResponse(content_type='application/pdf')
     response[
         'Content-Disposition'] = 'attachment; filename="incident_report.pdf"'
+    pisaStatus = pisa.CreatePDF(
+    html, dest=response, link_callback=link_callback, encoding='utf-8')
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response

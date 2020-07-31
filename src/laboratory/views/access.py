@@ -1,33 +1,25 @@
 # encoding: utf-8
-from __future__ import unicode_literals
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
-
-
-from laboratory.models import Laboratory
-from laboratory.forms import UserCreate, UserSearchForm
-
-from django.views.generic import FormView
-from laboratory.views.djgeneric import ListView
-
-from django.utils.translation import ugettext_lazy as _
-
-from django.contrib.auth.models import User, Group
-
-from django.contrib import messages
-from django.urls import reverse
-from django.shortcuts import render
-
-from django.utils.decorators import method_decorator
 
 from constance import config
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
+from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView
+
+from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm, SearchUserForm
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
+from laboratory.views.djgeneric import ListView
 
 
 @method_decorator(login_required, name='dispatch')
 class BaseAccessListLab(FormView, ListView):
     model = User
-    template_name = 'laboratory/access_list.html'
+    template_name = 'laboratory/users_management.html'
     form_class = UserSearchForm
     user_create_form = UserCreate
     paginate_by = 30
@@ -122,32 +114,61 @@ class AccessListLabAdminsView(BaseAccessListLab):
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
 
-class AccessListLaboratoritsView(BaseAccessListLab):
-    role = '#tab_laboratorits'
-    group = config.GROUP_LABORATORIST_PK
-    success_url = 'laboratory:access_list_laboratorits'
+@login_required
+def access_management(request):
+    context = {}
+    parent = None
 
-    def get_relationfield(self):
-        laboratory = get_object_or_404(Laboratory, pk=self.lab)
-        return laboratory.laboratorists
+    if request.method == 'POST':
+        user = request.user
+        form = OrganizationUserManagementForm(request.POST)
+        if form.is_valid():
+            pk = int(request.POST["pk"])
 
-    def remove_user_to_relation(self, user, relation, group_pk):
-        group = Group.objects.get(pk=group_pk)
-        relation.remove(user)
-        if not user.laboratorists.all().exists():
-            user.groups.remove(group)
+            if pk > 0:
+                parent = OrganizationStructure.objects.filter(pk=pk).first()
 
-class AccessListStudentsView(BaseAccessListLab):
-    role = '#tab_students'
-    group = config.GROUP_STUDENT_PK
-    success_url = 'laboratory:access_list_students'
+            orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
+            orga.save()
+            orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
+            orga_user.save()
+            orga_user.users.add(user)
+            return redirect('laboratory:access_list')
+    else:
+        form = OrganizationUserManagementForm()
 
-    def get_relationfield(self):
-        laboratory = get_object_or_404(Laboratory, pk=self.lab)
-        return laboratory.students
+    context['form'] = form
+    return render(request, 'laboratory/access_management.html', context=context)
 
-    def remove_user_to_relation(self, user, relation, group_pk):
-        group = Group.objects.get(pk=group_pk)
-        relation.remove(user)
-        if not user.students.all().exists():
-            user.groups.remove(group)
+
+@login_required
+def users_management(request, pk):
+
+    context = {}
+    orga_user_managament = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
+    users_organization = orga_user_managament.users.all()
+    users_pk = [user.pk for user in users_organization]
+
+    if request.method == 'POST':
+        form = SearchUserForm(request.POST, users_list=users_pk)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            orga_user_managament.users.add(user)
+            return redirect('laboratory:users_management', pk=pk)
+    else:
+        form = SearchUserForm(users_list=users_pk)
+
+    context['form'] = form
+
+    if orga_user_managament:
+        context['users_list'] = users_organization
+        context['organization'] = orga_user_managament.organization
+
+    return render(request, 'laboratory/users_management.html', context=context)
+
+@login_required
+def delete_user(request, pk, user_pk):
+    user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
+    if user_orga_management:
+        user_orga_management.users.remove(user_pk)
+    return redirect('laboratory:users_management', pk=pk)

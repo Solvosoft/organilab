@@ -6,8 +6,6 @@ Free as freedom will be 26/8/2016
 @author: luisza
 ''' 
 
-from __future__ import unicode_literals
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
@@ -40,9 +38,7 @@ class SearchObject(ListView):
         # User have perm on that organization ?  else it use assigned User with direct relationship
         if not organizations:    
              organizations=[]
-        labs = Laboratory.objects.filter(Q(students__pk=user.pk) |
-                                      Q(laboratorists__pk=user.pk) | 
-                                      Q(principaltechnician__credentials=user.pk) | 
+        labs = Laboratory.objects.filter(Q(profile__user=user.pk) |
                                       Q (organization__in=organizations) 
                                       ).distinct()
         query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)

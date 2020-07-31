@@ -1,10 +1,10 @@
-{% load crispy_forms_tags i18n %}
+{% load bootstrap i18n %}
 <form data-ajax-submit="" action ="" method="post" onsubmit="return false;">
-  {{usersearchform|crispy}}
+  {{usersearchform|boostrap}}
   <input type="submit" value="{% trans 'Search' %}"/>
 </form>
 
 <form data-ajax-submit="" action="{% url 'laboratory:laboratory_ajax_create_admins_user' lab.pk %}" method="post" onsubmit="return false;">
-  {{usercreateform|crispy}}
+  {{usercreateform|bootstrap}}
   <input type="submit" value="{% trans 'Create' %}"/>
 </form>

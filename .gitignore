@@ -98,3 +98,15 @@ ENV/
 .settings
 
 media/
+
+#development ignore
+src/static
+src/beat.db
+*.backup
+
+#vscode
+.vscode/
+src/logs/
+
+#avoid postgres directory
+docker/postgres

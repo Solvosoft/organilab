@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+
+{% block extra_css %}
+<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span> {% trans 'Reactive management' %}  </span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+    <div class="add-container">
+        <a href="{% url 'laboratory:sustance_manage'%}"><i class="glyphicon glyphicon-plus green"
+                                                        title="{% trans 'Add new Substance' %}"></i></a>
+    </div>
+  <table id="sustancetable" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th> </th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Cas code' %}</th>
+                <th>{% trans 'Actions' %}</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+
+<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
+
+<script>
+
+(function(){
+    $("#sustancetable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "{% url 'laboratory:sustance_list_json' %}",
+        "language": {
+            "url": "{% get_datatables_translation %}"
+        }
+    });
+})(jQuery);
+</script>
+
+
+
+{% endblock %}

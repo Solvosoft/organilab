@@ -9,7 +9,7 @@ class TagsLookup(LookupChannel):
     model = WarningWord
 
     def check_auth(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 
@@ -24,7 +24,7 @@ class TagsLookup(LookupChannel):
     model = DangerIndication
 
     def check_auth(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 
@@ -45,7 +45,7 @@ class TagsLookup(LookupChannel):
     model = PrudenceAdvice
 
     def check_auth(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 
