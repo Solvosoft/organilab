@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'djgentelella',
     'djgentelella.blog',
     'chunked_upload',
+    'api.apps.ApiConfig',
 ]
 
 

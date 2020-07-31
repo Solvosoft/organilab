@@ -7,11 +7,13 @@ Created on 1/8/2016
 from django.conf.urls import url, include
 
 from laboratory import views
+from authentication import users
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
+from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 
@@ -28,7 +30,7 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$', laboratory.del_admins_user,
         name='laboratory_ajax_del_admins_users'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(),  name='create_lab'),
+    url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
     url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
@@ -141,9 +143,15 @@ sustance_urls = [
     url('sustance/json$', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
+organization_urls = [
+    url('access_list$', access_management, name="access_list"),
+    url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
+    url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
+    url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
+]
 
 '''MULTILAB'''
-urlpatterns += sustance_urls + [
+urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
     url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),

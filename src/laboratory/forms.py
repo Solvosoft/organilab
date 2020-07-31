@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import Group, User
+from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
 from .models import Laboratory
@@ -6,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
 from laboratory.models import OrganizationStructure
-
+from djgentelella.widgets import core as genwidgets
 
 class ObjectSearchForm(forms.Form):
     q = AutoCompleteSelectMultipleField(
@@ -60,3 +62,14 @@ class H_CodeForm(forms.Form):
                                            widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
                                            label=_('Filter substances by H Code'))
 
+class OrganizationUserManagementForm(CustomForm):
+    name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
+    group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True, label=_("Group"))
+
+class SearchUserForm(CustomForm):
+    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
+
+    def __init__(self, *args, **kwargs):
+        users_list = kwargs.pop('users_list')
+        super(SearchUserForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
