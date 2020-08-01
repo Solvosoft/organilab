@@ -70,7 +70,7 @@ charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’){% endblocktrans
 {% endblock %}
 
 {% block js %}
-<script>molecular_name_url = "{% url 'api:api_molecularname' laboratory %}"; </script>
+<script>molecular_name_url = "{% url 'api_molecularname' laboratory %}"; </script>
 
 
     <script type="text/javascript" src="{% static 'laboratory/js/objectview.js' %}"></script>
