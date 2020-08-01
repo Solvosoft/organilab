@@ -24,3 +24,16 @@ class CreateUserForm(CustomForm, forms.ModelForm):
             'last_name': djgenwidgets.TextInput,
             'email': djgenwidgets.EmailMaskInput
         }
+
+class ChangeUserForm(CustomForm, forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        widgets = {
+            'username': djgenwidgets.TextInput,
+            'first_name': djgenwidgets.TextInput,
+            'last_name': djgenwidgets.TextInput,
+            'email': djgenwidgets.EmailMaskInput,
+            'password': djgenwidgets.PasswordInput
+        }
