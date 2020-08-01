@@ -1,13 +1,15 @@
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.contrib.auth.models import User
-from django.urls import reverse_lazy
-from django.template.loader import render_to_string
-from django.views.generic import CreateView
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, FormView
+from django.views.generic.base import ContextMixin
 
-from authentication.forms import CreateUserForm
+from authentication.forms import CreateUserForm, ChangeUserForm
 from laboratory.models import OrganizationUserManagement
 
 
@@ -49,4 +51,26 @@ class AddUser(CreateView):
         orga_user_manager = OrganizationUserManagement.objects.filter(organization__pk=self.kwargs['pk']).first()
         if orga_user_manager:
             orga_user_manager.users.add(user)
+        return response
+
+
+@method_decorator(login_required, name='dispatch')
+class ChangeUser(UpdateView):
+
+    model = User
+    form_class = ChangeUserForm
+    template_name = "auth/change_user.html"
+
+    def get_success_url(self):
+        return reverse_lazy('laboratory:profile', args=(self.kwargs['pk'],))
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user = self.object
+        user.username = form.cleaned_data['username']
+        user.first_name = form.cleaned_data['first_name']
+        user.first_name = form.cleaned_data['last_name']
+        user.email = form.cleaned_data['email']
+        user.set_password(form.cleaned_data['password'])
+        user.save()
         return response
