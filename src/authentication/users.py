@@ -70,36 +70,54 @@ class ChangeUser(UpdateView):
         context['password_form'] = PasswordChangeForm()
         return context
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user = self.object
+
+        if user == self.request.user:
+            form.save()
+        else:
+            messages.error(self.request, "Debe iniciar sesión para acceder al su perfil de usuario.")
+            return redirect('index')
+
+        return response
+
 
 @login_required
 def password_change(request, pk):
 
     user = User.objects.get(pk=pk)
 
-    if request.method == "POST":
+    if request.user == user:
 
-        form = PasswordChangeForm(request.POST)
+        if request.method == "POST":
 
-        if form.is_valid():
+            form = PasswordChangeForm(request.POST)
 
-            password = form.cleaned_data['password']
-            password_confirm = form.cleaned_data['password_confirm']
+            if form.is_valid():
 
-            if password == password_confirm:
+                password = form.cleaned_data['password']
+                password_confirm = form.cleaned_data['password_confirm']
 
-                if user.check_password(password):
+                if password == password_confirm:
 
-                    user.set_password(password)
-                    user.save()
-                    messages.success(request, "Contraseña cambiada exitosamente.")
-                    return redirect('laboratory:profile', pk=pk)
+                    if user.check_password(password):
+
+                        user.set_password(password)
+                        user.save()
+                        messages.success(request, "Contraseña cambiada exitosamente.")
+                        return redirect('laboratory:profile', pk=pk)
+                    else:
+                        messages.error(request, "Error al intentar cambiar su contraseña: Formato incorrecto.")
+                        return redirect('laboratory:profile', pk=pk)
                 else:
-                    messages.error(request, "Error al intentar cambiar su contraseña: Formato incorrecto.")
+                    messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
                     return redirect('laboratory:profile', pk=pk)
+
             else:
-                messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
+                messages.error(request, "Error al intentar cambiar su contraseña: Asegurese de llenar los campos y que el formato sea correcto.")
                 return redirect('laboratory:profile', pk=pk)
 
-        else:
-            messages.error(request, "Error al intentar cambiar su contraseña: Asegurese de llenar los campos y que el formato sea correcto.")
-            return redirect('laboratory:profile', pk=pk)
+    else:
+        messages.error(request, "Debe iniciar sesión para acceder a su perfil de usuario.")
+        return redirect('index')
