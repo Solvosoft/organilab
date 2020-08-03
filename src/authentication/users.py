@@ -1,15 +1,16 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView, FormView
-from django.views.generic.base import ContextMixin
+from django.views.generic import CreateView, UpdateView
 
-from authentication.forms import CreateUserForm, ChangeUserForm
+from authentication.forms import CreateUserForm, PasswordChangeForm
+from laboratory.decorators import user_group_perms
 from laboratory.models import OrganizationUserManagement
 
 
@@ -58,19 +59,47 @@ class AddUser(CreateView):
 class ChangeUser(UpdateView):
 
     model = User
-    form_class = ChangeUserForm
+    form_class = CreateUserForm
     template_name = "auth/change_user.html"
 
     def get_success_url(self):
         return reverse_lazy('laboratory:profile', args=(self.kwargs['pk'],))
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = self.object
-        user.username = form.cleaned_data['username']
-        user.first_name = form.cleaned_data['first_name']
-        user.first_name = form.cleaned_data['last_name']
-        user.email = form.cleaned_data['email']
-        user.set_password(form.cleaned_data['password'])
-        user.save()
-        return response
+    def get_context_data(self, **kwargs):
+        context = super(ChangeUser, self).get_context_data()
+        context['password_form'] = PasswordChangeForm()
+        return context
+
+
+@login_required
+def password_change(request, pk):
+
+    user = User.objects.get(pk=pk)
+
+    if request.method == "POST":
+
+        form = PasswordChangeForm(request.POST)
+
+        if form.is_valid():
+
+            password = form.cleaned_data['password']
+            password_confirm = form.cleaned_data['password_confirm']
+
+            if password == password_confirm:
+
+                if user.check_password(password):
+
+                    user.set_password(password)
+                    user.save()
+                    messages.success(request, "Contraseña cambiada exitosamente.")
+                    return redirect('laboratory:profile', pk=pk)
+                else:
+                    messages.error(request, "Error al intentar cambiar su contraseña: Formato incorrecto.")
+                    return redirect('laboratory:profile', pk=pk)
+            else:
+                messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
+                return redirect('laboratory:profile', pk=pk)
+
+        else:
+            messages.error(request, "Error al intentar cambiar su contraseña: Asegurese de llenar los campos y que el formato sea correcto.")
+            return redirect('laboratory:profile', pk=pk)
