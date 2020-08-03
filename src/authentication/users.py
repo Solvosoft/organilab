@@ -8,10 +8,12 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 from authentication.forms import CreateUserForm
+from laboratory.decorators import user_group_perms
 from laboratory.models import OrganizationUserManagement
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.change_organizationusermanagement'), name='dispatch')
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
