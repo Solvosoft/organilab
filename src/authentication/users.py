@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -10,7 +11,6 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
 
 from authentication.forms import CreateUserForm, PasswordChangeForm
-from laboratory.decorators import user_group_perms
 from laboratory.models import OrganizationUserManagement
 
 
@@ -54,13 +54,20 @@ class AddUser(CreateView):
             orga_user_manager.users.add(user)
         return response
 
-
 @method_decorator(login_required, name='dispatch')
 class ChangeUser(UpdateView):
 
     model = User
     form_class = CreateUserForm
     template_name = "auth/change_user.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+
+        if not int(self.kwargs['pk']) == request.user.pk:
+            return HttpResponseNotFound('<h1>Page not found</h1>')
+        else:
+            return response
 
     def get_success_url(self):
         return reverse_lazy('laboratory:profile', args=(self.kwargs['pk'],))
@@ -119,5 +126,4 @@ def password_change(request, pk):
                 return redirect('laboratory:profile', pk=pk)
 
     else:
-        messages.error(request, "Debe iniciar sesión para acceder a su perfil de usuario.")
-        return redirect('index')
+        return HttpResponseNotFound('<h1>Page not found</h1>')
