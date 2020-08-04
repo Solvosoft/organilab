@@ -7,9 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        permissions_list = ['add_organizationstructure', 'change_organizationstructure',
-                            'delete_organizationstructure', 'view_organizationstructure',
-                            'add_organizationusermanagement', 'change_organizationusermanagement',
+        permissions_list = ['add_organizationusermanagement', 'change_organizationusermanagement',
                             'delete_organizationusermanagement', 'view_organizationusermanagement']
 
         admin_group = Group.objects.filter(name="Laboratory Administrator").first()
