@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -76,18 +76,6 @@ class ChangeUser(UpdateView):
         context = super(ChangeUser, self).get_context_data()
         context['password_form'] = PasswordChangeForm()
         return context
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = self.object
-
-        if user == self.request.user:
-            form.save()
-        else:
-            messages.error(self.request, "Debe iniciar sesión para acceder al su perfil de usuario.")
-            return redirect('index')
-
-        return response
 
 
 @login_required
