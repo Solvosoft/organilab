@@ -25,7 +25,8 @@ class Command(BaseCommand):
 
         if laboratory_administrator:
             per_laboratory_administrator = list(Group.objects.filter(name="Laboratory Administrator").values_list('permissions__codename', flat=True))
-
+            per_laboratory_administrator += ['add_organizationusermanagement', 'change_organizationusermanagement',
+                                            'delete_organizationusermanagement', 'view_organizationusermanagement']
         if professor:
             per_professor = list(Group.objects.filter(name="Professor").values_list('permissions__codename', flat=True))
 
@@ -34,15 +35,8 @@ class Command(BaseCommand):
 
 
         Permission.objects.all().delete()
-
-        apps_list = ['academic', 'authentication', 'laboratory', 'msds', 'risk_management', 'sga']
-
-        for app in apps_list:
-
-            app_config = apps.get_app_config(app)
-            create_contenttypes(app_config)
+        for app_config in apps.get_app_configs():
             create_permissions(app_config)
-
 
         if laboratory_administrator and per_laboratory_administrator:
 

@@ -351,10 +351,6 @@ class OrganizationStructure(MPTTModel):
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
         permissions = (
-            ('add_organizationstructure', _('Can add Organization')),
-            ('change_organizationstructure', _('Can change Organization')),
-            ('delete_organizationstructure', _('Can delete Organization')),
-            ('view_organizationstructure', _('Can view Organization')),
             ('add_organizationusermanagement', _('Can add organization user management')),
             ('change_organizationusermanagement', _('Can change organization user management')),
             ('delete_organizationusermanagement', _('Can delete organization user management')),
