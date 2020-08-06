@@ -6,6 +6,7 @@ Created on 1/8/2016
 
 from django.conf.urls import url, include
 
+from authentication.users import ChangeUser, password_change
 from laboratory import views
 from authentication import users
 from laboratory.reservation import ShelfObjectReservation
@@ -148,6 +149,8 @@ organization_urls = [
     url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
     url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
     url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
+    url('profile/(?P<pk>\d+)/info$', ChangeUser.as_view(), name='profile'),
+    url('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
 ]
 
 '''MULTILAB'''
