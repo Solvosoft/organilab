@@ -334,7 +334,7 @@ def index_organilab(request):
             hcodes_list = form.cleaned_data['codes']
             prudence_advices = set([y for x in hcodes_list for y in x.prudence_advice.all()])
             pictograms = set([y for x in hcodes_list for y in x.pictograms.all() if y.name != "Sin Pictograma"])
-            warning_words = set([x.warning_words for x in hcodes_list])
+            warning_words = set([x.warning_words for x in hcodes_list if x.warning_words.name != "Sin palabra de advertencia"])
             return render(request, 'danger_indication_info.html', {'hcodes_list': hcodes_list,
                                                                    'prudence_advices': prudence_advices,
                                                                    'warning_words': warning_words,
