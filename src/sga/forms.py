@@ -35,4 +35,4 @@ class EditorForm(forms.ModelForm):
 
 class SearchDangerIndicationForm(CustomForm, forms.Form):
 
-    codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), widget=genwidgets.SelectMultiple, required=True)
+    codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"), widget=genwidgets.SelectMultiple, required=True)

@@ -43,7 +43,7 @@
                     <p>{{ warning_word }}</p>
                   {% empty %}
                     <p>{% trans 'Without Warning Words' %}</p>
-                {% endfor %}
+                 {% endfor %}
               </div>
             </div>
                 </div>
@@ -59,7 +59,7 @@
                   {% for prudence_advice in prudence_advices %}
                     <p>{{ prudence_advice }}</p>
                   {% empty %}
-                    <p>{% trans 'Without Prudence Advices' %}</p>
+                    <p class="text-center">{% trans 'Without Prudence Advices' %}</p>
                 {% endfor %}
               </div>
             </div>
