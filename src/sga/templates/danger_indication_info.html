@@ -39,11 +39,11 @@
                     <div class="card">
               <div class="card-header"><h5><strong>{% trans 'Warning Words' %}</strong></h5></div>
               <div class="card-body">
-                  {% for warning_word in warning_words %}
+                  {% if warning_word %}
                     <p>{{ warning_word }}</p>
-                  {% empty %}
+                  {% else %}
                     <p>{% trans 'Without Warning Words' %}</p>
-                 {% endfor %}
+                 {% endif %}
               </div>
             </div>
                 </div>
