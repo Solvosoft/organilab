@@ -2,12 +2,12 @@
 import os
 
 from django.core.files.base import ContentFile
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
 
 from organilab import settings
 from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm
 from sga.models import TemplateSGA, RecipientSize, Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
@@ -323,3 +323,18 @@ def search_autocomplete_sustance(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
+
+
+def index_organilab(request):
+
+    if request.method == "POST":
+        form = SearchDangerIndicationForm(request.POST)
+
+        if form.is_valid():
+            hcodes_list = form.cleaned_data['codes']
+            return render(request, 'danger_indication_info.html', {'hcodes_list': hcodes_list})
+
+    else:
+        form = SearchDangerIndicationForm()
+
+    return render(request, 'index_organilab.html', {'form': form})

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+{% load static %}
+{% block title %}{% trans 'SGA Search' %}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13" align="center">
+                <h3 class="heading-1" ><span> {% trans 'Danger Indication Information' %}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13">
+                {% for code in hcodes_list %}
+                <h5 class="heading-1" ><span>{{ code }}</span></h5>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+       <div class="col-md-4 text-center">
+           <div class="card">
+               <div class="card-header"><h5><strong>{% trans 'Prudence Advices' %}</strong></h5></div>
+              <div class="card-body">
+                  {% for code in hcodes_list %}
+                    {% for prudence_advice in code.prudence_advice.all %}
+                        <p>{{ prudence_advice }}</p>
+                    {% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+       </div>
+        <div class="col-md-4 text-center">
+           <div class="card">
+              <div class="card-header"><h5><strong>{% trans 'Pictograms' %}</strong></h5></div>
+              <div class="card-body">
+                  {% for code in hcodes_list %}
+                    {% for pictogram in code.pictograms.all %}
+                        <img src="{% static 'sga/img/pictograms/' %}{{pictogram}}" width="90px" height="90px" />
+                    {% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+       </div>
+        <div class="col-md-4 text-center">
+           <div class="card">
+              <div class="card-header"><h5><strong>{% trans 'Warning Words' %}</strong></h5></div>
+              <div class="card-body">
+                  {% for code in hcodes_list %}
+                    <p>{{ code.warning_words }}</p>
+                {% endfor %}
+              </div>
+            </div>
+       </div>
+    </div>
+</div>
+{% endblock content %}
