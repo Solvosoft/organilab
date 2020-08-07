@@ -1,8 +1,10 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from djgentelella.forms.forms import CustomForm
+from djgentelella.widgets import core as genwidgets
 
-from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA
+from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication
 
 
 class RecipientInformationForm(forms.Form):
@@ -29,3 +31,8 @@ class EditorForm(forms.ModelForm):
     class Meta:
         model = TemplateSGA
         fields = ('name', 'recipient_size', 'json_representation', 'community_share', 'preview')
+
+
+class SearchDangerIndicationForm(CustomForm, forms.Form):
+
+    codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), widget=genwidgets.SelectMultiple, required=True)
