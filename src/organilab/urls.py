@@ -34,12 +34,11 @@ from djgentelella.urls import urlpatterns as urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
-
-
+from sga.views import index_organilab
 
 urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'^$', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='index'),
+    url(r'^$', index_organilab, name='index'),
 
     url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     url(r'^', include((api_urls,'api'), namespace='api')),
