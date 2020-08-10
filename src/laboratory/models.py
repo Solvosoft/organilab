@@ -77,6 +77,11 @@ class Object(models.Model):
             return self.sustancecharacteristics.is_precursor
         return False
 
+    @property
+    def cas_code(self):
+        if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
+            return self.sustancecharacteristics.cas_id_number
+        return False
 
     class Meta:
         verbose_name = _('Object')
