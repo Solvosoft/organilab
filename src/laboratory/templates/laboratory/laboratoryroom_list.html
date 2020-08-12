@@ -3,6 +3,17 @@
 
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 
+{% block extra_css %}
+<style>
+.select2 {
+    width: 100%!important;
+}
+span.select2-container {
+    z-index:10050;
+}
+</style>
+{% endblock %}
+
 {# Container #}
 {% block container %}container-fluid{% endblock %}
 
@@ -15,8 +26,6 @@
  
   <h1 class="text-center">{% get_laboratory_name %}</h1>
 
-  {# Search widget #}
-  {% include 'laboratory/search_widget.html' with laboratory=laboratory %}
 
   {# Nav #}
   <div class="row">
@@ -75,6 +84,7 @@
     document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
   </script>
   <script src="{% static 'js/shelfobjectedit.js' %}"></script>
+  <script src="{% static 'gentelella/js/select2related.js' %}"></script>
 
   <script>
     (function () {

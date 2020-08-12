@@ -36,7 +36,6 @@ from sga import urls as sga_urls
 from risk_management import urls as risk_urls
 
 
-
 urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='index'),
@@ -63,8 +62,8 @@ if settings.DEBUG:
                           document_root=settings.MEDIA_ROOT)
 
 
-# if settings.DEBUG:
-#    import debug_toolbar
-#    urlpatterns = [
-#        url(r'^__debug__/', include(debug_toolbar.urls)),
-#    ] + urlpatterns
+if settings.DEBUG_TOOLBAR:
+   import debug_toolbar
+   urlpatterns = [
+       url(r'^__debug__/', include(debug_toolbar.urls)),
+   ] + urlpatterns
