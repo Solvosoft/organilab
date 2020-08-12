@@ -62,12 +62,14 @@
                 </li>
 
                 {% if user.is_authenticated %}
+                {% if userperms.view_organizationstructure %}
                 <li>
               <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
                   <i class='fa fa-university'></i> {% trans 'Access list' %}
 
               </a>
               </li>
+                 {% endif %}
                  {% endif %}
 
                 <li>
@@ -91,6 +93,9 @@
     </div>
     <div class="sidebar-footer hidden-print  nohidden">
         {% if request.user.is_authenticated %}
+        <a title="" href="{% url 'laboratory:profile' user.pk %}">
+            <span class="fa fa-user" aria-hidden="true"></span>
+        </a>
         <a id="fsb_50" title="" href="{% url 'logout' %}">
             <span class="fa fa-power-off" aria-hidden="true"></span>
         </a>

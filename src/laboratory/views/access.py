@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
+from laboratory.decorators import user_group_perms
 from laboratory.forms import UserCreate, UserSearchForm, OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from laboratory.views.djgeneric import ListView
@@ -114,7 +115,12 @@ class AccessListLabAdminsView(BaseAccessListLab):
         if not user.lab_admins.all().exists():
             user.groups.remove(group)
 
+
 @login_required
+@user_group_perms(perm='laboratory.add_organizationstructure')
+@user_group_perms(perm='laboratory.view_organizationstructure')
+@user_group_perms(perm='laboratory.add_organizationusermanagement')
+@user_group_perms(perm='laboratory.view_organizationusermanagement')
 def access_management(request):
     context = {}
     parent = None
@@ -142,6 +148,8 @@ def access_management(request):
 
 
 @login_required
+@user_group_perms(perm='laboratory.view_organizationstructure')
+@user_group_perms(perm='laboratory.view_organizationusermanagement')
 def users_management(request, pk):
 
     context = {}
@@ -167,6 +175,8 @@ def users_management(request, pk):
     return render(request, 'laboratory/users_management.html', context=context)
 
 @login_required
+@user_group_perms(perm='laboratory.change_organizationusermanagement')
+@user_group_perms(perm='laboratory.view_organizationusermanagement')
 def delete_user(request, pk, user_pk):
     user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
     if user_orga_management:

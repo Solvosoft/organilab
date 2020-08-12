@@ -12,14 +12,17 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
+from djgentelella.forms.forms import CustomForm
+from djgentelella.widgets import core
 
-from laboratory.models import ShelfObject, Shelf
+from laboratory.models import ShelfObject, Shelf, Object
 
 from .djgeneric import CreateView, UpdateView, DeleteView
 from ajax_select.fields import AutoCompleteSelectField
 from django.utils.translation import ugettext_lazy as _
 
 from laboratory.decorators import user_group_perms
+from djgentelella.widgets.selects import AutocompleteSelect
 
 @login_required
 def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
@@ -56,30 +59,38 @@ def list_shelfobject(request, lab_pk):
     }
 
 
-class ShelfObjectForm(forms.ModelForm):
+class ShelfObjectForm(CustomForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
-    object = AutoCompleteSelectField('objects',  required=False, label=_("Reactive/Material/Equipment"), help_text=_("Search by name, code or CAS number"))
+    object = forms.ModelChoiceField(
+        queryset=Object.objects.all(),
+        widget=AutocompleteSelect('objectsearch'),
+        label=_("Reactive/Material/Equipment"),
+        help_text=_("Search by name, code or CAS number")
+    )
+    #object = AutoCompleteSelectField('objects',  required=False, , )
 
-    def clean_object(self):
-        if hasattr(super(ShelfObjectForm, self), 'clean_object'):
-            data=super(ShelfObjectForm, self).clean_object()
-        else:
-            data = self.cleaned_data['object']
-        if not data:
-            raise forms.ValidationError(_("Object is required"))
-        return data
+    # def clean_object(self):
+    #     if hasattr(super(ShelfObjectForm, self), 'clean_object'):
+    #         data=super(ShelfObjectForm, self).clean_object()
+    #     else:
+    #         data = self.cleaned_data['object']
+    #     if not data:
+    #         raise forms.ValidationError(_("Object is required"))
+    #     return data
         
     class Meta:
         model = ShelfObject
         fields = "__all__"
         widgets = {
             'shelf': forms.HiddenInput,
-            
+            'quantity': core.NumberInput,
+            'limit_quantity': core.NumberInput,
+            'measurement_unit': core.Select
         }
 
 
-class ShelfObjectFormUpdate(forms.ModelForm):
+class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput, required=False)
     row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
@@ -88,6 +99,9 @@ class ShelfObjectFormUpdate(forms.ModelForm):
         fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
         widgets = {
             'shelf': forms.HiddenInput,
+            'quantity': core.NumberInput,
+            'limit_quantity': core.NumberInput,
+            'measurement_unit': core.Select
         }
 
 
@@ -222,8 +236,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         DeleteView.post(self, request, *args, **kwargs)
         self.row = request.POST.get("row")
         self.col = request.POST.get("col")
-        
-        DeleteView.post
+
 
         return {
             'inner-fragments': {
