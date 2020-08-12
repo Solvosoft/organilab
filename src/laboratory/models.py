@@ -77,6 +77,11 @@ class Object(models.Model):
             return self.sustancecharacteristics.is_precursor
         return False
 
+    @property
+    def cas_code(self):
+        if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
+            return self.sustancecharacteristics.cas_id_number
+        return False
 
     class Meta:
         verbose_name = _('Object')
@@ -350,6 +355,12 @@ class OrganizationStructure(MPTTModel):
     class Meta:
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
+        permissions = (
+            ('add_organizationusermanagement', _('Can add organization user management')),
+            ('change_organizationusermanagement', _('Can change organization user management')),
+            ('delete_organizationusermanagement', _('Can delete organization user management')),
+            ('view_organizationusermanagement', _('Can view organization user management')),
+        )
 
     class MPTTMeta:
         order_insertion_by = ['name', ]

@@ -24,7 +24,7 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
         'laboratory': laboratory
     }
     ptech = Profile.objects.filter(laboratories__in=[laboratory])
-    emails = [x for x in ptech.values('user__email')]
+    emails = [x for x in ptech.values_list('user__email', flat=True)]
     if not emails:
         emails = [settings.DEFAULT_FROM_EMAIL]
     send_email_from_template("Shelf object in limit",
