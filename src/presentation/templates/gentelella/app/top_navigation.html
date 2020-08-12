@@ -15,6 +15,7 @@
 
 
   <ul class="nav navbar-nav navbar-right">
+
   	{% if userperms.add_laboratory %}
       <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" title="{% trans 'Add Laboratory' %}">
       	<span class="fa fa-plus"></span></a>
@@ -116,6 +117,9 @@
 
 	  {% endif %}
       {% endif %}
+
+      <li id="tutorials"><a href="{% url 'tutorials' %}"><strong>{% trans 'Tutorials' %}</strong></a>
+      </li>
 
     {% if not request.user.is_authenticated %}
     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>

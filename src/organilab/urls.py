@@ -39,7 +39,7 @@ from sga.views import index_organilab
 urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', index_organilab, name='index'),
-
+    url(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
     url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     url(r'^', include((api_urls,'api'), namespace='api')),
     url(r'^ajax_select/', include(ajax_select_urls)),
