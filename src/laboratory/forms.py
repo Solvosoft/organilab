@@ -18,12 +18,6 @@ class ObjectSearchForm(CustomForm, forms.Form):
         widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
 
 
-class UserSearchForm(forms.Form):
-    user = forms.ModelMultipleChoiceField(queryset=User.objects.all(), widget=genwidgets.SelectMultiple,
-                                       required=False, label=_("Search by username, name or lastname"))
-    action = forms.CharField(widget=forms.HiddenInput)
-
-
 class UserCreate(UserCreationForm):
     first_name = forms.CharField(label=_('First name'))
     last_name = forms.CharField(label=_('Last name'))
