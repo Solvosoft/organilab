@@ -4,7 +4,6 @@ coreschema==0.0.4
 defusedxml==0.6.0
 Django==2.2.13
 django-datatables-view==1.19.1
-django-ajax-selects==1.9.1
 django-bootstrap-form==3.4
 django-ckeditor==5.6.1
 django-constance==2.6.0
