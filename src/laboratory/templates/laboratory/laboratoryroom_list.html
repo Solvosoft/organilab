@@ -21,6 +21,7 @@ span.select2-container {
 
 
 {% block content %}
+ {% include 'laboratory/search_widget.html' %}
  {%  has_perms "laboratory.view_furniture" as perm_furniture %}
  {%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
  
