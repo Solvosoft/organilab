@@ -19,8 +19,8 @@ class ObjectSearchForm(CustomForm, forms.Form):
 
 
 class UserSearchForm(forms.Form):
-    user = AutoCompleteSelectMultipleField(
-        'users', required=False, help_text=_("Search by username, name or lastname"))
+    user = forms.ModelMultipleChoiceField(queryset=User.objects.all(), widget=genwidgets.SelectMultiple,
+                                       required=False, label=_("Search by username, name or lastname"))
     action = forms.CharField(widget=forms.HiddenInput)
 
 
