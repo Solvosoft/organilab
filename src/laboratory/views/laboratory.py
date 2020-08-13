@@ -4,10 +4,8 @@ from django import forms
 from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
-from django.shortcuts import redirect, get_object_or_404, render
-from django.template.loader import render_to_string
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
@@ -16,88 +14,12 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from django_ajax.decorators import ajax
 
 from laboratory.decorators import user_group_perms
-from laboratory.forms import UserCreate, UserSearchForm, LaboratoryCreate, H_CodeForm
+from laboratory.forms import LaboratoryCreate, H_CodeForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-
-
-def render_admins_lab(request, object_list, lab, message=None):
-    return {
-        'inner-fragments': {
-            '#admin_lab_users': render_to_string(
-                'ajax/lab_admins_list.html',
-                context={
-                    'object_list': object_list,
-                    'lab': lab,
-                    'message': message
-                },
-                request=request,
-            )
-        }
-    }
-
-
-@ajax
-def create_admins_user(request, pk):
-    lab = get_object_or_404(Laboratory, pk=pk)
-    message = None
-    if request.method == 'POST':
-        form = UserCreate(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(
-                form.cleaned_data['username'],
-                form.cleaned_data['email'],
-                form.cleaned_data['password']
-            )
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
-            lab.lab_admins.add()
-            message = _("User added successfully")
-        else:
-            message = _("Something went wrong")
-    else:
-        message = _("Sorry, wrong method")
-    return render_admins_lab(request, lab.lab_admins.all(), lab, message=message)
-
-
-@ajax
-def get_create_admis_user(request, pk):
-    lab = get_object_or_404(Laboratory, pk=pk)
-    usersearchform = UserSearchForm()
-    usercreateform = UserCreate()
-    return {
-        'inner-fragments': {
-            '#admin_lab_users': render_to_string(
-                'ajax/lab_admins_create.html',
-                context={
-                    'usersearchform': usersearchform,
-                    'usercreateform': usercreateform,
-                    'lab': lab
-                },
-                request=request,
-            )
-        }
-    }
-
-
-@ajax
-def del_admins_user(request, pk, pk_user):
-    lab = get_object_or_404(Laboratory, pk=pk)
-    lab.lab_admins.filter(pk=pk_user).delete()
-    return render_admins_lab(request, lab.laboratorists.all(), lab)
-
-
-@ajax
-def admin_users(request, pk):
-    lab = get_object_or_404(Laboratory, pk=pk)
-    user_org = OrganizationStructure.os_manager.filter_user(request.user)
-
-    return render_admins_lab(request, lab.laboratorists.all(), lab)
 
 
 @method_decorator(login_required, name='dispatch')
