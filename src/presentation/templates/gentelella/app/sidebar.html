@@ -1,5 +1,5 @@
 {% load i18n shelf_position laboratory static %}
-
+{% index_permissions as userperms %}
 
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;  ">
@@ -61,7 +61,6 @@
 
                 </li>
 
-                {% if user.is_authenticated %}
                 {% if userperms.view_organizationstructure %}
                 <li>
               <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
@@ -69,7 +68,6 @@
 
               </a>
               </li>
-                 {% endif %}
                  {% endif %}
 
                 <li>
