@@ -33,20 +33,22 @@ def create_edit_sustance(request, pk=None):
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
+            obj = objform.save(commit=False)
+            obj.type = Object.REACTIVE
+            obj.save()
+            objform.save_m2m()
+            suscharinst = suschacform.save(commit=False)
+            suscharinst.obj = obj
+
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             if isValidate_molecular_formula(molecular_formula):
-                obj = objform.save(commit=False)
-                obj.type = Object.REACTIVE
-                obj.save()
-                objform.save_m2m()
-                suscharinst = suschacform.save(commit=False)
-                suscharinst.obj = obj
-                suscharinst.save()
-                suschacform.save_m2m()
-                messages.success(request, _("Sustance saved successfully"))
-                return redirect(reverse('laboratory:sustance_list'))
-            else:
-                messages.warning(request, _(molecular_formula+" is not a valid molecular formula."))
+                suscharinst.valid_molecular_formula = True
+
+            suscharinst.save()
+            suschacform.save_m2m()
+            messages.success(request, _("Sustance saved successfully"))
+            return redirect(reverse('laboratory:sustance_list'))
+
         else:
             messages.warning(request, _("Pending information in form"))
 
