@@ -2,6 +2,8 @@
 
 from django.db import migrations, models
 
+from organilab import settings
+
 
 class Migration(migrations.Migration):
 
@@ -14,5 +16,10 @@ class Migration(migrations.Migration):
             model_name='sustancecharacteristics',
             name='molecular_formula',
             field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Molecular formula'),
+        ),
+        migrations.AddField(
+            model_name='sustancecharacteristics',
+            name='valid_molecular_formula',
+            field=models.BooleanField(default=False),
         ),
     ]

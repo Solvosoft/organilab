@@ -113,6 +113,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="Precursor")
 
     h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
+    valid_molecular_formula = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Sustance characteristic')
