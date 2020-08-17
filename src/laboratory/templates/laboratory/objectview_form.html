@@ -1,89 +1,35 @@
 {% extends 'base.html' %}
 
-{% load bootstrap i18n static laboratory %}
+{% load i18n static laboratory %}
 
-{% block title %}{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
+{% block title %}{% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
 
 {% block content %}
 {%  has_perms "laboratory.add_object" as perm_add_object %}
 {%  has_perms "laboratory.chage_object" as perm_chage_object %}
 <div class="row">
-
- <div class="col-md-offset-2 col-md-8">
+   <div class="col-md-offset-2 col-md-8">
         <div class="page-header col-xs-13" align="center">
-            <h3 class="heading-1" ><span>{% if form.type.value == "0" %} {% trans 'Reactive management' %}{% elif form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
-      {% if perm_add_object or perm_chage_object  %}</span></h3>
+            <h3 class="heading-1" ><span>{% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+        </span></h3>
         </div>
- </div>
+   </div>
 </div>
-  <div class="row">
-    <div class="col-md-6 col-md-offset-{% if form.type.value == "0" %}1{%else%}3{%endif%}">
-      
+{% if perm_add_object or perm_chage_object  %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
 	      <form enctype="multipart/form-data" action="{% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
 	            method="post">{% csrf_token %}
-	        {{ form|bootstrap }}
+	        {{ form.as_horizontal }}
 	        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
 	      </form>
-      {% else %} 
-          {% include 'laboratory/action_denied.html' %} 
-      {% endif %}
     </div>
-{% if form.type.value == "0" %}
-    <div class="col-md-4">
-    <div class="section" id="representing-chemical-substances-in-pyeql">
-<h2>{% trans 'Representing Chemical Substances in pyEQL' %} </h2>
-<p>{% blocktrans %}pyEQL interprets the chemical formula of a substance to calculate its molecular
-weight and formal charge. The formula is also used as a key to search the
-database for parameters (e.g. diffusion coefficient) that are used in subsequent
-calculations.{% endblocktrans %}</p>
-<div class="section" id="how-to-enter-valid-chemical-formulas">
-<h3>{% trans 'How to Enter Valid Chemical Formulas' %}</h3>
-<p>{% blocktrans %}Generally speaking, type the chemical formula of your solute the “normal” way
-and pyEQL should be able to inerpret it. Here are some examples:{% endblocktrans %}</p>
-<ul class="simple">
-<li>{% trans 'Sodium Chloride - NaCl' %}</li>
-<li>{% trans 'Sodium Sulfate - Na(SO4)2' %}</li>
-<li>{% trans 'Methanol - CH4OH or CH5O' %}</li>
-<li>{% trans 'Magnesium Ion - Mg+2' %}</li>
-<li>{% trans 'Chloride Ion - Cl-' %}</li>
-</ul>
-<p>{% trans 'Formula Rules:' %}</p>
-<ol class="arabic simple">
-<li>{% trans 'Are composed of valid atomic symbols that start with capital letters' %}</li>
-<li>{% trans 'Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘' %}</li>
-<li>{% blocktrans %}If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘
-(e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of
-charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’){% endblocktrans %}</li>
-<li>{% trans 'Formula must contain matching numbers of ‘(‘ and ‘)’' %}</li>
-<li>{% trans 'Open parentheses must precede closed parentheses' %}</li>
-</ol>
 </div>
-
-</div>
-</div>
-{% endif %}
-  </div>
-  <br> <br>
-
-
-
-{% endblock %}
-
-{% block js %}
-<script>molecular_name_url = "{% url 'api:api_molecularname' laboratory %}"; </script>
-
-
-    <script type="text/javascript" src="{% static 'laboratory/js/objectview.js' %}"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-     <script >    $(document).ready(function() {
-{% if form.type.value == "0" %}
-  $('select[name="h_code"]').select2();
 {% else %}
-     $('select[name="h_code"]').closest(".form-group").hide();
+<div class="row">
+  {% include 'laboratory/action_denied.html' %}
+</div>
 {% endif %}
-  $('select[name="features"]').select2();
-    $('select[name="laboratory"]').select2();
-});
-    </script>
 {% endblock %}
+
+
