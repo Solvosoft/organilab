@@ -5,9 +5,9 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from mptt.models import MPTTModel, TreeForeignKey
 from location_field.models.plain import PlainLocationField
-from laboratory.validators import validate_molecular_formula
+from mptt.models import MPTTModel, TreeForeignKey
+
 from . import catalog
 
 
@@ -103,8 +103,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="IDMG")
     white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key", key_value="white_organ")
     bioaccumulable = models.NullBooleanField(default=False)
-    molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
-                                         validators=[validate_molecular_formula], null=True, blank=True)
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
     security_sheet = models.FileField(
@@ -114,6 +113,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="Precursor")
 
     h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
+    valid_molecular_formula = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Sustance characteristic')
