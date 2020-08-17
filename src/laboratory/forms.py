@@ -3,24 +3,19 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory
+from .models import Laboratory, Object
 from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.widgets import core as genwidgets
 
-class ObjectSearchForm(forms.Form):
-    q = AutoCompleteSelectMultipleField(
-        'objects', required=False, help_text=_("Search by name, code or CAS number"))
+class ObjectSearchForm(CustomForm, forms.Form):
+    q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
+                                       required=False, label=_("Search by name, code or CAS number"))
+
     all_labs = forms.BooleanField(
-        widget=forms.CheckboxInput, required=False, label=_("All labs"))
-
-
-class UserSearchForm(forms.Form):
-    user = AutoCompleteSelectMultipleField(
-        'users', required=False, help_text=_("Search by username, name or lastname"))
-    action = forms.CharField(widget=forms.HiddenInput)
+        widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
 
 
 class UserCreate(UserCreationForm):

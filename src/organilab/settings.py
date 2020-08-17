@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "bootstrapform",
     "djreservation",
     "celery",
-    'ajax_select',
     'location_field',
     'mptt',
     'constance',
