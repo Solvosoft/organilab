@@ -60,6 +60,7 @@ def index_permissions(context):
         'view_reports':  has_perms(context, "laboratory.view_report"),
         'do_reports': has_perms(context, "laboratory.do_report"),
         'add_reservation': has_perms(context, "djreservation.add_reservation"),
+        'view_organizationstructure': has_perms(context, "laboratory.view_organizationstructure"),
 
         }
     
