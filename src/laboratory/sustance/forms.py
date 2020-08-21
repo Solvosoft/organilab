@@ -16,4 +16,4 @@ class SustanceObjectForm(forms.ModelForm):
 class SustanceCharacteristicsForm(forms.ModelForm):
     class Meta:
         model = SustanceCharacteristics
-        exclude = ['obj']
+        exclude = ['obj', 'valid_molecular_formula']

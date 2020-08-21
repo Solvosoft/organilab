@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True')
-FULL_APPS = True
+DEBUG_TOOLBAR = False
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "bootstrapform",
     "djreservation",
     "celery",
-    'ajax_select',
     'location_field',
     'mptt',
     'constance',
@@ -74,7 +73,12 @@ INSTALLED_APPS = [
     'djgentelella.blog',
     'chunked_upload',
     'api.apps.ApiConfig',
+    'ajax_select',
+
 ]
+
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ['debug_toolbar',]
 
 
 RECAPTCHA_PRIVATE_KEY = os.getenv(
@@ -90,7 +94,11 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #  'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+if DEBUG_TOOLBAR:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
+
+MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djreservation.middleware.ReservationMiddleware'
 ]

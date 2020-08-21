@@ -102,8 +102,10 @@
               {% endif %}
 
               {% if userperms.add_object %}                         
-              <li class="list-group-item"><a
-                href="{% url 'laboratory:objectview_create' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
+              <li class="list-group-item">
+                  <a  href="{% url 'laboratory:sustance_list' %}"><strong>{% trans 'Reactive' %}</strong></a>
+                /  <a  href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
+                /  <a  href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2"><strong>{% trans 'Equipment' %}</strong></a>
               </li>
                {% endif %}
                {% if userperms.add_features %}
@@ -111,12 +113,6 @@
                 href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
               </li>
               {% endif %}
-               {% if userperms.manage_laboratory %}               
-			   <li class="list-group-item">
-              <a href="">
-                <strong>{% trans 'Access list' %}</strong></a>
-                </li>
-               {% endif %}
           </ul>
 
         </div>
