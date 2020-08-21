@@ -131,7 +131,7 @@ class MSDSObjectCRUD(CRUDView):
         class ODeleteView(ODeleteClass):
 
             def get_success_url(self):
-                url = reverse("laboratory:index")
+                url = reverse("msds:index_msds")
                 messages.success(self.request,
                                  _("Your MSDS was delete successfully"))
                 return url

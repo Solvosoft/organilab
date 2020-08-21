@@ -21,9 +21,7 @@ from laboratory.views.objects import ObjectView
 objviews = ObjectView()
 
 urlpatterns = [
-
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
-
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
