@@ -6,6 +6,7 @@ Created on 1/8/2016
 
 from django.conf.urls import url, include
 
+from authentication.users import ChangeUser, password_change
 from laboratory import views
 from authentication import users
 from laboratory.reservation import ShelfObjectReservation
@@ -20,15 +21,8 @@ from laboratory.views.objects import ObjectView
 objviews = ObjectView()
 
 urlpatterns = [
-
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
-
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
-    url(r'^(?P<pk>\d+)/ajax/list$', laboratory.admin_users, name='laboratory_ajax_admins_users_list'),
-    url(r'^(?P<pk>\d+)/ajax/create$', laboratory.get_create_admis_user, name='laboratory_ajax_get_create_admins_user'),
-    url(r'^(?P<pk>\d+)/ajax/post_create$', laboratory.create_admins_user, name='laboratory_ajax_create_admins_user'),
-    url(r'^(?P<pk>\d+)/ajax/(?P<pk_user>\d+)/delete$', laboratory.del_admins_user,
-        name='laboratory_ajax_del_admins_users'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     url(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     # Tour steps
@@ -148,6 +142,8 @@ organization_urls = [
     url('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
     url('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
     url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
+    url('profile/(?P<pk>\d+)/info$', ChangeUser.as_view(), name='profile'),
+    url('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
 ]
 
 '''MULTILAB'''

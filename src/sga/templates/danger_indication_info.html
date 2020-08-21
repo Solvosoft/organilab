@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load i18n bootstrap %}
+{% load static %}
+{% block title %}{% trans 'SGA Search' %}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13" align="center">
+                <h3 class="heading-1" ><span> {% trans 'Danger Indication Information' %}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="col-xs-13">
+                {% for code in hcodes_list %}
+                <h5 class="heading-1" ><span>{{ code }}</span></h5>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="col-xs-13">
+                <div class="col-md-6 text-center">
+                    <div class="card">
+                      <div class="card-header"><h5><strong>{% trans 'Pictograms' %}</strong></h5></div>
+                      <div class="card-body">
+                          {% for pictogram in pictograms %}
+                            <img src="{% static 'sga/img/pictograms/' %}{{pictogram}}" width="90px" height="90px" />
+                          {% empty %}
+                            <p>{% trans 'Without Pictograms' %}</p>
+                          {% endfor %}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="card">
+              <div class="card-header"><h5><strong>{% trans 'Warning Words' %}</strong></h5></div>
+              <div class="card-body">
+                  {% if warning_word %}
+                    <p>{{ warning_word }}</p>
+                  {% else %}
+                    <p>{% trans 'Without Warning Words' %}</p>
+                 {% endif %}
+              </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:30px;">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="col-xs-13">
+           <div class="card">
+               <div class="card-header text-center"><h5><strong>{% trans 'Prudence Advices' %}</strong></h5></div>
+              <div class="card-body">
+                  {% for prudence_advice in prudence_advices %}
+                    <p>{{ prudence_advice }}</p>
+                  {% empty %}
+                    <p class="text-center">{% trans 'Without Prudence Advices' %}</p>
+                {% endfor %}
+              </div>
+            </div>
+            </div>
+       </div>
+    </div>
+
+    <div id="survey_modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{% trans 'Survey' %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>{% blocktrans %}Are you a professional in chemistry, chemical engineering or industrial maintenance?
+                        If the answer is yes, we appreciate you completing the following form.{% endblocktrans %}
+                <a href="" target="_blank"><strong>{% trans 'Go to form' %}</strong></a>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+          </div>
+        </div>
+      </div>
+</div>
+</div>
+{% endblock content %}
+{% block js %}
+{{block.super}}
+<script>
+(function($){
+    $(window).load(function(){
+        $('#survey_modal').modal('show');
+    });
+})(jQuery);
+</script>
+{% endblock %}

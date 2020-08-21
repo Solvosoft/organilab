@@ -1,5 +1,5 @@
  {% load bootstrap i18n laboratory %}
-
+ {% load static %}
  {%  has_perms "laboratory.add_shelfobject" as perm_add_shelfobject %}
  {%  has_perms "laboratory.change_shelfobject" as perm_change_shelfobject %}
 
@@ -14,10 +14,8 @@
 		
 		<div class="modal-body">
 		  {% csrf_token %}
-		
-		  {{form|bootstrap }}
-		
-		
+		  {{ form.as_horizontal }}
+
 		<div class="modal-footer">
 			{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
 			<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
@@ -25,13 +23,12 @@
 		{% if q %}
 			<input type="hidden" name="q" value="{{q}}" />
 		{%endif%}
-		
-		<script>
-		$(function(){
-		$(window).trigger('init-autocomplete');
-		});
-		</script>
+
 	</form>
+ <script>delete window.autocompleteselect2;</script>
+ <script src="{% static 'gentelella/js/autocompleteSelect2.js' %}"></script>
+
+
 {% else %} 
        {% include 'laboratory/action_denied.html' %}  	
 {% endif %}

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as djgenwidgets
 from authentication.models import DemoRequest
@@ -24,3 +25,8 @@ class CreateUserForm(CustomForm, forms.ModelForm):
             'last_name': djgenwidgets.TextInput,
             'email': djgenwidgets.EmailMaskInput
         }
+
+class PasswordChangeForm(CustomForm, forms.Form):
+
+    password = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)
+    password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)

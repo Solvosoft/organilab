@@ -13,13 +13,16 @@ from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
+from djgentelella.forms.forms import CustomForm
+from djgentelella.widgets import core as genwidget
 
 from laboratory.decorators import user_group_perms, view_user_group_perms
 # from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.models import Object, SustanceCharacteristics
 from laboratory.utils import filter_laboratorist_profile
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
-from django.utils.translation import ugettext_lazy as _
+
 
 class ObjectView(object):
     model = Object
@@ -136,18 +139,13 @@ class ObjectView(object):
         ]
 
 
-
-def create_reactive(request):
-    pass
-
-
 class SustanceCharacteristicsForm(ModelForm):
     class Meta:
         model = SustanceCharacteristics
         fields = '__all__'
 
 
-class ObjectForm(ModelForm):
+class ObjectForm(CustomForm,ModelForm):
     required_css_class = ''
 
     def __init__(self, *args, **kwargs):
@@ -189,3 +187,12 @@ class ObjectForm(ModelForm):
     class Meta:
         model = Object
         fields = '__all__'
+        widgets = {
+            'features': genwidget.SelectMultiple,
+            'laboratory': genwidget.SelectMultiple,
+            'code': genwidget.TextInput,
+            'name': genwidget.TextInput,
+            'synonym':  genwidget.TextInput,
+            'is_public': genwidget.YesNoInput,
+            'description': genwidget.Textarea
+        }
