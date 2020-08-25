@@ -68,24 +68,14 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
         label=_("Reactive/Material/Equipment"),
         help_text=_("Search by name, code or CAS number")
     )
-    #object = AutoCompleteSelectField('objects',  required=False, , )
 
-    # def clean_object(self):
-    #     if hasattr(super(ShelfObjectForm, self), 'clean_object'):
-    #         data=super(ShelfObjectForm, self).clean_object()
-    #     else:
-    #         data = self.cleaned_data['object']
-    #     if not data:
-    #         raise forms.ValidationError(_("Object is required"))
-    #     return data
-        
     class Meta:
         model = ShelfObject
         fields = "__all__"
         widgets = {
             'shelf': forms.HiddenInput,
-            'quantity': core.NumberInput,
-            'limit_quantity': core.NumberInput,
+            'quantity': core.TextInput,
+            'limit_quantity': core.TextInput,
             'measurement_unit': core.Select
         }
 

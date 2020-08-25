@@ -124,8 +124,8 @@ class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
-    quantity = models.FloatField(_('Material quantity'))
-    limit_quantity = models.FloatField(_('Limit material quantity'))
+    quantity = models.FloatField(_('Material quantity'), help_text='Use dot like 0.344 on decimal')
+    limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                              verbose_name=_('Measurement unit'), key_name="key", key_value='units')
 
