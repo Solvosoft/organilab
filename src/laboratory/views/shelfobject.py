@@ -89,8 +89,8 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
         fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
         widgets = {
             'shelf': forms.HiddenInput,
-            'quantity': core.NumberInput,
-            'limit_quantity': core.NumberInput,
+            'quantity': core.TextInput,
+            'limit_quantity': core.TextInput,
             'measurement_unit': core.Select
         }
 
