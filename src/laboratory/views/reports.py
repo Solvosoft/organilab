@@ -728,7 +728,8 @@ class LogObjectView(ReportListView):
                             'update_time': end.update_time,
                             'old_value': ini,
                             'new_value': end.new_value,
-                            'diff_value': diff
+                            'diff_value': diff,
+                            'measurement_unit': end.measurement_unit
                             })
                            )
         return list_obj
@@ -766,16 +767,20 @@ class LogObjectView(ReportListView):
                 str(_('Day')),
                 str(_('Old')),
                 str(_('New')),
-                str(_('Difference'))
+                str(_('Difference')),
+                str(_('Unit')),
              ]]
-        
+
+
         for obj in context['object_list']:
+
             book.append([obj.user.get_full_name(),
                         str(obj.laboratory),
                         str(obj.object),
-                        obj.update_time,
+                        obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
                         obj.old_value,
                         obj.new_value,
-                        obj.diff_value
+                        obj.diff_value,
+                         str(obj.measurement_unit)
                        ])
         return book
