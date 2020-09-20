@@ -26,7 +26,16 @@
 
 	</form>
  <script>delete window.autocompleteselect2;</script>
- <script src="{% static 'gentelella/js/autocompleteSelect2.js' %}"></script>
+ <script>
+
+ if($("#shelfobjectCreate").length>0) {
+ 	document.formset.push(gt_find_initialize($("#shelfobjectCreate")));
+ }
+ if($("#shelfobjectUpdate").length>0) {
+ 	document.formset.push(gt_find_initialize($("#shelfobjectUpdate")));
+ }
+
+</script>
 
 
 {% else %} 
