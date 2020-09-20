@@ -24,6 +24,9 @@ from django.utils.translation import ugettext_lazy as _
 from laboratory.decorators import user_group_perms
 from djgentelella.widgets.selects import AutocompleteSelect
 
+from ..logsustances import log_object_change
+
+
 @login_required
 def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
     if shelf == 0:
@@ -107,6 +110,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, create=True)
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
         return {
@@ -136,7 +140,11 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
 
     def form_valid(self, form):
+        print("BINGO")
+        old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, create=False)
+
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
         return {

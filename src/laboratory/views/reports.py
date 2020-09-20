@@ -5,32 +5,39 @@ Created on 26/12/2016
 @author: luisza
 '''
 
-from django.db.models.query_utils import Q
+import os
+from datetime import datetime
+
+import django_excel
+from django import forms
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles import finders
+from django.db.models.aggregates import Sum, Min
+from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-
-#for xhtml2pdf
-from xhtml2pdf import pisa
-import os
-
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets.core import DateRangeInput, YesNoInput
+# for xhtml2pdf
+from xhtml2pdf import pisa
 
+from laboratory.decorators import user_group_perms
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, Profile
+from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula
-from laboratory.views.djgeneric import ListView
-from laboratory.decorators import user_group_perms
-import django_excel
-from django.db.models.aggregates import Sum, Min
-
+from laboratory.utils import get_user_laboratories
+from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
-from django.contrib.staticfiles import finders
+
 
 #Convert html URI to absolute
 def link_callback(uri, rel):
@@ -635,7 +642,7 @@ class LimitedShelfObjectList(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'
@@ -664,3 +671,111 @@ class ReactivePrecursorObjectList(ListView):
                 cas_id_number=get_cas(obj, 0)).first()
             setattr(obj, 'clinventory_entry', clentry)
         return query
+
+
+class FilterForm(GTForm, forms.Form):
+    period = forms.CharField(widget=DateRangeInput, required=False)
+    precursor = forms.BooleanField(widget=YesNoInput,  required=False)
+    all_laboratories = forms.BooleanField(widget=YesNoInput, required=False)
+    resume = forms.BooleanField(widget=YesNoInput, required=False)
+    format = forms.ChoiceField(choices=(
+        ('html', _('On screen')),
+        ('pdf', _('PDF')),
+        ('xls', 'XSL'),
+        ('xlsx', 'XLSX'),
+        ('ods', 'ODS')
+    ), required=False)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
+class LogObjectView(ReportListView):
+    model = ObjectLogChange
+    paginate_by = 100
+    form_class=FilterForm
+    pdf_template = 'logobject_pdf.html'
+
+    DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
+
+    def format_date(self, value):
+        dev = None
+        try:
+            dev = datetime.strptime(value, self.DATEFORMAT)
+        except ValueError as e:
+            pass
+        return dev
+
+    def filter_period(self, text, queryset):
+        if not str:
+            return queryset
+        dates = text.split('-')
+        if len(dates) != 2:
+            return queryset
+        dates[0] = self.format_date(dates[0].strip())
+        dates[1] = self.format_date(dates[1].strip())
+        return queryset.filter(update_time__range=dates)
+
+    def resume_queryset(self, queryset):
+        objects = set(queryset.values_list('object', flat=True))
+        list_obj = []
+        for obj in objects:
+            ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
+            end = queryset.filter(object=obj).last()
+            diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
+            list_obj.append(ResultQueryElement({'user': end.user,
+                            'laboratory': end.laboratory,
+                            'object': end.object,
+                            'update_time': end.update_time,
+                            'old_value': ini,
+                            'new_value': end.new_value,
+                            'diff_value': diff
+                            })
+                           )
+        return list_obj
+
+    def get_queryset(self):
+        query = super().get_queryset().order_by('update_time')
+        self.form = self.form_class(self.request.GET)
+        self.form.is_valid()
+        query = self.filter_period(self.form.cleaned_data['period'], query)
+        if self.form.cleaned_data['precursor']:
+            query = query.filter(precursor=True)
+        if self.form.cleaned_data['all_laboratories']:
+            query = query.filter(laboratory__in=get_user_laboratories(self.request.user) )
+        else:
+            query = query.filter(laboratory=self.lab)
+        if self.form.cleaned_data['resume']:
+            self.myqueryset = query
+        return query
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+
+        if self.form.cleaned_data['resume']:
+            messages.info(self.request,
+                          _("When resume date, we use last object for fill User, Laboratory, and Day ")
+                          )
+            context['object_list'] = self.resume_queryset(self.myqueryset)
+        return context
+    
+    def get_book(self, context):
+        book = [[str(_('User')),
+                str(_('Laboratory')),
+                str(_('Object')),
+                str(_('Day')),
+                str(_('Old')),
+                str(_('New')),
+                str(_('Difference'))
+             ]]
+        
+        for obj in context['object_list']:
+            book.append([obj.user.get_full_name(),
+                        str(obj.laboratory),
+                        str(obj.object),
+                        obj.update_time,
+                        obj.old_value,
+                        obj.new_value,
+                        obj.diff_value
+                       ])
+        return book

@@ -97,7 +97,9 @@ lab_reports_urls = [
     url(r'^list/limited_shelf_objects$', reports.LimitedShelfObjectList.as_view(),
         name='reports_limited_shelf_objects_list'),
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
-        name='reactive_precursor_object_list')
+        name='reactive_precursor_object_list'),
+    url('^objectchanges$', reports.LogObjectView.as_view(), name='object_change_logs'),
+
 ]
 
 lab_reports_organization_urls = [

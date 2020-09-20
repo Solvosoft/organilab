@@ -468,3 +468,16 @@ class Solution(models.Model):
             pressure=self.pressure,
             pH=self.pH
         )
+
+
+class ObjectLogChange(models.Model):
+    object = models.ForeignKey(Object, on_delete=models.DO_NOTHING)
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    old_value = models.FloatField(default=0)
+    new_value = models.FloatField(default=0)
+    diff_value = models.FloatField(default=0)
+    update_time = models.DateTimeField(auto_now_add=True)
+    precursor = models.BooleanField(default=False)
+    measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
+                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
