@@ -8,7 +8,11 @@
     <div class="nav toggle">
       <a id="menu_toggle"><i class="fa fa-bars"></i></a>
     </div>
-
+{% if laboratory %}
+     <ul class="nav navbar-nav navbar-left">
+         <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
+     </ul>
+{% endif %}
   <ul class="nav navbar-nav navbar-right">
 
   	{% if userperms.add_laboratory %}

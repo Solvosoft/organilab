@@ -87,3 +87,11 @@ def get_user_labs(context):
         return []
 
     return get_user_laboratories(context['request'].user)
+
+@register.simple_tag(takes_context=True)
+def show_laboratory_name(context):
+    if 'laboratory' in context and context['laboratory']:
+        lab= Laboratory.objects.filter(pk=context['laboratory']).first()
+        if lab:
+            return str(lab)
+    return ''
