@@ -101,7 +101,8 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="IARC")
     imdg = catalog.GTForeignKey(Catalog, related_name="gt_imdg", on_delete=models.DO_NOTHING,
                                 null=True, blank=True, key_name="key", key_value="IDMG")
-    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key", key_value="white_organ")
+    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key",
+                                            key_value="white_organ", blank=True)
     bioaccumulable = models.NullBooleanField(default=False)
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
@@ -114,6 +115,15 @@ class SustanceCharacteristics(models.Model):
 
     h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
     valid_molecular_formula = models.BooleanField(default=False)
+
+    ue_code = catalog.GTManyToManyField(Catalog, related_name="gt_ue", key_name="key",
+                                            key_value="ue_code", blank=True, verbose_name=_('UE codes'))
+    nfpa = catalog.GTManyToManyField(Catalog, related_name="gt_nfpa", key_name="key",
+                                            key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
+    storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_class", key_name="key",
+                                            key_value="storage_class", blank=True, verbose_name=_('Storage class'))
+    seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
+
 
     class Meta:
         verbose_name = _('Sustance characteristic')
@@ -471,9 +481,9 @@ class Solution(models.Model):
 
 
 class ObjectLogChange(models.Model):
-    object = models.ForeignKey(Object, on_delete=models.DO_NOTHING)
+    object = models.ForeignKey(Object, db_constraint=False, on_delete=models.DO_NOTHING)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, db_constraint=False, on_delete=models.DO_NOTHING)
     old_value = models.FloatField(default=0)
     new_value = models.FloatField(default=0)
     diff_value = models.FloatField(default=0)

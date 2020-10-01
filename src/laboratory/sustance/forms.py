@@ -1,9 +1,10 @@
 from django import forms
+from djgentelella.forms.forms import GTForm
 
 from laboratory.models import Object, SustanceCharacteristics
+from djgentelella.widgets import core as genwidgets
 
-
-class SustanceObjectForm(forms.ModelForm):
+class SustanceObjectForm(GTForm, forms.ModelForm):
     class Meta:
         model = Object
         fields = [
@@ -12,8 +13,38 @@ class SustanceObjectForm(forms.ModelForm):
             'description',
             'model', 'serie', 'plaque', 'laboratory', 'features'
         ]
+        widgets = {
+            'name': genwidgets.TextInput,
+            'synonym': genwidgets.TextInput,
+            'code': genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            'model': genwidgets.TextInput,
+            'serie': genwidgets.TextInput,
+            'plaque': genwidgets.TextInput,
+            'laboratory': genwidgets.SelectMultiple,
+            'features': genwidgets.SelectMultiple
 
-class SustanceCharacteristicsForm(forms.ModelForm):
+        }
+
+class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SustanceCharacteristics
         exclude = ['obj', 'valid_molecular_formula']
+        widgets = {
+            'iarc': genwidgets.Select,
+            'imdg': genwidgets.Select,
+            'white_organ': genwidgets.SelectMultiple,
+            'bioaccumulable': genwidgets.YesNoInput,
+            'molecular_formula': genwidgets.TextInput,
+            'cas_id_number': genwidgets.TextInput,
+            'is_precursor': genwidgets.YesNoInput,
+            'precursor_type': genwidgets.Select,
+            'h_code': genwidgets.SelectMultiple,
+            'ue_code': genwidgets.SelectMultiple,
+            'nfpa': genwidgets.SelectMultiple,
+            'storage_class': genwidgets.SelectMultiple,
+            'seveso_list': genwidgets.YesNoInput,
+            'security_sheet': genwidgets.FileInput
+
+        }
