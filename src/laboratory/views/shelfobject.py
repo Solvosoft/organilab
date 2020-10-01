@@ -140,7 +140,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
 
     def form_valid(self, form):
-        print("BINGO")
+
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
         log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, create=False)
@@ -187,7 +187,10 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
 
     def form_valid(self, form):
         self.fvalid = True
-        return UpdateView.form_valid(self, form)
+        old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
+        response = UpdateView.form_valid(self, form)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, create=False)
+        return response
 
     def post(self, request, *args, **kwargs):
         self.fvalid = False
