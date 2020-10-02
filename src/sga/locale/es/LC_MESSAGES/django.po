@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-07 14:12-0600\n"
-"PO-Revision-Date: 2020-08-07 14:12-0600\n"
+"POT-Creation-Date: 2020-10-01 19:48-0600\n"
+"PO-Revision-Date: 2020-10-01 21:10-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: admin.py:21
 msgid "Download Label"
@@ -44,8 +44,8 @@ msgid "Danger Category"
 msgstr "Categoría de peligo"
 
 #: models.py:15 models.py:48 models.py:63 models.py:79 models.py:120
-#: models.py:167 models.py:187 models.py:228 templates/information.html:65
-#: templates/label_information.html:53
+#: models.py:167 models.py:187 models.py:228 templates/information.html:67
+#: templates/label_information.html:54
 msgid "Name"
 msgstr "Nombre"
 
@@ -154,13 +154,13 @@ msgstr "Sustancia"
 msgid "Sustances"
 msgstr "Sustancias"
 
-#: models.py:168 templates/information.html:79
-#: templates/label_information.html:67
+#: models.py:168 templates/information.html:81
+#: templates/label_information.html:68
 msgid "Phone"
 msgstr "Telefono"
 
-#: models.py:169 templates/information.html:72
-#: templates/label_information.html:60
+#: models.py:169 templates/information.html:74
+#: templates/label_information.html:61
 msgid "Address"
 msgstr "Dirección"
 
@@ -182,7 +182,7 @@ msgstr "Centimetros"
 
 #: models.py:185
 msgid "inch"
-msgstr "Inches"
+msgstr "inches"
 
 #: models.py:188
 msgid "Height"
@@ -190,7 +190,7 @@ msgstr "Alto"
 
 #: models.py:190
 msgid "Height Unit"
-msgstr "Alto en:"
+msgstr "Unidad de altura"
 
 #: models.py:192
 msgid "Width"
@@ -198,7 +198,7 @@ msgstr "Ancho"
 
 #: models.py:194
 msgid "Width Unit"
-msgstr "Ancho en: "
+msgstr "Unidad de anchura"
 
 #: models.py:203 models.py:217 models.py:229
 msgid "Recipient Size"
@@ -208,8 +208,8 @@ msgstr "Tamaño de recipiente"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: models.py:216 templates/editor.html:183 templates/information.html:90
-#: templates/label_editor.html:151 templates/label_information.html:78
+#: models.py:216 templates/editor.html:183 templates/information.html:92
+#: templates/label_editor.html:151 templates/label_information.html:79
 msgid "Commercial Information"
 msgstr "Información comercial"
 
@@ -223,15 +223,15 @@ msgstr "Etiquetas"
 
 #: models.py:231
 msgid "Share with community"
-msgstr ""
+msgstr "Comparte con la comunidad"
 
 #: models.py:238
 msgid "Template SGA"
-msgstr ""
+msgstr "Plantilla SGA"
 
 #: models.py:239
 msgid "Templates SGA"
-msgstr ""
+msgstr "Plantillas SGA"
 
 #: templates/danger_indication_info.html:4 templates/index_organilab.html:4
 msgid "SGA Search"
@@ -278,136 +278,129 @@ msgid "Close"
 msgstr "Cerrar"
 
 #: templates/editor.html:34 templates/label_editor.html:26
-#, fuzzy
-#| msgid "Can see available labels"
 msgid "Available templates"
-msgstr "Puede ver las etiquetas"
+msgstr "Plantillas disponibles"
 
 #: templates/editor.html:45 templates/label_editor.html:37
 msgid "Customize the selected template using the canvas editor and it elements"
 msgstr ""
+"Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
+"elementos"
 
 #: templates/editor.html:65 templates/label_editor.html:56
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: templates/editor.html:69 templates/label_editor.html:59
 msgid "Live"
-msgstr ""
+msgstr "En vivo"
 
 #: templates/editor.html:73 templates/label_editor.html:62
 msgid "Generic"
-msgstr ""
+msgstr "Genérico"
 
 #: templates/editor.html:90 templates/label_editor.html:76
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 #: templates/editor.html:92 templates/label_editor.html:78
 msgid "Line"
-msgstr ""
+msgstr "Línea"
 
 #: templates/editor.html:94 templates/label_editor.html:80
 msgid "Fill / Stroke / Background"
-msgstr ""
+msgstr "Relleno / Trazo / Fondo"
 
 #: templates/editor.html:102 templates/label_editor.html:90
-#, fuzzy
-#| msgid "Size"
 msgid "Font Size"
-msgstr "Tamaño de recipiente"
+msgstr "Tamaño de la fuente"
 
 #: templates/editor.html:105 templates/label_editor.html:93
 msgid "actual"
-msgstr ""
+msgstr "Actual"
 
 #: templates/editor.html:108 templates/label_editor.html:96
 msgid "Font family"
-msgstr ""
+msgstr "Familia de fuentes"
 
 #: templates/editor.html:164 templates/label_editor.html:144
-#, fuzzy
-#| msgid "Sustance"
 msgid "Substance Name"
-msgstr "Nombre comercial"
+msgstr "Nombre de la sustancia"
 
 #: templates/editor.html:167 templates/label_editor.html:145
-#, fuzzy
-#| msgid "CAS number"
 msgid "Cas number"
 msgstr "Número CAS"
 
 #: templates/editor.html:174 templates/label_editor.html:148
-#, fuzzy
 msgid "Seler name"
-msgstr "Nombre"
+msgstr "Nombre del vendedor"
 
 #: templates/editor.html:177 templates/label_editor.html:149
-#, fuzzy
 msgid "Seler phone"
-msgstr "Telefono"
+msgstr "Teléfono del vendedor"
 
 #: templates/editor.html:180 templates/label_editor.html:150
-#, fuzzy
-#| msgid "Address"
 msgid "Seler address"
-msgstr "Dirección"
+msgstr "Dirección del vendedor"
 
 #: templates/editor.html:221 templates/label_editor.html:170
 msgid "Use save before finish"
-msgstr ""
+msgstr "Usar guardar antes de terminar"
 
 #: templates/editor.html:222 templates/label_editor.html:171
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: templates/index_organilab.html:10
-#, fuzzy
-#| msgid "Builder Information"
 msgid "SGA Information Searcher"
-msgstr "Información de los fabricantes"
+msgstr "Buscador de información del SGA"
 
 #: templates/index_organilab.html:11
 msgid "Enter in the following searcher the danger indication codes (H-Codes)."
 msgstr ""
+"Introduzca en el siguiente buscador los códigos de indicación de peligro "
+"(Códigos H)."
 
 #: templates/index_organilab.html:23
 msgid "Search"
-msgstr ""
+msgstr "Búsqueda"
 
 #: templates/index_organilab.html:27
 msgid "Donate"
-msgstr ""
+msgstr "Donar"
 
 #: templates/index_sga.html:20 templates/index_sga.html:32
 #: templates/label_index.html:52
-#, fuzzy
 msgid "GHS Label Creator"
-msgstr "Descargar etiquetas"
+msgstr "Creador de etiquetas del SGA"
 
 #: templates/index_sga.html:27
 msgid ""
 "Doesn't have templates created yet, go to the editor and generate your "
 "custom templates!"
 msgstr ""
+"No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas "
+"personalizadas!"
 
 #: templates/index_sga.html:28
 msgid "Go to Editor"
-msgstr ""
+msgstr "Ir al editor"
 
 #: templates/index_sga.html:33 templates/label_index.html:53
 msgid ""
 "Create your own chemical label according to the Globally Harmonized System "
 "(GHS)."
 msgstr ""
+"Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente "
+"Armonizado (SGA)."
 
 #: templates/index_sga.html:40
 msgid "GHS Label Example and Requirements"
-msgstr ""
+msgstr "Ejemplo y requisitos de la etiqueta del SGA"
 
 #: templates/index_sga.html:44
 msgid "Online GHS Solution"
-msgstr ""
+msgstr "Solución GHS en línea"
 
 #: templates/index_sga.html:45
 msgid ""
@@ -416,163 +409,153 @@ msgid ""
 "users such as laboratories to quickly adopt the new standard and avoid the "
 "risk of non-compliance."
 msgstr ""
+"Crear y personalizar una etiqueta química de acuerdo con el Sistema "
+"Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los "
+"proveedores y usuarios intermedios, como los laboratorios, a adoptar "
+"rápidamente la nueva norma y evitar el riesgo de incumplimiento."
 
 #: templates/index_sga.html:46
 msgid "Moreover, the solution contains multiples features:"
-msgstr ""
+msgstr "Además, la solución contiene múltiples características:"
 
 #: templates/index_sga.html:48
 msgid "Container Management."
-msgstr ""
+msgstr "Gestión de contenedores."
 
 #: templates/index_sga.html:49
 msgid "Social Media Options."
-msgstr ""
+msgstr "Opciones de medios sociales."
 
 #: templates/index_sga.html:50
 msgid "Printing Management."
-msgstr ""
+msgstr "Gestión de la impresión."
 
 #: templates/index_sga.html:52
 msgid "Do you have templates already created, print them!"
-msgstr ""
+msgstr "¿Tienes plantillas ya creadas? ¡Imprímelas!"
 
 #: templates/index_sga.html:58
-#, fuzzy
 msgid "Create a GHS Label"
-msgstr "Descargar etiquetas"
+msgstr "Crear una etiqueta SGA"
 
 #: templates/index_sga.html:67 templates/label_creator.html:55
 #: templates/template.html:78
 msgid "Powered by"
-msgstr ""
+msgstr "Potenciado por"
 
-#: templates/information.html:34 templates/label_information.html:23
+#: templates/information.html:36 templates/label_information.html:24
 msgid "Enter all required label and recipient information"
 msgstr ""
+"Introduzca toda la información necesaria sobre la etiqueta y el destinatario"
 
-#: templates/information.html:41 templates/label_information.html:29
-#, fuzzy
-#| msgid "Sustance"
+#: templates/information.html:43 templates/label_information.html:30
 msgid "Substance"
 msgstr "Sustancia"
 
-#: templates/information.html:43 templates/label_information.html:31
-#, fuzzy
-#| msgid "CAS number"
+#: templates/information.html:45 templates/label_information.html:32
 msgid "Name or CAS number"
-msgstr "Número CAS"
+msgstr "Nombre o número CAS"
 
-#: templates/information.html:49 templates/label_information.html:37
+#: templates/information.html:51 templates/label_information.html:38
 msgid "Did you find the substance?"
-msgstr ""
+msgstr "¿Encontraste la sustancia?"
 
-#: templates/information.html:50 templates/information.html:122
-#: templates/label_information.html:38 templates/label_information.html:110
+#: templates/information.html:52 templates/information.html:124
+#: templates/label_information.html:39 templates/label_information.html:111
 msgid "Create it Here!"
-msgstr ""
+msgstr "¡Créalo aquí!"
 
-#: templates/information.html:55 templates/label_information.html:43
+#: templates/information.html:57 templates/label_information.html:44
 msgid "View substance label information"
-msgstr ""
+msgstr "Ver la información de la etiqueta de la sustancia"
 
-#: templates/information.html:61 templates/label_information.html:49
-#, fuzzy
-#| msgid "Builder Information"
+#: templates/information.html:63 templates/label_information.html:50
 msgid "Supplier Identification"
-msgstr "Información del fabricante"
+msgstr "Información sobre los proveedores"
 
-#: templates/information.html:94 templates/label_information.html:82
+#: templates/information.html:96 templates/label_information.html:83
 msgid "Additionals product identifiers"
-msgstr ""
+msgstr "Identificadores de productos adicionales"
 
-#: templates/information.html:103 templates/label_information.html:91
-#, fuzzy
-#| msgid "Recipient Size"
+#: templates/information.html:105 templates/label_information.html:92
 msgid "Recipient"
-msgstr "Tamaño de recipiente"
+msgstr "Destinatario"
 
-#: templates/information.html:106 templates/label_information.html:94
+#: templates/information.html:108 templates/label_information.html:95
 msgid "Name - Height x Width"
-msgstr ""
+msgstr "Nombre - Altura x Anchura"
 
-#: templates/information.html:122 templates/label_information.html:110
-#, fuzzy
-#| msgid "Size of recipients"
+#: templates/information.html:124 templates/label_information.html:111
 msgid "Did you find the recipient?"
-msgstr "Tamaños de recipiente"
+msgstr "¿Encontraste al recipiente?"
 
-#: templates/information.html:129
-#, fuzzy
+#: templates/information.html:131
 msgid "Logo and Bar Code"
-msgstr "Código"
+msgstr "Logotipo y código de barras"
 
-#: templates/information.html:146 templates/label_creator.html:40
+#: templates/information.html:148 templates/label_creator.html:40
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: templates/label_creator.html:42
 msgid "Finish"
-msgstr ""
+msgstr "Finalizar"
 
 #: templates/label_creator.html:47
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: templates/label_creator.html:74
 msgid "Pre designed template"
-msgstr ""
+msgstr "Plantilla prediseñada"
 
 #: templates/label_creator.html:93
 msgid "Loading"
-msgstr ""
+msgstr "Cargando"
 
 #: templates/label_index.html:66
-#, fuzzy
-#| msgid "Builder Information"
 msgid "Information"
-msgstr "Información del fabricante"
+msgstr "Información"
 
 #: templates/label_index.html:74
 msgid "Template"
-msgstr ""
+msgstr "Plantilla"
 
 #: templates/label_index.html:82
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: templates/label_index.html:90
 msgid "GHS"
-msgstr ""
+msgstr "SGA"
 
 #: templates/label_template.html:21 templates/template.html:26
 msgid ""
 "Create a new label template or select a pre-designed template in accordance "
 "with your needs"
 msgstr ""
+"Cree una nueva plantilla de etiquetas o seleccione una plantilla prediseñada "
+"de acuerdo con tus necesidades"
 
 #: templates/label_template.html:28 templates/template.html:33
-#, fuzzy
 msgid "Edit basic information"
-msgstr "Información comercial"
+msgstr "Editar la información básica"
 
 #: templates/label_template.html:36 templates/template.html:41
-#, fuzzy
-#| msgid "Danger indications"
 msgid "Change information"
-msgstr "Información del fabricante"
+msgstr "Cambiar información"
 
 #: templates/label_template.html:52
 msgid "Get as Image"
-msgstr ""
+msgstr "Obtener como imagen"
 
 #: templates/template.html:55
 msgid "Get as PDF"
-msgstr ""
+msgstr "Obtener como PDF"
 
 #: views.py:122 views.py:179
 msgid "Tag Template saved successfully"
-msgstr ""
+msgstr "Plantilla de la etiqueta guardada con éxito"
 
 #~ msgid "Can see available Warning Classes"
 #~ msgstr "Puede ver clases de peligro disponibles"

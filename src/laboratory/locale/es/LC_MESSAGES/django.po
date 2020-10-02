@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-01 17:00-0600\n"
-"PO-Revision-Date: 2020-10-01 17:04-0600\n"
+"PO-Revision-Date: 2020-10-01 19:44-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -123,11 +123,11 @@ msgstr "Código"
 
 #: models.py:56
 msgid "Synonym"
-msgstr ""
+msgstr "Sinónimo"
 
 #: models.py:56
 msgid "Comma separed name"
-msgstr ""
+msgstr "Nombres separados por comas"
 
 #: models.py:57 models.py:186 models.py:224 templates/laboratory/search.html:53
 #: views/reports.py:342
@@ -180,36 +180,28 @@ msgid "Danger Indication"
 msgstr "Indicación de peligro"
 
 #: models.py:120
-#, fuzzy
-#| msgid "H code"
 msgid "UE codes"
-msgstr "Códigos H"
+msgstr "Códigos UE"
 
 #: models.py:122
-#, fuzzy
-#| msgid "H code"
 msgid "NFPA codes"
-msgstr "Códigos H"
+msgstr "Códigos NFPA"
 
 #: models.py:124
 msgid "Storage class"
-msgstr ""
+msgstr "Clases de almacenamientos"
 
 #: models.py:125
 msgid "Is Seveso list III?"
-msgstr ""
+msgstr "Esta Seveso en la lista III?"
 
 #: models.py:129
-#, fuzzy
-#| msgid "Characteristic"
 msgid "Sustance characteristic"
-msgstr "Características"
+msgstr "Características de sustancia"
 
 #: models.py:130
-#, fuzzy
-#| msgid "Characteristic"
 msgid "Sustance characteristics"
-msgstr "Características"
+msgstr "Características de sustancias"
 
 #: models.py:134 models.py:212
 #: templates/laboratory/report_laboratoryroom_list.html:61
@@ -286,28 +278,20 @@ msgid "Organizations"
 msgstr "Organizaciones"
 
 #: models.py:369
-#, fuzzy
-#| msgid "Laboratory management"
 msgid "Can add organization user management"
-msgstr "Administración de sala de laboratorio"
+msgstr "agregar administración de sala de laboratorio"
 
 #: models.py:370
-#, fuzzy
-#| msgid "Laboratory management"
 msgid "Can change organization user management"
-msgstr "Administración de sala de laboratorio"
+msgstr "cambio administración de sala de laboratorio"
 
 #: models.py:371
-#, fuzzy
-#| msgid "Laboratory management"
 msgid "Can delete organization user management"
-msgstr "Administración de sala de laboratorio"
+msgstr "borrar administración de sala de laboratorio"
 
 #: models.py:372
-#, fuzzy
-#| msgid "Laboratory management"
 msgid "Can view organization user management"
-msgstr "Administración de sala de laboratorio"
+msgstr "observar administración de sala de laboratorio"
 
 #: models.py:410
 msgid "Laboratory name"
@@ -558,14 +542,12 @@ msgid "Press the Save button to save the furniture into the system."
 msgstr "Presione el botón Grabar para guardar el mueble en el sistema."
 
 #: sustance/views.py:49
-#, fuzzy
-#| msgid "User added successfully"
 msgid "Sustance saved successfully"
-msgstr "Usuario agregado satisfactoriamente"
+msgstr "sustancia guardada satisfactoriamente"
 
 #: sustance/views.py:53
 msgid "Pending information in form"
-msgstr ""
+msgstr "información pendiente en el formulario"
 
 #: sustance/views.py:113 views/reports.py:349
 msgid "Is precursor?"
@@ -574,32 +556,28 @@ msgstr "¿Es precursor?"
 #: sustance/views.py:114 sustance/views.py:116 sustance/views.py:118
 #: templates/laboratory/users_management.html:106
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: sustance/views.py:114 sustance/views.py:116 sustance/views.py:118
 #: templates/laboratory/users_management.html:107
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: sustance/views.py:116
 msgid "Is bioaccumulable?"
-msgstr ""
+msgstr "¿Es bioacumulable?"
 
 #: sustance/views.py:118
 msgid "Is public?"
-msgstr ""
+msgstr "¿Es público?"
 
 #: sustance/views.py:124
-#, fuzzy
-#| msgid "Delete users"
 msgid "Delete sustance"
-msgstr "Eliminar usuarios"
+msgstr "Eliminar sustancias"
 
 #: sustance/views.py:128
-#, fuzzy
-#| msgid "Security sheet"
 msgid "Download security sheet"
-msgstr "Hoja de seguridad"
+msgstr "Descargar hoja de seguridad"
 
 #: templates/email/shelf_object_quantity_limit.html:2
 msgid "Hi,"
@@ -672,7 +650,7 @@ msgstr "Lista de acceso"
 
 #: templates/laboratory/access_management.html:33
 msgid "Add descendant organization"
-msgstr ""
+msgstr "Añadir organización desendiente"
 
 #: templates/laboratory/action_denied.html:4
 #: templates/laboratory/permission_denied.html:6
@@ -714,7 +692,7 @@ msgstr "Eliminar pieza de mueble"
 #: templates/laboratory/objectview_delete.html:11
 #: templates/laboratory/sustance/substance_deleteview.html:11
 msgid "Are you sure you want to delete"
-msgstr "¿Está seguro que desea eliminar "
+msgstr "¿Está seguro que desea eliminar?"
 
 #: templates/laboratory/furniture_confirm_delete.html:14
 #: templates/laboratory/laboratoryroom_confirm_delete.html:15
@@ -1046,28 +1024,24 @@ msgid "of"
 msgstr "de"
 
 #: templates/laboratory/objectlogchange_list.html:14
-#, fuzzy
-#| msgid "C&L Inventory"
 msgid "Changes on Objects"
-msgstr "Inventario C&L"
+msgstr "Cambio de objetos"
 
 #: templates/laboratory/objectlogchange_list.html:24
 msgid "Filter"
-msgstr ""
+msgstr "Filtro"
 
 #: templates/laboratory/objectlogchange_list.html:34 views/reports.py:767
 msgid "Day"
-msgstr ""
+msgstr "Día"
 
 #: templates/laboratory/objectlogchange_list.html:35 views/reports.py:768
-#, fuzzy
-#| msgid "Ods"
 msgid "Old"
-msgstr "Ods"
+msgstr "Antiguo"
 
 #: templates/laboratory/objectlogchange_list.html:37 views/reports.py:770
 msgid "Difference"
-msgstr ""
+msgstr "Diferencia"
 
 #: templates/laboratory/objectlogchange_list.html:38
 #: views/laboratory_utils.py:8 views/reports.py:771
@@ -1307,7 +1281,7 @@ msgstr "Laboratorio:"
 #: templates/laboratory/report_organizationlaboratory_list.html:61
 #: templates/pdf/organizationlaboratory_pdf.html:13
 msgid "Profiles"
-msgstr ""
+msgstr "Perfiles"
 
 #: templates/laboratory/report_organizationlaboratory_list.html:62
 #: templates/pdf/organizationlaboratory_pdf.html:14 views/reports.py:84
@@ -1374,7 +1348,7 @@ msgstr "¿Está seguro?"
 
 #: templates/laboratory/shelfobject_confirm_delete.html:14
 msgid "Are you sure that do you want delete this object"
-msgstr "¿ Está seguro de que quiere borrar este objeto?"
+msgstr "¿Está seguro de que quiere borrar este objeto?"
 
 #: templates/laboratory/shelfobject_form.html:21
 msgid "Save changes"
@@ -1432,51 +1406,34 @@ msgstr "Todavía no hay soluciones"
 
 #: templates/laboratory/sustance/list.html:21
 msgid "Add new Substance"
-msgstr ""
+msgstr "Añadir nueva sustancia"
 
 #: templates/laboratory/sustance/list.html:28
-#, fuzzy
-#| msgid "H code"
 msgid "Cas code"
-msgstr "Códigos H"
+msgstr "Código CAS"
 
 #: templates/laboratory/sustance/list.html:29
-#, fuzzy
-#| msgid "Location"
 msgid "Actions"
-msgstr "Ubicación"
+msgstr "Acciones"
 
 #: templates/laboratory/sustance/sustance_form.html:8
 msgid "Back"
-msgstr ""
+msgstr "Atrás"
 
 #: templates/laboratory/sustance/sustance_form.html:11
 #: templates/laboratory/sustance/sustance_form.html:12
-#, fuzzy
-#| msgid "Help us!"
 msgid "Help"
-msgstr "¡Colabora!"
+msgstr "Colabora"
 
 #: templates/laboratory/sustance/sustance_form.html:15
-#, fuzzy
-#| msgid "Furniture Management"
 msgid "Substance Management"
-msgstr "Administración de muebles"
+msgstr "Administración de sustancia"
 
 #: templates/laboratory/sustance/sustance_form.html:42
 msgid "Representing Chemical Substances in pyEQL"
 msgstr "Representar las sustancias químicas en el pyEQL"
 
 #: templates/laboratory/sustance/sustance_form.html:47
-#, fuzzy
-#| msgid ""
-#| "pyEQL interprets the chemical formula of a substance to calculate its "
-#| "molecular\n"
-#| "weight and formal charge. The formula is also used as a key to search "
-#| "the\n"
-#| "database for parameters (e.g. diffusion coefficient) that are used in "
-#| "subsequent\n"
-#| "calculations."
 msgid ""
 "pyEQL interprets the chemical formula of a substance to calculate its "
 "molecular\n"
@@ -1487,20 +1444,17 @@ msgid ""
 "            calculations."
 msgstr ""
 "El pyEQL interpreta la fórmula química de una sustancia para calcular su "
-"peso molecular y su carga formal. La fórmula también se utiliza como clave "
-"para buscar en la base de datos los parámetros (por ejemplo, el coeficiente "
-"de difusión) que se utilizan en los cálculos posteriores."
+"peso molecular\n"
+" y su carga formal. La fórmula también se utiliza como clave para buscar \n"
+"en la base de datos los parámetros (por ejemplo, el coeficiente de difusión) "
+"que se utilizan en los cálculos\n"
+" posteriores."
 
 #: templates/laboratory/sustance/sustance_form.html:52
 msgid "How to Enter Valid Chemical Formulas"
 msgstr "Cómo introducir fórmulas químicas válidas"
 
 #: templates/laboratory/sustance/sustance_form.html:53
-#, fuzzy
-#| msgid ""
-#| "Generally speaking, type the chemical formula of your solute the “normal” "
-#| "way\n"
-#| "and pyEQL should be able to inerpret it. Here are some examples:"
 msgid ""
 "Generally speaking, type the chemical formula of your solute the “normal” "
 "way\n"
@@ -1570,24 +1524,20 @@ msgid "Open parentheses must precede closed parentheses"
 msgstr "Los paréntesis abiertos deben preceder a los paréntesis cerrados"
 
 #: templates/laboratory/users_management.html:9
-#, fuzzy
-#| msgid "Management"
 msgid "Users Management"
-msgstr "Administración"
+msgstr "Administración de usuarios"
 
 #: templates/laboratory/users_management.html:51
 msgid "Add New User"
-msgstr ""
+msgstr "Añadir nuevo usuario"
 
 #: templates/laboratory/users_management.html:65
 msgid "Username"
 msgstr "Usuario:"
 
 #: templates/laboratory/users_management.html:66
-#, fuzzy
-#| msgid "First name"
 msgid "Full name"
-msgstr "Nombre"
+msgstr "Nombre completo"
 
 #: templates/pdf/base_organization_pdf.html:51 templates/pdf/base_pdf.html:47
 msgid "Date:"
@@ -1666,7 +1616,7 @@ msgstr "Sólo está disponible en este laboratorio si es privado"
 
 #: views/reports.py:84
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: views/reports.py:180 views/reports.py:498
 msgid "Units"
@@ -1714,12 +1664,14 @@ msgstr "Cantidad límite"
 
 #: views/reports.py:682
 msgid "On screen"
-msgstr ""
+msgstr "En pantalla"
 
 #: views/reports.py:758
 msgid ""
 "When resume date, we use last object for fill User, Laboratory, and Day "
 msgstr ""
+"Cuando se reanuda la fecha, usamos el último objeto para rellenar Usuario, "
+"Laboratorio, y Día"
 
 #: views/shelfobject.py:71
 msgid "Reactive/Material/Equipment"
