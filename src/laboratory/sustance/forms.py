@@ -45,6 +45,6 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             'nfpa': genwidgets.SelectMultiple,
             'storage_class': genwidgets.SelectMultiple,
             'seveso_list': genwidgets.YesNoInput,
-            'security_sheet': genwidgets.FileInput
+            #'security_sheet': genwidgets.FileInput
 
         }
