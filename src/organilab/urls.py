@@ -36,6 +36,8 @@ from sga import urls as sga_urls
 from risk_management import urls as risk_urls
 from sga.views import index_organilab
 
+from reservations_management.urls import urlpatterns as reservation_management_urls
+
 urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', index_organilab, name='index'),
@@ -55,6 +57,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
 
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls
+urlpatterns += reservation_management_urls
 
 if settings.DEBUG:
     from django.conf.urls.static import static

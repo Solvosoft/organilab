@@ -1,0 +1,96 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n shelf_position laboratory static %}
+{% block content %}
+
+<div class="x_panel gencrud">
+    <div class="x_title">
+        <ul class="nav navbar-left panel_toolbox">
+        </ul>
+
+        <h2>{% trans 'Reservations List' %}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+           
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="col-lg-12">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+            </li>
+
+            {% endif %}
+
+            <li class="paginate_button">
+                <span class="current">
+                    Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+  <div class="container">
+    {{form.status}}
+  </div>
+  <br>
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th class="text-center">{% trans 'User' %}</th>
+                <th class="text-center">{% trans 'Status' %}</th>
+                <th class="text-center">{% trans 'Massive Reservation' %}</th>
+                <th class="text-center">{% trans 'Actions' %}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for reservation in object_list %}
+            <tr>
+                <td>{{ reservation.user }}</td>
+                <td> {{ reservation.get_status_display}}</td>
+                <td>{{ reservation.is_massive}}</td>
+                <td>
+                    <a class="btn btn-sm btn-dark"
+                        href="{% url 'reservartions_list' %}" title="{% trans 'Manage' %}"><i class="fa fa-cog"></i></a>
+                 
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+    
+    <div class="col-lg-12">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+            </li>
+
+            {% endif %}
+
+            <li class="paginate_button">
+                <span class="current">
+                    Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
