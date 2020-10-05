@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'chunked_upload',
     'api.apps.ApiConfig',
     'ajax_select',
+    'reservations_management'
 
 ]
 
