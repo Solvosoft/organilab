@@ -816,7 +816,8 @@ class OrganizationReactivePresenceList(ReportListView):
                                    reactive.obj.code,
                                    reactive.obj.name,
                                    reactive.cas_id_number,
-                                   ", ".join( reactive.white_organ.all().values_list('description', flat=True))
+                                   ", ".join( reactive.white_organ.all().values_list('description', flat=True)),
+                                   str(reactive.iarc) if reactive.iarc else ""
                                    ))
         return data
 
@@ -827,7 +828,8 @@ class OrganizationReactivePresenceList(ReportListView):
                 str(_('Code')),
                 str(_('Sustance')),
                 str(_('CAS')),
-                str(_('White Organ'))
+                str(_('White Organ')),
+                str(_('Carcinogenic'))
              ]]+context['object_list']
 
 

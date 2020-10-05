@@ -57,6 +57,7 @@
 		<th>{% trans "Sustance:" %}</th>
 		<th>{% trans 'CAS ID Number:' %}</th>
 		<th>{% trans 'White Organ:' %}</th>
+		<th>{% trans 'Carcinogenic:' %}</th>
 	</tr></thead><tbody>
 	  {% for obj in object_list %}
 		    <tr>
@@ -66,6 +67,7 @@
 			<td>{{ obj.4 }} </td>
 			<td>{{ obj.5 }}</td>
 			<td>{{ obj.6 }}</td>
+			<td>{{ obj.7 }}</td>
 	    </tr>
 	   {% empty %}
 	<tr><td colspan="6"> {% trans "No objects" %}</td> </tr>
