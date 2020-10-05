@@ -30,9 +30,10 @@ from xhtml2pdf import pisa
 from laboratory.decorators import user_group_perms
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, Profile
+    OrganizationStructure, Profile, SustanceCharacteristics
 from laboratory.models import ObjectLogChange
-from laboratory.utils import get_cas, get_imdg, get_molecular_formula
+from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_users_form_organization, \
+    get_laboratories_from_organization
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -688,7 +689,7 @@ class FilterForm(GTForm, forms.Form):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.viw_report'), name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
 class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
@@ -783,4 +784,53 @@ class LogObjectView(ReportListView):
                         obj.diff_value,
                          str(obj.measurement_unit)
                        ])
+        return book
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+class OrganizationReactivePresenceList(ReportListView):
+    model = OrganizationStructure
+    template_name = 'laboratory/organization_reactive_presence.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self):
+        query = self.model.objects.filter(pk = self.lab).get_descendants(include_self=True)
+        #users = get_users_form_organization(query.pk)
+        #labs = get_laboratories_from_organization(query.pk)
+        data = []
+        for item in query:
+
+            laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
+            usermanagement = item.organizationusermanagement_set.all().values('users__first_name', 'users__last_name')
+            for lab in laboratories:
+
+                reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+                    shelf__furniture=lab['rooms__furniture']
+                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+                for user in usermanagement:
+                    for reactive in reactives:
+                        data.append((lab['name'],
+                                   user['users__first_name'],
+                                   user['users__last_name'],
+                                   reactive.obj.code,
+                                   reactive.obj.name,
+                                   reactive.cas_id_number,
+                                   ", ".join( reactive.white_organ.all().values_list('description', flat=True))
+                                   ))
+        return data
+
+    def get_book(self, context):
+        book = [[str(_('Name')),
+                str(_('First Name')),
+                str(_('Last Name')),
+                str(_('Code')),
+                str(_('Sustance')),
+                str(_('CAS')),
+                str(_('White Organ'))
+             ]]+context['object_list']
+
+
         return book

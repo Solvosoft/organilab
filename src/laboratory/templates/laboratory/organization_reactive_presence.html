@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+
+{% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
+
+{% block content %}
+ {%  has_perms "laboratory.do_report" as perm_do_report %}
+ {%  has_perms "laboratory.view_object" as perm_object %}
+
+  <div class="page-header"><h1>{% trans 'User exposition' %}</h1>
+
+  </div>
+  {% if perm_do_report and perm_object  %}
+	  <div class=" pull-right">
+	  <div class="btn-group dropup">
+	  <button type="button" class="btn btn-danger">
+	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	   {% trans 'Download'%}</button>
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="caret"></span>
+	    <span class="sr-only">{% trans 'Toggle Dropdown'%} </span>
+	  </button>
+	  <ul class="dropdown-menu">
+		  <li>
+	     <a 
+	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=ods">{% trans "Ods" %} </a>
+	   </li>
+	   
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xls">{% trans "Xls" %} </a>
+	   </li>
+	   
+	   <li>
+	     <a 
+	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+	   </li>
+	    
+	  </ul>
+	</div>
+	
+	 </div>
+ {% endif %}
+<br><br>
+ {% if perm_object  %}
+<table id="reporttable" class="table">
+	<thead>
+	<tr>
+		<th>{% trans "Laboratory:" %}</th>
+		<th>{% trans "Name:" %}</th>
+		<th>{% trans "Code:" %}</th>
+		<th>{% trans "Sustance:" %}</th>
+		<th>{% trans 'CAS ID Number:' %}</th>
+		<th>{% trans 'White Organ:' %}</th>
+	</tr></thead><tbody>
+	  {% for obj in object_list %}
+		    <tr>
+			<td>{{ obj.0 }}</td>
+			<td>{{ obj.1 }} {{ obj.2 }}</td>
+			<td>{{ obj.3 }} </td>
+			<td>{{ obj.4 }} </td>
+			<td>{{ obj.5 }}</td>
+			<td>{{ obj.6 }}</td>
+	    </tr>
+	   {% empty %}
+	<tr><td colspan="6"> {% trans "No objects" %}</td> </tr>
+	   {% endfor %}
+	</tbody>
+</table>
+ {% else %}
+   {% include 'laboratory/action_denied.html' %}
+ {% endif %}
+  <div>
+  </div>
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+<script>
+	$("#reporttable").DataTable();
+</script>
+{% endblock %}
+

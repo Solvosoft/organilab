@@ -47,6 +47,7 @@
 {% endblock %}
 {% block js %}
 {{block.super}}
+<link href="{% static 'vendors/bootstrap-tree/bootstrap-treeview.min.css' %}" />
 <script src="{% static 'vendors/bootstrap-tree/bootstrap-treeview.min.js' %}"></script>
 <script>
 $(function() {
@@ -60,7 +61,8 @@ $('[data-toggle="tooltip"]').tooltip();
             dataType : 'json',
             success : function(result) {
                  $('#treeview').treeview({
-                    data: result
+                    data: result,
+                    enableLinks: true
                 });
             },
             error: function(xhr, resp, text) {
