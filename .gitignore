@@ -3,6 +3,7 @@ djreservation
 __pycache__/
 *.py[cod]
 *$py.class
+/entorno
 
 # C extensions
 *.so
