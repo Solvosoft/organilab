@@ -5,13 +5,13 @@ from laboratory.models import ShelfObject
 import uuid
 
 
-PROCESSING = 0
+SELECTED = 0
 REQUESTED = 1
 ACCEPTED = 2
 DENIED = 3
 CLOSED = 4
 STATUS = (
-    (PROCESSING, _("Processing")),
+    (SELECTED, _("Selected")),
     (REQUESTED, _("Requested")),
     (ACCEPTED, _("Accepted")),
     (DENIED, _("Denied")),
