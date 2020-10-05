@@ -49,7 +49,6 @@ class MassiveReservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
     comments = models.CharField(max_length=500)
-    days = models.SmallIntegerField(choices=DAYS)
 
 
 class ReservedProducts(models.Model):
@@ -68,3 +67,8 @@ class ReservedProducts(models.Model):
 class ReservationTasks(models.Model):
     reserved_product = models.ForeignKey(ReservedProducts, on_delete=models.CASCADE)
     celery_task_id = models.UUIDField(default=uuid.uuid4, editable=False)
+
+
+class ReservationRange(models.Model):
+    day = models.SmallIntegerField(choices=DAYS)
+    reserved_product = models.ForeignKey(ReservedProducts, on_delete=models.CASCADE)
