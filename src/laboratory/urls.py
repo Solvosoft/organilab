@@ -99,6 +99,7 @@ lab_reports_urls = [
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list'),
     url('^objectchanges$', reports.LogObjectView.as_view(), name='object_change_logs'),
+    url('^organizationreactivepresence/$', reports.OrganizationReactivePresenceList.as_view(), name='organizationreactivepresence'),
 
 ]
 

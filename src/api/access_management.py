@@ -1,3 +1,4 @@
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,6 +9,15 @@ def get_users_button(pk_orga):
     users_button = "<a class='btn btn-primary btn-sm'" \
                    "onclick='users_management(this)'" \
                     " data-id='" + str(pk_orga) +"'><i class='fa fa-users'></i></a>"
+
+    return users_button
+
+
+def get_report_button(pk_orga):
+    url = reverse('laboratory:organizationreactivepresence', args=(pk_orga,))
+    users_button = '<a class="btn btn-primary btn-sm" href="%s" target="_blank"><i class="fa fa-medkit"></i></a>'%(
+        url
+    )
 
     return users_button
 
@@ -27,7 +37,7 @@ def get_child(element, query):
     for x in query.filter(organization__parent=element):
         pk = x.organization.pk
         buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
-            pk) + get_users_button(pk) + "</div>"
+            pk) + get_users_button(pk) + get_report_button(pk)+ "</div>"
 
         info_orga = {
             'text': x.organization.name + buttons,
@@ -57,7 +67,7 @@ def get_data_parent(queryset, user):
         if organization:
             pk = x.organization.pk
             buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
-                pk) + get_users_button(pk) + "</div>"
+                pk) + get_users_button(pk) + get_report_button(pk)+ "</div>"
             text = text + buttons
 
         info_orga = {
