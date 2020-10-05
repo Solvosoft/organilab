@@ -21,7 +21,6 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput
 # for xhtml2pdf
@@ -340,8 +339,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
 def make_book_objects(objects, summary=False, type_id=None):
 
     description = [
-        _("Code"), _("Name"), _("Type"), _(
-            "Quantity total"), _('Measurement units')
+        _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
     ]
     if type_id == '0':
         description += [

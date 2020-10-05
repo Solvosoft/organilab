@@ -57,10 +57,10 @@ ul, li{
         {% endif %}
 
         <li><label class="bold">{% trans "Description:" %}</label> {{ obj.description }}</li>
-        <li><label class="bold">{% trans 'Molecular formula:' %}</label> <code>{{ obj.molecular_formula | default:'-' }}</code></li>
+        <li><label class="bold">{% trans 'Molecular formula:' %}</label> <code>{{ obj.sustancecharacteristics.molecular_formula | default:'-' }}</code></li>
         <li>
           <label class="bold">{% trans 'CAS ID Number:' %}</label> 
-          {{ obj.cas_id_number | default:'Undefined' }}
+          {{ obj.sustancecharacteristics.cas_id_number | default:'Undefined' }}
         </li>
         {% if obj.clinventory_entry %}
           <li>{% trans 'Inventario C&L:' %} {{ obj.clinventory_entry.name | safe }} (<a
