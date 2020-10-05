@@ -1,9 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 from laboratory.models import ShelfObject
 import uuid
 
@@ -42,31 +39,24 @@ DAYS = (
 class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
-    comments = models.CharField(max_length=500)
-
-
-class MassiveReservations(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
-    comments = models.CharField(max_length=500)
+    comments = models.CharField(max_length=500, null=True)
+    is_massive = models.BooleanField(default=False)
 
 
 class ReservedProducts(models.Model):
-    shelf_object_id = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    # Using generic relation to be able to connect to both the reservations and the MassiveReservations model
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE)
     is_returnable = models.BooleanField(default=True)
     amount_required = models.FloatField()
     initial_date = models.DateTimeField()
     final_date = models.DateTimeField()
     was_returned = models.BooleanField(default=True)
+    status = models.SmallIntegerField(choices=STATUS)
 
 
 class ReservationTasks(models.Model):
     reserved_product = models.ForeignKey(ReservedProducts, on_delete=models.CASCADE)
-    celery_task_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    celery_task = models.UUIDField(default=uuid.uuid4, editable=False)
 
 
 class ReservationRange(models.Model):
