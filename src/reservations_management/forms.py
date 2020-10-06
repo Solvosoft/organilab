@@ -11,6 +11,7 @@ class ReservationsForm(GTForm, ModelForm):
         widgets={
             'user': genwidgets.Select(),
             'status': genwidgets.Select(),
+            'laboratory': genwidgets.Select(),
             'comments': genwidgets.Textarea(),
             'is_massive': genwidgets.CheckboxInput()
         }
