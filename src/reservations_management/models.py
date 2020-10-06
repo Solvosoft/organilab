@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from laboratory.models import ShelfObject
+from laboratory.models import ShelfObject,Laboratory
 import uuid
 
 
@@ -38,6 +38,7 @@ DAYS = (
 
 class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    laboratory = models.ForeignKey(Laboratory,on_delete=models.CASCADE)
     status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
     comments = models.CharField(max_length=500, null=True)
     is_massive = models.BooleanField(default=False)
