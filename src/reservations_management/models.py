@@ -5,17 +5,17 @@ from laboratory.models import ShelfObject
 import uuid
 
 
-SELECTED = 0
-REQUESTED = 1
-ACCEPTED = 2
-DENIED = 3
-CLOSED = 4
+REQUESTED = 0
+ACCEPTED = 1
+DENIED = 2
+CLOSED = 3
+SELECTED = 4
 STATUS = (
-    (SELECTED, _("Selected")),
     (REQUESTED, _("Requested")),
     (ACCEPTED, _("Accepted")),
     (DENIED, _("Denied")),
     (CLOSED, _("Closed")),
+    (SELECTED, _("Selected")),
 )
 
 L = 0
@@ -41,6 +41,9 @@ class Reservations(models.Model):
     status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
     comments = models.CharField(max_length=500, null=True)
     is_massive = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['status']
 
 
 class ReservedProducts(models.Model):

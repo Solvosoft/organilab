@@ -1,5 +1,7 @@
 {% extends 'gentelella/base.html' %}
-{% load i18n shelf_position laboratory static %}
+{% load i18n %}
+{% load static %}
+
 {% block content %}
 
 <div class="x_panel gencrud">
@@ -37,10 +39,10 @@
         </ul>
     </div>
 
-  <div class="container">
+  <!-- <div class="container">
     {{form.status}}
   </div>
-  <br>
+  <br> -->
     <table class="table table-bordered text-center">
         <thead>
             <tr>
@@ -56,8 +58,19 @@
             {% for reservation in object_list %}
             <tr>
                 <td>{{ reservation.user }}</td>
-                <td> {{ reservation.get_status_display}}</td>
-                <td>{{ reservation.is_massive}}</td>
+                <td> 
+                    <strong class="{%if reservation.status == 0 %}text-warning {%endif%} 
+                    {%if reservation.status == 1 %}text-success {%endif%}
+                    {%if reservation.status == 2 %}text-danger {%endif%}
+                    {%if reservation.status == 3 %}text-info {%endif%}">
+                    {{ reservation.get_status_display}} </strong>
+                </td>
+                <td>{% if reservation.is_massive %} 
+                    {% trans 'Yes' %}
+                    {% else %} 
+                    {% trans 'No' %}
+                    {%endif%}
+                </td>
                 <td>
                     <a class="btn btn-sm btn-dark"
                         href="{% url 'reservartions_list' %}" title="{% trans 'Manage' %}"><i class="fa fa-cog"></i></a>
@@ -93,4 +106,11 @@
         </ul>
     </div>
 </div>
+{% endblock %}
+
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
+
 {% endblock %}
