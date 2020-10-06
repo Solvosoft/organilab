@@ -14,8 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from .views import ReservationsListView
+from .views import (
+    ReservationsListView,
+    ManageReservationView
+    )
 
 urlpatterns = [
-    url(r'reservations/', ReservationsListView.as_view(), name='reservartions_list'),
+    url(r'reservations/(?P<pk>\d+)/manage$', ManageReservationView.as_view(), name='manage_reservation'),
+    url(r'reservations/', ReservationsListView.as_view(), name='reservartions_list')
 ]
