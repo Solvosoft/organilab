@@ -5,12 +5,11 @@ from .models import Reservations
 
 
 class ReservationsForm(GTForm, ModelForm):
+
     class Meta:
-        model=Reservations
-        fields='__all__'
-        widgets={
-            'user': genwidgets.Select(),
+        model = Reservations
+        fields = ['status','comments']
+        widgets = {
             'status': genwidgets.Select(),
             'comments': genwidgets.Textarea(),
-            'is_massive': genwidgets.CheckboxInput()
         }
