@@ -1,0 +1,123 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Manage Reservation' %}{% endblock %}
+
+{% block content %}
+
+<div class="x_panel gencrud">
+    <div class="x_title">
+        <ul class="nav navbar-left panel_toolbox">
+            <li>
+                <a href="{% url 'reservations_list'%}" title="{% trans 'Back to the reservations list'%}">
+                    <i class="fa fa-angle-double-left red"></i>
+                </a>
+            </li>
+        </ul>
+
+        <h2>{% trans 'Reservation from' %} <strong>{{username}}</strong> {% trans 'for laboratory' %} <strong>
+                {{lab_name}}</strong></h2>
+
+        <ul class="nav navbar-right panel_toolbox">
+
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="x_content">
+
+        <form method="POST" id="update-create-form">
+            {% csrf_token %}
+            {{form.as_p }}
+            <div class="box-footer">
+                <div class="form-group">
+                    <div class="controls text-right">
+
+                        <a href="{% url 'reservations_list'%}" class="btn btn-danger"><i class='fa fa-times'></i>
+                            Volver</a>
+
+                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="box-body row mr-tp">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans 'Products List' %}</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="x_content">
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">{% trans 'Product name' %}</th>
+                                        <th class="text-center">{% trans 'Amount Required' %}</th>
+                                        <th class="text-center">{% trans 'Initial Date' %}</th>
+                                        <th class="text-center">{% trans 'Final Date' %}</th>
+                                        <th class="text-center">{% trans 'Is Returnable' %}</th>
+                                        <th class="text-center">{% trans 'Status' %}</th> 
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for product in reservation_products %}
+                                    <tr>
+                                        <td>
+                                            <a href="#">{{ product.shelf_object}}</a>
+                                        </td>
+
+                                        <td>
+                                             {{ product.amount_required}} 
+                                        </td>
+
+                                        <td>
+                                            {{ product.initial_date}} 
+                                        </td>
+                                      
+                                        <td>
+                                            {{ product.final_date}} 
+                                        </td>
+                                        <td>
+                                            {% if product.is_returnable %} 
+                                                {% trans 'Yes' %}
+                                            {% else %}
+                                                {% trans 'No' %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <strong class="{%if product.status == 0 %}text-warning {%endif%} 
+                                            {%if product.status == 1 %}text-info{%endif%}
+                                            {%if product.status == 2 %}text-danger {%endif%}
+                                            {%if product.status == 4 %}text-success {%endif%}">
+                                            {{ product.get_status_display}} </strong>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Button trigger modal
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        <i class='fa fa-floppy-o'></i> Editar respuesta
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}

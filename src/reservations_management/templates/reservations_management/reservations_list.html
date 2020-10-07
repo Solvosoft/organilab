@@ -2,6 +2,9 @@
 {% load i18n %}
 {% load static %}
 
+{% block title %}{% trans 'Reservations List' %}{% endblock %}
+
+
 {% block content %}
 
 <div class="x_panel gencrud">
@@ -45,7 +48,7 @@
                 <th class="text-center">{% trans 'User' %}</th>
                 <th class="text-center">{% trans 'Status' %}</th>
                 <th class="text-center">{% trans 'Massive Reservation' %}</th>
-                <th class="text-center">{% trans 'Actions' %}</th>
+                <th class="text-center">{% trans 'Manage Reservation' %}</th>
             </tr>
         </thead>
 
@@ -68,8 +71,8 @@
                     {%endif%}
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-dark"
-                        href="{% url 'reservartions_list' %}" title="{% trans 'Manage' %}"><i class="fa fa-cog"></i></a>
+                    <a class="btn btn-md btn-success"
+                        href="{% url 'manage_reservation' reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
                 </td>
             </tr>
 
@@ -101,11 +104,4 @@
         </ul>
     </div>
 </div>
-{% endblock %}
-
-
-{% block javascripts %}
-  {{ block.super }}
-  <script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
-
 {% endblock %}
