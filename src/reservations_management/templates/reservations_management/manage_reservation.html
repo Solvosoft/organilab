@@ -1,10 +1,16 @@
-{% extends 'gentelella/base.html' %}
+{% extends 'reservations_management/product_modal.html' %}
 {% load i18n %}
+
 {% load static %}
 
 {% block title %}{% trans 'Manage Reservation' %}{% endblock %}
 
 {% block content %}
+{{block.super}}
+
+
+<input type="hidden" id='api_url' value=" {% url 'api_reservation_management' 0%}">
+<input type="hidden" name="get_product_name" id="get_product_name" value="{%url 'get_product_name'%}">
 
 <div class="x_panel gencrud">
     <div class="x_title">
@@ -27,9 +33,9 @@
 
     <div class="x_content">
 
-        <form method="POST" id="update-create-form">
+        <form method="POST" id="form">
             {% csrf_token %}
-            {{form.as_p }}
+            {{reservation_form.as_p }}
             <div class="box-footer">
                 <div class="form-group">
                     <div class="controls text-right">
@@ -63,7 +69,7 @@
                                         <th class="text-center">{% trans 'Initial Date' %}</th>
                                         <th class="text-center">{% trans 'Final Date' %}</th>
                                         <th class="text-center">{% trans 'Is Returnable' %}</th>
-                                        <th class="text-center">{% trans 'Status' %}</th> 
+                                        <th class="text-center">{% trans 'Status' %}</th>
                                     </tr>
                                 </thead>
 
@@ -72,25 +78,30 @@
                                     {% for product in reservation_products %}
                                     <tr>
                                         <td>
-                                            <a href="#">{{ product.shelf_object}}</a>
+
+                                            <a href='#' data-toggle="modal" data-target="#exampleModal"
+                                                id=product-{{product.id}}
+                                                onclick="retrieve_update_object({{product.id}})">
+                                                {{ product.shelf_object}}
+                                            </a>
                                         </td>
 
                                         <td>
-                                             {{ product.amount_required}} 
+                                            {{ product.amount_required}}
                                         </td>
 
                                         <td>
-                                            {{ product.initial_date}} 
+                                            {{ product.initial_date}}
                                         </td>
-                                      
+
                                         <td>
-                                            {{ product.final_date}} 
+                                            {{ product.final_date}}
                                         </td>
                                         <td>
-                                            {% if product.is_returnable %} 
-                                                {% trans 'Yes' %}
+                                            {% if product.is_returnable %}
+                                            {% trans 'Yes' %}
                                             {% else %}
-                                                {% trans 'No' %}
+                                            {% trans 'No' %}
                                             {% endif %}
                                         </td>
                                         <td>
@@ -98,7 +109,7 @@
                                             {%if product.status == 1 %}text-info{%endif%}
                                             {%if product.status == 2 %}text-danger {%endif%}
                                             {%if product.status == 4 %}text-success {%endif%}">
-                                            {{ product.get_status_display}} </strong>
+                                                {{ product.get_status_display}} </strong>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -118,6 +129,11 @@
 
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
 
 
 {% endblock %}

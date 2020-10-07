@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from .views import (
     ReservationsListView,
-    ManageReservationView
+    ManageReservationView,
+    get_product_name
     )
 
 urlpatterns = [
     url(r'reservations/(?P<pk>\d+)/manage$', ManageReservationView.as_view(), name='manage_reservation'),
-    url(r'reservations/list$', ReservationsListView.as_view(), name='reservations_list')
+    url(r'reservations/list$', ReservationsListView.as_view(), name='reservations_list'),
+    url(r'reservedproduct/get_product_name', get_product_name, name='get_product_name')
 ]
