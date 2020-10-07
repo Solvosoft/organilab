@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from laboratory.decorators import user_group_perms
 
-from .models import Reservations
+from .models import Reservations,ReservedProducts
 from .forms import ReservationsForm
 
 # Create your views here.
@@ -22,7 +22,8 @@ class ReservationsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reservations'] = Reservations.objects.filter(
-            laboratory__profile__user_id=self.request.user.id)
+            laboratory__profile__user_id=self.request.user.id
+        )
         return context
 
 
@@ -35,5 +36,8 @@ class ManageReservationView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         reservation = Reservations.objects.get(pk=self.kwargs['pk'])
+        context['username'] = self.request.user.username
         context['form'] = ReservationsForm(instance=reservation)
+        context['lab_name'] = Reservations.objects.values('laboratory__name').get(pk=self.kwargs['pk'])['laboratory__name']
+        context['reservation_products'] = ReservedProducts.objects.filter(reservation_id =self.kwargs['pk'])
         return context

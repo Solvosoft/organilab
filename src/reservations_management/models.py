@@ -7,15 +7,25 @@ import uuid
 
 REQUESTED = 0
 ACCEPTED = 1
+BORROWED = 1
 DENIED = 2
 CLOSED = 3
-SELECTED = 4
-STATUS = (
+SELECTED = 3
+RETURNED = 4
+
+RESERVATION_STATUS = (
     (REQUESTED, _("Requested")),
     (ACCEPTED, _("Accepted")),
     (DENIED, _("Denied")),
     (CLOSED, _("Closed")),
+)
+
+PRODUCT_STATUS = (
+    (REQUESTED, _("Requested")),
+    (BORROWED, _("Borrowed")),
+    (DENIED, _("Denied")),
     (SELECTED, _("Selected")),
+    (RETURNED, _("Returned")),
 )
 
 L = 0
@@ -39,7 +49,7 @@ DAYS = (
 class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     laboratory = models.ForeignKey(Laboratory,on_delete=models.CASCADE)
-    status = models.SmallIntegerField(choices=STATUS, default=REQUESTED)
+    status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED)
     comments = models.CharField(max_length=500, null=True)
     is_massive = models.BooleanField(default=False)
 
@@ -54,8 +64,7 @@ class ReservedProducts(models.Model):
     amount_required = models.FloatField()
     initial_date = models.DateTimeField()
     final_date = models.DateTimeField()
-    was_returned = models.BooleanField(default=True)
-    status = models.SmallIntegerField(choices=STATUS)
+    status = models.SmallIntegerField(choices=PRODUCT_STATUS,default=REQUESTED)
 
 
 class ReservationTasks(models.Model):

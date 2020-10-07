@@ -21,5 +21,5 @@ from .views import (
 
 urlpatterns = [
     url(r'reservations/(?P<pk>\d+)/manage$', ManageReservationView.as_view(), name='manage_reservation'),
-    url(r'reservations/', ReservationsListView.as_view(), name='reservartions_list')
+    url(r'reservations/list$', ReservationsListView.as_view(), name='reservations_list')
 ]
