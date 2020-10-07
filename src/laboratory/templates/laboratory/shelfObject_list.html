@@ -4,8 +4,6 @@
 {%  has_perms "laboratory.change_shelfobject" as perm_change_shelfobject %}
 {%  has_perms "laboratory.do_report" as perm_do_report %}
 
-
-
 <ul class="list-group">
  {% if perm_shelfobject %}
   {% for shelfobject in data.shelfobject_set.all %}
@@ -34,7 +32,7 @@
 	          <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 	        </a>
           {% endif %}
-        <a class="pull-right" style="margin-right: 10px;" href="{% url 'laboratory:object_reservation' shelfobject.pk %}">
+        <a data-target="#model-reservation-form" data-toggle="modal" class="pull-right" style="margin-right: 10px;">
           <span class="glyphicon glyphicon-book" aria-hidden="true" title="{% trans 'Reserve' %}"></span>
         </a>
     </li>
@@ -42,3 +40,4 @@
   
  {% endif %}
 </ul>
+
