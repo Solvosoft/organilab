@@ -50,7 +50,7 @@ class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     laboratory = models.ForeignKey(Laboratory,on_delete=models.CASCADE)
     status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED)
-    comments = models.CharField(max_length=500, null=True)
+    comments = models.CharField(max_length=500, null=True,blank=True)
     is_massive = models.BooleanField(default=False)
 
     class Meta:
