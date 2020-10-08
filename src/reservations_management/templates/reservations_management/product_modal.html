@@ -1,0 +1,60 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n %}
+{% block content %}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+
+        <div class="x_panel gencrud">
+          <div class="x_title">
+            <ul class="nav navbar-left panel_toolbox">
+            </ul>
+
+            <h2 id='product_name'>{% trans 'Manage Product' %} </h2>
+
+            <ul class="nav navbar-right panel_toolbox">
+
+            </ul>
+            <div class="clearfix">
+            </div>
+          </div>
+
+          <div class="x_content">
+            <input type="hidden" name="selected_product" id="selected_product_id">
+            <form method="POST" id="modal_form">
+              {% csrf_token %}
+              {{product_form.as_p }}
+
+              <div class="box-footer mt-4">
+                <div class="form-group">
+                  <div class="controls text-right">
+                    <a data-dismiss="modal" href="{% url 'reservations_list'%}" class="btn btn-danger"><i
+                        class='fa fa-times'></i>
+                      {% trans 'Cancel' %}</a>
+
+                    <a onclick="retrieve_update_object(document.querySelector('#selected_product_id').value,'put')"
+                      data-dismiss="modal" class="btn btn-success"><i class='fa fa-check'></i> {% trans 'Accept' %}</a>
+
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
