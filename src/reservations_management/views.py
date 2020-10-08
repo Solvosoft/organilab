@@ -1,16 +1,16 @@
-from django.shortcuts import render
 from django.views.generic import ListView, UpdateView
 
 
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 
 from laboratory.decorators import user_group_perms
+from laboratory.models import ShelfObject
 
 from .models import Reservations,ReservedProducts
 from .forms import ReservationsForm, ProductForm
+
 
 # Create your views here.
 
@@ -45,10 +45,52 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
         return context
 
 
+############## METHODS TO USE WITH AJAX ############## 
+
 def get_product_name(request):
     product_name = ''
     if request.method == 'GET':
         product_id = request.GET['id']
         product_info = ReservedProducts.objects.values('shelf_object__object__name').get(id=product_id)
         product_name = product_info['shelf_object__object__name']
-    return JsonResponse({'product_name': product_name})
+    return JsonResponse({'product_name':product_name})
+
+def get_shelf_products_id(list):
+    id_list = []
+    for product in list:
+        id_list.append(product.shelf_object.id)
+    
+    return id_list
+
+
+def get_related_data_sets(requested_product):
+      # Retrieves all accepted reserved products that are the same than the requested shelf_object product
+        related_reserved_products_list = ReservedProducts.objects.filter(status=1 ,shelf_object__object=requested_product.shelf_object.object, shelf_object__shelf__furniture__labroom__laboratory__id = requested_product.reservation.laboratory.id)
+
+        reserved_shelf_products_ids = get_shelf_products_id(related_reserved_products_list)
+
+        # Retrieves shelf objects of the same laboratory with the same requested product excluding the reserved products and the requested product
+        related_available_shelf_objects = ShelfObject.objects.filter(shelf__furniture__labroom__laboratory__id = requested_product.reservation.laboratory.id , object = requested_product.shelf_object.object).exclude(id__in=reserved_shelf_products_ids).exclude(id=requested_product.shelf_object.id)
+
+        return {
+            'related_reserved_products_list': related_reserved_products_list,
+            'related_available_shelf_objects' : related_available_shelf_objects 
+        }
+
+def validate_reservation(request):
+    is_valid = True
+    if request.method == 'GET':
+
+        requested_product = ReservedProducts.objects.get(pk = request.GET['id'])
+        requested_initial_date = requested_product.initial_date
+        requested_final_date = requested_product.final_date
+        amount_required = requested_product.amount_required
+        
+        data_sets = get_related_data_sets(requested_product)
+        a = data_sets['related_reserved_products_list'].count()
+        c = data_sets['related_available_shelf_objects'].count()
+
+
+    return JsonResponse({'is_valid':is_valid})
+
+
