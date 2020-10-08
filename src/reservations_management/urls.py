@@ -17,11 +17,13 @@ from django.conf.urls import url, include
 from .views import (
     ReservationsListView,
     ManageReservationView,
-    get_product_name
+    get_product_name,
+    validate_reservation
     )
 
 urlpatterns = [
     url(r'reservations/(?P<pk>\d+)/manage$', ManageReservationView.as_view(), name='manage_reservation'),
     url(r'reservations/list$', ReservationsListView.as_view(), name='reservations_list'),
-    url(r'reservedproduct/get_product_name', get_product_name, name='get_product_name')
+    url(r'reservedproduct/get_product_name', get_product_name, name='get_product_name'),
+    url(r'reservedproduct/validate_reservation',validate_reservation, name='validate_reservation')
 ]
