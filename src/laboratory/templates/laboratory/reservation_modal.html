@@ -1,18 +1,19 @@
 {% load i18n %}
 <!-- Modal -->
-<div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="model-reservation-form" role="dialog"
+<div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="model_reservation_form" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Creating Reservations' %}</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Reservations' %}</h5>
                 <button aria-label="{% trans 'Close' %}" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form action="" method="post">
-                    {{ form.as_p }}
+                    {% csrf_token %}
+                    {{ modal_form_reservation }}
                 </form>
             </div>
             <div class="modal-footer">
