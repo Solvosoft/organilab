@@ -11,4 +11,4 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReservedProducts
-        fields = '__all__'
+        exclude = ['reservation']
