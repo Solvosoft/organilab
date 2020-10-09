@@ -93,28 +93,38 @@ def validate_reservation(request):
         requested_product = ReservedProducts.objects.get(pk=request.GET['id'])
         requested_initial_date = requested_product.initial_date
         requested_final_date = requested_product.final_date
-        amount_required = requested_product.amount_required
+        requested_amount_required = requested_product.amount_required
+        requested_product_quantity = requested_product.shelf_object.quantity
 
         data_sets = get_related_data_sets(requested_product)
 
         reserved_product_quantity = 0
+        quantity_per_reserved_product = []
         for reserved_product in data_sets['related_reserved_products_list']:
             reserved_initial_date = reserved_product.initial_date
             reserved_final_date = reserved_product.final_date
 
-            # Si pido antes de una reserva existente y mi devolucion es cuando esa reserva inicia o antes => true
-            # Si pido despues de que una reserva finaliza o exactamente cuando finaliza => true
+            # Si pido antes de una reserva existente y mi devolucion es cuando esa reserva inicia o antes => No acumulo
+            # Si pido despues de que una reserva finaliza o exactamente cuando finaliza => No acumulo
 
             # Si pido antes de una reserva aceptada y mi devolucion es en periodo de una reserva existente => acumulo
             if((reserved_initial_date <= requested_initial_date) and ((reserved_final_date > requested_initial_date) and (reserved_final_date < requested_final_date) or (reserved_final_date >= requested_final_date))):
                 reserved_product_quantity += reserved_product.amount_required
+                quantity_per_reserved_product.append({'product_id': reserved_product.id,
+                                                      'required_quantity': reserved_product.amount_required
+                                                      })
 
             # Si pido mientras ya hay reserva aceptada => acumulo
             elif((reserved_initial_date > requested_initial_date) and (((reserved_final_date > requested_initial_date) and (reserved_final_date <= requested_final_date)) or (reserved_final_date > requested_final_date))):
                 reserved_product_quantity += reserved_product.amount_required
+                quantity_per_reserved_product.append({'product_id': reserved_product.id,
+                                                      'required_quantity': reserved_product.amount_required
+                                                      })
 
         # Si hay producto reservado => hay que verificar si el stock es suficiente
         if reserved_product_quantity > 0:
+            remaining_amount = requested_product_quantity - reserved_product_quantity 
+            # if()
             print('It is necessary to verify stock')
 
     return JsonResponse({'is_valid': is_valid})
