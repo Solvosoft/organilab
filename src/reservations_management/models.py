@@ -10,7 +10,6 @@ ACCEPTED = 1
 BORROWED = 1
 DENIED = 2
 CLOSED = 3
-SELECTED = 3
 RETURNED = 4
 
 RESERVATION_STATUS = (
@@ -24,7 +23,6 @@ PRODUCT_STATUS = (
     (REQUESTED, _("Requested")),
     (BORROWED, _("Borrowed")),
     (DENIED, _("Denied")),
-    (SELECTED, _("Selected")),
     (RETURNED, _("Returned")),
 )
 
@@ -44,6 +42,12 @@ DAYS = (
     (S, _("Saturday")),
     (D, _("Sunday")),
 )
+
+class SelectedProducts(models.Model):
+    shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
+    amount_required = models.FloatField()
+    initial_date = models.DateTimeField()
+    final_date = models.DateTimeField()
 
 
 class Reservations(models.Model):
