@@ -97,9 +97,9 @@ def validate_reservation(request):
         requested_product_quantity = requested_product.shelf_object.quantity
 
         data_sets = get_related_data_sets(requested_product)
-
         reserved_product_quantity = 0
-        quantity_per_reserved_product = []
+
+        # Loops through the reservations of the same product to verify if the request is in periof of one existing reservation
         for reserved_product in data_sets['related_reserved_products_list']:
             reserved_initial_date = reserved_product.initial_date
             reserved_final_date = reserved_product.final_date
@@ -107,24 +107,52 @@ def validate_reservation(request):
             # Si pido antes de una reserva existente y mi devolucion es cuando esa reserva inicia o antes => No acumulo
             # Si pido despues de que una reserva finaliza o exactamente cuando finaliza => No acumulo
 
-            # Si pido antes de una reserva aceptada y mi devolucion es en periodo de una reserva existente => acumulo
+            # Si pido antes de una reserva aceptada y mi devolucion es en periodo de una reserva existente => acumulo cuanto producto se requiere en esa reserva
             if((reserved_initial_date <= requested_initial_date) and ((reserved_final_date > requested_initial_date) and (reserved_final_date < requested_final_date) or (reserved_final_date >= requested_final_date))):
                 reserved_product_quantity += reserved_product.amount_required
-                quantity_per_reserved_product.append({'product_id': reserved_product.id,
-                                                      'required_quantity': reserved_product.amount_required
-                                                      })
 
-            # Si pido mientras ya hay reserva aceptada => acumulo
+            # Si pido mientras ya hay reserva aceptada => acumulo cuanto producto se requiere en esa reserva
             elif((reserved_initial_date > requested_initial_date) and (((reserved_final_date > requested_initial_date) and (reserved_final_date <= requested_final_date)) or (reserved_final_date > requested_final_date))):
                 reserved_product_quantity += reserved_product.amount_required
-                quantity_per_reserved_product.append({'product_id': reserved_product.id,
-                                                      'required_quantity': reserved_product.amount_required
-                                                      })
 
-        # Si hay producto reservado => hay que verificar si el stock es suficiente
+        # Si hay producto reservado => hay que verificar si el stock en relacion a lo que quiero es suficiente
         if reserved_product_quantity > 0:
-            remaining_amount = requested_product_quantity - reserved_product_quantity 
-            # if()
-            print('It is necessary to verify stock')
+            period_missing_amount = \
+                requested_product_quantity - \
+                (reserved_product_quantity + requested_amount_required)
+
+            # If there is not enough stock in the shelf object and there are available products loop through the available products to see which can be usefull
+            if period_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) > 0:
+                available_product_quantity_to_take = 0
+                remaining_available_product_quantity = 0
+                remaining_quantity_to_take = 0
+
+                for available_product in data_sets['related_available_shelf_objects']:
+                    remaining_available_product_quantity = \
+                        period_missing_amount + available_product.quantity
+        
+                    if remaining_available_product_quantity >= 0:
+                        available_product_quantity_to_take = available_product.quantity - remaining_available_product_quantity
+                        period_missing_amount += available_product_quantity_to_take
+                        print(available_product.id)
+                        print('Registry the product')
+
+                    else :
+                        print('Registry the product again')
+                        print(available_product.quantity)
+                        available_product_quantity_to_take += available_product.quantity
+                        period_missing_amount += available_product_quantity_to_take
+
+                    if period_missing_amount == 0:
+                        is_valid = True
+                        break
+
+                    else: 
+                        is_valid = False
+
+            # There is no stock and there are no available products
+            elif period_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) <= 0:
+                is_valid = False
 
     return JsonResponse({'is_valid': is_valid})
+

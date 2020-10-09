@@ -67,7 +67,6 @@ const retrieve_update_object = (product_id = 0, method = 'get') => {
 
 
 const load_product_information = async (data) => {
-    const get_product_name_url = document.querySelector('#get_product_name').value;
     const modal_elements = get_modal_product_elements();
     modal_elements.is_returnable_checkbox.checked = data.is_returnable;
     modal_elements.status_select.selectedIndex = data.status
@@ -94,7 +93,11 @@ const update_product_information = (data) => {
             // xhr.setRequestHeader('Authorization', `Token ${user_token}`);
         },
         success: function (data) {
-            location.reload();
+            if(data){
+                $('#exampleModal').modal('hide');
+                location.reload();
+            }
+            
         }
     });
 }
