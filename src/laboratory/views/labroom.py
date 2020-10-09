@@ -18,6 +18,7 @@ from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.decorators import user_group_perms
 from laboratory.views.furniture import FurnitureCreateForm
 
+from laboratory.forms import ReservationModalForm
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
@@ -29,6 +30,11 @@ class LaboratoryRoomsList(ListView):
             Laboratory, pk=self.lab)
         self.request.session['search_lab'] = self.lab
         return lab.rooms.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_form_reservation'] = ReservationModalForm()
+        return context
 
 
 @method_decorator(login_required, name='dispatch')

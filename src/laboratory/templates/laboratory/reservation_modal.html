@@ -1,0 +1,25 @@
+{% load i18n %}
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="model_reservation_form" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="model_reservation_form_title">{% trans 'Reservations' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="modal_reservation_form" method="POST">
+                    {% csrf_token %}
+                    {{ modal_form_reservation.as_p }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

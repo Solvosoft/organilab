@@ -17,10 +17,11 @@ from laboratory.views import labroom, shelfobject, laboratory, solutions, organi
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
-
+from laboratory.api.views import ApiReservationCRUD
 objviews = ObjectView()
 
 urlpatterns = [
+    url(r'r/api/reservation/$', ApiReservationCRUD.as_view(), name='api_reservation'),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
@@ -71,7 +72,8 @@ shelf_object_urls = [
     url(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
-        name="shelfobject_searchupdate")
+        name="shelfobject_searchupdate"),
+    url(r"reservation/(?P<modelpk>\d+)$", shelfobject.ShelfObjectReservationModal.as_view(), name="shelfobject_modal")
 ]
 
 lab_reports_urls = [
