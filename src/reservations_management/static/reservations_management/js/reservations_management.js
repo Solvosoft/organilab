@@ -77,7 +77,6 @@ const load_product_information = async (data) => {
 
     $.get(methods_urls.get_product_name_url, { 'id': data.id }, function ({ product_name }) {
         modal_elements.modal_title.textContent = product_name.toUpperCase();
-        api_url
     });
 }
 
