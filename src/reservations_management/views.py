@@ -68,8 +68,6 @@ def get_shelf_products_id(list):
 
     return id_list
 
-# PONER TRIES
-
 
 def get_related_data_sets(requested_product):
     related_reserved_products_list = []
@@ -123,7 +121,7 @@ def get_related_data_sets(requested_product):
     }
 
 
-def verify_reserved_products_period(requested_product, data_set):
+def verify_reserved_products_overlap(requested_product, data_set):
     Range = namedtuple('Range', ['start', 'end'])
     reserved_product_quantity = 0
     requested_initial_date = requested_product.initial_date
@@ -169,13 +167,13 @@ def create_reserve_product(product, amount_required, status):
     )
 
 
-def verify_requested_shelf_objects_stock(requested_product, product_missing_amount, related_different_reserved_products_list):
+def verify_reserved_shelf_objects_stock(requested_product, product_missing_amount, related_different_reserved_products_list):
     missing_amount = product_missing_amount
     is_valid = True
     products_to_request = []
 
     # If there is not enough stock in the shelf object and there are more reserved shelf objects, loop through those objects to see which can be usefull
-    if missing_amount < 0 and len(related_different_reserved_products_list) > 0:
+    if missing_amount < 0 and related_different_reserved_products_list:
 
         product_quantity_to_take = 0
         remaining_product_quantity = 0
@@ -192,7 +190,7 @@ def verify_requested_shelf_objects_stock(requested_product, product_missing_amou
             except Exception as identifier:
                 pass
 
-            reserved_product_quantity = verify_reserved_products_period(
+            reserved_product_quantity = verify_reserved_products_overlap(
                 product, data_set)
 
             remaining_product_quantity = missing_amount + \
@@ -210,7 +208,7 @@ def verify_requested_shelf_objects_stock(requested_product, product_missing_amou
                 products_to_request.append(new_product_to_reserve)
 
             else:
-                product_quantity_to_take += (
+                product_quantity_to_take = (
                     product.shelf_object.quantity - product.amount_required)
                 missing_amount += product_quantity_to_take
 
@@ -225,6 +223,57 @@ def verify_requested_shelf_objects_stock(requested_product, product_missing_amou
 
             else:
                 is_valid = False
+
+    # There is no stock and there are no reserved products
+    elif missing_amount < 0 and related_different_reserved_products_list <= 0:
+        is_valid = False
+
+    return missing_amount, is_valid, products_to_request
+
+
+def verify_available_shelf_objects_stock(requested_product, product_missing_amount, related_available_shelf_objects):
+    missing_amount = product_missing_amount
+    is_valid = True
+    products_to_request = []
+
+    # If there is not enough stock in the shelf object and there are available products, loop through the available products to see which can be usefull
+    if missing_amount < 0 and related_available_shelf_objects:
+        available_product_quantity_to_take = 0
+        remaining_available_product_quantity = 0
+        remaining_quantity_to_take = 0
+
+        for available_product in related_available_shelf_objects:
+            remaining_available_product_quantity = \
+                missing_amount + available_product.quantity
+
+            if remaining_available_product_quantity >= 0:
+                available_product_quantity_to_take = available_product.quantity - \
+                    remaining_available_product_quantity
+                missing_amount += available_product_quantity_to_take
+                new_product_to_reserve = create_reserve_product(
+                    requested_product, available_product_quantity_to_take, 1
+                )
+                products_to_request.append(new_product_to_reserve)
+
+            else:
+                #Cuidado con este +
+                available_product_quantity_to_take += available_product.quantity
+                missing_amount += available_product_quantity_to_take
+                new_product_to_reserve = create_reserve_product(
+                    requested_product, available_product_quantity_to_take, 1
+                )
+                products_to_request.append(new_product_to_reserve)
+
+            if missing_amount == 0:
+                is_valid = True
+                break
+
+            else:
+                is_valid = False
+
+    # There is no stock and there are no available products
+    elif missing_amount < 0 and related_available_shelf_objects:
+        is_valid = False
 
     return missing_amount, is_valid, products_to_request
 
@@ -245,12 +294,12 @@ def validate_reservation(request):
 
         data_sets = get_related_data_sets(requested_product)
 
-        reserved_product_quantity = verify_reserved_products_period(
+        reserved_product_quantity = verify_reserved_products_overlap(
             requested_product,
             data_sets['related_reserved_products_list']
         )
 
-        # Si hay producto reservado o no me alcanza con lo que hay -> hay que verificar si el stock de otros productos resrervados o disponibles no reservados en relacion a lo que quiero es suficiente
+        # Si hay producto reservado o no me alcanza con lo que hay -> hay que verificar si el stock de otros productos reservados en relacion a lo que quiero es suficiente
         if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
             product_missing_amount = \
                 requested_product_quantity - \
@@ -259,49 +308,59 @@ def validate_reservation(request):
             available_quantity = (requested_product_quantity - reserved_product_quantity) if (
                 reserved_product_quantity > 0) else requested_product_quantity
 
-            product_missing_amount, is_valid, new_products_to_request = verify_requested_shelf_objects_stock(
+            product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
                 requested_product,
                 product_missing_amount,
                 data_sets['related_different_reserved_products_list']
             )
+            #Stores the new possible products to request
+            products_to_request += new_products_to_request
 
-    
+            # Si no me alcanzó con los productos reservados -> verifico si en los productos disponibles que no estan reservados puedo agarrar algo
+            if (product_missing_amount < 0):
+                print('Here man')
+                product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
+                requested_product,
+                product_missing_amount,
+                data_sets['related_available_shelf_objects']
+            )
+
 #######################################################
 
-            # If there is not enough stock in the shelf object and there are available products loop through the available products to see which can be usefull
-            if product_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) > 0:
-                available_product_quantity_to_take = 0
-                remaining_available_product_quantity = 0
-                remaining_quantity_to_take = 0
+            # # If there is not enough stock in the shelf object and there are available products loop through the available products to see which can be usefull
+            # if product_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) > 0:
+            #     available_product_quantity_to_take = 0
+            #     remaining_available_product_quantity = 0
+            #     remaining_quantity_to_take = 0
 
-                for available_product in data_sets['related_available_shelf_objects']:
-                    remaining_available_product_quantity = \
-                        product_missing_amount + available_product.quantity
+            #     for available_product in data_sets['related_available_shelf_objects']:
+            #         remaining_available_product_quantity = \
+            #             product_missing_amount + available_product.quantity
 
-                    if remaining_available_product_quantity >= 0:
-                        available_product_quantity_to_take = available_product.quantity - \
-                            remaining_available_product_quantity
-                        product_missing_amount += available_product_quantity_to_take
-                        print(available_product.id)
-                        print('Create the product')
+            #         if remaining_available_product_quantity >= 0:
+            #             available_product_quantity_to_take = available_product.quantity - \
+            #                 remaining_available_product_quantity
+            #             product_missing_amount += available_product_quantity_to_take
+            #             print(available_product.id)
+            #             print('Create the product')
 
-                    else:
-                        print('Create the product again')
-                        print(available_product.quantity)
-                        available_product_quantity_to_take += available_product.quantity
-                        product_missing_amount += available_product_quantity_to_take
+            #         else:
+            #             print('Create the product again')
+            #             print(available_product.quantity)
+            #             available_product_quantity_to_take += available_product.quantity
+            #             product_missing_amount += available_product_quantity_to_take
 
-                    if product_missing_amount == 0:
-                        print('Save products')
-                        is_valid = True
-                        break
+            #         if product_missing_amount == 0:
+            #             print('Save products')
+            #             is_valid = True
+            #             break
 
-                    else:
-                        is_valid = False
+            #         else:
+            #             is_valid = False
 
-            # There is no stock and there are no available products
-            elif product_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) <= 0:
-                is_valid = False
+            # # There is no stock and there are no available products
+            # elif product_missing_amount < 0 and len(data_sets['related_available_shelf_objects']) <= 0:
+            #     is_valid = False
 
     return JsonResponse({
         'is_valid': is_valid,
