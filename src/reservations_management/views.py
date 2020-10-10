@@ -155,7 +155,7 @@ def verify_reserved_products_overlap(requested_product, data_set):
         return reserved_product_quantity
 
 
-def create_reserve_product(product, amount_required, status):
+def create_reserved_product(product, amount_required, status):
     return ReservedProducts(
         shelf_object=product.shelf_object,
         reservation=product.reservation,
