@@ -93,19 +93,19 @@ const update_product_information = (data) => {
             // xhr.setRequestHeader('Authorization', `Token ${user_token}`);
         },
         success: function (data) {
-            if(data){
+            if (data) {
                 $('#exampleModal').modal('hide');
                 location.reload();
             }
-            
+
         }
     });
 }
 
 const validate_reservation = (product_id) => {
     $.get(methods_urls.validate_reservation_url, { 'id': product_id },
-        function ({ is_valid }) {
-            console.log(is_valid)
+        function ({ is_valid, available_quantity }) {
+            console.log(is_valid, available_quantity)
         });
 
 }
