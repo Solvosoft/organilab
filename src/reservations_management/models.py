@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from laboratory.models import ShelfObject,Laboratory
+from laboratory.models import ShelfObject, Laboratory
 import uuid
 
 
@@ -46,15 +46,6 @@ DAYS = (
 )
 
 
-class SelectedProducts(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    amount_required = models.FloatField()
-    initial_date = models.DateTimeField()
-    final_date = models.DateTimeField()
-    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED)
-
-
 class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
@@ -68,12 +59,13 @@ class Reservations(models.Model):
 
 class ReservedProducts(models.Model):
     shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True)
     is_returnable = models.BooleanField(default=True)
     amount_required = models.FloatField()
     initial_date = models.DateTimeField()
     final_date = models.DateTimeField()
-    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=REQUESTED)
+    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED)
 
 
 class ReservationTasks(models.Model):

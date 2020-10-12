@@ -3,10 +3,10 @@
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<a id="reserve_btn" class="pull-right btn btn-success" role="button"> {% trans "Reserve" %}</a>
 <table id="table_id" class="display">
     <thead>
         <tr>
-            <th>{% trans "User" %}</th>
             <th>{% trans 'Object' %}</th>
             <th>{% trans 'Amount required' %}</th>
             <th>{% trans 'Initial date' %}</th>
@@ -18,7 +18,6 @@
     <tbody>
     {% for obj in object_list%}
         <tr>
-            <td>{{obj.user.get_full_name}}</td>
             <td>{{obj.shelf_object}}</td>
             <td>{{obj.amount_required}}</td>
             <td>{{obj.initial_date}}</td>
@@ -35,8 +34,6 @@
     {% endfor %}
     </tbody>
 </table>
-
-<a id="reserve_btn" class="pull-right btn btn-success" role="button"> {% trans "Reserve" %}</a>
 
 {% endblock %}
 {% block js %}

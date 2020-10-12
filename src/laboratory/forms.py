@@ -4,7 +4,7 @@ from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
 from .models import Laboratory, Object
-from reservations_management.models import SelectedProducts
+from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
@@ -77,8 +77,8 @@ class SearchUserForm(CustomForm):
 class ReservationModalForm(GTForm, ModelForm):
 
     class Meta:
-        model = SelectedProducts
-        exclude = ['shelf_object', 'user', 'status']
+        model = ReservedProducts
+        fields = ['amount_required','initial_date', 'final_date']
         widgets = {
             'initial_date': genwidgets.DateTimeInput(),
             'final_date': genwidgets.DateTimeInput(),
