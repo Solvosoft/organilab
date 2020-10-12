@@ -61,5 +61,4 @@ class SearchObject(ListView):
             context['laboratory'] = self.kwargs.get('lab_pk')
         context['q'] = self.request.GET.get('q', '')
         context['modal_form_reservation'] = ReservationModalForm()
-        context['current_user'] = self.request.user
         return context

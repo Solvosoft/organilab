@@ -1,27 +1,45 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load static i18n %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 <table id="table_id" class="display">
     <thead>
         <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
+            <th>{% trans "User" %}</th>
+            <th>{% trans 'Object' %}</th>
+            <th>{% trans 'Amount required' %}</th>
+            <th>{% trans 'Initial date' %}</th>
+            <th>{% trans 'Final date' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
+    {% for obj in object_list%}
         <tr>
-            <td>Row 1 Data 1</td>
-            <td>Row 1 Data 2</td>
+            <td>{{obj.user.get_full_name}}</td>
+            <td>{{obj.shelf_object}}</td>
+            <td>{{obj.amount_required}}</td>
+            <td>{{obj.initial_date}}</td>
+            <td>{{obj.final_date}}</td>
+            <td>{{obj.get_status_display}}</td>
+            {%if obj.status == 3 %}
+            <td>
+                <button aria-label="{% trans 'Remove' %}" type="button" onclick="remove_reservation({{obj.id}})">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </td>
+            {%endif%}
         </tr>
-        <tr>
-            <td>Row 2 Data 1</td>
-            <td>Row 2 Data 2</td>
-        </tr>
+    {% endfor %}
     </tbody>
 </table>
+
+<a id="reserve_btn" class="pull-right btn btn-success" role="button"> {% trans "Reserve" %}</a>
+
 {% endblock %}
 {% block js %}
+<script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 {% endblock %}

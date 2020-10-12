@@ -78,7 +78,7 @@ class ReservationModalForm(GTForm, ModelForm):
 
     class Meta:
         model = SelectedProducts
-        exclude = ['shelf_object', 'user']
+        exclude = ['shelf_object', 'user', 'status']
         widgets = {
             'initial_date': genwidgets.DateTimeInput(),
             'final_date': genwidgets.DateTimeInput(),
