@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from reservations_management.models import SelectedProducts
+from reservations_management.models import ReservedProducts
 from organilab.settings import DATETIME_INPUT_FORMATS
 
 
@@ -8,5 +8,5 @@ class ReservationSerializer(serializers.ModelSerializer):
     final_date = serializers.DateTimeField(input_formats=[DATETIME_INPUT_FORMATS[0]], required=False)
 
     class Meta:
-        model = SelectedProducts
+        model = ReservedProducts
         fields = '__all__'

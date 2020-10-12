@@ -42,7 +42,7 @@ function add_reservation() {
         type: 'POST',
         data: data,
         success: function(data) {
-            location.reload();
+
         }
     });
 }

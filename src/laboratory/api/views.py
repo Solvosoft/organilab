@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
-from reservations_management.models import SelectedProducts
+from reservations_management.models import ReservedProducts
 from laboratory.api.serializers import ReservationSerializer
 
 
