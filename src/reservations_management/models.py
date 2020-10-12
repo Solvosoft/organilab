@@ -44,6 +44,7 @@ DAYS = (
 )
 
 class SelectedProducts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
     amount_required = models.FloatField()
     initial_date = models.DateTimeField()

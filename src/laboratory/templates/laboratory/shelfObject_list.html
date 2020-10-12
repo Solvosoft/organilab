@@ -3,7 +3,7 @@
 {%  has_perms "laboratory.delete_shelfobject" as perm_delete_shelfobject %}
 {%  has_perms "laboratory.change_shelfobject" as perm_change_shelfobject %}
 {%  has_perms "laboratory.do_report" as perm_do_report %}
-.{%  has_perms "reservations.add_reservation" as perm_add_reservation %}
+{%  has_perms "djreservation.add_reservation" as perm_add_reservation %}
 
 
 <ul class="list-group">
@@ -38,7 +38,7 @@
         <a class="pull-right"
            data-toggle="modal"
            data-target="#model_reservation_form"
-           style="margin-right: 10px;" onclick="get_shelf_object_id({{shelfobject.pk}})">
+           style="margin-right: 10px;" onclick="get_ids({{shelfobject.pk}}, {{request.user.id}})">
             <span aria-hidden="true" class="glyphicon glyphicon-book" title="{% trans 'Reserve' %}"></span>
         </a>
         {% endif %}
