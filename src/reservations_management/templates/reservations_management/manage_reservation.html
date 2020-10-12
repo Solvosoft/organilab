@@ -63,6 +63,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">{% trans 'Product name' %}</th>
+                                        <th class="text-center">{% trans 'Available quantity' %}</th>
                                         <th class="text-center">{% trans 'Amount Required' %}</th>
                                         <th class="text-center">{% trans 'Initial Date' %}</th>
                                         <th class="text-center">{% trans 'Final Date' %}</th>
@@ -76,14 +77,15 @@
                                     {% for product in reservation_products %}
                                     <tr>
                                         <td>
-
                                             <a href='#' data-toggle="modal" data-target="#exampleModal"
                                                 id=product-{{product.id}}
-                                                onclick="retrieve_update_object({{product.id}})">
-                                                {{ product.shelf_object}}
+                                                onclick="retrieve_object({{product.id}})">
+                                                {{ product.shelf_object.object.name}}
                                             </a>
                                         </td>
-
+                                        <td>
+                                            {{product.shelf_object.quantity}}
+                                        </td>
                                         <td>
                                             {{ product.amount_required}}
                                         </td>
