@@ -9,6 +9,15 @@
 {{block.super}}
 
 
+<div class="management_id" hidden>
+    <input type="hidden" id="reservation_id" value="{{reservation_id}}">
+    <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
+    <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
+    
+    <input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity" value="{%url 'get_product_name_and_quantity'%}">
+    <input type="hidden" name="validate_reservation" id="validate_reservation" value="{%url 'validate_reservation'%}">
+</div>
+
 
 <div class="x_panel gencrud">
     <div class="x_title">
@@ -65,67 +74,23 @@
                                         <th class="text-center">{% trans 'Product name' %}</th>
                                         <th class="text-center">{% trans 'Available quantity' %}</th>
                                         <th class="text-center">{% trans 'Amount Required' %}</th>
-                                        <th class="text-center">{% trans 'Initial Date' %}</th>
-                                        <th class="text-center">{% trans 'Final Date' %}</th>
+                                        <th class="text-center">{% trans 'Start Date' %}</th>
+                                        <th class="text-center">{% trans 'End Date' %}</th>
                                         <th class="text-center">{% trans 'Is Returnable' %}</th>
                                         <th class="text-center">{% trans 'Status' %}</th>
                                     </tr>
                                 </thead>
 
-                                <tbody>
-
-                                    {% for product in reservation_products %}
-                                    <tr>
-                                        <td>
-                                            <a href='#' data-toggle="modal" data-target="#exampleModal"
-                                                id=product-{{product.id}}
-                                                onclick="retrieve_object({{product.id}})">
-                                                {{ product.shelf_object.object.name}}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{product.shelf_object.quantity}}
-                                        </td>
-                                        <td>
-                                            {{ product.amount_required}}
-                                        </td>
-
-                                        <td>
-                                            {{ product.initial_date}}
-                                        </td>
-
-                                        <td>
-                                            {{ product.final_date}}
-                                        </td>
-                                        <td>
-                                            {% if product.is_returnable %}
-                                            {% trans 'Yes' %}
-                                            {% else %}
-                                            {% trans 'No' %}
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <strong class="{%if product.status == 0 %}text-warning {%endif%} 
-                                            {%if product.status == 1 %}text-info{%endif%}
-                                            {%if product.status == 2 %}text-danger {%endif%}
-                                            {%if product.status == 4 %}text-success {%endif%}">
-                                                {{ product.get_status_display}} </strong>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
+                                <tbody id="reserved_products_table_body">
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <!-- Button trigger modal
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        <i class='fa fa-floppy-o'></i> Editar respuesta
-                    </button> -->
                 </div>
             </div>
         </div>
     </div>
-
 
 </div>
 
