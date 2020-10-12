@@ -37,13 +37,16 @@
               {{product_form.as_p }}
 
               <div class="box-footer mt-4">
+                <div class="container">
+                  <small id="error_message" class="text-danger"></small>
+                </div>
                 <div class="form-group">
                   <div class="controls text-right">
-                    <a data-dismiss="modal" href="{% url 'reservations_list'%}" class="btn btn-danger"><i
+                    <a data-dismiss="modal" href="{% url 'reservations_list'%}" class="btn btn-danger" id="cancel-button"><i
                         class='fa fa-times'></i>
                       {% trans 'Cancel' %}</a>
 
-                    <a onclick="retrieve_update_object(document.querySelector('#selected_product_id').value,'put')"
+                    <a onclick="validate_reservation(document.querySelector('#selected_product_id').value,'put')"
                       class="btn btn-success"><i class='fa fa-check'></i> {% trans 'Accept' %}</a>
 
                   </div>
