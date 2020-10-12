@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import ObjectSearchForm
 from babel.util import distinct
+from laboratory.forms import ReservationModalForm
 
 
 @method_decorator(login_required, name='dispatch')
@@ -59,4 +60,6 @@ class SearchObject(ListView):
         if 'lab_pk' in self.kwargs:
             context['laboratory'] = self.kwargs.get('lab_pk')
         context['q'] = self.request.GET.get('q', '')
+        context['modal_form_reservation'] = ReservationModalForm()
+        context['current_user'] = self.request.user
         return context

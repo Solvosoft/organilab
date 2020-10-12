@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load laboratory static i18n %}
+
+{%  has_perms "reservation.add_reservation" as perm_add_reservation %}
 
 {% block content %}
 {% include 'laboratory/search_widget.html' %}
-
+{% include 'laboratory/reservation_modal.html' %}
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 {% for object in object_list%}
@@ -38,14 +40,16 @@
 	    </div>
 	    <div id="collapse{{object.pk}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{object.pk}}">
 	      <div class="panel-body">
-	 {% if request.reservation %}
+
 		 <div class="row">
 		 	 <div class="col-md-4">
-		 	<a href="{% url 'laboratory:object_reservation' modelpk=object.pk %}" 
+		 	<a data-toggle="modal"
+           data-target="#model_reservation_form"
+           style="margin-right: 10px;" onclick="get_ids({{object.pk}},{{request.user.id}})" 
 		 	class="btn btn-danger"> {% trans "Reserve object" %}</a>
 		 	</div>
 		 </div>
-	 {% endif %}
+
 	 <div class="row">
 	  <div class="col-md-4">
 	  	<h3> {% trans 'Information' %} </h3>
@@ -80,6 +84,10 @@
 {% endblock %}
 {% block js %}
 {{block.super}}
+<script>
+    document.api_modal = '{% url "laboratory:api_reservation"%}';
+</script>
+<script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
 jq162 = jQuery.noConflict( true );
 </script>
