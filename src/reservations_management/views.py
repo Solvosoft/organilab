@@ -139,8 +139,8 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
 
             if remaining_product_quantity >= 0:
                 product_quantity_to_take = product.shelf_object.quantity - \
-                        (remaining_product_quantity + product.amount_required)
-                
+                    (remaining_product_quantity + product.amount_required)
+
                 missing_amount += product_quantity_to_take
 
                 new_product_to_reserve = create_reserved_product(
@@ -150,8 +150,8 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
 
             else:
                 product_quantity_to_take = (
-                        product.shelf_object.quantity - product.amount_required)
-                
+                    product.shelf_object.quantity - product.amount_required)
+
                 missing_amount += product_quantity_to_take
 
                 new_product_to_reserve = create_reserved_product(
@@ -229,49 +229,34 @@ def get_shelf_products_id(list):
 
 
 def get_related_data_sets(requested_product):
-    related_reserved_products_list = []
-    related_different_reserved_products_list = []
-    related_available_shelf_objects = []
     reserved_shelf_products_ids = []
 
-    try:
-        # Retrieves all accepted reserved products that are the same than the requested shelf_object product
-        related_reserved_products_list = ReservedProducts.objects.filter(
-            status=1,
-            shelf_object=requested_product.shelf_object,
-            shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
-        )
+    # Retrieves all accepted reserved products that are the same than the requested shelf_object product
+    related_reserved_products_list = ReservedProducts.objects.filter(
+        status=1,
+        shelf_object=requested_product.shelf_object,
+        shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
+    )
 
-        reserved_shelf_products_ids = get_shelf_products_id(
-            related_reserved_products_list
-        )
+    reserved_shelf_products_ids = get_shelf_products_id(
+        related_reserved_products_list
+    )
 
-    except Exception as identifier:
-        pass
+    # Retrieves all accepted reserved products that are different shelf objects ,but have the same requested product
+    related_different_reserved_products_list = ReservedProducts.objects.filter(
+        status=1,
+        shelf_object__object=requested_product.shelf_object.object,
+        shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
+    ).exclude(shelf_object=requested_product.shelf_object)
 
-    try:
-        # Retrieves all accepted reserved products that are different shelf objects ,but have the same requested product
-        related_different_reserved_products_list = ReservedProducts.objects.filter(
-            status=1,
-            shelf_object__object=requested_product.shelf_object.object,
-            shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
-        ).exclude(shelf_object=requested_product.shelf_object)
+    reserved_shelf_products_ids += get_shelf_products_id(
+        related_different_reserved_products_list
+    )
 
-        reserved_shelf_products_ids += get_shelf_products_id(
-            related_different_reserved_products_list
-        )
-
-    except Exception as identifier:
-        pass
-
-    try:
-        # Retrieves shelf objects of the same laboratory with the same requested product excluding the reserved products and the requested product
-        related_available_shelf_objects = ShelfObject.objects.filter(
-            shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id,
-            object=requested_product.shelf_object.object).exclude(id__in=reserved_shelf_products_ids).exclude(id=requested_product.shelf_object.id)
-
-    except Exception as identifier:
-        pass
+    # Retrieves shelf objects of the same laboratory with the same requested product excluding the reserved products and the requested product
+    related_available_shelf_objects = ShelfObject.objects.filter(
+        shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id,
+        object=requested_product.shelf_object.object).exclude(id__in=reserved_shelf_products_ids).exclude(id=requested_product.shelf_object.id)
 
     return {
         'related_reserved_products_list': related_reserved_products_list,
