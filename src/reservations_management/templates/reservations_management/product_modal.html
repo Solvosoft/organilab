@@ -3,10 +3,6 @@
 {% block content %}
 
 
-<input type="hidden" id='api_url' value=" {% url 'api_reservation_management' 0%}">
-<input type="hidden" name="get_product_name" id="get_product_name" value="{%url 'get_product_name'%}">
-<input type="hidden" name="validate_reservation" id="validate_reservation" value="{%url 'validate_reservation'%}">
-
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -31,7 +27,6 @@
           </div>
 
           <div class="x_content">
-            <input type="hidden" name="selected_product" id="selected_product_id">
             <form method="POST" id="modal_form">
               {% csrf_token %}
               {{product_form.as_p }}
@@ -46,7 +41,7 @@
                         class='fa fa-times'></i>
                       {% trans 'Cancel' %}</a>
 
-                    <a onclick="validate_reservation(document.querySelector('#selected_product_id').value,'put')"
+                    <a onclick="validate_reservation()"
                       class="btn btn-success"><i class='fa fa-check'></i> {% trans 'Accept' %}</a>
 
                   </div>

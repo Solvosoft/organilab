@@ -37,14 +37,37 @@ const get_modal_product_elements = () => {
 }
 
 // VARIABLES 
-const api_url = get_html_element('#api_url', 'js').value;
+const api_reserved_product_CRUD_url = get_html_element('#api_reserved_product_CRUD_url', 'js').value;
+const api_reserved_products_list_url = get_html_element('#api_reserved_products_list_url', 'js').value;
 const modal_form = get_html_element('#modal_form');
 const error_message = document.querySelector('#error_message');
 const cancel_button = document.querySelector('#cancel-button');
 const modal_elements = get_modal_product_elements();
-
+const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
+const reserved_product_status = {
+    0: {
+        status: 'Solicitado',
+        color: 'text-warning '
+    },
+    1: {
+        status: 'Prestado',
+        color: 'text-info'
+    },
+    2: {
+        status: 'Denegado',
+        color: 'text-danger'
+    },
+    3: {
+        status: 'Seleccionado',
+        color: 'text-dark'
+    },
+    4: {
+        status: 'Retornado',
+        color: 'text-success'
+    }
+};
 const methods_urls = {
-    'get_product_name_url': document.querySelector('#get_product_name').value,
+    'get_product_name_and_quantity_url': document.querySelector('#get_product_name_and_quantity').value,
     'validate_reservation_url': document.querySelector('#validate_reservation').value
 }
 
@@ -54,6 +77,7 @@ const store_reserved_product_info = (data) => {
     sessionStorage.setItem('id', data['id']);
     sessionStorage.setItem('reservation', data['reservation']);
     sessionStorage.setItem('shelf_object', data['shelf_object']);
+    sessionStorage.setItem('last_status', data['status']);
 }
 
 const get_stored_reserved_product_info = () => {
@@ -75,23 +99,21 @@ const load_product_information = async (data) => {
     modal_elements.amount_required.value = data.amount_required;
     modal_elements.initial_date.value = new Date(data.initial_date).toString();
     modal_elements.final_date.value = new Date(data.final_date).toString();
-    $.get(methods_urls.get_product_name_url, { 'id': data.id }, function ({ product_name }) {
+    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': data.id }, function ({ product_name }) {
         modal_elements.modal_title.textContent = product_name.toUpperCase();
     });
 }
 
 
-const retrieve_object = (product_id = 0, method = 'get') => {
+const retrieve_object = (product_id = 0) => {
     $.ajax({
-        url: api_url.replace('0', product_id),
+        url: api_reserved_product_CRUD_url.replace('0', product_id),
         type: 'GET',
         // beforeSend: function (xhr) {
         //     xhr.setRequestHeader('Authorization', `Token ${user_token}`);
         // },
         success: function (data) {
-            console.log(data);
             load_product_information(data);
-            document.querySelector('#selected_product_id').value = product_id;
         }
     });
 }
@@ -102,7 +124,7 @@ const update_product_information = (product_id) => {
     data['is_returnable'] = modal_elements.is_returnable_checkbox.checked;
     data['amount_required'] = parseFloat(modal_elements.amount_required.value);
     $.ajax({
-        url: api_url.replace('0', data.id),
+        url: api_reserved_product_CRUD_url.replace('0', data.id),
         type: 'PUT',
         data: data,
         beforeSend: function (xhr) {
@@ -112,37 +134,39 @@ const update_product_information = (product_id) => {
         success: function (data) {
             if (data) {
                 $('#exampleModal').modal('hide');
-                location.reload();
+                load_reserved_products_list();
             }
-
         }
     });
 }
 
-const validate_reservation = (product_id) => {
+const validate_reservation = () => {
     const status_select = modal_form.querySelector('#id_status');
+    const last_status = sessionStorage.getItem('last_status');
+    const product_id = sessionStorage.getItem('id');
 
     //Si quiero aceptar la solicitud
     if (status_select.selectedIndex === 1) {
 
         $.get(methods_urls.validate_reservation_url, { 'id': product_id },
             function ({ is_valid, available_quantity }) {
-                console.log(is_valid, available_quantity)
                 if (is_valid) {
-                    console.log('valido');
                     // Asignar el nuevo amount required
                     modal_elements.amount_required.value = available_quantity;
                     update_product_information(product_id);
                 }
                 else {
-                    $.get(methods_urls.get_product_name_url, { 'id': product_id }, function ({ product_name }) {
+                    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
                         error_message.innerHTML = `No hay suficiente ${product_name} en el inventario`;
                     });
                 }
             });
     }
-    else if (status_select === 4) {
-        console.log(Returned);
+    else if (status_select.selectedIndex === 4) {
+        if (last_status === 1) {
+            console.log('Returned');
+            console.log(last_status);
+        }
 
     }
     else {
@@ -155,9 +179,58 @@ cancel_button.addEventListener('click', () => {
     error_message.innerHTML = '';
 });
 
-// status_select.addEventListener('change', (event) => {
-//     const product_id = document.querySelector('#selected_product_id').value;
-//     // validate_reservation(product_id);
 
-// });
+const load_reserved_products_list = () => {
+    const reservation_id = document.querySelector('#reservation_id').value;
+    reserved_products_table_body.innerHTML = '';
 
+    $.get(api_reserved_products_list_url.replace(0, reservation_id),
+        function (reserved_products) {
+            for (const reserved_product of reserved_products) {
+                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity }) {
+                    fill_reserved_products_table(reserved_product, product_name, product_quantity);
+                });
+            }
+        });
+}
+
+const fill_reserved_products_table = (reserved_product, product_name, product_quantity) => {
+    const is_returnable = (reserved_product.is_returnable) ? 'Si' : 'No';
+    const table_row_template = `<tr>
+    <td id="product_name">
+    <a href='#' data-toggle="modal" data-target="#exampleModal"
+             id='product-${reserved_product.id}'
+             onclick="retrieve_object(${reserved_product.id})">
+             ${product_name}
+         </a>
+    </td>
+
+    <td id="product_quantity">
+    ${product_quantity}
+    </td>
+
+    <td id="amount_required">
+    ${reserved_product.amount_required}
+    </td>
+
+    <td id="initial_date">
+    ${new Date(reserved_product.initial_date).toString()}
+    </td>
+
+    <td id="final_date">
+    ${new Date(reserved_product.initial_date).toString()}
+    </td>
+    <td id="is_returnable">
+        ${is_returnable} 
+    </td>
+    <td id="status">
+        <strong class="${reserved_product_status[reserved_product.status]['color']}">
+            ${reserved_product_status[reserved_product.status]['status']} </strong>
+    </td>
+</tr>`
+
+    reserved_products_table_body.innerHTML += table_row_template;
+
+}
+
+load_reserved_products_list();

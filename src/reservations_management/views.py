@@ -38,27 +38,23 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reservation_form'] = ReservationsForm(
-            instance=Reservations.objects.get(pk=self.kwargs['pk']))
+        context['reservation_form'] = ReservationsForm(instance=Reservations.objects.get(pk=self.kwargs['pk']))
+        context['reservation_id'] = self.kwargs['pk']
         context['product_form'] = ProductForm()
         context['username'] = self.request.user.username
-        context['lab_name'] = Reservations.objects.values(
-            'laboratory__name').get(pk=self.kwargs['pk'])['laboratory__name']
-        context['reservation_products'] = ReservedProducts.objects.filter(
-            reservation_id=self.kwargs['pk'])
+        context['lab_name'] = Reservations.objects.values('laboratory__name').get(pk=self.kwargs['pk'])['laboratory__name']
         return context
-
 
 ############## METHODS TO USE WITH AJAX ##############
 
-def get_product_name(request):
+
+def get_product_name_and_quantity(request):
     product_name = ''
     if request.method == 'GET':
-        product_id = request.GET['id']
-        product_info = ReservedProducts.objects.values(
-            'shelf_object__object__name').get(id=product_id)
-        product_name = product_info['shelf_object__object__name']
-    return JsonResponse({'product_name': product_name})
+        product = ReservedProducts.objects.get(id=request.GET['id'])
+        product_name = product.shelf_object.object.name
+        product_quantity = product.shelf_object.quantity
+    return JsonResponse({'product_name': product_name, 'product_quantity':product_quantity})
 
 
 def verify_reserved_products_overlap(requested_product, data_set):
@@ -130,9 +126,11 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
             except Exception as identifier:
                 pass
 
+            # Quantity of product that has been already reserved
             reserved_product_quantity = verify_reserved_products_overlap(
-                requested_product, data_set)  # Antes estaba product
+                requested_product, data_set)
 
+            # Indicates how much quantity of product can be reserved
             remaining_product_quantity = missing_amount + \
                 (product.shelf_object.quantity -
                  (reserved_product_quantity+product.amount_required))
@@ -198,7 +196,6 @@ def verify_available_shelf_objects_stock(requested_product, product_missing_amou
                 products_to_request.append(new_product_to_reserve)
 
             else:
-                # Cuidado con este +
                 available_product_quantity_to_take = available_product.quantity
                 missing_amount += available_product_quantity_to_take
                 new_product_to_reserve = create_reserved_product(
@@ -267,8 +264,9 @@ def get_related_data_sets(requested_product):
 
 def validate_reservation(request):
     is_valid = True
+    # New posible product to add in the reservation
     products_to_request = []
-    # CANTIDAD QUE DEBO ENVIAR PARA RESERVAR DEL PRODUCTO
+    # Available quantity that is used to reserved the current product
     available_quantity_for_current_requested_product = 0
 
     if request.method == 'GET':
@@ -279,15 +277,19 @@ def validate_reservation(request):
         requested_amount_required = requested_product.amount_required
         requested_product_quantity = requested_product.shelf_object.quantity
 
+        # Data sets related with the requested product
         data_sets = get_related_data_sets(requested_product)
 
+        # Quantity of product that has been already reserved
         reserved_product_quantity = verify_reserved_products_overlap(
             requested_product,
             data_sets['related_reserved_products_list']
         )
 
-        # Si hay producto reservado o no me alcanza con lo que hay -> hay que verificar si el stock de otros productos reservados en relacion a lo que quiero es suficiente
+        # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
         if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
+
+            # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
             product_missing_amount = \
                 requested_product_quantity - \
                 (reserved_product_quantity + requested_amount_required)
@@ -304,7 +306,8 @@ def validate_reservation(request):
             # Stores the new possible products to request
             products_to_request += new_products_to_request
 
-            # Si no me alcanzó con los productos reservados -> verifico si en los productos disponibles que no estan reservados puedo agarrar algo
+            #verifico si en los productos disponibles que no estan reservados puedo agarrar algo
+            # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
             if (product_missing_amount < 0):
                 product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
                     requested_product,
@@ -316,7 +319,7 @@ def validate_reservation(request):
 
             if product_missing_amount == 0 and is_valid:
                 for new_requested_product in products_to_request:
-                    print(new_requested_product)
+                    new_requested_product.save()
 
             else:
                 products_to_request.clear()
