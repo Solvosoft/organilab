@@ -8,11 +8,6 @@ from laboratory.api.serializers import ReservationSerializer
 
 
 class ApiReservationCRUD(APIView):
-    def get_object(self, pk):
-        try:
-            return ReservedProducts.objects.get(pk=pk)
-        except ReservedProducts.DoesNotExist:
-            raise Http404
 
     def post(self, request):
         serializer = ReservationSerializer(data=request.data)

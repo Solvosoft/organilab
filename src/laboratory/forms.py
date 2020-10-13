@@ -78,7 +78,7 @@ class ReservationModalForm(GTForm, ModelForm):
 
     class Meta:
         model = ReservedProducts
-        fields = ['initial_date', 'final_date', 'amount_required']
+        fields = ['amount_required','initial_date', 'final_date']
         widgets = {
             'initial_date': genwidgets.DateTimeInput(),
             'final_date': genwidgets.DateTimeInput(),
