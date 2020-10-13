@@ -10,7 +10,7 @@
 
 
 <div class="management_id" hidden>
-    <input type="hidden" id="reservation_id" value="{{reservation_id}}">
+    <input type="hidden" id="reservation_id" value="{{object.id}}">
     <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
     <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
     
@@ -23,14 +23,14 @@
     <div class="x_title">
         <ul class="nav navbar-left panel_toolbox">
             <li>
-                <a href="{% url 'reservations_list'%}" title="{% trans 'Back to the reservations list'%}">
+                <a href="{% url 'reservations_list' object.status%}" title="{% trans 'Back to the reservations list'%}">
                     <i class="fa fa-angle-double-left red"></i>
                 </a>
             </li>
         </ul>
 
-        <h2>{% trans 'Reservation from' %} <strong>{{username}}</strong> {% trans 'for laboratory' %} <strong>
-                {{lab_name}}</strong></h2>
+        <h2>{% trans 'Reservation from' %} <strong>{{object.user.username}}</strong> {% trans 'for laboratory' %} <strong>
+                {{object.laboratory.name}}</strong></h2>
 
         <ul class="nav navbar-right panel_toolbox">
 
@@ -47,7 +47,7 @@
                 <div class="form-group">
                     <div class="controls text-right">
 
-                        <a href="{% url 'reservations_list'%}" class="btn btn-danger"><i class='fa fa-times'></i>
+                        <a href="{% url 'reservations_list' object.status%}" class="btn btn-danger"><i class='fa fa-times'></i>
                             Volver</a>
 
                         <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
