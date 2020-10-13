@@ -43,6 +43,8 @@ const modal_form = get_html_element('#modal_form');
 const error_message = document.querySelector('#error_message');
 const cancel_button = document.querySelector('#cancel-button');
 const modal_elements = get_modal_product_elements();
+const status_select = modal_elements.status_select;
+
 const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
 const reserved_product_status = {
     0: {
@@ -141,7 +143,6 @@ const update_product_information = (product_id) => {
 }
 
 const validate_reservation = () => {
-    const status_select = modal_form.querySelector('#id_status');
     const last_status = sessionStorage.getItem('last_status');
     const product_id = sessionStorage.getItem('id');
 
@@ -175,11 +176,6 @@ const validate_reservation = () => {
     }
 
 }
-
-cancel_button.addEventListener('click', () => {
-    error_message.innerHTML = '';
-});
-
 
 const load_reserved_products_list = () => {
     const reservation_id = document.querySelector('#reservation_id').value;
@@ -233,5 +229,17 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     reserved_products_table_body.innerHTML += table_row_template;
 
 }
+
+
+
+cancel_button.addEventListener('click', () => {
+    error_message.innerHTML = '';
+});
+
+status_select.addEventListener('change', (event) => {
+    if (status_select.selectedIndex === 4) {
+        console.log('Cantidad a devolver');
+    }
+});
 
 load_reserved_products_list();
