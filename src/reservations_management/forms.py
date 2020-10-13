@@ -20,9 +20,11 @@ class ProductForm(GTForm, ModelForm):
     class Meta:
         model = ReservedProducts
         fields = ['is_returnable', 'status',
-                  'amount_required', 'initial_date', 'final_date']
+                  'amount_required','amount_returned', 'initial_date', 'final_date']
+
         widgets = {
             'amount_required': genwidgets.TextInput(attrs={'readonly': 'True'}),
+            'amount_returned': genwidgets.TextInput(),
             'is_returnable': genwidgets.CheckboxInput(),
             'status': genwidgets.Select(),
             'initial_date': genwidgets.TextInput(attrs={'readonly': 'True'}),
