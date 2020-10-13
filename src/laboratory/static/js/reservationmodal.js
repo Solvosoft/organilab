@@ -4,7 +4,8 @@ var user_id
 /* Function called when the reservation button is clicked. 
 It gets the shelfObject.pk and user id and saves it as a js variables.
 */
-function get_ids(shelf_obj_pk, user_pk) {
+function initialize_modal(shelf_obj_pk, user_pk) {
+    $('#alert_message').css('display', 'none');
     shelf_object_id = shelf_obj_pk;
     user_id = user_pk;
 }
@@ -32,36 +33,33 @@ function get_form_data(form) {
 }
 
 
-
-function callbackFunc(response){
-        not_repeated = response
-        console.log(not_repeated)
-}
-
 /* Function called when the modal Save changes button is clicked.
 It sends the data of the form to the database via API.
 */
 function add_reservation() {
-    var not_repeated
     form_modal = $('#modal_reservation_form');
     data = get_form_data(form_modal);
-    console.log(data.shelf_object)
-    console.log(data.initial_date)
-    console.log(data.user)
     input = {
         "obj": data.shelf_object,
         "initial_date": data.initial_date,
-        "user": data.user
+        "user": data.user,
+        "status": 3
     }
     $.get("validators", input,
-        function ({ is_valid }) {
-            console.log(is_valid)
+        function({ is_valid }) {
+            if (is_valid) {
+                $.ajax({
+                    url: document.api_modal,
+                    type: 'POST',
+                    data: data,
+                    success: function(data) {}
+                });
+                $("#modal_reservation").modal('hide');
+            } else {
+                if ($('#alert_message').css('display') != 'block')
+                {
+                    $('#alert_message').css('display', 'block');
+                }
+            }
         });
-
-//    $.ajax({
-//        url: document.api_modal,
-//        type: 'POST',
-//        data: data,
-//        success: function(data) {}
-//    });
 }
