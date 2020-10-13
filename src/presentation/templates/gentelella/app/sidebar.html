@@ -59,15 +59,45 @@
                     </ul>
                 </li>
 
-                  
                 {% if perms.laboratory.add_objectfeatures %}
-                <li>
-                    <a class="nav-link" href="{% url 'reservations_list' %}"
-                       title="{% trans 'Reservations Management' %}">
-                        <i class="fa fa-hourglass-3 fa-fw"></i> {% trans 'Reservations Management' %}
-                    </a>
-                </li>
+                    <li>
+                        <a>
+                            <i class="fa fa-shopping-basket"></i> 
+                                {% trans 'Manage Reservations' %}       
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a class="nav-link" href="{% url 'reservations_list' 0 %}"
+                        title="{% trans 'Requested reservations' %}">
+                            <i class="fa fa-child"></i> 
+                            {% trans 'Requested Reservations' %}
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="nav-link" href="{% url 'reservations_list' 1 %}"
+                                title="{% trans 'Accepted Reservations' %}">
+                                <i class="fa fa-thumbs-up"></i> {% trans 'Accepted Reservations' %}
+                            </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="{% url 'reservations_list' 2%}"
+                                title="{% trans 'Denied Reservations' %}">
+                                <i class="fa fa-times"></i> {% trans 'Denied Reservations' %}
+                            </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="{% url 'reservations_list' 3%}"
+                                title="{% trans 'Closed Reservations' %}">
+                                <i class="fa fa-check"></i> {% trans 'Closed Reservations' %}
+                            </a>
+                            </li>
+                        </ul>
+                    </li>
                 {% endif %}
+                  
+                
 
                 {% if userperms.view_organizationstructure %}
                     <li>
