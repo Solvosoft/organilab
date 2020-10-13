@@ -20,6 +20,7 @@ from laboratory.views.furniture import FurnitureCreateForm
 
 from laboratory.forms import ReservationModalForm
 
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
 class LaboratoryRoomsList(ListView):
@@ -34,6 +35,7 @@ class LaboratoryRoomsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['modal_form_reservation'] = ReservationModalForm()
+        context['user'] = self.request.user
         return context
 
 
