@@ -38,3 +38,12 @@ class ApiReservedProductsCRUD(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ApiListReservationReservedProduct(APIView):
+    
+    def get(self, request, pk, format=None):
+        reserved_products = ReservedProducts.objects.filter(reservation_id=pk)
+        serializer = ReservedProductSerializer(reserved_products,many= True)
+        return Response(serializer.data)
+ 
