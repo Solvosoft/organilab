@@ -188,14 +188,14 @@ const load_reserved_products_list = () => {
     $.get(api_reserved_products_list_url.replace(0, reservation_id),
         function (reserved_products) {
             for (const reserved_product of reserved_products) {
-                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity }) {
-                    fill_reserved_products_table(reserved_product, product_name, product_quantity);
+                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity , product_unit}) {
+                    fill_reserved_products_table(reserved_product, product_name, product_quantity , product_unit);
                 });
             }
         });
 }
 
-const fill_reserved_products_table = (reserved_product, product_name, product_quantity) => {
+const fill_reserved_products_table = (reserved_product, product_name, product_quantity, product_unit) => {
     const is_returnable = (reserved_product.is_returnable) ? 'Si' : 'No';
     const table_row_template = `<tr>
     <td id="product_name">
@@ -207,11 +207,11 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     </td>
 
     <td id="product_quantity">
-    ${product_quantity}
+    ${product_quantity} ${product_unit.toLowerCase()}
     </td>
 
     <td id="amount_required">
-    ${reserved_product.amount_required}
+    ${reserved_product.amount_required} ${product_unit.toLowerCase()}
     </td>
 
     <td id="initial_date">
