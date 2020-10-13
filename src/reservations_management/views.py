@@ -34,7 +34,11 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
     template_name = 'reservations_management/manage_reservation.html'
     form_class = ReservationsForm
     model = Reservations
-    success_url = '/reservations/list'
+    
+    def get_success_url(self,**kwargs):
+        new_status = self.object.status
+        success_url = f'reservations/list/{new_status}'
+        return success_url
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,8 +55,8 @@ def get_product_name_and_quantity(request):
         product = ReservedProducts.objects.get(id=request.GET['id'])
         product_name = product.shelf_object.object.name
         product_quantity = product.shelf_object.quantity
-    return JsonResponse({'product_name': product_name, 'product_quantity':product_quantity})
-
+        product_unit = product.shelf_object.measurement_unit.description
+    return JsonResponse({'product_name': product_name, 'product_quantity':product_quantity , 'product_unit':product_unit  })
 
 def verify_reserved_products_overlap(requested_product, data_set):
     Range = namedtuple('Range', ['start', 'end'])
@@ -85,11 +89,12 @@ def verify_reserved_products_overlap(requested_product, data_set):
         if overlap > 0:
             reserved_product_quantity += reserved_product.amount_required
 
-        return reserved_product_quantity
+    return reserved_product_quantity
 
 
 def create_reserved_product(requested_product, amount_required, new_shelf_object):
     return ReservedProducts(
+        user=requested_product.user,
         shelf_object=new_shelf_object,
         reservation=requested_product.reservation,
         is_returnable=requested_product.is_returnable,
@@ -230,7 +235,7 @@ def get_related_data_sets(requested_product):
         status=1,
         shelf_object=requested_product.shelf_object,
         shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
-    )
+    ).exclude(pk=requested_product.id)
 
     reserved_shelf_products_ids = get_shelf_products_id(
         related_reserved_products_list
@@ -267,12 +272,12 @@ def validate_reservation(request):
     available_quantity_for_current_requested_product = 0
 
     if request.method == 'GET':
-
         requested_product = ReservedProducts.objects.get(pk=request.GET['id'])
         requested_initial_date = requested_product.initial_date
         requested_final_date = requested_product.final_date
         requested_amount_required = requested_product.amount_required
         requested_product_quantity = requested_product.shelf_object.quantity
+        available_quantity_for_current_requested_product = requested_amount_required 
 
         # Data sets related with the requested product
         data_sets = get_related_data_sets(requested_product)
@@ -291,7 +296,7 @@ def validate_reservation(request):
                 requested_product_quantity - \
                 (reserved_product_quantity + requested_amount_required)
 
-            available_quantity = (requested_product_quantity - reserved_product_quantity) if (
+            available_quantity_for_current_requested_product = (requested_product_quantity - reserved_product_quantity) if (
                 reserved_product_quantity > 0) else requested_product_quantity
 
             product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
@@ -323,5 +328,5 @@ def validate_reservation(request):
 
     return JsonResponse({
         'is_valid': is_valid,
-        'available_quantity': available_quantity
+        'available_quantity': available_quantity_for_current_requested_product
     })

@@ -21,6 +21,8 @@ const get_modal_product_elements = () => {
     const status_select = modal_form.querySelector('#id_status');
     const is_returnable_checkbox = modal_form.querySelector('#id_is_returnable');
     const amount_required = modal_form.querySelector('#id_amount_required');
+    const amount_returned = modal_form.querySelector('#id_amount_returned');
+    amount_returned.readOnly = true;
     const initial_date = modal_form.querySelector('#id_initial_date');
     const final_date = modal_form.querySelector('#id_final_date');
     const csrf_token = modal_form.querySelector('input[type=hidden]').value;
@@ -30,6 +32,7 @@ const get_modal_product_elements = () => {
         'status_select': status_select,
         'is_returnable_checkbox': is_returnable_checkbox,
         'amount_required': amount_required,
+        'amount_returned': amount_returned,
         'initial_date': initial_date,
         'final_date': final_date,
         'csrf_token': csrf_token
@@ -40,9 +43,13 @@ const get_modal_product_elements = () => {
 const api_reserved_product_CRUD_url = get_html_element('#api_reserved_product_CRUD_url', 'js').value;
 const api_reserved_products_list_url = get_html_element('#api_reserved_products_list_url', 'js').value;
 const modal_form = get_html_element('#modal_form');
+const modal_elements = get_modal_product_elements();
 const error_message = document.querySelector('#error_message');
 const cancel_button = document.querySelector('#cancel-button');
-const modal_elements = get_modal_product_elements();
+const status_select = modal_elements.status_select;
+const amount_returned = modal_elements.amount_returned;
+
+
 const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
 const reserved_product_status = {
     0: {
@@ -97,6 +104,7 @@ const load_product_information = async (data) => {
     modal_elements.is_returnable_checkbox.checked = data.is_returnable;
     modal_elements.status_select.selectedIndex = data.status
     modal_elements.amount_required.value = data.amount_required;
+    modal_elements.amount_returned.value = data.amount_returned;
     modal_elements.initial_date.value = new Date(data.initial_date).toString();
     modal_elements.final_date.value = new Date(data.final_date).toString();
     $.get(methods_urls.get_product_name_and_quantity_url, { 'id': data.id }, function ({ product_name }) {
@@ -123,6 +131,7 @@ const update_product_information = (product_id) => {
     data['status'] = modal_elements.status_select.selectedIndex;
     data['is_returnable'] = modal_elements.is_returnable_checkbox.checked;
     data['amount_required'] = parseFloat(modal_elements.amount_required.value);
+    data['amount_returned'] = parseFloat(modal_elements.amount_returned.value);
     $.ajax({
         url: api_reserved_product_CRUD_url.replace('0', data.id),
         type: 'PUT',
@@ -141,13 +150,11 @@ const update_product_information = (product_id) => {
 }
 
 const validate_reservation = () => {
-    const status_select = modal_form.querySelector('#id_status');
-    const last_status = sessionStorage.getItem('last_status');
+    const last_status = parseInt(sessionStorage.getItem('last_status'));
     const product_id = sessionStorage.getItem('id');
 
     //Si quiero aceptar la solicitud
     if (status_select.selectedIndex === 1) {
-
         $.get(methods_urls.validate_reservation_url, { 'id': product_id },
             function ({ is_valid, available_quantity }) {
                 if (is_valid) {
@@ -162,23 +169,60 @@ const validate_reservation = () => {
                 }
             });
     }
-    else if (status_select.selectedIndex === 4) {
-        if (last_status === 1) {
-            console.log('Returned');
-            console.log(last_status);
-        }
-        console.log('Test');
-
-    }
     else {
-        update_product_information(product_id);
+        const response = get_action_message(status_select.selectedIndex, last_status);
+        error_message.innerHTML = response.error_message;
+
+        if (response.can_update) {
+            if (response.compute_return_stock) {
+                console.log('Returned');
+                console.log(last_status);
+            }
+            update_product_information(product_id);
+            console.log('áaa', response.compute_return_stock);
+        }
     }
 
 }
 
-cancel_button.addEventListener('click', () => {
-    error_message.innerHTML = '';
-});
+const get_action_message = (selectd_status, last_status) => {
+    let error_message = ''
+    let compute_return_stock = false;
+    let can_update = true;
+    if (selectd_status === 4) {
+        if (last_status === 1) {
+            error_message = '';
+            compute_return_stock = true
+        }
+        else {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que no ha sido previamente prestado.`;
+            can_update = false;
+        }
+    }
+    else if (selectd_status === 0) {
+        if (last_status !== selectd_status) {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
+            can_update = false;
+        }
+    }
+    else if (selectd_status === 2) {
+        if (last_status !== selectd_status && last_status !== 0) {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
+            can_update = false;
+        }
+    }
+    else if (selectd_status === 3) {
+        error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto en esta etapa de aprobación.`;
+        can_update = false;
+    }
+
+
+    return {
+        'error_message': error_message,
+        'compute_return_stock': compute_return_stock,
+        'can_update': can_update
+    }
+}
 
 
 const load_reserved_products_list = () => {
@@ -188,14 +232,14 @@ const load_reserved_products_list = () => {
     $.get(api_reserved_products_list_url.replace(0, reservation_id),
         function (reserved_products) {
             for (const reserved_product of reserved_products) {
-                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity }) {
-                    fill_reserved_products_table(reserved_product, product_name, product_quantity);
+                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity, product_unit }) {
+                    fill_reserved_products_table(reserved_product, product_name, product_quantity, product_unit);
                 });
             }
         });
 }
 
-const fill_reserved_products_table = (reserved_product, product_name, product_quantity) => {
+const fill_reserved_products_table = (reserved_product, product_name, product_quantity, product_unit) => {
     const is_returnable = (reserved_product.is_returnable) ? 'Si' : 'No';
     const table_row_template = `<tr>
     <td id="product_name">
@@ -207,11 +251,15 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     </td>
 
     <td id="product_quantity">
-    ${product_quantity}
+    ${product_quantity} ${product_unit.toLowerCase()}
     </td>
 
     <td id="amount_required">
-    ${reserved_product.amount_required}
+    ${reserved_product.amount_required} ${product_unit.toLowerCase()}
+    </td>
+
+    <td id="amount_required">
+    ${reserved_product.amount_returned} ${product_unit.toLowerCase()}
     </td>
 
     <td id="initial_date">
@@ -219,7 +267,7 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     </td>
 
     <td id="final_date">
-    ${new Date(reserved_product.initial_date).toString()}
+    ${new Date(reserved_product.final_date).toString()}
     </td>
     <td id="is_returnable">
         ${is_returnable} 
@@ -229,9 +277,24 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
             ${reserved_product_status[reserved_product.status]['status']} </strong>
     </td>
 </tr>`
-
     reserved_products_table_body.innerHTML += table_row_template;
-
 }
+
+
+
+cancel_button.addEventListener('click', () => {
+    error_message.innerHTML = '';
+});
+
+status_select.addEventListener('change', (event) => {
+    const last_status = parseInt(sessionStorage.getItem('last_status'));
+    console.log(last_status);
+    if (status_select.selectedIndex === 4 && last_status === 1) {
+        amount_returned.readOnly = false;
+    }
+    else {
+        amount_returned.readOnly = true;
+    }
+});
 
 load_reserved_products_list();

@@ -63,6 +63,7 @@ class ReservedProducts(models.Model):
     reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True)
     is_returnable = models.BooleanField(default=True)
     amount_required = models.FloatField()
+    amount_returned = models.FloatField(default=0)
     initial_date = models.DateTimeField()
     final_date = models.DateTimeField()
     status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED)
