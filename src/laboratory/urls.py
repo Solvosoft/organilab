@@ -19,6 +19,7 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
 from laboratory.api.views import ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
+from laboratory.validators import validate_duplicate_initial_date
 objviews = ObjectView()
 
 urlpatterns = [
@@ -31,7 +32,8 @@ urlpatterns = [
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
     url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
-    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation")
+    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
+    url(r"validators", validate_duplicate_initial_date, name="date_validator"),
 ]
 
 lab_shelf_urls = [
