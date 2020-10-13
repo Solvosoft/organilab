@@ -19,7 +19,7 @@
     {% for obj in object_list%}
         <tr>
             <td>{{obj.shelf_object}}</td>
-            <td>{{obj.amount_required}}</td>
+            <td>{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
             <td>{{obj.initial_date}}</td>
             <td>{{obj.final_date}}</td>
             <td>{{obj.get_status_display}}</td>

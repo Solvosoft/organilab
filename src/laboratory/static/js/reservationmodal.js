@@ -31,18 +31,37 @@ function get_form_data(form) {
     return formAttributes;
 }
 
+
+
+function callbackFunc(response){
+        not_repeated = response
+        console.log(not_repeated)
+}
+
 /* Function called when the modal Save changes button is clicked.
 It sends the data of the form to the database via API.
 */
 function add_reservation() {
+    var not_repeated
     form_modal = $('#modal_reservation_form');
     data = get_form_data(form_modal);
-    $.ajax({
-        url: document.api_modal,
-        type: 'POST',
-        data: data,
-        success: function(data) {
+    console.log(data.shelf_object)
+    console.log(data.initial_date)
+    console.log(data.user)
+    input = {
+        "obj": data.shelf_object,
+        "initial_date": data.initial_date,
+        "user": data.user
+    }
+    $.get("validators", input,
+        function ({ is_valid }) {
+            console.log(is_valid)
+        });
 
-        }
-    });
+//    $.ajax({
+//        url: document.api_modal,
+//        type: 'POST',
+//        data: data,
+//        success: function(data) {}
+//    });
 }
