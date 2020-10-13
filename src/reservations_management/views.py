@@ -51,8 +51,8 @@ def get_product_name_and_quantity(request):
         product = ReservedProducts.objects.get(id=request.GET['id'])
         product_name = product.shelf_object.object.name
         product_quantity = product.shelf_object.quantity
-    return JsonResponse({'product_name': product_name, 'product_quantity':product_quantity})
-
+        product_unit = product.shelf_object.measurement_unit.description
+    return JsonResponse({'product_name': product_name, 'product_quantity':product_quantity , 'product_unit':product_unit  })
 
 def verify_reserved_products_overlap(requested_product, data_set):
     Range = namedtuple('Range', ['start', 'end'])
