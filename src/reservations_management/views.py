@@ -89,7 +89,7 @@ def verify_reserved_products_overlap(requested_product, data_set):
         if overlap > 0:
             reserved_product_quantity += reserved_product.amount_required
 
-        return reserved_product_quantity
+    return reserved_product_quantity
 
 
 def create_reserved_product(requested_product, amount_required, new_shelf_object):
