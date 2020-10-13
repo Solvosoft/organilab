@@ -24,7 +24,7 @@ class ReservationsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reservations'] = Reservations.objects.filter(
-            laboratory__profile__user_id=self.request.user.id
+            laboratory__profile__user_id=self.request.user.id,status=self.kwargs['status']
         )
         return context
 
@@ -39,10 +39,7 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reservation_form'] = ReservationsForm(instance=Reservations.objects.get(pk=self.kwargs['pk']))
-        context['reservation_id'] = self.kwargs['pk']
         context['product_form'] = ProductForm()
-        context['username'] = self.request.user.username
-        context['lab_name'] = Reservations.objects.values('laboratory__name').get(pk=self.kwargs['pk'])['laboratory__name']
         return context
 
 ############## METHODS TO USE WITH AJAX ##############

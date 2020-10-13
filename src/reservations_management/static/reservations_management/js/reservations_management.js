@@ -167,6 +167,7 @@ const validate_reservation = () => {
             console.log('Returned');
             console.log(last_status);
         }
+        console.log('Test');
 
     }
     else {
