@@ -2,9 +2,16 @@ from datetime import datetime
 from collections import namedtuple
 from django.http import JsonResponse
 
-from .models import Reservations, ReservedProducts
 from laboratory.models import ShelfObject
+from .models import Reservations, ReservedProducts, ReservationTasks
+from .tasks import decrease_stock
 
+import os
+import importlib
+from django.conf import settings
+
+
+# app = importlib.import_module(settings.CELERY_MODULE).app
 
 ############## METHODS TO USE WITH AJAX ##############
 
@@ -126,7 +133,7 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
                     product_quantity_to_take = abs(missing_amount)
                     # product_quantity_to_take = product.shelf_object.quantity - \
                     #     (remaining_product_quantity + missing_amount)
-                    ## (remaining_product_quantity + product.amount_required)
+                    # (remaining_product_quantity + product.amount_required)
 
                     missing_amount += product_quantity_to_take
 
@@ -335,9 +342,30 @@ def validate_reservation(request):
 
 
 def increase_stock(request):
+    # Validate if is possible to compute the sum
+    was_increase = False
     if request.method == 'GET':
         product = ReservedProducts.objects.get(id=request.GET['id'])
-        shelf_object = ShelfObject.objects.get(id=product.shelf_object.id)
-        shelf_object.quantity += float(request.GET['amount_to_return'])
-        shelf_object.save()
-    return JsonResponse({'was_increase': True})
+        amount_to_return = float(request.GET['amount_to_return'])
+
+        if (product.amount_required >= product.amount_returned + amount_to_return) and amount_to_return > 0 :
+            product.shelf_object.quantity += amount_to_return
+            was_increase = True
+            product.shelf_object.save()
+
+    return JsonResponse({'was_increase': was_increase})
+
+
+# def add_decrease_stock_task(reserved_product):
+
+#     task = decrease_stock.apply_async(
+#         args=(reserved_product, ),
+#         eta=reserved_product.initial_date
+#     )
+
+#     new_reserved_product_task = ReservationTasks(
+#         reserved_product=reserved_product,
+#         celery_task=task.id
+#     )
+
+#     new_reserved_product_task.save()
