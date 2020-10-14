@@ -36,10 +36,10 @@ class ApiReservedProductsCRUD(APIView):
             reserved_product, data=request.data
         )
         if serializer.is_valid():
+            serializer.save()
             if(serializer.initial_data['status'] == '1'):
                 add_decrease_stock_task(reserved_product)
                 
-            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
