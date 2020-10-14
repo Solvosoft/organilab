@@ -48,6 +48,7 @@ const error_message = document.querySelector('#error_message');
 const cancel_button = document.querySelector('#cancel-button');
 const status_select = modal_elements.status_select;
 const amount_returned = modal_elements.amount_returned;
+const is_returnable_checkbox = modal_elements.is_returnable_checkbox;
 
 
 const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
@@ -112,7 +113,6 @@ const load_product_information = async (data) => {
     });
 }
 
-
 const retrieve_object = (product_id = 0) => {
     $.ajax({
         url: api_reserved_product_CRUD_url.replace('0', product_id),
@@ -126,12 +126,36 @@ const retrieve_object = (product_id = 0) => {
     });
 }
 
-const update_product_information = (product_id) => {
+const increase_stock = (product_id, amount_to_return) => {
+    // $.get(
+    //     methods_urls.get_product_name_and_quantity_url,
+    //     {
+    //         'id': product_id,
+    //         'amount_to_return': amount_to_return
+    //     },
+    //     function ({ was_increase }) {
+    //         console.log('Was increased : ', was_increase)
+    //     });
+}
+
+
+const update_product_information = () => {
     data = get_stored_reserved_product_info();
     data['status'] = modal_elements.status_select.selectedIndex;
     data['is_returnable'] = modal_elements.is_returnable_checkbox.checked;
     data['amount_required'] = parseFloat(modal_elements.amount_required.value);
     data['amount_returned'] = parseFloat(modal_elements.amount_returned.value);
+
+    if ((!modal_elements.is_returnable_checkbox.checked && data['status'] === 1)
+        || (modal_elements.is_returnable_checkbox.checked && data['status'] === 4)) {
+            
+        const amount_to_return = (modal_elements.is_returnable_checkbox.checked) ? data['amount_returned'] : data['amount_required'];
+
+        console.log('Lo que se devuelve : ',amount_to_return);
+
+        increase_stock(data['id'], amount_to_return);
+    }
+
     $.ajax({
         url: api_reserved_product_CRUD_url.replace('0', data.id),
         type: 'PUT',
@@ -149,6 +173,7 @@ const update_product_information = (product_id) => {
     });
 }
 
+
 const validate_reservation = () => {
     const last_status = parseInt(sessionStorage.getItem('last_status'));
     const product_id = sessionStorage.getItem('id');
@@ -160,7 +185,7 @@ const validate_reservation = () => {
                 if (is_valid) {
                     // Asignar el nuevo amount required
                     modal_elements.amount_required.value = available_quantity;
-                    update_product_information(product_id);
+                    update_product_information();
                 }
                 else {
                     $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
@@ -172,14 +197,8 @@ const validate_reservation = () => {
     else {
         const response = get_action_message(status_select.selectedIndex, last_status);
         error_message.innerHTML = response.error_message;
-
         if (response.can_update) {
-            if (response.compute_return_stock) {
-                console.log('Returned');
-                console.log(last_status);
-            }
-            update_product_information(product_id);
-            console.log('áaa', response.compute_return_stock);
+            update_product_information();
         }
     }
 
@@ -187,14 +206,10 @@ const validate_reservation = () => {
 
 const get_action_message = (selectd_status, last_status) => {
     let error_message = ''
-    let compute_return_stock = false;
     let can_update = true;
+
     if (selectd_status === 4) {
-        if (last_status === 1) {
-            error_message = '';
-            compute_return_stock = true
-        }
-        else {
+        if (last_status !== 1) {
             error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que no ha sido previamente prestado.`;
             can_update = false;
         }
@@ -216,10 +231,8 @@ const get_action_message = (selectd_status, last_status) => {
         can_update = false;
     }
 
-
     return {
         'error_message': error_message,
-        'compute_return_stock': compute_return_stock,
         'can_update': can_update
     }
 }
@@ -281,14 +294,13 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
 }
 
 
-
+// ############################# EVENTS ##########################################
 cancel_button.addEventListener('click', () => {
     error_message.innerHTML = '';
 });
 
 status_select.addEventListener('change', (event) => {
     const last_status = parseInt(sessionStorage.getItem('last_status'));
-    console.log(last_status);
     if (status_select.selectedIndex === 4 && last_status === 1) {
         amount_returned.readOnly = false;
     }
@@ -296,5 +308,8 @@ status_select.addEventListener('change', (event) => {
         amount_returned.readOnly = true;
     }
 });
+
+
+
 
 load_reserved_products_list();
