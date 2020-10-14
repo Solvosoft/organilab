@@ -23,8 +23,8 @@ class ProductForm(GTForm, ModelForm):
                   'amount_required','amount_returned', 'initial_date', 'final_date']
 
         widgets = {
-            'amount_required': genwidgets.TextInput(attrs={'readonly': 'True'}),
-            'amount_returned': genwidgets.TextInput(),
+            'amount_required': genwidgets.NumberInput(attrs={'readonly': 'True'}),
+            'amount_returned': genwidgets.NumberInput(),
             'is_returnable': genwidgets.CheckboxInput(),
             'status': genwidgets.Select(),
             'initial_date': genwidgets.TextInput(attrs={'readonly': 'True'}),
