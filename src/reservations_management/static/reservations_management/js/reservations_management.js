@@ -49,9 +49,8 @@ const cancel_button = document.querySelector('#cancel-button');
 const status_select = modal_elements.status_select;
 const amount_returned = modal_elements.amount_returned;
 const is_returnable_checkbox = modal_elements.is_returnable_checkbox;
-
-
 const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
+
 const reserved_product_status = {
     0: {
         status: 'Solicitado',
@@ -74,10 +73,18 @@ const reserved_product_status = {
         color: 'text-success'
     }
 };
+
 const methods_urls = {
     'get_product_name_and_quantity_url': document.querySelector('#get_product_name_and_quantity').value,
     'validate_reservation_url': document.querySelector('#validate_reservation').value,
     'increase_stock': document.querySelector('#increase_stock').value
+}
+
+if (status_select.selectedIndex === 4) {
+    amount_returned.readOnly = false;
+}
+else {
+    amount_returned.readOnly = true;
 }
 
 const store_reserved_product_info = (data) => {
@@ -140,23 +147,22 @@ const increase_stock = (product_id, amount_to_return) => {
 }
 
 const can_increase_and_update = (data) => {
-    can_increase = true;
+    can_increase = false;
     can_update = true;
     let amount_to_return = 0;
 
     if ((!modal_elements.is_returnable_checkbox.checked && data['status'] === 1)
         || (modal_elements.is_returnable_checkbox.checked && data['status'] === 4)) {
 
+        can_increase = true;
         amount_to_return = (modal_elements.is_returnable_checkbox.checked) ? data['amount_returned'] : data['amount_required'];
 
         if (amount_to_return > data['amount_required']) {
             can_update = false
             can_increase = false;
         }
-        else {
-            if (amount_to_return <= 0) {
-                can_increase = false;
-            }
+        else if (amount_to_return <= 0) {
+            can_increase = false;
         }
     }
 
@@ -165,116 +171,53 @@ const can_increase_and_update = (data) => {
         'can_update': can_update,
         'amount_to_return': amount_to_return
     }
-
 }
 
 const update_product_information = () => {
-    let can_update = true;
-    let amount_to_return = 0;
-    const error = 'La cantidad a retornar no puede ser mayor a la que se pidió';
+    const error = 'No se puede retornar la cantidad indicada';
     const data = get_stored_reserved_product_info();
     data['status'] = modal_elements.status_select.selectedIndex;
     data['is_returnable'] = modal_elements.is_returnable_checkbox.checked;
     data['amount_required'] = parseFloat(modal_elements.amount_required.value);
     data['amount_returned'] = parseFloat(modal_elements.amount_returned.value);
 
-    results = can_increase_and_update(data);
-    can_update = results.can_update;
-    can_increase = results.can_increase;
-    amount_to_return = results.amount_to_return;
+    const results = can_increase_and_update(data);
+    const can_update = results.can_update;
+    const can_increase = results.can_increase;
+    const amount_to_return = results.amount_to_return;
 
-    if (can_increase) {
-        if (amount_to_return > 0) {
-            increase_stock(data['id'], amount_to_return);
-        }
+    if (can_increase && amount_to_return > 0) {
+        console.log(can_increase);
+        increase_stock(data['id'], amount_to_return);
     }
+
     else {
         error_message.innerHTML = error;
     }
 
     if (can_update) {
         error_message.innerHTML = '';
-        $.ajax({
-            url: api_reserved_product_CRUD_url.replace('0', data.id),
-            type: 'PUT',
-            data: data,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('X-CSRFToken', modal_elements.csrf_token);
-                // xhr.setRequestHeader('Authorization', `Token ${user_token}`);
-            },
-            success: function (data) {
-                if (data) {
-                    $('#exampleModal').modal('hide');
-                    load_reserved_products_list();
-                }
+        send_update_request(data);
+    }
+}
+
+const send_update_request = (product_data) => {
+    $.ajax({
+        url: api_reserved_product_CRUD_url.replace('0', product_data.id),
+        type: 'PUT',
+        data: product_data,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRFToken', modal_elements.csrf_token);
+            // xhr.setRequestHeader('Authorization', `Token ${user_token}`);
+        },
+        success: function (data) {
+            if (data) {
+                $('#exampleModal').modal('hide');
+                load_reserved_products_list();
             }
-        });
-    }
+        }
+    });
 }
-
-
-const validate_reservation = () => {
-    const last_status = parseInt(sessionStorage.getItem('last_status'));
-    const product_id = sessionStorage.getItem('id');
-
-    //Si quiero aceptar la solicitud
-    if (status_select.selectedIndex === 1 && last_status !== 1) {
-        $.get(methods_urls.validate_reservation_url, { 'id': product_id },
-            function ({ is_valid, available_quantity }) {
-                if (is_valid) {
-                    // Asignar el nuevo amount required
-                    modal_elements.amount_required.value = available_quantity;
-                    update_product_information();
-                }
-                else {
-                    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
-                        error_message.innerHTML = `No hay suficiente ${product_name} en el inventario`;
-                    });
-                }
-            });
-    }
-    else {
-        const response = get_action_message(status_select.selectedIndex, last_status);
-        error_message.innerHTML = response.error_message;
-        if (response.can_update) {
-            update_product_information();
-        }
-    }
-}
-
-const get_action_message = (selectd_status, last_status) => {
-    let error_message = ''
-    let can_update = true;
-
-    if (selectd_status === 4) {
-        if (last_status !== 1 && last_status !== 4) {
-            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que no ha sido previamente prestado.`;
-            can_update = false;
-        }
-    }
-    else if (selectd_status === 0) {
-        if (last_status !== selectd_status) {
-            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
-            can_update = false;
-        }
-    }
-    else if (selectd_status === 2) {
-        if (last_status !== selectd_status && last_status !== 0) {
-            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
-            can_update = false;
-        }
-    }
-    else if (selectd_status === 3) {
-        error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto en esta etapa de aprobación.`;
-        can_update = false;
-    }
-
-    return {
-        'error_message': error_message,
-        'can_update': can_update
-    }
-}
-
 
 const load_reserved_products_list = () => {
     const reservation_id = document.querySelector('#reservation_id').value;
@@ -331,6 +274,66 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     reserved_products_table_body.innerHTML += table_row_template;
 }
 
+const validate_reservation = () => {
+    const last_status = parseInt(sessionStorage.getItem('last_status'));
+    const product_id = sessionStorage.getItem('id');
+
+    //Si quiero aceptar la solicitud
+    if (last_status === 0 && status_select.selectedIndex === 1) {
+        $.get(methods_urls.validate_reservation_url, { 'id': product_id }, function ({ is_valid, available_quantity }) {
+            if (is_valid) {
+                // Asignar el nuevo amount required
+                modal_elements.amount_required.value = available_quantity;
+                update_product_information();
+            }
+            else {
+                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
+                    error_message.innerHTML = `No hay suficiente ${product_name} en el inventario`;
+                });
+            }
+        });
+    }
+    else {
+        const response = get_action_message(status_select.selectedIndex, last_status);
+        error_message.innerHTML = response.error_message;
+        if (response.can_update) {
+            update_product_information();
+        }
+    }
+}
+
+const get_action_message = (selectd_status, last_status) => {
+    let error_message = ''
+    let can_update = true;
+
+    if (selectd_status === 0) {
+        if (last_status !== selectd_status) {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
+            can_update = false;
+        }
+    }
+    else if (selectd_status === 2) {
+        if (last_status !== selectd_status && last_status !== 0) {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que ha sido previamente ${reserved_product_status[last_status]['status'].toLowerCase()}.`;
+            can_update = false;
+        }
+    }
+    else if (selectd_status === 3) {
+        error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto en esta etapa de aprobación.`;
+        can_update = false;
+    }
+    else if (selectd_status === 4) {
+        if (last_status !== 1 && last_status !== 4) {
+            error_message = `No es posible poner como ${reserved_product_status[selectd_status]['status'].toLowerCase()} un producto que no ha sido previamente prestado.`;
+            can_update = false;
+        }
+    }
+
+    return {
+        'error_message': error_message,
+        'can_update': can_update
+    }
+}
 
 // ############################# EVENTS ##########################################
 cancel_button.addEventListener('click', () => {
@@ -339,6 +342,7 @@ cancel_button.addEventListener('click', () => {
 
 status_select.addEventListener('change', (event) => {
     const last_status = parseInt(sessionStorage.getItem('last_status'));
+
     if (status_select.selectedIndex === 4 && last_status === 1) {
         amount_returned.readOnly = false;
     }
@@ -346,15 +350,5 @@ status_select.addEventListener('change', (event) => {
         amount_returned.readOnly = true;
     }
 });
-
-if (status_select.selectedIndex === 4) {
-    amount_returned.readOnly = false;
-}
-else {
-    amount_returned.readOnly = true;
-}
-
-
-
 
 load_reserved_products_list();

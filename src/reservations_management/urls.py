@@ -28,6 +28,8 @@ from .functions import (
 urlpatterns = [
     url(r'reservations/(?P<pk>\d+)/manage$',ManageReservationView.as_view(), name='manage_reservation'),
     url(r'reservations/list/(?P<status>\d+)$',ReservationsListView.as_view(), name='reservations_list'),
+    
+    # Functions URLs
     url(r'reservedproduct/get_product_name_and_quantity',get_product_name_and_quantity, name='get_product_name_and_quantity'),
     url(r'reservedproduct/validate_reservation',validate_reservation, name='validate_reservation'),
     url(r'reservedproduct/increase_stock', increase_stock, name='increase_stock')
