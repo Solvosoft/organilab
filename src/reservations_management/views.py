@@ -60,8 +60,31 @@ def get_product_name_and_quantity(request):
     return JsonResponse({'product_name': product_name, 'product_quantity': product_quantity, 'product_unit': product_unit})
 
 
-def verify_reserved_products_overlap(requested_product, data_set):
+def get_dates_overlap(start_date_1, final_date_1, start_date_2, final_date_2):
     Range = namedtuple('Range', ['start', 'end'])
+
+    requested_datetime_range = Range(
+        start=start_date_1,
+        end=final_date_1
+    )
+    reserved_datetime_range = Range(
+        start=start_date_2,
+        end=final_date_2
+    )
+    latest_start = max(requested_datetime_range.start,
+                       reserved_datetime_range.start
+                       )
+    earliest_end = min(requested_datetime_range.end,
+                       reserved_datetime_range.end
+                       )
+    delta = (earliest_end - latest_start).days + 1
+    overlap = max(0, delta)
+
+    return overlap
+
+
+def verify_reserved_products_overlap(requested_product, data_set):
+    # Range = namedtuple('Range', ['start', 'end'])
     reserved_product_quantity = 0
     requested_initial_date = requested_product.initial_date
     requested_final_date = requested_product.final_date
@@ -71,22 +94,8 @@ def verify_reserved_products_overlap(requested_product, data_set):
         reserved_initial_date = reserved_product.initial_date
         reserved_final_date = reserved_product.final_date
 
-        requested_datetime_range = Range(
-            start=requested_initial_date,
-            end=requested_final_date
-        )
-        reserved_datetime_range = Range(
-            start=reserved_product.initial_date,
-            end=reserved_product.final_date
-        )
-        latest_start = max(requested_datetime_range.start,
-                           reserved_datetime_range.start
-                           )
-        earliest_end = min(requested_datetime_range.end,
-                           reserved_datetime_range.end
-                           )
-        delta = (earliest_end - latest_start).days + 1
-        overlap = max(0, delta)
+        overlap = get_dates_overlap(
+            requested_initial_date, requested_final_date, reserved_initial_date, reserved_final_date)
 
         if overlap > 0:
             reserved_product_quantity += reserved_product.amount_required
@@ -136,11 +145,22 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
                 reserved_product_quantity = verify_reserved_products_overlap(
                     requested_product, data_set)
 
+                current_product_overlap = get_dates_overlap(
+                    requested_product.initial_date,
+                    requested_product.final_date,
+                    product.initial_date,
+                    product.final_date
+                )
+
                 # Indicates how much quantity of product will exist after to take the missing amount
-                remaining_product_quantity = 0 if product.shelf_object.quantity == reserved_product_quantity else missing_amount + \
-                        (product.shelf_object.quantity - (reserved_product_quantity + product.amount_required))
-                #   (reserved_product_quantity + product.amount_required))
-             
+                if (current_product_overlap > 0):
+                    remaining_product_quantity = 0 if product.shelf_object.quantity == reserved_product_quantity else missing_amount + \
+                        (product.shelf_object.quantity -
+                         (reserved_product_quantity + product.amount_required))
+
+                else:
+                    remaining_product_quantity = 0 if product.shelf_object.quantity == reserved_product_quantity else missing_amount + \
+                        (product.shelf_object.quantity - reserved_product_quantity)
 
                 if remaining_product_quantity > 0:
                     product_quantity_to_take = abs(missing_amount)
@@ -157,7 +177,8 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
 
                 elif remaining_product_quantity < 0 or \
                         (remaining_product_quantity == 0 and product.shelf_object.quantity != reserved_product_quantity):
-                    product_quantity_to_take = product.shelf_object.quantity - (reserved_product_quantity + product.amount_required )
+                    product_quantity_to_take = product.shelf_object.quantity - \
+                        (reserved_product_quantity + product.amount_required)
                     # product_quantity_to_take = (
                     #     product.shelf_object.quantity - product.amount_required)
 
@@ -168,6 +189,7 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
                             requested_product, product_quantity_to_take, product.shelf_object
                         )
                         products_to_request.append(new_product_to_reserve)
+
                     # There is no more quantity to reserve in this shelf object
                     shelf_objects_to_skip.append(product.shelf_object.id)
 
