@@ -6,12 +6,8 @@ from laboratory.models import ShelfObject
 from .models import Reservations, ReservedProducts, ReservationTasks
 from .tasks import decrease_stock
 
-import os
-import importlib
 from django.conf import settings
 
-
-# app = importlib.import_module(settings.CELERY_MODULE).app
 
 ############## METHODS TO USE WITH AJAX ##############
 
@@ -348,7 +344,7 @@ def increase_stock(request):
         product = ReservedProducts.objects.get(id=request.GET['id'])
         amount_to_return = float(request.GET['amount_to_return'])
 
-        if (product.amount_required >= product.amount_returned + amount_to_return) and amount_to_return > 0 :
+        if (product.amount_required >= product.amount_returned + amount_to_return) and amount_to_return > 0:
             product.shelf_object.quantity += amount_to_return
             was_increase = True
             product.shelf_object.save()
@@ -356,16 +352,16 @@ def increase_stock(request):
     return JsonResponse({'was_increase': was_increase})
 
 
-# def add_decrease_stock_task(reserved_product):
+def add_decrease_stock_task(reserved_product):
 
-#     task = decrease_stock.apply_async(
-#         args=(reserved_product, ),
-#         eta=reserved_product.initial_date
-#     )
+    task = decrease_stock.apply_async(
+        args=(reserved_product.id, ),
+        eta=reserved_product.initial_date
+    )
 
-#     new_reserved_product_task = ReservationTasks(
-#         reserved_product=reserved_product,
-#         celery_task=task.id
-#     )
+    new_reserved_product_task = ReservationTasks(
+        reserved_product=reserved_product,
+        celery_task=task.id
+    )
 
-#     new_reserved_product_task.save()
+    new_reserved_product_task.save()
