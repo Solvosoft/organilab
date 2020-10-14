@@ -11,7 +11,7 @@ function initialize_modal(shelf_obj_pk, user_pk) {
 }
 
 /* Function that appends an input field to the form 
-before serializing it. In this case the shelf_object field.
+before serializing it. In this case the shelf_object field and the user's id.
 */
 function get_form_data(form) {
     const formAttributes = {};
