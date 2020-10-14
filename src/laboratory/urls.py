@@ -23,7 +23,8 @@ from laboratory.validators import validate_duplicate_initial_date
 objviews = ObjectView()
 
 urlpatterns = [
-    url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_reservation'),
+    url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_reservation_create'),
+    url(r'r/api/reservation/(?P<pk>\d+)/delete/', ApiReservationCRUD.as_view(), name='api_reservation_delete'),
     url(r"my_reservations$", MyReservationView.as_view(), name="my_reservations"),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),

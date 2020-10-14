@@ -85,7 +85,7 @@
 {% block js %}
 {{block.super}}
 <script>
-    document.api_modal = '{% url "laboratory:api_reservation"%}';
+    document.api_modal = '{% url "laboratory:api_reservation_create"%}';
 </script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
