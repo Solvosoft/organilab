@@ -8,6 +8,11 @@ from laboratory.api.serializers import ReservationSerializer
 
 
 class ApiReservationCRUD(APIView):
+    def get_object(self, pk):
+        try:
+            return ReservedProducts.objects.get(pk=pk)
+        except ReservedProducts.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
         serializer = ReservationSerializer(data=request.data)
@@ -15,3 +20,8 @@ class ApiReservationCRUD(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        solicitud = self.get_object(pk)
+        solicitud.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
