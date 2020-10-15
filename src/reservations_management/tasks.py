@@ -1,12 +1,12 @@
 
+import importlib
 
 from django.conf import settings
 
 from celery import Celery
-
 from .models import ReservedProducts
 
-app = Celery()
+app = importlib.import_module(settings.CELERY_MODULE).app
 
 
 @app.task
