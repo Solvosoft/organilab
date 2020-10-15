@@ -74,8 +74,9 @@ INSTALLED_APPS = [
     'chunked_upload',
     'api.apps.ApiConfig',
     'ajax_select',
-    'reservations_management'
-
+    'reservations_management',
+    'django_celery_beat'
+    
 ]
 
 if DEBUG_TOOLBAR:
@@ -137,7 +138,7 @@ DATABASES = {
         'USER': os.getenv('DBUSER', 'organilab_user'),
         'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
         'HOST': os.getenv('DBHOST', '127.0.0.1'),
-        'PORT': os.getenv('DBPORT', '5433'),
+        'PORT': os.getenv('DBPORT', '5432'),
     }
 }
 
