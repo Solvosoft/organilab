@@ -1,5 +1,28 @@
 {% load i18n %}
 <!-- Modal -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 30px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -11,6 +34,10 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="alert" id="alert_message" style="display: none;">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    <strong id="error_message">The initial date is already been added for this object</strong>
+                </div>
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
                     {{ modal_form_reservation.as_p }}
@@ -18,7 +45,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary" type="button" onclick="add_reservation()" data-dismiss="modal">{% trans 'Save changes' %}</button>
+                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>

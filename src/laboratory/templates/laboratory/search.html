@@ -45,7 +45,7 @@
 		 	 <div class="col-md-4">
 		 	<a data-toggle="modal"
            data-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="get_ids({{object.pk}},{{request.user.id}})" 
+           style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})" 
 		 	class="btn btn-danger"> {% trans "Reserve object" %}</a>
 		 	</div>
 		 </div>
@@ -85,7 +85,7 @@
 {% block js %}
 {{block.super}}
 <script>
-    document.api_modal = '{% url "laboratory:api_reservation"%}';
+    document.api_modal = '{% url "laboratory:api_reservation_create"%}';
 </script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
