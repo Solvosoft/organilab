@@ -5,6 +5,8 @@ from django.http import Http404
 
 from reservations_management.models import ReservedProducts
 from reservations_management.api.serializers import ReservedProductSerializer
+from reservations_management.functions import add_decrease_stock_task
+from reservations_management.tasks import decrease_stock
 
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.authentication import TokenAuthentication
@@ -36,6 +38,9 @@ class ApiReservedProductsCRUD(APIView):
         )
         if serializer.is_valid():
             serializer.save()
+            if(serializer.initial_data['status'] == '1'):
+                add_decrease_stock_task(reserved_product)
+                
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
