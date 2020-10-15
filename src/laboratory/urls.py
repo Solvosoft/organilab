@@ -17,14 +17,16 @@ from laboratory.views import labroom, shelfobject, laboratory, solutions, organi
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.objects import ObjectView
-from laboratory.api.views import ApiReservationCRUD
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.validators import validate_duplicate_initial_date
+from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
 
 urlpatterns = [
-    url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_reservation_create'),
-    url(r'r/api/reservation/(?P<pk>\d+)/delete/', ApiReservationCRUD.as_view(), name='api_reservation_delete'),
+    url(r'rp/api/reservedProducts$', ApiReservedProductsCRUD.as_view(), name='api_reservation_create'),
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
+    url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
     url(r"my_reservations$", MyReservationView.as_view(), name="my_reservations"),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
@@ -34,7 +36,9 @@ urlpatterns = [
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
     url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
     url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
+
     url(r"validators", validate_duplicate_initial_date, name="date_validator"),
+    url(r"returnLabId", return_laboratory_of_shelf_id, name="return_lab_id"),
 ]
 
 lab_shelf_urls = [
