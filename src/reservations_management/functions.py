@@ -127,9 +127,6 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
 
                 if remaining_product_quantity > 0:
                     product_quantity_to_take = abs(missing_amount)
-                    # product_quantity_to_take = product.shelf_object.quantity - \
-                    #     (remaining_product_quantity + missing_amount)
-                    # (remaining_product_quantity + product.amount_required)
 
                     missing_amount += product_quantity_to_take
 
@@ -142,8 +139,6 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
                         (remaining_product_quantity == 0 and product.shelf_object.quantity != reserved_product_quantity):
                     product_quantity_to_take = product.shelf_object.quantity - \
                         (reserved_product_quantity + product.amount_required)
-                    # product_quantity_to_take = (
-                    #     product.shelf_object.quantity - product.amount_required)
 
                     missing_amount += product_quantity_to_take
 
@@ -190,8 +185,7 @@ def verify_available_shelf_objects_stock(requested_product, product_missing_amou
                 missing_amount + available_product.quantity
 
             if remaining_available_product_quantity > 0:
-                # available_product_quantity_to_take = available_product.quantity - \
-                #     remaining_available_product_quantity
+
                 available_product_quantity_to_take = abs(
                     product_missing_amount)
                 missing_amount += available_product_quantity_to_take
@@ -296,15 +290,19 @@ def validate_reservation(request):
         # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
         if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
 
-            available_quantity_for_current_requested_product = (
-                requested_product_quantity - reserved_product_quantity)
-
             # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
             product_missing_amount = \
                 requested_product_quantity - \
                 (reserved_product_quantity + requested_amount_required)
 
-            if (product_missing_amount < 0):
+            if product_missing_amount >= 0:
+                available_quantity_for_current_requested_product = requested_amount_required
+                product_missing_amount = 0
+
+            elif product_missing_amount < 0:
+                available_quantity_for_current_requested_product = (
+                    requested_product_quantity - reserved_product_quantity)
+
                 product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
                     requested_product,
                     product_missing_amount,
@@ -316,7 +314,7 @@ def validate_reservation(request):
 
             # verifico si en los productos disponibles que no estan reservados puedo agarrar algo
             # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
-            if (product_missing_amount < 0):
+            if product_missing_amount < 0:
                 product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
                     requested_product,
                     product_missing_amount,
@@ -328,6 +326,7 @@ def validate_reservation(request):
             if product_missing_amount == 0 and is_valid:
                 for new_requested_product in products_to_request:
                     new_requested_product.save()
+                    add_decrease_stock_task(new_requested_product)
             else:
                 products_to_request.clear()
 

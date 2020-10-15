@@ -23,5 +23,5 @@ def decrease_stock(reserved_product):
         except:
             return
 
-    reserved_product.shelf_object.quantity += reserved_product.amount_required
+    reserved_product.shelf_object.quantity -= reserved_product.amount_required
     reserved_product.shelf_object.save()
