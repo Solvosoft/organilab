@@ -52,8 +52,9 @@ let is_returnable_checkbox = null;
 let api_reserved_product_CRUD_url = get_html_element('#api_reserved_product_CRUD_url', 'js');
 let api_reserved_products_list_url = get_html_element('#api_reserved_products_list_url', 'js');
 
-const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
-const error_message = document.querySelector('#error_message');
+const reserved_products_table_body = get_html_element('#reserved_products_table_body');
+const error_message = get_html_element('#error_message');
+const table_of_reservations = get_html_element('#table_of_reservations', 'jq');
 const cancel_button = get_html_element('#cancel-button');
 const modal_elements = get_modal_product_elements();
 
@@ -346,7 +347,7 @@ const get_action_message = (selectd_status, last_status) => {
     }
 }
 
-// ############################# EVENTS AND SOME CONFIG TO AVOID ERRORS##########################################
+// ############################# EVENTS AND SOME CONFIG TO AVOID ERRORS ##########################################
 
 
 if (api_reserved_product_CRUD_url) {
@@ -391,4 +392,8 @@ if (cancel_button) {
 
 if (get_html_element('#reserved_products_table')) {
     load_reserved_products_list();
+}
+
+if (table_of_reservations.length) {
+    table_of_reservations.DataTable();
 }
