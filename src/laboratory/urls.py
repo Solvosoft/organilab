@@ -24,8 +24,10 @@ from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
 
 urlpatterns = [
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/', ApiReservedProductsCRUD.as_view(), name='api_reservation_detail'),
     url(r'rp/api/reservedProducts$', ApiReservedProductsCRUD.as_view(), name='api_reservation_create'),
     url(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
     url(r"my_reservations$", MyReservationView.as_view(), name="my_reservations"),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
@@ -38,7 +40,7 @@ urlpatterns = [
     url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
 
     url(r"validators", validate_duplicate_initial_date, name="date_validator"),
-    url(r"returnLabId", return_laboratory_of_shelf_id, name="return_lab_id"),
+    url(r"returnLabId", return_laboratory_of_shelf_id, name="get_lab_id"),
 ]
 
 lab_shelf_urls = [

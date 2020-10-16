@@ -31,8 +31,9 @@
                         aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <input type="hidden" name="user_id" value="{{obj.user.id}}">
                 <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
-                <input type="hidden" name="so_id" id="rp_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
+                <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
             </td>
             {%endif%}
         </tr>
@@ -43,8 +44,11 @@
 {% endblock %}
 {% block js %}
 <script>
-    document.api_update_products = '{% url "laboratory:api_individual_reservation_create"%}';
+    document.get_lab_id_script_url = '{% url "laboratory:get_lab_id"%}';
     document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
+    document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
+    document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
+    document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
 </script>
 <script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>

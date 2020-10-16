@@ -45,7 +45,7 @@ function add_reservation() {
         "user": data.user,
         "status": 3
     }
-    $.get("validators", input,
+    $.get(document.date_validation_script_url, input,
         function({ is_valid }) {
             if (is_valid) {
                 $.ajax({
