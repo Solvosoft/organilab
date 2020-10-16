@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime,timedelta
+import pytz
 from collections import namedtuple
 from django.http import JsonResponse
 
@@ -7,10 +8,12 @@ from .models import Reservations, ReservedProducts, ReservationTasks
 from .tasks import decrease_stock
 
 from django.conf import settings
+import importlib
+
+app = importlib.import_module(settings.CELERY_MODULE).app
 
 
 ############## METHODS TO USE WITH AJAX ##############
-
 
 def get_product_name_and_quantity(request):
     product_name = ''
@@ -273,62 +276,68 @@ def validate_reservation(request):
     if request.method == 'GET':
         requested_product = ReservedProducts.objects.get(pk=request.GET['id'])
         requested_initial_date = requested_product.initial_date
-        requested_final_date = requested_product.final_date
-        requested_amount_required = requested_product.amount_required
-        requested_product_quantity = requested_product.shelf_object.quantity
-        available_quantity_for_current_requested_product = requested_amount_required
+       
+        if requested_initial_date - timedelta(hours=6) >= pytz.UTC.localize(datetime.now()):
 
-        # Data sets related with the requested product
-        data_sets = get_related_data_sets(requested_product)
+            requested_final_date = requested_product.final_date
+            requested_amount_required = requested_product.amount_required
+            requested_product_quantity = requested_product.shelf_object.quantity
+            available_quantity_for_current_requested_product = requested_amount_required
 
-        # Quantity of product that has been already reserved
-        reserved_product_quantity = verify_reserved_products_overlap(
-            requested_product,
-            data_sets['related_reserved_products_list']
-        )
+            # Data sets related with the requested product
+            data_sets = get_related_data_sets(requested_product)
 
-        # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
-        if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
+            # Quantity of product that has been already reserved
+            reserved_product_quantity = verify_reserved_products_overlap(
+                requested_product,
+                data_sets['related_reserved_products_list']
+            )
 
-            # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
-            product_missing_amount = \
-                requested_product_quantity - \
-                (reserved_product_quantity + requested_amount_required)
+            # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
+            if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
 
-            if product_missing_amount >= 0:
-                available_quantity_for_current_requested_product = requested_amount_required
-                product_missing_amount = 0
+                # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
+                product_missing_amount = \
+                    requested_product_quantity - \
+                    (reserved_product_quantity + requested_amount_required)
 
-            elif product_missing_amount < 0:
-                available_quantity_for_current_requested_product = (
-                    requested_product_quantity - reserved_product_quantity)
+                if product_missing_amount >= 0:
+                    available_quantity_for_current_requested_product = requested_amount_required
+                    product_missing_amount = 0
 
-                product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
-                    requested_product,
-                    product_missing_amount,
-                    data_sets['related_different_reserved_products_list']
-                )
+                elif product_missing_amount < 0:
+                    available_quantity_for_current_requested_product = (
+                        requested_product_quantity - reserved_product_quantity)
 
-                # Stores the new possible products to request
-                products_to_request += new_products_to_request
+                    product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
+                        requested_product,
+                        product_missing_amount,
+                        data_sets['related_different_reserved_products_list']
+                    )
 
-            # verifico si en los productos disponibles que no estan reservados puedo agarrar algo
-            # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
-            if product_missing_amount < 0:
-                product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
-                    requested_product,
-                    product_missing_amount,
-                    data_sets['related_available_shelf_objects']
-                )
+                    # Stores the new possible products to request
+                    products_to_request += new_products_to_request
 
-                products_to_request += new_products_to_request
+                # verifico si en los productos disponibles que no estan reservados puedo agarrar algo
+                # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
+                if product_missing_amount < 0:
+                    product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
+                        requested_product,
+                        product_missing_amount,
+                        data_sets['related_available_shelf_objects']
+                    )
 
-            if product_missing_amount == 0 and is_valid:
-                for new_requested_product in products_to_request:
-                    new_requested_product.save()
-                    add_decrease_stock_task(new_requested_product)
-            else:
-                products_to_request.clear()
+                    products_to_request += new_products_to_request
+
+                if product_missing_amount == 0 and is_valid:
+                    for new_requested_product in products_to_request:
+                        new_requested_product.save()
+                        add_decrease_stock_task(new_requested_product)
+                else:
+                    products_to_request.clear()
+        else:
+            is_valid = False
+            available_quantity_for_current_requested_product = -1
 
     return JsonResponse({
         'is_valid': is_valid,
@@ -353,6 +362,17 @@ def increase_stock(request):
 
 def add_decrease_stock_task(reserved_product):
 
+    try:
+        task = ReservationTasks.objects.get(
+            reserved_product__id=reserved_product.id,
+            task_type='decrease'
+        )
+        app.control.revoke(task.celery_task, terminate=True)
+        task.delete()
+
+    except Exception as error:
+        pass
+
     task = decrease_stock.apply_async(
         args=(reserved_product.id, ),
         eta=reserved_product.initial_date
@@ -360,7 +380,8 @@ def add_decrease_stock_task(reserved_product):
 
     new_reserved_product_task = ReservationTasks(
         reserved_product=reserved_product,
-        celery_task=task.id
+        celery_task=task.id,
+        task_type='decrease'
     )
 
     new_reserved_product_task.save()
