@@ -9,7 +9,7 @@
 {{block.super}}
 
 
-<div class="management_id" hidden>
+<div class="management_id" hidden id="manage_urls">
     <input type="hidden" id="reservation_id" value="{{object.id}}">
     <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
     <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
@@ -70,7 +70,7 @@
                     <div class="x_content">
                         <div class="table-responsive">
 
-                            <table class="table table-bordered text-center">
+                            <table class="table table-bordered text-center" id="reserved_products_table">
                                 <thead>
                                     <tr>
                                         <th class="text-center">{% trans 'Product name' %}</th>
