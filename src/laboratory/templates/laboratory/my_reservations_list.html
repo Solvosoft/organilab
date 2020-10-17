@@ -4,7 +4,9 @@
 {% block content %}
 {% include 'laboratory/my_reservation_delete.html' %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
-<a id="reserve_btn" class="pull-right btn btn-success" role="button" onclick="make_reservation()"> {% trans "Reserve" %}</a>
+<div id="management_buttons">
+    <a id="reserve_btn" class="pull-right btn btn-success" role="button" onclick="make_reservation()"> {% trans "Reserve" %}</a>
+</div>
 <table id="table_id" class="display">
     <thead>
         <tr>
@@ -24,8 +26,8 @@
             <td id="initial_date">{{obj.initial_date}}</td>
             <td id="final_date">{{obj.final_date}}</td>
             <td id="stats">{{obj.get_status_display}}</td>
-            {%if obj.status == 3 %}
             <td>
+                {%if obj.status == 3 %}
                 <button data-toggle="modal"
                         data-target="#delete_selected_obj_reservation_modal"
                         aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
@@ -34,8 +36,8 @@
                 <input type="hidden" name="user_id" value="{{obj.user.id}}">
                 <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
                 <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
+                {%endif%}
             </td>
-            {%endif%}
         </tr>
     {% endfor %}
     </tbody>

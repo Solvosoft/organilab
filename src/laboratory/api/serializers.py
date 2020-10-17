@@ -12,6 +12,12 @@ class ReservedProductsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ReservedProductsSerializerUpdate(serializers.ModelSerializer):
+    class Meta:
+        model = ReservedProducts
+        fields = ["reservation", "status"]
+
+
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservations
