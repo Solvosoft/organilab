@@ -72,6 +72,8 @@ class ReservedProducts(models.Model):
 class ReservationTasks(models.Model):
     reserved_product = models.ForeignKey(ReservedProducts, on_delete=models.CASCADE)
     celery_task = models.UUIDField(default=uuid.uuid4, editable=False)
+    task_type = models.CharField(max_length=20)
+
 
 
 class ReservationRange(models.Model):

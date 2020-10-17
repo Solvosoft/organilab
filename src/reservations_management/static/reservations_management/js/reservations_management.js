@@ -16,40 +16,49 @@ const get_html_element = (element_id, option = 'js') => {
 }
 
 const get_modal_product_elements = () => {
+    let data = {};
     const modal_form = get_html_element('#modal_form');
-    const modal_title = get_html_element('#product_name');
-    const status_select = modal_form.querySelector('#id_status');
-    const is_returnable_checkbox = modal_form.querySelector('#id_is_returnable');
-    const amount_required = modal_form.querySelector('#id_amount_required');
-    const amount_returned = modal_form.querySelector('#id_amount_returned');
-    amount_returned.readOnly = true;
-    const initial_date = modal_form.querySelector('#id_initial_date');
-    const final_date = modal_form.querySelector('#id_final_date');
-    const csrf_token = modal_form.querySelector('input[type=hidden]').value;
-    return {
-        'modal_form': modal_form,
-        'modal_title': modal_title,
-        'status_select': status_select,
-        'is_returnable_checkbox': is_returnable_checkbox,
-        'amount_required': amount_required,
-        'amount_returned': amount_returned,
-        'initial_date': initial_date,
-        'final_date': final_date,
-        'csrf_token': csrf_token
+
+    if (modal_form) {
+        const modal_title = get_html_element('#product_name');
+        const status_select = modal_form.querySelector('#id_status');
+        const is_returnable_checkbox = modal_form.querySelector('#id_is_returnable');
+        const amount_required = modal_form.querySelector('#id_amount_required');
+        const amount_returned = modal_form.querySelector('#id_amount_returned');
+        amount_returned.readOnly = true;
+        const initial_date = modal_form.querySelector('#id_initial_date');
+        const final_date = modal_form.querySelector('#id_final_date');
+        const csrf_token = modal_form.querySelector('input[type=hidden]').value;
+        data = {
+            'modal_form': modal_form,
+            'modal_title': modal_title,
+            'status_select': status_select,
+            'is_returnable_checkbox': is_returnable_checkbox,
+            'amount_required': amount_required,
+            'amount_returned': amount_returned,
+            'initial_date': initial_date,
+            'final_date': final_date,
+            'csrf_token': csrf_token
+        }
     }
+    return data;
 }
 
 // VARIABLES 
-const api_reserved_product_CRUD_url = get_html_element('#api_reserved_product_CRUD_url', 'js').value;
-const api_reserved_products_list_url = get_html_element('#api_reserved_products_list_url', 'js').value;
-const modal_form = get_html_element('#modal_form');
+let methods_urls = {}
+let status_select = null;
+let amount_returned = null;
+let is_returnable_checkbox = null;
+let api_reserved_product_CRUD_url = get_html_element('#api_reserved_product_CRUD_url', 'js');
+let api_reserved_products_list_url = get_html_element('#api_reserved_products_list_url', 'js');
+
+const reserved_products_table_body = get_html_element('#reserved_products_table_body');
+const error_message = get_html_element('#error_message');
+const table_of_reservations = get_html_element('#table_of_reservations', 'jq');
+const cancel_button = get_html_element('#cancel-button');
 const modal_elements = get_modal_product_elements();
-const error_message = document.querySelector('#error_message');
-const cancel_button = document.querySelector('#cancel-button');
-const status_select = modal_elements.status_select;
-const amount_returned = modal_elements.amount_returned;
-const is_returnable_checkbox = modal_elements.is_returnable_checkbox;
-const reserved_products_table_body = document.querySelector('#reserved_products_table_body');
+
+
 
 const reserved_product_status = {
     0: {
@@ -74,18 +83,15 @@ const reserved_product_status = {
     }
 };
 
-const methods_urls = {
-    'get_product_name_and_quantity_url': document.querySelector('#get_product_name_and_quantity').value,
-    'validate_reservation_url': document.querySelector('#validate_reservation').value,
-    'increase_stock': document.querySelector('#increase_stock').value
+if (get_html_element('#manage_urls')) {
+    methods_urls = {
+        'get_product_name_and_quantity_url': document.querySelector('#get_product_name_and_quantity').value,
+        'validate_reservation_url': document.querySelector('#validate_reservation').value,
+        'increase_stock': document.querySelector('#increase_stock').value
+    }
 }
 
-if (status_select.selectedIndex === 4) {
-    amount_returned.readOnly = false;
-}
-else {
-    amount_returned.readOnly = true;
-}
+
 
 const store_reserved_product_info = (data) => {
     sessionStorage.setItem('initial_date', data['initial_date']);
@@ -287,9 +293,15 @@ const validate_reservation = () => {
                 update_product_information();
             }
             else {
-                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
-                    error_message.innerHTML = `No hay suficiente ${product_name} en el inventario`;
-                });
+                if (!is_valid && available_quantity < 0) {
+                    error_message.innerHTML = `No es posible aceptar una solicitud con fecha y hora menor a la actual`;
+                }
+                else {
+                    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': product_id }, function ({ product_name }) {
+                        error_message.innerHTML = `No hay suficiente ${product_name} en el inventario`;
+                    });
+                }
+
             }
         });
     }
@@ -335,20 +347,53 @@ const get_action_message = (selectd_status, last_status) => {
     }
 }
 
-// ############################# EVENTS ##########################################
-cancel_button.addEventListener('click', () => {
-    error_message.innerHTML = '';
-});
+// ############################# EVENTS AND SOME CONFIG TO AVOID ERRORS ##########################################
 
-status_select.addEventListener('change', (event) => {
-    const last_status = parseInt(sessionStorage.getItem('last_status'));
 
-    if (status_select.selectedIndex === 4 && last_status === 1) {
+if (api_reserved_product_CRUD_url) {
+    api_reserved_product_CRUD_url = api_reserved_product_CRUD_url.value;
+}
+
+if (api_reserved_products_list_url) {
+    api_reserved_products_list_url = api_reserved_products_list_url.value;
+}
+
+if (modal_elements) {
+    status_select = modal_elements.status_select;
+    amount_returned = modal_elements.amount_returned;
+    is_returnable_checkbox = modal_elements.is_returnable_checkbox;
+}
+
+if (status_select) {
+    if (status_select.selectedIndex === 4) {
         amount_returned.readOnly = false;
     }
     else {
         amount_returned.readOnly = true;
     }
-});
 
-load_reserved_products_list();
+    status_select.addEventListener('change', (event) => {
+        const last_status = parseInt(sessionStorage.getItem('last_status'));
+
+        if (status_select.selectedIndex === 4 && last_status === 1) {
+            amount_returned.readOnly = false;
+        }
+        else {
+            amount_returned.readOnly = true;
+        }
+    });
+}
+
+if (cancel_button) {
+    cancel_button.addEventListener('click', () => {
+        error_message.innerHTML = '';
+    });
+}
+
+if (get_html_element('#reserved_products_table')) {
+    load_reserved_products_list();
+}
+
+if (table_of_reservations.length) {
+    table_of_reservations.DataTable();
+}
