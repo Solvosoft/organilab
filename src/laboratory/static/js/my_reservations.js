@@ -12,6 +12,7 @@ $(document).ready(function() {
    table = $('#table_id').DataTable();
 });
 
+/*Function necessary to ge the crsf_token to use with ajax*/
 function get_csrf_token(){
     form_modal = $('#modal_reservation_delete_form');
     crsftoken = get_form_data(form_modal);
@@ -52,32 +53,27 @@ function remove_reservation(){
 
 /*Function to update the products now that the reservations have been made*/
 function update_reserved_products(data_info){
-    for (i=0; i < data_info.length; i++){
-        var reservation = data_info[i][2];
+    for (var x=0; x < data_info.length; x++){
+        var reservedProduct = data_info[x][0];
+        var reservation = data_info[x][1];
+        var shelf_obj = data_info[x][2];
+        data = {
+            "reservation": reservation,
+            "status": 0
+        }
         $.ajax({
-            url: document.api_get_product.replace(0, data_info[i][0]),
-            type: 'GET',
+            url: document.api_update_product.replace(0, reservedProduct),
+            type: 'PUT',
+            data: data,
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader('X-CSRFToken', get_csrf_token());
+            },
             success: function(data) {
-                data["reservation"] = reservation;
-                data["status"] = 0;
-                console.log("Data Modificada")
-                console.log(data)
-                $.ajax({
-                    url: document.api_update_product,
-                    type: 'PUT',
-                    data: data,
-                    beforeSend: function (xhr) {
-                      xhr.setRequestHeader('X-CSRFToken', get_csrf_token());
-                    },
-                    success: function(data) {
-
-                    }
-                });
+                location.reload()
             }
         });
     }
 }
-
 
 /*Function to send the requests for the shelfobjects to each admin of the lab that shelfobject is in*/
 function make_reservation(){
@@ -118,18 +114,15 @@ function make_reservation(){
                     xhr.setRequestHeader('X-CSRFToken', get_csrf_token());
                 },
                 success: function(data) {
-                    console.log(data)
                     for (j=0; j < reserved_products_ids_list.length; j++){
                        if(lab_ids[j] == data["laboratory"]){
                            info_update[j] = [
                                 reserved_products_ids_list[j],
-                                lab_ids[j],
-                                data["id"]
+                                data["id"],
+                                shelf_object_ids_list[j]
                            ];
                        }
                     }
-                    console.log("info_update:")
-                    console.log(info_update)
                     update_reserved_products(info_update);
                 }
             });

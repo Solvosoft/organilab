@@ -4,7 +4,7 @@ from rest_framework import status
 from django.http import Http404
 
 from reservations_management.models import ReservedProducts, Reservations
-from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer
+from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, ReservedProductsSerializerUpdate
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -28,7 +28,7 @@ class ApiReservedProductsCRUD(APIView):
 
     def put(self, request, pk):
         solicitud = self.get_object(pk)
-        serializer = ReservedProductsSerializer(solicitud, data=request.data)
+        serializer = ReservedProductsSerializerUpdate(solicitud, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
