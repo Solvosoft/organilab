@@ -1,27 +1,29 @@
+//########################################VARIABLES
 var reserved_product_id
 var table
 var values
 
+//########################################FUNCTIONS USED BY OTHER FUNCTIONS
 /*Function necessary to filter an array and only have the distinct elements*/
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-/*Function necessary for the datatables to work*/
-$(document).ready(function() {
-   table = $('#table_id').DataTable();
-});
+/*Function to get all elements with an specific name*/
+function get_all_elements_with_name(name){
+    list = [];
+    var inputs = document.getElementsByName(name);
+    for (i=0; i < inputs.length; i++){
+        list[i] = inputs[i].value;
+    }
+    return list
+}
 
 /*Function necessary to ge the crsf_token to use with ajax*/
 function get_csrf_token(){
     form_modal = $('#modal_reservation_delete_form');
     crsftoken = get_form_data(form_modal);
     return crsftoken.csrfmiddlewaretoken
-}
-
-/*When the deletion modal is opened (a delete button is clicked), this methods gets the id of the reserved product*/
-function init_remove_reservation(pk) {
-    reserved_product_id = pk;
 }
 
 /* Function that returns the fields of the form. In this case the crsf token*/
@@ -36,6 +38,25 @@ function get_form_data(form) {
     return formAttributes;
 }
 
+/*Function to disable or enable the reservation button of My Reservations view if SOLICITED ITEMS are on*/
+function status_of_reservation_button(all_status_codes){
+   disable_reservation_button = true;
+   for (let i=0; i < all_status.length; i++){
+        if (all_status[i] == 3){
+            disable_reservation_button = false;
+        }
+   }
+   btnReserve = document.getElementById("reserve_btn");
+   btnReserve.disabled = disable_reservation_button;
+}
+
+//########################################FUNCTIONS CALLED IN THE HTML ONCLICK
+/*When the deletion modal is opened (a delete button is clicked), this methods gets the id of the reserved product*/
+function init_remove_reservation(pk) {
+    reserved_product_id = pk;
+}
+
+//########################################MAIN FUNCTIONS
 /*Function to remove a shelf object from the My Reservations view*/
 function remove_reservation(){
      $.ajax({
@@ -53,10 +74,14 @@ function remove_reservation(){
 
 /*Function to update the products now that the reservations have been made*/
 function update_reserved_products(data_info){
+    var reservedProduct;
+    var reservation;
+    var shelf_obj;
+
     for (var x=0; x < data_info.length; x++){
-        var reservedProduct = data_info[x][0];
-        var reservation = data_info[x][1];
-        var shelf_obj = data_info[x][2];
+        reservedProduct = data_info[x][0];
+        reservation = data_info[x][1];
+        shelf_obj = data_info[x][2];
         data = {
             "reservation": reservation,
             "status": 0
@@ -78,21 +103,15 @@ function update_reserved_products(data_info){
 /*Function to send the requests for the shelfobjects to each admin of the lab that shelfobject is in*/
 function make_reservation(){
     var lab_to_make_reservation = [];
-    var shelf_object_ids_list = [];
-    var reserved_products_ids_list = [];
+    var shelf_object_ids_list;
+    var reserved_products_ids_list;
     var info_update = [];
+    var user;
 
-    var inputs = document.getElementsByName("rp_id"); //Get all elements with the name rp_id (Reserved Products Ids)
-    for (i=0; i < inputs.length; i++){
-        reserved_products_ids_list[i] = inputs[i].value; //Saving them in reserved_products_ids_list
-    }
+    reserved_products_ids_list = get_all_elements_with_name("rp_id") //Get all elements with the name rp_id (Reserved Products Ids)
+    shelf_object_ids_list = get_all_elements_with_name("so_id") //Get all elements with the name so_id (Shelf Objects Ids)
+    user = document.getElementsByName("user_id")[0].value; //Get the user
 
-    var shelf_objects = document.getElementsByName("so_id"); //Get all elements with the name so_id (Shelf Objects Ids)
-    for (i=0; i < shelf_objects.length; i++){
-        shelf_object_ids_list[i] = shelf_objects[i].value; //Saving them in shelf_object_ids_list
-    }
-
-    var user = document.getElementsByName("user_id")[0].value; //Get the user
     input = {
         "ids": shelf_object_ids_list
     }
@@ -129,3 +148,11 @@ function make_reservation(){
         }
     });
 }
+
+//########################################INIT
+/*Function necessary for the datatables to work*/
+$(document).ready(function() {
+   table = $('#table_id').DataTable();
+   all_status = get_all_elements_with_name("status_num");
+   status_of_reservation_button(all_status);
+});

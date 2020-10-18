@@ -61,7 +61,9 @@ def index_permissions(context):
         'do_reports': has_perms(context, "laboratory.do_report"),
         'add_reservation': has_perms(context, "djreservation.add_reservation"),
         'view_organizationstructure': has_perms(context, "laboratory.view_organizationstructure"),
-
+        'add_reservations': has_perms(context, "reservations_management.add_reservation"),
+        'add_reserved_product': has_perms(context, "reservations_management.add_reserved_product"),
+        'delete_reserved_product': has_perms(context, "reservations_management.delete_reserved_product"),
         }
     
     
