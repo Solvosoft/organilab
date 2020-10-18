@@ -39,7 +39,7 @@ function get_form_data(form) {
 }
 
 /*Function to disable or enable the reservation button of My Reservations view if SOLICITED ITEMS are on*/
-function status_of_reservation_button(all_status_codes){
+function status_of_reservation_buttons(all_status_codes){
    disable_reservation_button = true;
    for (let i=0; i < all_status.length; i++){
         if (all_status[i] == 3){
@@ -48,9 +48,11 @@ function status_of_reservation_button(all_status_codes){
    }
    btnReserve = document.getElementById("reserve_btn");
    btnReserve.disabled = disable_reservation_button;
+   btnCancelProducts = document.getElementById("cancel_all_products_btn");
+   btnCancelProducts.disabled = disable_reservation_button;
 }
 
-//########################################FUNCTIONS CALLED IN THE HTML ONCLICK
+//########################################FUNCTIONS MODAL CALLED IN THE HTML ONCLICK
 /*When the deletion modal is opened (a delete button is clicked), this methods gets the id of the reserved product*/
 function init_remove_reservation(pk) {
     reserved_product_id = pk;
@@ -70,6 +72,25 @@ function remove_reservation(){
         }
     });
     $("#delete_selected_obj_reservation_modal").modal('hide');
+}
+
+/*Function to remove all items that have a status of selected on the My Reservations View*/
+function delete_reserved_products(){
+    all_reserved_products_ids = get_all_elements_with_name("rp_id");
+    console.log(all_reserved_products_ids)
+    for (let i=0; i<all_reserved_products_ids.length;i++){
+        $.ajax({
+            url: document.api_modal_delete.replace(0, all_reserved_products_ids[i]),
+            type: 'DELETE',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-CSRFToken', get_csrf_token());
+            },
+            success: function(data) {
+                location.reload()
+            }
+        });
+    }
+    $("#delete_all_obj_reservation_modal").modal('hide');
 }
 
 /*Function to update the products now that the reservations have been made*/
@@ -154,5 +175,5 @@ function make_reservation(){
 $(document).ready(function() {
    table = $('#table_id').DataTable();
    all_status = get_all_elements_with_name("status_num");
-   status_of_reservation_button(all_status);
+   status_of_reservation_buttons(all_status);
 });
