@@ -5,7 +5,7 @@
 {% include 'laboratory/my_reservation_delete.html' %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 <div id="management_buttons">
-    <a id="reserve_btn" class="pull-right btn btn-success" role="button" onclick="make_reservation()"> {% trans "Reserve" %}</a>
+    <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
 </div>
 <table id="table_id" class="display">
     <thead>
@@ -25,7 +25,7 @@
             <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
             <td id="initial_date">{{obj.initial_date}}</td>
             <td id="final_date">{{obj.final_date}}</td>
-            <td id="stats">{{obj.get_status_display}}</td>
+            <td id="status">{{obj.get_status_display}}</td>
             <td>
                 {%if obj.status == 3 %}
                 <button data-toggle="modal"
@@ -37,6 +37,7 @@
                 <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
                 <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
                 {%endif%}
+                <input type="hidden" name="status_num" value="{{obj.status}}">
             </td>
         </tr>
     {% endfor %}

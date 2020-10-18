@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
 
-{%  has_perms "reservation.add_reservation" as perm_add_reservation %}
+{%  has_perms "reservation_management.add_reserved_product" as perm_add_reserved_products %}
 
 {% block content %}
 {% include 'laboratory/search_widget.html' %}
@@ -42,11 +42,13 @@
 	      <div class="panel-body">
 
 		 <div class="row">
-		 	 <div class="col-md-4">
-		 	<a data-toggle="modal"
-           data-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})" 
-		 	class="btn btn-danger"> {% trans "Reserve object" %}</a>
+			 <div class="col-md-4">
+				 {% if perm_add_reserved_products %}
+				 <a data-toggle="modal"
+					data-target="#modal_reservation"
+					style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})"
+					class="btn btn-danger"> {% trans "Reserve object" %}</a>
+				 {% endif %}
 		 	</div>
 		 </div>
 
