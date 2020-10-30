@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -94,12 +95,10 @@ def password_change(request, pk):
             password = form.cleaned_data['password']
             password_confirm = form.cleaned_data['password_confirm']
             if password == password_confirm:
-                if user.check_password(password):
-                    user.set_password(password)
-                    user.save()
-                    messages.success(request, "Contraseña cambiada exitosamente.")
-                else:
-                    messages.error(request, "Error al intentar cambiar su contraseña: Formato incorrecto.")
+                user.set_password(password)
+                user.save()
+                login(request, user)
+                messages.success(request, "Contraseña cambiada exitosamente.")
             else:
                 messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
         else:
