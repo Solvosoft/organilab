@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'My reservations' %}{% endblock %}
+{% block content %}
+{% include 'laboratory/my_reservation_delete.html' %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<a id="reserve_btn" class="pull-right btn btn-success" role="button"> {% trans "Reserve" %}</a>
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>{% trans 'Object' %}</th>
+            <th>{% trans 'Amount required' %}</th>
+            <th>{% trans 'Initial date' %}</th>
+            <th>{% trans 'Final date' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list%}
+        <tr>
+            <td>{{obj.shelf_object}}</td>
+            <td>{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
+            <td>{{obj.initial_date}}</td>
+            <td>{{obj.final_date}}</td>
+            <td>{{obj.get_status_display}}</td>
+            {%if obj.status == 3 %}
+            <td>
+                <button data-toggle="modal"
+                        data-target="#delete_selected_obj_reservation_modal"
+                        aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </td>
+            {%endif%}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+{% block js %}
+<script>
+    document.my_reservation_url = '{% url "laboratory:my_reservations"%}';
+    document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
+</script>
+<script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+{% endblock %}

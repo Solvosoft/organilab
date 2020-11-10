@@ -74,7 +74,9 @@ INSTALLED_APPS = [
     'chunked_upload',
     'api.apps.ApiConfig',
     'ajax_select',
-
+    'reservations_management',
+    'django_celery_beat'
+    
 ]
 
 if DEBUG_TOOLBAR:
@@ -304,3 +306,8 @@ MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
 JQUERY_URL = None
 
+DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %p',
+    '%Y-%m-%d %H:%M %p',
+    '%d/%m/%y %H:%M %p'
+]
