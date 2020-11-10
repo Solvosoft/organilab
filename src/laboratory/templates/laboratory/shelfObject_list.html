@@ -3,7 +3,7 @@
 {%  has_perms "laboratory.delete_shelfobject" as perm_delete_shelfobject %}
 {%  has_perms "laboratory.change_shelfobject" as perm_change_shelfobject %}
 {%  has_perms "laboratory.do_report" as perm_do_report %}
-{%  has_perms "reservation_management.add_reservation" as perm_add_reservation %}
+{%  has_perms "reservation_management.add_reserved_product" as perm_add_reserved_products %}
 
 
 <ul class="list-group">
@@ -34,7 +34,7 @@
             <span aria-hidden="true" class="glyphicon glyphicon-download-alt"></span>
         </a>
         {% endif %}
-        {% if perm_add_reservation %}
+        {% if perm_add_reserved_products %}
         <a class="pull-right"
            data-toggle="modal"
            data-target="#modal_reservation"
