@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -100,18 +101,19 @@ def get_all_organizations(queryset):
 
 
 class OrganizationStructureView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        tree = {}
+        tree = []
         organizations_user = OrganizationUserManagement.objects.filter(users__in=[request.user])
         queryset = OrganizationUserManagement.objects.filter(
             organization__in=get_all_organizations(organizations_user)).order_by('organization__name')
         if queryset:
             tree = get_data_parent(queryset, request.user)
 
-            new_orga = {
-                'text': get_organization_button(0),
-                'href': '#'
-            }
-            tree.append(new_orga)
-            return Response(tree)
+        new_orga = {
+            'text': get_organization_button(0),
+            'href': '#'
+        }
+        tree.append(new_orga)
+        return Response(tree)
