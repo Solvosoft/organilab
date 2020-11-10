@@ -96,15 +96,13 @@
                         </ul>
                     </li>
                 {% endif %}
-                  
-                
 
                 {% if userperms.view_organizationstructure %}
-                    <li>
-                        <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
-                            <i class='fa fa-university'></i> {% trans 'Access list' %}
-                        </a>
-                    </li>
+                <li>
+              <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
+                  <i class='fa fa-university'></i> {% trans 'Access list' %}
+              </a>
+              </li>
                  {% endif %}
 
                 <li>
