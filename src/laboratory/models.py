@@ -23,6 +23,7 @@ class CLInventory(models.Model):
     def __str__(self):
         return '%s' % self.name
 
+
 class Catalog(models.Model):
     key = models.CharField(max_length=150)
     description = models.CharField(max_length=500)
@@ -30,8 +31,9 @@ class Catalog(models.Model):
     def __str__(self):
         return self.description
 
+
 class ObjectFeatures(models.Model):
-    name = models.CharField(_('Name'), max_length=250,  unique=True)
+    name = models.CharField(_('Name'), max_length=250, unique=True)
     description = models.TextField(_('Description'))
 
     class Meta:
@@ -40,6 +42,7 @@ class ObjectFeatures(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Object(models.Model):
     REACTIVE = '0'
@@ -61,7 +64,7 @@ class Object(models.Model):
     features = models.ManyToManyField(ObjectFeatures, verbose_name=_("Object features"))
 
     model = models.CharField(_('Model'), max_length=50, null=True, blank=True)
-    serie = models.CharField(_('Serie'),  max_length=50, null=True, blank=True)
+    serie = models.CharField(_('Serie'), max_length=50, null=True, blank=True)
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
 
@@ -87,13 +90,13 @@ class Object(models.Model):
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
 
-
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
 
     def save(self, *args, **kwargs):
         self.full_clean()
         return super(Object, self).save(*args, **kwargs)
+
 
 class SustanceCharacteristics(models.Model):
     obj = models.OneToOneField(Object, on_delete=models.CASCADE)
@@ -111,19 +114,17 @@ class SustanceCharacteristics(models.Model):
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
     precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor", on_delete=models.SET_NULL,
-                                null=True, blank=True, key_name="key", key_value="Precursor")
+                                          null=True, blank=True, key_name="key", key_value="Precursor")
 
     h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
     valid_molecular_formula = models.BooleanField(default=False)
-
     ue_code = catalog.GTManyToManyField(Catalog, related_name="gt_ue", key_name="key",
-                                            key_value="ue_code", blank=True, verbose_name=_('UE codes'))
+                                        key_value="ue_code", blank=True, verbose_name=_('UE codes'))
     nfpa = catalog.GTManyToManyField(Catalog, related_name="gt_nfpa", key_name="key",
-                                            key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
+                                     key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
     storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_class", key_name="key",
-                                            key_value="storage_class", blank=True, verbose_name=_('Storage class'))
+                                              key_value="storage_class", blank=True, verbose_name=_('Storage class'))
     seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
-
 
     class Meta:
         verbose_name = _('Sustance characteristic')
@@ -137,31 +138,27 @@ class ShelfObject(models.Model):
     quantity = models.FloatField(_('Material quantity'), help_text='Use dot like 0.344 on decimal')
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
-                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-
+                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
 
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
             unit = Catalog.objects.filter(pk=unit).first() or ''
         return str(unit)
+
     @property
     def limit_reached(self):
         return self.quantity < self.limit_quantity
 
-
     def get_measurement_unit_display(self):
         return str(self.measurement_unit)
-
 
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
 
-
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
-
 
 
 class LaboratoryRoom(models.Model):
@@ -175,7 +172,6 @@ class LaboratoryRoom(models.Model):
         return '%s' % (self.name,)
 
 
-
 class Shelf(models.Model):
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"), on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=15, default="nd")
@@ -183,9 +179,8 @@ class Shelf(models.Model):
                                         verbose_name=_("Container shelf"), on_delete=models.CASCADE)
 
     # C space  D drawer
-    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,  verbose_name=_('Type'),
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
-
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -216,12 +211,11 @@ class Shelf(models.Model):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
 
-
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255)
     # old  'F' Cajón   'D' Estante
-    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,  verbose_name=_('Type'),
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='furniture_type')
 
     dataconfig = models.TextField(_('Data configuration'))
@@ -352,7 +346,6 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
 
 
-
 class OrganizationStructure(MPTTModel):
     name = models.CharField(_('Name'), max_length=255)
 
@@ -420,7 +413,6 @@ class Laboratory(models.Model):
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
-
     class Meta:
         verbose_name = _('Laboratory')
         verbose_name_plural = _('Laboratories')
@@ -447,6 +439,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return '%s' % (self.user,)
+
 
 class Solution(models.Model):
     name = models.CharField(_('Name'), default='', max_length=255)
@@ -490,4 +483,4 @@ class ObjectLogChange(models.Model):
     update_time = models.DateTimeField(auto_now_add=True)
     precursor = models.BooleanField(default=False)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
-                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')

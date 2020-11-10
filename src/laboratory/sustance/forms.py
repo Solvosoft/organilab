@@ -4,6 +4,7 @@ from djgentelella.forms.forms import GTForm
 from laboratory.models import Object, SustanceCharacteristics
 from djgentelella.widgets import core as genwidgets
 
+
 class SustanceObjectForm(GTForm, forms.ModelForm):
     class Meta:
         model = Object
@@ -27,6 +28,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
 
         }
 
+
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SustanceCharacteristics
@@ -45,6 +47,6 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             'nfpa': genwidgets.SelectMultiple,
             'storage_class': genwidgets.SelectMultiple,
             'seveso_list': genwidgets.YesNoInput,
-            #'security_sheet': genwidgets.FileInput
+            # 'security_sheet': genwidgets.FileInput
 
         }
