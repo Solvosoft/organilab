@@ -9,6 +9,7 @@
     width: 100%!important;
 }
 
+
 </style>
 {% endblock %}
 
@@ -20,84 +21,87 @@
 
 {% block content %}
 
- {%  has_perms "laboratory.view_furniture" as perm_furniture %}
- {%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
+{%  has_perms "laboratory.view_furniture" as perm_furniture %}
+{%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
 
-  {% include 'laboratory/search_widget.html' %}
+{% include 'laboratory/search_widget.html' %}
+{% include 'laboratory/reservation_modal.html' %}
+<h1 class="text-center">{% get_laboratory_name %}</h1>
 
-  <h1 class="text-center">{% get_laboratory_name %}</h1>
 
-
-  {# Nav #}
-  <div class="row">
+{# Nav #}
+<div class="row">
     <div class="col-md-12">
-      <ul id="labmenues" class="nav nav-tabs" role="tablist">
-       {% if perm_laboratoryroom %}
-        {% for LaboratoryRoom in object_list %}
-          <li role="presentation">
-            <a id="room_{{ LaboratoryRoom.id }}" href="#idlab"
-               data-argument="{{ LaboratoryRoom.id }}"
-               onclick="function_name_furniture('{{ LaboratoryRoom.id }}')"
-               aria-controls={{ LaboratoryRoom.id }} role="tab"
-               data-toggle="tab">{{ LaboratoryRoom.name }}</a>
-          </li>
-         {% endfor %}
-        {% endif %}
-      </ul>
+        <ul class="nav nav-tabs" id="labmenues" role="tablist">
+            {% if perm_laboratoryroom %}
+            {% for LaboratoryRoom in object_list %}
+            <li role="presentation">
+                <a LaboratoryRoom.id aria-controls={{
+                   data-argument="{{ LaboratoryRoom.id }}"
+                   data-toggle="tab"
+                   href="#idlab" id="room_{{ LaboratoryRoom.id }}" onclick="function_name_furniture('{{ LaboratoryRoom.id }}')" role="tab"
+                   }}>{{ LaboratoryRoom.name }}</a>
+            </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
     </div>
-  </div>
+</div>
 
-  {# Furniture panel #}
-  <div class="row">
+{# Furniture panel #}
+<div class="row">
     <div class="col-md-12">
-      <div class="tab-content">
-      {% if perm_furniture %}
-        {% for LaboratoryRoom in object_list %}
-          <div role="tab-panel" class="tab-pane" id="idlab">
-            <div class="col-md-3">
-              <div id="furnitures">
-              </div>
-            </div>
+        <div class="tab-content">
+            {% if perm_furniture %}
+            {% for LaboratoryRoom in object_list %}
+            <div class="tab-pane" id="idlab" role="tab-panel">
+                <div class="col-md-3">
+                    <div id="furnitures">
+                    </div>
+                </div>
 
-            <div class="col-md-9">
-              <div id="shelf">
-              </div>
-              <div id="prototype_shelf_field" class="hidden">
-                <h2>{% trans 'Please click over furniture items' %}<br>
-                  <small> {% trans 'Shelves will be displayed here' %} </small>
-                </h2>
-              </div>
+                <div class="col-md-9">
+                    <div id="shelf">
+                    </div>
+                    <div class="hidden" id="prototype_shelf_field">
+                        <h2>{% trans 'Please click over furniture items' %}<br>
+                            <small> {% trans 'Shelves will be displayed here' %} </small>
+                        </h2>
+                    </div>
+                </div>
             </div>
-          </div>
-        {% endfor %}
-       {% endif %}
-      </div>
+            {% endfor %}
+            {% endif %}
+        </div>
     </div>
-  </div>
+</div>
 
-  {% include 'laboratory/shelfobjectUpdate_modal.html' %}
+{% include 'laboratory/shelfobjectUpdate_modal.html' %}
 {% endblock %}
 
 {% block js %}
-  <script>
+<script>
     document.furniture_list = '{% url "laboratory:furniture_list" laboratory %}';
     document.shelf_list = '{% url "laboratory:list_shelf" laboratory %}';
     document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
-  </script>
-  <script src="{% static 'js/shelfobjectedit.js' %}"></script>
+    document.api_modal = '{% url "laboratory:api_reservation_create"%}';
+</script>
+<script src="{% static 'js/shelfobjectedit.js' %}"></script>
+<script src="{% static 'js/reservationmodal.js' %}"></script>
 
-
-  <script>
+<script>
     (function () {
       $("#labmenues").find("a").first().click();
       see_prototype_shelf_field();
     })();
-  </script>
 
-  <script>
+</script>
+
+<script>
     $(function() {
         load_self_from_uls();
     });
-  </script>
+
+</script>
 
 {% endblock %}
