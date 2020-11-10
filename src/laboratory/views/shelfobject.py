@@ -25,9 +25,6 @@ from laboratory.decorators import user_group_perms
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from ..logsustances import log_object_change
-
-from laboratory.modal_handler import AjaxTemplateMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import FormView
 from django.shortcuts import render
 
