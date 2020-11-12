@@ -91,3 +91,4 @@ class ProfileForm(forms.Form):
     last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
+    profile_id = forms.CharField(widget=forms.HiddenInput())
