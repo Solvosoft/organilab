@@ -215,8 +215,8 @@ def report_labroom_building(request, *args, **kwargs):
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
             make_book_laboratory(rooms), fileformat, file_name="Laboratories.%s" % (fileformat,))
-        
-    
+
+
     context = {
         #set your report title in verbose_name
         'verbose_name': "Organilab Laboratory Report",
@@ -230,7 +230,7 @@ def report_labroom_building(request, *args, **kwargs):
     template = get_template('pdf/laboratoryroom_pdf.html')
     #added explicit context
     html = template.render(context=context)
-    
+
     pisaStatus = pisa.CreatePDF(
         html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
@@ -420,7 +420,7 @@ def report_objects(request, *args, **kwargs):
         setattr(obj, 'clinventory_entry', clentry)
 
     template = get_template('pdf/object_pdf.html')
-    verbose_name =  'Reactives report' 
+    verbose_name =  'Reactives report'
     if type_id == "1": verbose_name = 'Materials report'
     if type_id == "2": verbose_name = 'Equipments report'
     context = {
@@ -479,7 +479,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     response[
         'Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
     pisaStatus = pisa.CreatePDF(
-	    html, dest=response, link_callback=link_callback, encoding='utf-8')
+        html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
@@ -722,15 +722,15 @@ class LogObjectView(ReportListView):
             end = queryset.filter(object=obj).last()
             diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
             list_obj.append(ResultQueryElement({'user': end.user,
-                            'laboratory': end.laboratory,
-                            'object': end.object,
-                            'update_time': end.update_time,
-                            'old_value': ini,
-                            'new_value': end.new_value,
-                            'diff_value': diff,
-                            'measurement_unit': end.measurement_unit
-                            })
-                           )
+                                                'laboratory': end.laboratory,
+                                                'object': end.object,
+                                                'update_time': end.update_time,
+                                                'old_value': ini,
+                                                'new_value': end.new_value,
+                                                'diff_value': diff,
+                                                'measurement_unit': end.measurement_unit
+                                                })
+                            )
         return list_obj
 
     def get_queryset(self):
@@ -758,30 +758,30 @@ class LogObjectView(ReportListView):
                           )
             context['object_list'] = self.resume_queryset(self.myqueryset)
         return context
-    
+
     def get_book(self, context):
         book = [[str(_('User')),
-                str(_('Laboratory')),
-                str(_('Object')),
-                str(_('Day')),
-                str(_('Old')),
-                str(_('New')),
-                str(_('Difference')),
-                str(_('Unit')),
-             ]]
+                 str(_('Laboratory')),
+                 str(_('Object')),
+                 str(_('Day')),
+                 str(_('Old')),
+                 str(_('New')),
+                 str(_('Difference')),
+                 str(_('Unit')),
+                 ]]
 
 
         for obj in context['object_list']:
 
             book.append([obj.user.get_full_name(),
-                        str(obj.laboratory),
-                        str(obj.object),
-                        obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                        obj.old_value,
-                        obj.new_value,
-                        obj.diff_value,
+                         str(obj.laboratory),
+                         str(obj.object),
+                         obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                         obj.old_value,
+                         obj.new_value,
+                         obj.diff_value,
                          str(obj.measurement_unit)
-                       ])
+                         ])
         return book
 
 @method_decorator(login_required, name='dispatch')
@@ -799,38 +799,52 @@ class OrganizationReactivePresenceList(ReportListView):
         #users = get_users_form_organization(query.pk)
         #labs = get_laboratories_from_organization(query.pk)
         data = []
+        add_profile_info = True
         for item in query:
 
             laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
-            usermanagement = item.organizationusermanagement_set.all().values('users__first_name', 'users__last_name')
+            usermanagement = item.organizationusermanagement_set.all().values('users__first_name', 'users__last_name', 'users__id')
             for lab in laboratories:
 
                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
                     shelf__furniture=lab['rooms__furniture']
                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
                 for user in usermanagement:
+                    # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
+                    try:
+                        profile = Profile.objects.get(user__id=user['users__id'])
+
+                    except Profile.DoesNotExist as error:
+                        add_profile_info = False
+
                     for reactive in reactives:
-                        data.append((lab['name'],
-                                   user['users__first_name'],
-                                   user['users__last_name'],
-                                   reactive.obj.code,
-                                   reactive.obj.name,
-                                   reactive.cas_id_number,
-                                   ", ".join( reactive.white_organ.all().values_list('description', flat=True)),
-                                   str(reactive.iarc) if reactive.iarc else ""
-                                   ))
+                        user_data = [lab['name'],
+                                    user['users__first_name'],
+                                    user['users__last_name'],
+                                    reactive.obj.code,
+                                    reactive.obj.name,
+                                    reactive.cas_id_number,
+                                    ", ".join(reactive.white_organ.all().values_list(
+                                        'description', flat=True)),
+                                    str(reactive.iarc) if reactive.iarc else "",
+                        ]
+                        if add_profile_info:
+                            user_data.append(profile.id_card)
+                            user_data.append(profile.job_position)
+                                        
+                        data.append(user_data)
+                
         return data
 
     def get_book(self, context):
         book = [[str(_('Name')),
-                str(_('First Name')),
-                str(_('Last Name')),
-                str(_('Code')),
-                str(_('Sustance')),
-                str(_('CAS')),
-                str(_('White Organ')),
-                str(_('Carcinogenic'))
-             ]]+context['object_list']
-
+                 str(_('First Name')),
+                 str(_('Last Name')),
+                 str(_('Code')),
+                 str(_('Sustance')),
+                 str(_('CAS')),
+                 str(_('White Organ')),
+                 str(_('Carcinogenic'))
+                 ]]+context['object_list']
 
         return book
