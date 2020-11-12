@@ -16,7 +16,7 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
-from laboratory.views.profiles_management import UsersProfileManagementListView
+from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
@@ -162,6 +162,11 @@ organization_urls = [
     url('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
 ]
 
+lab_profiles_urls = [
+    url(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
+    url(r"list/(?P<pk>\d+)?$", ProfileUpdateView.as_view(), name="update_lab_profile"),
+] 
+
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
@@ -177,6 +182,9 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
-    url(r"^lab/(?P<lab_pk>\d+)?/users_management$", UsersProfileManagementListView.as_view(), name="lab_profiles"),
+    url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
+        
+   
+
 
 ] +reports_all_lab
