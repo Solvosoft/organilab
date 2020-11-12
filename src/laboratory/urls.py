@@ -16,6 +16,7 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.profiles_management import UsersProfileManagementListView
 from laboratory.views.objects import ObjectView
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
@@ -176,5 +177,6 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
+    url(r"^lab/(?P<lab_pk>\d+)?/users_management$", UsersProfileManagementListView.as_view(), name="lab_profiles"),
 
 ] +reports_all_lab
