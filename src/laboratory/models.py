@@ -436,6 +436,8 @@ class Profile(models.Model):
     phone_number = models.CharField(_('Phone'), default='', max_length=25)
     id_card = models.CharField(_('ID Card'), max_length=100)
     laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
+    job_position = models.CharField(_('Job Position'), max_length=100)
+
 
     def __str__(self):
         return '%s' % (self.user,)
