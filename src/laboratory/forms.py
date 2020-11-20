@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object
+from .models import Laboratory, Object, Profile
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
@@ -85,3 +85,10 @@ class ReservationModalForm(GTForm, ModelForm):
             'amount_required': genwidgets.NumberInput()
         }
 
+
+class ProfileForm(forms.Form): 
+    first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
+    last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
+    id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
+    job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
+    profile_id = forms.CharField(widget=forms.HiddenInput())
