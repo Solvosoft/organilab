@@ -8,6 +8,7 @@ from laboratory.models import Profile
 from laboratory.forms import ProfileForm
 
 
+@method_decorator(user_group_perms(perm='laboratory.change_profile'), name='dispatch')
 class ProfilesListView(LoginRequiredMixin, ListView):
     model = Profile
 
@@ -15,6 +16,7 @@ class ProfilesListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['profiles'] = Profile.objects.filter(laboratories__id=self.kwargs['lab_pk'])
         context['lab_pk'] = self.kwargs['lab_pk']
+        context['laboratory'] = self.kwargs['lab_pk']
         return context
 
 
@@ -36,6 +38,7 @@ class ProfileUpdateView(LoginRequiredMixin, FormView):
             }
         )
         context['lab_pk'] = self.kwargs['lab_pk']
+        context['laboratory'] = self.kwargs['lab_pk']
 
         return context
 
