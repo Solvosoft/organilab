@@ -1,9 +1,10 @@
+from django.forms import widgets
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
-
+from djgentelella.forms.forms import GTForm
 from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication
 
 
@@ -36,3 +37,17 @@ class EditorForm(forms.ModelForm):
 class SearchDangerIndicationForm(CustomForm, forms.Form):
 
     codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"), widget=genwidgets.SelectMultiple, required=True)
+
+
+class DonateForm(GTForm, forms.Form):
+    name = forms.CharField(
+        label=_('Name'), max_length=200, required=True,
+        widget=genwidgets.TextInput)
+    amount = forms.CharField(
+        label=_('Amount'), required=True, widget=genwidgets.NumberInput,
+        help_text=_("*Type the amount in dollars"))
+    email = forms.CharField(
+        label=_('Email'), required=True, widget=genwidgets.EmailMaskInput)
+    is_donator = forms.BooleanField(
+        label=_('Add me to the donators list'), widget=genwidgets.YesNoInput,
+        initial=True)
