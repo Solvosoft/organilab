@@ -56,6 +56,11 @@ urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^admin/', admin.site.urls),
 ]
 
+paypal_urls = [
+    url(r'^paypal/', include('paypal.standard.ipn.urls')),
+]
+
+urlpatterns += paypal_urls
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += academic_urls
 urlpatterns += reservation_management_urls
