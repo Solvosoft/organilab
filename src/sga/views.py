@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from organilab import settings
 from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm
 from sga.models import TemplateSGA, RecipientSize, Substance
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
@@ -22,6 +22,7 @@ from django.views.decorators.http import require_http_methods
 from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
+from paypal.standard.forms import PayPalPaymentsForm
 
 register = Library()
 
@@ -324,7 +325,6 @@ def search_autocomplete_sustance(request):
     return HttpResponse(data, mimetype)
 
 
-
 def index_organilab(request):
 
     if request.method == "POST":
@@ -344,3 +344,30 @@ def index_organilab(request):
         form = SearchDangerIndicationForm()
 
     return render(request, 'index_organilab.html', {'form': form})
+
+
+def donate(request):
+    pay = False
+
+    if request.method == "POST":
+        form = DonateForm(request.POST)
+        if form.is_valid():
+            paypal_dict = {
+                'business': settings.PAYPAL_RECEIVER_EMAIL,
+                'amount': form.cleaned_data['amount'],
+                'item_name': _('Donate Organilab'),
+                'invoice': _('Payment Invoice'),
+                'currency_code': 'USD',
+                'notify_url': settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
+                'return_url': settings.MY_PAYPAL_HOST + reverse('msds:index_msds'),
+                'cancel_return': settings.MY_PAYPAL_HOST + reverse('msds:index_msds'),
+            }
+            pay = True
+            paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+            paypal_form.button_type = "donate"
+        return render(
+            request, 'donate_organilab.html', {'paypal_form': paypal_form, 'pay': pay, 'form':form})
+    else:
+        form = DonateForm()
+        return render(
+            request, 'donate_organilab.html', {'form': form, 'pay': pay})
