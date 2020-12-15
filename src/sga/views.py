@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm
-from sga.models import TemplateSGA, RecipientSize, Substance
+from sga.models import TemplateSGA, RecipientSize, Substance, Donation
 from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
 from django.db.models.query_utils import Q
@@ -23,6 +23,7 @@ from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
 from paypal.standard.forms import PayPalPaymentsForm
+import random
 
 register = Library()
 
@@ -356,11 +357,14 @@ def donate(request):
                 'business': settings.PAYPAL_RECEIVER_EMAIL,
                 'amount': form.cleaned_data['amount'],
                 'item_name': _('Donate Organilab'),
-                'invoice': _('Payment Invoice'),
+                #'email': form.cleaned_data['email'],
+                #'name': form.cleaned_data['name'],
+                #'is_donator': form.cleaned_data['is_donator'],
+                'invoice': str(random.randint(1, 10000)),
                 'currency_code': 'USD',
                 'notify_url': settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
-                'return_url': settings.MY_PAYPAL_HOST + reverse('msds:index_msds'),
-                'cancel_return': settings.MY_PAYPAL_HOST + reverse('msds:index_msds'),
+                'return_url': settings.MY_PAYPAL_HOST + reverse('index'),
+                'cancel_return': settings.MY_PAYPAL_HOST + reverse('index'),
             }
             pay = True
             paypal_form = PayPalPaymentsForm(initial=paypal_dict)
