@@ -23,7 +23,6 @@ from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
 from paypal.standard.forms import PayPalPaymentsForm
-import random
 
 register = Library()
 
@@ -353,14 +352,16 @@ def donate(request):
     if request.method == "POST":
         form = DonateForm(request.POST)
         if form.is_valid():
+            donation = Donation(
+                name=form.cleaned_data['name'], email=form.cleaned_data['email'],
+                amount=form.cleaned_data['amount'], is_donator=form.cleaned_data['is_donator'],
+                is_paid=False)
+            donation.save()
             paypal_dict = {
                 'business': settings.PAYPAL_RECEIVER_EMAIL,
                 'amount': form.cleaned_data['amount'],
                 'item_name': _('Donate Organilab'),
-                #'email': form.cleaned_data['email'],
-                #'name': form.cleaned_data['name'],
-                #'is_donator': form.cleaned_data['is_donator'],
-                'invoice': str(random.randint(1, 10000)),
+                'invoice': str(donation.pk),
                 'currency_code': 'USD',
                 'notify_url': settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
                 'return_url': settings.MY_PAYPAL_HOST + reverse('index'),
