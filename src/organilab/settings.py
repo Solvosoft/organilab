@@ -75,8 +75,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'ajax_select',
     'reservations_management',
-    'django_celery_beat'
-    
+    'django_celery_beat',
+    'paypal.standard.ipn',
 ]
 
 if DEBUG_TOOLBAR:
@@ -311,3 +311,8 @@ DATETIME_INPUT_FORMATS = [
     '%Y-%m-%d %H:%M %p',
     '%d/%m/%y %H:%M %p'
 ]
+
+#Paypal configurations
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
+MY_PAYPAL_HOST="http://localhost:8000/"

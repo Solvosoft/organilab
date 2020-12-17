@@ -3,7 +3,7 @@ from django.contrib import admin
 from sga.models import TemplateSGA
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
-    RecipientSize
+    RecipientSize, Donation
 from .utils import render_pdf_view
 # Register your models here.
 #from mptt.admin import MPTTModelAdmin
@@ -52,6 +52,10 @@ class AdminSustance(admin.ModelAdmin):
     filter_horizontal = ['components', 'danger_indications']
 
 
+class DonationAdmin(admin.ModelAdmin):
+    search_fields = ['details']
+
+
 admin.site.register(WarningClass, DraggableMPTTAdmin)
 admin.site.register(
     [BuilderInformation, RecipientSize, PrudenceAdvice, Component,
@@ -60,4 +64,4 @@ admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)
 admin.site.register(TemplateSGA)
-
+admin.site.register(Donation, DonationAdmin)
