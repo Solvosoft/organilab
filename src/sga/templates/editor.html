@@ -57,6 +57,9 @@
             -->
         </div>
     </div>
+</div>
+<div class="row">
+
     <div class="col-sm-2 col-md-3">
 
       <ul class="nav nav-tabs" role="tablist">
@@ -222,15 +225,14 @@
         <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
     </div>
 
-    <div class="col-sm-6 col-md-9  ">
-        <div id="canvasContainer" class="canvas-container" >
-        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100%"></canvas>
+    <div class="col-sm-6 col-md-9" >
+        <div id="canvasContainer" class="canvas-container"  style="width:100%">
+        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100% !important"></canvas>
         </div>
     </div>
 </div>
 
 <div id="hiddencanvas" class="hide hidden">
-
 </div>
 
 <style>
@@ -238,6 +240,7 @@
         margin: 0 auto;
         border: 1px solid #aaa;
     }
+
 
 </style>
 {% endblock content %}

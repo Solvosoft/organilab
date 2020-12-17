@@ -4,7 +4,7 @@ class TextBoxTag():
         self.properties = {
             'type': 'textbox',
             'originX': 'originX', 'originY': 'originY',
-            'left': 'left', 'top': 'top',
+            'left': 'margin-left', 'top': 'margin-top',
             'width': 'width', 'height': 'height',
             'fill': 'color', 'stroke': 'stroke', 'color': 'color',
             'strokeWidth': 'stroke-width', 'strokeDashArray': 'stroke-dasharray',
@@ -32,7 +32,7 @@ class ITextBoxTag():
         self.properties = {
             'type': 'i-text',
             'originX': 'originX', 'originY': 'originY',
-            'left': 'left', 'top': 'top',
+            'left': 'margin-left', 'top': 'margin-top',
             'width': 'width', 'height': 'height',
             'fill': 'color', 'stroke': 'stroke', 'color': 'color',
             'strokeWidth': 'stroke-width', 'strokeDashArray': 'stroke-dasharray',
@@ -103,7 +103,7 @@ class LineTag():
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
-    styles = "position:absolute;"
+    styles = ""
     tag = ""
     warningword = ['Peligro']
 
@@ -121,11 +121,14 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
     def set_tag(self):
         if (self.type == "textbox"):
-            self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
+            self.tag = "<div style=\"%s\"><p>%s</p></div>" % (self.parse_data(), self.json_props['text'])
+            print(self.parse_data())
         if (self.type == "image"):
-            self.tag = "<img style=\"%s\" src=\"%s\">" % (self.parse_data(), self.json_props['src'])
+            self.tag = "<p style=\"%s\"><img src=\"%s\"></p>" % (self.parse_data(), self.json_props['src'])
+            print(self.parse_data())
         if (self.type == "i-text"):
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
+            print(self.parse_data())
         if (self.type == "line"):
             self.tag = "<hr style=\"%s;%s\">" % (self.parse_data(), self.get_hr_specific_styles())
         return self.tag
@@ -140,27 +143,37 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             self.properties.pop(key)
 
     def parse_data(self):
-        if self.json_props['scaleX'] and self.json_props['scaleY']:
-            self.styles += "transform: scale({},{});".format(
-                self.json_props['scaleX'] / self.wa_scale_x,
-                self.json_props['scaleY'] / self.wa_scale_y)
-            self.pop_from_dict(['scaleY', 'scaleX'])
-        if self.json_props['originX'] and self.json_props['originY']:
-            self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
-            self.pop_from_dict(['originY', 'originX'])
-        if self.json_props['top'] and self.json_props['left']:
-            top_value = str(self.json_props['top'] / self.wa_scale_y) + 'px'
-            left_value = str(self.json_props['left'] / self.wa_scale_y) + 'px'
-            self.styles += "{}:{};".format('top', top_value)
-            self.styles += "{}:{};".format('left', left_value)
-            self.pop_from_dict(['top', 'left'])
+        lista=["backgroundColor","top","left","color","fontSize","width","heigth"]
+
+     #   if self.json_props['scaleX'] and self.json_props['scaleY']:
+           # self.styles += "transform: scale({},{});".format(
+              #  self.json_props['scaleX'] / self.wa_scale_x,
+             #   self.json_props['scaleY'] / self.wa_scale_y)
+            #self.pop_from_dict(['scaleY', 'scaleX'])
+       # if self.json_props['originX'] and self.json_props['originY']:
+        #    self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
+         #   self.pop_from_dict(['originY', 'originX'])
+        #if self.json_props['top'] and self.json_props['left']:
+         #   top_value = str(self.json_props['top'] / self.wa_scale_y) + 'px'
+          #  left_value = str(self.json_props['left'] / self.wa_scale_x) + 'px'
+           # self.styles += "{}:{};".format('top', top_value)
+            #self.styles += "{}:{};".format('left', left_value)
+            #self.pop_from_dict(['top', 'left'])
+
         for key, value in self.properties.items():
             if key == 'color':
                 if self.json_props['text'] in self.warningword:
                     self.styles += "{}:{};".format('color', 'red')
-            elif self.json_props[key]:
+            elif key == 'backgroundColor':
+                self.styles += "{}:{};".format('background-color', 'white')
+            elif key == 'left' or key == 'top':
+                if key == 'left':
+                    self.styles += "{}:{};".format(value, str(self.json_props[key]/self.wa_scale_x) + 'cm')
+                else:
+                    self.styles += "{}:{};".format(value, str(self.json_props[key] / self.wa_scale_y) + 'cm')
+
+            elif key in lista:
+                #print(key)
                 self.styles += "{}:{};".format(value, self.json_props[key] if key not in self.to_append_px else
-                str(self.json_props[key]) + 'px')
+                    str(self.json_props[key]) + 'px')
         return self.styles
-
-

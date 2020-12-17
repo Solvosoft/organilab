@@ -64,7 +64,7 @@ def add_background(color):
 
 # Setting page size with Css to render to pdf size, @media print is other way to render size properly in Css
 def ending_of_styles(info_recipient):
-    ending_tags = '</style></head><body>'
+    ending_tags = 'p{background-color:white}</style></head><body>'
     height = str(info_recipient['height_value']) + info_recipient['height_unit']
     width = str(info_recipient['width_value']) + info_recipient['width_unit']
     page_size = height + ' ' + width
@@ -79,13 +79,14 @@ def ending_of_styles(info_recipient):
 # Convert Json elements inside html
 def render_body(json_elements, work_area):
     body_data = ""
+    header='<div id="header_content"><table width="100%"><tr><td style="text-align:left;">verbose title</td><td style="text-align:right;">Date here</td></tr></table></div>'
+    body_data+=header
     for elem in json_elements:
         style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
         body_data += style_parser.set_tag()
-    header='<div id="header_content"><table width="100%"><tr><td style="text-align:left;">verbose title</td><td style="text-align:right;">Date here</td></tr></table></div>'
+        #print(style_parser.set_tag())
     footer='<div id="footer_content"><table width="100%"><tr><td style="text-align:left;">user here</td><td style="text-align:right;"><pdf:pagenumber> of <pdf:pagecount></td></tr></table></div>'
     body_data+=footer
-    body_data+=header
     return body_data
 
 #TODO check if we need this change  from px to em
