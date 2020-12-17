@@ -126,6 +126,7 @@ function handleDragEnd(e) {
              img.set("top", get_position_x(e));
              img.set("left", get_position_y(e));
              img.set("centeredScaling", true);
+             console.log(img);
              canvas_editor.add(img);
          });
      }
@@ -350,7 +351,7 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
 
  let height = $(".canvas-container").height();
  if (height < 400){
-     height = 400;
+     height = 800;
  }
  let width = $(".canvas-container").width();
  if(width < 400 ){

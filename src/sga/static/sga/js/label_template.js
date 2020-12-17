@@ -159,6 +159,7 @@ $(document).ready(function(){
 function get_canvas(pk){
     for(let canvas of _canvases){
         let id = canvas.canv_obj.lowerCanvasEl.id;
+        console.log(canvas.canv_ob+"-op-");
         if (id === "preview_" + pk.toString())
             return canvas.canv_obj;
      }
