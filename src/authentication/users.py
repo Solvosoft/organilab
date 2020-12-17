@@ -16,7 +16,8 @@ from django.views.generic import CreateView, UpdateView
 
 from laboratory.decorators import user_group_perms
 from authentication.forms import CreateUserForm, PasswordChangeForm
-from laboratory.models import OrganizationUserManagement
+from laboratory.models import OrganizationUserManagement, Profile
+from laboratory.utils import get_laboratories_from_organization
 
 
 @method_decorator(login_required, name='dispatch')
@@ -54,10 +55,18 @@ class AddUser(CreateView):
         ).first()
         user.password=password
         user.save()
+        profile =Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
+            id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
+
         self.send_email(user)
         orga_user_manager = OrganizationUserManagement.objects.filter(organization__pk=self.kwargs['pk']).first()
         if orga_user_manager:
             orga_user_manager.users.add(user)
+            labs = get_laboratories_from_organization(orga_user_manager.pk)
+            lab_list = list(labs)
+            if lab_list:
+                profile.laboratories.add(*lab_list)
+
         return response
 
 @method_decorator(login_required, name='dispatch')

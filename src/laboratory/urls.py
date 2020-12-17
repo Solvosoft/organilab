@@ -16,11 +16,21 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView
-
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
+from laboratory.views.my_reservations import MyReservationView
+from laboratory.validators import validate_duplicate_initial_date
+from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
 
 urlpatterns = [
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/', ApiReservedProductsCRUD.as_view(), name='api_reservation_detail'),
+    url(r'rp/api/reservedProducts$', ApiReservedProductsCRUD.as_view(), name='api_reservation_create'),
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
+    url(r'rp/api/reservedProducts/(?P<pk>\d+)/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
+    url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
+    url(r"my_reservations$", MyReservationView.as_view(), name="my_reservations"),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
@@ -28,7 +38,10 @@ urlpatterns = [
     # Tour steps
     url(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
     url(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
-    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation")
+    url(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
+
+    url(r"validators", validate_duplicate_initial_date, name="date_validator"),
+    url(r"returnLabId", return_laboratory_of_shelf_id, name="get_lab_id"),
 ]
 
 lab_shelf_urls = [
@@ -71,7 +84,7 @@ shelf_object_urls = [
     url(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
-        name="shelfobject_searchupdate")
+        name="shelfobject_searchupdate"),
 ]
 
 lab_reports_urls = [
@@ -149,6 +162,11 @@ organization_urls = [
     url('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
 ]
 
+lab_profiles_urls = [
+    url(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
+    url(r"list/(?P<pk>\d+)?$", ProfileUpdateView.as_view(), name="update_lab_profile"),
+] 
+
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
@@ -164,5 +182,9 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
+        
+   
+
 
 ] +reports_all_lab

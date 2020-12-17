@@ -1,0 +1,24 @@
+{% load i18n %}
+<!-- Modal -->
+<div class="modal fade" id="delete_all_obj_reservation_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_reservation_delete_all_title">{% trans 'Delete All Selected Items' %}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="modal_reservation_delete_all_form" method="POST">
+            {% csrf_token %}
+            {% trans 'Do you want to delete all selected items?' %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="delete_reserved_products()">{% trans 'Accept' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

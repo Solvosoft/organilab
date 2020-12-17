@@ -3,10 +3,11 @@ djreservation
 __pycache__/
 *.py[cod]
 *$py.class
+/entorno
 
 # C extensions
 *.so
-
+4.2
 # Distribution / packaging
 .Python
 env/

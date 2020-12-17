@@ -25,6 +25,10 @@ from laboratory.decorators import user_group_perms
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from ..logsustances import log_object_change
+from django.views.generic.edit import FormView
+from django.shortcuts import render
+
+from laboratory.forms import ReservationModalForm
 
 
 @login_required
@@ -47,6 +51,16 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
             'laboratory': lab_pk,
             'request': request
         })
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_group_perms(perm='reservations.add_reservation'), name='dispatch')
+class ShelfObjectReservationModal(FormView):
+    template_name = 'laboratory/reservation_modal.html'
+    form_class = ReservationModalForm
+    success_message = "Reservation done successfully"
+    success_url = "/"
+
 
 
 @login_required
