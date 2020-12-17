@@ -306,10 +306,18 @@ MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
 JQUERY_URL = None
 
+DATE_INPUT_FORMATS = [
+    '%d/%m/%Y', '%Y-%m-%d', '%d/%m/%y'
+]
+
+DATE_FORMAT = 'd/m/Y'
+
 DATETIME_INPUT_FORMATS = [
-    '%m/%d/%Y %H:%M %p',
-    '%Y-%m-%d %H:%M %p',
-    '%d/%m/%y %H:%M %p'
+    '%Y/%m/%d %H:%M %A',
+    '%m/%d/%Y %H:%M',
+    '%d/%m/%Y %H:%M',
+    '%Y-%m-%d %H:%M',
+    '%d/%m/%y %H:%M'
 ]
 
 #Paypal configurations
