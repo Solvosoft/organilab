@@ -34,7 +34,7 @@ from djgentelella.urls import urlpatterns as urls_djgentelela
 
 from sga import urls as sga_urls
 from risk_management import urls as risk_urls
-from sga.views import index_organilab, donate
+from sga.views import index_organilab, donate, donate_success
 
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
@@ -55,6 +55,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^markitup/', include('markitup.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^donate$', donate, name='donate'),
+    url(r'^donate_success$', donate_success, name='donate_success'),
 ]
 
 paypal_urls = [
