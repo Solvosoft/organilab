@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Donate Organilab' %}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13" align="center">
+                <h3 class="heading-1" ><span> {% trans 'Thank for support this project making your donation.' %}</span></h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row text-center">
+    {% if not pay %}
+        {% if form %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    {{form.as_horizontal}}
+                    <div class="row text-center">
+                        <a class="btn btn-dark" href={% url 'index' %}>{% trans 'Cancel'%}</a>
+                        <button type="submit" class="btn btn-primary">{% trans 'Continue' %}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+    {% else %}
+        <h2>{% trans 'Donation Details'%}</h2>
+        <div class="col-md-offset-3 col-md-6">
+            <div style="max-width:300px; margin:0 auto; text-align:left">
+                <table class="table">
+                    <tr>
+                        <td>{% trans 'Name' %}</td>
+                        <td>{{form.name.value}}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Email' %}</td>
+                        <td>{{form.email.value}}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Amount' %}</td>
+                        <td>${{form.amount.value}}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Add to donators list?' %}</td>
+                        <td>{% if form.is_donator.value %} {% trans 'Yes' %} {% else %} {% trans 'No' %} {% endif %}</td>
+                    </tr>
+                </table>
+            </div>
+            {{paypal_form.render}}
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

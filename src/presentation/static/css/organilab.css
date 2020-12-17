@@ -17,11 +17,6 @@ html {
     transform: rotate(270deg);
 }
 
-.container {
-    width: auto;
-    padding: 0 15px;
-}
-
 .container .text-muted {
     margin: 20px 0;
 }
@@ -77,4 +72,6 @@ img {
     font-size: 24px;
 }
 
-
+.fa-blank {
+    visibility:hidden !important;
+}
