@@ -3,12 +3,16 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object
+from .models import Laboratory, Object, Profile
+from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.utils.translation import ugettext_lazy as _
 from laboratory.models import OrganizationStructure
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from django.forms import ModelForm
+
 
 class ObjectSearchForm(CustomForm, forms.Form):
     q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
@@ -68,3 +72,23 @@ class SearchUserForm(CustomForm):
         users_list = kwargs.pop('users_list')
         super(SearchUserForm, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
+
+
+class ReservationModalForm(GTForm, ModelForm):
+
+    class Meta:
+        model = ReservedProducts
+        fields = ['amount_required','initial_date', 'final_date']
+        widgets = {
+            'initial_date': genwidgets.DateTimeInput(),
+            'final_date': genwidgets.DateTimeInput(),
+            'amount_required': genwidgets.NumberInput()
+        }
+
+
+class ProfileForm(forms.Form): 
+    first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
+    last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
+    id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
+    job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
+    profile_id = forms.CharField(widget=forms.HiddenInput())
