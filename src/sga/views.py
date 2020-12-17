@@ -364,7 +364,7 @@ def donate(request):
                 'invoice': str(donation.pk),
                 'currency_code': 'USD',
                 'notify_url': settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
-                'return_url': settings.MY_PAYPAL_HOST + reverse('index'),
+                'return_url': settings.MY_PAYPAL_HOST + reverse('donate_success'),
                 'cancel_return': settings.MY_PAYPAL_HOST + reverse('index'),
             }
             pay = True
@@ -376,3 +376,7 @@ def donate(request):
         form = DonateForm()
         return render(
             request, 'donate_organilab.html', {'form': form, 'pay': pay})
+
+def donate_success(request):
+    messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
+    return HttpResponseRedirect(reverse('donate'))
