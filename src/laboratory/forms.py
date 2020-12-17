@@ -80,9 +80,9 @@ class ReservationModalForm(GTForm, ModelForm):
         model = ReservedProducts
         fields = ['amount_required','initial_date', 'final_date']
         widgets = {
-            'initial_date': genwidgets.DateTimeInput(),
-            'final_date': genwidgets.DateTimeInput(),
-            'amount_required': genwidgets.NumberInput()
+            'initial_date': genwidgets.DateTimeInput,
+            'final_date': genwidgets.DateTimeInput,
+            'amount_required': genwidgets.NumberInput
         }
 
 

@@ -3,6 +3,7 @@ from django import forms
 from django.conf import settings
 from laboratory.utils import get_user_laboratories
 from risk_management.models import RiskZone, IncidentReport
+from djgentelella.widgets import core as djgentelella
 
 
 class RiskZoneCreateForm(forms.ModelForm):
@@ -31,6 +32,7 @@ class IncidentReportForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'causes': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+            "incident_date": djgentelella.DateInput,
             'infraestructure_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
             'people_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
             'environment_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
