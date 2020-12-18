@@ -3,9 +3,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelect
 
 from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication
-
 
 class RecipientInformationForm(forms.Form):
     substance = forms.ModelChoiceField(queryset=Substance.objects.all())
@@ -19,8 +19,9 @@ class RecipientInformationForm(forms.Form):
 class SGAEditorForm(forms.Form):
     #warningwords = forms.ModelChoiceField(queryset=WarningWord.objects.all(),
      #                                     label=_("Warning Word"))
-    dangerindication = AutoCompleteSelectField('dangerindication',
-                                          label=_("Danger Indication"))
+    dangerindication = AutocompleteSelect('dangerbasename')
+    #,
+                        #                  label=_("Danger Indication"))
     prudenceadvice = AutoCompleteSelectField('prudenceadvices',
                                           label=_("Prudence Advices"))
 
