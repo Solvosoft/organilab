@@ -1,8 +1,14 @@
-from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
-from sga.models import DangerIndication
+from djgentelella.groute import register_lookups
+from sga.models import DangerIndication,PrudenceAdvice
 
-@register_lookups(prefix="danger", basename="dangerbasename")
-class DangerModelLookup(BaseSelect2View):
+
+@register_lookups(prefix="prudence", basename="prudencesearch")
+class PrudenceGModelLookup(BaseSelect2View):
+    model = PrudenceAdvice
+    fields = ['code','name']
+
+@register_lookups(prefix="danger", basename="dangersearch")
+class DangerGModelLookup(BaseSelect2View):
     model = DangerIndication
-    fields = ['code']
+    fields = ['code','description']

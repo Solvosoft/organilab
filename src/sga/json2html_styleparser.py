@@ -143,7 +143,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             self.properties.pop(key)
 
     def parse_data(self):
-        lista=["backgroundColor","top","left","color","fontSize","width","heigth"]
+        datalist=["backgroundColor","top","left","color","fontSize","width","heigth"]
 
      #   if self.json_props['scaleX'] and self.json_props['scaleY']:
            # self.styles += "transform: scale({},{});".format(
@@ -171,8 +171,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                     self.styles += "{}:{};".format(value, str(self.json_props[key]/self.wa_scale_x) + 'cm')
                 else:
                     self.styles += "{}:{};".format(value, str(self.json_props[key] / self.wa_scale_y) + 'cm')
-
-            elif key in lista:
+            elif key in datalist:
                 #print(key)
                 self.styles += "{}:{};".format(value, self.json_props[key] if key not in self.to_append_px else
                     str(self.json_props[key]) + 'px')

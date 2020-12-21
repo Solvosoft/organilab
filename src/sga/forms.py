@@ -4,8 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.forms.forms import GTForm
+from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence
 
-from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication
 
 class RecipientInformationForm(forms.Form):
     substance = forms.ModelChoiceField(queryset=Substance.objects.all())
@@ -16,15 +17,21 @@ class RecipientInformationForm(forms.Form):
     recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
 
 
-class SGAEditorForm(forms.Form):
+class SGAEditorForm(CustomForm,forms.ModelForm):
     #warningwords = forms.ModelChoiceField(queryset=WarningWord.objects.all(),
      #                                     label=_("Warning Word"))
-    dangerindication = AutocompleteSelect('dangerbasename')
-    #,
-                        #                  label=_("Danger Indication"))
-    prudenceadvice = AutoCompleteSelectField('prudenceadvices',
-                                          label=_("Prudence Advices"))
-
+    #dangerindication = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"),widget=forms.Select,label="Danger Indication")
+    #prudenceadvice = AutoCompleteSelectField('prudenceadvices',
+     #                                     label=_("Prudence Advices"))
+   # dangerindication = AutoCompleteSelectField('dangerindication',
+    #                                      label=_("Danger Indication"))
+    class Meta:
+        model = DangerPrudence
+        fields = ('prudence_advice','danger_indication')
+        widgets = {
+            'prudence_advice':AutocompleteSelect('prudencesearch'),
+            'danger_indication': AutocompleteSelect('dangersearch')
+        }
 
 class EditorForm(forms.ModelForm):
     preview = forms.CharField(widget=forms.HiddenInput())
