@@ -301,7 +301,7 @@ function setNewCanvas(widthP,heightP){
 
 $("#id_dangerindication_on_deck").bind('added', function() {
     let obj = $("#id_dangerindication_on_deck .tag");
-
+    console.log('opera')
     obj.attr('draggable', 'True');
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
