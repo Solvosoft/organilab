@@ -22,6 +22,9 @@ from django.views.decorators.http import require_http_methods
 from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
+from django.views.decorators.csrf import csrf_exempt
+
+# from django.http import JsonResponse
 
 register = Library()
 
@@ -43,8 +46,8 @@ def html2pdf(json_data):
     pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
     result_file = open(pdf_absolute_path, "w+b")
     pisa_status = pisa.CreatePDF(
-            json_data,                # the HTML to convert
-            dest=result_file)           # file handle to recieve result
+        json_data,  # the HTML to convert
+        dest=result_file)  # file handle to recieve result
     result_file.close()
     try:
         pdf = open(pdf_absolute_path, "rb")
@@ -108,6 +111,7 @@ def template(request):
     }
     return render(request, 'template.html', context)
 
+
 # SGA editor
 def editor(request):
     finstance = None
@@ -133,6 +137,7 @@ def editor(request):
     }
     return render(request, 'editor.html', context)
 
+
 # SGA Label Creator Page
 
 def get_step(step):
@@ -145,6 +150,7 @@ def get_step(step):
     except ValueError:
         step = 0
     return step
+
 
 def label_creator(request, step=0):
     step = get_step(step)
@@ -202,7 +208,8 @@ def clean_json_text(text):
 
 def show_editor_preview(request, pk):
     recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
-    request.session['global_info_recipient'] = {'height_value': recipients.height, 'height_unit': recipients.height_unit,
+    request.session['global_info_recipient'] = {'height_value': recipients.height,
+                                                'height_unit': recipients.height_unit,
                                                 'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
     weight = -1
@@ -325,9 +332,7 @@ def search_autocomplete_sustance(request):
     return HttpResponse(data, mimetype)
 
 
-
 def index_organilab(request):
-
     if request.method == "POST":
         form = SearchDangerIndicationForm(request.POST)
 
@@ -345,3 +350,17 @@ def index_organilab(request):
         form = SearchDangerIndicationForm()
 
     return render(request, 'index_organilab.html', {'form': form})
+
+
+@csrf_exempt
+def get_prudence_advice(request):
+    code = request.POST.get('code', '')
+    data = PrudenceAdvice.objects.get(code=code)
+    return HttpResponse(data.name)
+
+
+@csrf_exempt
+def get_danger_indication(request):
+    code = request.POST.get('code', '')
+    data = DangerIndication.objects.get(code=code)
+    return HttpResponse(data.description)

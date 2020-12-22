@@ -236,8 +236,66 @@ function cmToPixel(cadena){
     sizeInPixel.push(cadena[1]*38);
     return sizeInPixel;
 }
+function create_container(message,classname){
+    let div= document.createElement('div')
+    div.innerHTML=`<span class="delete_message">x</span>`;
+    div.classList.add(classname);
+    div.append(create_message(message));
+
+    return div;
+ }
+ function create_message(message){
+    let textbox= document.createElement('p');
+    textbox.classList.add('selects');
+    textbox.textContent=message;
+    textbox.setAttribute('draggable', 'True');
+    textbox.setAttribute('data-ftype',"textbox")
+    textbox.setAttribute('title',message);
+    textbox.addEventListener('dragstart', handleDragStart, false);
+    textbox.addEventListener('dragend', handleDragEnd, false);
+ return textbox;
+ }
 
 $(document).ready(function () {
+$('#id_prudence_advice').change(function(){
+
+    let code=$(this).find('option:selected').text().split(' ');
+    $.ajax({
+        url: 'sga/prudence/',
+        type:'POST',
+        data: {'code':code[0]},
+        datatype:'json',
+        success: function (message) {
+        if($('.prudence_message').length==0){
+        $("#id_prudence_advice").parent().append(create_container(message,'prudence_message'));
+        }else{
+        $('.prudence_message').find('p').text(message);
+        }
+      }
+        });
+        });
+
+$('#id_danger_indication').change(function(){
+    let code=$(this).find('option:selected').text().split(' ');
+    $.ajax({
+        url: 'sga/get_danger_indication/',
+        type:'POST',
+        data: {'code':code[0]},
+        datatype:'json',
+        success: function (message) {
+        if($('.danger_message').length==0){
+        $("#id_danger_indication").parent().append(create_container(message,'danger_message'));
+        }else{
+        $('.danger_message').find('p').text(message);
+        }
+      }
+        });
+});
+$(document).on('click','.delete_message',function(){
+console.log('op')
+    $(this).parent().remove();
+
+});
     $("#id_recipient_size").on('change', function(){
 
     let select = $(this);
@@ -298,7 +356,7 @@ function setNewCanvas(widthP,heightP){
 //  $("#id_preview").val(canvas_editor.toDataURL('png'));
 // $("#sgaform").submit();
 });
-
+/*
 $("#id_dangerindication_on_deck").bind('added', function() {
     let obj = $("#id_dangerindication_on_deck .tag");
     console.log('opera')
@@ -310,7 +368,7 @@ $("#id_dangerindication_on_deck").bind('added', function() {
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
 });
-
+*/
 $("#logo_on_deck").bind('added', function() {
     let obj = $("#logo_on_deck .tag");
 
@@ -334,7 +392,7 @@ $("#barcode_on_deck").bind('added', function() {
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
 });
-
+/*
 $("#id_prudenceadvice_on_deck").bind('added', function() {
     let obj = $("#id_prudenceadvice_on_deck .tag");
     obj.attr('draggable', 'True');
@@ -347,7 +405,7 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
     obj[0].addEventListener('dragstart', handleDragStart, false);
     obj[0].addEventListener('dragend', handleDragEnd, false);
 });
-
+*/
 
  let height = $(".canvas-container").height();
  if (height < 400){
