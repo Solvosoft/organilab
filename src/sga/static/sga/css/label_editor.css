@@ -7,11 +7,35 @@
 */
 
 /* Canvas editor options */
+
 .select2 {
     width: 100%!important;
 }
 span.select2-container {
     z-index:10050;
+}
+.danger_message{
+    padding: 10px;
+    position:relative;
+}
+.prudence_message{
+  padding: 10px;
+    position:relative;
+ }
+ .delete_message{
+    position:absolute;
+    margin-left:90%;
+    top:1px;
+    padding: 2px;
+    font-size:12px;
+ }
+ .delete_message:hover{
+    cursor:pointer;
+    opacity:0.6;
+ }
+.selects{
+cursor: all-scroll;
+align-text:left;
 }
 
 .canvas_editor{

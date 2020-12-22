@@ -23,8 +23,8 @@ class SGAEditorForm(CustomForm,forms.ModelForm):
     #dangerindication = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"),widget=forms.Select,label="Danger Indication")
     #prudenceadvice = AutoCompleteSelectField('prudenceadvices',
      #                                     label=_("Prudence Advices"))
-   # dangerindication = AutoCompleteSelectField('dangerindication',
-    #                                      label=_("Danger Indication"))
+    #dangerindication = AutoCompleteSelectField('dangerindication',
+     #                                     label=_("Danger Indication"))
     class Meta:
         model = DangerPrudence
         fields = ('prudence_advice','danger_indication')
