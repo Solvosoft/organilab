@@ -14,11 +14,13 @@ class LaboratoryConfig(AppConfig):
         context = [
             ('shelf_object', 'Object in limit'),
             ('labroom', 'Labroom where is the object'),
-            ('laboratory', 'Laboratory where is the object')
+            ('laboratory', 'Laboratory where is the object'),
+            ('domain', 'url to block notifications')
         ]
         message = render_to_string('email/shelf_object_quantity_limit.html',
                                    context={
-                                       'shelf_object': DummyContextObject('shelf_object')
+                                       'shelf_object': DummyContextObject('shelf_object'),
+                                       'domain': DummyContextObject('domain')
                                    }
                                    )
         update_template_context(
