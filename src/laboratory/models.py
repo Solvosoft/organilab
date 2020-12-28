@@ -486,3 +486,17 @@ class ObjectLogChange(models.Model):
     precursor = models.BooleanField(default=False)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+
+
+class BlockedListNotification(models.Model):
+    laboratory = models.ForeignKey(
+        Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
+    object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Object"))
+
+    class Meta:
+        verbose_name = _('Blocked List Notification')
+        verbose_name_plural = _('Bloked List Notifications')
+    
+    def __str__(self):
+        return f"{self.object}: {self.laboratory}: {self.user}" 
