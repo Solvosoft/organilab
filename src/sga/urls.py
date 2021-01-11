@@ -41,6 +41,5 @@ urlpatterns = [
     url(r'editor', editor, name='editor'),
     url(r'download/', render_pdf_view, name='download'),
     url(r'prudence', views.get_prudence_advice, name='prudence'),
-    url(r'danger', views.get_danger_indication, name='get_danger_indication')
-
+    url(r'danger', views.get_danger_indication, name='get_danger_indication'),
 ]

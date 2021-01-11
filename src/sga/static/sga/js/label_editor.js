@@ -102,6 +102,7 @@ function handleDragEnd(e) {
              objectCaching: false,
              renderOnAddRemove: false,
          });
+         console.log($("#text-font-size").val())
          canvas_editor.add(name_label);
      }else if (ftype == "itext"){
          let name_label = new fabric.IText(data, {
@@ -292,7 +293,6 @@ $('#id_danger_indication').change(function(){
         });
 });
 $(document).on('click','.delete_message',function(){
-console.log('op')
     $(this).parent().remove();
 
 });
@@ -304,6 +304,7 @@ console.log('op')
     let comboBoxTextCleaned = comboBoxText[1].split(",");
     let dimensions = convertionTocm(comboBoxTextCleaned);
     dimensions = cmToPixel(dimensions);
+    console.log(dimensions);
     let HeightPix = dimensions[0];
     let WidthPix = dimensions[1];
     // let y = setSize(WidthPix, HeightPix);
