@@ -23,7 +23,7 @@ from .json2html import json2html
 from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
 from django.views.decorators.csrf import csrf_exempt
-
+from weasyprint import HTML
 # from django.http import JsonResponse
 
 register = Library()
@@ -34,11 +34,33 @@ def render_pdf_view(request):
     label_pk = request.POST.get("template_sga_pk", None)
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
-
     html_data = json2html(json_data, global_info_recipient)
-    response = html2pdf(html_data)
+    response = generate_pdf(html_data) #html2pdf(html_data)
     return response
 
+def generate_pdf(json):
+    """Generate pdf."""
+    # Model data
+
+    # Rendered
+    pdf_absolute_path = tempfile.gettempdir() + "/x.pdf"
+    result_file = open(pdf_absolute_path, "w+b")
+
+    html = HTML(string=json)
+    result = html.write_pdf(pdf_absolute_path)
+    result_file.close()
+    # Creating http response
+    ''' response = HttpResponse(content_type='application/pdf;')
+    response['Content-Disposition'] = 'inline; filename=list_people.pdf'
+    doc='''
+    try:
+        pdf = open(pdf_absolute_path, "rb")
+        response = FileResponse(pdf, content_type='application/pdf')
+    except IOError:
+        return HttpResponseNotFound()
+    response['Content-Disposition'] = 'attachment; filename=x.pdf'
+
+    return response
 
 # Return html rendered in pdf o return a html
 def html2pdf(json_data):
@@ -230,20 +252,21 @@ def show_editor_preview(request, pk):
             dangerindications += ""
         else:
             if dangerindications == '':
-                dangerindications += di.description
+                dangerindications += di.code+" "+di.description
             else:
                 dangerindications += ". " + di.description
+            #print(di.description)
 
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
-            prudenceAdvice += advice.name
+            prudenceAdvice += "Danger "+advice.code+" "+advice.name
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
-        casnumber += component.cas_number
+        casnumber += "#Cast: "+component.cas_number
 
     template_context = {
         '{{warningword}}': clean_json_text(warningword),
@@ -264,16 +287,20 @@ def show_editor_preview(request, pk):
             value = " "
         representation = representation.replace(key, value)
 
+
     files = {'logo_url': request.session['logo_file_url'],
              'barcode_url': request.session['barcode_file_url']}
-
+    #print(files)
+    #print(representation)
+    #print(pictograms)
     representation = utils_pictograms.pic_selected(representation,
                                                    pictograms, files)
-
+    #print(representation)
     context = {
         'object': representation,
         'preview': obj.preview
     }
+    #print(context)
 
     return JsonResponse(context)
 

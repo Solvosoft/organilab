@@ -45,8 +45,10 @@
     {% endif %}
 </div>
 <hr>
+{% for template in sgatemplates %}
+
 <div class="row">
-    {% for template in sgatemplates %}
+
       <div class="col-md-12">
 
           <div class="panel panel-default">
@@ -66,9 +68,8 @@
   </div>
 </div>
       </div>
-
-    {% endfor %}
 </div>
+    {% endfor %}
     <div class="wizard-footer">
         <div class="clearfix"></div>
         <div id="powered_by">

@@ -74,8 +74,10 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
+            console.log(handler);
             _canvases.push(handler);
             let index_temp = _canvases.length - 1;
+            console.log(_canvases.length)
            /* if( window.localStorage.getItem(element.id)){
                 temp = window.localStorage.getItem(element.id);
                 json_object = JSON.parse(temp)
@@ -84,7 +86,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             json_object = data.object;
            // }
            console.log(data.object);
-           console.log('--------------------');
             _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
                 _canvases[index_temp].canv_obj.item(0).selectable = false;
                 _canvases[index_temp].canv_obj['panning'] = false;
@@ -125,6 +126,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
 
                 let canvas_container_preview = $(".canvas-container-preview");
                 let height = canvas_container_preview.height();
+                console.log(height+" - "+element.id)
                 if (height < 400){
                     height = 400;
                 }
@@ -152,14 +154,13 @@ function redoFunction(ele){
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
          let canvas =  _canvases[this.dataset.order];
-         this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
+       //  this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
     });
 });
 
 function get_canvas(pk){
     for(let canvas of _canvases){
         let id = canvas.canv_obj.lowerCanvasEl.id;
-        console.log(canvas.canv_ob+"-op-");
         if (id === "preview_" + pk.toString())
             return canvas.canv_obj;
      }
@@ -167,7 +168,9 @@ function get_canvas(pk){
 
 function get_as_pdf(pk){
     const canvas = get_canvas(pk);
+//    console.log('212');
     const json_data = JSON.stringify(canvas);
+  //  console.log(json_data);
     $('#json_data').attr('value',json_data);
     document.download_pdf.submit();
 }
