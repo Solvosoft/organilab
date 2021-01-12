@@ -85,11 +85,11 @@ def render_body(json_elements, work_area):
             if len(elem['text']) > 0:
                 style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
                 body_data += style_parser.set_tag()
-                print(style_parser.set_tag())
+             #   print(style_parser.set_tag())
         else:
             style_parser = TagStyleParser({'type': elem['type'], 'json_data': elem, 'workarea': work_area})
             body_data += style_parser.set_tag()
-            print(style_parser.set_tag())
+            #print(style_parser.set_tag())
 
     return body_data
 

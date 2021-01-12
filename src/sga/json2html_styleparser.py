@@ -176,12 +176,14 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                         self.json_props['scaleY'])
                     self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
                 else:
-                    if 'text' in self.json_props:
-                        self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
-                        if self.json_props['text'] in self.warningword:
-                            self.styles += "{}:{};".format('color', 'red')
+
                     self.styles += "{}:{};".format('width', self.conversion_width('width', self.json_props) + 'cm')
                     self.styles += "{}:{};".format('height', self.conversion_height('height') + 'cm')
+                if 'text' in self.json_props:
+                    self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
+                    print(self.json_props)
+                    if self.json_props['text'] in self.warningword:
+                        self.styles += "{}:{};".format('color', 'red')
 
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
@@ -212,10 +214,10 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     def convert_danger(self,text):
         i = 0
         x = 6
-        result=""
+        result = ""
         while i < len(text):
             if text[i:x] == "Danger":
-                result +="<br><br><strong>Danger </strong>"
+                result +="<br><strong>Danger </strong>"
                 i = x
                 x += 6
             else:

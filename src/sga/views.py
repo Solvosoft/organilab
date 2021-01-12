@@ -234,12 +234,15 @@ def show_editor_preview(request, pk):
                                                 'height_unit': recipients.height_unit,
                                                 'width_value': recipients.width, 'width_unit': recipients.width_unit}
     substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
+    x=Substance.objects.get(pk=request.POST.get('substance',''))
+    print(x.uipa_name)
+    #print(request.POST.get('substance', ''))
     weight = -1
     warningword = "{{warningword}}"
-    dangerindications = ''
+    dangerindications = 'Indicaciones de Peligro\n'
     casnumber = ''
     pictograms = {}
-    prudenceAdvice = ''
+    prudenceAdvice = 'Consejos de Prudencia\n'
     for di in substance.danger_indications.all():
         if di.warning_words.weigth > weight:
             if di.warning_words.name == "Sin palabra de advertencia":
@@ -255,18 +258,17 @@ def show_editor_preview(request, pk):
                 dangerindications += di.code+" "+di.description
             else:
                 dangerindications += ". " + di.description
-            #print(di.description)
 
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
-            prudenceAdvice += "Danger "+advice.code+" "+advice.name
+            prudenceAdvice += advice.code+" "+advice.name
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
-        casnumber += "#Cast: "+component.cas_number
+        casnumber += "CAS: "+component.cas_number
 
     template_context = {
         '{{warningword}}': clean_json_text(warningword),
@@ -276,6 +278,7 @@ def show_editor_preview(request, pk):
         "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
         "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
         "{{substancename}}": clean_json_text(substance.comercial_name),
+        "{{uipa}}": clean_json_text(substance.uipa_name),
         '{{casnumber}}': clean_json_text(casnumber),
         '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
     }
