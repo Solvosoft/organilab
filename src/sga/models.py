@@ -140,6 +140,8 @@ class Component(models.Model):
 class Substance(models.Model):
     comercial_name = models.CharField(max_length=250,
                                       verbose_name=_("Comercial name"))
+    uipa_name= models.CharField(max_length=250, default="",
+                                verbose_name=_("UIPA name"))
     components = models.ManyToManyField(
         Component, verbose_name=_("Components"))
     danger_indications = models.ManyToManyField(
