@@ -70,6 +70,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
 (function( ) {
     let formdata = $("#sgaform").serializeArray();
     $(".templatepreview").each(function(index, element){
+        console.log($(this).getWidth());
         $.post(element.dataset.href,formdata,function(data, status){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);

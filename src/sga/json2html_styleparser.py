@@ -111,10 +111,10 @@ class LineTag():
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
-    styles = "position:absolute; padding:0;"
+    styles = "position:absolute; padding:0;line-height: 1.5em;"
     tag = ""
     cm = 0.0264583333
-    warningword = ['Peligro']
+    warningword = ['Peligro','peligro','Atención','atención']
 
     def __init__(self, props):
         self.to_append_px = ("font-size", "width", "height")
@@ -130,7 +130,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
     def set_tag(self):
         if (self.type == "textbox"):
-            self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.convert_danger(self.json_props['text']))
+            self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.separate_title(self.convert_header(self.json_props['text'])))
             #print(self.tag)
         if (self.type == "image"):
             self.tag = "<img style=\"%s\" src=\"%s\">" % (self.parse_data(), self.json_props['src'])
@@ -155,6 +155,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         if self.json_props['scaleX'] and self.json_props['scaleY']:
             if 'src' in self.json_props:
                 grades=int(float(self.json_props['angle']))
+
                 if self.json_props['angle'] > 2:
                     self.styles += "transform: scale({},{}) rotate({});".format(
                     self.json_props['scaleY'],self.json_props['scaleX'],
@@ -170,26 +171,29 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                 left = self.json_props['left'] * self.cm
 
 
-                if (width+left)*2>=self.wid:
+                if (width+left)>=self.wid:
                     self.styles += "transform: scale({},{});".format(
                         self.json_props['scaleX'],
                         self.json_props['scaleY'])
                     self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
                 else:
-
-                    self.styles += "{}:{};".format('width', self.conversion_width('width', self.json_props) + 'cm')
-                    self.styles += "{}:{};".format('height', self.conversion_height('height') + 'cm')
+                    if self.type=='i-text':
+                        self.styles += "transform: scale({},{});".format(
+                            self.json_props['scaleX'],
+                            self.json_props['scaleY'])
+                    else:
+                        self.styles += "{}:{};".format('width', self.conversion_width('width', self.json_props) + 'cm')
+                        self.styles += "{}:{};".format('height', self.conversion_height('height') + 'cm')
+                    print(self.separate_title(self.json_props['text']))
                 if 'text' in self.json_props:
                     self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
-                    print(self.json_props)
                     if self.json_props['text'] in self.warningword:
                         self.styles += "{}:{};".format('color', 'red')
-
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
 
 
-        if self.json_props['backgroundColor']=='':
+        if self.json_props['backgroundColor'] == '':
             self.styles += "{}:{};".format('background-color', 'white')
 
         top_value = str((self.json_props['top']) * self.cm) + 'cm'
@@ -211,17 +215,42 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     def conversion_fontsize(self):
         return str((int(float(self.json_props['fontSize'])))*self.cm) + 'cm'
 
-    def convert_danger(self,text):
-        i = 0
-        x = 6
-        result = ""
+    def convert_header(self,text):
+        data = text
+        if text.find('Consejos de Prudencia')>-1:
+            data = "<strong>Consejos de Prudencia</strong><br>"
+            data += text[len('Consejos de Prudencia'):len(text)]
+        if text.find('Indicaciones de Peligro')>-1:
+            data = "<strong>Indicaciones de Peligro</strong><br>"
+            data += text[len('Indicaciones de Peligro'):len(text)]
+        return data
+
+
+    def validate_concat(self,text, i,j):
+        position = j
         while i < len(text):
-            if text[i:x] == "Danger":
-                result +="<br><strong>Danger </strong>"
-                i = x
-                x += 6
+            if text[j+2] == '+':
+                print('+')
+                j += 7
+                position = j
             else:
-                result += text[i]
-                i += 1
+                break
+        return position
+
+    def separate_title(self,text):
+        i = 0
+        output = ""
+        x = 3
+        while i<len(text):
+
+            if (text[i] == 'H' and str(text[i+1:x]).isnumeric()) or (text[i]=='P' and str(text[i+1:x]).isnumeric()):
+                j = self.validate_concat(text,i,x)
+                output += '<br>'+text[i:j]
+                i = j
+                x = i+3
+            else:
+                output += text[i]
                 x += 1
-        return result
+                i += 1
+
+        return output

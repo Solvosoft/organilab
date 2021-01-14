@@ -31,6 +31,7 @@ def json2html(json_data, info_recipient):
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
+
         html_data += ending_of_styles(info_recipient)
         workarea = WorkArea(
             width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
