@@ -15,8 +15,8 @@
         </div>
 </div>
 </div>
-
- <div class="row">
+        {% if perms.laboratory.change_organizationusermanagement %}
+          <div class="row">
             <div class='col-md-8 col-md-offset-2 col-xs-12'>
                 <div class="x_panel" >
                     <div class="x_title"><h2>
@@ -45,7 +45,6 @@
 
 
                         </form>
-
                         <div class="col-md-12" align="center">
                 <a class="btn btn-primary"  href="{% url 'laboratory:add_user' organization.pk %}" >
                     {% trans 'Add New User' %}
@@ -55,7 +54,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+          </div>
+        {% endif %}
 <hr>
 
 <div class="table-responsive">
@@ -65,7 +65,9 @@
          <th>{% trans 'Username' %}</th>
          <th>{% trans 'Full name' %}</th>
          <th>{% trans 'Email' %}</th>
-         <th>{% trans 'Delete' %}</th>
+         {% if perms.laboratory.delete_organizationusermanagement %}
+          <th>{% trans 'Delete' %}</th>
+         {% endif %}
      </tr>
      </thead>
      <tbody>
@@ -79,12 +81,13 @@
                 <td>{{ obj.username }}</td>
                 <td>{{ obj.get_full_name }}</td>
                 <td>{{ obj.email }}</td>
-                <td align="center">
-
-                    <a class="btn btn-danger pull-center delete_user" data-toggle="modal" data-target="#modalConfirmDelete"
-                       data-id="{{ obj.pk }}" data-name="{{ obj.get_full_name }}">
-                        <i class="fa fa-trash"></i></a>
-                </td>
+                {% if perms.laboratory.delete_organizationusermanagement %}
+                  <td align="center">
+                      <a class="btn btn-danger pull-center delete_user" data-toggle="modal" data-target="#modalConfirmDelete"
+                        data-id="{{ obj.pk }}" data-name="{{ obj.get_full_name }}">
+                          <i class="fa fa-trash"></i></a>
+                  </td>
+                {% endif %}
                 </tr>
             {% endif %}
          {% endfor %}
@@ -94,6 +97,7 @@
      </tbody>
  </table>
 </div>
+{% if perms.laboratory.delete_organizationusermanagement %}
 <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
     <div class="modal-content text-center">
@@ -109,19 +113,22 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
 {% block javascripts %}
-{{ block.super }}
-<script>
-(function(){
-    $("#userstable").DataTable();
+  {{ block.super }}
+  {% if perms.laboratory.delete_organizationusermanagement %}
+    <script>
+      (function(){
+        $("#userstable").DataTable();
 
-    $(".delete_user").on('click', function(){
-        var url = "{% url 'laboratory:delete_user' organization.pk %}".concat(String($(this).data('id')));
-        $("#modal_delete_user").attr('href', url);
-        $("div.modal_user").text($(this).data('name'));
-    });
+        $(".delete_user").on('click', function(){
+            var url = "{% url 'laboratory:delete_user' organization.pk %}".concat(String($(this).data('id')));
+            $("#modal_delete_user").attr('href', url);
+            $("div.modal_user").text($(this).data('name'));
+        });
 
-})(jQuery);
-</script>
+      })(jQuery);
+    </script>
+  {% endif %}
 {% endblock %}

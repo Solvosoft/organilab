@@ -36,9 +36,7 @@ def access_management(request):
     return render(request, 'laboratory/access_management.html', context=context)
 
 
-@login_required
-@user_group_perms(perm='laboratory.view_organizationstructure')
-@user_group_perms(perm='laboratory.view_organizationusermanagement')
+@permission_required('laboratory.view_organizationusermanagement')
 def users_management(request, pk):
 
     context = {}
@@ -63,9 +61,8 @@ def users_management(request, pk):
 
     return render(request, 'laboratory/users_management.html', context=context)
 
-@login_required
-@user_group_perms(perm='laboratory.change_organizationusermanagement')
-@user_group_perms(perm='laboratory.view_organizationusermanagement')
+
+@permission_required('laboratory.delete_organizationusermanagement')
 def delete_user(request, pk, user_pk):
     user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
     if user_orga_management:
