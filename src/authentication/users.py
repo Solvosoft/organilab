@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.http import HttpResponseNotFound
@@ -20,8 +21,7 @@ from laboratory.models import OrganizationUserManagement, Profile
 from laboratory.utils import get_laboratories_from_organization
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_organizationusermanagement'), name='dispatch')
+@method_decorator(permission_required("laboratory.change_organizationusermanagement"), name="dispatch")
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
@@ -69,7 +69,8 @@ class AddUser(CreateView):
 
         return response
 
-@method_decorator(login_required, name='dispatch')
+
+@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
 
     model = User
@@ -93,7 +94,7 @@ class ChangeUser(UpdateView):
         return context
 
 
-@login_required
+@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
 @sensitive_post_parameters('password', 'password_confirm')
 @require_http_methods(["POST"])
 def password_change(request, pk):
