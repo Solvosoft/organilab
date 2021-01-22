@@ -11,7 +11,7 @@ from datetime import datetime
 import django_excel
 from django import forms
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
@@ -784,8 +784,7 @@ class LogObjectView(ReportListView):
                          ])
         return book
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReactivePresenceList(ReportListView):
     model = OrganizationStructure
     template_name = 'laboratory/organization_reactive_presence.html'
