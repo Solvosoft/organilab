@@ -7,7 +7,6 @@ Created on 26/12/2016
 
 import os
 from datetime import datetime
-
 import django_excel
 from django import forms
 from django.contrib import messages
@@ -31,8 +30,7 @@ from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, Profile, SustanceCharacteristics
 from laboratory.models import ObjectLogChange
-from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_users_form_organization, \
-    get_laboratories_from_organization
+from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -74,8 +72,6 @@ def link_callback(uri, rel):
             'media URI must start with %s or %s' % (sUrl, mUrl)
         )
     return path
-
-
 
 
 def make_book_organization_laboratory(objects):
@@ -548,7 +544,6 @@ def report_furniture(request, *args, **kwargs):
     return response
 
 
-
 @login_required
 @user_group_perms(perm='laboratory.do_report')
 def report_h_code(request, *args, **kwargs):
@@ -583,9 +578,6 @@ def report_h_code(request, *args, **kwargs):
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
     return response
-
-
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -770,7 +762,6 @@ class LogObjectView(ReportListView):
                  str(_('Unit')),
                  ]]
 
-
         for obj in context['object_list']:
 
             book.append([obj.user.get_full_name(),
@@ -783,6 +774,7 @@ class LogObjectView(ReportListView):
                          str(obj.measurement_unit)
                          ])
         return book
+
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReactivePresenceList(ReportListView):
