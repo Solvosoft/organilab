@@ -1,9 +1,8 @@
 # encoding: utf-8
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
 from django.shortcuts import render
-from laboratory.decorators import user_group_perms
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
 
