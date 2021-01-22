@@ -97,7 +97,7 @@
                     </li>
                 {% endif %}
 
-                {% if userperms.view_organizationstructure %}
+                {% if perms.laboratory.view_organizationusermanagement and perms.laboratory.add_organizationusermanagement %}
                 <li>
               <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
                   <i class='fa fa-university'></i> {% trans 'Access list' %}
