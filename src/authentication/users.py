@@ -70,7 +70,7 @@ class AddUser(CreateView):
         return response
 
 
-@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
+@method_decorator(permission_required("auth.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
 
     model = User
