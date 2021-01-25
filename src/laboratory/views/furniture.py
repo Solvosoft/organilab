@@ -32,8 +32,7 @@ class FurnitureReportView(ListView):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("name", "type")
