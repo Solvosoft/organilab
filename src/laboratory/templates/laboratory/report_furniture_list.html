@@ -8,7 +8,7 @@
  
   <div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
   
-   {% if perm_do_report and perm_furniture  %}
+   {% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
   
 		  <div class="pull-right">
 		  
@@ -44,7 +44,7 @@
      </div>
    {% endif  %}
   <br><br>
-  {% if perm_furniture  %}
+  {% if perms.laboratory.view_furniture %}
 	  {% for furniture in object_list %}
 	    <h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
 	      <a class="btn btn-sm btn-danger pull-right"
@@ -100,7 +100,7 @@
   {% else %}
       {% include 'laboratory/action_denied.html' %}
   {% endif %}
-  {% if perm_do_report and perm_furniture  %}
+  {% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
 	  <div class="pull-right">
 	 <div class="btn-group dropup">
 	  <button type="button" class="btn btn-danger">
