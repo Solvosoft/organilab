@@ -32,6 +32,20 @@ function handleDragEnd(e) {
     console.log('handleDragEnd');
 }
 
+function getList(){
+   let x= canvas_editor.getObjects();
+   let p=0;
+   let a=0;
+   x.forEach( function(item,i){
+        if(item.text=='Peligro' || item.text=="{{warningwork}}"){
+            p++;
+           }
+        if(item.text=="atención"){
+            a++;
+        }
+   });
+   return {"peligro":p,"atencion":a};
+}
 (function( ) {
  this.__canvases = [];
  fabric.Object.prototype.transparentCorners = false;
@@ -85,6 +99,7 @@ function handleDragEnd(e) {
  function get_position_y(e){
      return e.layerY;
  }
+
  function get_fabric_element(e){
      let data = e.dataTransfer.getData("label");
      let ftype = e.dataTransfer.getData('type');
@@ -102,7 +117,7 @@ function handleDragEnd(e) {
              objectCaching: false,
              renderOnAddRemove: false,
          });
-         console.log($("#text-font-size").val())
+
          canvas_editor.add(name_label);
      }else if (ftype == "itext"){
          let name_label = new fabric.IText(data, {
@@ -118,6 +133,7 @@ function handleDragEnd(e) {
              objectCaching: false,
              renderOnAddRemove: false,
          });
+          console.log(getList());
          canvas_editor.add(name_label);
 
      }else if(ftype == "image") {
@@ -127,7 +143,6 @@ function handleDragEnd(e) {
              img.set("top", get_position_x(e));
              img.set("left", get_position_y(e));
              img.set("centeredScaling", true);
-             console.log(img);
              canvas_editor.add(img);
          });
      }
