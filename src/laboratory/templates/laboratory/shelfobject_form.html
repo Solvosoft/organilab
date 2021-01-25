@@ -1,45 +1,38 @@
  {% load bootstrap i18n laboratory %}
  {% load static %}
- {%  has_perms "laboratory.add_shelfobject" as perm_add_shelfobject %}
- {%  has_perms "laboratory.change_shelfobject" as perm_change_shelfobject %}
 
- {% if perm_add_shelfobject or perm_change_shelfobject %}
+ {% if perms.laboratory.add_shelfobject or perms.laboratory.change_shelfobject %}
 	 <form data-ajax-submit="" onsubmit="return false;" method="post"
-		 {% if insearch %}
-		 action="{% url 'laboratory:shelfobject_searchupdate' laboratory form.instance.pk %}"
-		 {%else%}
-			data-success="processResponseshelfobject"
-			action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' laboratory %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}" 
-		{%endif%} >
+			{% if insearch %}
+				action="{% url 'laboratory:shelfobject_searchupdate' laboratory form.instance.pk %}"
+			{% else %}
+				data-success="processResponseshelfobject"
+				action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' laboratory %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}" 
+			{% endif %} >
 		
 		<div class="modal-body">
 		  {% csrf_token %}
 		  {{ form.as_horizontal }}
 
-		<div class="modal-footer">
-			{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
-			<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-		</div>
-		{% if q %}
-			<input type="hidden" name="q" value="{{q}}" />
-		{%endif%}
-
+			<div class="modal-footer">
+				{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
+				<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+			</div>
+			{% if q %}
+				<input type="hidden" name="q" value="{{q}}" />
+			{% endif %}
 	</form>
- <script>delete window.autocompleteselect2;</script>
- <script>
-
- if($("#shelfobjectCreate").length>0) {
- 	document.formset.push(gt_find_initialize($("#shelfobjectCreate")));
- }
- if($("#shelfobjectUpdate").length>0) {
- 	document.formset.push(gt_find_initialize($("#shelfobjectUpdate")));
- }
-
-</script>
-
-
+ 	<script>delete window.autocompleteselect2;</script>
+ 	<script>
+		if($("#shelfobjectCreate").length>0) {
+			document.formset.push(gt_find_initialize($("#shelfobjectCreate")));
+		}
+		if($("#shelfobjectUpdate").length>0) {
+			document.formset.push(gt_find_initialize($("#shelfobjectUpdate")));
+		}
+	</script>
 {% else %} 
-       {% include 'laboratory/action_denied.html' %}  	
+	{% include 'laboratory/action_denied.html' %}  	
 {% endif %}
   
   
