@@ -43,6 +43,7 @@ admin.site.register(models.Object, Object_Admin)
 admin.site.register(models.ShelfObject)
 admin.site.register(models.Solution)
 admin.site.register(models.Catalog)
+admin.site.register(models.BlockedListNotification)
 
 
 admin.site.register(models.OrganizationStructure,
