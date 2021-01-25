@@ -5,7 +5,7 @@ Created on 1/8/2016
 '''
 
 from django.conf.urls import url, include
-
+from django.urls import path
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from authentication import users
@@ -17,7 +17,7 @@ from laboratory.views import labroom, shelfobject, laboratory, solutions, organi
 from laboratory.views.access import access_management, users_management, delete_user
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
-from laboratory.views.objects import ObjectView
+from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.validators import validate_duplicate_initial_date
@@ -183,8 +183,7 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
     url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
-        
-   
-
-
+    path(
+        'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
+        block_notifications, name="block_notification") 
 ] +reports_all_lab

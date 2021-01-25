@@ -9,19 +9,24 @@ Free as freedom will be 26/8/2016
 from django import forms
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
+from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidget
+from django.contrib import messages
+import laboratory
 
 from laboratory.decorators import user_group_perms, view_user_group_perms
 # from laboratory.decorators import check_lab_permissions, user_lab_perms
-from laboratory.models import Object, SustanceCharacteristics
+from laboratory.models import Laboratory, Object, SustanceCharacteristics, BlockedListNotification
 from laboratory.utils import filter_laboratorist_profile
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
+from django.contrib.auth.decorators import login_required
 
 
 class ObjectView(object):
@@ -196,3 +201,13 @@ class ObjectForm(CustomForm,ModelForm):
             'is_public': genwidget.YesNoInput,
             'description': genwidget.Textarea
         }
+
+
+@login_required
+def block_notifications(request, lab_pk, obj_pk):
+    laboratory = Laboratory.objects.get(pk=lab_pk)
+    object = Object.objects.get(pk=obj_pk)
+    BlockedListNotification.objects.get_or_create(
+        laboratory=laboratory, object=object, user=request.user)
+    messages.success(request, "You won't be recieving notifications of this object anymore.")
+    return render(request, 'laboratory/block_object_notification.html')
