@@ -20,7 +20,6 @@ from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
-from laboratory.decorators import user_group_perms
 
 
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
