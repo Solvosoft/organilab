@@ -15,6 +15,7 @@ class RecipientInformationForm(forms.Form):
     address = forms.CharField(max_length=100, required=True )
     commercial_information = forms.Textarea( )
     recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
+    templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.all())
 
 
 class SGAEditorForm(CustomForm,forms.ModelForm):

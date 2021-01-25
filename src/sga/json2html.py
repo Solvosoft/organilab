@@ -2,21 +2,21 @@ import json
 
 from xhtml2pdf.util import getSize
 
-from sga.json2html_styleparser import TagStyleParser
-
+#from sga.json2html_styleparser import TagStyleParser
+from sga.tags import TagStyleParser
 
 class WorkArea:
-    def __init__(self, width, height):
+    def __init__(self, width, height,x,y):
         self.ref_left = 0
         self.ref_top = 0
         self.ref_width = 0
         self.ref_height = 0
         self.pro_y = 0
         self.pro_x = 0
-        self.initial_width = getSize(width)
-        self.initial_height = getSize(height)
-        self.width = int(float(width[0:-2]))
-
+        self.initial_width = x
+        self.initial_height = y
+        self.template_width = int(float(width[0:-2]))
+        self.template_height =int(float(height[0:-2]))
     def set_reference_instance(self, width, height, top=0, left=0):
         self.ref_left = getSize("%.2fpx" % left)
         self.ref_top = getSize("%.2fpx" % top)
@@ -26,16 +26,20 @@ class WorkArea:
         self.pro_x = self.ref_width / self.initial_width
 
 # Prepare and convert json objects into python objects
-def json2html(json_data, info_recipient):
+def json2html(json_data, info_recipient,recipient):
     if type(json_data) == str:
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
+        info_recipient['width_value'] = 20
+        info_recipient['height_value'] = 15
 
         html_data += ending_of_styles(info_recipient)
         workarea = WorkArea(
             width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
             height="%.2f%s" % (info_recipient['height_value'], info_recipient['height_unit']),
+            x=info_recipient['width_value'],
+            y=info_recipient['height_value']
         )
         if 'objects' in parsed_json:
             dataobjs = iter(parsed_json['objects'])
@@ -43,7 +47,7 @@ def json2html(json_data, info_recipient):
             workarea.set_reference_instance(
                 base['width'], base['height'], base['top'], base['left']
             )
-            html_data += render_body(dataobjs, workarea)
+            html_data += render_body(dataobjs, workarea,recipient)
 
         html_data += ending_of_html()
         return html_data
@@ -78,41 +82,46 @@ def ending_of_styles(info_recipient):
 
 
 # Convert Json elements inside html
-def render_body(json_elements, work_area):
+def render_body(json_elements, work_area,recipient):
     body_data = ""
     #header='<div id="header_content"><table width="100%"><tr><td style="text-align:left;">verbose title</td><td style="text-align:right;">Date here</td></tr></table></div>'
-    for elem in json_elements:
+    datalist=order_elements(json_elements)
+    validate=validate_danger_messages(datalist)
+    for elem in datalist:
         if 'text' in elem:
             if len(elem['text']) > 0:
-                style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
-                body_data += style_parser.set_tag()
-             #   print(style_parser.set_tag())
+                if validate['peligro']>0 and elem['text']=='atención' and validate['atencion']>0:
+                    pass
+                else:
+                    style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area,'sizes':recipient})
+                    body_data += style_parser.set_tag()
         else:
-            style_parser = TagStyleParser({'type': elem['type'], 'json_data': elem, 'workarea': work_area})
+            style_parser = TagStyleParser({'type': elem['type'], 'json_data': elem, 'workarea': work_area,'sizes':recipient})
             body_data += style_parser.set_tag()
-            #print(style_parser.set_tag())
 
     return body_data
 
 
-    #print(body_data)
-    #footer = '</div><div id="footer_content"><table width="100%"><tr><td style="text-align:left;">user here</td><td style="text-align:right;"><pdf:pagenumber> of <pdf:pagecount></td></tr></table></div>'
-    #body_data += footer
+
 
 # Sort the JSON elements by Margin-Top
+
+def validate_danger_messages(json_elements):
+    p=0
+    a=0
+    for elem in json_elements:
+        if 'text' in elem:
+            if elem['text']=='Peligro':
+                p+=1
+            if elem['text'] in['Atención','atención']:
+                a+=1
+
+    return {"peligro":p,"atencion":a}
 
 def order_elements(json_elements):
     datalist = []
     for elem in json_elements:
         datalist.append(elem)
-
-    for element in range(len(datalist) - 1, 0, -1):
-        for i in range(element):
-            if datalist[i]['top'] > datalist[i + 1]['top']:
-                temp = datalist[i]
-                datalist[i] = datalist[i + 1]
-                datalist[i + 1] = temp
-
     return datalist
 #TODO check if we need this change  from px to em
 # Define size in px in html
