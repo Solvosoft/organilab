@@ -5,7 +5,7 @@ from laboratory.models import ShelfObject, Profile
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
-
+from django.contrib.sites.models import Site
 
 @receiver(post_save, sender=ShelfObject)
 def notify_shelf_object_reach_limit(sender, **kwargs):
@@ -33,8 +33,13 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
     if not allowed_emails:
         allowed_emails = [settings.DEFAULT_FROM_EMAIL]
     for email in allowed_emails:
-        schema = f"http://localhost:8000/lab/{laboratory.pk}/blocknotifications/"
-        context['domain'] = f"{schema}{shelf_object.object.pk}/"
+        schema = 'https'
+        if settings.DEBUG:
+            schema = 'http'
+        url = f"/lab/{laboratory.pk}/blocknotifications/{shelf_object.object.pk}"
+        domain = Site.objects.get_current().domain
+        context['blockurl'] = f"{schema}://{domain}{url}"
+        context['domain'] = domain
         send_email_from_template("Shelf object in limit",
                              email,
                              context=context,
