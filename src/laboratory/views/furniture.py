@@ -8,26 +8,22 @@ Created on 26/12/2016
 '''
 
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.validators import RegexValidator
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-
 from django_ajax.decorators import ajax
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
-
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
-
 from laboratory.decorators import user_group_perms
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.do_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
