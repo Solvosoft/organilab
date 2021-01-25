@@ -86,8 +86,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = "/"
@@ -121,8 +120,7 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.delete_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = "/"

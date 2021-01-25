@@ -1,20 +1,15 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 
-
-
 {% block title %}{% trans 'Delete furniture' %}{% endblock %}
 {% block content %}
-
-  {%  has_perms "laboratory.delete_furniture" as perm_del_furniture %}
-
-  {% if perm_del_furniture %}
+  {% if perms.laboratory.delete_furniture %}
 	<form action="" method="post">{% csrf_token %}
-	    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
-	    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
 	</form>
 	<br> <br>
   {% else %} 
-       {% include 'laboratory/action_denied.html' %} 
+    {% include 'laboratory/action_denied.html' %} 
   {% endif %}	
 {% endblock%}
