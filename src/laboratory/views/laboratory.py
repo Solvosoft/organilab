@@ -14,8 +14,6 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-
-from laboratory.decorators import user_group_perms
 from laboratory.forms import LaboratoryCreate, H_CodeForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_user_laboratories
