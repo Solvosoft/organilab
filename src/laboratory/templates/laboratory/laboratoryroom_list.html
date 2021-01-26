@@ -1,108 +1,96 @@
 {% extends 'base.html' %}
 {% load i18n shelf_position static laboratory %}
-
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
-
 {% block extra_css %}
-<style>
-.select2 {
-    width: 100%!important;
-}
-
-
-</style>
+    <style>
+        .select2 {
+            width: 100%!important;
+        }
+    </style>
 {% endblock %}
 
 {# Container #}
 {% block container %}container-fluid{% endblock %}
 
 {# Content #}
-
-
 {% block content %}
-
-{%  has_perms "laboratory.view_furniture" as perm_furniture %}
-{%  has_perms "laboratory.view_laboratoryroom" as perm_laboratoryroom %}
-
-{% include 'laboratory/search_widget.html' %}
-{% include 'laboratory/reservation_modal.html' %}
-<h1 class="text-center">{% get_laboratory_name %}</h1>
+    {% include 'laboratory/search_widget.html' %}
+    {% include 'laboratory/reservation_modal.html' %}
+    <h1 class="text-center">{% get_laboratory_name %}</h1>
 
 
-{# Nav #}
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs" id="labmenues" role="tablist">
-            {% if perm_laboratoryroom %}
-            {% for LaboratoryRoom in object_list %}
-            <li role="presentation">
-                <a LaboratoryRoom.id aria-controls={{
-                   data-argument="{{ LaboratoryRoom.id }}"
-                   data-toggle="tab"
-                   href="#idlab" id="room_{{ LaboratoryRoom.id }}" onclick="function_name_furniture('{{ LaboratoryRoom.id }}')" role="tab"
-                   }}>{{ LaboratoryRoom.name }}</a>
-            </li>
-            {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
-</div>
-
-{# Furniture panel #}
-<div class="row">
-    <div class="col-md-12">
-        <div class="tab-content">
-            {% if perm_furniture %}
-            {% for LaboratoryRoom in object_list %}
-            <div class="tab-pane" id="idlab" role="tab-panel">
-                <div class="col-md-3">
-                    <div id="furnitures">
-                    </div>
-                </div>
-
-                <div class="col-md-9">
-                    <div id="shelf">
-                    </div>
-                    <div class="hidden" id="prototype_shelf_field">
-                        <h2>{% trans 'Please click over furniture items' %}<br>
-                            <small> {% trans 'Shelves will be displayed here' %} </small>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            {% endif %}
+    {# Nav #}
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" id="labmenues" role="tablist">
+                {% if perms.laboratory.view_laboratoryroom %}
+                    {% for LaboratoryRoom in object_list %}
+                        <li role="presentation">
+                            <a LaboratoryRoom.id aria-controls={{
+                                    data-argument="{{ LaboratoryRoom.id }}"
+                                    data-toggle="tab"
+                                    href="#idlab" id="room_{{ LaboratoryRoom.id }}" onclick="function_name_furniture('{{ LaboratoryRoom.id }}')" role="tab"}}>
+                                {{ LaboratoryRoom.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
         </div>
     </div>
-</div>
 
-{% include 'laboratory/shelfobjectUpdate_modal.html' %}
+    {# Furniture panel #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content">
+                {% if perms.laboratory.view_furniture %}
+                    {% for LaboratoryRoom in object_list %}
+                        <div class="tab-pane" id="idlab" role="tab-panel">
+                            <div class="col-md-3">
+                                <div id="furnitures">
+                                </div>
+                            </div>
+
+                            <div class="col-md-9">
+                                <div id="shelf">
+                                </div>
+                                <div class="hidden" id="prototype_shelf_field">
+                                    <h2>{% trans 'Please click over furniture items' %}<br>
+                                        <small> {% trans 'Shelves will be displayed here' %} </small>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'laboratory/shelfobjectUpdate_modal.html' %}
 {% endblock %}
 
 {% block js %}
-<script>
-    document.furniture_list = '{% url "laboratory:furniture_list" laboratory %}';
-    document.shelf_list = '{% url "laboratory:list_shelf" laboratory %}';
-    document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
-    document.api_modal = '{% url "laboratory:api_reservation_create"%}';
-    document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
-</script>
-<script src="{% static 'js/shelfobjectedit.js' %}"></script>
-<script src="{% static 'js/reservationmodal.js' %}"></script>
+    <script>
+        document.furniture_list = '{% url "laboratory:furniture_list" laboratory %}';
+        document.shelf_list = '{% url "laboratory:list_shelf" laboratory %}';
+        document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
+        document.api_modal = '{% url "laboratory:api_reservation_create"%}';
+        document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
+    </script>
+    <script src="{% static 'js/shelfobjectedit.js' %}"></script>
+    <script src="{% static 'js/reservationmodal.js' %}"></script>
 
-<script>
-    (function () {
-      $("#labmenues").find("a").first().click();
-      see_prototype_shelf_field();
-    })();
+    <script>
+        (function () {
+        $("#labmenues").find("a").first().click();
+        see_prototype_shelf_field();
+        })();
+    </script>
 
-</script>
-
-<script>
-    $(function() {
-        load_self_from_uls();
-    });
-
-</script>
-
+    <script>
+        $(function() {
+            load_self_from_uls();
+        });
+    </script>
 {% endblock %}
