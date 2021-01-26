@@ -6,7 +6,7 @@ Created on 26/12/2016
 '''
 
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -18,15 +18,12 @@ from djgentelella.widgets import core
 from laboratory.models import ShelfObject, Shelf, Object
 
 from .djgeneric import CreateView, UpdateView, DeleteView
-from ajax_select.fields import AutoCompleteSelectField
 from django.utils.translation import ugettext_lazy as _
 
-from laboratory.decorators import user_group_perms
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from ..logsustances import log_object_change
 from django.views.generic.edit import FormView
-from django.shortcuts import render
 
 from laboratory.forms import ReservationModalForm
 
@@ -53,8 +50,7 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
         })
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='reservations.add_reservation'), name='dispatch')
+@method_decorator(permission_required('reservations.add_reservation'), name='dispatch')
 class ShelfObjectReservationModal(FormView):
     template_name = 'laboratory/reservation_modal.html'
     form_class = ReservationModalForm
@@ -112,8 +108,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
         }
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_shelfobject'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_shelfobject'), name='dispatch')
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     form_class = ShelfObjectForm
@@ -143,8 +138,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return kwargs
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_shelfobject'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -178,8 +172,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return kwargs
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_shelfobject'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -227,8 +220,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         }
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.delete_shelfobject'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_shelfobject'), name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = "/"
