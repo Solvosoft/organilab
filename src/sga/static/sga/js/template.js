@@ -74,16 +74,18 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
         $.post(element.dataset.href,formdata,function(data, status){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
-            fabric.Image.fromURL($('#img').val(), function (img) {
+            $(".img").each((i,e)=>{
+            fabric.Image.fromURL(e.value, function (img) {
              img.scaleToWidth(100);
              img.scaleToHeight(100);
              img.set("top", 0);
              img.set("left", 0);
              img.set("centeredScaling", true);
-             console.log(img);
              newcanvas.add(img);
+             console.log(newcanvas)
          });
-         newcanvas.renderAll();
+         });
+            newcanvas.renderAll();
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
 
             _canvases.push(handler);

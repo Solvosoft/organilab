@@ -38,6 +38,9 @@
       <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
                     {% csrf_token %}
             {{form|bootstrap}}
+             {%for file in files %}
+              <input class="img" value="{{file}}" type="hidden">
+              {% endfor%}
             <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
         </form>
     </div>
@@ -51,15 +54,15 @@
       <div class="col-md-12">
 
           <div class="panel panel-default">
+
   <div class="panel-heading">
-      <input type="hidden" id="img" value="{{files.0}}">
                 <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
                    class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ sgatemplates.pk }})"> {% trans 'Get as PDF'%}</button>
-               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} {{files}} </a>
+               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} </a>
   </div
   <div class="panel-body">
-        <button data-order="{{forloop.counter0}}" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>
-        <button data-order="{{forloop.counter0}}" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Redo</button>
+        <button data-order="0" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>
+        <button data-order="0" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Redo</button>
       <div class="canvas-container-preview" onkeydown="">
       <canvas tabindex="1"  class="templatepreview"   id="preview_{{sgatemplates.pk}}"
                data-href="{% url 'sga:show_editor_preview' sgatemplates.pk %}"></canvas>

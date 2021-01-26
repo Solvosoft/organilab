@@ -130,12 +130,12 @@ def template(request):
         form = RecipientInformationForm(request.POST)
     else:
         form = None
-    x=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
+    template_sizes=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
     context = {
         'laboratory': None,
         'form': form,
         'sgatemplates': sgatemplates,
-        'sizes': x,
+        'sizes': template_sizes,
         'files': [logo_file_url, barcode_file_url]
 
     }
