@@ -1,4 +1,4 @@
-let _canvases = [];
+let _canvases;
 
 
 class CanvasHandler
@@ -13,36 +13,36 @@ class CanvasHandler
 }
 
 function save(index_temp, index_local){
-    _canvases[index_temp].redo = [];
+    _canvases.redo = [];
     $('#redo').prop('disabled', true);
-    if (_canvases[index_temp].state){
-        _canvases[index_temp].undo.push(_canvases[index_temp].state);
+    if (_canvases.state){
+        _canvases.undo.push(_canvases.state);
         $('#undo').prop('disabled', false);
     }
-    _canvases[index_temp].state = JSON.stringify(_canvases[index_temp].canv_obj);
+    _canvases.state = JSON.stringify(_canvases.canv_obj);
     if ( window.localStorage.getItem(index_local)){
         window.localStorage.removeItem(index_local)
-        window.localStorage.setItem(index_local, _canvases[index_temp].canv_obj)
+        window.localStorage.setItem(index_local, _canvases.canv_obj)
     }
     else{
-        window.localStorage.setItem(index_local, _canvases[index_temp].canv_obj)
+        window.localStorage.setItem(index_local, _canvases.canv_obj)
     }
 
 }
 function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     if(saveStack =='redo'){
-        _canvases[index].redo.push(_canvases[index].state);
-        if(_canvases[index].undo.length >= 2)
+        _canvases.redo.push(_canvases.state);
+        if(_canvases.undo.length >= 2)
         {
-            _canvases[index].state = _canvases[index].undo.pop();
+            _canvases.state = _canvases.undo.pop();
         }
 
     }
     else if (saveStack == 'undo'){
-        _canvases[index].undo.push(_canvases[index].state);
-        if(_canvases[index].redo.length >= 1)
+        _canvases.undo.push(_canvases.state);
+        if(_canvases.redo.length >= 1)
         {
-            _canvases[index].state = _canvases[index].redo.pop();
+            _canvases.state = _canvases.redo.pop();
         }
     }
     let on = $(buttonsOn);
@@ -50,17 +50,17 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     on.prop('disabled', true);
     off.prop('disabled', true);
 
-    _canvases[index].canv_obj.clear();
-    _canvases[index].canv_obj.loadFromJSON(JSON.parse(_canvases[index].state), function(){
-        _canvases[index].canv_obj.renderAll();
+    _canvases.canv_obj.clear();
+    _canvases.canv_obj.loadFromJSON(JSON.parse(_canvases.state), function(){
+        _canvases.canv_obj.renderAll();
         on.prop('disabled', false);
         if(playStack == 'undo'){
-            if (_canvases[index].undo.length>=1){
+            if (_canvases.undo.length>=1){
                 off.prop('disabled',false);
             }
         }
         else{
-            if (_canvases[index].redo.length>=1){
+            if (_canvases.redo.length>=1){
                 off.prop('disabled',false);
             }
         }
@@ -82,13 +82,12 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
              img.set("left", 0);
              img.set("centeredScaling", true);
              newcanvas.add(img);
-             console.log(newcanvas)
          });
          });
             newcanvas.renderAll();
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
 
-            _canvases.push(handler);
+            _canvases=handler;
             let index_temp = _canvases.length - 1;
            /* if( window.localStorage.getItem(element.id)){
                 temp = window.localStorage.getItem(element.id);
@@ -97,41 +96,41 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             else{*/
             json_object = data.object;
            // }
-            _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
-                _canvases[index_temp].canv_obj.item(0).selectable = false;
-                _canvases[index_temp].canv_obj['panning'] = false;
-                _canvases[index_temp].canv_obj['onselected'] = false;
-                _canvases[index_temp].canv_obj.on('mouse:wheel', function (opt) {
+            _canvases.canv_obj.loadFromJSON(data.object, function() {
+                _canvases.canv_obj.item(0).selectable = false;
+                _canvases.canv_obj['panning'] = false;
+                _canvases.canv_obj['onselected'] = false;
+                _canvases.canv_obj.on('mouse:wheel', function (opt) {
                     let delta = opt.e.deltaY;
-                    let zoom = _canvases[index_temp].canv_obj.getZoom();
+                    let zoom = _canvases.canv_obj.getZoom();
                     zoom = zoom + delta / 200;
                     if (zoom > 20) zoom = 20;
                     if (zoom < 0.01) zoom = 0.01;
-                    _canvases[index_temp].canv_obj.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                    _canvases.canv_obj.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
                     opt.e.preventDefault();
                     opt.e.stopPropagation();
                  });
-                _canvases[index_temp].canv_obj.on('mouse:up', function () {
-                     _canvases[index_temp].canv_obj['panning'] = false;
+                _canvases.canv_obj.on('mouse:up', function () {
+                     _canvases.canv_obj['panning'] = false;
                  });
-                _canvases[index_temp].canv_obj.on('mouse:dblclick', function () {
-                     if (!_canvases[index_temp].canv_obj['onselected']) {
-                         _canvases[index_temp].canv_obj['panning'] = true;
+                _canvases.canv_obj.on('mouse:dblclick', function () {
+                     if (!_canvases.canv_obj['onselected']) {
+                         _canvases.canv_obj['panning'] = true;
                      }
                  });
-                _canvases[index_temp].canv_obj.on('mouse:move', function (e) {
-                     if (_canvases[index_temp].canv_obj['panning'] && e && e.e && !_canvases[index_temp].canv_obj['onselected']) {
+                _canvases.canv_obj.on('mouse:move', function (e) {
+                     if (_canvases.canv_obj['panning'] && e && e.e && !_canvases.canv_obj['onselected']) {
                              var delta = new fabric.Point(e.e.movementX, e.e.movementY);
-                             _canvases[index_temp].canv_obj.relativePan(delta);
+                             _canvases.canv_obj.relativePan(delta);
                      }
                  });
-                _canvases[index_temp].canv_obj.on('object:selected', function () {
-                     _canvases[index_temp].canv_obj['onselected'] = true;
+                _canvases.canv_obj.on('object:selected', function () {
+                     _canvases.canv_obj['onselected'] = true;
                  });
-                _canvases[index_temp].canv_obj.on('before:selection:cleared', function () {
-                     _canvases[index_temp].canv_obj['onselected'] = false;
+                _canvases.canv_obj.on('before:selection:cleared', function () {
+                     _canvases.canv_obj['onselected'] = false;
                  });
-                _canvases[index_temp].canv_obj.on('object:modified', function (e) {
+                _canvases.canv_obj.on('object:modified', function (e) {
                        save(index_temp,element.id);
                  });
 
@@ -144,9 +143,9 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 if(width < 400 ){
                     width = 400;
                 }
-                _canvases[index_temp].canv_obj.setWidth(width);
-                _canvases[index_temp].canv_obj.setHeight(height);
-                _canvases[index_temp].canv_obj.renderAll();
+                _canvases.canv_obj.setWidth(width);
+                _canvases.canv_obj.setHeight(height);
+                _canvases.canv_obj.renderAll();
 
                 save(index_temp,element.id);
             });
@@ -164,18 +163,17 @@ function redoFunction(ele){
 
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
-         let canvas =  _canvases[this.dataset.order];
+         let canvas =  _canvases;
          this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
     });
 });
 
 function get_canvas(pk){
-    for(let canvas of _canvases){
-        let id = canvas.canv_obj.lowerCanvasEl.id;
+        let id = _canvases.canv_obj.lowerCanvasEl.id;
         if (id === "preview_" + pk.toString())
-            return canvas.canv_obj;
+            return _canvases.canv_obj;
      }
-}
+
 
 function get_as_pdf(pk){
     const canvas = get_canvas(pk);

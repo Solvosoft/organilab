@@ -263,7 +263,7 @@ def show_editor_preview(request, pk):
             if dangerindications == '':
                 dangerindications += di.description
             else:
-                dangerindications += ". " + di.description
+                dangerindications += di.description
 
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
