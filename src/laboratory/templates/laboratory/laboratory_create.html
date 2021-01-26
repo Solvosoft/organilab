@@ -1,39 +1,27 @@
 {% extends 'base.html' %}
-
 {% load bootstrap i18n laboratory %}
 
-
-
 {% block content %}
-
-  {%  has_perms "laboratory.add_laboratory" as perm_add_lab %}
-
-<div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Create laboratory' %}</span></h3>
-        </div>
-</div>
-</div>
-<div class="row">
-  {% if perm_add_lab %}
-  <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
-    <div class=" body ">
-
-      {{ form|bootstrap_horizontal }}
-
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <div class="page-header col-xs-13" align="center">
+        <h3 class="heading-1" center=""><span>{% trans 'Create laboratory' %}</span></h3>
+      </div>
     </div>
-
- 
-      <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
- 
-  </form>
-</div>
+  </div>
+  {% if perms.laboratory.add_laboratory %}
+    <div class="row">
+      <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
+        <div class=" body ">
+          {{ form|bootstrap_horizontal }}
+        </div>
+        <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
+      </form>
+    </div>
   {% else %} 
-       {% include 'laboratory/action_denied.html' %} 
+    {% include 'laboratory/action_denied.html' %} 
   {% endif %}	
 {% endblock%}
-
 
 {% block js %}
    {{ form.media }}
