@@ -1,77 +1,78 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
-{% block title %} {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
+{% block title %}
+  {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+{% endblock %}
 
 {% block content %}
-{%  has_perms "laboratory.view_object" as perm_object %}
-{%  has_perms "laboratory.add_object" as perm_add_object %}
-{%  has_perms "laboratory.change_object" as perm_chage_object %}
-{%  has_perms "laboratory.delete_object" as perm_delete_object %}
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" ><span> 
-  {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} 
-</span></h3>
-        </div>
-</div>
-
-{% if perm_object or perm_add_object or perm_chage_object  or perm_delete_object  %}
-  <form class="form-inline" method="GET" action="">
-    <div class="form-group">
-      <input type="text" name="q" value="{{ q }}" class="form-control">
-      <input type="hidden" name="type_id" value="{{ type_id }}" class="form-control">
+  <div class="col-md-offset-2 col-md-8">
+    <div class="page-header col-xs-13" align="center">
+      <h3 class="heading-1" >
+        <span> 
+          {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} 
+        </span>
+      </h3>
     </div>
-    <button type="submit" class="btn btn-info"> {% trans 'Search' %} </button>
-  </form>
-   {% if perm_add_object %}
-  <a class="btn btn-info pull-right"
-    href="{% url 'laboratory:objectview_create' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %}
-  </a>
-  {% endif %}
-  <br><br>
-  <ul class="list-group">
-    {% for object in object_list %}
-      <li class="row list-group-item">
-        <div class="col-md-9"> {{ object }}</div>
-        <div class="col-md-3">
-         {% if perm_chage_object %}
-          <a class="btn btn-info"
-             href="{% url 'laboratory:objectview_update' laboratory object.pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
-          {% endif %}
-          {% if perm_delete_object %}
-          <a class="btn btn-danger"
-             href="{% url 'laboratory:objectview_delete' laboratory object.pk %}">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-          {% endif %}
-        </div>
-      </li>
-    {% endfor %}
-  </ul>
-  {% if is_paginated %}
-    <nav aria-label="...">
-      <ul class="pager">
-        {% if page_obj.has_previous %}
-          <li>
-            <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}">{% trans 'Previous' %}</a>
-          </li>
-        {% endif %}
+  </div>
 
-        <li>
-          {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
+  {% if perms.laboratory.view_object or perms.laboratory.add_object or perms.laboratory.change_object  or perms.laboratory.delete_object  %}
+    <form class="form-inline" method="GET" action="">
+      <div class="form-group">
+        <input type="text" name="q" value="{{ q }}" class="form-control">
+        <input type="hidden" name="type_id" value="{{ type_id }}" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-info"> {% trans 'Search' %} </button>
+    </form>
+    {% if perm_add_object %}
+      <a class="btn btn-info pull-right"
+          href="{% url 'laboratory:objectview_create' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %}
+      </a>
+    {% endif %}
+    <br><br>
+    <ul class="list-group">
+      {% for object in object_list %}
+        <li class="row list-group-item">
+          <div class="col-md-9"> {{ object }}</div>
+          <div class="col-md-3">
+            {% if laboratory.change_object %}
+              <a class="btn btn-info"
+                  href="{% url 'laboratory:objectview_update' laboratory object.pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}
+              </a>
+            {% endif %}
+            {% if perms.laboratory.delete_object %}
+              <a class="btn btn-danger"
+                  href="{% url 'laboratory:objectview_delete' laboratory object.pk %}">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
+              </a>
+            {% endif %}
+          </div>
         </li>
+      {% endfor %}
+    </ul>
+    {% if is_paginated %}
+      <nav aria-label="...">
+        <ul class="pager">
+          {% if page_obj.has_previous %}
+            <li>
+              <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}">{% trans 'Previous' %}</a>
+            </li>
+          {% endif %}
 
-        {% if page_obj.has_next %}
           <li>
-            <a href="?page={{ page_obj.next_page_number }}&q={{ q }}">{% trans 'Next' %}</a>
+            {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
           </li>
-        {% endif %}
-      </ul>
-    </nav>
-   {% endif %}
- {% else %} 
-       {% include 'laboratory/action_denied.html' %} 
+
+          {% if page_obj.has_next %}
+            <li>
+              <a href="?page={{ page_obj.next_page_number }}&q={{ q }}">{% trans 'Next' %}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %} 
+    {% include 'laboratory/action_denied.html' %} 
   {% endif %}
 {% endblock %}

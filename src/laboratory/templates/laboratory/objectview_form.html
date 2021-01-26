@@ -1,33 +1,35 @@
 {% extends 'base.html' %}
-
 {% load i18n static laboratory %}
-
-{% block title %}{% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} {% endblock %}
+{% block title %}
+  {% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+{% endblock %}
 
 {% block content %}
-{%  has_perms "laboratory.add_object" as perm_add_object %}
-{%  has_perms "laboratory.chage_object" as perm_chage_object %}
-<div class="row">
-   <div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-            <h3 class="heading-1" ><span>{% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
-        </span></h3>
-        </div>
-   </div>
-</div>
-{% if perm_add_object or perm_chage_object  %}
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-	      <form enctype="multipart/form-data" action="{% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
-	            method="post">{% csrf_token %}
-	        {{ form.as_horizontal }}
-	        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
-	      </form>
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <div class="page-header col-xs-13" align="center">
+        <h3 class="heading-1" >
+          <span>
+            {% if form.type.value == "1" %}{% trans 'Material management' %}{% elif form.type.value == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+          </span>
+        </h3>
+      </div>
     </div>
-</div>
-{% else %}
-<div class="row">
-  {% include 'laboratory/action_denied.html' %}
-</div>
-{% endif %}
+  </div>
+  {% if perms.laboratory.add_object or perms.laboratory.chage_object %}
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <form enctype="multipart/form-data" action="{% if form.instance.pk %}{% url 'laboratory:objectview_update' laboratory form.instance.pk %}{% else %}{% url 'laboratory:objectview_create' laboratory %} {% endif %}"
+            method="post">
+          {% csrf_token %}
+          {{ form.as_horizontal }}
+          <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="row">
+      {% include 'laboratory/action_denied.html' %}
+    </div>
+  {% endif %}
 {% endblock %}
