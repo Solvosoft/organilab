@@ -1,14 +1,13 @@
-from django.views.generic import ListView, UpdateView, FormView
+from django.contrib.auth.decorators import login_required, permission_required
+from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from laboratory.decorators import user_group_perms
 
 from laboratory.models import Profile
 from laboratory.forms import ProfileForm
 
 
-@method_decorator(user_group_perms(perm='laboratory.change_profile'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
 class ProfilesListView(LoginRequiredMixin, ListView):
     model = Profile
 
@@ -20,7 +19,8 @@ class ProfilesListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ProfileUpdateView(LoginRequiredMixin, FormView):
+@login_required
+class ProfileUpdateView(FormView):
     template_name = 'laboratory/profile_form.html'
     form_class = ProfileForm
     model = Profile
