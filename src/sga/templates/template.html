@@ -52,10 +52,11 @@
 
           <div class="panel panel-default">
   <div class="panel-heading">
+      <input type="hidden" id="img" value="{{files.0}}">
                 <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
                    class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ sgatemplates.pk }})"> {% trans 'Get as PDF'%}</button>
-               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} </a>
-  </div>
+               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} {{files}} </a>
+  </div
   <div class="panel-body">
         <button data-order="{{forloop.counter0}}" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>
         <button data-order="{{forloop.counter0}}" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Redo</button>

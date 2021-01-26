@@ -69,10 +69,21 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
 }
 (function( ) {
     let formdata = $("#sgaform").serializeArray();
+
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
+            fabric.Image.fromURL($('#img').val(), function (img) {
+             img.scaleToWidth(100);
+             img.scaleToHeight(100);
+             img.set("top", 0);
+             img.set("left", 0);
+             img.set("centeredScaling", true);
+             console.log(img);
+             newcanvas.add(img);
+         });
+         newcanvas.renderAll();
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
 
             _canvases.push(handler);
@@ -84,7 +95,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             else{*/
             json_object = data.object;
            // }
-           console.log(data.object);
             _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
                 _canvases[index_temp].canv_obj.item(0).selectable = false;
                 _canvases[index_temp].canv_obj['panning'] = false;
@@ -120,10 +130,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                      _canvases[index_temp].canv_obj['onselected'] = false;
                  });
                 _canvases[index_temp].canv_obj.on('object:modified', function (e) {
-                    let aux=JSON.parse(_canvases[index_temp].state);
-                    console.log(e.target.height* e.target.scaleY);
-                    console.log(_canvases[index_temp].state);
-                     save(index_temp,element.id);
+                       save(index_temp,element.id);
                  });
 
                 let canvas_container_preview = $(".canvas-container-preview");
@@ -156,7 +163,7 @@ function redoFunction(ele){
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
          let canvas =  _canvases[this.dataset.order];
-       //  this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
+         this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
     });
 });
 
