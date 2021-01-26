@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,7 +8,7 @@ from laboratory.forms import ProfileForm
 
 
 @method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
-class ProfilesListView(LoginRequiredMixin, ListView):
+class ProfilesListView(ListView):
     model = Profile
 
     def get_context_data(self, **kwargs):
@@ -19,8 +19,7 @@ class ProfilesListView(LoginRequiredMixin, ListView):
         return context
 
 
-@login_required
-class ProfileUpdateView(FormView):
+class ProfileUpdateView(FormView, LoginRequiredMixin):
     template_name = 'laboratory/profile_form.html'
     form_class = ProfileForm
     model = Profile
@@ -47,7 +46,6 @@ class ProfileUpdateView(FormView):
         success_url = f'/lab/{lab_pk}/profiles/list'
         return success_url
 
-    
     def form_valid(self, form):
         response = super().form_valid(form)
         profile_id = form.cleaned_data.get('profile_id')
