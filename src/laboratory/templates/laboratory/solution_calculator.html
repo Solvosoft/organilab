@@ -4,25 +4,20 @@
 {% block title %}{% trans 'Solution calculator' %}{% endblock %}
 
 {% block content %}
+	<h1>{% trans 'Solution calculator' %}</h1>
+	{% if perms.laboratory.view_solution and perms.laboratory.add_solution %}
+		<form method="post" action="">{% csrf_token %}
+			{{ form | bootstrap }}
+			<input type="submit" class="btn btn-primary" value="{% trans 'Calculate' %}">
+		</form>
 
-{%  has_perms "laboratory.view_solution" as perm_solution %}
-{%  has_perms "laboratory.add_solution" as perm_add_solution %}
-
-  <h1>{% trans 'Solution calculator' %}</h1>
-  
-  {% if perm_solution and perm_add_solution %}
-	  <form method="post" action="">{% csrf_token %}
-	    {{ form | bootstrap }}
-	    <input type="submit" class="btn btn-primary" value="{% trans 'Calculate' %}">
-	  </form>
-
-	  {% block js %}
-		  {{ form.errors }}
-		  <script defer>
-		    $('.help-block').show();
-		  </script>
-	  {% endblock %}
-   {% else %} 
-       {% include 'laboratory/action_denied.html' %} 
-  {% endif %}	  
+		{% block js %}
+			{{ form.errors }}
+			<script defer>
+				$('.help-block').show();
+			</script>
+		{% endblock %}
+	{% else %} 
+		{% include 'laboratory/action_denied.html' %} 
+	{% endif %}	  
 {% endblock %}
