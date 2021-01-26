@@ -93,7 +93,7 @@ def index_sga(request):
 # SGA information
 def information_creator(request):
     recipients = RecipientSize.objects.all()
-    template= TemplateSGA.objects.all()
+    template= RecipientSize.objects.all()
     context = {
         'laboratory': None,
         'recipients': recipients,
@@ -111,7 +111,6 @@ def information_creator(request):
 
 # SGA template visualize
 def template(request):
-    print(request.POST.get('templates'))
     sgatemplates = TemplateSGA.objects.get(pk=request.POST.get('templates'))
     barcode_file_url = logo_file_url = False
     request.session['commercial_information'] = request.POST.get('commercial_information', '')
@@ -131,10 +130,12 @@ def template(request):
         form = RecipientInformationForm(request.POST)
     else:
         form = None
+    x=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
     context = {
         'laboratory': None,
         'form': form,
         'sgatemplates': sgatemplates,
+        'sizes': x,
         'files': [logo_file_url, barcode_file_url]
 
     }
@@ -260,21 +261,20 @@ def show_editor_preview(request, pk):
             dangerindications += ""
         else:
             if dangerindications == '':
-                dangerindications += di.code+" "+di.description
+                dangerindications += di.description
             else:
-                dangerindications += ". " + di.code + " " + di.description
+                dangerindications += ". " + di.description
 
         pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
 
         for advice in di.prudence_advice.all():
             if prudenceAdvice != '':
                 prudenceAdvice += ' '
-            prudenceAdvice += advice.code +" "+ advice.name
+            prudenceAdvice += advice.name
     for component in substance.components.all():
         if casnumber != '':
             casnumber += ' '
         casnumber += "CAS: "+component.cas_number
-    prudenceAdvice=separate_title(prudenceAdvice)
     template_context = {
         '{{warningword}}': clean_json_text(warningword),
         '{{dangerindication}}': clean_json_text(dangerindications),
@@ -306,33 +306,6 @@ def show_editor_preview(request, pk):
     }
 
     return JsonResponse(context)
-
-def validate_concat(text, i,j):
-    position = j
-    while i < len(text):
-        if text[j+2] == '+':
-            j += 7
-            position = j
-        else:
-            break
-    return position
-
-def separate_title(text):
-    i = 0
-    output = ""
-    x = 3
-    while i<len(text):
-        if (text[i] == 'H' and str(text[i+1:x]).isnumeric()) or (text[i]=='P' and str(text[i+1:x]).isnumeric()):
-            j = validate_concat(text,i,x)
-            output += '\n'+text[i:j]
-            i = j
-            x = i+3
-        else:
-             output += text[i]
-             x += 1
-             i += 1
-
-    return output
 
 def label_information(request):
     # Includes recipient search

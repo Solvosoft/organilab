@@ -133,7 +133,6 @@ function getList(){
              objectCaching: false,
              renderOnAddRemove: false,
          });
-          console.log(getList());
          canvas_editor.add(name_label);
 
      }else if(ftype == "image") {

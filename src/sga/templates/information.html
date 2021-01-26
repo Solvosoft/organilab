@@ -97,8 +97,6 @@
                 </div>
             </div>
             <!--============================================================================================================-->
-        </div>
-        <div class="col-sm-6">
             <!--============================================================================================================-->
             <!--=========================================Recipient==========================================================-->
             <div class="form-group">
@@ -123,9 +121,6 @@
             <!--Add new recipient-->
             <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             <!--============================================================================================================-->
-        </div>
-
-        <div class="col-sm-6">
            <div class="form-group">
                 <label><span class="label label-info">5</span>&nbsp;{% trans 'Template' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
@@ -134,7 +129,16 @@
 
                     {% if templates != null %}
                     {% for template in templates %}
-                    <option value="{{template.pk}}" data-name="{{template.name}}">{{template.name}}</option>
+                         {% for t in template.templatesga_set.all %}
+                    <option value="{{t.pk}}" data-name="{{t.name}}"
+                       data-height="{{template.height}}"
+                        data-height_unit="{{template.height_unit}}"
+                        data-width="{{template.width}}"
+                        data-width_unit="{{template.width_unit}}">{{t.name}} -
+                        {{template.height}}{{template.height_unit}}
+                    x
+                        {{template.width}}{{template.width_unit}}</option>
+                    {% endfor %}
                     {% endfor %}
                     {% endif %}
                 </select>
@@ -142,9 +146,6 @@
             <!--Add new recipient-->
             <label>{% trans 'Did you find the template?' %}</label>&nbsp;&nbsp;<a href="{% url 'sga:editor' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             <!--============================================================================================================-->
-        </div>
-    </div>
-        <div class="col-sm-6" style="margin-top:1%">
             <!--============================================================================================================-->
             <!--=========================================Recipient==========================================================-->
             <div class="form-group">
