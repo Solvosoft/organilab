@@ -23,7 +23,7 @@
       </div>
       <button type="submit" class="btn btn-info"> {% trans 'Search' %} </button>
     </form>
-    {% if perm_add_object %}
+    {% if perms.laboratory.add_object %}
       <a class="btn btn-info pull-right"
           href="{% url 'laboratory:objectview_create' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Add' %}
@@ -35,7 +35,7 @@
         <li class="row list-group-item">
           <div class="col-md-9"> {{ object }}</div>
           <div class="col-md-3">
-            {% if laboratory.change_object %}
+            {% if perms.laboratory.change_object %}
               <a class="btn btn-info"
                   href="{% url 'laboratory:objectview_update' laboratory object.pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}
