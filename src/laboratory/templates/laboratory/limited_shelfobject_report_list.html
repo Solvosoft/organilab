@@ -1,16 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
 {% block title %}{% trans 'Limited shelf objects' %}{% endblock %}
 
 {% block content %}
- {%  has_perms "laboratory.do_report" as perm_do_report %}
- {%  has_perms "laboratory.view_shelfobject" as perm_shelfobject %}
-
-
-  <div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
-  
-  {% if perm_do_report and perm_shelfobject  %}
+	<div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
+	{% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
 	  <div class="pull-right">
 	  
 	    <div class="btn-group dropup">
@@ -47,7 +41,7 @@
 	  <br> <br>
 	  {{ lab }}
 	
-  {% if perm_shelfobject  %}
+  {% if perms.laboratory.view_shelfobject  %}
 		  {% for obj in object_list %}
 		    <h3 class="alert alert-info">
 		      {{ obj }}
@@ -79,7 +73,7 @@
 
   <br>
   <div>
-    {% if perm_do_report and perm_shelfobject  %}
+    {% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
     <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
          href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
