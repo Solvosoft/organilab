@@ -6,7 +6,7 @@ Created on 26/12/2016
 '''
 
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -81,8 +81,7 @@ class ShelfForm(forms.ModelForm):
         }
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_shelf'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_shelf'), name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
@@ -135,8 +134,7 @@ class ShelfCreate(AJAXMixin, CreateView):
         }
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_shelf'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_shelf'), name='dispatch')
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"
