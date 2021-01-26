@@ -4,13 +4,10 @@
 {% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
 
 {% block content %}
- {%  has_perms "laboratory.do_report" as perm_do_report %}
- {%  has_perms "laboratory.view_object" as perm_object %}
-
   <div class="page-header"><h1>{% trans 'Reactive precursor objects' %}</h1>
     <a href="?all_labs=1">{% trans 'Not found? include all laboratories' %}</a>
   </div>
-  {% if perm_do_report and perm_object  %}
+  {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
 	  <div class=" pull-right">
 	  <div class="btn-group dropup">
 	  <button type="button" class="btn btn-danger">
@@ -44,11 +41,11 @@
 	 </div>
  {% endif %}
 <br><br>
- {% if perm_object  %}
+ {% if perms.laboratory.view_object  %}
 	  {% for obj in object_list %}
 	    <h3 class="alert alert-info">
 	      {{ obj.code }}
-	      {% if perm_do_report %}
+	      {% if perms.laboratory.do_report %}
 		      <a class="btn btn-sm btn-danger pull-right"
 		         title="{{ obj.name }}"
 		         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
@@ -111,7 +108,7 @@
  {% endif %}
   
   <div>
-    {% if perm_do_report and perm_object  %}
+    {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
 	    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
 	       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{ all_labs }}">
 	      <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
