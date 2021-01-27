@@ -32,6 +32,16 @@
                     </a>
                     <ul class="nav child_menu">
                         <li>
+                            <a href="{% url 'sga:index_sga'%}">
+                                {% trans 'SGA Labeling' %}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{% url 'sga:editor'%}">
+                                {% trans 'SGA Editor' %}
+                            </a>
+                        </li>
+                        <li>
                             <a href="{% url 'msds:index_msds'%}">
                                 {% trans 'MSDS: Security sheets' %}
                             </a>
