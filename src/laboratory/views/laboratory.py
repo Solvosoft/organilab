@@ -3,7 +3,7 @@
 from django import forms
 from django.conf.urls import url
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -14,16 +14,13 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-
-from laboratory.decorators import user_group_perms
 from laboratory.forms import LaboratoryCreate, H_CodeForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = 'laboratory/edit.html'
@@ -95,8 +92,7 @@ class SelectLaboratoryForm(forms.Form):
         self.fields['laboratory'].queryset = lab_queryset
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
 class SelectLaboratoryView(FormView):
     template_name = 'laboratory/select_lab.html'
     form_class = SelectLaboratoryForm
@@ -138,8 +134,7 @@ class SelectLaboratoryView(FormView):
         return FormView.get(self, request, *args, **kwargs)
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create.html'
     form_class = LaboratoryCreate
@@ -172,8 +167,7 @@ class CreateLaboratoryFormView(FormView):
         return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk})
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = '/'
@@ -181,7 +175,7 @@ class CreateLaboratoryView(CreateView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
         form = self.get_form()
-        if user.has_perm('laboratory.add_laboratory'):
+        if request.user.has_perm('laboratory.add_laboratory'):
             if form.is_valid():
                 form.save(user)
                 return redirect(self.success_url)
@@ -193,8 +187,7 @@ class CreateLaboratoryView(CreateView):
             return redirect(self.success_url)
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.delete_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryListView(ListView):
     model = Laboratory
     template_name= 'laboratory/laboratory_list.html'
@@ -207,8 +200,8 @@ class LaboratoryListView(ListView):
             q = None
         return get_user_laboratories(self.request.user, q)
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.delete_laboratory'), name='dispatch')
+
+@method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory
     template_name= 'laboratory/laboratory_delete.html'

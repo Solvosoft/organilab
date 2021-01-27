@@ -1,21 +1,17 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 
-
-
 {% block title %}{% trans 'Delete laboratory room' %}{% endblock %}
 
 {% block content %}
 
-{%  has_perms "laboratory.delete_laboratoryroom" as perm_delete_labroom %}
-
-  {% if perm_delete_labroom %}
-	<form action="" method="post">{% csrf_token %}
-	    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
-	    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
-	</form>
-	<br> <br>
-  {% else %} 
-       {% include 'laboratory/action_denied.html' %} 
-  {% endif %}
+  	{% if perms.laboratory.delete_laboratoryroom %}
+		<form action="" method="post">{% csrf_token %}
+			<p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+			<input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+		</form>
+		<br> <br>
+	{% else %} 
+		{% include 'laboratory/action_denied.html' %} 
+	{% endif %}
 {% endblock%}

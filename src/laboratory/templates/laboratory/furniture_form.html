@@ -6,23 +6,18 @@
 {% block title %}{% trans 'Furniture management' %}{% endblock %}
 
 {% block content %}
-	{%  has_perms "laboratory.view_furniture" as perm_furniture %}
-	{%  has_perms "laboratory.add_furniture" as perm_add_furniture %}
-	{%  has_perms "laboratory.change_furniture" as perm_change_furniture %}
-	{%  has_perms "laboratory.delete_furniture" as perm_delete_furniture %}
 
   <div id="intro_title">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Furniture management' %}</span></h3>
-        </div>
-</div>
-   
- {% if perm_furniture or perm_add_furniture or perm_change_furniture or perm_delete_furniture %}
+  <div class="col-md-offset-2 col-md-8">
+          <div class="page-header col-xs-13" align="center">
+            <h3 class="heading-1" center=""><span>{% trans 'Furniture management' %}</span></h3>
+          </div>
+  </div>
+  {% if perms.laboratory.view_furniture or perms.laboratory.add_furniture or perms.laboratory.change_furniture or perms.laboratory.delete_furniture %}
     <br>
     {{ form.errors }}
     <form class="form-horizontal" action="" method="post">
-    {% if perm_add_furniture %}
+      {% if perms.laboratory.add_furniture %}
       {% csrf_token %}
 	      <div class="row">
 	        <div id="furniture_form" class="col-md-4 col-md-offset-2">
@@ -34,48 +29,50 @@
 	          </button>
 	        </div>
               <div class="col-md-1 col-md-offset-2">
-                                 {% if perm_delete_furniture and object %}
-	                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
-	                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-	                  {% endif %}
+                {% if perms.laboratory.delete_furniture and object %}
+                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
+                  </a>
+                {% endif %}
               </div>
 	      </div>
       {% endif %}
       {% if form.instance.pk %}
-         {% if perm_add_furniture %}
-        <div id="furniture_size" class="table-responsive">
-          <table class="table table-bordered" id="mytab">
-            {{ dataconfig|safe }}
-          </table>
-          <div class="btn-toolbar" role="toolbar" aria-label="...">
-            <div class="btn-group" role="group" aria-label="...">
-              <button id="btnAddRow" class="btn btn-success" type="button" onclick="addRow()">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Row' %}
-              </button>
-              <button class="btn btn-info" type="button" onclick="addColumn()">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Column' %}
-              </button>
-            </div>
-            <div class="btn-group" role="group" aria-label="...">
-              <button class="btn btn-warning" type="button" onclick="deleteRows()">
-                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Row' %}
-              </button>
-              <button class="btn btn-danger" type="button" onclick="deleteColumns()">
-                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Column' %}
-              </button>
-            </div>
+        {% if perms.laboratory.add_furniture %}
+          <div id="furniture_size" class="table-responsive">
+            <table class="table table-bordered" id="mytab">
+              {{ dataconfig|safe }}
+            </table>
+            <div class="btn-toolbar" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group" aria-label="...">
+                <button id="btnAddRow" class="btn btn-success" type="button" onclick="addRow()">
+                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Row' %}
+                </button>
+                <button class="btn btn-info" type="button" onclick="addColumn()">
+                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Column' %}
+                </button>
+              </div>
+              <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-warning" type="button" onclick="deleteRows()">
+                  <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Row' %}
+                </button>
+                <button class="btn btn-danger" type="button" onclick="deleteColumns()">
+                  <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Column' %}
+                </button>
+              </div>
 
-            <div id="save_button2" class="btn-group" role="group" aria-label="...">
-              <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+              <div id="save_button2" class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+              </div>
             </div>
           </div>
-        </div>
         {% endif %}
-
       {% endif %}
     </form>
   {% else %}
+    {% include 'laboratory/action_denied.html' %}   
        {% include 'laboratory/action_denied.html' %}   
+    {% include 'laboratory/action_denied.html' %}   
   {% endif %}
   </div>
 
@@ -89,7 +86,6 @@
       <ul class='list-group  sortableself'></ul>
     </div>
   </div>
-
 
   <div id="createshelfmodal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -105,7 +101,6 @@
     </div>
   </div>
   <div id="modalclose"></div>	
-  
 {% endblock%}
 
 {% block css %}
@@ -134,21 +129,15 @@
       /** Define arrowhead **/
     }
   </style>
-
 {% endblock %}
-
 
 {% block js %}
   <script src="{% static 'laboratory/js/jquery-sortable-min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
-
   <link href="{% static 'laboratory/css/bootstrap-tour.css' %}"
-  	rel="stylesheet">
-  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}"
-  	rel="stylesheet">
-
+  	  rel="stylesheet">
+  <link href="{% static 'laboratory/css/bootstrap-tour.docs.css' %}" rel="stylesheet">
   <script type="text/javascript"
-  	src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
+  	  src="{% static 'laboratory/js/bootstrap-tour.js' %}"></script>
   <script type="text/javascript" src="{% static 'laboratory/js/tourfurniture.js' %}"></script>
-
 {% endblock %}

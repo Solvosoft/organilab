@@ -7,11 +7,10 @@ Created on 26/12/2016
 
 import os
 from datetime import datetime
-
+from django.contrib.auth.decorators import permission_required
 import django_excel
 from django import forms
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
@@ -26,13 +25,11 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput
 # for xhtml2pdf
 from xhtml2pdf import pisa
 
-from laboratory.decorators import user_group_perms
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, Profile, SustanceCharacteristics
 from laboratory.models import ObjectLogChange
-from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_users_form_organization, \
-    get_laboratories_from_organization
+from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -76,8 +73,6 @@ def link_callback(uri, rel):
     return path
 
 
-
-
 def make_book_organization_laboratory(objects):
     dev = [
         [_("Name"), _("Phone"), _("Location"), _(
@@ -109,8 +104,7 @@ def make_book_organization_laboratory(objects):
     return dev
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_organization_building(request, *args, **kwargs):
     var = request.GET.get('organization')
     if var:  # when have user selecting org
@@ -202,8 +196,7 @@ def make_book_laboratory(rooms):
     return content
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_labroom_building(request, *args, **kwargs):
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
@@ -238,8 +231,7 @@ def report_labroom_building(request, *args, **kwargs):
     return response
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_shelf_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     if var is None:
@@ -291,8 +283,7 @@ def make_book_limited_reached(objects):
     return dev
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
         for shelf_object in query:
@@ -380,8 +371,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     return content
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     type_id = None
@@ -439,8 +429,7 @@ def report_objects(request, *args, **kwargs):
     return response
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
@@ -513,8 +502,7 @@ def make_book_furniture_objects(furnitures):
     return content
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     lab = kwargs.get('lab_pk')
@@ -548,9 +536,7 @@ def report_furniture(request, *args, **kwargs):
     return response
 
 
-
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@permission_required('laboratory.do_report')
 def report_h_code(request, *args, **kwargs):
     form = H_CodeForm(request.GET)
     q=[]
@@ -585,11 +571,7 @@ def report_h_code(request, *args, **kwargs):
     return response
 
 
-
-
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
     template_name = 'laboratory/report_object_list.html'
@@ -621,8 +603,7 @@ class ObjectList(ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'laboratory/limited_shelfobject_report_list.html'
@@ -640,8 +621,7 @@ class LimitedShelfObjectList(ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = 'laboratory/reactive_precursor_objects_list.html'
@@ -686,8 +666,7 @@ class FilterForm(GTForm, forms.Form):
     ), required=False)
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
@@ -770,7 +749,6 @@ class LogObjectView(ReportListView):
                  str(_('Unit')),
                  ]]
 
-
         for obj in context['object_list']:
 
             book.append([obj.user.get_full_name(),
@@ -784,8 +762,8 @@ class LogObjectView(ReportListView):
                          ])
         return book
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.view_report'), name='dispatch')
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReactivePresenceList(ReportListView):
     model = OrganizationStructure
     template_name = 'laboratory/organization_reactive_presence.html'

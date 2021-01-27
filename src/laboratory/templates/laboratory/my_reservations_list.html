@@ -1,63 +1,63 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n gtsettings %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+{% endblock %}
 {% block content %}
-{% include 'laboratory/my_reservation_delete.html' %}
-{% include 'laboratory/my_reservation_delete_all.html' %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
-<div id="management_buttons">
-    <input data-toggle="modal"
-           data-target="#delete_all_obj_reservation_modal" type="button"
-           disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="pull-right btn btn-danger"
-           id="cancel_all_products_btn">
-    <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
-</div>
-<table id="table_id" class="display">
-    <thead>
-        <tr>
-            <th>{% trans 'Object' %}</th>
-            <th>{% trans 'Amount required' %}</th>
-            <th>{% trans 'Initial date' %}</th>
-            <th>{% trans 'Final date' %}</th>
-            <th>{% trans 'Status' %}</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for obj in object_list%}
-        <tr id="table_data">
-            <td id="shelf_object">{{obj.shelf_object}}</td>
-            <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
-            <td id="initial_date">{{obj.initial_date}}</td>
-            <td id="final_date">{{obj.final_date}}</td>
-            <td id="status">{{obj.get_status_display}}</td>
-            <td>
-                {%if obj.status == 3 %}
-                <button data-toggle="modal"
-                        data-target="#delete_selected_obj_reservation_modal"
-                        aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <input type="hidden" name="user_id" value="{{obj.user.id}}">
-                <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
-                <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
-                {%endif%}
-                <input type="hidden" name="status_num" value="{{obj.status}}">
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+    {% include 'laboratory/my_reservation_delete.html' %}
+    {% include 'laboratory/my_reservation_delete_all.html' %}
+    <div id="management_buttons">
+        <input data-toggle="modal"
+            data-target="#delete_all_obj_reservation_modal" type="button"
+            disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="pull-right btn btn-danger"
+            id="cancel_all_products_btn">
+        <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
+    </div>
+    <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>{% trans 'Object' %}</th>
+                <th>{% trans 'Amount required' %}</th>
+                <th>{% trans 'Initial date' %}</th>
+                <th>{% trans 'Final date' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list%}
+            <tr id="table_data">
+                <td id="shelf_object">{{obj.shelf_object}}</td>
+                <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
+                <td id="initial_date">{{obj.initial_date}}</td>
+                <td id="final_date">{{obj.final_date}}</td>
+                <td id="status">{{obj.get_status_display}}</td>
+                <td>
+                    {% if obj.status == 3 %}
+                        <button data-toggle="modal"
+                                data-target="#delete_selected_obj_reservation_modal"
+                                aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <input type="hidden" name="user_id" value="{{obj.user.id}}">
+                        <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
+                        <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
+                    {% endif %}
+                    <input type="hidden" name="status_num" value="{{obj.status}}">
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 {% block js %}
-<script>
-    document.get_lab_id_script_url = '{% url "laboratory:get_lab_id"%}';
-    document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
-    document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
-    document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
-    document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
-</script>
-<script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <script>
+        document.get_lab_id_script_url = '{% url "laboratory:get_lab_id"%}';
+        document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
+        document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
+        document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
+        document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
+    </script>
+    <script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
 {% endblock %}
