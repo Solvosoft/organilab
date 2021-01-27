@@ -15,7 +15,7 @@
 <link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
 {% endblock css %}
 {% block js %}
-<script src="{% static 'sga/js/label_template.js' %}"> </script>
+<script src="{% static 'sga/js/template.js' %}"> </script>
 <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
 {% endblock %}
 
@@ -38,6 +38,9 @@
       <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
                     {% csrf_token %}
             {{form|bootstrap}}
+             {%for file in files %}
+              <input class="img" value="{{file}}" type="hidden">
+              {% endfor%}
             <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
         </form>
     </div>
@@ -45,29 +48,29 @@
     {% endif %}
 </div>
 <hr>
+
 <div class="row">
-    {% for template in sgatemplates %}
+
       <div class="col-md-12">
 
           <div class="panel panel-default">
+
   <div class="panel-heading">
                 <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
-                   class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ template.pk }})"> {% trans 'Get as PDF'%}</button>
-               <a  href="{% url 'sga:label_creator' 2 %}?instance={{template.pk}}"> {{template.name}} </a>
-  </div>
+                   class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ sgatemplates.pk }})"> {% trans 'Get as PDF'%}</button>
+               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} </a>
+  </div
   <div class="panel-body">
-        <button data-order="{{forloop.counter0}}" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Undo</button>
-        <button data-order="{{forloop.counter0}}" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{template.pk}}">Redo</button>
+        <button data-order="0" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>
+        <button data-order="0" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Redo</button>
       <div class="canvas-container-preview" onkeydown="">
-      <canvas tabindex="1"  class="templatepreview"   id="preview_{{template.pk}}"
-               data-href="{% url 'sga:show_editor_preview' template.pk %}"></canvas>
+      <canvas tabindex="1"  class="templatepreview"   id="preview_{{sgatemplates.pk}}"
+               data-href="{% url 'sga:show_editor_preview' sgatemplates.pk %}"></canvas>
 
       </div>
   </div>
 </div>
       </div>
-
-    {% endfor %}
 </div>
     <div class="wizard-footer">
         <div class="clearfix"></div>
@@ -82,7 +85,7 @@
     <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
         {% csrf_token %}
         <input type="hidden" value="" name="json_data" id="json_data">
-        <input type="hidden" value="" name="template_sga_pk" id="template_sga_pk">
+        <input type="hidden" value="{ sgatemplates.pk }" name="template_sga_pk" id="template_sga_pk">
     </form>
 
 {% endblock content %}

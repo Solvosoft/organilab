@@ -59,3 +59,4 @@ django-debug-toolbar==2.2
 django-celery-beat==2.0.0
 celery==4.4.1
 django-paypal==1.0.0
+weasyprint==52.2

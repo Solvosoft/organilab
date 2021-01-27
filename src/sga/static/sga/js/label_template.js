@@ -74,6 +74,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
             let handler = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
+
             _canvases.push(handler);
             let index_temp = _canvases.length - 1;
            /* if( window.localStorage.getItem(element.id)){
@@ -84,7 +85,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
             json_object = data.object;
            // }
            console.log(data.object);
-           console.log('--------------------');
             _canvases[index_temp].canv_obj.loadFromJSON(data.object, function() {
                 _canvases[index_temp].canv_obj.item(0).selectable = false;
                 _canvases[index_temp].canv_obj['panning'] = false;
@@ -119,7 +119,10 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 _canvases[index_temp].canv_obj.on('before:selection:cleared', function () {
                      _canvases[index_temp].canv_obj['onselected'] = false;
                  });
-                _canvases[index_temp].canv_obj.on('object:modified', function () {
+                _canvases[index_temp].canv_obj.on('object:modified', function (e) {
+                    let aux=JSON.parse(_canvases[index_temp].state);
+                    console.log(e.target.height* e.target.scaleY);
+                    console.log(_canvases[index_temp].state);
                      save(index_temp,element.id);
                  });
 
@@ -135,6 +138,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
                 _canvases[index_temp].canv_obj.setWidth(width);
                 _canvases[index_temp].canv_obj.setHeight(height);
                 _canvases[index_temp].canv_obj.renderAll();
+
                 save(index_temp,element.id);
             });
           });
@@ -152,7 +156,7 @@ function redoFunction(ele){
 $(document).ready(function(){
     $(".canvaspng").on('click', function(){
          let canvas =  _canvases[this.dataset.order];
-         this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
+       //  this.href=canvas.toDataURL({ format: 'png', quality: 0.8});
     });
 });
 
@@ -167,7 +171,10 @@ function get_canvas(pk){
 function get_as_pdf(pk){
     const canvas = get_canvas(pk);
     const json_data = JSON.stringify(canvas);
+
     $('#json_data').attr('value',json_data);
+    $('#template_sga_pk').attr('value',pk)
+
     document.download_pdf.submit();
 }
 
