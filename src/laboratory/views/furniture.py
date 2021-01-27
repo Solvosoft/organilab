@@ -8,26 +8,21 @@ Created on 26/12/2016
 '''
 
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.validators import RegexValidator
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-
 from django_ajax.decorators import ajax
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
-
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
-from laboratory.decorators import user_group_perms
 
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.do_report'), name='dispatch')
+@method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
     template_name = "laboratory/report_furniture_list.html"
@@ -36,8 +31,7 @@ class FurnitureReportView(ListView):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.add_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("name", "type")
@@ -91,8 +85,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.change_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = "/"
@@ -126,8 +119,7 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='laboratory.delete_furniture'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = "/"

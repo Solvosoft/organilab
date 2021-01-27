@@ -9,13 +9,11 @@
 {% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
 
 {% block content %}
- {%  has_perms "laboratory.do_report" as perm_do_report %}
- {%  has_perms "laboratory.view_object" as perm_object %}
 
   <div class="page-header"><h1>{% trans 'User exposition' %}</h1>
 
   </div>
-  {% if perm_do_report and perm_object  %}
+  	{% if perms.laboratory.do_report %}
 	  <div class=" pull-right">
 	  <div class="btn-group dropup">
 	  <button type="button" class="btn btn-danger">
@@ -45,9 +43,9 @@
 	</div>
 	
 	 </div>
- {% endif %}
+ 	{% endif %}
 <br><br>
- {% if perm_object  %}
+ {% if perms.laboratory.view_object %}
 <table id="reporttable" class="table">
 	<thead>
 	<tr>

@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
-
-{%  has_perms "reservation_management.add_reserved_product" as perm_add_reserved_products %}
-
 {% block content %}
 {% include 'laboratory/search_widget.html' %}
 {% include 'laboratory/reservation_modal.html' %}
@@ -43,7 +40,7 @@
 
 		 <div class="row">
 			 <div class="col-md-4">
-				 {% if perm_add_reserved_products %}
+				 {% if perms.reservation_management.add_reserved_product %}
 				 <a data-toggle="modal"
 					data-target="#modal_reservation"
 					style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})"

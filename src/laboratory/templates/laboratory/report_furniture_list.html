@@ -3,134 +3,126 @@
 
 {% block title %}{% trans 'Furniture report' %}{% endblock %}
 {% block content %}
- {%  has_perms "laboratory.do_report" as perm_do_report %}
- {%  has_perms "laboratory.view_furniture" as perm_furniture %}
- 
-  <div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
+  	<div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
   
-   {% if perm_do_report and perm_furniture  %}
+   	{% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
   
-		  <div class="pull-right">
+		<div class="pull-right">
 		  
-		  <div class="btn-group dropup">
-		  <button type="button" class="btn btn-danger">
-		   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-		   {% trans 'Download' %}</button>
-		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    <span class="caret"></span>
-		    <span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
-		  </button>
-		  <ul class="dropdown-menu">
-		  <li>  <a  
-		       href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
-		  </li><li>
-		     <a 
-		       href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
-		   </li>
+		  	<div class="btn-group dropup">
+				<button type="button" class="btn btn-danger">
+					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					{% trans 'Download' %}
+				</button>
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span>
+					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>  <a  
+						href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+					</li><li>
+						<a 
+						href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
+					</li>
+			
+					<li>
+						<a 
+						href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
+					</li>
+					
+					<li>
+						<a 
+						href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+					</li>
+		  		</ul>
+			</div>
 		   
-		   <li>
-		     <a 
-		       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
-		   </li>
-		   
-		   <li>
-		     <a 
-		       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
-		   </li>
-		    
-		  </ul>
-		</div>
-		   
-     </div>
-   {% endif  %}
-  <br><br>
-  {% if perm_furniture  %}
-	  {% for furniture in object_list %}
-	    <h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
-	      <a class="btn btn-sm btn-danger pull-right"
-	         href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
-	        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	        {% trans "PDF" %}
-	      </a>
-	    </h3>
+     	</div>
+   	{% endif  %}
+  	<br><br>
+  	{% if perms.laboratory.view_furniture %}
+	  	{% for furniture in object_list %}
+			<h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
+				<a class="btn btn-sm btn-danger pull-right"
+					href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
+					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					{% trans "PDF" %}
+				</a>
+			</h3>
+		
+			<div class="row text-center">
+				<strong>{% trans "Laboratory room:" %}</strong> {{ furniture.labroom }}<br>
+				<strong>{% trans "Type:" %}</strong> {{ furniture.get_type_display }}
+				<hr>
+			</div>
 	
-	    <div class="row text-center">
-	      <strong>{% trans "Laboratory room:" %}</strong> {{ furniture.labroom }}<br>
-	      <strong>{% trans "Type:" %}</strong> {{ furniture.get_type_display }}
-	      <hr>
-	    </div>
-	
-	    {% for shelf in furniture.shelf_set.all %}
-	      <div class="panel panel-default">
-	        <div class="panel-heading">
-	          <strong>{% trans "Shelf:" %}</strong> {{ shelf.name }} <span
-	          class="badge pull-right"> {% trans 'Total' %}: {{ shelf.count_objects }} {% trans 'objects' %}</span>
-	        </div>
-	        <div class="panel-body"><p>
-	          {% trans "Type:" %} {{ shelf.get_type_display }}
-	        </p></div>
-	
-	        <ul class="list-group">
-	          {% for obj in shelf.shelfobject_set.all %}
-	            <li class="list-group-item active">
-	              <h4>{% trans 'Shelf object' %}: {{ obj }}</h4>
-	            </li>
-	            <li class="list-group-item">
-	              {% trans "Type:" %}
-	              {{ obj.object.get_type_display }}
-	            </li>
-	            <li class="list-group-item">
-	              {% trans "Quantity:" %}
-	              {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
-	            </li>
-	            <br>
-	          {% empty %}
-	            <li class="list-group-item bg-success"><i>{% trans "No object elements" %}</i></li>
-	            <br>
-	          {% endfor %}
-	        </ul>
-	      </div>
-	      <br>
-	    {% empty %}
-	      <i>{% trans "No shelf elements" %}</i><br><br>
-	    {% endfor %}
-	  {% empty %}
-	    <div class="alert alert-info"><i>{% trans "No furniture elements" %}</i></div><br>
-	  {% endfor %}
-  {% else %}
-      {% include 'laboratory/action_denied.html' %}
-  {% endif %}
-  {% if perm_do_report and perm_furniture  %}
-	  <div class="pull-right">
-	 <div class="btn-group dropup">
-	  <button type="button" class="btn btn-danger">
-	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	   {% trans 'Download'%}</button>
-	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	    <span class="caret"></span>
-	    <span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
-	  </button>
-	  <ul class="dropdown-menu">
-	  <li>  <a  
-	       href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
-	  </li><li>
-	     <a 
-	       href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
-	   </li>
-	    
-	  </ul>
-	</div>
-	  </div>
-  {% endif %}
-
+			{% for shelf in furniture.shelf_set.all %}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+					<strong>{% trans "Shelf:" %}</strong> {{ shelf.name }} <span
+					class="badge pull-right"> {% trans 'Total' %}: {{ shelf.count_objects }} {% trans 'objects' %}</span>
+					</div>
+					<div class="panel-body"><p>
+					{% trans "Type:" %} {{ shelf.get_type_display }}
+					</p></div>
+			
+					<ul class="list-group">
+					{% for obj in shelf.shelfobject_set.all %}
+						<li class="list-group-item active">
+						<h4>{% trans 'Shelf object' %}: {{ obj }}</h4>
+						</li>
+						<li class="list-group-item">
+						{% trans "Type:" %}
+						{{ obj.object.get_type_display }}
+						</li>
+						<li class="list-group-item">
+						{% trans "Quantity:" %}
+						{{ obj.quantity }} {{ obj.get_measurement_unit_display }}
+						</li>
+						<br>
+					{% empty %}
+						<li class="list-group-item bg-success"><i>{% trans "No object elements" %}</i></li>
+						<br>
+					{% endfor %}
+					</ul>
+				</div>
+				<br>
+			{% empty %}
+				<i>{% trans "No shelf elements" %}</i><br><br>
+			{% endfor %}
+	  	{% empty %}
+			<div class="alert alert-info"><i>{% trans "No furniture elements" %}</i></div><br>
+		{% endfor %}
+  	{% else %}
+      	{% include 'laboratory/action_denied.html' %}
+  	{% endif %}
+  	{% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
+	  	<div class="pull-right">
+	 		<div class="btn-group dropup">
+				<button type="button" class="btn btn-danger">
+					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					{% trans 'Download'%}
+				</button>
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span>
+					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>  
+						<a href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+					</li>
+					<li>
+						<a href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
+					</li>
+					<li>
+						<a href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
+					</li>
+					<li>
+						<a href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+					</li>
+				</ul>
+			</div>
+	  	</div>
+  	{% endif %}
 {% endblock %}

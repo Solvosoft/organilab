@@ -6,7 +6,6 @@ from pyEQL import Solution
 from laboratory.models import Solution
 from laboratory.validators import validate_molecular_formula
 
-from laboratory.decorators import user_group_perms
 
 class SolutionListView(ListView):
     model = Solution
