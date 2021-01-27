@@ -9,13 +9,15 @@ def pic_selected(representation, pictograms, context):
     index = 0
     var = settings.STATIC_URL
     repro = json.loads(representation)
-    for obj in repro['objects']:
+    #print(repro)
+    """for obj in repro['objects']:
         if obj['type'] == 'image':
-            if 'logogen.jpg' in obj['src']:
+            if 'logogen.jpg' in str(obj['src']):
                 obj['src'] = context['logo_url']
-            if 'barcodegen.jpg' in obj['src']:
+            if 'barcodegen.jpg' in str(obj['src']):
                 obj['src'] = context['barcode_url']
-            if 'example.gif' in obj['src']:
+            if 'example.gif' in str(obj['src']):
+                print(str(obj['src']))
                 if index < size_obj:
                     path_to_file = var + "sga/img/pictograms/"
                     if 'Sin Pictograma' in temp_picts[index]:
@@ -25,4 +27,5 @@ def pic_selected(representation, pictograms, context):
                     index += 1
                 else:
                     obj['src'] = ''
+    #print(repro)"""
     return repro

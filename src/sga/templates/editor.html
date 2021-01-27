@@ -57,6 +57,9 @@
             -->
         </div>
     </div>
+</div>
+<div class="row">
+
     <div class="col-sm-2 col-md-3">
 
       <ul class="nav nav-tabs" role="tablist">
@@ -146,6 +149,10 @@
             <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="textbox" href="#">{{word}}</a></li>
         {% endfor %}
         </ul>
+        <label>Cuadros de Textos</label>
+        <ul>
+            <li><a class="genericitem" id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox" href="#">Agregue Adiccional</a></li>
+        </ul>
         {{form|bootstrap  }}
     </div>
     <div role="tabpanel" class="tab-pane" id="messages">
@@ -162,6 +169,9 @@
             </li>
             <li>
                 <a class="genericitem"  id="substancename"  data-ftype="itext"  href="#" > {% trans 'Substance Name' %} </a>
+            </li>
+            <li>
+                <a class="genericitem"  id="uipa"  data-ftype="itext"  href="#" > {% trans 'UIPA Name' %} </a>
             </li>
             <li>
                 <a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a>
@@ -222,15 +232,14 @@
         <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
     </div>
 
-    <div class="col-sm-6 col-md-9  ">
-        <div id="canvasContainer" class="canvas-container" >
-        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100%"></canvas>
+    <div class="col-sm-6 col-md-9" >
+        <div id="canvasContainer" class="canvas-container"  style="width:100%">
+        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100% !important"></canvas>
         </div>
     </div>
 </div>
 
 <div id="hiddencanvas" class="hide hidden">
-
 </div>
 
 <style>
@@ -238,6 +247,7 @@
         margin: 0 auto;
         border: 1px solid #aaa;
     }
+
 
 </style>
 {% endblock content %}

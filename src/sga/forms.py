@@ -1,11 +1,10 @@
-from django.forms import widgets
-from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.forms.forms import GTForm
-from sga.models import WarningWord, Substance, RecipientSize, TemplateSGA, DangerIndication
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence
 
 
 class RecipientInformationForm(forms.Form):
@@ -15,16 +14,17 @@ class RecipientInformationForm(forms.Form):
     address = forms.CharField(max_length=100, required=True )
     commercial_information = forms.Textarea( )
     recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
+    templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.all())
 
 
-class SGAEditorForm(forms.Form):
-    #warningwords = forms.ModelChoiceField(queryset=WarningWord.objects.all(),
-     #                                     label=_("Warning Word"))
-    dangerindication = AutoCompleteSelectField('dangerindication',
-                                          label=_("Danger Indication"))
-    prudenceadvice = AutoCompleteSelectField('prudenceadvices',
-                                          label=_("Prudence Advices"))
-
+class SGAEditorForm(CustomForm,forms.ModelForm):
+    class Meta:
+        model = DangerPrudence
+        fields = ('prudence_advice','danger_indication')
+        widgets = {
+            'prudence_advice':AutocompleteSelect('prudencesearch'),
+            'danger_indication': AutocompleteSelect('dangersearch')
+        }
 
 class EditorForm(forms.ModelForm):
     preview = forms.CharField(widget=forms.HiddenInput())
