@@ -1,10 +1,10 @@
 # encoding: utf-8
-
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
 from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
+from laboratory.decorators import has_lab_assigned
 
 
 #FIXME to manage add separately bootstrap, we need a workaround to to this.
@@ -35,6 +35,7 @@ def access_management(request):
     return render(request, 'laboratory/access_management.html', context=context)
 
 
+@has_lab_assigned(lab_pk='pk')
 @permission_required('laboratory.view_organizationusermanagement')
 def users_management(request, pk):
 
@@ -61,6 +62,7 @@ def users_management(request, pk):
     return render(request, 'laboratory/users_management.html', context=context)
 
 
+@has_lab_assigned(lab_pk='pk')
 @permission_required('laboratory.delete_organizationusermanagement')
 def delete_user(request, pk, user_pk):
     user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()

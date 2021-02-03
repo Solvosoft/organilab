@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 from django import forms
 from django.conf.urls import url
 from django.contrib import messages
@@ -18,8 +17,10 @@ from laboratory.forms import LaboratoryCreate, H_CodeForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from laboratory.decorators import has_lab_assigned
 
 
+@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
@@ -201,6 +202,7 @@ class LaboratoryListView(ListView):
         return get_user_laboratories(self.request.user, q)
 
 
+@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory

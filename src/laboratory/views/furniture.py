@@ -16,12 +16,14 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django_ajax.decorators import ajax
+from laboratory.decorators import has_lab_assigned
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
@@ -31,6 +33,7 @@ class FurnitureReportView(ListView):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.add_furniture'), name='dispatch')
 class FurnitureCreateView(CreateView):
     model = Furniture
@@ -85,6 +88,7 @@ class FurnitureForm(forms.ModelForm):
         fields = ("labroom", "name", "type", 'dataconfig')
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
@@ -119,6 +123,7 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
     model = Furniture
@@ -146,6 +151,7 @@ def list_furniture_render(request, lab_pk=None):
         })
 
 
+# Here we need to discuss if it is necesary to look for lab_pk in ajax requests
 @login_required
 @ajax
 def list_furniture(request, lab_pk):
