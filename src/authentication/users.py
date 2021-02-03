@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -13,9 +13,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
-
-
-from laboratory.decorators import user_group_perms
 from authentication.forms import CreateUserForm, PasswordChangeForm
 from laboratory.models import OrganizationUserManagement, Profile
 from laboratory.utils import get_laboratories_from_organization
