@@ -70,7 +70,7 @@ class AddUser(CreateView):
         return response
 
 
-@method_decorator(permission_required("auth.change_user"), name="dispatch")
+@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
 
     model = User
@@ -92,6 +92,16 @@ class ChangeUser(UpdateView):
         context = super(ChangeUser, self).get_context_data()
         context['password_form'] = PasswordChangeForm()
         return context
+    
+    def form_valid(self, form):
+        instance = form.save()
+        user = User.objects.get(username=form.cleaned_data['username'])
+        p, created = Profile.objects.get_or_create(user=user)
+        p.phone_number = form.cleaned_data['phone_number']
+        p.id_card = form.cleaned_data['id_card']
+        p.job_position = form.cleaned_data['job_position']
+        p.save()
+        return super(ChangeUser, self).form_valid(form)
 
 
 @method_decorator(permission_required("laboratory.change_user"), name="dispatch")
