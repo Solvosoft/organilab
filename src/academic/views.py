@@ -1,15 +1,17 @@
 from django.shortcuts import get_object_or_404, redirect
 from djgentelella.cruds.base import CRUDView
 from djgentelella.cruds.inline_crud import InlineAjaxCRUD
-
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject,\
     ProcedureObservations
 from django.urls.base import reverse_lazy
+from laboratory.decorators import has_lab_assigned
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 from academic.forms import ProcedureForm, ProcedureStepForm
 
-# Create your views here.
-from django.forms.models import BaseInlineFormSet
 
+
+# Default behaivor of CRUDView is check permissions in each request
 class ProcedureView(CRUDView):
     model = Procedure
     template_father = 'base.html'
@@ -35,6 +37,7 @@ class ProcedureObservationsView(InlineAjaxCRUD):
     list_fields = ['description']
 
 
+# Default behaivor of CRUDView is check permissions in each request
 class StepsView(CRUDView):
     model = ProcedureStep
     inlines=[ProcedureRequiredObjectView, ProcedureObservationsView ]
@@ -60,6 +63,7 @@ class StepsView(CRUDView):
         return CSV
 
 
+@permission_required('academic.add_procedurestep')
 def add_steps_wrapper(request, pk):
     procedure = get_object_or_404(Procedure, pk=pk)
     procstep = ProcedureStep.objects.create(procedure=procedure)
