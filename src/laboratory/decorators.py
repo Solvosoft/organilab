@@ -51,8 +51,8 @@ view_user_group_perms = user_group_perms
 def has_lab_assigned():
     def decorator(view_func):
         def wrap(request, *args, **kwargs):
-            labs = request.user.profile.laboratories.values_list('pk', flat=True)
-            if kwargs['lab_pk'] in labs:
+            lab_in = request.user.profile.laboratories.filter(pk=kwargs['lab_pk'] ).first()
+            if lab_in:
                 return view_func(request, *args, **kwargs)
             else:
                 return redirect(reverse('permission_denied'))
