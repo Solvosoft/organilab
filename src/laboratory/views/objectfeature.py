@@ -9,8 +9,10 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
+from laboratory.decorators import has_lab_assigned
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.add_objectfeatures'), name='dispatch')
 class FeatureCreateView(CreateView):
     model = ObjectFeatures
@@ -38,6 +40,7 @@ class FeatureCreateView(CreateView):
         return super(FeatureCreateView, self).get_success_url()
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_objectfeatures'), name='dispatch')
 class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
@@ -49,6 +52,7 @@ class FeatureUpdateView(UpdateView):
         return super(FeatureUpdateView, self).get_success_url()
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_objectfeatures'), name='dispatch')
 class FeatureDeleteView(DeleteView):
     model = ObjectFeatures
