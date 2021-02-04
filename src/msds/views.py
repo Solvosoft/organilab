@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http.response import JsonResponse
 from djgentelella.cruds.base import CRUDView
@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
 from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 import zipfile
 from django.conf import settings
 import os
