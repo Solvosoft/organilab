@@ -1,9 +1,8 @@
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
-from laboratory.decorators import user_group_perms
 from risk_management.forms import RiskZoneCreateForm
 from risk_management.models import RiskZone
 

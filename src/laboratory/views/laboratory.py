@@ -216,7 +216,7 @@ class LaboratoryDeleteView(DeleteView):
         context['laboratory'] = self.object.pk
         return context
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class HCodeReports(ListView):
     paginate_by = 15
     template_name = 'laboratory/h_code_report.html'

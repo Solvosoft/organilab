@@ -14,11 +14,13 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
 from authentication.forms import CreateUserForm, PasswordChangeForm
+from laboratory.decorators import has_lab_assigned
 from laboratory.models import OrganizationUserManagement, Profile
 from laboratory.utils import get_laboratories_from_organization
 
 
-@method_decorator(permission_required("laboratory.change_organizationusermanagement"), name="dispatch")
+@has_lab_assigned(lab_pk='pk')
+@method_decorator(permission_required("laboratory.add_organizationusermanagement"), name="dispatch")
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
