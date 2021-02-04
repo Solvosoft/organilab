@@ -19,7 +19,7 @@ from laboratory.models import OrganizationUserManagement, Profile
 from laboratory.utils import get_laboratories_from_organization
 
 
-@has_lab_assigned(lab_pk='pk')
+@method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
 @method_decorator(permission_required("laboratory.add_organizationusermanagement"), name="dispatch")
 class AddUser(CreateView):
     model = User
