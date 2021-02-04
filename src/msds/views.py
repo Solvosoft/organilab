@@ -1,8 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.http.response import JsonResponse
-
 from djgentelella.cruds.base import CRUDView
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
@@ -10,10 +9,11 @@ from django.core.paginator import Paginator
 from django.utils.translation import ugettext as _
 from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import zipfile
 from django.conf import settings
 import os
+
 
 def index_msds(request):
     return render(request, 'index_msds.html')
@@ -93,6 +93,13 @@ class MSDSObjectCRUD(CRUDView):
     update_form = FormMSDSobjectUpdate
     check_login = False
     check_perms = False
+    perms = { 
+        'create': ['msds.add_msdsobject'],
+        'list': [],
+        'delete': ['msds.delete_msdsobject'],
+        'update': ['msds.update_msdsobject'],
+        'detail': []
+    }
     form_widget_exclude = ['file']
 
     def decorator_update(self, viewclass):
