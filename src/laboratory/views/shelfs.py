@@ -43,9 +43,9 @@ def list_shelf_render(request, lab_pk):
         })
 
 
-@login_required
 @ajax
 @has_lab_assigned()
+@permission_required('laboratory.view_shelf')
 def list_shelf(request, lab_pk):
     return {
         'inner-fragments': {
@@ -55,9 +55,9 @@ def list_shelf(request, lab_pk):
     }
 
 
-@login_required
 @ajax
 @has_lab_assigned()
+@permission_required('laboratory.delete_shelf')
 def ShelfDelete(request, lab_pk, pk, row, col):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)
