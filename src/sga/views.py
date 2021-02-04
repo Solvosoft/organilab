@@ -1,16 +1,12 @@
 # Import functions of another modules
-import os
-
-from django.core.files.base import ContentFile
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm
 from sga.models import TemplateSGA, RecipientSize, Substance, Donation
-from .models import Substance, Component, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse, HttpResponseNotAllowed
+from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 from django.db.models.query_utils import Q
 from django.template import Library
 from django.http import JsonResponse, HttpResponseRedirect
@@ -20,12 +16,11 @@ from django.contrib import messages
 from django.core.files import temp as tempfile
 from django.views.decorators.http import require_http_methods
 from .json2html import json2html
-from django.core.files.storage import FileSystemStorage, Storage
+from django.core.files.storage import FileSystemStorage
 from xhtml2pdf import pisa
-
-from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
 from weasyprint import HTML
+
 
 register = Library()
 
@@ -42,6 +37,7 @@ def render_pdf_view(request):
     html_data = json2html(json_data, global_info_recipient,recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
     return response
+
 
 def generate_pdf(json):
     """Generate pdf."""
@@ -66,6 +62,7 @@ def generate_pdf(json):
     response['Content-Disposition'] = 'attachment; filename=x.pdf'
 
     return response
+
 
 # Return html rendered in pdf o return a html
 def html2pdf(json_data):
@@ -170,7 +167,6 @@ def editor(request):
 
 
 # SGA Label Creator Page
-
 def get_step(step):
     if step is None:
         step = 0
@@ -308,6 +304,7 @@ def show_editor_preview(request, pk):
 
     return JsonResponse(context)
 
+
 def label_information(request):
     # Includes recipient search
     context = RecipientSize.objects.all()
@@ -315,7 +312,6 @@ def label_information(request):
 
 
 # SGA Label Template Page
-
 def label_template(request):
     recipients = RecipientSize.objects.all()
 
@@ -382,7 +378,6 @@ def index_organilab(request):
     return render(request, 'index_organilab.html', {'form': form})
 
 
-
 def donate(request):
     pay = False
 
@@ -414,9 +409,11 @@ def donate(request):
         return render(
             request, 'donate_organilab.html', {'form': form, 'pay': pay})
 
+
 def donate_success(request):
     messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
     return HttpResponseRedirect(reverse('donate'))
+
 
 @csrf_exempt
 def get_prudence_advice(request):
