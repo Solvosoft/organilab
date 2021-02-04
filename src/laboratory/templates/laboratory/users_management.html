@@ -78,14 +78,11 @@
 
             {% if not obj == user %}
                 <tr>
-                <td>{{ obj.username }}</td>
-                <td>{{ obj.get_full_name }}</td>
-                <td>{{ obj.email }}</td>
+                <td>{{ obj.user.username }}</td>
+                <td>{{ obj.user.get_full_name }}</td>
+                <td>{{ obj.user.email }}</td>
                 {% if perms.laboratory.delete_organizationusermanagement %}
                   <td align="center">
-                      <a class="btn btn-danger pull-center delete_user" data-toggle="modal" data-target="#modalConfirmDelete"
-                        data-id="{{ obj.pk }}" data-name="{{ obj.get_full_name }}">
-                          <i class="fa fa-trash"></i></a>
                   </td>
                 {% endif %}
                 </tr>

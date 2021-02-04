@@ -158,8 +158,9 @@ class CreateLaboratoryFormView(FormView):
         return context
 
     def form_valid(self, form):
-        form.save()
-        self.object = form.instance
+        self.object = form.save()
+        user = self.request.user
+        user.profile.laboratories.add(self.object)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
 
         return response
