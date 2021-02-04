@@ -17,7 +17,7 @@ from laboratory.decorators import has_lab_assigned
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')
-@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
@@ -60,7 +60,7 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
-@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -75,7 +75,7 @@ class LabroomUpdate(UpdateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
-@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom

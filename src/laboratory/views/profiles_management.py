@@ -8,7 +8,7 @@ from laboratory.decorators import has_lab_assigned
 
 
 @method_decorator(has_lab_assigned(), name="dispatch")
-@method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_profile'), name='dispatch')
 class ProfilesListView(ListView):
     model = Profile
 
@@ -20,6 +20,7 @@ class ProfilesListView(ListView):
         return context
 
 @method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
 class ProfileUpdateView(FormView, LoginRequiredMixin):
     template_name = 'laboratory/profile_form.html'
     form_class = ProfileForm
