@@ -1,24 +1,23 @@
 import django_excel
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-
 from xhtml2pdf import pisa
 from laboratory.views.reports import link_callback
-
 from laboratory.decorators import user_group_perms
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
 from django.utils.translation import ugettext as _
+from laboratory.decorators import has_lab_assigned
 
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='risk_management.view_incidentreport'), name='dispatch')
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
 class IncidentReportList(djgeneric.ListView):
     model = IncidentReport
     ordering = 'pk'
@@ -46,8 +45,8 @@ class IncidentReportList(djgeneric.ListView):
             context['pgparams'] = '?'
         return context
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='risk_management.add_incidentreport'), name='dispatch')
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('risk_management.add_incidentreport'), name="dispatch")
 class IncidentReportCreate(djgeneric.CreateView):
     model = IncidentReport
     form_class = IncidentReportForm
@@ -60,8 +59,10 @@ class IncidentReportCreate(djgeneric.CreateView):
             'laboratories':[self.lab]
         }
         return kwargs
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='risk_management.change_incidentreport'), name='dispatch')
+
+
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('risk_management.change_incidentreport'), name="dispatch")
 class IncidentReportEdit(djgeneric.UpdateView):
     model = IncidentReport
     form_class = IncidentReportForm
@@ -74,14 +75,17 @@ class IncidentReportEdit(djgeneric.UpdateView):
             'laboratories':[self.lab]
         }
         return kwargs
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='risk_management.delete_incidentreport'), name='dispatch')
+
+
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('risk_management.delete_incidentreport'), name="dispatch")
 class IncidentReportDelete(djgeneric.DeleteView):
     model = IncidentReport
     success_url = reverse_lazy('riskmanagement:riskzone_list')
 
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_group_perms(perm='risk_management.view_incidentreport'), name='dispatch')
+
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
 class IncidentReportDetail(djgeneric.DetailView):
     model = IncidentReport
 
@@ -124,8 +128,8 @@ _('Laboratories'),
 
 
 
-@login_required
-@user_group_perms(perm='laboratory.do_report')
+@has_lab_assigned()
+@permission_required('laboratory.do_report')
 def report_incidentreport(request, *args, **kwargs):
     var = request.GET.get('pk', '')
     lab = kwargs.get('lab_pk')
