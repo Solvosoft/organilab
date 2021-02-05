@@ -1,2 +1,2 @@
 04/02/2020
-    - python src/manage.py migrate 
+    - python manage.py create_profile
