@@ -12,8 +12,13 @@ from laboratory.decorators import has_lab_assigned
 @permission_required(['laboratory.view_organizationusermanagement', 'laboratory.add_organizationusermanagement'])
 def access_management(request):
     context = {}
+    if request.method == "POST":
+        form = OrganizationUserManagementForm()
+    else:
+        form = OrganizationUserManagementForm()
     context['labs'] = request.user.profile.laboratories.all()
     context['orgs'] = OrganizationStructure.objects.filter(organizationusermanagement__users=request.user)
+    context['form'] = form
     return render(request, 'laboratory/access_management.html', context=context)
 
 
