@@ -13,6 +13,7 @@ from laboratory.decorators import has_lab_assigned
 def access_management(request):
     context = {}
     context['labs'] = request.user.profile.laboratories.all()
+    context['orgs'] = OrganizationUserManagement.objects.filter(users=request.user)
     return render(request, 'laboratory/access_management.html', context=context)
 
 
