@@ -77,7 +77,9 @@
                       </ul>
                     </td>
                     <td>{{item.group}}</td>
-                    <td><a href="{% url 'laboratory:users_management' item.pk %}"><i class="fa fa-plus" aria-hidden="true"></i></a></td>
+                    <td>
+                      <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="50" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                    </td>
                   </tr>
                 {% endfor %}
               </tbody>
