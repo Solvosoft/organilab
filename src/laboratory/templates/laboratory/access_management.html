@@ -79,7 +79,7 @@
                       </ul>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="50" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                      <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
                     </td>
                   </tr>
                 {% endfor %}
@@ -100,17 +100,21 @@
   <div id="organizationsavemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">{% trans 'Add descendant organization' %}</h4>
-        </div>
-        <div class="modal-body">
-          {{ form.as_horizontal }}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
+        <form action="" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="pk" name="pk" value=0>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{% trans 'Add descendant organization' %}</h4>
+          </div>
+          <div class="modal-body">
+            {{ form.as_horizontal }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -121,6 +125,10 @@
     $(document).ready(function() {
       $('#labs').DataTable();
       $('#orgs').DataTable();
+      $('.select2-container').width('100%');
     });
+    function update_pK_parent(element){
+      $('#pk').val(parseInt($(element).attr('id')));
+    }
   </script>
 {% endblock %}
