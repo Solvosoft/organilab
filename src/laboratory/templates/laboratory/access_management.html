@@ -33,7 +33,9 @@
                     <td>{{lab.phone_number}}</td>
                     <td>{{lab.location}}</td>
                     <td>{{lab.organization}}</td>
-                    <td><a href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-plus" aria-hidden="true"></i></a></td>
+                    <td>
+                      <a class="btn btn-primary btn-sm"  href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
+                    </td>
                   </tr>
                 {% endfor %}
               </tbody>
