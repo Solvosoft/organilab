@@ -35,6 +35,7 @@
                     <td>{{lab.organization}}</td>
                     <td>
                       <a class="btn btn-primary btn-sm"  href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
+                      <a class="btn btn-primary btn-sm" href="{% url 'laboratory:organizationreactivepresence' lab.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
                     </td>
                   </tr>
                 {% endfor %}
