@@ -75,6 +75,8 @@
                       <ul style="list-style-type:none;">
                         {% for lab in node.laboratory_set.all %}
                           <li>{{lab}}</li>
+                        {% empty %}
+                          <li>Sin laboratorios</li>
                         {% endfor %}
                       </ul>
                     </td>
