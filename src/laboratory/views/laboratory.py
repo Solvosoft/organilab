@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from django.db.models import query
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -15,7 +16,7 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from laboratory.forms import LaboratoryCreate, H_CodeForm
-from laboratory.models import Laboratory, OrganizationStructure, Profile
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from laboratory.decorators import has_lab_assigned
@@ -203,10 +204,12 @@ class LaboratoryListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(profile__user=self.request.user)
         q = self.request.GET.get('search_fil', '')
-        if q == "":
-            q = None
-        return get_user_laboratories(self.request.user, q)
+        if q != "":
+            queryset = queryset.filter(name__icontains=q) 
+        return queryset   
 
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
