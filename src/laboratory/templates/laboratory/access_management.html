@@ -92,6 +92,7 @@
                 </tr>
               </tfoot>
             </table>
+            <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="0" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
           </div>
         </div>
       </div>
@@ -123,7 +124,9 @@
 {% block js %}
   <script>
     $(document).ready(function() {
-      $('#labs').DataTable();
+      $('#labs').DataTable({
+         "dom": 'lfrtip'
+      });
       $('#orgs').DataTable();
       $('.select2-container').width('100%');
     });
