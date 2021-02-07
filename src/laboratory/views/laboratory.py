@@ -3,6 +3,7 @@ from django import forms
 from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -160,7 +161,10 @@ class CreateLaboratoryFormView(FormView):
     def form_valid(self, form):
         self.object = form.save()
         user = self.request.user
+        admins = User.objects.filter(is_superuser=True)
         user.profile.laboratories.add(self.object)
+        for admin in admins: admin.profile.laboratories.add(self.object)
+        user.profile.laboratories.add(*admins)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
 
         return response
