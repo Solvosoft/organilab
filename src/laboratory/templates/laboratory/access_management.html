@@ -63,34 +63,47 @@
               <thead>
                 <tr>
                   <th>{% trans 'Name' %}</th>
-                  <th>{% trans 'Users' %}</th>
-                  <th>{% trans 'Groups' %}</th>
+                  <th>{% trans 'Laboratories' %}</th>
                   <th>{% trans 'Actions' %}</th>
                 </tr>
               </thead>
               <tbody>
-                {% for item in orgs %}
+                {% for node in orgs %}
                   <tr>
-                  <td>{{item.organization.name}}</td>
+                    <td>{{node.name}}</td>
                     <td>
                       <ul style="list-style-type:none;">
-                        {% for user in item.users.all %}
-                          <li>{{user}}</li>
+                        {% for lab in node.laboratory_set.all %}
+                          <li>{{lab}}</li>
                         {% endfor %}
                       </ul>
                     </td>
-                    <td>{{item.group}}</td>
                     <td>
                       <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="50" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
                     </td>
                   </tr>
+                  {% if not node.children %}
+                    <tr>
+                      <td>{{node.children}}</td>
+                      <td>
+                        <ul style="list-style-type:none;">
+                          {% for user in children.users.all %}
+                            <li>{{user}}</li>
+                          {% endfor %}
+                        </ul>
+                      </td>
+                      <td>{{children.group}}</td>
+                      <td>
+                        <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="50" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                      </td>
+                    </tr>
+                  {% endif %}
                 {% endfor %}
               </tbody>
               <tfoot>
                 <tr>
                   <th>{% trans 'Name' %}</th>
-                  <th>{% trans 'Users' %}</th>
-                  <th>{% trans 'Groups' %}</th>
+                  <th>{% trans 'Laboratories' %}</th>
                   <th>{% trans 'Actions' %}</th>
                 </tr>
               </tfoot>
