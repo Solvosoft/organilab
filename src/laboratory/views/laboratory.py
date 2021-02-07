@@ -15,7 +15,7 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from laboratory.forms import LaboratoryCreate, H_CodeForm
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, Profile
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from laboratory.decorators import has_lab_assigned
@@ -163,8 +163,10 @@ class CreateLaboratoryFormView(FormView):
         user = self.request.user
         admins = User.objects.filter(is_superuser=True)
         user.profile.laboratories.add(self.object)
-        for admin in admins: admin.profile.laboratories.add(self.object)
-        user.profile.laboratories.add(*admins)
+        for admin in admins: 
+            if not hasattr(admin, 'profile'):
+                admin.profile = Profile.objects.create(user=admin)
+            admin.profile.laboratories.add(self.object)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
 
         return response
