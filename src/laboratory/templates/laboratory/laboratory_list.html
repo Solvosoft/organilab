@@ -44,3 +44,18 @@
     </nav>
   {% endif %}
 {% endblock %}
+<!-- Workaround to avoid change ui with django form -->
+{% block js %}
+  <script>
+    window.onload = function(){
+      try{
+        var url_string = (window.location.href).toLowerCase();
+        var url = new URL(url_string);
+        var search_fil = url.searchParams.get("search_fil");
+        document.getElementById('searchbox').value = search_fil;
+      }catch(err){
+        //do nothing
+      }
+    }
+  </script>
+{% endblock %}
