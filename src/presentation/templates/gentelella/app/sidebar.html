@@ -1,5 +1,4 @@
 {% load i18n shelf_position laboratory static %}
-{% index_permissions as userperms %}
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;  ">
         <a href="{% if laboratory %}{% url 'laboratory:labindex' laboratory %}{% else %}{% url 'index' %}{% endif %}"
