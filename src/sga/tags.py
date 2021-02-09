@@ -195,14 +195,14 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                     self.styles += "{}:{};".format('height', str(self.conversion_height()*self.json_props['scaleY']) + 'cm')
                 print("{}--{}--{}".format(self.json_props['text'],self.json_props['height']*self.json_props['scaleY'],x))
                 if 'text' in self.json_props:
-                    if self.json_props['text'] in self.warningword:
-                        self.styles += "{}:{};".format('color', 'red')
+
+                        self.styles += "{}:{};".format('color', self.json_props['fill'])
                 self.styles += "{}:{};".format("font-size", font)
 
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
         if self.json_props['backgroundColor'] == '':
-            self.styles += "{}:{};".format('background-color', 'white')
+            self.styles += "{}:{};".format('background-color', 'transparent')
 
         return self.styles
 

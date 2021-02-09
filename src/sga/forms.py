@@ -16,7 +16,6 @@ class RecipientInformationForm(forms.Form):
     recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
     templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.all())
 
-
 class SGAEditorForm(CustomForm,forms.ModelForm):
     class Meta:
         model = DangerPrudence
