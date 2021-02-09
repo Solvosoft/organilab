@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
-
-{% block extra_css %}
-	<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
 {% endblock %}
-
 {% block content %} 
 <h1 class="header text-center">  {% trans 'Search MSDS' %} 
 <a class="btn btn-success pull-right" href="{% url 'msds:msds_msdsobject_create' %}">
@@ -32,10 +30,6 @@
 
 {% endblock %} 
 {% block js %}
-
-<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
-
 <script>
 $(document).ready(function() {
     $('#msdstable').DataTable( {

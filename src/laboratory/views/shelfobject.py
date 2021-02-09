@@ -14,18 +14,14 @@ from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core
-
 from laboratory.models import ShelfObject, Shelf, Object
-
 from .djgeneric import CreateView, UpdateView, DeleteView
 from django.utils.translation import ugettext_lazy as _
-
 from djgentelella.widgets.selects import AutocompleteSelect
-
 from ..logsustances import log_object_change
 from django.views.generic.edit import FormView
-
 from laboratory.forms import ReservationModalForm
+from laboratory.decorators import has_lab_assigned
 
 
 @login_required
@@ -108,6 +104,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
         }
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.add_shelfobject'), name='dispatch')
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
@@ -138,6 +135,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return kwargs
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -172,6 +170,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return kwargs
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -220,6 +219,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         }
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.delete_shelfobject'), name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject

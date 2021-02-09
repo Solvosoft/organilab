@@ -1,9 +1,10 @@
 # encoding: utf-8
-
 from django import forms
 from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
+from django.db.models import query
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -15,11 +16,13 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from laboratory.forms import LaboratoryCreate, H_CodeForm
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from laboratory.decorators import has_lab_assigned
 
 
+@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
@@ -157,8 +160,14 @@ class CreateLaboratoryFormView(FormView):
         return context
 
     def form_valid(self, form):
-        form.save()
-        self.object = form.instance
+        self.object = form.save()
+        user = self.request.user
+        admins = User.objects.filter(is_superuser=True)
+        user.profile.laboratories.add(self.object)
+        for admin in admins: 
+            if not hasattr(admin, 'profile'):
+                admin.profile = Profile.objects.create(user=admin)
+            admin.profile.laboratories.add(self.object)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
 
         return response
@@ -195,12 +204,15 @@ class LaboratoryListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(profile__user=self.request.user)
         q = self.request.GET.get('search_fil', '')
-        if q == "":
-            q = None
-        return get_user_laboratories(self.request.user, q)
+        if q != "":
+            queryset = queryset.filter(name__icontains=q) 
+        return queryset   
 
 
+@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory
@@ -214,7 +226,7 @@ class LaboratoryDeleteView(DeleteView):
         context['laboratory'] = self.object.pk
         return context
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class HCodeReports(ListView):
     paginate_by = 15
     template_name = 'laboratory/h_code_report.html'

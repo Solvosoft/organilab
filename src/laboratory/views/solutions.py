@@ -2,11 +2,16 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, DetailView
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 from pyEQL import Solution
 from laboratory.models import Solution
 from laboratory.validators import validate_molecular_formula
+from laboratory.decorators import has_lab_assigned
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.view_solution'), name='dispatch')
 class SolutionListView(ListView):
     model = Solution
     template_name = 'laboratory/solution_list.html'
@@ -23,7 +28,8 @@ class SolutionListView(ListView):
         return context
 
 
-
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.view_solution'), name='dispatch')
 class SolutionDetailView(DetailView):
     model = Solution
     template_name = 'laboratory/solution_detail.html'
@@ -114,6 +120,8 @@ class SolutionCalculatorForm(forms.Form):
         return cleaned_data
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.view_solution'), name='dispatch')
 class SolutionCalculatorView(FormView):
     form_class = SolutionCalculatorForm
     template_name = 'laboratory/solution_calculator.html'

@@ -12,15 +12,12 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
+from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-
 from laboratory.models import Furniture, Shelf
 from laboratory.shelf_utils import get_dataconfig
-
 from .djgeneric import CreateView, UpdateView
-
-from laboratory.decorators import user_group_perms
 
 
 def get_shelves(furniture):
@@ -46,8 +43,9 @@ def list_shelf_render(request, lab_pk):
         })
 
 
-@login_required
 @ajax
+@has_lab_assigned()
+@permission_required('laboratory.view_shelf')
 def list_shelf(request, lab_pk):
     return {
         'inner-fragments': {
@@ -57,8 +55,9 @@ def list_shelf(request, lab_pk):
     }
 
 
-@login_required
 @ajax
+@has_lab_assigned()
+@permission_required('laboratory.delete_shelf')
 def ShelfDelete(request, lab_pk, pk, row, col):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)
@@ -81,6 +80,7 @@ class ShelfForm(forms.ModelForm):
         }
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.add_shelf'), name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
@@ -134,6 +134,7 @@ class ShelfCreate(AJAXMixin, CreateView):
         }
 
 
+@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelf'), name='dispatch')
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
