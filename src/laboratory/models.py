@@ -432,7 +432,7 @@ class Laboratory(models.Model):
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(_('Phone'), default='', max_length=25)
     id_card = models.CharField(_('ID Card'), max_length=100)
     laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)

@@ -7,15 +7,17 @@ from django.urls.base import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
-
 from authentication.forms import DemoRequestForm
 from authentication.models import FeedbackEntry, DemoRequest
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 class PermissionDeniedView(TemplateView):
     template_name = 'laboratory/permission_denied.html'
 
 
+@method_decorator(login_required(), name='dispatch')
 class FeedbackView(CreateView):
     template_name = 'feedback/feedbackentry_form.html'
     model = FeedbackEntry
@@ -68,6 +70,8 @@ update_template_context("Request demo",  "New demo request", context,
                         {{data.country}}<br>
                         {{data.phone_number}}
                         """)
+
+
 class RequestDemoView(CreateView):
     model = DemoRequest
     form_class = DemoRequestForm

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -13,15 +13,14 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
-
-
-from laboratory.decorators import user_group_perms
 from authentication.forms import CreateUserForm, PasswordChangeForm
+from laboratory.decorators import has_lab_assigned
 from laboratory.models import OrganizationUserManagement, Profile
 from laboratory.utils import get_laboratories_from_organization
 
 
-@method_decorator(permission_required("laboratory.change_organizationusermanagement"), name="dispatch")
+@method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
+@method_decorator(permission_required("laboratory.add_organizationusermanagement"), name="dispatch")
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
@@ -57,20 +56,12 @@ class AddUser(CreateView):
         user.save()
         profile =Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
             id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
-
         self.send_email(user)
-        orga_user_manager = OrganizationUserManagement.objects.filter(organization__pk=self.kwargs['pk']).first()
-        if orga_user_manager:
-            orga_user_manager.users.add(user)
-            labs = get_laboratories_from_organization(orga_user_manager.pk)
-            lab_list = list(labs)
-            if lab_list:
-                profile.laboratories.add(*lab_list)
-
+        profile.laboratories.add(self.kwargs['pk'])
         return response
 
 
-@method_decorator(permission_required("auth.change_user"), name="dispatch")
+@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
 
     model = User
@@ -92,6 +83,16 @@ class ChangeUser(UpdateView):
         context = super(ChangeUser, self).get_context_data()
         context['password_form'] = PasswordChangeForm()
         return context
+    
+    def form_valid(self, form):
+        instance = form.save()
+        user = User.objects.get(username=form.cleaned_data['username'])
+        p, created = Profile.objects.get_or_create(user=user)
+        p.phone_number = form.cleaned_data['phone_number']
+        p.id_card = form.cleaned_data['id_card']
+        p.job_position = form.cleaned_data['job_position']
+        p.save()
+        return super(ChangeUser, self).form_valid(form)
 
 
 @method_decorator(permission_required("laboratory.change_user"), name="dispatch")

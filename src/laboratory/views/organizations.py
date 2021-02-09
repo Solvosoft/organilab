@@ -5,13 +5,13 @@ Created on 26/12/2016
 @author: luisza
 '''
 from __future__ import unicode_literals
-
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from laboratory.models import Laboratory, OrganizationStructure, Profile
 from .djgeneric import ListView
+from laboratory.decorators import has_lab_assigned
 
 
 class OrganizationSelectableForm(forms.Form):
@@ -28,7 +28,7 @@ class OrganizationSelectableForm(forms.Form):
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all(
             )
 
-
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReportView(ListView):
     model = Laboratory

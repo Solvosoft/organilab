@@ -9,16 +9,15 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-
 from laboratory.models import LaboratoryRoom, Laboratory
-#from laboratory.decorators import check_lab_permissions, user_lab_perms
-
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.views.furniture import FurnitureCreateForm
 from laboratory.forms import ReservationModalForm
+from laboratory.decorators import has_lab_assigned
 
 
-@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
+@method_decorator(has_lab_assigned(), name='dispatch')
+@method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
@@ -35,6 +34,7 @@ class LaboratoryRoomsList(ListView):
         return context
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
@@ -60,6 +60,7 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -74,6 +75,7 @@ class LabroomUpdate(UpdateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
@@ -84,6 +86,7 @@ class LaboratoryRoomDelete(DeleteView):
             self.kwargs.get('lab_pk'),))
 
 
+@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom

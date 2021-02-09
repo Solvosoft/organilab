@@ -4,7 +4,7 @@ Created on 4 may. 2017
 @author: luis
 '''
 from academic.views import ProcedureView, StepsView, add_steps_wrapper
-from django.conf.urls import url, include
+from django.conf.urls import url
 
 
 procView = ProcedureView().get_urls()

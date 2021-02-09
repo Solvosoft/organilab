@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -8,16 +7,13 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
-
-from laboratory.decorators import user_group_perms
 from laboratory.models import Object
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
 from laboratory.utils import get_cas
-from laboratory.validators import validate_molecular_formula, isValidate_molecular_formula
+from laboratory.validators import isValidate_molecular_formula
 
 
-@login_required(login_url='login')
-@user_group_perms(perm='laboratory.edit_object')
+@permission_required('laboratory.edit_object')
 def create_edit_sustance(request, pk=None):
     instance = Object.objects.filter(pk=pk).first()
 
@@ -59,8 +55,7 @@ def create_edit_sustance(request, pk=None):
     })
 
 
-@login_required(login_url='login')
-@user_group_perms(perm='laboratory.view_object')
+@permission_required('laboratory.view_object')
 def sustance_list(request):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
     return render(request, 'laboratory/sustance/list.html', {
@@ -68,14 +63,14 @@ def sustance_list(request):
     })
 
 
-@method_decorator(user_group_perms(perm='laboratory.delete_object'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_object'), name='dispatch')
 class SubstanceDelete(DeleteView):
     model = Object
     success_url = reverse_lazy('laboratory:sustance_list')
     template_name = 'laboratory/sustance/substance_deleteview.html'
 
 
-@method_decorator(user_group_perms(perm='laboratory.view_object'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_object'), name='dispatch')
 class SustanceListJson(BaseDatatableView):
     model = Object
     columns = ['id','name','cas_code','action']
@@ -135,4 +130,3 @@ class SustanceListJson(BaseDatatableView):
                 delete
             ])
         return json_data
-

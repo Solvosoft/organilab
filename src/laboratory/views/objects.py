@@ -19,12 +19,11 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidget
-
-# from laboratory.decorators import check_lab_permissions, user_lab_perms
 from laboratory.models import Laboratory, BlockedListNotification
 from laboratory.models import Object, SustanceCharacteristics
 from laboratory.utils import filter_laboratorist_profile
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
+from laboratory.decorators import has_lab_assigned
 
 
 class ObjectView(object):
@@ -32,6 +31,7 @@ class ObjectView(object):
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
+        @method_decorator(has_lab_assigned(), name='dispatch')
         @method_decorator(permission_required('laboratory.add_object'), name='dispatch')
         class ObjectCreateView(CreateView):
             permission_required = ('laboratory.add_object',)
@@ -52,6 +52,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html",
         )
 
+        @method_decorator(has_lab_assigned(), name='dispatch')
         @method_decorator(permission_required('laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
@@ -72,6 +73,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html"
         )
 
+        @method_decorator(has_lab_assigned(), name='dispatch')
         @method_decorator(permission_required('laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
@@ -86,6 +88,7 @@ class ObjectView(object):
         )
 
         
+        @method_decorator(has_lab_assigned(), name='dispatch')
         @method_decorator(permission_required('laboratory.view_object'), name='dispatch')    
         class ObjectListView(ListView):
 
@@ -200,6 +203,7 @@ class ObjectForm(CustomForm,ModelForm):
 
 
 @login_required
+@has_lab_assigned()
 def block_notifications(request, lab_pk, obj_pk):
     laboratory = Laboratory.objects.get(pk=lab_pk)
     object = Object.objects.get(pk=obj_pk)
