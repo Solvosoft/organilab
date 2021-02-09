@@ -6,13 +6,35 @@ from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
 from laboratory.decorators import has_lab_assigned
+from django.contrib import messages
+from django.utils.translation import gettext as _
 
 
 #FIXME to manage add separately bootstrap, we need a workaround to to this.
 @permission_required(['laboratory.view_organizationusermanagement', 'laboratory.add_organizationusermanagement'])
 def access_management(request):
     context = {}
+    parent = None
+    if request.method == 'POST':
+        form = OrganizationUserManagementForm(request.POST)
+        if form.is_valid():
+            pk = int(request.POST["pk"])
+
+            if pk > 0:
+                parent = OrganizationStructure.objects.filter(pk=pk).first()
+
+            orga = OrganizationStructure(name=form.cleaned_data['name'], parent=parent)
+            orga.save()
+            orga_user = OrganizationUserManagement(group=form.cleaned_data['group'], organization=orga)
+            orga_user.save()
+            orga_user.users.add(request.user)
+            messages.success(request, _('Organization added sucessfully'))
+            return redirect('laboratory:access_list')
+    else:
+        form = OrganizationUserManagementForm()
     context['labs'] = request.user.profile.laboratories.all()
+    context['orgs'] = OrganizationStructure.objects.filter(organizationusermanagement__users=request.user)
+    context['form'] = form
     return render(request, 'laboratory/access_management.html', context=context)
 
 
