@@ -56,16 +56,8 @@ class AddUser(CreateView):
         user.save()
         profile =Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
             id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
-
         self.send_email(user)
-        orga_user_manager = OrganizationUserManagement.objects.filter(organization__pk=self.kwargs['pk']).first()
-        if orga_user_manager:
-            orga_user_manager.users.add(user)
-            labs = get_laboratories_from_organization(orga_user_manager.pk)
-            lab_list = list(labs)
-            if lab_list:
-                profile.laboratories.add(*lab_list)
-
+        profile.laboratories.add(self.kwargs['pk'])
         return response
 
 
