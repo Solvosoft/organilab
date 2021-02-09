@@ -1,46 +1,34 @@
 {% load i18n laboratory %}
 
-{%  has_perms "laboratory.view_laboratoryroom"  as perm_laboratoryroom %}
-{%  has_perms "academic.view_procedure" as perm_procedure  %}
-{%  has_perms "laboratory.view_solution" as perm_solution %}
-{%  has_perms "laboratory.change_laboratory" as perm_change_lab %}
-
 {% if laboratory %}
-<div class="menu_section">
-<h3>{% trans 'Laboratory' %}</h3>
-<ul class="nav side-menu">
- <li>
-
-
-    {% if perm_laboratoryroom %}
-        <li >
-        <a href="{% url 'laboratory:rooms_list' laboratory %}">
-        <strong>{% trans 'Laboratory view' %}</strong></a>
+  <div class="menu_section">
+    <h3>{% trans 'Laboratory' %}</h3>
+    <ul class="nav side-menu">
+      {% if laboratory.view_laboratoryroom %}
+        <li>
+          <a href="{% url 'laboratory:rooms_list' laboratory %}">
+          <strong>{% trans 'Laboratory view' %}</strong></a>
         </li>
-    {% endif %}
-
-    {% if perm_procedure %}
-              <li >
-              <a href="{% url 'academic_procedure_list' %}">
-                {% trans 'Procedures' %}</a>
-              </li>
-    {% endif %}
-    {% if perm_solution %}
-			   <li>
-               <a href="{% url 'laboratory:solution_list' laboratory %}">
-                {% trans 'Dissolution calculator (experimental)' %}</a>
-            </li>
-    {% endif %}
-
- {% if perm_change_lab %}
-              <li>
-              <a href="{% url 'laboratory:laboratory_update' laboratory %}">
-                {% trans 'Edit laboratory' %}
-              </a>
-              </li>
-    {% endif %}
-
-
-</ul>
-</div>
+      {% endif %}
+      {% if academic.view_procedure %}
+        <li >
+          <a href="{% url 'academic_procedure_list' %}">{% trans 'Procedures' %}</a>
+        </li>
+      {% endif %}
+      {% if laboratory.view_solution %}
+        <li>
+          <a href="{% url 'laboratory:solution_list' laboratory %}">
+            {% trans 'Dissolution calculator (experimental)' %}
+          </a>
+        </li>
+      {% endif %}
+      {% if laboratory.change_laboratory %}
+        <li>
+          <a href="{% url 'laboratory:laboratory_update' laboratory %}">
+            {% trans 'Edit laboratory' %}
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
 {% endif %}
