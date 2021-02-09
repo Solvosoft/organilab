@@ -46,6 +46,13 @@ function getList(){
    });
    return {"peligro":p,"atencion":a};
 }
+function danger_color(data){
+   let result=$('#colorfill').val();
+    if(data==='Peligro' || data==="{{warningword}}"||data==="atención"){
+       result="red";
+       }
+    return result;
+}
 (function( ) {
  this.__canvases = [];
  fabric.Object.prototype.transparentCorners = false;
@@ -61,6 +68,15 @@ function getList(){
  //Control zoom and panning in canvas editor
  var panning = false;
  var oselected = false;
+ function addClass(data){
+    if(data=='{{prudenceadvice}}'){
+        return 'prudence';
+    }else if(data=='{{dangerindication}}'){
+        return 'danger';
+    }else{
+        return 'normal';
+    }
+ }
  canvas_editor.on({
      'mouse:wheel': function(opt) {
          let delta = opt.e.deltaY;
@@ -110,31 +126,70 @@ function getList(){
              left: get_position_x(e),
              top: get_position_y(e),
              fontSize: $("#text-font-size").val(),
-             fill: $('#colorfill').val(),
+             fill:$('#colorfill').val(),
              textAlign: $('#textalign').val(),
              fixedWidth: 160,
              fontFamily: 'Helvetica',
              objectCaching: false,
              renderOnAddRemove: false,
          });
-
+        name_label.toObject = (function(toObject) {
+        return function() {
+            return fabric.util.object.extend(toObject.call(this), {
+                name: addClass(data)
+         });
+      };
+    })(name_label.toObject);
          canvas_editor.add(name_label);
+         printns()
      }else if (ftype == "itext"){
          let name_label = new fabric.IText(data, {
              width: 280,
+             id:'normal',
              left: get_position_x(e),
              top: get_position_y(e),
              fontSize: $("#text-font-size").val(),
              fontFamily: $('#fontfamily').val(),
              textAlign: $('#textalign').val(),
-             fill: $('#colorfill').val(),
+             fill: danger_color(data),
              fixedWidth: 280,
             // centeredScaling: true,
              objectCaching: false,
              renderOnAddRemove: false,
          });
+        name_label.toObject = (function(toObject) {
+        return function() {
+            return fabric.util.object.extend(toObject.call(this), {
+                name: 'normal'
+         });
+      };
+    })(name_label.toObject);
          canvas_editor.add(name_label);
-
+    }else if (ftype == "danger-itext") {
+        let danger=getList();
+         if(danger.peligro==0 && danger.atencion==0){
+         let name_label = new fabric.IText(data, {
+             width: 280,
+             id:'normal',
+             left: get_position_x(e),
+             top: get_position_y(e),
+             fontSize: $("#text-font-size").val(),
+             fontFamily: $('#fontfamily').val(),
+             textAlign: $('#textalign').val(),
+             fill: danger_color(data),
+             fixedWidth: 280,
+             objectCaching: false,
+             renderOnAddRemove: false,
+         });
+            name_label.toObject = (function(toObject) {
+        return function() {
+            return fabric.util.object.extend(toObject.call(this), {
+                name: 'normal'
+         });
+      };
+    })(name_label.toObject);
+         canvas_editor.add(name_label);
+        }
      }else if(ftype == "image") {
          fabric.Image.fromURL(data, function (img) {
              img.scaleToWidth(100);
@@ -146,7 +201,11 @@ function getList(){
          });
      }
  }
-
+function printns(){
+    canvas_editor.getObjects().forEach((item,i)=>{
+        console.log(item);
+    });
+}
 
  function handleDragOver(e) {
      if (e.preventDefault) {
@@ -274,12 +333,12 @@ function create_container(message,classname){
 $(document).ready(function () {
 $('#id_prudence_advice').change(function(){
 
-    let code=$(this).find('option:selected').text().split(' ');
+    let pk=$(this).find('option:selected').val();
     $.ajax({
         url: 'sga/prudence/',
         type:'POST',
-        data: {'code':code[0]},
-        datatype:'json',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function (message) {
         if($('.prudence_message').length==0){
         $("#id_prudence_advice").parent().append(create_container(message,'prudence_message'));
@@ -291,12 +350,12 @@ $('#id_prudence_advice').change(function(){
         });
 
 $('#id_danger_indication').change(function(){
-    let code=$(this).find('option:selected').text().split(' ');
+    let pk=$(this).find('option:selected').val();
     $.ajax({
         url: 'sga/get_danger_indication/',
         type:'POST',
-        data: {'code':code[0]},
-        datatype:'json',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function (message) {
         if($('.danger_message').length==0){
         $("#id_danger_indication").parent().append(create_container(message,'danger_message'));
@@ -366,6 +425,7 @@ function setNewCanvas(widthP,heightP){
 //$("#hiddencanvas").removeClass("hidden");
 //$("#hiddencanvas").removeClass("hide");
     $("#id_json_representation").val(JSON.stringify(canvas_editor));
+    //console.log(JSON.stringify(canvas_editor))
     $("#id_preview").val(20000/canvas_editor.getWidth()/100);
     document.getElementById("sgaform").submit();
 //  $("#id_preview").val(canvas_editor.toDataURL('png'));
@@ -438,11 +498,13 @@ $("#id_prudenceadvice_on_deck").bind('added', function() {
  });
 
 if($("#id_json_representation").val() != ""){
+    console.log($("#id_json_representation").val())
     canvas_editor.loadFromJSON($("#id_json_representation").val(), function(){
         canvas_editor.getObjects()[0].selectable = false;
         canvas_editor.renderAll();
     });
-}
+
+   }
 else {
 
     originalWidth= canvas_editor.getWidth();
@@ -466,4 +528,22 @@ function addLine(){
       top: 30,
       stroke: $('#colorfill').val()
     }));
+}
+function getList(){
+   let x= canvas_editor.getObjects();
+   let p=0;
+   let a=0;
+   x.forEach( function(item,i){
+        if(item.text=='Peligro'){
+            p++;
+           }
+        if(item.text=="atención"){
+            a++;
+        }
+         if(item.text=="{{warningword}}"){
+            p++;
+        }
+   });
+
+   return {"peligro":p,"atencion":a};
 }

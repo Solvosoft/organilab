@@ -4,7 +4,7 @@ import os
 from django.core.files.base import ContentFile
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
-
+from django.core import serializers
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm
@@ -24,7 +24,6 @@ from django.core.files.storage import FileSystemStorage, Storage
 from xhtml2pdf import pisa
 
 from paypal.standard.forms import PayPalPaymentsForm
-from django.views.decorators.csrf import csrf_exempt
 from weasyprint import HTML
 
 register = Library()
@@ -137,7 +136,9 @@ def template(request):
         'form': form,
         'sgatemplates': sgatemplates,
         'sizes': template_sizes,
-        'files': [logo_file_url, barcode_file_url]
+        'files': [logo_file_url, barcode_file_url],
+        'pictograms': Pictogram.objects.all(),
+        'warningwords': WarningWord.objects.all()
 
     }
     return render(request, 'template.html', context)
@@ -155,6 +156,7 @@ def editor(request):
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
             finstance = sgaform.save()
+            print(finstance)
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
 
     context = {
@@ -291,16 +293,20 @@ def show_editor_preview(request, pk):
 
     obj = get_object_or_404(TemplateSGA, pk=pk)
     representation = obj.json_representation
+
     for key, value in template_context.items():
         if value == 'Sin palabra de advertencia':
             value = " "
         representation = representation.replace(key, value)
 
 
+
+
     files = {'logo_url': request.session['logo_file_url'],
              'barcode_url': request.session['barcode_file_url']}
     representation = utils_pictograms.pic_selected(representation,
                                                    pictograms, files)
+    representation['objects'] = orderby_elements(representation['objects'])
     context = {
         'object': representation,
         'preview': obj.preview
@@ -308,6 +314,16 @@ def show_editor_preview(request, pk):
 
     return JsonResponse(context)
 
+
+def orderby_elements(datalist):
+
+    for i in range(len(datalist) - 1, 0, -1):
+        for j in range(i):
+            if datalist[j]['top'] > datalist[j + 1]['top']:
+                aux = datalist[j]
+                datalist[j] = datalist[j + 1]
+                datalist[j + 1] = aux
+    return datalist
 def label_information(request):
     # Includes recipient search
     context = RecipientSize.objects.all()
@@ -418,15 +434,23 @@ def donate_success(request):
     messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
     return HttpResponseRedirect(reverse('donate'))
 
-@csrf_exempt
 def get_prudence_advice(request):
-    code = request.POST.get('code', '')
-    data = PrudenceAdvice.objects.get(code=code)
+    pk = request.POST.get('pk', '')
+    data = PrudenceAdvice.objects.get(pk=pk)
     return HttpResponse(data.name)
 
 
-@csrf_exempt
 def get_danger_indication(request):
-    code = request.POST.get('code', '')
-    data = DangerIndication.objects.get(code=code)
+    pk = request.POST.get('pk', '')
+    data = DangerIndication.objects.get(pk=pk)
+    print(data)
     return HttpResponse(data.description)
+
+def getTemplates(request):
+    pk = request.POST.get('pk', '')
+    templates = TemplateSGA.objects.filter(recipient_size=pk)
+    aux=[]
+    for template in templates:
+        aux.append({'id':template.pk, 'name':template.name})
+    data=json.dumps(aux)
+    return JsonResponse(data,safe=False)
