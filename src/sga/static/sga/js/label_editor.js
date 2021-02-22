@@ -121,31 +121,27 @@ function danger_color(data){
      let ftype = e.dataTransfer.getData('type');
      if(ftype == "textbox"){
          let name_label = new fabric.Textbox(data, {
-             width: 180,
+              width: 180,
              height: 20,
              left: get_position_x(e),
              top: get_position_y(e),
              fontSize: $("#text-font-size").val(),
-             fill:$('#colorfill').val(),
+             fill: $('#colorfill').val(),
              textAlign: $('#textalign').val(),
              fixedWidth: 160,
-             fontFamily: 'Helvetica',
+             fontFamily: $('#fontfamily').val(),
+             backgroundColor:$('#text-bg-color').val(),
+             borderColor:$('#colorstroke').val(),
              objectCaching: false,
              renderOnAddRemove: false,
          });
-        name_label.toObject = (function(toObject) {
-        return function() {
-            return fabric.util.object.extend(toObject.call(this), {
-                name: addClass(data)
-         });
-      };
-    })(name_label.toObject);
+
          canvas_editor.add(name_label);
-         printns()
+         canvas_editor.renderAll();
+
      }else if (ftype == "itext"){
          let name_label = new fabric.IText(data, {
-             width: 280,
-             id:'normal',
+              width: 280,
              left: get_position_x(e),
              top: get_position_y(e),
              fontSize: $("#text-font-size").val(),
@@ -153,24 +149,19 @@ function danger_color(data){
              textAlign: $('#textalign').val(),
              fill: danger_color(data),
              fixedWidth: 280,
-            // centeredScaling: true,
+             borderColor:$('#colorstroke').val(),
+             backgroundColor:$('#text-bg-color').val(),
              objectCaching: false,
              renderOnAddRemove: false,
          });
-        name_label.toObject = (function(toObject) {
-        return function() {
-            return fabric.util.object.extend(toObject.call(this), {
-                name: 'normal'
-         });
-      };
-    })(name_label.toObject);
          canvas_editor.add(name_label);
+         canvas_editor.renderAll();
+
     }else if (ftype == "danger-itext") {
         let danger=getList();
          if(danger.peligro==0 && danger.atencion==0){
          let name_label = new fabric.IText(data, {
              width: 280,
-             id:'normal',
              left: get_position_x(e),
              top: get_position_y(e),
              fontSize: $("#text-font-size").val(),
@@ -178,17 +169,14 @@ function danger_color(data){
              textAlign: $('#textalign').val(),
              fill: danger_color(data),
              fixedWidth: 280,
+             borderColor:$('#colorstroke').val(),
+             backgroundColor:$('#text-bg-color').val(),
              objectCaching: false,
              renderOnAddRemove: false,
-         });
-            name_label.toObject = (function(toObject) {
-        return function() {
-            return fabric.util.object.extend(toObject.call(this), {
-                name: 'normal'
-         });
-      };
-    })(name_label.toObject);
-         canvas_editor.add(name_label);
+              });
+                       canvas_editor.add(name_label);
+         canvas_editor.renderAll();
+
         }
      }else if(ftype == "image") {
          fabric.Image.fromURL(data, function (img) {
@@ -198,6 +186,8 @@ function danger_color(data){
              img.set("left", get_position_y(e));
              img.set("centeredScaling", true);
              canvas_editor.add(img);
+         canvas_editor.renderAll();
+
          });
      }
  }

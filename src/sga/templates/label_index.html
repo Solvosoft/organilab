@@ -73,28 +73,22 @@
 				<div class="progress-bar" role="progressbar" aria-valuenow="{{step}}"
 					aria-valuemin="0" aria-valuemax="4" style="width: 15%;"></div>
 			</div>
-			<ul>
+			<ul id="creator_options">
 				<li id="label_information"   {% if step == 0 %} class="active" {%endif%} name="label_information">
 					<a href="#information" data-toggle="tab">
-						<div class="icon-circle">
 							<i class="ti-info"></i>
-						</div>
 						{% trans 'Information' %}
 					</a>
 				</li>
 				<li id="label_template" {% if step == 1 %} class="active" {%endif%} name="label_template">
 					<a href="#template" data-toggle="tab">
-						<div class="icon-circle">
 							<i class="ti-pencil"></i>
-						</div>
 						{% trans 'Template' %}
 					</a>
 				</li>
 				<li id="label_editor" {% if step == 2 %} class="active" {%endif%} name="label_editor">
 					<a href="#editor" data-toggle="tab">
-						<div class="icon-circle">
 							<i class="ti-pencil-alt"></i>
-						</div>
 						{% trans 'Editor' %}
 					</a>
 				</li>

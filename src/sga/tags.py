@@ -111,7 +111,7 @@ class LineTag():
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
-    styles = "position:absolute; padding:0;line-height: 1em;"
+    styles = "position:absolute; padding:0;"
     tag = ""
     cm = 0.0264583333
     warningword = ['Peligro','peligro','Atención','atención']
@@ -133,10 +133,8 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     def set_tag(self):
         if (self.type == "textbox"):
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.convert_header(self.json_props['text']))
-            #print(self.tag)
         if (self.type == "image"):
             self.tag = "<img style=\"%s\" src=\"%s\">" % (self.parse_data(), self.json_props['src'])
-            #print(self.tag)
         if (self.type == "i-text"):
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
         if (self.type == "line"):
@@ -159,10 +157,7 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         left_value = str(self.getX(width)) + 'cm'
         self.styles += "{}:{};".format('top', top_value)
         self.styles += "{}:{};".format('left', left_value)
-        lista=['red','blue','green']
-        from random import  shuffle
-        shuffle(lista)
-        x=lista[0]
+
 
         if self.json_props['scaleX'] and self.json_props['scaleY']:
             if 'src' in self.json_props:
@@ -177,7 +172,9 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                     self.styles += self.convertion_scale(width,height)
 
             else:
-                extra_width = self.json_props["width"] * self.cm*self.convertion()
+
+                extra_width = int(float(self.json_props["width"])) * self.cm*self.convertion()
+
                 left = self.json_props['left'] * self.cm*width
 
                 font= self.conversion_fontsize()
@@ -193,16 +190,18 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                 else:
                     self.styles += "{}:{};".format('width', str(self.conversion_width()) + 'cm')
                     self.styles += "{}:{};".format('height', str(self.conversion_height()*self.json_props['scaleY']) + 'cm')
-                print("{}--{}--{}".format(self.json_props['text'],self.json_props['height']*self.json_props['scaleY'],x))
                 if 'text' in self.json_props:
 
                         self.styles += "{}:{};".format('color', self.json_props['fill'])
+                        self.styles += "{}:{};".format('text-align', self.json_props['textAlign'])
                 self.styles += "{}:{};".format("font-size", font)
 
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
         if self.json_props['backgroundColor'] == '':
             self.styles += "{}:{};".format('background-color', 'transparent')
+        else:
+            self.styles += "{}:{};".format('background-color', self.json_props['backgroundColor'])
 
         return self.styles
 
@@ -215,17 +214,10 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         return sizes
 
     def conversion_fontsize(self):
-         convertX = self.conversion_width()
-         convertY = self.conversion_height()
-         aux = float(self.json_props['fontSize'])*self.cm
-         x = (float(aux/convertX))
-         y = float((aux*convertY))
-         z = aux*self.conversion_h()
-         #print(z)
-         if x >= y:
-            z = aux*self.convertion()
-         #print(z)
-         return str(aux) + 'cm'
+
+        aux = float(self.json_props['fontSize'])*self.cm
+
+        return str(aux) + 'cm'
 
     def convert_header(self,text):
         data = text
