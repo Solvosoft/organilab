@@ -39,9 +39,7 @@
       <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
                     {% csrf_token %}
             {{form|bootstrap}}
-             {%for file in files %}
-              <input class="img" value="{{file}}" type="hidden">
-              {% endfor%}
+
             <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
         </form>
     </div>
@@ -64,6 +62,8 @@
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
         {% trans 'General' %}</a></li>
+    <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
+        {% trans 'En vivo' %}</a></li>
     <li role="presentation"><a href="#pictograms" aria-controls="pictograms" role="tab" data-toggle="tab">
         {% trans 'Pictogram' %}</a></li>
   </ul>
@@ -71,12 +71,6 @@
     <div role="tabpanel" class="tab-pane active" id="home">
 
         <div class="form-group">
-            <label >{% trans 'Warning Words' %}</label>
-        <ul>
-        {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
-        {% endfor %}
-        </ul>
     <label>Cuadros de Textos</label>
          <ul>
              <li><a class="genericitem" id="Agregue Informacion"  title="{% trans 'Additional Information' %}" data-ftype="textbox" href="#">{% trans 'Additional Information' %}</a></li>
@@ -89,7 +83,7 @@
 
         <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
         <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#000"  class="btn" >
-        <input type="color"  style="width: 25%;" value="" id="text-bg-color"  value="#000" class="btn" >
+        <input type="color"  style="width: 25%;"  id="text-bg-color"  value="#FFFFFF" class="btn" >
         <br>
 
 
@@ -107,9 +101,9 @@
               <option value="delicious">Delicious</option>
               <option value="verdana">Verdana</option>
               <option value="georgia">Georgia</option>
-              <option value="courier">Courier</option>
+              <option value="Courier">Courier</option>
               <option value="comic sans ms">Comic Sans MS</option>
-              <option value="impact">Impact</option>
+              <option value="Impact">Impact</option>
               <option value="monaco">Monaco</option>
               <option value="optima">Optima</option>
               <option value="hoefler text">Hoefler Text</option>
@@ -147,8 +141,45 @@
       {% endfor %}
         </div>
     </div>
-    </div>
+          <div role="tabpanel" class="tab-pane" id="live">
+        <label >{% trans 'Warning Words' %}</label>
+        <ul>
+        {% for word in warningwords %}
+            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
+        {% endfor %}
+        </ul>
+        {{formselects|bootstrap  }}
 
+
+           {% if barcode_file_url %}
+          <div class="row p-4">
+
+    <div class="col-md-12">
+        <label>Codigo de barra</label>
+        <br>
+        <a class="genericitem " id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
+    </div>
+    </div>
+{% endif%}
+{% if logo_file_url %}
+      <div class="row pt-4">
+
+    <div class="col-md-12">
+        <label>Logotipo</label>
+        <br>
+         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
+    </div>
+    </div>
+{%  endif %}
+
+              </div>
+  </div>
+    {% if request.user.is_authenticated %}
+        <button class="btn btn-success" id="save" data-toggle="modal" data-target="#save_template">Save</button>
+    {% include 'modal.html'%}
+    {% endif %}
         </div>
       <div class="col-md-9">
 
@@ -158,7 +189,8 @@
                 <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
                    class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ sgatemplates.pk }})"> {% trans 'Get as PDF'%}</button>
                <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} </a>
-  </div
+
+  </div>
   <div class="panel-body">
        <div id="panel-buttons">
         <button data-order="0" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>

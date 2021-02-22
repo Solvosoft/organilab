@@ -136,7 +136,9 @@ def template(request):
         'form': form,
         'sgatemplates': sgatemplates,
         'sizes': template_sizes,
-        'files': [logo_file_url, barcode_file_url],
+        'barcode_file_url':  barcode_file_url,
+        'logo_file_url': logo_file_url,
+        'formselects': SGAEditorForm,
         'pictograms': Pictogram.objects.all(),
         'warningwords': WarningWord.objects.all()
 

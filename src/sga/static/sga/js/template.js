@@ -1,5 +1,5 @@
 let canvas;
-let op;
+let element="";
 
 class CanvasHandler
 {
@@ -57,6 +57,8 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
         if(canvas.redo.length >= 1)
         {
             canvas.state = canvas.redo.pop();
+            console.log(canvas.state);
+
         }
     }
     let on = $(buttonsOn);
@@ -67,6 +69,7 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
     canvas.canv_obj.clear();
     canvas.canv_obj.loadFromJSON(JSON.parse(canvas.state), function(){
         canvas.canv_obj.renderAll();
+         enableControls();
         on.prop('disabled', false);
         if(playStack == 'undo'){
             if (canvas.undo.length>=1){
@@ -82,28 +85,107 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
 
 }
 
+function templateList(data){
+    let templates=document.querySelector('#id_templates')
+    templates.innerHTML='';
+    let y= JSON.parse(data);
+
+    if(y.length>0){
+    y.forEach(e=>{
+       templates.innerHTML+=`<option value=${e.id}>${e.name}</option>`;
+    });
+    }
+}
+
+function initElements(){
+
+   $("#text-font-size").on("change",function(){
+      if(element.type=='textbox'){
+         let aux=getCanvas(element.text);
+         canvas.canv_obj.getObjects()[aux].fontSize=$(this).val();
+         canvas.canv_obj.renderAll();
+       }
+      });
+
+    $('#textalign').on("change",function(){
+      if(element.type=='textbox'){
+         let aux=getCanvas(elementtext);
+         canvas.canv_obj.getObjects()[aux].textAlign=$(this).val();
+         canvas.canv_obj.renderAll();
+       }
+      });
+
+    $('#fontfamily').on("change",function(){
+       if(element.type=='textbox' || element.type=='i-text'){
+          let aux=getCanvas(element.text);
+          canvas.canv_obj.getObjects()[aux].fontFamily=$(this).val();
+          canvas.canv_obj.renderAll();
+       }
+      });
+
+     $('#colorstroke').on("change",function(){
+       if(element.type=='textbox' || element.type=='i-text'){
+          let aux=getCanvas(element.text);
+          canvas.canv_obj.getObjects()[aux].borderColor=$(this).val();
+          canvas.canv_obj.renderAll();
+      }
+     });
+
+     $('#colorfill').on("change",function(){
+       if(element.type=='textbox' || element.type=='i-text'){
+          let aux=getCanvas(element.text);
+          canvas.canv_obj.getObjects()[aux].fill=$(this).val();
+          canvas.canv_obj.renderAll();
+        }
+       });
+
+     $('#text-bg-color').on("change",function(){
+       if(element.type=='textbox' || element.type=='i-text'){
+           let aux=getCanvas(element.text);
+            canvas.canv_obj.getObjects()[aux].backgroundColor=$(this).val();
+            canvas.canv_obj.renderAll();
+       }
+     });
+     let recipient=$('#id_recipients');
+  let pk=$(recipient).find('option:selected');
+    if(pk.index()>0){
+        $.ajax({
+        url: 'sga/getList/',
+        type:'POST',
+        data: {'pk':pk.val()},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (data) {
+        templateList(data);
+      }
+        });
+        }
+
+    $('#id_recipients').change(function(){
+    let pk=$(this).find('option:selected').val();
+     $.ajax({
+        url: 'sga/getList/',
+        type:'POST',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (data) {
+        templateList(data);
+      }
+        });
+});
+}
+
 $(document).ready(function () {
+    initElements();
     let formdata = $("#sgaform").serializeArray();
 
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
             let json_object = {};
             let newcanvas = new fabric.Canvas(element.id);
-            op=newcanvas;
             newcanvas.renderAll();
 
              canvas = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
 
-            $(".img").each((i,e)=>{
-             fabric.Image.fromURL(e.value, function (img) {
-             img.scaleToWidth(100);
-             img.scaleToHeight(100);
-             img.set("top", 0);
-             img.set("left", 0);
-             img.set("centeredScaling", true);
-             canvas.canv_obj.add(img)
-         });
-         });
             canvas.canv_obj.renderAll();
 
        $(".genericitem").each(function (i, obj) {
@@ -118,15 +200,15 @@ $(document).ready(function () {
        container.addEventListener('drop', handleDrop, false);
 
             json_object = data.object;
-        //    data.object.objects.forEach((e,i)=>{
-          //      console.log(e)
-           // })
+
             canvas.canv_obj.loadFromJSON(data.object, function() {
                 let view= $(".canvas-container-preview");
-                upWidth();
-                //setTop();
+
+
                 updateTop();
-             //   setWidth()
+                setTop();
+                enableControls();
+
                 canvas.canv_obj.item(0).selectable = false;
                 canvas.canv_obj['panning'] = false;
                 canvas.canv_obj['onselected'] = false;
@@ -140,8 +222,12 @@ $(document).ready(function () {
                     opt.e.preventDefault();
                     opt.e.stopPropagation();
                  });
-                canvas.canv_obj.on('mouse:up', function () {
+                canvas.canv_obj.on('mouse:up', function (e) {
                      canvas.canv_obj['panning'] = false;
+                    if(e.target!=undefined){
+                     $('#text-font-size').val(e.target.fontSize)
+                        option=e.target;
+                     }
                  });
                 canvas.canv_obj.on('mouse:dblclick', function () {
                      if (!canvas.canv_obj['onselected']) {
@@ -154,22 +240,31 @@ $(document).ready(function () {
                              canvas.canv_obj.relativePan(delta);
                      }
                  });
-                canvas.canv_obj.on('object:selected', function () {
+
+                canvas.canv_obj.on('object:selected', function (e) {
+
                      canvas.canv_obj['onselected'] = true;
                  });
+
                 canvas.canv_obj.on('before:selection:cleared', function () {
                      canvas.canv_obj['onselected'] = false;
                  });
+
                 canvas.canv_obj.on('object:modified', function (e) {
+                     if (e.target.type=='textbox') {
+                         e.target.scaleX=1;
+                        }
                        save(element.id);
                  });
+
                 canvas.canv_obj.on('object:scaling', function(e) {
-                    if (e.target.type=='textbox') {
+                     if (e.target.type=='textbox') {
                          let index=getCanvas(e.target.text);
-                         let item=canvas.canv_obj.getObjects()[index];
-                         canvas.canv_obj.getObjects()[index].fontSize=(e.target.fontSize*e.target.scaleX).toFixed(0x);
+                         e.target.fontSize*=e.target.scaleX;
+                         $('#text-font-size').val(e.target.fontSize)
 
                     }
+                    console.log(e.target.oCoords)
                    });
                 let height = view.height();
                 if (height < 400){
@@ -189,99 +284,105 @@ $(document).ready(function () {
     });
 });
 
-function printns(){
-    canvas.canv_obj.getObjects().forEach((item,i)=>{
-        console.log(item.top);
+function enableControls(){
+
+    canvas.canv_obj.getObjects().forEach((element,i)=>{
+        element.setControlsVisibility({
+    bl: true,br: true, tl: true, tr: true, mt: false,mb: false,
+});
     });
+}
+
+function getPositionX(data){
+    let aux=[];
+    canvas.canv_obj.getObjects().forEach((item,i)=>{
+         if(data.left+data.width<item.left&&(data.top<item.top||data.top-30<item.top)){
+           aux.push(item.left);
+           }
+    });
+
+    let x=aux.sort((a,b) => a-b);
+    return x;
+}
+function getPositionXT(data){
+    let aux=[];
+    canvas.canv_obj.getObjects().forEach((item,i)=>{
+         if(data.left+data.width>item.left&&data.top<item.top-300&&data.top+data.height>item.top){
+           aux.push(item.left);
+           }
+    });
+
+    let x=aux.sort((a,b) => a-b);
+    return x;
+}
+function getPositionY(data){
+    let aux=[];
+    canvas.canv_obj.getObjects().forEach((item,i)=>{
+         if(Math.abs(data.left-item.left)<20&&
+         (data.top<item.top)&&
+         (data.top+data.height)>item.top){
+           aux.push(item.top);
+
+           }
+    });
+
+    let x=aux.sort((a,b) => a-b);
+    return x;
 }
 
 // Aumenta el ancho
 function upWidth(){
-let w=0;
        canvas.canv_obj.getObjects().forEach((item,i)=>{
-         canvas.canv_obj.getObjects().forEach((other,e)=>{
-               if(item.type=='textbox'&&i!=e){
-               if(item.left>700&&w==0){
-                        canvas.canv_obj.getObjects()[i].width*=1.5;
-                        w++;
-                        }
+               if(item.type=='textbox'){
+                   if(item.left<700){
+                       let position=getPositionX(item);
+                       canvas.canv_obj.getObjects()[i].width=position!=undefined?position[0]:item.width;
+                     }else{
+                       canvas.canv_obj.getObjects()[i].width+=(1400-(item.left+item.width));
+
+                       }
                 }
-       });
        });
 	}
 function updateTop(){
        canvas.canv_obj.getObjects().forEach((item,i)=>{
-        if(item.top+item.height>=1500 && item.type=='textbox'){
-            let aux=(item.top+item.height)-1400
+        if(item.top+item.height>=1300 && item.type=='textbox'){
+            let aux=1300-item.top;
+            canvas.canv_obj.getObjects()[i].fontSize*=aux/1300;
+           // canvas.canv_obj.getObjects()[i].scaleY=aux/1300;
+            canvas.canv_obj.getObjects()[i].height=aux;
 
-            canvas.canv_obj.getObjects()[i].scaleY=aux/1400;
-            canvas.canv_obj.getObjects()[i].fontSize=item.fontSize*(aux/1400);
-            console.log(aux/1500)
         }
         });
 }
+function setTop(){
+       canvas.canv_obj.getObjects().forEach((item,i)=>{
+               if(item.type=='textbox'){
+                       let position=getPositionY(item);
+                        if(position[0]!=undefined){
+                        let res=canvas.canv_obj.getObjects()[i];
+                        let aux=(res.top+res.height)-position[0];
+                        aux=(aux*2<position[0])?(res.top+res.height-aux)*0.8:aux*0.7
+                       // canvas.canv_obj.getObjects()[i].scaleY=aux/position[0];
+                        canvas.canv_obj.getObjects()[i].fontSize*=aux/position[0];
+            }
+
+                }
+       });
+	}
+
+
 function getCanvas(text){
     let position=-1;
        canvas.canv_obj.getObjects().forEach((item,i)=>{
-        if(item.type=="textbox"){
-              if(text=item.text){
+        if(item.type=="textbox" || item.type=="i-text"){
+              if(text==item.text){
             position=i
             }
         }
         });
         return position;
 }
-
-function setWidth(){
-        let canva=canvas.canv_obj.getObjects();
-        let res=canvas.canv_obj.getObjects();
-       for(let x in canvas.canv_obj.getObjects()){
-         for(let y in canvas.canv_obj.getObjects()){
-            if(canvas[x].type!='images'){
-            if((canva[x].left+canva[x].width)<res[y].left&&
-            Math.abs(canva[x].left-res[y].left)<500&&
-            canva[x].top<(res[y].top+res[y].height)&&
-            x!=y){
-               // console.log(canva[x].text,' ',i)
-               }
-               }
-
-     	}
-     	i++;
-	}
-	}
-
-function discard(){
-       for(let x in canvas.canv_obj.getObjects()){
-        let a=canvas.canv_obj.getObjects()[x];
-         for(let y in canvas.canv_obj.getObjects()){
-            let b=canvas.canv_obj.getObjects()[y];
-             if(a.type=="textbox" && x!=y && a.width+a.left>b.left && b.top+b.height>a.top&& (a.width+a.left<1200)){
-                canvas.canv_obj.getObjects()[x].width*=0.9;
-        }
-        }
-}
-}
-
-function setTop(){
-
-    let x=0;
-    canvas.canv_obj.getObjects().forEach((item,i)=>{
-        canvas.canv_obj.getObjects().forEach((other,e)=>{
-        if(item.top+item.height> other.top &&
-        item.top<other.top &&
-        item.type!='image'&&
-        other.type!='image'&&
-        Math.abs(item.top-other.top)>20&&
-        Math.abs(item.left-other.left)<200&&
-        i!=e){
-        canvas.canv_obj.getObjects()[x].top-=item.top>0?50:0;
-     }
-     });
-     x++;
-    });
-}
-
 
 function danger_color(data){
    let result=$('#colorfill').val();
@@ -302,7 +403,6 @@ function danger_color(data){
      let ftype = e.dataTransfer.getData('type');
      if(ftype == "textbox"){
          let name_label = new fabric.Textbox(data, {
-             id:'op',
              width: 180,
              height: 20,
              left: get_position_x(e),
@@ -311,10 +411,16 @@ function danger_color(data){
              fill: $('#colorfill').val(),
              textAlign: $('#textalign').val(),
              fixedWidth: 160,
-             fontFamily: 'Helvetica',
+             fontFamily: $('#fontfamily').val(),
+             lineHeight:1,
+             backgroundColor:$('#text-bg-color').val(),
+             borderColor:$('#colorstroke').val(),
              objectCaching: false,
              renderOnAddRemove: false,
          });
+            name_label.setControlsVisibility({
+            bl: true,br: true, tl: true, tr: true, mt: false,mb: false,
+        });
          canvas.canv_obj.add(name_label);
      }else if (ftype == "itext"){
         let danger_count=getList(data);
@@ -327,9 +433,12 @@ function danger_color(data){
              textAlign: $('#textalign').val(),
              fill: danger_color(data),
              fixedWidth: 280,
+             borderColor:$('#colorstroke').val(),
+             backgroundColor:$('#text-bg-color').val(),
              objectCaching: false,
              renderOnAddRemove: false,
          });
+
          canvas.canv_obj.add(name_label);
 
      }else if(ftype == "image") {
@@ -404,13 +513,10 @@ function redoFunction(ele){
     replay('redo','undo','#undo','#redo', ele.dataset.order );
 }
 
-$(document).ready(function(){
-    $(".canvaspng").on('click', function(){
-         let canva =  canvas;
-         this.href=canva.toDataURL({ format: 'png', quality: 0.8});
-    });
-});
 
+function set_elements_atributes(){
+
+}
 function get_canvas(pk){
         let id = canvas.canv_obj.lowerCanvasEl.id;
         if (id === "preview_" + pk.toString())

@@ -38,10 +38,10 @@ urlpatterns = [
     # sga/editor
     url(r'editor', editor, name='editor'),
     url(r'download/', render_pdf_view, name='download'),
-    #sga/prudence
-    url(r'prudence', views.get_prudence_advice, name='prudence'),
-    #sga/get_danger_indication
-    url(r'danger', views.get_danger_indication, name='get_danger_indication'),
-    #sga/get_get_templateList
+    # sga/prudence
+    url(r'get_prudence', views.get_prudence_advice, name='prudence'),
+    # sga/get_danger_indication
+    url(r'get_indication', views.get_danger_indication, name='get_danger_indication'),
+    # sga/get_get_templateList
     url(r'getList', views.getTemplates, name='getList'),
 ]
