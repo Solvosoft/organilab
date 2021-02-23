@@ -774,7 +774,6 @@ class LogObjectView(ReportListView):
         return book
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReactivePresenceList(ReportListView):
     model = OrganizationStructure
