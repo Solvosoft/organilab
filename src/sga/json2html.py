@@ -3,7 +3,7 @@ import json
 from xhtml2pdf.util import getSize
 
 #from sga.json2html_styleparser import TagStyleParser
-from sga.tags import TagStyleParser
+from sga.tagsT import TagStyleParser
 
 class WorkArea:
     def __init__(self, width, height,x,y):

@@ -130,7 +130,7 @@ function danger_color(data){
              textAlign: $('#textalign').val(),
              fixedWidth: 160,
              fontFamily: $('#fontfamily').val(),
-             backgroundColor:$('#text-bg-color').val(),
+             backgroundColor:$('#text-bg-color').val()!='#ffffff'?$('#text-bg-color').val():'transparent',
              borderColor:$('#colorstroke').val(),
              objectCaching: false,
              renderOnAddRemove: false,
@@ -150,7 +150,7 @@ function danger_color(data){
              fill: danger_color(data),
              fixedWidth: 280,
              borderColor:$('#colorstroke').val(),
-             backgroundColor:$('#text-bg-color').val(),
+             backgroundColor:$('#text-bg-color').val()!='#ffffff'?$('#text-bg-color').val():'transparent',
              objectCaching: false,
              renderOnAddRemove: false,
          });
