@@ -15,8 +15,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
 from authentication.forms import CreateUserForm, PasswordChangeForm
 from laboratory.decorators import has_lab_assigned
-from laboratory.models import OrganizationUserManagement, Profile
-from laboratory.utils import get_laboratories_from_organization
+from laboratory.models import Profile
 
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
