@@ -557,6 +557,9 @@ msgstr "Obtener como PDF"
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
+msgid "The user will be removed from laboratory."
+msgstr "El usuario se eliminará del laboratorio."
+
 #~ msgid "Can see available Warning Classes"
 #~ msgstr "Puede ver clases de peligro disponibles"
 
