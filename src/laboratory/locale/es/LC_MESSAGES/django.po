@@ -1787,6 +1787,18 @@ msgstr "Definición incorrecta de soluto"
 msgid "There are errors in the solution definition, please try again"
 msgstr "Hay errores en la definición de la solución, intente de nuevo"
 
+msgid "Laboratories list"
+msgstr "Lista de laboratorios"
+
+msgid "Phone number"
+msgstr "Número de teléfono"
+
+msgid "Organizations list"
+msgstr "Lista de organizaciones"
+
+msgid "There are not laboratories"
+msgstr "No hay laboratorios"
+
 #~ msgid "Search by username, name or lastname"
 #~ msgstr "Buscar por nombre de usuario, nombre o apellido"
 
