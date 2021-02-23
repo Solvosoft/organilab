@@ -1799,6 +1799,15 @@ msgstr "Lista de organizaciones"
 msgid "There are not laboratories"
 msgstr "No hay laboratorios"
 
+msgid "Add organization"
+msgstr "Crear organización"
+
+msgid "Reactive presence"
+msgstr "Presencia de reactivos"
+
+msgid "User management"
+msgstr "Gestión de usuarios"
+
 #~ msgid "Search by username, name or lastname"
 #~ msgstr "Buscar por nombre de usuario, nombre o apellido"
 
