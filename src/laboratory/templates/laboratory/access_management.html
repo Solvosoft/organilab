@@ -11,7 +11,7 @@
         <h3 class="heading-1" ><span> {% trans 'Access List' %}</span></h3>
         <div class="x_panel">
           <div class="x_title">
-            <h2>{% trans 'Laboratories List' %}</h2>
+            <h2>{% trans 'Laboratories list' %}</h2>
             <ul class="nav navbar-right panel_toolbox"></ul>
             <div class="clearfix"></div>
           </div>
@@ -76,7 +76,7 @@
                         {% for lab in node.laboratory_set.all %}
                           <li>{{lab}}</li>
                         {% empty %}
-                          <li>Sin laboratorios</li>
+                          <li>{% trans 'There are not laboratories' %}</li>
                         {% endfor %}
                       </ul>
                     </td>
