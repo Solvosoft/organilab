@@ -1,5 +1,5 @@
 let canvas;
-let element="";
+let option="";
 
 class CanvasHandler
 {
@@ -100,48 +100,48 @@ function templateList(data){
 function initElements(){
 
    $("#text-font-size").on("change",function(){
-      if(element.type=='textbox'){
-         let aux=getCanvas(element.text);
+      if(option.type=='textbox'){
+         let aux=getCanvas(option.text);
          canvas.canv_obj.getObjects()[aux].fontSize=$(this).val();
          canvas.canv_obj.renderAll();
        }
       });
 
     $('#textalign').on("change",function(){
-      if(element.type=='textbox'){
-         let aux=getCanvas(elementtext);
+      if(option.type=='textbox'){
+         let aux=getCanvas(option.text);
          canvas.canv_obj.getObjects()[aux].textAlign=$(this).val();
          canvas.canv_obj.renderAll();
        }
       });
 
     $('#fontfamily').on("change",function(){
-       if(element.type=='textbox' || element.type=='i-text'){
-          let aux=getCanvas(element.text);
+       if(option.type=='textbox' || option.type=='i-text'){
+          let aux=getCanvas(option.text);
           canvas.canv_obj.getObjects()[aux].fontFamily=$(this).val();
           canvas.canv_obj.renderAll();
        }
       });
 
      $('#colorstroke').on("change",function(){
-       if(element.type=='textbox' || element.type=='i-text'){
-          let aux=getCanvas(element.text);
+       if(option.type=='textbox' || option.type=='i-text'){
+          let aux=getCanvas(option.text);
           canvas.canv_obj.getObjects()[aux].borderColor=$(this).val();
           canvas.canv_obj.renderAll();
       }
      });
 
      $('#colorfill').on("change",function(){
-       if(element.type=='textbox' || element.type=='i-text'){
-          let aux=getCanvas(element.text);
+       if(option.type=='textbox' || option.type=='i-text'){
+          let aux=getCanvas(option.text);
           canvas.canv_obj.getObjects()[aux].fill=$(this).val();
           canvas.canv_obj.renderAll();
         }
        });
 
      $('#text-bg-color').on("change",function(){
-       if(element.type=='textbox' || element.type=='i-text'){
-           let aux=getCanvas(element.text);
+       if(option.type=='textbox' || option.type=='i-text'){
+           let aux=getCanvas(option.text);
             canvas.canv_obj.getObjects()[aux].backgroundColor=$(this).val();
             canvas.canv_obj.renderAll();
        }
@@ -175,7 +175,6 @@ function initElements(){
 }
 
 $(document).ready(function () {
-    initElements();
     let formdata = $("#sgaform").serializeArray();
 
     $(".templatepreview").each(function(index, element){
@@ -224,11 +223,15 @@ $(document).ready(function () {
                  });
                 canvas.canv_obj.on('mouse:up', function (e) {
                      canvas.canv_obj['panning'] = false;
-                    if(e.target!=undefined){
+                    if(e.target!=undefined&&e.target.type!='rect'&&e.target.type!='image'){
                      $('#text-font-size').val(e.target.fontSize)
                         option=e.target;
+                     }else{
+                     $('#text-font-size').val('20');
                      }
                  });
+                   initElements();
+
                 canvas.canv_obj.on('mouse:dblclick', function () {
                      if (!canvas.canv_obj['onselected']) {
                          canvas.canv_obj['panning'] = true;
@@ -413,7 +416,7 @@ function danger_color(data){
              fixedWidth: 160,
              fontFamily: $('#fontfamily').val(),
              lineHeight:1,
-             backgroundColor:$('#text-bg-color').val(),
+             backgroundColor:$('#text-bg-color').val()!='#ffffff'?$('#text-bg-color').val():'transparent',
              borderColor:$('#colorstroke').val(),
              objectCaching: false,
              renderOnAddRemove: false,
@@ -421,6 +424,7 @@ function danger_color(data){
             name_label.setControlsVisibility({
             bl: true,br: true, tl: true, tr: true, mt: false,mb: false,
         });
+        console.log($('#text-bg-color').val().trim())
          canvas.canv_obj.add(name_label);
      }else if (ftype == "itext"){
         let danger_count=getList(data);
