@@ -94,7 +94,7 @@
                 </tr>
               </tfoot>
             </table>
-            <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="0" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+            <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Add organization' %}" onclick="update_pK_parent(this)" id="0" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
           </div>
         </div>
       </div>
@@ -121,7 +121,6 @@
       </div>
     </div>
   </div>
-</form>
 {% endblock %}
 {% block js %}
   <script>
@@ -134,6 +133,7 @@
     });
     function update_pK_parent(element){
       $('#pk').val(parseInt($(element).attr('id')));
+      $("#organizationsavemodal").modal("show");
     }
   </script>
 {% endblock %}
