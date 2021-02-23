@@ -17,6 +17,9 @@ class OrganilabNodeMPTTAdmin(DraggableMPTTAdmin):
     formfield_overrides = {
         models.TextField: {'widget': CKEditorUploadingWidget},
     }
+    
+    class Media:
+        js  = ('js/ckeditor-init-overwrite.js',)
 
 
 admin.site.register(OrganilabNode, OrganilabNodeMPTTAdmin)
