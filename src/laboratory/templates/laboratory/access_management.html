@@ -34,7 +34,7 @@
                     <td>{{lab.location}}</td>
                     <td>{{lab.organization}}</td>
                     <td>
-                      <a class="btn btn-primary btn-sm" href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
+                      <a class="btn btn-primary btn-sm" data-toggle="tooltip" title="{% trans 'User management' %}" href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
                     </td>
                   </tr>
                 {% endfor %}
@@ -80,8 +80,8 @@
                       </ul>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
-                      <a class="btn btn-primary btn-sm" href="{% url 'laboratory:organizationreactivepresence' node.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Add organization' %}" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                      <a class="btn btn-primary btn-sm" data-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
                     </td>
                   </tr>
                 {% endfor %}
