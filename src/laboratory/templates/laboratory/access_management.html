@@ -11,7 +11,7 @@
         <h3 class="heading-1" ><span> {% trans 'Access List' %}</span></h3>
         <div class="x_panel">
           <div class="x_title">
-            <h2>{% trans 'Laboratories List' %}</h2>
+            <h2>{% trans 'Laboratories list' %}</h2>
             <ul class="nav navbar-right panel_toolbox"></ul>
             <div class="clearfix"></div>
           </div>
@@ -34,8 +34,7 @@
                     <td>{{lab.location}}</td>
                     <td>{{lab.organization}}</td>
                     <td>
-                      <a class="btn btn-primary btn-sm" href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
-                      <a class="btn btn-primary btn-sm" href="{% url 'laboratory:organizationreactivepresence' lab.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
+                      <a class="btn btn-primary btn-sm" data-toggle="tooltip" title="{% trans 'User management' %}" href="{% url 'laboratory:users_management' lab.pk %}"><i class="fa fa-users"></i></a>
                     </td>
                   </tr>
                 {% endfor %}
@@ -76,12 +75,13 @@
                         {% for lab in node.laboratory_set.all %}
                           <li>{{lab}}</li>
                         {% empty %}
-                          <li>Sin laboratorios</li>
+                          <li>{% trans 'There are not laboratories' %}</li>
                         {% endfor %}
                       </ul>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Add organization' %}" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+                      <a class="btn btn-primary btn-sm" data-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
                     </td>
                   </tr>
                 {% endfor %}
@@ -94,7 +94,7 @@
                 </tr>
               </tfoot>
             </table>
-            <button type="button" class="btn btn-success btn-sm" onclick="update_pK_parent(this)" id="0" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
+            <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Add organization' %}" onclick="update_pK_parent(this)" id="0" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
           </div>
         </div>
       </div>
@@ -114,14 +114,13 @@
             {{ form.as_horizontal }}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-</form>
 {% endblock %}
 {% block js %}
   <script>
@@ -134,6 +133,7 @@
     });
     function update_pK_parent(element){
       $('#pk').val(parseInt($(element).attr('id')));
+      $("#organizationsavemodal").modal("show");
     }
   </script>
 {% endblock %}

@@ -10,7 +10,7 @@
   </ul>
 {% endif %}
 <ul class="nav navbar-nav navbar-right">
-  {% if laboratory.add_laboratory %}
+  {% if perms.laboratory.add_laboratory %}
     <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}" title="{% trans 'Add Laboratory' %}">
       <span class="fa fa-plus"></span></a>
     </li>
