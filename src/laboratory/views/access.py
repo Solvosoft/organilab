@@ -8,6 +8,7 @@ from laboratory.models import Laboratory, OrganizationStructure, OrganizationUse
 from laboratory.decorators import has_lab_assigned
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from laboratory.models import Profile
 
 
 #FIXME to manage add separately bootstrap, we need a workaround to to this.
@@ -65,7 +66,8 @@ def users_management(request, pk):
 @has_lab_assigned(lab_pk='pk')
 @permission_required('laboratory.delete_organizationusermanagement')
 def delete_user(request, pk, user_pk):
-    user_orga_management = OrganizationUserManagement.objects.filter(organization__pk=pk).first()
-    if user_orga_management:
-        user_orga_management.users.remove(user_pk)
+    lab = Laboratory.objects.filter(pk=pk).first()
+    user = Profile.objects.filter(pk=user_pk).first()
+    if user and lab:
+        user.laboratories.remove(pk)
     return redirect('laboratory:users_management', pk=pk)
