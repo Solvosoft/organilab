@@ -47,4 +47,5 @@ urlpatterns = [
 
     url(r'add_personal', views.create_personal_template, name='add_personal'),
     url(r'getData', views.delete_personal, name='getData'),
+    url(r'get_pdf/(?P<pk>\d+)$', views.render_user_pdf, name='get_pdf'),
 ]

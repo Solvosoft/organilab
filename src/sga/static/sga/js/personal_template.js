@@ -2,8 +2,8 @@ $( document ).ready(function() {
 $('#table_template_list').DataTable();
 
 });
+const sendrequest=(element=>{
 
-function delete_template(element){
 let pk=element.getAttribute('data-id');
      $.ajax({
         url: 'sga/getData/',
@@ -26,4 +26,42 @@ let pk=element.getAttribute('data-id');
 
       }
         });
+
+});
+function delete_template(element){
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+})
+
+swalWithBootstrapButtons.fire({
+  title: 'Esta seguro de eLiminar la plantilla?',
+  text: "Estas a tiempo de revertir esta acción!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel!',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    swalWithBootstrapButtons.fire(
+      'ELiminado!',
+      'La plantilla a sido eliminada.',
+      'Confirmado'
+    )
+        sendrequest(element);
+
+  } else if (
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Cancelled',
+      'Your imaginary file is safe :)',
+      'error'
+    )
+  }
+})
 }

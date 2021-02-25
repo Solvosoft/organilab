@@ -118,8 +118,6 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
     def __init__(self, props):
         self.to_append_px = ("font-size", "width", "height")
         self.type = props['type']
-        self.template_width = int(float(props['sizes'].width))
-        self.template_height = int(float(props['sizes'].height))
         if(self.type == "textbox"):
             TextBoxTag.__init__(self, props)
         if(self.type == "image"):
