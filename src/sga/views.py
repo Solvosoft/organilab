@@ -419,6 +419,7 @@ def create_personal_template(request):
                 recipient_size=recipient
             )
             personal.save()
+            return redirect('sga:add_personal')
 
     else:
 
