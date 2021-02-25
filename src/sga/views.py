@@ -30,12 +30,22 @@ register = Library()
 def render_pdf_view(request):
     label_pk = request.POST.get("template_sga_pk", None)
     instance = get_object_or_404(TemplateSGA, pk=label_pk)
-    recipient=instance.recipient_size_id
-    recipient=RecipientSize.objects.get(pk=recipient)
 
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
-    html_data = json2html(json_data, global_info_recipient,recipient)
+    print(global_info_recipient)
+    html_data = json2html(json_data, global_info_recipient)
+    response = generate_pdf(html_data) #html2pdf(html_data)
+    return response
+
+def render_user_pdf(request,pk):
+
+    instance = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    json_data = instance.json_representation
+    recipient=RecipientSize.objects.get(pk=instance.recipient_size.pk)
+    global_info_recipient = {'height_value': recipient.height, 'height_unit': recipient.height_unit, 'width_value': recipient.width, 'width_unit': recipient.width_unit}
+    print()
+    html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
     return response
 

@@ -26,7 +26,7 @@ class WorkArea:
         self.pro_x = self.ref_width / self.initial_width
 
 # Prepare and convert json objects into python objects
-def json2html(json_data, info_recipient,recipient):
+def json2html(json_data, info_recipient):
     if type(json_data) == str:
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
@@ -46,7 +46,7 @@ def json2html(json_data, info_recipient,recipient):
             workarea.set_reference_instance(
                 base['width'], base['height'], base['top'], base['left']
             )
-            html_data += render_body(dataobjs, workarea,recipient)
+            html_data += render_body(dataobjs, workarea)
 
         html_data += ending_of_html()
         return html_data
@@ -86,7 +86,7 @@ def ending_of_styles(info_recipient):
 
 
 # Convert Json elements inside html
-def render_body(json_elements, work_area,recipient):
+def render_body(json_elements, work_area):
     body_data = ""
     #header='<div id="header_content"><table width="100%"><tr><td style="text-align:left;">verbose title</td><td style="text-align:right;">Date here</td></tr></table></div>'
     datalist=order_elements(json_elements)
@@ -97,10 +97,10 @@ def render_body(json_elements, work_area,recipient):
                 if validate['peligro']>0 and elem['text']=='atención' and validate['atencion']>0:
                     pass
                 else:
-                    style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area,'sizes':recipient})
+                    style_parser = TagStyleParser({'type':elem['type'],'json_data':elem,'workarea':work_area})
                     body_data += style_parser.set_tag()
         else:
-            style_parser = TagStyleParser({'type': elem['type'], 'json_data': elem, 'workarea': work_area,'sizes':recipient})
+            style_parser = TagStyleParser({'type': elem['type'], 'json_data': elem, 'workarea': work_area})
             body_data += style_parser.set_tag()
 
     return body_data
