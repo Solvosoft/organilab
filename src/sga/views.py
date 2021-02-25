@@ -1,12 +1,12 @@
 # Import functions of another modules
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.utils.translation import ugettext_lazy as _
 from django.core import serializers
 
 from organilab import settings
 from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm
-from sga.models import TemplateSGA, RecipientSize, Substance, Donation
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm
+from sga.models import TemplateSGA, RecipientSize, Substance, Donation,PersonalTemplateSGA
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 from django.db.models.query_utils import Q
@@ -22,7 +22,6 @@ from django.core.files.storage import FileSystemStorage
 from xhtml2pdf import pisa
 from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
-
 
 register = Library()
 
@@ -145,6 +144,14 @@ def template(request):
     }
     return render(request, 'template.html', context)
 
+def personal_templates(request):
+    context={
+        'pictograms': Pictogram.objects.all(),
+        'warningwords': WarningWord.objects.all(),
+        'formselects': SGAEditorForm
+
+    }
+    return render(request,'personal_template.html', context)
 
 # SGA editor
 def editor(request):
@@ -399,6 +406,29 @@ def index_organilab(request):
     return render(request, 'index_organilab.html', {'form': form})
 
 
+def create_personal_template(request):
+    context = {"templates": PersonalTemplateSGA.objects.all()}
+    user=request.user
+    if request.method == 'POST':
+        form = PersonalForm(request.POST)
+        if form.is_valid():
+            recipient=RecipientSize.objects.get(pk=form.cleaned_data['sizes'])
+            personal = PersonalTemplateSGA(
+                user=user,  name=form.cleaned_data['name'],
+                json_representation=request.POST.get('json_representation',''),
+                recipient_size=recipient
+            )
+            personal.save()
+
+    else:
+
+        return render(request, 'personal_template.html', context)
+
+
+    return render(request, 'personal_template.html', {"templates": PersonalTemplateSGA.objects.filter(user=user)})
+
+
+
 def donate(request):
     pay = False
 
@@ -444,14 +474,22 @@ def get_prudence_advice(request):
 def get_danger_indication(request):
     pk = request.POST.get('pk', '')
     data = DangerIndication.objects.get(pk=pk)
-    print(data)
     return HttpResponse(data.description)
 
 def getTemplates(request):
     pk = request.POST.get('pk', '')
+
     templates = TemplateSGA.objects.filter(recipient_size=pk)
     aux=[]
     for template in templates:
         aux.append({'id':template.pk, 'name':template.name})
     data=json.dumps(aux)
     return JsonResponse(data,safe=False)
+
+def delete_personal(request):
+    pk = request.GET.get('pk', '')
+    obj = PersonalTemplateSGA.objects.get(pk=pk)
+    obj.delete()
+    data = serializers.serialize("json",PersonalTemplateSGA.objects.all())
+    print(data)
+    return JsonResponse(data, safe=False)

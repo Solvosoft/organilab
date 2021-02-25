@@ -37,8 +37,8 @@ def json2html(json_data, info_recipient,recipient):
         workarea = WorkArea(
             width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
             height="%.2f%s" % (info_recipient['height_value'], info_recipient['height_unit']),
-            x=info_recipient['width_value'],
-            y=info_recipient['height_value']
+            x=info_recipient['width_value']*37.7952755906,
+            y=info_recipient['height_value']*37.7952755906
         )
         if 'objects' in parsed_json:
             dataobjs = iter(parsed_json['objects'])
@@ -64,12 +64,17 @@ def beginning_of_html():
 def add_background(color):
     return "body{background-color:white; padding:0; margin:0; position:relative;}"
 
+def convertUnit(info_recipient):
+    result=""
+    if(info_recipient['width_unit']):
+        result=""
+
 
 # Setting page size with Css to render to pdf size, @media print is other way to render size properly in Css
 def ending_of_styles(info_recipient):
     ending_tags = '</style><body>'
-    height = str(int(info_recipient['height_value'])) + info_recipient['height_unit']
-    width = str(int(info_recipient['width_value'])) + info_recipient['width_unit']
+    height = str(int(info_recipient['height_value']*37.7952755906)) + 'px'
+    width = str(int(info_recipient['width_value']*37.7952755906)) + 'px'
     page_size = height + ' ' + width
     print(page_size)
     margin = "1mm"
