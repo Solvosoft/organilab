@@ -24,7 +24,7 @@ class TextBoxTag():
         }
         self.json_props = props["json_data"]
         self.wa_scale_x = props["workarea"].pro_x
-        self.width = props["workarea"].initial_width*37.7952755906
+        self.width = props["workarea"].initial_width
         self.height = props["workarea"].initial_height
         self.wa_scale_y = props["workarea"].pro_y
 
@@ -53,7 +53,7 @@ class ITextBoxTag():
             'charSpacing': 'letter-spaclefting', 'styles': {}
         }
         self.json_props = props["json_data"]
-        self.width = props["workarea"].initial_width*37.7952755906
+        self.width = props["workarea"].initial_width
         self.height = props["workarea"].initial_height
         self.wa_scale_x = props["workarea"].pro_x
         self.wa_scale_y = props["workarea"].pro_y
@@ -169,7 +169,8 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             else:
 
                 extra_width = int(float(self.json_props["width"]))
-
+                self.styles += "line-height:{};".format(self.json_props['lineHeight'])
+                print(self.json_props['charSpacing'])
                 left = self.json_props['left']
 
                 font= self.conversion_fontsize()
@@ -184,8 +185,8 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                         self.json_props['scaleX'],
                         self.json_props['scaleY'])
                 else:
-                    self.styles += "{}:{};".format('width', str(self.conversion_width()) + 'px')
-                    self.styles += "{}:{};".format('height', str(self.json_props['scaleY']) + 'px')
+                    self.styles += "{}:{};".format('width', str( (self.json_props['width']*self.json_props['scaleX'])) + 'px')
+                    self.styles += "{}:{};".format('height', str(self.json_props['height']*self.json_props['scaleY']) + 'px')
                 if 'text' in self.json_props:
 
                         self.styles += "{}:{};".format('color', self.json_props['fill'])
@@ -201,13 +202,6 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
         return self.styles
 
-    def conversion_width(self):
-        sizes = (self.json_props['width'])
-        return sizes
-
-    def conversion_height(self):
-        sizes = (self.json_props['height'])
-        return sizes
 
     def conversion_fontsize(self):
 

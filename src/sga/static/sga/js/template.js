@@ -57,7 +57,6 @@ function replay(playStack, saveStack, buttonsOn, buttonsOff, index){
         if(canvas.redo.length >= 1)
         {
             canvas.state = canvas.redo.pop();
-            console.log(canvas.state);
 
         }
     }
@@ -146,6 +145,7 @@ function initElements(){
             canvas.canv_obj.renderAll();
        }
      });
+     set_color_value();
      let recipient=$('#id_recipients');
   let pk=$(recipient).find('option:selected');
     if(pk.index()>0){
@@ -173,6 +173,14 @@ function initElements(){
         });
 });
 }
+function set_color_value(){
+
+     $('#colorstroke').val('#ffffff');
+
+     $('#colorfill').val('#000000');
+
+     $('#text-bg-color').val('#ffffff');
+}
 
 $(document).ready(function () {
     let formdata = $("#sgaform").serializeArray();
@@ -186,7 +194,12 @@ $(document).ready(function () {
              canvas = new CanvasHandler(JSON.stringify(newcanvas), newcanvas);
 
             canvas.canv_obj.renderAll();
+              canvasActions(data,element);
+          });
+    });
+});
 
+function canvasActions(data,element){
        $(".genericitem").each(function (i, obj) {
          obj.addEventListener('dragstart', handleDragStart, false);
          obj.addEventListener('dragend', handleDragEnd, false);
@@ -267,7 +280,6 @@ $(document).ready(function () {
                          $('#text-font-size').val(e.target.fontSize)
 
                     }
-                    console.log(e.target.oCoords)
                    });
                 let height = view.height();
                 if (height < 400){
@@ -283,10 +295,8 @@ $(document).ready(function () {
 
                 save(element.id);
             });
-          });
-    });
-});
 
+}
 function enableControls(){
 
     canvas.canv_obj.getObjects().forEach((element,i)=>{
@@ -352,7 +362,6 @@ function updateTop(){
         if(item.top+item.height>=1300 && item.type=='textbox'){
             let aux=1300-item.top;
             canvas.canv_obj.getObjects()[i].fontSize*=aux/1300;
-           // canvas.canv_obj.getObjects()[i].scaleY=aux/1300;
             canvas.canv_obj.getObjects()[i].height=aux;
 
         }
@@ -366,7 +375,6 @@ function setTop(){
                         let res=canvas.canv_obj.getObjects()[i];
                         let aux=(res.top+res.height)-position[0];
                         aux=(aux*2<position[0])?(res.top+res.height-aux)*0.8:aux*0.7
-                       // canvas.canv_obj.getObjects()[i].scaleY=aux/position[0];
                         canvas.canv_obj.getObjects()[i].fontSize*=aux/position[0];
             }
 
@@ -424,7 +432,6 @@ function danger_color(data){
             name_label.setControlsVisibility({
             bl: true,br: true, tl: true, tr: true, mt: false,mb: false,
         });
-        console.log($('#text-bg-color').val().trim())
          canvas.canv_obj.add(name_label);
      }else if (ftype == "itext"){
         let danger_count=getList(data);
@@ -556,3 +563,10 @@ function getList(data){
    });
    return {"peligro":p,"atencion":a};
 }
+
+//
+
+$('#personal').submit((e)=>{
+    $('#json_representation').attr('value',JSON.stringify(canvas.canv_obj));
+    $('#sizes').attr('value',$('#id_recipients').val());
+})
