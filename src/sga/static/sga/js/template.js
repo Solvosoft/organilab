@@ -278,7 +278,6 @@ function canvasActions(data,element){
                          let index=getCanvas(e.target.text);
                          e.target.fontSize*=e.target.scaleX;
                          $('#text-font-size').val(e.target.fontSize)
-
                     }
                    });
                 let height = view.height();
@@ -317,17 +316,7 @@ function getPositionX(data){
     let x=aux.sort((a,b) => a-b);
     return x;
 }
-function getPositionXT(data){
-    let aux=[];
-    canvas.canv_obj.getObjects().forEach((item,i)=>{
-         if(data.left+data.width>item.left&&data.top<item.top-300&&data.top+data.height>item.top){
-           aux.push(item.left);
-           }
-    });
 
-    let x=aux.sort((a,b) => a-b);
-    return x;
-}
 function getPositionY(data){
     let aux=[];
     canvas.canv_obj.getObjects().forEach((item,i)=>{
