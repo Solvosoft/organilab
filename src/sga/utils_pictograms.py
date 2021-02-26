@@ -22,8 +22,10 @@ def pic_selected(representation, pictograms, context):
                     index += 1
                 else:
                     obj['type'] = 'deleted'
-            else:
+            elif 'barcodegen.jpg' in str(obj['src']):
                 pass
+            else:
+                obj['type'] = 'deleted'
 
     repro['objects']=[item for item in repro['objects'] if item['type']!='deleted']
     return repro
