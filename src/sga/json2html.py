@@ -2,8 +2,8 @@ import json
 
 from xhtml2pdf.util import getSize
 
-#from sga.json2html_styleparser import TagStyleParser
-from sga.tagsT import TagStyleParser
+from sga.json2html_styleparser import TagStyleParser
+#from sga.tagsT import TagStyleParser
 
 class WorkArea:
     def __init__(self, width, height,x,y):
@@ -15,8 +15,6 @@ class WorkArea:
         self.pro_x = 0
         self.initial_width = x
         self.initial_height = y
-        self.template_width = int(float(width[0:-2]))
-        self.template_height =int(float(height[0:-2]))
     def set_reference_instance(self, width, height, top=0, left=0):
         self.ref_left = getSize("%.2fpx" % left)
         self.ref_top = getSize("%.2fpx" % top)
@@ -31,14 +29,14 @@ def json2html(json_data, info_recipient):
         html_data = beginning_of_html()
         parsed_json = json.loads(json_data)
         html_data += add_background(color=parsed_json["background"])
-
+        sizes=convertUnit(info_recipient)
 
         html_data += ending_of_styles(info_recipient)
         workarea = WorkArea(
             width="%.2f%s" % (info_recipient['width_value'], info_recipient['width_unit']),
             height="%.2f%s" % (info_recipient['height_value'], info_recipient['height_unit']),
-            x=info_recipient['width_value']*37.7952755906,
-            y=info_recipient['height_value']*37.7952755906
+            x=sizes['width_value'],
+            y=sizes['height_value']
         )
         if 'objects' in parsed_json:
             dataobjs = iter(parsed_json['objects'])
@@ -65,16 +63,24 @@ def add_background(color):
     return "body{background-color:white; padding:0; margin:0; position:relative;}"
 
 def convertUnit(info_recipient):
-    result=""
-    if(info_recipient['width_unit']):
-        result=""
+    result = {'height_value': info_recipient['height_value'] * 37.7952755906,
+              'width_value': info_recipient['width_value'] *  37.7952755906}
 
+    if info_recipient['width_unit'] == 'inch':
+        result={'height_value':info_recipient['height_value']*2.54*37.7952755906,
+                'width_value':info_recipient['width_value']*2.54*37.7952755906}
+    elif info_recipient['width_unit'] == 'mm':
+        result={'height_value':info_recipient['height_value']*10*37.7952755906,
+                'width_value':info_recipient['width_value']*10*37.7952755906}
+
+    return result
 
 # Setting page size with Css to render to pdf size, @media print is other way to render size properly in Css
 def ending_of_styles(info_recipient):
+    sizes=convertUnit(info_recipient)
     ending_tags = '</style><body>'
-    height = str(int(info_recipient['height_value']*37.7952755906)) + 'px'
-    width = str(int(info_recipient['width_value']*37.7952755906)) + 'px'
+    height = str(float(sizes['height_value'])) + 'px'
+    width = str(float(sizes['width_value'])) + 'px'
     page_size = height + ' ' + width
     print(page_size)
     margin = "1mm"

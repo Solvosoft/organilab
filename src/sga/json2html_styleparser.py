@@ -23,10 +23,8 @@ class TextBoxTag():
             'charSpacing': 'letter-spaclefting', 'minWidth': 'min-width', 'styles': {}
         }
         self.json_props = props["json_data"]
-        self.wa_scale_x = props["workarea"].pro_x
-        self.wid = props["workarea"].initial_width
-        self.hei = props["workarea"].initial_height
-        self.wa_scale_y = props["workarea"].pro_y
+        self.width = props["workarea"].initial_width
+        self.height = props["workarea"].initial_height
 
 class ITextBoxTag():
 
@@ -53,10 +51,8 @@ class ITextBoxTag():
             'charSpacing': 'letter-spaclefting', 'styles': {}
         }
         self.json_props = props["json_data"]
-        self.wid = props["workarea"].initial_width
-        self.hei = props["workarea"].initial_height
-        self.wa_scale_x = props["workarea"].pro_x
-        self.wa_scale_y = props["workarea"].pro_y
+        self.width = props["workarea"].initial_width
+        self.height = props["workarea"].initial_height
 
 class ImageTag():
 
@@ -78,10 +74,8 @@ class ImageTag():
             'skewX': 'skewX', 'skewY': 'skewY', 'crossOrigin': 'crossorigin', 'src': 'src', 'filters': {}
         }
         self.json_props = props["json_data"]
-        self.wid = props["workarea"].initial_width
-        self.hei = props["workarea"].initial_height
-        self.wa_scale_x = props["workarea"].pro_x
-        self.wa_scale_y = props["workarea"].pro_y
+        self.width = props["workarea"].initial_width
+        self.height = props["workarea"].initial_height
 
 class LineTag():
 
@@ -103,17 +97,14 @@ class LineTag():
             'skewX': 'skewX', 'skewY': 'skewY', 'x1': 'x1', 'x2': 'x2', 'y1': 'y1', 'y2': 'y2'
         }
         self.json_props = props["json_data"]
-        self.wid = props["workarea"].initial_width
-        self.hei = props["workarea"].initial_height
-        self.wa_scale_x = props["workarea"].pro_x
-        self.wa_scale_y = props["workarea"].pro_y
+        self.width = props["workarea"].initial_width
+        self.height = props["workarea"].initial_height
 
 
 class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
-    styles = "position:absolute; padding:0;line-height: 1em;"
+    styles = "position:absolute; padding:0;"
     tag = ""
-    cm = 0.0264583333
     warningword = ['Peligro','peligro','Atención','atención']
 
     def __init__(self, props):
@@ -130,11 +121,9 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
 
     def set_tag(self):
         if (self.type == "textbox"):
-            self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.separate_title(self.convert_header(self.json_props['text'])))
-            #print(self.tag)
+            self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.convert_header(self.json_props['text']))
         if (self.type == "image"):
             self.tag = "<img style=\"%s\" src=\"%s\">" % (self.parse_data(), self.json_props['src'])
-            #print(self.tag)
         if (self.type == "i-text"):
             self.tag = "<p style=\"%s\">%s</p>" % (self.parse_data(), self.json_props['text'])
         if (self.type == "line"):
@@ -151,6 +140,9 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
             self.properties.pop(key)
 
     def parse_data(self):
+        self.styles += "{}:{};".format('top', str(self.json_props['top'])+'px')
+        self.styles += "{}:{};".format('left', str(self.json_props['left'])+'px')
+
 
         if self.json_props['scaleX'] and self.json_props['scaleY']:
             if 'src' in self.json_props:
@@ -162,58 +154,41 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
                     str(grades)+"deg")
 
                 else:
-                    self.styles += "transform: scale({},{});".format(
-                        self.json_props['scaleX'],
-                        self.json_props['scaleY'])
+                    self.styles += self.convertion_scale()
 
             else:
-                width = self.json_props["width"] * self.cm
-                left = self.json_props['left'] * self.cm
 
+                extra_width = int(float(self.json_props["width"]))
+                left = self.json_props['left']
 
-                if (width+left)>=self.wid:
+                if (extra_width+left) >= self.width:
                     self.styles += "transform: scale({},{});".format(
                         self.json_props['scaleX'],
                         self.json_props['scaleY'])
-                    self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
+
+                elif self.type=='i-text':
+                    self.styles += "transform: scale({},{});".format(
+                        self.json_props['scaleX'],
+                        self.json_props['scaleY'])
                 else:
-                    if self.type=='i-text':
-                        self.styles += "transform: scale({},{});".format(
-                            self.json_props['scaleX'],
-                            self.json_props['scaleY'])
-                    else:
-                        self.styles += "{}:{};".format('width', self.conversion_width('width', self.json_props) + 'cm')
-                        self.styles += "{}:{};".format('height', self.conversion_height('height') + 'cm')
-                    print(self.separate_title(self.json_props['text']))
+                    self.styles += "{}:{};".format('width', str( (self.json_props['width']*self.json_props['scaleX'])) + 'px')
+                    self.styles += "{}:{};".format('height', str(self.json_props['height']*self.json_props['scaleY']) + 'px')
                 if 'text' in self.json_props:
-                    self.styles += "{}:{};".format("font-size", self.conversion_fontsize())
-                    if self.json_props['text'] in self.warningword:
-                        self.styles += "{}:{};".format('color', 'red')
+
+                        self.styles += "{}:{};".format('color', self.json_props['fill'])
+                        self.styles += "{}:{};".format('text-align', self.json_props['textAlign'])
+                self.styles += "{}:{};".format("font-size", str(float(self.json_props['fontSize']))+'px')
+                self.styles += "line-height:{};".format(self.json_props['lineHeight'])
+
         if self.json_props['originX'] and self.json_props['originY']:
             self.styles += f"transform-origin: {self.json_props['originX']} {self.json_props['originY']};"
-
-
         if self.json_props['backgroundColor'] == '':
-            self.styles += "{}:{};".format('background-color', 'white')
-
-        top_value = str((self.json_props['top']) * self.cm) + 'cm'
-        left_value = str((self.json_props['left']) * self.cm) + 'cm'
-        self.styles += "{}:{};".format('top', top_value)
-        self.styles += "{}:{};".format('left', left_value)
+            self.styles += "{}:{};".format('background-color', 'transparent')
+        else:
+            self.styles += "{}:{};".format('background-color', self.json_props['backgroundColor'])
 
         return self.styles
 
-    def conversion_width(self, key, src):
-        sizes = str(self.json_props[key]*self.cm)
-        sizes = str(sizes)
-
-        return sizes
-    def conversion_height(self, key):
-        sizes = str(self.json_props[key]*self.cm)
-        return sizes
-
-    def conversion_fontsize(self):
-        return str((int(float(self.json_props['fontSize'])))*self.cm) + 'cm'
 
     def convert_header(self,text):
         data = text
@@ -226,31 +201,9 @@ class TagStyleParser(TextBoxTag,ImageTag,LineTag,ITextBoxTag):
         return data
 
 
-    def validate_concat(self,text, i,j):
-        position = j
-        while i < len(text):
-            if text[j+2] == '+':
-                print('+')
-                j += 7
-                position = j
-            else:
-                break
-        return position
+    def convertion_scale(self):
+        result= "transform: scale({},{});".format(
+                        self.json_props['scaleX'],
+                        self.json_props['scaleY'])
 
-    def separate_title(self,text):
-        i = 0
-        output = ""
-        x = 3
-        while i<len(text):
-
-            if (text[i] == 'H' and str(text[i+1:x]).isnumeric()) or (text[i]=='P' and str(text[i+1:x]).isnumeric()):
-                j = self.validate_concat(text,i,x)
-                output += '<br>'+text[i:j]
-                i = j
-                x = i+3
-            else:
-                output += text[i]
-                x += 1
-                i += 1
-
-        return output
+        return result;
