@@ -23,7 +23,7 @@ def pic_selected(representation, pictograms, context):
                 else:
                     obj['type'] = 'deleted'
             else:
-                obj['type'] = 'deleted'
+                pass
 
     repro['objects']=[item for item in repro['objects'] if item['type']!='deleted']
     return repro

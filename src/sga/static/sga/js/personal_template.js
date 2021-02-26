@@ -11,19 +11,9 @@ let pk=element.getAttribute('data-id');
         data: {pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         datatype:'json',
-        success: function (data) {
-        data=JSON.parse(data);
-        let tbody=document.querySelector('#template_list');
-        tbody.innerHTML='';
-        data.forEach((item,i)=>{
-         tbody.innerHTML+=`<tr>
-                <td>${item['fields']['name']}</td>
-                <td><a class="btn btn-md btn-info"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                    <a class="deleted btn btn-md btn-danger" onclick="delete_template(this)" data-id=${item['pk']}><i class="fa fa-trash"></i></a></td>
-            </tr>`
-
-      });
-
+        success: function (response) {
+        data=JSON.parse(response);
+        create_table(data);
       }
         });
 
@@ -48,9 +38,9 @@ swalWithBootstrapButtons.fire({
 }).then((result) => {
   if (result.isConfirmed) {
     swalWithBootstrapButtons.fire(
-      'ELiminado!',
+      'Eliminado!',
       'La plantilla a sido eliminada.',
-      'Confirmado'
+      'success'
     )
         sendrequest(element);
 
@@ -64,4 +54,19 @@ swalWithBootstrapButtons.fire({
     )
   }
 })
+}
+
+function create_table(data){
+      let tbody=document.querySelector('#template_list');
+        tbody.innerHTML='';
+        data.forEach((item,i)=>{
+        console.log(item['fields'])
+         tbody.innerHTML+=`<tr>
+                <td>${item['fields']['name']}</td>
+                <td><a class="btn btn-md btn-info" href="/sga/get_pdf/${item.pk}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    <a class="deleted btn btn-md btn-danger" onclick="delete_template(this)" data-id=${item['pk']}><i class="fa fa-trash"></i></a></td>
+            </tr>`
+
+      });
+
 }
