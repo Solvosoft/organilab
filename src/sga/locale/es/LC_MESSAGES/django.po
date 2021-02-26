@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-01 19:48-0600\n"
-"PO-Revision-Date: 2021-02-02 15:30-0600\n"
+"PO-Revision-Date: 2021-02-26 10:47-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -572,6 +572,14 @@ msgstr "Código de barras"
 #: templates/template.html:72
 msgid "Additional Information"
 msgstr "Información Adicional"
+
+#: templates/personal_template.html:23
+msgid "List of SGA Templates"
+msgstr "Listado de Plantillas SGA"
+
+#: templates/index_sga.html:30
+msgid "Go to custom templates"
+msgstr "Ir a tus plantillas"
 
 # templates/templates.html:57
 msgid "There can only be one Indication of Danger or Attention"

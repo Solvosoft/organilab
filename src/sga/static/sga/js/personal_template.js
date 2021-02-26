@@ -32,8 +32,8 @@ swalWithBootstrapButtons.fire({
   text: "Estas a tiempo de revertir esta acción!",
   icon: 'warning',
   showCancelButton: true,
-  confirmButtonText: 'Yes, delete it!',
-  cancelButtonText: 'No, cancel!',
+  confirmButtonText: 'Si',
+  cancelButtonText: 'No',
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
@@ -48,8 +48,8 @@ swalWithBootstrapButtons.fire({
     result.dismiss === Swal.DismissReason.cancel
   ) {
     swalWithBootstrapButtons.fire(
-      'Cancelled',
-      'Your imaginary file is safe :)',
+      'Cancelado',
+      'El archivo no fue eliminado :)',
       'error'
     )
   }
