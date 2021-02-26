@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.utils.translation import ugettext_lazy as _
 from django.core import serializers
-
+from django.contrib.auth.decorators import login_required
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm
@@ -44,7 +44,6 @@ def render_user_pdf(request,pk):
     json_data = instance.json_representation
     recipient=RecipientSize.objects.get(pk=instance.recipient_size.pk)
     global_info_recipient = {'height_value': recipient.height, 'height_unit': recipient.height_unit, 'width_value': recipient.width, 'width_unit': recipient.width_unit}
-    print()
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
     return response
@@ -415,10 +414,11 @@ def index_organilab(request):
 
     return render(request, 'index_organilab.html', {'form': form})
 
-
+@login_required
 def create_personal_template(request):
-    context = {"templates": PersonalTemplateSGA.objects.all()}
-    user=request.user
+    user = request.user
+    templates = PersonalTemplateSGA.objects.filter(user=user)
+    context = {"templates": templates }
     if request.method == 'POST':
         form = PersonalForm(request.POST)
         if form.is_valid():
@@ -434,10 +434,6 @@ def create_personal_template(request):
     else:
 
         return render(request, 'personal_template.html', context)
-
-
-    return render(request, 'personal_template.html', {"templates": PersonalTemplateSGA.objects.filter(user=user)})
-
 
 
 def donate(request):
@@ -499,8 +495,9 @@ def getTemplates(request):
 
 def delete_personal(request):
     pk = request.GET.get('pk', '')
+    user = request.user
     obj = PersonalTemplateSGA.objects.get(pk=pk)
     obj.delete()
-    data = serializers.serialize("json",PersonalTemplateSGA.objects.all())
-    print(data)
-    return JsonResponse(data, safe=False)
+    templates=PersonalTemplateSGA.objects.filter(user=user)
+    templates = serializers.serialize("json",templates)
+    return JsonResponse(templates, safe=False)

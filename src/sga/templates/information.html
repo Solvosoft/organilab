@@ -87,11 +87,11 @@
             <!--=========================================Logo and Barcode==========================================================-->
 
             <div class="form-group">
-                <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
+                <label><span class="label label-info">3</span>&nbsp;{% trans 'Logo' %}</label><br>
                 <input type="file" id="logo" name="logo">
             </div>
             <div class="form-group">
-                <label><span class="label label-info">4</span>&nbsp;{% trans 'Barcode' %}</label><br>
+                <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
                 <input type="file" id="barcode" name="barcode">
             </div>
             <!--============================================================================================================-->
@@ -99,7 +99,7 @@
         <div class="col-sm-6">
             <!--=========================================Comercial information==============================================-->
            <div class="form-group">
-                <label><span class="label label-info">3</span>&nbsp;{% trans 'Commercial Information' %}</label>
+                <label><span class="label label-info">5</span>&nbsp;{% trans 'Commercial Information' %}</label>
                 <div class="form-group shadow-textarea">
                     <textarea name="commercial_information" class="form-control
                         z-depth-1" id="commercial_information" rows="2"
@@ -110,7 +110,7 @@
 
             <!--=========================================Recipient==========================================================-->
             <div class="form-group">
-                <label><span class="label label-info">5</span>&nbsp;{% trans 'Recipient' %}</label><br>
+                <label><span class="label label-info">6</span>&nbsp;{% trans 'Recipient' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
                 <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
                     <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
@@ -132,7 +132,7 @@
             <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             <!--============================================================================================================-->
            <div class="form-group">
-                <label><span class="label label-info">5</span>&nbsp;{% trans 'Template' %}</label><br>
+                <label><span class="label label-info">7</span>&nbsp;{% trans 'Template' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
                 <select name="templates" id="templates" class="form-control" onchange="changePlaceHolder(this)">
                     <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option></select>
