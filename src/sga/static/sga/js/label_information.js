@@ -117,15 +117,57 @@ $(document).ready(function () {
                 //set_blank_templates();
                 // Show loading message
                 $('#loadingMessage').modal("show");
-                // Set pre designed templates according to provided information 
+                // Set pre designed templates according to provided information
                 //setTimeout(set_pre_designed_templates, 0);
             }
         //}
     });
+  let recipient=$('#recipients');
+  let pk=$(recipient).find('option:selected');
+    if(pk.index()>0){
+        $.ajax({
+        url: 'sga/getList/',
+        type:'POST',
+        data: {'pk':pk.val()},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (data) {
+        templateList(data);
+      }
+        });
+        }
 });
-// Select box place holder 
+
+$('#recipients').change(function(){
+    let pk=$(this).find('option:selected').val();
+    console.log(pk)
+     $.ajax({
+        url: 'sga/getList/',
+        type:'POST',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (data) {
+        templateList(data);
+      }
+        });
+});
+
+
+// Select box place holder
 function changePlaceHolder(sel) {
     sel.style.cssText = 'color: #000 !important';
+}
+function templateList(data){
+    let templates=document.querySelector('#templates')
+    templates.innerHTML='';
+    let y= JSON.parse(data);
+    let errors=document.querySelector(".error");
+    errors.style.display='block';
+    if(y.length>0){
+    y.forEach(e=>{
+       templates.innerHTML+=`<option value=${e.id}>${e.name}</option>`;
+    });
+    errors.style.display='none';
+    }
 }
 // Element contains a class 
 function hasClass(element, cls) {
