@@ -16,7 +16,6 @@ class RecipientInformationForm(forms.Form):
     recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
     templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.all())
 
-
 class SGAEditorForm(CustomForm,forms.ModelForm):
     class Meta:
         model = DangerPrudence
@@ -38,6 +37,10 @@ class SearchDangerIndicationForm(CustomForm, forms.Form):
 
     codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"), widget=genwidgets.SelectMultiple, required=True)
 
+class PersonalForm(forms.Form):
+    name = forms.CharField(max_length=100, required=True)
+    json_representation = forms.CharField(widget=forms.HiddenInput()),
+    sizes = forms.CharField(required=True, widget=genwidgets.NumberInput)
 
 class DonateForm(GTForm, forms.Form):
     name = forms.CharField(

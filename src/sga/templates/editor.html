@@ -97,8 +97,8 @@
         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
 
         <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
-        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#000"  class="btn" >
-        <input type="color"  style="width: 25%;" value="" id="text-bg-color"  value="#000" class="btn" >
+        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#FFFFFF"  class="btn" >
+        <input type="color"  style="width: 25%;" id="text-bg-color"  value="#FFFFFF" class="btn" >
         <br>
 
         <div class="form-group">
@@ -146,7 +146,7 @@
         <label >{% trans 'Warning Words' %}</label>
         <ul>
         {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="textbox" href="#">{{word}}</a></li>
+            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
         {% endfor %}
         </ul>
         <label>Cuadros de Textos</label>
@@ -229,7 +229,7 @@
     </div>
   </div>
             {% trans 'Use save before finish' %}
-        <button id="editor_save" type="submit" class="btn btn-succes" >{% trans 'Save' %} </button>
+        <button id="editor_save" type="submit" class="btn btn-success" >{% trans 'Save' %} </button>
     </div>
 
     <div class="col-sm-6 col-md-9" >

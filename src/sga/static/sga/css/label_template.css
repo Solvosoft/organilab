@@ -7,6 +7,30 @@
 */
 
 /* Label creator card */
+#table_template_list tbody tr td{
+    vertical-align: middle;
+}
+.select2 {
+    width: 100%!important;
+}
+span.select2-container {
+    z-index:10050;
+}
+
+#messages{
+    display:none;
+}
+#messages p{
+    font-size:15px;
+    font-weight:bold;
+}
+#panel-buttons{
+    padding:5px;
+    vertical-align:middle;
+}
+#panel-buttons button{
+    margin-left:5px;
+}
 .card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.400) !important;
     transition: 0.3s;
@@ -15,9 +39,9 @@
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.500) !important;
 }
-.container {
+/*.container {
     padding: 8px 16px;
-}
+}*/
 /* Template option card */
 .template_card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
