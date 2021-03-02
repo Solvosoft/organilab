@@ -38,7 +38,7 @@ PyJWT==1.7.1
 PyPDF2==1.26.0
 Pyphen==0.9.5
 PyYAML==5.1
-reportlab==3.5.20
+reportlab==3.5.20pip install django-paypal
 scipy==1.4.1
 six
 Sphinx==3.0.4

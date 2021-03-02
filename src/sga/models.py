@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from tagging.registry import register
 from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
-
+from django.contrib.auth.models import User
 
 class WarningClass(MPTTModel):
     TYPE = (
@@ -250,6 +250,20 @@ class TemplateSGA(models.Model):
     class Meta:
         verbose_name = _('Template SGA')
         verbose_name_plural = _('Templates SGA')
+
+class PersonalTemplateSGA(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    json_representation = models.TextField()
+    recipient_size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"), on_delete=models.CASCADE)
+
+    def __str__(self):
+        recipient=RecipientSize.objects.get(pk=self.recipient_size.pk)
+        return self.name+" Height {0}{1} x Width {2}{3}".format(recipient.height,recipient.height_unit,recipient.width,recipient.width_unit)
+
+    class Meta:
+        verbose_name = _('Personal Template SGA')
+        verbose_name_plural = _('Personal Templates SGA')
 
 
 class Donation(models.Model):

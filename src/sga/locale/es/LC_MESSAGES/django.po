@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-01 19:48-0600\n"
-"PO-Revision-Date: 2020-10-01 21:10-0600\n"
+"PO-Revision-Date: 2021-02-26 10:47-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: admin.py:21
 msgid "Download Label"
@@ -479,7 +479,7 @@ msgstr "Identificadores de productos adicionales"
 
 #: templates/information.html:105 templates/label_information.html:92
 msgid "Recipient"
-msgstr "Destinatario"
+msgstr "Recipientes"
 
 #: templates/information.html:108 templates/label_information.html:95
 msgid "Name - Height x Width"
@@ -557,8 +557,37 @@ msgstr "Obtener como PDF"
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
+
 msgid "The user will be removed from laboratory."
 msgstr "El usuario se eliminará del laboratorio."
+
+#: templates/information.html:132
+msgid "Did you find the template?"
+msgstr "¿Encontraste la plantilla?"
+
+#: templates/information.html:137
+msgid "Logo"
+msgstr "Logotipo"
+
+#: templates/information.html:141
+msgid "Barcode"
+msgstr "Código de barras"
+
+#: templates/template.html:72
+msgid "Additional Information"
+msgstr "Información Adicional"
+
+#: templates/personal_template.html:23
+msgid "List of SGA Templates"
+msgstr "Listado de Plantillas SGA"
+
+#: templates/index_sga.html:30
+msgid "Go to custom templates"
+msgstr "Ir a tus plantillas"
+
+# templates/templates.html:57
+msgid "There can only be one Indication of Danger or Attention"
+msgstr "Sólo puede haber una Indicación de Peligro o Atención"
 
 #~ msgid "Can see available Warning Classes"
 #~ msgstr "Puede ver clases de peligro disponibles"

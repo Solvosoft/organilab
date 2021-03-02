@@ -58,9 +58,9 @@ img {
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.500) !important;
 }
-.container {
+/*.container {
   padding: 8px 16px;
-}
+}*/
 /* Centered button */
 #createLabel { 
   display: flex; 
