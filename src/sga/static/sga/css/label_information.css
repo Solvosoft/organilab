@@ -7,6 +7,16 @@
 */
 
 /* Select box placeHolder */
+
+.error{
+    display:none;
+    padding:5px;
+}
+.error lead{
+    text-aling:center;
+    color:red;
+
+}
 select
 {
     color: #0000007c !important;
