@@ -25,6 +25,7 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
     template_name = 'laboratory/profile_form.html'
     form_class = ProfileForm
     model = Profile
+    lab_pk_field = 'pk'
 
     def get_context_data(self, **kwargs):
         context = dict()

@@ -55,7 +55,7 @@ class AddUser(CreateView):
         user.save()
         profile =Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
             id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
-        #self.send_email(user)
+        self.send_email(user)
         profile.laboratories.add(self.kwargs['pk'])
         return response
 
