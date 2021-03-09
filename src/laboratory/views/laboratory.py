@@ -217,6 +217,7 @@ class LaboratoryListView(ListView):
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory
     template_name= 'laboratory/laboratory_delete.html'
+    lab_pk_field = 'pk'
 
     def get_success_url(self):
         return  "/"

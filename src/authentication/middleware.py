@@ -14,10 +14,10 @@ class ProfileMiddleware:
         response = self.get_response(request)
         return response
 
-    def _get_group_permissions(self, user_obj):
+    def get_group_permissions(self, user_obj):
         user_groups_field = get_user_model()._meta.get_field('groups')
         user_groups_query = 'group__%s' % user_groups_field.related_query_name()
-        return Permission.objects.filter(**{user_groups_query: user_obj})
+        return Permission.objects.filter(**{user_groups_query: user_obj}).values_list('content_type__app_label', 'codename').order_by()
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         profile_in = None
@@ -31,6 +31,11 @@ class ProfileMiddleware:
         elif 'lab_pk' in request.POST and request.POST['lab_pk'] is not None:
             profile_in = ProfilePermission.objects.filter(profile=request.user.profile,
                                                       laboratories_id=request.POST.get('lab_pk')).first()
+
+        elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
+            view_func.view_class.lab_pk_field in view_kwargs  and  view_kwargs[view_func.view_class.lab_pk_field] is not None:
+            profile_in = ProfilePermission.objects.filter(profile=request.user.profile,
+                                                          laboratories_id=view_kwargs[view_func.view_class.lab_pk_field]).first()
         elif hasattr(view_func, 'lab_pk_field') and view_func.lab_pk_field in view_kwargs and \
                 view_kwargs[view_func.lab_pk_field] is not None:
             profile_in = ProfilePermission.objects.filter(profile=request.user.profile,
@@ -44,7 +49,7 @@ class ProfileMiddleware:
 
             user_permissions += list(
                 request.user.user_permissions.values_list('content_type__app_label', 'codename').order_by())
+            user_permissions += list(self.get_group_permissions(request.user))
 
             if user_permissions:
                 request.user._perm_cache = {"%s.%s" % (ct, name) for ct, name in user_permissions}
-            request.user.has_perm
