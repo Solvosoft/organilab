@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10">
-            <a href="{% url 'laboratory:sustance_list' %}" class="btn btn-danger">{% trans 'Back' %}</a>
+            <a href="{% url 'laboratory:sustance_list' lab_pk=lab_pk %}" class="btn btn-danger">{% trans 'Back' %}</a>
             <a role="button" class="btn btn-primary pull-right" data-toggle="modal" href="#helpModal"
                aria-expanded="false">
                 <i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i>
@@ -18,6 +18,7 @@
     </div>
     <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+        <input type="hidden" name="lab_pk" value="{{lab_pk}}">
     <div class="row-md-10">
         <div class="col-md-4">
             {{objform.as_inline}}
