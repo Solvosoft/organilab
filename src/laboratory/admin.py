@@ -44,6 +44,8 @@ admin.site.register(models.ShelfObject)
 admin.site.register(models.Solution)
 admin.site.register(models.Catalog)
 admin.site.register(models.BlockedListNotification)
+admin.site.register(models.Rol)
+admin.site.register(models.ProfilePermission)
 
 
 admin.site.register(models.OrganizationStructure,

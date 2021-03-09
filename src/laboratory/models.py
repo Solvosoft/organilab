@@ -1,7 +1,7 @@
 import ast
 import json
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
@@ -473,6 +473,28 @@ class Solution(models.Model):
             pressure=self.pressure,
             pH=self.pH
         )
+
+class Rol(models.Model):
+    name = models.CharField(blank=True,max_length=100)
+    permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('permissions'),
+        blank=True,
+    )
+    class Meta:
+        verbose_name = _('Rol')
+        verbose_name_plural = _('Rols')
+
+    def __str__(self):
+        return self.name
+
+class ProfilePermission(models.Model):
+    profile = models.ForeignKey(Profile, verbose_name=_("Profile"), blank=True, null=True, on_delete=models.CASCADE)
+    laboratories = models.ForeignKey(Laboratory, verbose_name=_("Laboratories"), blank=True, null=True, on_delete=models.CASCADE)
+    rol = models.ManyToManyField(Rol, blank=True, verbose_name=_("Rol"))
+
+    def __str__(self):
+        return '%s' % (self.profile,)
 
 
 class ObjectLogChange(models.Model):

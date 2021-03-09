@@ -102,7 +102,8 @@ if DEBUG_TOOLBAR:
 
 MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'djreservation.middleware.ReservationMiddleware'
+    'djreservation.middleware.ReservationMiddleware',
+    'authentication.middleware.ProfileMiddleware'
 ]
 
 ROOT_URLCONF = 'organilab.urls'
