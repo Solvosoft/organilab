@@ -17,7 +17,7 @@
 <div class="row">
 <div class="col-md-12">
     <div class="add-container">
-        <a href="{% url 'laboratory:sustance_manage'%}"><i class="glyphicon glyphicon-plus green"
+        <a href="{% url 'laboratory:sustance_add' lab_pk=laboratory %}"><i class="glyphicon glyphicon-plus green"
                                                         title="{% trans 'Add new Substance' %}"></i></a>
     </div>
   <table id="sustancetable" class="table table-striped table-bordered" style="width:100%">
@@ -49,7 +49,7 @@
     $("#sustancetable").DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "{% url 'laboratory:sustance_list_json' %}",
+        "ajax": "{% url 'laboratory:sustance_list_json' lab_pk=laboratory %}",
         "language": {
             "url": "{% get_datatables_translation %}"
         }

@@ -196,7 +196,7 @@ class CreateLaboratoryView(CreateView):
             return redirect(self.success_url)
 
 
-@method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
 class LaboratoryListView(ListView):
     model = Laboratory
     template_name= 'laboratory/laboratory_list.html'
