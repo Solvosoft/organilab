@@ -61,6 +61,8 @@ def users_management(request, pk):
         'form': SearchUserForm(users_list=users_pk)
     }
     return render(request, 'laboratory/users_management.html', context=context)
+users_management.lab_pk_field = 'pk'
+
 
 
 @has_lab_assigned(lab_pk='pk')
