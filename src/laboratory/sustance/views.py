@@ -13,8 +13,8 @@ from laboratory.utils import get_cas
 from laboratory.validators import isValidate_molecular_formula
 
 
-@permission_required('laboratory.edit_object')
-def create_edit_sustance(request, pk=None):
+@permission_required('laboratory.change_object')
+def create_edit_sustance(request, lab_pk, pk=None):
     instance = Object.objects.filter(pk=pk).first()
 
     suscharobj=None
@@ -25,6 +25,7 @@ def create_edit_sustance(request, pk=None):
     if request.method == 'POST':
         postdata = request.POST
         filesdata = request.FILES
+
     objform = SustanceObjectForm(postdata, instance=instance)
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
@@ -43,7 +44,7 @@ def create_edit_sustance(request, pk=None):
             suscharinst.save()
             suschacform.save_m2m()
             messages.success(request, _("Sustance saved successfully"))
-            return redirect(reverse('laboratory:sustance_list'))
+            return redirect(reverse('laboratory:sustance_list',args=[lab_pk]))
 
         else:
             messages.warning(request, _("Pending information in form"))
@@ -51,15 +52,20 @@ def create_edit_sustance(request, pk=None):
     return render(request, 'laboratory/sustance/sustance_form.html', {
         'objform': objform,
         'suschacform': suschacform,
-        'instance': instance
+        'instance': instance,
+        'lab_pk': lab_pk
     })
 
 
 @permission_required('laboratory.view_object')
-def sustance_list(request):
+def sustance_list(request,lab_pk):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
+    if request.method == 'POST':
+        lab_pk = request.POST.get('lab_pk')
+        print(lab_pk)
     return render(request, 'laboratory/sustance/list.html', {
-        'object_url': '#'
+        'object_url': '#',
+        'laboratory': lab_pk
     })
 
 
@@ -112,7 +118,7 @@ class SustanceListJson(BaseDatatableView):
             is_public = '<i class="{0}"  title="{1} {2}" aria-hidden="true"></i>'.format(
                 warning_is_public, _('Is public?'), _("Yes") if item.is_public else _("No"))
             name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
-                reverse('laboratory:sustance_manage', kwargs={'pk': item.id}),
+                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['lab_pk']}),
                 item.synonym or item.name, item.name)
             delete = """<a href="{0}" title="{1}" class="pull-right"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
