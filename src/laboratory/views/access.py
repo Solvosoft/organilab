@@ -73,3 +73,4 @@ def delete_user(request, pk, user_pk):
     if user and lab:
         user.laboratories.remove(pk)
     return redirect('laboratory:users_management', pk=pk)
+delete_user.lab_pk_field = 'pk'

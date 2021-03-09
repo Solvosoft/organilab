@@ -23,6 +23,7 @@ from laboratory.models import Profile
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
+    lab_pk_field = 'pk'
 
     def get_success_url(self):
         return reverse_lazy('laboratory:users_management',

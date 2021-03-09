@@ -27,6 +27,8 @@ from laboratory.decorators import has_lab_assigned
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = 'laboratory/edit.html'
+    lab_pk_field = 'pk'
+
     #fields = ['name', 'phone_number', 'location', 'geolocation']
     form_class = LaboratoryCreate
 
@@ -101,6 +103,7 @@ class SelectLaboratoryView(FormView):
     form_class = SelectLaboratoryForm
     number_of_labs = 0
     success_url = '/'
+    lab_pk_field = 'pk'
 
     def get_laboratories(self, user):
         organizations = OrganizationStructure.os_manager.filter_user(user)
