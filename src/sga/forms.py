@@ -4,7 +4,7 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.forms.forms import GTForm
-from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence,PersonalTemplateSGA
 
 
 class RecipientInformationForm(forms.Form):
@@ -54,3 +54,8 @@ class DonateForm(GTForm, forms.Form):
     is_donator = forms.BooleanField(
         label=_('Add me to the donators list'), widget=genwidgets.YesNoInput,
         initial=True)
+
+
+class PersonalTemplatesForm(CustomForm, forms.Form):
+    name = forms.CharField(max_length=100, required=True)
+    json_data = forms.CharField(widget=forms.TextInput)
