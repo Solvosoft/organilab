@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-01 19:48-0600\n"
+"POT-Creation-Date: 2021-03-09 23:26-0600\n"
 "PO-Revision-Date: 2020-10-01 21:11-0600\n"
 "Last-Translator: \n"
 "Language-Team: es\n"
@@ -18,140 +18,148 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: incidents.py:92
+#: risk_management/incidents.py:96
 msgid "Identificador"
 msgstr "Identificador"
 
-#: incidents.py:93
+#: risk_management/incidents.py:97
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
-#: incidents.py:94
+#: risk_management/incidents.py:98
 msgid "Short Description"
 msgstr "Descripción corta"
 
-#: incidents.py:95
+#: risk_management/incidents.py:99
 msgid "Incident Date"
 msgstr "Fecha del incidente"
 
-#: incidents.py:96
+#: risk_management/incidents.py:100
 msgid "Causes"
 msgstr "Causas"
 
-#: incidents.py:97
+#: risk_management/incidents.py:101
 msgid "Infraestructure impact"
 msgstr "Impacto a la infraestructura"
 
-#: incidents.py:98
+#: risk_management/incidents.py:102
 msgid "People impact"
 msgstr "Impacto a las personas"
 
-#: incidents.py:99
+#: risk_management/incidents.py:103
 msgid "Environment impact"
 msgstr "Impacto ambiental"
 
-#: incidents.py:100
+#: risk_management/incidents.py:104
 msgid "Result of plans"
 msgstr "Resultado de la ejecución de planes de seguridad"
 
-#: incidents.py:101
+#: risk_management/incidents.py:105
 msgid "Mitigation actions"
 msgstr "Acciones de mitigación"
 
-#: incidents.py:102
+#: risk_management/incidents.py:106
 msgid "Recomendations"
 msgstr "Recomandaciones"
 
-#: incidents.py:103 models.py:50 models.py:68
-#: templates/risk_management/incidentreport_pdf.html:21
+#: risk_management/incidents.py:107 risk_management/models.py:50
+#: risk_management/models.py:68
+#: risk_management/templates/risk_management/incidentreport_pdf.html:21
 msgid "Laboratories"
 msgstr "Laboratorios"
 
-#: incidents.py:121
+#: risk_management/incidents.py:125
 msgid "Incidents"
 msgstr "Incidentes"
 
-#: models.py:22
+#: risk_management/models.py:22
 msgid "Opertation"
 msgstr "Operación"
 
-#: models.py:23
+#: risk_management/models.py:23
 msgid "left_value opertation X ej.  left_value > 100"
 msgstr "left_value operación  X ej.  left_value > 100"
 
-#: models.py:23
+#: risk_management/models.py:23
 msgid "Comparative value"
 msgstr "Valor comparativo"
 
-#: models.py:24
+#: risk_management/models.py:24
 msgid "Use only if =<x>=, <x>, <x>= or =<x>  "
 msgstr "Use solo cuando:  =<x>=, <x>, <x>= or =<x>  "
 
-#: models.py:25
+#: risk_management/models.py:25
 msgid "Set priority if true"
 msgstr "Poner prioridad si Verdadero"
 
-#: models.py:25
+#: risk_management/models.py:25
 msgid "Value result if operation is True"
 msgstr "Valor resultante si operación es Verdadera"
 
-#: models.py:36 models.py:49
+#: risk_management/models.py:36 risk_management/models.py:49
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:37
+#: risk_management/models.py:37
 msgid "Priority calculate operators"
 msgstr "Prioridad de operaciones"
 
-#: models.py:51
+#: risk_management/models.py:51
 msgid "Number of workers (aprox)"
 msgstr "Número de trabajadores (aprox)"
 
-#: models.py:53
+#: risk_management/models.py:53
 msgid "Priority"
 msgstr "Prioridad"
 
-#: models.py:59
+#: risk_management/models.py:59
 msgid "Risk zone"
 msgstr "Zona de riesgo"
 
-#: models.py:60
+#: risk_management/models.py:60
 msgid "Risk zones"
 msgstr "Zonas de riesgo"
 
-#: models.py:65
+#: risk_management/models.py:65
 msgid "Descipción corta"
 msgstr "Descipción corta"
 
-#: models.py:66
+#: risk_management/models.py:66
 msgid "Descipción corta de evento, max 500 caracteres"
 msgstr "Descipción corta de evento, max 500 caracteres"
 
-#: models.py:67 templates/risk_management/incidentreport_pdf.html:19
+#: risk_management/models.py:67
+#: risk_management/templates/risk_management/incidentreport_pdf.html:19
 msgid "Fecha del incidente"
 msgstr "Fecha del incidente"
 
-#: models.py:71 templates/risk_management/incidentreport_pdf.html:29
+#: risk_management/models.py:71
+#: risk_management/templates/risk_management/incidentreport_pdf.html:29
 msgid "Causas del accidente"
 msgstr "Causas del accidente"
 
-#: models.py:74 templates/risk_management/incidentreport_pdf.html:31
+#: risk_management/models.py:74
+#: risk_management/templates/risk_management/incidentreport_pdf.html:31
 msgid "Impacto a la infraestructura"
 msgstr "Impacto a la infraestructura"
 
-#: models.py:75 models.py:79 models.py:83
+#: risk_management/models.py:75 risk_management/models.py:79
+#: risk_management/models.py:83
 msgid "Indicando las consecuencias a corto, mediano y largo plazo."
 msgstr "Indicando las consecuencias a corto, mediano y largo plazo."
 
-#: models.py:78 templates/risk_management/incidentreport_pdf.html:33
+#: risk_management/models.py:78
+#: risk_management/templates/risk_management/incidentreport_pdf.html:33
 msgid "Impacto a las personas (empleados, visitantes y comunidad afectada)"
 msgstr "Impacto a las personas (empleados, visitantes y comunidad afectada)"
 
-#: models.py:82 templates/risk_management/incidentreport_pdf.html:35
+#: risk_management/models.py:82
+#: risk_management/templates/risk_management/incidentreport_pdf.html:35
 msgid "Impacto ambiental"
 msgstr "Impacto ambiental"
 
-#: models.py:86 templates/risk_management/incidentreport_pdf.html:37
+#: risk_management/models.py:86
+#: risk_management/templates/risk_management/incidentreport_pdf.html:37
 msgid ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
 "Respuesta ante Accidentes Químicos."
@@ -159,17 +167,19 @@ msgstr ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
 "Respuesta ante Accidentes Químicos."
 
-#: models.py:90 templates/risk_management/incidentreport_pdf.html:39
+#: risk_management/models.py:90
+#: risk_management/templates/risk_management/incidentreport_pdf.html:39
 msgid ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 msgstr ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 
-#: models.py:94
+#: risk_management/models.py:94
 msgid "Recomendaciones"
 msgstr "Recomendaciones"
 
-#: models.py:95 templates/risk_management/incidentreport_pdf.html:41
+#: risk_management/models.py:95
+#: risk_management/templates/risk_management/incidentreport_pdf.html:41
 msgid ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
 "cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
@@ -177,7 +187,7 @@ msgstr ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
 "cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 
-#: models.py:99
+#: risk_management/models.py:99
 msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
@@ -185,119 +195,119 @@ msgstr ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
 
-#: templates/risk_management/incidentreport_confirm_delete.html:6
+#: risk_management/templates/risk_management/incidentreport_confirm_delete.html:6
 msgid "Delete Incident report"
 msgstr "Eliminar reporte de incidente"
 
-#: templates/risk_management/incidentreport_confirm_delete.html:13
-#: templates/risk_management/riskzone_confirm_delete.html:13
+#: risk_management/templates/risk_management/incidentreport_confirm_delete.html:13
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:13
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro de que desea eliminar?"
 
-#: templates/risk_management/incidentreport_confirm_delete.html:14
-#: templates/risk_management/riskzone_confirm_delete.html:14
+#: risk_management/templates/risk_management/incidentreport_confirm_delete.html:14
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:14
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: templates/risk_management/incidentreport_detail.html:9
+#: risk_management/templates/risk_management/incidentreport_detail.html:9
 msgid "Laboratory incidents list"
 msgstr "Lista de incidentes del laboratorio"
 
-#: templates/risk_management/incidentreport_detail.html:12
-#: templates/risk_management/incidentreport_list.html:53
-#: templates/risk_management/riskzone_detail.html:10
-#: templates/risk_management/riskzone_list.html:53
+#: risk_management/templates/risk_management/incidentreport_detail.html:12
+#: risk_management/templates/risk_management/incidentreport_list.html:53
+#: risk_management/templates/risk_management/riskzone_detail.html:10
+#: risk_management/templates/risk_management/riskzone_list.html:53
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/risk_management/incidentreport_detail.html:37
-#: templates/risk_management/incidentreport_detail.html:88
+#: risk_management/templates/risk_management/incidentreport_detail.html:37
+#: risk_management/templates/risk_management/incidentreport_detail.html:88
 msgid "Download"
 msgstr "Descargar"
 
-#: templates/risk_management/incidentreport_detail.html:40
-#: templates/risk_management/incidentreport_detail.html:91
+#: risk_management/templates/risk_management/incidentreport_detail.html:40
+#: risk_management/templates/risk_management/incidentreport_detail.html:91
 msgid "Toggle Dropdown"
 msgstr "Toggle Dropdown"
 
-#: templates/risk_management/incidentreport_detail.html:44
-#: templates/risk_management/incidentreport_detail.html:95
+#: risk_management/templates/risk_management/incidentreport_detail.html:44
+#: risk_management/templates/risk_management/incidentreport_detail.html:95
 msgid "PDF"
 msgstr "PDF"
 
-#: templates/risk_management/incidentreport_detail.html:47
-#: templates/risk_management/incidentreport_detail.html:98
+#: risk_management/templates/risk_management/incidentreport_detail.html:47
+#: risk_management/templates/risk_management/incidentreport_detail.html:98
 msgid "Ods"
 msgstr "Ods"
 
-#: templates/risk_management/incidentreport_detail.html:52
-#: templates/risk_management/incidentreport_detail.html:103
+#: risk_management/templates/risk_management/incidentreport_detail.html:52
+#: risk_management/templates/risk_management/incidentreport_detail.html:103
 msgid "Xls"
 msgstr "Xls"
 
-#: templates/risk_management/incidentreport_detail.html:57
-#: templates/risk_management/incidentreport_detail.html:108
+#: risk_management/templates/risk_management/incidentreport_detail.html:57
+#: risk_management/templates/risk_management/incidentreport_detail.html:108
 msgid "Xlsx"
 msgstr "Xlsx"
 
-#: templates/risk_management/incidentreport_form.html:4
-#: templates/risk_management/incidentreport_form.html:18
+#: risk_management/templates/risk_management/incidentreport_form.html:4
+#: risk_management/templates/risk_management/incidentreport_form.html:18
 msgid "Incident Management"
 msgstr "Administración de incidentes"
 
-#: templates/risk_management/incidentreport_form.html:11
+#: risk_management/templates/risk_management/incidentreport_form.html:11
 msgid "Laboratory incidents"
 msgstr "Incidentes del laborarorio"
 
-#: templates/risk_management/incidentreport_form.html:32
-#: templates/risk_management/riskzone_form.html:29
+#: risk_management/templates/risk_management/incidentreport_form.html:32
+#: risk_management/templates/risk_management/riskzone_form.html:29
 msgid "Save"
 msgstr "Guardar"
 
-#: templates/risk_management/incidentreport_list.html:12
+#: risk_management/templates/risk_management/incidentreport_list.html:12
 msgid "Incidents Management"
 msgstr "Administración de incidentes"
 
-#: templates/risk_management/incidentreport_list.html:58
-#: templates/risk_management/riskzone_list.html:58
+#: risk_management/templates/risk_management/incidentreport_list.html:58
+#: risk_management/templates/risk_management/riskzone_list.html:58
 msgid "Delete"
 msgstr "Eliminar"
 
-#: templates/risk_management/incidentreport_list.html:70
-#: templates/risk_management/riskzone_list.html:70
+#: risk_management/templates/risk_management/incidentreport_list.html:70
+#: risk_management/templates/risk_management/riskzone_list.html:70
 msgid "Previous"
 msgstr "Anterior"
 
-#: templates/risk_management/incidentreport_list.html:75
-#: templates/risk_management/riskzone_list.html:75
+#: risk_management/templates/risk_management/incidentreport_list.html:75
+#: risk_management/templates/risk_management/riskzone_list.html:75
 msgid "Page"
 msgstr "Página"
 
-#: templates/risk_management/incidentreport_list.html:80
-#: templates/risk_management/riskzone_list.html:80
+#: risk_management/templates/risk_management/incidentreport_list.html:80
+#: risk_management/templates/risk_management/riskzone_list.html:80
 msgid "Next"
 msgstr "Siguiente"
 
-#: templates/risk_management/riskzone_confirm_delete.html:6
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:6
 msgid "Delete risk zone"
 msgstr "Eliminar zona de riesgo"
 
-#: templates/risk_management/riskzone_detail.html:7
-#: templates/risk_management/riskzone_form.html:8
+#: risk_management/templates/risk_management/riskzone_detail.html:7
+#: risk_management/templates/risk_management/riskzone_form.html:8
 msgid "Zone list"
 msgstr "Lista de zonas"
 
-#: templates/risk_management/riskzone_detail.html:37
+#: risk_management/templates/risk_management/riskzone_detail.html:37
 msgid "Incident Reports"
 msgstr "Reportes de incidentes"
 
-#: templates/risk_management/riskzone_detail.html:40
+#: risk_management/templates/risk_management/riskzone_detail.html:40
 msgid "Incident Reports Create"
 msgstr "Crear Reporte de incidentes"
 
-#: templates/risk_management/riskzone_form.html:4
-#: templates/risk_management/riskzone_form.html:15
-#: templates/risk_management/riskzone_list.html:12
+#: risk_management/templates/risk_management/riskzone_form.html:4
+#: risk_management/templates/risk_management/riskzone_form.html:15
+#: risk_management/templates/risk_management/riskzone_list.html:12
 msgid "Risk Zone Management"
 msgstr "Administración de zonas de riesgo"
 

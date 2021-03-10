@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-25 01:19-0600\n"
+"POT-Creation-Date: 2021-03-09 23:26-0600\n"
 "PO-Revision-Date: 2020-03-25 01:21-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -19,132 +19,128 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: models.py:10 models.py:27
+#: academic/models.py:12 academic/models.py:26
 msgid "Title"
 msgstr "Título"
 
-#: models.py:11 models.py:28 models.py:70
+#: academic/models.py:13 academic/models.py:27 academic/models.py:62
 msgid "Description"
 msgstr "Descripción"
 
-#: models.py:18 models.py:26
+#: academic/models.py:20 academic/models.py:25
 msgid "Procedure"
 msgstr "Procedimientos"
 
-#: models.py:19
+#: academic/models.py:21
 msgid "Procedures"
 msgstr "Procedimientos"
 
-#: models.py:21
-msgid "Can see available Procedure"
-msgstr "Puede ver Procedure disponibles"
-
-#: models.py:33
+#: academic/models.py:32
 msgid "No titled step"
 msgstr "Paso sin título"
 
-#: models.py:37
+#: academic/models.py:36
 msgid "Procedure step"
 msgstr "Paso en procedimiento"
 
-#: models.py:38
+#: academic/models.py:37
 msgid "Procedure steps"
 msgstr "Pasos en los procedimientos"
 
-#: models.py:40
-msgid "Can see available ProcedureStep"
-msgstr "Puede ver ProcedureStep disponibles"
-
-#: models.py:46
+#: academic/models.py:43
 msgid "Object"
 msgstr "Objeto"
 
-#: models.py:47
+#: academic/models.py:44
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: models.py:49
+#: academic/models.py:46
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: models.py:60
+#: academic/models.py:56
 msgid "Procedure Required Object"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: models.py:61
+#: academic/models.py:57
 msgid "Procedure Required Objects"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: models.py:64
-msgid "Can see available ProcedureRequiredObject"
-msgstr "Puede ver ProcedureRequiredObject disponibles"
-
-#: models.py:77
+#: academic/models.py:69
 msgid "Procedure Observation"
 msgstr "Observaciones del procedimiento"
 
-#: models.py:78
+#: academic/models.py:70
 msgid "Procedure Observations"
 msgstr "Observaciones del procedimiento"
 
-#: models.py:81
-msgid "Can see available ProcedureObservations"
-msgstr "Puede ver ProcedureObservations disponibles"
-
-#: templates/academic/procedure/cruds/detail.html:4
-#: templates/academic/procedure/cruds/detail.html:7
+#: academic/templates/academic/procedure/cruds/detail.html:4
+#: academic/templates/academic/procedure/cruds/detail.html:6
 msgid "Detail of"
 msgstr "Detalle de"
 
-#: templates/academic/procedure/cruds/detail.html:17
-#: templates/academic/procedure/cruds/list.html:60
+#: academic/templates/academic/procedure/cruds/detail.html:14
+#: academic/templates/academic/procedure/cruds/list.html:55
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/academic/procedure/cruds/detail.html:31
+#: academic/templates/academic/procedure/cruds/detail.html:27
 msgid "Steps"
 msgstr "Pasos"
 
-#: templates/academic/procedure/cruds/detail.html:48
+#: academic/templates/academic/procedure/cruds/detail.html:44
 msgid "Required objects"
 msgstr "Objetos requeridos"
 
-#: templates/academic/procedure/cruds/detail.html:60
+#: academic/templates/academic/procedure/cruds/detail.html:56
 msgid "Observations"
 msgstr "Observaciones"
 
-#: templates/academic/procedure/cruds/detail.html:75
+#: academic/templates/academic/procedure/cruds/detail.html:69
 msgid "Back to list"
 msgstr "Volver a la lista"
 
-#: templates/academic/procedure/cruds/list.html:5
-#: templates/academic/procedure/cruds/list.html:8
+#: academic/templates/academic/procedure/cruds/list.html:5
+#: academic/templates/academic/procedure/cruds/list.html:8
 msgid "List of"
 msgstr "Lista de"
 
-#: templates/academic/procedure/cruds/list.html:21
+#: academic/templates/academic/procedure/cruds/list.html:18
 msgid "Create new "
 msgstr "Crear nuevo"
 
-#: templates/academic/procedure/cruds/list.html:34
+#: academic/templates/academic/procedure/cruds/list.html:31
 msgid "Actions"
 msgstr "Acciones"
 
-#: templates/academic/procedure/cruds/list.html:53
+#: academic/templates/academic/procedure/cruds/list.html:48
 msgid "Steps Details"
 msgstr "Detalle de pasos"
 
-#: templates/academic/procedure/cruds/list.html:58
+#: academic/templates/academic/procedure/cruds/list.html:53
 msgid "New Steps"
 msgstr "Nuevo paso"
 
-#: templates/academic/procedure/cruds/list.html:64
+#: academic/templates/academic/procedure/cruds/list.html:59
 msgid "Delete"
 msgstr "Eliminar"
 
-#: templates/academic/procedure/cruds/list.html:74
+#: academic/templates/academic/procedure/cruds/list.html:69
 msgid "No items yet."
 msgstr "Todavía no hay elementos"
+
+#~ msgid "Can see available Procedure"
+#~ msgstr "Puede ver Procedure disponibles"
+
+#~ msgid "Can see available ProcedureStep"
+#~ msgstr "Puede ver ProcedureStep disponibles"
+
+#~ msgid "Can see available ProcedureRequiredObject"
+#~ msgstr "Puede ver ProcedureRequiredObject disponibles"
+
+#~ msgid "Can see available ProcedureObservations"
+#~ msgstr "Puede ver ProcedureObservations disponibles"
 
 #~ msgid "Organilab Administration site"
 #~ msgstr "Sitio administrativo de Organilab"
@@ -320,59 +316,105 @@ msgstr "Todavía no hay elementos"
 #~ msgid "Hello!"
 #~ msgstr "¡Hola!"
 
-#~ msgid "Welcome to Organilab, the simple laboratory organizer. Let's take a look of the main features of this system"
-#~ msgstr "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las características principales de este sistema."
+#~ msgid ""
+#~ "Welcome to Organilab, the simple laboratory organizer. Let's take a look "
+#~ "of the main features of this system"
+#~ msgstr ""
+#~ "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las "
+#~ "características principales de este sistema."
 
-#~ msgid "The laboratory view is Organilab's main feature because it offers a general view of the structure of the laboratory for its management"
-#~ msgstr "La vista de laboratorio es el pilar principal de Organilab porque ofrece una vista general de la estructura del laboratorio para llevar a cabo su administración"
+#~ msgid ""
+#~ "The laboratory view is Organilab's main feature because it offers a "
+#~ "general view of the structure of the laboratory for its management"
+#~ msgstr ""
+#~ "La vista de laboratorio es el pilar principal de Organilab porque ofrece "
+#~ "una vista general de la estructura del laboratorio para llevar a cabo su "
+#~ "administración"
 
 #~ msgid "Management"
 #~ msgstr "Administración"
 
-#~ msgid "In the management views you can find everything you need to control the components of the laboratory, from rooms to objects."
-#~ msgstr "En las vistas de administración puedes encontrar todo lo que necesitas para controlar los componentes del laboratorio, desde las salas hasta objetos."
+#~ msgid ""
+#~ "In the management views you can find everything you need to control the "
+#~ "components of the laboratory, from rooms to objects."
+#~ msgstr ""
+#~ "En las vistas de administración puedes encontrar todo lo que necesitas "
+#~ "para controlar los componentes del laboratorio, desde las salas hasta "
+#~ "objetos."
 
 #~ msgid "Reports"
 #~ msgstr "Reportes"
 
-#~ msgid "If you need a full inventory of the whole laboratory or an specific component, this is the place to do it"
-#~ msgstr "Si necesitas un inventorio completo de todo el laboratorio o de un componente específico, este es el lugar para hacerlo"
+#~ msgid ""
+#~ "If you need a full inventory of the whole laboratory or an specific "
+#~ "component, this is the place to do it"
+#~ msgstr ""
+#~ "Si necesitas un inventorio completo de todo el laboratorio o de un "
+#~ "componente específico, este es el lugar para hacerlo"
 
 #~ msgid "Select laboratory"
 #~ msgstr "Seleccione su laboratorio"
 
-#~ msgid "You can have access to multiple laboratories, select the one you want to manage by clicking this link"
-#~ msgstr "Puedes tener acceso a multiples laboratorios, selecciona el que deseas haciendo click aquí"
+#~ msgid ""
+#~ "You can have access to multiple laboratories, select the one you want to "
+#~ "manage by clicking this link"
+#~ msgstr ""
+#~ "Puedes tener acceso a multiples laboratorios, selecciona el que deseas "
+#~ "haciendo click aquí"
 
 #~ msgid "Laboratory view"
 #~ msgstr "Vista de laboratorio"
 
-#~ msgid "In this view you can manage most of the components related to the lab, including its rooms, furniture and objects"
-#~ msgstr "En esta vista puedes administrar la mayoría de los componentes relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
+#~ msgid ""
+#~ "In this view you can manage most of the components related to the lab, "
+#~ "including its rooms, furniture and objects"
+#~ msgstr ""
+#~ "En esta vista puedes administrar la mayoría de los componentes "
+#~ "relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
 
 #~ msgid "Management views"
 #~ msgstr "Vistas de administración"
 
-#~ msgid "This views manage the different objects handled by the Organilab system for the current laboratory"
-#~ msgstr "Estas vistas permiten administrar los diferentes objectos manipulados por el sistema Organilab para el laboratorio actual"
+#~ msgid ""
+#~ "This views manage the different objects handled by the Organilab system "
+#~ "for the current laboratory"
+#~ msgstr ""
+#~ "Estas vistas permiten administrar los diferentes objectos manipulados por "
+#~ "el sistema Organilab para el laboratorio actual"
 
-#~ msgid "Here you can see and retrieve the reports generated by the different components handled and saved in the Organilab system"
-#~ msgstr "Aquí puedes ver y obtener los reportes generados a partir de los diferentes componentes manipulados y guardados en el sistema Organilab"
+#~ msgid ""
+#~ "Here you can see and retrieve the reports generated by the different "
+#~ "components handled and saved in the Organilab system"
+#~ msgstr ""
+#~ "Aquí puedes ver y obtener los reportes generados a partir de los "
+#~ "diferentes componentes manipulados y guardados en el sistema Organilab"
 
-#~ msgid "In this view you can check out all the reservations related to you and their current status."
-#~ msgstr "En esta vista puedes revisar todas las reservaciones relacionadas contigo y su estado actual"
+#~ msgid ""
+#~ "In this view you can check out all the reservations related to you and "
+#~ "their current status."
+#~ msgstr ""
+#~ "En esta vista puedes revisar todas las reservaciones relacionadas contigo "
+#~ "y su estado actual"
 
 #~ msgid "Reservation administration"
 #~ msgstr "Administración de reservaciones"
 
-#~ msgid "Here you create and finish a given reservation registered in the Organilab system"
-#~ msgstr "Aquí puedes crear y finalizar una reservación registrada en el sistema Organilab"
+#~ msgid ""
+#~ "Here you create and finish a given reservation registered in the "
+#~ "Organilab system"
+#~ msgstr ""
+#~ "Aquí puedes crear y finalizar una reservación registrada en el sistema "
+#~ "Organilab"
 
 #~ msgid "Help us!"
 #~ msgstr "¡Colabora!"
 
-#~ msgid "If you have an issue testing or using Organilab, let us know. We'll be eager to help you"
-#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber. Estaremos ansiosos por corregirlo."
+#~ msgid ""
+#~ "If you have an issue testing or using Organilab, let us know. We'll be "
+#~ "eager to help you"
+#~ msgstr ""
+#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber. "
+#~ "Estaremos ansiosos por corregirlo."
 
 #~ msgid "Please use an email client with HTML support"
 #~ msgstr "Por favor use un cliente con soporte a HTML"
@@ -380,11 +422,19 @@ msgstr "Todavía no hay elementos"
 #~ msgid "Hi,"
 #~ msgstr "Hola"
 
-#~ msgid "You have received this email because you are in charge of a laboratory in the Organilab system."
-#~ msgstr "Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab."
+#~ msgid ""
+#~ "You have received this email because you are in charge of a laboratory in "
+#~ "the Organilab system."
+#~ msgstr ""
+#~ "Usted ha recibido este correo porque tiene un cambio en un laboratorio en "
+#~ "el sistema Organilab."
 
-#~ msgid "This message is to notify you that one or more of the shelf objects of your laboratory has reached its limit"
-#~ msgstr "Este mensaje es para notificarle que uno o más estantes en el laboratorio han llegado a su cuota mínima"
+#~ msgid ""
+#~ "This message is to notify you that one or more of the shelf objects of "
+#~ "your laboratory has reached its limit"
+#~ msgstr ""
+#~ "Este mensaje es para notificarle que uno o más estantes en el laboratorio "
+#~ "han llegado a su cuota mínima"
 
 #~ msgid "This are the details of the products:"
 #~ msgstr "Detalle de los productos"
@@ -407,8 +457,12 @@ msgstr "Todavía no hay elementos"
 #~ msgid "No shelf objects have reached their limit."
 #~ msgstr "No hay  objetos en mínimos límites."
 
-#~ msgid "Please refill this product or contact the people that reserved it to balance the current quantity."
-#~ msgstr "Por favor recargue este producto o contacte a la persona que pueda hacerlo."
+#~ msgid ""
+#~ "Please refill this product or contact the people that reserved it to "
+#~ "balance the current quantity."
+#~ msgstr ""
+#~ "Por favor recargue este producto o contacte a la persona que pueda "
+#~ "hacerlo."
 
 #~ msgid "Thanks,"
 #~ msgstr "Gracias,"
@@ -416,8 +470,12 @@ msgstr "Todavía no hay elementos"
 #~ msgid "Organilab system"
 #~ msgstr "Organilab: Reporte de objetos"
 
-#~ msgid "This message is to notify you that one of the shelf objects of your laboratory has reached its limit"
-#~ msgstr "Este mensaje es para notificarle que uno o más objetos en su laboratorio están en las cuotas mínimas."
+#~ msgid ""
+#~ "This message is to notify you that one of the shelf objects of your "
+#~ "laboratory has reached its limit"
+#~ msgstr ""
+#~ "Este mensaje es para notificarle que uno o más objetos en su laboratorio "
+#~ "están en las cuotas mínimas."
 
 #~ msgid "This are the details of the product:"
 #~ msgstr "Detalle de productos"
@@ -432,7 +490,8 @@ msgstr "Todavía no hay elementos"
 #~ msgstr "Retroalimentación"
 
 #~ msgid "If you had some problem using Organilab, please let us know about it"
-#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+#~ msgstr ""
+#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
 
 #~ msgid "Send"
 #~ msgstr "Enviar"
@@ -585,7 +644,9 @@ msgstr "Todavía no hay elementos"
 #~ msgstr "Permiso denegado"
 
 #~ msgid "You don't have the permissions required to access this section"
-#~ msgstr "Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
+#~ msgstr ""
+#~ "Usted no cuenta con los privilegios suficientes para acceder este "
+#~ "laboratorio"
 
 #~ msgid "Please"
 #~ msgstr "Por favor"
@@ -785,8 +846,10 @@ msgstr "Todavía no hay elementos"
 #~ msgid "%(value)s is not a valid molecular formula"
 #~ msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
 
-#~ msgid "Thank you for your help. We are gonna check your problem as soon as we can"
-#~ msgstr "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
+#~ msgid ""
+#~ "Thank you for your help. We are gonna check your problem as soon as we can"
+#~ msgstr ""
+#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
 
 #~ msgid "Invalid format in shelf dataconfig "
 #~ msgstr "Formato inválido en dataconfig del estante"
@@ -854,8 +917,11 @@ msgstr "Todavía no hay elementos"
 #~ msgid "Descriptive name of the solution"
 #~ msgstr "Nombre descriptivo para la solución"
 
-#~ msgid "Write in each line the formula along with its amount, separated by a comma"
-#~ msgstr "Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
+#~ msgid ""
+#~ "Write in each line the formula along with its amount, separated by a comma"
+#~ msgstr ""
+#~ "Escriba en cada línea la fórmula junto con su cantidad, separada por una "
+#~ "coma"
 
 #~ msgid "For example: 500 mL, 1 L"
 #~ msgstr "Por ejemplo: 500 mL, 1 L"

@@ -1,0 +1,418 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-09 23:26-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: presentation/templates/gentelella/app/footer.html:4
+#: presentation/templates/gentelella/registration/footer.html:7
+msgid "All Rights Reserved."
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:10
+msgid "user profile icon"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:14
+msgid "Welcome,"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:33
+msgid "Manage Reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:39
+msgid "Requested reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:41
+msgid "Requested Reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:47
+#: presentation/templates/gentelella/app/sidebar.html:48
+msgid "Accepted Reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:53
+#: presentation/templates/gentelella/app/sidebar.html:54
+msgid "Denied Reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:59
+#: presentation/templates/gentelella/app/sidebar.html:60
+msgid "Closed Reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:69
+#: presentation/templates/gentelella/app/sidebar.html:70
+msgid "Access list"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:77
+msgid "blog entries"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:78
+msgid "Blog"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:84
+#: presentation/templates/gentelella/app/sidebar.html:85
+msgid "Regulation documents"
+msgstr ""
+
+#: presentation/templates/gentelella/app/sidebar.html:91
+msgid "Feedback"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:14
+msgid "Add Laboratory"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:21
+#: presentation/templates/gentelella/app/top_navigation.html:22
+msgid "My laboratories"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:30
+msgid "Administration"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:35
+msgid "My Laboratories"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:40
+msgid "Laboratory management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:45
+msgid "Object management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:47
+#: presentation/templates/gentelella/app/top_navigation.html:88
+msgid "Reactive"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:48
+#: presentation/templates/gentelella/app/top_navigation.html:89
+msgid "Material"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:49
+#: presentation/templates/gentelella/app/top_navigation.html:90
+msgid "Equipment"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:55
+msgid "Object features management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:59
+msgid "Dissolution management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:68
+msgid "Reports"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:73
+#: presentation/templates/partials/laboratories_menu.html:5
+msgid "Laboratory"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:75
+#: presentation/templates/gentelella/app/top_navigation.html:86
+msgid "Objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:76
+msgid "Principal Technician"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:82
+msgid "Furnitures"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:96
+msgid "Reactive precursor objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:101
+msgid "Object changes"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:106
+msgid "Limited shelf objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:115
+msgid "My reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:122
+msgid "Tutorials"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:126
+#: presentation/templates/gentelella/registration/login.html:43
+#: presentation/templates/gentelella/registration/password_reset_complete.html:15
+msgid "Log in"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/activate.html:11
+msgid "Account activation failed"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/activation_complete.html:12
+msgid "Your account is now activated."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/activation_email.txt:2
+msgid "Activate account at"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/activation_email.txt:6
+#, python-format
+msgid "Link is valid for %(expiration_days)s days."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/activation_email_subject.txt:1
+msgid "Account activation on"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:3
+#: presentation/templates/gentelella/registration/login.html:20
+#: presentation/templates/gentelella/registration/logout.html:20
+msgid "Login"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:23
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:28
+msgid ""
+"Your account doesn't have access to this page. To proceed,\n"
+"                        please login with an account that has access."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:31
+msgid "Please login to see this page."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:37
+msgid "Username"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:40
+msgid "Password"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:44
+msgid "Lost your password?"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/login.html:56
+msgid "Request a demonstration"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/logout.html:15
+msgid "Logged out"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/logout.html:16
+msgid "Do you want to login again?"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/logout.html:17
+msgid "or maybe you want to"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/logout.html:17
+msgid "go home"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/new_user.html:5
+msgid "Welcome"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/new_user.html:8
+msgid "This email was sent because someone create an user with your email in "
+msgstr ""
+
+#: presentation/templates/gentelella/registration/new_user.html:10
+msgid "Your username is: "
+msgstr ""
+
+#: presentation/templates/gentelella/registration/new_user.html:11
+msgid ""
+"for security reason password was create randomly and it is not provided "
+"here, please use this link"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/new_user.html:13
+msgid "to regenerate new password and login on platform"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_change_done.html:12
+msgid "Password changed"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_change_form.html:17
+#: presentation/templates/gentelella/registration/password_reset_confirm.html:18
+#: presentation/templates/gentelella/registration/registration_form.html:17
+msgid "Submit"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_complete.html:13
+msgid "Password reset successfully"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_confirm.html:14
+msgid "Password change"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_confirm.html:23
+msgid "Password reset failed"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_done.html:13
+msgid "Password reseted"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_done.html:14
+msgid "Email with password reset instructions has been sent."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_done.html:16
+msgid "Go to home"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_email.html:5
+#, python-format
+msgid "Reseting password at %(site_name)s"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_email.html:8
+msgid "Use the follow link to reset the password in the platform"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_email.html:10
+msgid "Here"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_email.html:13
+msgid ""
+"This email was send because someone try to reset your password, if you "
+"didn't request a reset, please delete this email and do not more actions\n"
+"    "
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_form.html:17
+msgid "Reset password"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_form.html:19
+msgid "Please insert the user email registered in platform"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_form.html:24
+msgid "We will send you a email to verify you are were you say you are"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_form.html:28
+msgid "Send email"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/password_reset_subject.txt:3
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr ""
+
+#: presentation/templates/gentelella/registration/registration_closed.html:12
+msgid "Registration is currently closed."
+msgstr ""
+
+#: presentation/templates/gentelella/registration/registration_complete.html:12
+msgid "You are now registered. Activation email sent."
+msgstr ""
+
+#: presentation/templates/partials/laboratories_menu.html:10
+msgid "Laboratory view"
+msgstr ""
+
+#: presentation/templates/partials/laboratories_menu.html:15
+msgid "Procedures"
+msgstr ""
+
+#: presentation/templates/partials/laboratories_menu.html:21
+msgid "Dissolution calculator (experimental)"
+msgstr ""
+
+#: presentation/templates/partials/laboratories_menu.html:28
+msgid "Edit laboratory"
+msgstr ""
+
+#: presentation/templates/partials/riskmanagement_menu.html:7
+msgid "Risk Management"
+msgstr ""
+
+#: presentation/templates/partials/riskmanagement_menu.html:13
+msgid "Risk zones"
+msgstr ""
+
+#: presentation/templates/partials/riskmanagement_menu.html:16
+msgid "Report View"
+msgstr ""
+
+#: presentation/templates/partials/riskmanagement_menu.html:17
+msgid "H code Reports"
+msgstr ""
+
+#: presentation/templates/partials/sga_menu.html:6
+msgid "SGA Management"
+msgstr ""
+
+#: presentation/templates/partials/sga_menu.html:13
+msgid "SGA Labeling"
+msgstr ""
+
+#: presentation/templates/partials/sga_menu.html:20
+msgid "SGA Editor"
+msgstr ""
+
+#: presentation/templates/partials/sga_menu.html:27
+msgid "MSDS: Security sheets"
+msgstr ""
+
+#: presentation/templates/tour/tourtemplate.html:8
+msgid "Prev"
+msgstr ""
+
+#: presentation/templates/tour/tourtemplate.html:9
+msgid "Next"
+msgstr ""
+
+#: presentation/templates/tour/tourtemplate.html:10
+msgid "Pause"
+msgstr ""
+
+#: presentation/templates/tour/tourtemplate.html:12
+msgid "End tour"
+msgstr ""
