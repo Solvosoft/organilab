@@ -15,7 +15,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
 from authentication.forms import CreateUserForm, PasswordChangeForm
 from laboratory.decorators import has_lab_assigned
-from laboratory.models import Profile
+from laboratory.models import Profile,ProfilePermission,Laboratory
 
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
@@ -58,6 +58,12 @@ class AddUser(CreateView):
             id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
         self.send_email(user)
         profile.laboratories.add(self.kwargs['pk'])
+        laboratory= Laboratory.objects.filter(pk=self.kwargs['pk']).first()
+        profile_permission = ProfilePermission.objects.create(profile=profile,laboratories=laboratory)
+        roles=form.cleaned_data['rol']
+        if roles is not None:
+            for rol in roles:
+                profile_permission.rol.add(rol)
         return response
 
 

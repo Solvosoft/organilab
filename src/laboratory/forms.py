@@ -3,10 +3,10 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile
+from .models import Laboratory, Object, Profile,Rol,ProfilePermission
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
-from ajax_select.fields import AutoCompleteSelectMultipleField
+from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
 from django.utils.translation import ugettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.forms.forms import GTForm
@@ -74,6 +74,16 @@ class SearchUserForm(CustomForm):
         self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
 
 
+class ProfilePermissionForm(GTForm):
+    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
+    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=genwidgets.SelectMultiple, label=_('Roles'))
+
+    def __init__(self, *args, **kwargs):
+        users_list = kwargs.pop('users_list')
+        super(ProfilePermissionForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
+
+
 class ReservationModalForm(GTForm, ModelForm):
 
     class Meta:
@@ -85,8 +95,7 @@ class ReservationModalForm(GTForm, ModelForm):
             'amount_required': genwidgets.NumberInput
         }
 
-
-class ProfileForm(forms.Form): 
+class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
     last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
