@@ -3,7 +3,7 @@
 <strong>{% trans 'Quantity' %}: </strong> 
 {{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}
 
-{% if perms.laboratory.view_shelfobject %}
+{% if perms.laboratory.change_shelfobject %}
 	<a class="btn btn-info" data-ajax=true 
 			href="{% url 'laboratory:shelfobject_searchupdate' laboratory object.pk %}">
 		{% trans 'Edit' %}

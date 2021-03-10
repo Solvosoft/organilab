@@ -1,0 +1,36 @@
+{% load i18n %}
+{% if perms.sga.view_label %}
+<li>
+    <a>
+        <i class="fa fa-tags"></i>
+        {% trans 'SGA Management' %}
+        <span class="fa fa-chevron-down">
+    </span>
+    </a>
+    <ul class="nav child_menu">
+        <li>
+            <a href="{% url 'sga:index_sga'%}">
+                {% trans 'SGA Labeling' %}
+            </a>
+        </li>
+
+        {% if perms.sga.change_templatesga %}
+         <li>
+            <a href="{% url 'sga:editor'%}">
+                {% trans 'SGA Editor' %}
+            </a>
+        </li>
+         {% endif %}
+        {% if perms.msds.view_msdsobject %}
+        <li>
+            <a href="{% url 'msds:index_msds'%}">
+                {% trans 'MSDS: Security sheets' %}
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+    <!-- /.nav-second-level -->
+</li>
+
+{% endif %}

@@ -1,0 +1,21 @@
+{% load i18n  %}
+
+{% if perms.risk_management.view_riskzone %}
+<li>
+<a>
+    <i class="fa fa-tasks fa-fw"></i>
+    {% trans 'Risk Management' %}
+    <span class="fa fa-chevron-down"></span>
+</a>
+<ul class="nav child_menu">
+    <li>
+        <a href="{% url 'riskmanagement:riskzone_list' %}">
+            {% trans 'Risk zones' %}</a>
+    </li>
+    <li><a id='reports' href="{% url 'laboratory:h_code_reports' %}"
+           title="{% trans 'Report View' %}">
+        {% trans 'H code Reports' %}</a>
+    </li>
+</ul>
+</li>
+{% endif %}
