@@ -1,6 +1,6 @@
 # encoding: utf-8
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.shortcuts import redirect
 from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm, ProfilePermissionForm
@@ -43,7 +43,7 @@ def access_management(request):
 def users_management(request, pk):
     if request.method == 'POST':
         users_list = Profile.objects.filter(laboratories__pk=pk).all()
-        form = ProfilePermissionForm(request.POST, users_list=users_list)
+        form = SearchUserForm(request.POST, users_list=users_list)
         if form.is_valid():
             user = User.objects.get(username=form.cleaned_data['user'])
             lab = Laboratory.objects.get(pk=pk)
@@ -52,16 +52,15 @@ def users_management(request, pk):
                 profile = Profile(user=user)
                 profile.save()
             user.profile.laboratories.add(lab)
-            profile_permission=ProfilePermission.objects.create(profile=user.profile,laboratories=lab)
-            if roles is not None:
-                for rol in roles:
-                    profile_permission.rol.add(rol)
+            get_group = form.cleaned_data['group']
+            group = Group.objects.get(pk=get_group.pk)
+            group.user_set.add(user)
         return redirect('laboratory:users_management', pk=pk)
     users_pk = User.objects.filter(profile__laboratories__pk=pk).values_list('pk', flat=True)
     context = {
         'users_list': Profile.objects.filter(laboratories__pk=pk).all(),
         'organization': Laboratory.objects.get(pk=pk),
-        'form': ProfilePermissionForm(users_list=users_pk)
+        'form': SearchUserForm(users_list=users_pk)
     }
     return render(request, 'laboratory/users_management.html', context=context)
 users_management.lab_pk_field = 'pk'

@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.core.mail import send_mail
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
@@ -58,12 +58,11 @@ class AddUser(CreateView):
             id_card=form.cleaned_data['id_card'], job_position=form.cleaned_data['job_position'] )
         self.send_email(user)
         profile.laboratories.add(self.kwargs['pk'])
-        laboratory= Laboratory.objects.filter(pk=self.kwargs['pk']).first()
-        profile_permission = ProfilePermission.objects.create(profile=profile,laboratories=laboratory)
-        roles=form.cleaned_data['rol']
-        if roles is not None:
-            for rol in roles:
-                profile_permission.rol.add(rol)
+
+        get_group = form.cleaned_data['group']
+        group = Group.objects.get(pk=get_group.pk)
+        group.user_set.add(user)
+
         return response
 
 

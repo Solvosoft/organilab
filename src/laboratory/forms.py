@@ -67,20 +67,12 @@ class OrganizationUserManagementForm(CustomForm):
 
 class SearchUserForm(CustomForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, widget=djgenwidgets.Select,
+                                   label=_('Groups'))
 
     def __init__(self, *args, **kwargs):
         users_list = kwargs.pop('users_list')
         super(SearchUserForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
-
-
-class ProfilePermissionForm(GTForm):
-    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=genwidgets.SelectMultiple, label=_('Roles'))
-
-    def __init__(self, *args, **kwargs):
-        users_list = kwargs.pop('users_list')
-        super(ProfilePermissionForm, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
 
 

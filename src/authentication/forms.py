@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.core.exceptions import ValidationError
-from laboratory.models import Rol
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase
 
 from djgentelella.forms.forms import CustomForm
@@ -24,8 +23,8 @@ class CreateUserForm(CustomForm, forms.ModelForm):
     phone_number = forms.CharField(max_length=25, label=_('Phone'), widget=djgenwidgets.PhoneNumberMaskInput)
     id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
     job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
-    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=djgenwidgets.SelectMultiple,
-                                         label=_('Roles'))
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, widget=djgenwidgets.Select,
+                                         label=_('Groups'))
 
     class Meta:
         model = User
