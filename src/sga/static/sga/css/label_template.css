@@ -16,7 +16,15 @@
 span.select2-container {
     z-index:10050;
 }
-
+.icons{
+    font-weight:bold;
+}
+.prudence_message{
+    cursor:pointer;
+}
+.danger_message{
+    cursor:pointer;
+}
 #messages{
     display:none;
 }

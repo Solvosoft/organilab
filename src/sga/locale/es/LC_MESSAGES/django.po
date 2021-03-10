@@ -702,6 +702,10 @@ msgstr "Información Adicional"
 msgid "Get as PDF"
 msgstr "Obtener como PDF"
 
+#: sga/templates/template_edit.html:27
+msgid "Edit your template"
+msgstr "Edita tu plantilla"
+
 #: sga/views.py:178 sga/views.py:236
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
