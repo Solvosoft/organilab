@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User,Group
 from django.shortcuts import redirect
 from django.shortcuts import render
-from laboratory.forms import OrganizationUserManagementForm, SearchUserForm, ProfilePermissionForm
+from laboratory.forms import OrganizationUserManagementForm, SearchUserForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
 from laboratory.decorators import has_lab_assigned
 from django.contrib import messages
@@ -47,7 +47,6 @@ def users_management(request, pk):
         if form.is_valid():
             user = User.objects.get(username=form.cleaned_data['user'])
             lab = Laboratory.objects.get(pk=pk)
-            roles= form.cleaned_data['rol']
             if not hasattr(user, 'profile'):
                 profile = Profile(user=user)
                 profile.save()

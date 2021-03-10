@@ -67,7 +67,7 @@ class OrganizationUserManagementForm(CustomForm):
 
 class SearchUserForm(CustomForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, widget=djgenwidgets.Select,
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, widget=genwidgets.Select,
                                    label=_('Groups'))
 
     def __init__(self, *args, **kwargs):
