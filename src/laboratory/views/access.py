@@ -1,6 +1,6 @@
 # encoding: utf-8
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.shortcuts import redirect
 from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm, ProfilePermissionForm
@@ -56,6 +56,10 @@ def users_management(request, pk):
             if roles is not None:
                 for rol in roles:
                     profile_permission.rol.add(rol)
+            group = Group.objects.get(name="General")
+            if group is not None:
+                group.user_set.add(user)
+
         return redirect('laboratory:users_management', pk=pk)
     users_pk = User.objects.filter(profile__laboratories__pk=pk).values_list('pk', flat=True)
     context = {
