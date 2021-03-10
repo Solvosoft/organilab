@@ -8,6 +8,8 @@
 
 {% block title %}{% trans 'Users Management' %}{% endblock %}
 {% block content %}
+<link href="{% static 'laboratory/css/users.css' %}" rel="stylesheet">
+
 <div class="row">
 <div class="col-md-offset-2 col-md-8">
         <div class="page-header col-xs-13" align="center">
@@ -29,22 +31,20 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content"  >
+                              <div class="row">
+                                  <div class="col-md-offset-2 col-md-8 text-center">
 
-                          <form action="" method="post" id="user">
+                          <form method="post" id="user">
                             {% csrf_token %}
 
-                              <div class="row">
-                                  <div class="col-md-8">
-                                    {{ form.as_horizontal }}
-                                  </div>
-                                  <div class="col-md-4">
-                                            <button type="submit" class="btn btn-success">{% trans 'Add' %}</button>
+                              {{ form.as_horizontal }}
 
-                                  </div>
-                              </div>
-
+                              <button type="submit" class="btn btn-success">{% trans 'Add' %}</button>
 
                         </form>
+                                  </div>
+
+                                  </div>
                         <div class="col-md-12" align="center">
                 <a class="btn btn-primary"  href="{% url 'laboratory:add_user' organization.pk %}" >
                     {% trans 'Add New User' %}
