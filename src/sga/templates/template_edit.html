@@ -1,0 +1,215 @@
+<!--
+@organization: Solvo
+@license: GNU General Public License v3.0
+@date: Created on 26 sept. 2018
+@author: Guillermo Castro Sánchez
+@email: guillermoestebancs@gmail.com
+-->
+
+{% extends 'label_index.html' %}
+{% load i18n %}
+{% load static bootstrap %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
+{% endblock css %}
+{% block js %}
+<script src="{% static 'sga/js/template.js' %}"> </script>
+<script src="{% static 'sga/js/fabric.min.js' %}"> </script>
+{% endblock %}
+
+
+{% block extrameta%}{% endblock extrameta %}
+
+{% block content %}
+
+    <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
+    <!-- Nav tabs -->
+<hr>
+<div id="messages" class="row text-center">
+  <div class="col-md-offset-1 col-md-10">
+      <div class="messages">
+
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <p>{% trans 'There can only be one Indication of Danger or Attention' %}</p>
+                </div>
+      </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+          <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+        {% trans 'General' %}</a></li>
+    <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
+        {% trans 'En vivo' %}</a></li>
+    <li role="presentation"><a href="#pictograms" aria-controls="pictograms" role="tab" data-toggle="tab">
+        {% trans 'Pictogram' %}</a></li>
+  </ul>
+  <div class="tab-content" style="padding: 15px 20px 10px;">
+    <div role="tabpanel" class="tab-pane active" id="home">
+        <form action="" method="post" id="update_form">
+            {% csrf_token %}
+
+        <div class="form-group">
+        <label>Plantilla</label>
+            <input type="text" name="name" value="{{sgatemplates.name}}">
+            <input type="hidden" name="id_template" value="{{sgatemplates.pk}}">
+            <input type="hidden" name="json_data" id="representation">
+        </div>
+        <div class="form-group">
+
+    <label>Cuadros de Textos</label>
+         <ul>
+             <li><a class="genericitem" id="Agregue Informacion"  title="{% trans 'Additional Information' %}" data-ftype="textbox" href="#">{% trans 'Additional Information' %}</a></li>
+         </ul>
+    </div>
+
+
+         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
+
+
+        <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
+        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#FFFFFF"  class="btn" >
+        <input type="color"  style="width: 25%;"  id="text-bg-color"  value="#FFFFFF" class="btn" >
+        <br>
+
+
+          <div class="form-group">
+            <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
+            <input type="number" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action form-control"
+                bind-value-to="fontSize">
+          </div>
+        <div class="form-group">
+        <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
+            <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
+              <option value="arial">Arial</option>
+              <option value="helvetica" selected>Helvetica</option>
+              <option value="myriad pro">Myriad Pro</option>
+              <option value="delicious">Delicious</option>
+              <option value="verdana">Verdana</option>
+              <option value="georgia">Georgia</option>
+              <option value="Courier">Courier</option>
+              <option value="comic sans ms">Comic Sans MS</option>
+              <option value="Impact">Impact</option>
+              <option value="monaco">Monaco</option>
+              <option value="optima">Optima</option>
+              <option value="hoefler text">Hoefler Text</option>
+              <option value="plaster">Plaster</option>
+              <option value="engagement">Engagement</option>
+            </select>
+          </div>
+
+        <div class="form-group">
+           <label for="textalign" style="display:inline-block">Text align:</label>
+            <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
+              <option value="left" selected>Left</option>
+              <option value="center">Center</option>
+              <option value="right" >Right</option>
+              <option value="Justify">Justify</option>
+              <option value="Justify-left">Justify-left</option>
+              <option value="Justify-right">Justify-right</option>
+              <option value="Justify-center"> Justify-center</option>
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-success">Save</button>
+            </form>
+    </div>
+       <div role="tabpanel" class="tab-pane" id="pictograms">
+        <div class="row">
+
+{% for pictogram in pictograms %}
+        <div class="col-md-4">
+             <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                      src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
+
+          </div>
+      {% endfor %}
+        </div>
+    </div>
+          <div role="tabpanel" class="tab-pane" id="live">
+        <label >{% trans 'Warning Words' %}</label>
+        <ul>
+        {% for word in warningwords %}
+            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
+        {% endfor %}
+        </ul>
+        {{formselects|bootstrap  }}
+
+
+           {% if barcode_file_url %}
+          <div class="row p-4">
+
+    <div class="col-md-12">
+        <label>Codigo de barra</label>
+        <br>
+        <a class="genericitem " id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
+    </div>
+    </div>
+{% endif%}
+{% if logo_file_url %}
+      <div class="row pt-4">
+
+    <div class="col-md-12">
+        <label>Logotipo</label>
+        <br>
+         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
+                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
+    </div>
+    </div>
+{%  endif %}
+
+              </div>
+  </div>
+    </div>
+        <div class="col-md-9">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <button data-order="{{forloop.counter0}}"  id="canvaspng_{{forloop.counter0}}"
+                   class="btn btn-default btn-sm canvaspng" onclick="get_as_pdf({{ sgatemplates.pk }})"> {% trans 'Get as PDF'%}</button>
+               <a  href="{% url 'sga:label_creator' 2 %}?instance={{sgatemplates.pk}}"> {{sgatemplates.name}} </a>
+
+          </div>
+      <div class="panel-body">
+           <div id="panel-buttons">
+            <button data-order="0" onclick="undoFunction(this)" type="button" class="btn btn-danger" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Undo</button>
+            <button data-order="0" onclick="redoFunction(this)" type="button" class="btn btn-success" style="margin-bottom: 5px;" data-pk="{{sgatemplates.pk}}">Redo</button>
+            <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
+             </div>
+          <div class="canvas-container-preview" onkeydown="">
+          <canvas tabindex="1"  class="templatepreview"   id="preview_{{sgatemplates.pk}}"
+                   data-href="{% url 'sga:show_personal' sgatemplates.pk %}"></canvas>
+              <lead style="padding:5px"><strong>Nota:</strong> Sistema globalmente Armonizado de clasificación y etiquetado de productos peligrosos (establecido en Costa Rica
+    mediante el decreto N°40148 – S-MINAE-MAG</lead>
+          </div>
+      </div>
+    </div>
+          </div>
+    </div>
+        <div class="wizard-footer">
+            <div class="clearfix"></div>
+            <div id="powered_by">
+                <a href="https://solvosoft.com/en/">
+                    <img width="16" height="16" src="https://solvosoft.com/static/img/Mascota_301x330.png"/>
+                </a>
+                {% trans 'Powered by' %}
+                <a href="http://fabricjs.com/">Fabric.js</a>
+            </div>
+        </div>
+        <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
+            {% csrf_token %}
+
+            <input type="hidden" value="" name="json_data" id="json_data">
+            <input type="hidden" value="{ sgatemplates.pk }" name="template_sga_pk" id="template_sga_pk">
+        </form>
+<form id="sgaform"  method="post" action="{% url 'sga:template' %}">
+                    {% csrf_token %}
+    <input type="hidden" name="pk">
+    </form>
+
+    {% endblock content %}
+

@@ -38,7 +38,8 @@
             <tr>
                 <td>{{template.name}}</td>
                 <td><a class="btn  btn-md  btn-info" href="{% url 'sga:get_pdf' template.pk %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                    <a class="btn  btn-md  btn-danger" onclick="delete_template(this)" data-id="{{template.pk}}" ><i class="fa fa-trash"></i></a></td>
+                    <a class="btn  btn-md  btn-danger" onclick="delete_template(this)" data-id="{{template.pk}}" ><i class="fa fa-trash"></i></a>
+                    <a class="btn  btn-md  btn-success" href="{% url 'sga:edit_personal' template.pk %}" ><i class="fa fa-trash"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>

@@ -188,6 +188,7 @@ $(document).ready(function () {
     $(".templatepreview").each(function(index, element){
         $.post(element.dataset.href,formdata,function(data, status){
             let json_object = {};
+            console.log(data)
             let newcanvas = new fabric.Canvas(element.id);
             newcanvas.renderAll();
 
@@ -196,6 +197,9 @@ $(document).ready(function () {
             canvas.canv_obj.renderAll();
               canvasActions(data,element);
           });
+    });
+    $('#update_form').submit((e)=>{
+        $('#representation').val(JSON.stringify(canvas.canv_obj));
     });
 });
 
@@ -212,7 +216,7 @@ function canvasActions(data,element){
        container.addEventListener('drop', handleDrop, false);
 
             json_object = data.object;
-
+            console.log(json_object)
             canvas.canv_obj.loadFromJSON(data.object, function() {
                 let view= $(".canvas-container-preview");
 
@@ -514,19 +518,9 @@ function redoFunction(ele){
 }
 
 
-function set_elements_atributes(){
-
-}
-function get_canvas(pk){
-        let id = canvas.canv_obj.lowerCanvasEl.id;
-        if (id === "preview_" + pk.toString())
-            return canvas.canv_obj;
-     }
-
 
 function get_as_pdf(pk){
-    const canvas = get_canvas(pk);
-    const json_data = JSON.stringify(canvas);
+    const json_data = JSON.stringify(canvas.canv_obj);
 
     $('#json_data').attr('value',json_data);
     $('#template_sga_pk').attr('value',pk)

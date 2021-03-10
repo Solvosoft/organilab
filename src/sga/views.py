@@ -5,7 +5,7 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from organilab import settings
 from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm,PersonalTemplatesForm
 from sga.models import TemplateSGA, RecipientSize, Substance, Donation,PersonalTemplateSGA
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
@@ -28,12 +28,8 @@ register = Library()
 
 @require_http_methods(["POST"])
 def render_pdf_view(request):
-    label_pk = request.POST.get("template_sga_pk", None)
-    instance = get_object_or_404(TemplateSGA, pk=label_pk)
-
     json_data = request.POST.get("json_data", None)
     global_info_recipient = request.session['global_info_recipient']
-    print(global_info_recipient)
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
     return response
@@ -174,7 +170,6 @@ def editor(request):
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
             finstance = sgaform.save()
-            print(finstance)
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
 
     context = {
@@ -434,6 +429,34 @@ def create_personal_template(request):
     else:
 
         return render(request, 'personal_template.html', context)
+
+def show_preview(request,pk):
+    templates = PersonalTemplateSGA.objects.get(pk=pk)
+    context = {"object": templates.json_representation}
+    return JsonResponse(context)
+
+@login_required
+def edit_personal_template(request,pk):
+    if request.method=='POST':
+
+        form=PersonalTemplatesForm(request.POST)
+
+        if form.is_valid():
+
+            template = PersonalTemplateSGA.objects.get(pk=pk)
+            template.name = form.cleaned_data['name']
+            template.json_representation = form.cleaned_data['json_data']
+            template.save()
+            return redirect(reverse('sga:add_personal'))
+
+    templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
+    context={
+        'pictograms': Pictogram.objects.all(),
+        'warningwords': WarningWord.objects.all(),
+        'formselects': SGAEditorForm,
+        "sgatemplates": templates,
+    }
+    return render(request, 'template_edit.html', context)
 
 
 def donate(request):
