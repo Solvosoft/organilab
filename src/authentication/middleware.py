@@ -5,6 +5,15 @@ from laboratory.models import ProfilePermission
 from django.shortcuts import redirect
 from django.urls import reverse
 
+"""
+view_shelf
+view_shelfobjects
+view_shelfobject
+view_laboratoryroom
+view_laboratory
+view_furniture
+
+"""
 
 class ProfileMiddleware:
     def __init__(self, get_response):
