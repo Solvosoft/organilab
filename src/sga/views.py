@@ -22,6 +22,8 @@ from django.core.files.storage import FileSystemStorage
 from xhtml2pdf import pisa
 from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
+from django.core.files.storage import default_storage
+import os
 
 register = Library()
 
@@ -524,3 +526,19 @@ def delete_personal(request):
     templates=PersonalTemplateSGA.objects.filter(user=user)
     templates = serializers.serialize("json",templates)
     return JsonResponse(templates, safe=False)
+
+def saveImages(img):
+    fs_image = FileSystemStorage()
+    image_filename = fs_image.save(img.name, img)
+    path = fs_image.url(image_filename)
+    return path
+
+def get_files(request):
+    data = []
+    if request.is_ajax():
+        if 'logo' in request.FILES:
+            data.append(saveImages(request.FILES['logo']))
+        if 'barcode' in request.FILES:
+            data.append(saveImages(request.FILES['barcode']))
+
+        return JsonResponse({'logo': data})

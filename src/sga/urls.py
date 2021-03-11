@@ -51,4 +51,6 @@ urlpatterns = [
 
     url(r'getData', views.delete_personal, name='getData'),
     url(r'get_pdf/(?P<pk>\d+)$', views.render_user_pdf, name='get_pdf'),
+    url(r'get_images', views.get_files, name='get_images'),
+
 ]

@@ -610,3 +610,37 @@ function create_container(message,classname){
     $(this).parent().remove();
 
 });
+
+$('.form_image').submit((e)=>{
+    e.preventDefault();
+    let form= new FormData(e.target);
+    document.querySelector('#logo').value='';
+    document.querySelector('#barcode').value='';
+
+   $.ajax({
+      url : 'sga/get_images' ,
+      method : 'POST' ,
+      data : form,
+      processData: false,
+      contentType: false,
+      headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (img) {
+            console.log(img)
+            img.logo.forEach(item=>{
+            addImage(item);
+            });
+
+   }
+});
+})
+function addImage(data){
+    fabric.Image.fromURL(data, function (img) {
+             img.scaleToWidth(100);
+             img.scaleToHeight(100);
+             img.set("top", 0);
+             img.set("left", 0);
+             img.set("centeredScaling", true);
+             canvas.canv_obj.add(img);
+         });
+
+}

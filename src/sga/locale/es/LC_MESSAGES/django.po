@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: sga/templates/information.html:48 sga/templates/label_information.html:35
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-09 23:26-0600\n"
-"PO-Revision-Date: 2021-02-26 10:47-0600\n"
+"PO-Revision-Date: 2021-03-10 15:47-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -444,10 +443,8 @@ msgid "Substance Name"
 msgstr "Nombre de la sustancia"
 
 #: sga/templates/editor.html:174
-#, fuzzy
-#| msgid "Name"
 msgid "UIPA Name"
-msgstr "Nombre"
+msgstr "Nombre UIPA"
 
 #: sga/templates/editor.html:177 sga/templates/label_editor.html:145
 msgid "Cas number"
@@ -706,7 +703,15 @@ msgstr "Obtener como PDF"
 msgid "Edit your template"
 msgstr "Edita tu plantilla"
 
-#: sga/views.py:178 sga/views.py:236
+#: sga/templates/personal_template.html:40
+msgid "Generate PDF"
+msgstr "Generar PDF"
+
+#: sga/templates/personal_template.html:42
+msgid "Edit"
+msgstr "Editar"
+
+#: sga/templates/personal_template.html:42 sga/views.py:178 sga/views.py:236
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 

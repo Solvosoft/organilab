@@ -1,9 +1,9 @@
 <!--
 @organization: Solvo
 @license: GNU General Public License v3.0
-@date: Created on 26 sept. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
+@date: Created on 10 mar. 2020
+@author: Kendrick Jenkins Bond
+@email: kenjen041@gmail.com
 -->
 
 {% extends 'label_index.html' %}
@@ -23,10 +23,18 @@
 {% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
-
+     <div class="wizard-header">
     <h5 class="info-text">{% trans 'Edit your template' %}</h5>
-    <!-- Nav tabs -->
+
+            <div class="col-sm-12" style="text-align:right">
+                    <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
+                    <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
+                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to custom templates' %}</a>
+                    <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:information' %}" >{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
+        </div>
 <hr>
+<br>
 <div id="messages" class="row text-center">
   <div class="col-md-offset-1 col-md-10">
       <div class="messages">
@@ -138,31 +146,19 @@
         {% endfor %}
         </ul>
         {{formselects|bootstrap  }}
-
-
-           {% if barcode_file_url %}
-          <div class="row p-4">
-
-    <div class="col-md-12">
-        <label>Codigo de barra</label>
-        <br>
-        <a class="genericitem " id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
-    </div>
-    </div>
-{% endif%}
-{% if logo_file_url %}
-      <div class="row pt-4">
-
-    <div class="col-md-12">
-        <label>Logotipo</label>
-        <br>
-         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
-    </div>
-    </div>
-{%  endif %}
-
+         <br>
+              <form class="form_image">
+               <div class="form-group">
+                   <label>Logo</label>
+                   <input type="file" name="logo" id="logo" class="logo form-control">
+              </div>
+               <div class="form-group">
+                   <label>Codigo de barras</label>
+                   <input type="file" name="barcode"  id="barcode" class="logo form-control">
+              </div>
+                  <br>
+                <button type="submit" class="btn btn-success">Cargar</button>
+              </form>
               </div>
   </div>
     </div>

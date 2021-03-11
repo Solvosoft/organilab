@@ -19,6 +19,9 @@ span.select2-container {
 .icons{
     font-weight:bold;
 }
+.wizard-header{
+    padding-bottom:20px;
+}
 .prudence_message{
     cursor:pointer;
 }
