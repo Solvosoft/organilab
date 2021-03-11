@@ -711,6 +711,10 @@ msgstr "Generar PDF"
 msgid "Edit"
 msgstr "Editar"
 
+#: sga/templates/template_edit.html:160
+msgid "Load"
+msgstr "Cargar"
+
 #: sga/templates/personal_template.html:42 sga/views.py:178 sga/views.py:236
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
