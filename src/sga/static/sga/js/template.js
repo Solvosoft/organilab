@@ -197,6 +197,9 @@ $(document).ready(function () {
               canvasActions(data,element);
           });
     });
+    $('#update_form').submit((e)=>{
+        $('#representation').val(JSON.stringify(canvas.canv_obj));
+    });
 });
 
 function canvasActions(data,element){
@@ -212,7 +215,6 @@ function canvasActions(data,element){
        container.addEventListener('drop', handleDrop, false);
 
             json_object = data.object;
-
             canvas.canv_obj.loadFromJSON(data.object, function() {
                 let view= $(".canvas-container-preview");
 
@@ -514,19 +516,9 @@ function redoFunction(ele){
 }
 
 
-function set_elements_atributes(){
-
-}
-function get_canvas(pk){
-        let id = canvas.canv_obj.lowerCanvasEl.id;
-        if (id === "preview_" + pk.toString())
-            return canvas.canv_obj;
-     }
-
 
 function get_as_pdf(pk){
-    const canvas = get_canvas(pk);
-    const json_data = JSON.stringify(canvas);
+    const json_data = JSON.stringify(canvas.canv_obj);
 
     $('#json_data').attr('value',json_data);
     $('#template_sga_pk').attr('value',pk)
@@ -559,3 +551,96 @@ $('#personal').submit((e)=>{
     $('#json_representation').attr('value',JSON.stringify(canvas.canv_obj));
     $('#sizes').attr('value',$('#id_recipients').val());
 })
+
+$('#id_prudence_advice').change(function(){
+
+    let pk=$(this).find('option:selected').val();
+    $.ajax({
+        url: 'sga/prudence/',
+        type:'POST',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (message) {
+        if($('.prudence_message').length==0){
+        $("#id_prudence_advice").parent().append(create_container(message,'prudence_message'));
+        }else{
+        $('.prudence_message').find('p').text(message);
+        }
+      }
+        });
+        });
+
+$('#id_danger_indication').change(function(){
+    let pk=$(this).find('option:selected').val();
+    $.ajax({
+        url: 'sga/get_danger_indication/',
+        type:'POST',
+        data: {pk},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (message) {
+        if($('.danger_message').length==0){
+        $("#id_danger_indication").parent().append(create_container(message,'danger_message'));
+        }else{
+        $('.danger_message').find('p').text(message);
+        }
+      }
+        });
+        });
+function create_container(message,classname){
+    let div= document.createElement('div')
+    div.innerHTML=`<span class="delete_message">x</span>`;
+    div.classList.add(classname);
+    div.append(create_message(message));
+
+    return div;
+ }
+ function create_message(message){
+    let textbox= document.createElement('p');
+    textbox.classList.add('selects');
+    textbox.textContent=message;
+    textbox.setAttribute('draggable', 'True');
+    textbox.setAttribute('data-ftype',"textbox")
+    textbox.setAttribute('title',message);
+    textbox.addEventListener('dragstart', handleDragStart, false);
+    textbox.addEventListener('dragend', handleDragEnd, false);
+ return textbox;
+ }
+
+ $(document).on('click','.delete_message',function(){
+    $(this).parent().remove();
+
+});
+
+$('.form_image').submit((e)=>{
+    e.preventDefault();
+    let form= new FormData(e.target);
+    document.querySelector('#logo').value='';
+    document.querySelector('#barcode').value='';
+
+   $.ajax({
+      url : 'sga/get_images' ,
+      method : 'POST' ,
+      data : form,
+      processData: false,
+      contentType: false,
+      headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (img) {
+            console.log(img)
+            img.logo.forEach(item=>{
+            addImage(item);
+            });
+
+   }
+});
+})
+function addImage(data){
+    fabric.Image.fromURL(data, function (img) {
+             img.scaleToWidth(100);
+             img.scaleToHeight(100);
+             img.set("top", 0);
+             img.set("left", 0);
+             img.set("centeredScaling", true);
+             canvas.canv_obj.add(img);
+         });
+
+}
