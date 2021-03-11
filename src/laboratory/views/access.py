@@ -45,6 +45,7 @@ def users_management(request, pk):
     if request.method == 'POST':
         users_list = Profile.objects.filter(laboratories__pk=pk).all()
         form = ProfilePermissionForm(request.POST, users_list=users_list)
+        print(form.errors)
         if form.is_valid():
             user = User.objects.get(username=form.cleaned_data['user'])
             lab = Laboratory.objects.get(pk=pk)
@@ -57,7 +58,9 @@ def users_management(request, pk):
             if roles is not None:
                 for rol in roles:
                     profile_permission.rol.add(rol)
+
             group, created = Group.objects.get_or_create(name="General")
+            print(group)
             group.user_set.add(user)
 
         return redirect('laboratory:users_management', pk=pk)

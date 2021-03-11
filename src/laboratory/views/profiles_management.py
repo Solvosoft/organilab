@@ -19,7 +19,7 @@ class ProfilesListView(ListView):
         context['laboratory'] = self.kwargs['lab_pk']
         return context
 
-@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
 @method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
 class ProfileUpdateView(FormView, LoginRequiredMixin):
     template_name = 'laboratory/profile_form.html'

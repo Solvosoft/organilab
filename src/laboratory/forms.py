@@ -76,7 +76,8 @@ class SearchUserForm(CustomForm):
 
 class ProfilePermissionForm(GTForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=genwidgets.SelectMultiple, label=_('Roles'))
+    rol = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Rol.objects.all(), required=False,
+                                         label=_("Roles"))
 
     def __init__(self, *args, **kwargs):
         users_list = kwargs.pop('users_list')
