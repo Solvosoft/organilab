@@ -44,7 +44,7 @@
               <li class="dropdown-submenu">
                 <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' %}" >{% trans 'Reactive' %}</a></li>
+                  <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' laboratory %}" >{% trans 'Reactive' %}</a></li>
                   <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
                   <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
                 </ul>
