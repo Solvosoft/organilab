@@ -46,6 +46,11 @@ urlpatterns = [
     url(r'getList', views.getTemplates, name='getList'),
 
     url(r'add_personal', views.create_personal_template, name='add_personal'),
+    url(r'edit_personal/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
+    url(r'show_personal/(?P<pk>\d+)$', views.show_preview, name='show_personal'),
+
     url(r'getData', views.delete_personal, name='getData'),
     url(r'get_pdf/(?P<pk>\d+)$', views.render_user_pdf, name='get_pdf'),
+    url(r'get_images', views.get_files, name='get_images'),
+
 ]
