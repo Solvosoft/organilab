@@ -165,7 +165,7 @@ organization_urls = [
 
 lab_profiles_urls = [
     url(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
-    url(r"list/(?P<pk>\d+)?$", ProfileUpdateView.as_view(), name="update_lab_profile"),
+    url(r"list/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
 ] 
 
 '''MULTILAB'''
