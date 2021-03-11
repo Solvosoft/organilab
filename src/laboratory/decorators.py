@@ -52,6 +52,7 @@ view_user_group_perms = user_group_perms
 def has_lab_assigned(lab_pk='lab_pk'):
     def decorator(view_func):
         def wrap(request, *args, **kwargs):
+
             lab_in = request.user.profile.laboratories.filter(pk=kwargs[lab_pk] ).first()
             if lab_in:
                 return view_func(request, *args, **kwargs)
