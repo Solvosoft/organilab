@@ -5,8 +5,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from laboratory.models import Profile
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect,render
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_profile'), name='dispatch')
