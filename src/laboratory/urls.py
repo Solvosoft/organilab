@@ -150,7 +150,7 @@ sustance_urls = [
     url('sustance/edit/(?P<pk>\d+)?/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
     url('sustance/add/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_add'),
     url('sustance/delete/(?P<pk>\d+)/(?P<lab_pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
-    url('sustance/(?P<lab_pk>\d+)?$', sustance_list, name='sustance_list'),
+    url('sustance/(?P<lab_pk>\d+)$', sustance_list, name='sustance_list'),
     url('sustance/json/(?P<lab_pk>\d+)?$', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
