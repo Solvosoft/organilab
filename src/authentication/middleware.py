@@ -40,7 +40,6 @@ class ProfileMiddleware:
         elif 'lab_pk' in request.POST and request.POST['lab_pk'] is not None:
             profile_in = ProfilePermission.objects.filter(profile=request.user.profile,
                                                       laboratories_id=request.POST.get('lab_pk')).first()
-
         elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
             view_func.view_class.lab_pk_field in view_kwargs  and  view_kwargs[view_func.view_class.lab_pk_field] is not None:
             profile_in = ProfilePermission.objects.filter(profile=request.user.profile,
