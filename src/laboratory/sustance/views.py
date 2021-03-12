@@ -62,7 +62,6 @@ def sustance_list(request,lab_pk):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
     if request.method == 'POST':
         lab_pk = request.POST.get('lab_pk')
-        print(lab_pk)
     return render(request, 'laboratory/sustance/list.html', {
         'object_url': '#',
         'laboratory': lab_pk
@@ -75,12 +74,12 @@ class SubstanceDelete(DeleteView):
     success_url = reverse_lazy('laboratory:sustance_list')
     template_name = 'laboratory/sustance/substance_deleteview.html'
 
-
 @method_decorator(permission_required('laboratory.view_object'), name='dispatch')
 class SustanceListJson(BaseDatatableView):
     model = Object
     columns = ['id','name','cas_code','action']
     max_display_length = 500
+    lab_pk_field ='pk'
 
     def filter_queryset(self, qs):
         qs = qs.filter(type=Object.REACTIVE)
@@ -118,11 +117,11 @@ class SustanceListJson(BaseDatatableView):
             is_public = '<i class="{0}"  title="{1} {2}" aria-hidden="true"></i>'.format(
                 warning_is_public, _('Is public?'), _("Yes") if item.is_public else _("No"))
             name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
-                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['lab_pk']}),
+                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['pk']}),
                 item.synonym or item.name, item.name)
             delete = """<a href="{0}" title="{1}" class="pull-right"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
-                                kwargs={'pk': item.id}), _('Delete sustance'))
+                                kwargs={'pk': item.id, 'lab_pk':self.kwargs['pk']}), _('Delete sustance'))
             if hasattr(item, 'sustancecharacteristics') and item.sustancecharacteristics and \
                     item.sustancecharacteristics.security_sheet:
                 download = """<a href="{0}" title="{1}"><i class="fa fa-download" ></i></a>""" \
