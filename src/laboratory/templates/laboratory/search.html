@@ -9,7 +9,7 @@
   <div class="panel panel-default">
 	<div class="panel-heading" role="tab" id="heading{{object.pk}}">
 	  <h4 class="panel-title">
-	      
+
 	<div class="row">
 		<div class="col-md-1">
 		
@@ -24,7 +24,8 @@
 				
 				  <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
 				  <div class="col-md-3"><p class="text-info">{{object.shelf.furniture.name}}
-				  -- {{object.shelf.name}}	
+				  -- {{object.shelf.name}}
+
 				  </p></div>
 				  <div class="col-md-4">{{object.object.name}} </div>
 				</div>
@@ -43,7 +44,7 @@
 				 {% if perms.reservation_management.add_reserved_product %}
 				 <a data-toggle="modal"
 					data-target="#modal_reservation"
-					style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})"
+					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
 					class="btn btn-danger"> {% trans "Reserve object" %}</a>
 				 {% endif %}
 		 	</div>
