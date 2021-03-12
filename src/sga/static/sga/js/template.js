@@ -626,7 +626,7 @@ $('.form_image').submit((e)=>{
       headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function (img) {
             console.log(img)
-            img.logo.forEach(item=>{
+            img.data.forEach(item=>{
             addImage(item);
             });
 

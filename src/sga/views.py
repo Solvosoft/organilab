@@ -518,13 +518,15 @@ def getTemplates(request):
     data=json.dumps(aux)
     return JsonResponse(data,safe=False)
 
+@login_required
 def delete_personal(request):
-    pk = request.GET.get('pk', '')
-    user = request.user
-    obj = PersonalTemplateSGA.objects.get(pk=pk)
-    obj.delete()
-    templates=PersonalTemplateSGA.objects.filter(user=user)
-    templates = serializers.serialize("json",templates)
+    templates = PersonalTemplateSGA.objects.filter(user=user)
+    if request.is_ajax():
+        pk = request.GET.get('pk', '')
+        obj = PersonalTemplateSGA.objects.get(pk=pk)
+        obj.delete()
+
+    templates = serializers.serialize("json", templates)
     return JsonResponse(templates, safe=False)
 
 def saveImages(img):
@@ -541,4 +543,4 @@ def get_files(request):
         if 'barcode' in request.FILES:
             data.append(saveImages(request.FILES['barcode']))
 
-        return JsonResponse({'logo': data})
+        return JsonResponse({'data': data})
