@@ -71,8 +71,12 @@ def sustance_list(request,lab_pk):
 @method_decorator(permission_required('laboratory.delete_object'), name='dispatch')
 class SubstanceDelete(DeleteView):
     model = Object
-    success_url = reverse_lazy('laboratory:sustance_list')
     template_name = 'laboratory/sustance/substance_deleteview.html'
+
+    def get_success_url(self, **kwargs):
+        lab_pk = self.kwargs['lab_pk']
+        success_url = reverse_lazy('laboratory:sustance_list', kwargs={'lab_pk':lab_pk})
+        return success_url
 
 @method_decorator(permission_required('laboratory.view_object'), name='dispatch')
 class SustanceListJson(BaseDatatableView):
