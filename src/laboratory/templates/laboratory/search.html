@@ -41,7 +41,7 @@
 
 		 <div class="row">add the object unit into reservation modal
 			 <div class="col-md-4">
-				 {% if perms.reservation_management.add_reserved_product %}
+				 {% if perms.reservations_management.add_reservedproducts %}
 				 <a data-toggle="modal"
 					data-target="#modal_reservation"
 					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
@@ -86,6 +86,7 @@
 {{block.super}}
 <script>
     document.api_modal = '{% url "laboratory:api_reservation_create"%}';
+    document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 </script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
