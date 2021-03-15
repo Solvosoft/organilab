@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 
 
-@method_decorator(permission_required('reservations.add_reservation'), name='dispatch')
+@method_decorator(permission_required('reservations_management.add_reservations'), name='dispatch')
 class MyReservationView(ListView):
     model = ReservedProducts
     template_name = "laboratory/my_reservations_list.html"
