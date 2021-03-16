@@ -28,7 +28,8 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = dict()
-        profile = Profile.objects.get(pk=self.kwargs['profile_pk'])
+        profile = Profile.objects.filter(pk=self.kwargs['profile_pk']).first()
+
         context['profile_form'] = ProfileForm(initial=
             {
                 'first_name': profile.user.first_name,
