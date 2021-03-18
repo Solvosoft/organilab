@@ -406,8 +406,8 @@ class Laboratory(models.Model):
     location = models.CharField(_('Location'), default='', max_length=255)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
-    email= models.EmailField(blank=True)
-    coordinator=models.CharField(default='', max_length=255, blank=True)
+    email= models.EmailField(_('Email'),blank=True)
+    coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
     organization = TreeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 

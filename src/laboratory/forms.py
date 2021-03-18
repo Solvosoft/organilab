@@ -54,6 +54,7 @@ class LaboratoryCreate(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
+
 class LaboratoryEdit(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
