@@ -522,4 +522,10 @@ class BlockedListNotification(models.Model):
         verbose_name_plural = _('Bloked List Notifications')
     
     def __str__(self):
-        return f"{self.object}: {self.laboratory}: {self.user}" 
+        return f"{self.object}: {self.laboratory}: {self.user}"
+
+class Provider(models.Model):
+    name= models.CharField(max_length=255, blank=True, default='')
+    phone_number=models.CharField(max_length=25, blank=True, default='')
+    email= models.EmailField(blank=True)
+    legal_identity=models.CharField(max_length=50,blank=True,default='')
