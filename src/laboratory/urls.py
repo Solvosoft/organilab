@@ -15,7 +15,7 @@ from laboratory.sustance.views import create_edit_sustance, sustance_list, Susta
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views.access import access_management, users_management, delete_user
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
@@ -171,6 +171,7 @@ lab_profiles_urls = [
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
+    url(r'^lab/(?P<pk>\d+)/edit', LaboratoryEdit.as_view(), name="laboratory_edit"),
     url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),

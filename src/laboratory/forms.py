@@ -54,6 +54,18 @@ class LaboratoryCreate(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
+class LaboratoryEdit(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(LaboratoryEdit, self).__init__(*args, **kwargs)
+        self.fields['organization'].queryset = \
+            OrganizationStructure.os_manager.filter_user(user)
+
+    class Meta:
+        model = Laboratory
+        fields = ['name', 'coordinator', 'phone_number', 'email', 'location',
+                  'geolocation', 'organization']
 
 
 class H_CodeForm(forms.Form):

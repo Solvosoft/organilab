@@ -34,6 +34,10 @@ from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElem
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
+from django.template.loader import render_to_string
+
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
 
 
 #Convert html URI to absolute
@@ -363,6 +367,7 @@ def make_book_objects(objects, summary=False, type_id=None):
                 get_cas(object, ''),
                 object.is_precursor,
                 str(get_imdg(object, ''))]
+            print(object.is_precursor)
 
         content['objects'].append(obj_info)
         if not summary:
@@ -431,6 +436,7 @@ def report_objects(request, *args, **kwargs):
     pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+
     return response
 
 
