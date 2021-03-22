@@ -340,6 +340,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     description = [
         _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
     ]
+
     if type_id == '0':
         description += [
             _("Molecular formula"),
@@ -349,6 +350,58 @@ def make_book_objects(objects, summary=False, type_id=None):
         ]
     content = {
         'objects': [
+            description,
+    ]
+    }
+    objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
+                               measurement_unit=Min('shelfobject__measurement_unit'))
+    for object in objects:
+        obj_info = [
+            object.code,
+            object.name,
+            object.get_type_display(),
+            object.quantity_total,
+            ShelfObject.get_units(object.measurement_unit)]
+        if type_id == '0':
+            obj_info += [
+                get_molecular_formula(object),
+                get_cas(object, ''),
+                object.is_precursor,
+                str(get_imdg(object, ''))]
+
+        content['objects'].append(obj_info)
+        if not summary:
+            for shelfobj in object.shelfobject_set.all():
+                content['objects'].append(['', shelfobj.shelf.furniture.name,
+                                           shelfobj.shelf.name,
+                                           shelfobj.quantity,
+                                           shelfobj.get_measurement_unit_display()
+                                           ])
+    return content
+
+def make_book_precursors(objects, lab,summary=False, type_id=None):
+
+    description = [
+        _("NOMBRE DE LA SUSTANCIA O PRODUCTO"), _("UNID."), _("SALDO FINAL DEL REPORTE ANTERIOR"), _("INGRESOS DURANTE EL MES "),
+        _('Proveedor que suplió el producto adquirido'), _("TOTAL DE EXISTENCIA"),_("DESPACHO O GASTO DURANTE ESTE MES "),
+        _("SALDO AL FINAL DEL MES REPORTADO EN ESTE INFORME"),_("RAZÓN DEL DESPACHO O GASTO")
+    ]
+    laboratory=Laboratory.objects.get(pk=lab)
+    first_line = [
+        _("Coordinator"), laboratory.coordinator, _('Unidad'), '',
+    ]
+    second_line = [
+        _("Laboratorio o centro de trabajo"), laboratory.name, _('Mes'), '',
+    ]
+    third_line = [
+        _("e-mail"), laboratory.email, _('Teléfono'), laboratory.phone_number,
+    ]
+    content = {
+        'objects': [
+            first_line,
+            second_line,
+            third_line,
+            [],
             description,
         ]
     }
@@ -367,7 +420,6 @@ def make_book_objects(objects, summary=False, type_id=None):
                 get_cas(object, ''),
                 object.is_precursor,
                 str(get_imdg(object, ''))]
-            print(object.is_precursor)
 
         content['objects'].append(obj_info)
         if not summary:
@@ -465,7 +517,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
+            make_book_precursors(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
         'verbose_name': "Reactive precursor objects",

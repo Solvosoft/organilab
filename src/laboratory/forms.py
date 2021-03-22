@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission
+from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
@@ -65,7 +65,7 @@ class LaboratoryEdit(forms.ModelForm):
 
     class Meta:
         model = Laboratory
-        fields = ['name', 'coordinator', 'phone_number', 'email', 'location',
+        fields = ['name', 'coordinator', 'unit','phone_number', 'email', 'location',
                   'geolocation', 'organization']
 
 
@@ -108,6 +108,19 @@ class ReservationModalForm(GTForm, ModelForm):
             'final_date': genwidgets.DateTimeInput,
             'amount_required': genwidgets.NumberInput
         }
+
+class TransferObjectForm(GTForm,forms.Form):
+    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'))
+    date = forms.DateField(widget=genwidgets.DateInput, label=_('Date'))
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
+                                       label=_("Laboratory"))
+class AddObjectForm(forms.Form):
+    amount= forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'))
+    date=forms.DateField(widget=genwidgets.DateInput, label=_('Date'))
+    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill number"))
+    provider= forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
+                                       label=_("Provider"))
+
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))

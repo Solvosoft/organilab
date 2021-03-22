@@ -69,3 +69,20 @@ function add_reservation() {
             }
         });
 }
+
+function select_action(reserved_state, tranfer_state, add_state){
+    $('#reserved').css('display',reserved_state);
+    $('#tranfer').css('display',tranfer_state);
+    $('#add').css('display',add_state);
+}
+
+function choose_action(){
+   let option=$('#option').find('option:selected').val()
+    select_action('block','none','none');
+   if(option==2){
+    select_action('none','block','none');
+   }
+   if(option==3){
+    select_action('none','none','block');
+   }
+ }

@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from djgentelella.widgets.selects import AutocompleteSelect
 from ..logsustances import log_object_change
 from django.views.generic.edit import FormView
-from laboratory.forms import ReservationModalForm
+from laboratory.forms import ReservationModalForm,AddObjectForm
 from laboratory.decorators import has_lab_assigned
 
 

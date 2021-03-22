@@ -41,6 +41,16 @@
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
+                        <label>Type Action</label>
+                        <select id="option" data-widget="Select" onchange="choose_action()">
+                            {% for option in options %}
+                            <option value="{{forloop.counter}}">{{option}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div id="reserved">
+                    <div class="form-group">
                         <label>Amount Required</label>
                         <div class="input-group">
                         {{modal_form_reservation.amount_required}}
@@ -54,6 +64,14 @@
                       <div class="form-group">
                         <label>Final Date</label>
                         {{modal_form_reservation.final_date}}
+
+                    </div>
+                   </div>
+                    <div  id="add" style="display:none;" class="form-group">
+                        {{add_object.as_p}}
+                    </div>
+                    <div id="tranfer" style="display:none;" class="form-group">
+                        {{tranfer_form.as_p}}
                     </div>
                 </form>
             </div>

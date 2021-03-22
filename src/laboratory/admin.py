@@ -48,6 +48,7 @@ admin.site.register(models.Catalog)
 admin.site.register(models.BlockedListNotification)
 admin.site.register(models.Rol, RolAdmin)
 admin.site.register(models.ProfilePermission)
+admin.site.register(models.Provider)
 
 
 admin.site.register(models.OrganizationStructure,
