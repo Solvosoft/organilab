@@ -2634,6 +2634,5 @@ msgstr "Hay errores en la definición de la solución, intente de nuevo"
 #~ msgid "FURNITURE INFORMATION"
 #~ msgstr "INFORMACIÓN DE MUEBLE"
 
-#: laboratory/templates/laboratory/edit.html:19
-msgid "Coordinator"
-msgstr "Coordinador"
+#~ msgid "Coordinator"
+#~ msgstr "Coordinador"

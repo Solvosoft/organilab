@@ -408,6 +408,7 @@ class Laboratory(models.Model):
         default='9.895804362670006,-84.1552734375', zoom=15)
     email= models.EmailField(_('Email'),blank=True)
     coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
+    unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
@@ -497,6 +498,14 @@ class ProfilePermission(models.Model):
     def __str__(self):
         return '%s' % (self.profile,)
 
+class Provider(models.Model):
+    name= models.CharField(max_length=255, blank=True, default='')
+    phone_number=models.CharField(max_length=25, blank=True, default='')
+    email= models.EmailField(blank=True)
+    legal_identity=models.CharField(max_length=50,blank=True,default='')
+
+    def __str__(self):
+        return self.name
 
 class ObjectLogChange(models.Model):
     object = models.ForeignKey(Object, db_constraint=False, on_delete=models.DO_NOTHING)
@@ -524,8 +533,3 @@ class BlockedListNotification(models.Model):
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 
-class Provider(models.Model):
-    name= models.CharField(max_length=255, blank=True, default='')
-    phone_number=models.CharField(max_length=25, blank=True, default='')
-    email= models.EmailField(blank=True)
-    legal_identity=models.CharField(max_length=50,blank=True,default='')
