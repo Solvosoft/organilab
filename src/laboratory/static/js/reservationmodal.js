@@ -67,6 +67,7 @@ function add_reservation() {
                     success: function(data) {}
                 });
                 $("#modal_reservation").modal('hide');
+                clear_inputs();
             } else {
                 if ($('#alert_message').css('display') != 'block')
                 {
@@ -74,8 +75,13 @@ function add_reservation() {
                 }
             }
         });
+    }
+function clear_inputs(){
+    input_fields = $('#content').find(':input');
+    for (const input of input_fields) {
+        input.value='';
+    }
 }
-
 function select_action(reserved_state, tranfer_state, add_state){
     $('#reserved').css('display',reserved_state);
     $('#tranfer').css('display',tranfer_state);
