@@ -139,7 +139,6 @@ class ShelfObject(models.Model):
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
@@ -321,7 +320,7 @@ class Furniture(models.Model):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def __str__(self):
-        return '%s' % (self.name,)
+        return '%s' % (self.name)
 
 
 class OrganizationStructureManager(models.Manager):
@@ -518,7 +517,9 @@ class ObjectLogChange(models.Model):
     precursor = models.BooleanField(default=False)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-
+    subject = models.CharField(max_length=100, blank=True, null=True)
+    provider= models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
+    bill = models.CharField(max_length=100, blank=True, null=True)
 
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(

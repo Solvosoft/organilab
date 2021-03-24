@@ -23,6 +23,7 @@
   color: black;
 }
 </style>
+<input type="hidden" id="edit_url" value="{% url 'laboratory:add_object' pk=laboratory %}">
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -42,13 +43,13 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label>Type Action</label>
-                        <select id="option" data-widget="Select" onchange="choose_action()">
+                        <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
                             {% for option in options %}
                             <option value="{{forloop.counter}}">{{option}}</option>
                             {% endfor %}
                         </select>
                     </div>
-
+                    <div id="content">
                     <div id="reserved">
                     <div class="form-group">
                         <label>Amount Required</label>
@@ -73,6 +74,7 @@
                     <div id="tranfer" style="display:none;" class="form-group">
                         {{tranfer_form.as_p}}
                     </div>
+</div>
                 </form>
             </div>
             <div class="modal-footer">
