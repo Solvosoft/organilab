@@ -5,6 +5,7 @@
 {% include 'laboratory/reservation_modal.html' %}
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
 {% for object in object_list%}
   <div class="panel panel-default">
 	<div class="panel-heading" role="tab" id="heading{{object.pk}}">
@@ -44,7 +45,7 @@
 				 {% if perms.reservations_management.add_reservedproducts %}
 				 <a data-toggle="modal"
 					data-target="#modal_reservation"
-					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
+					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
 					class="btn btn-danger"> {% trans "Reserve object" %}</a>
 				 {% endif %}
 		 	</div>

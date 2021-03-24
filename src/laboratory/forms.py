@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider
+from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
@@ -109,11 +109,10 @@ class ReservationModalForm(GTForm, ModelForm):
             'amount_required': genwidgets.NumberInput
         }
 
-class TransferObjectForm(GTForm,forms.Form):
-    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'))
-    date = forms.DateField(widget=genwidgets.DateInput, label=_('Date'))
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
-                                       label=_("Laboratory"))
+class TransferObjectForm(GTForm):
+    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all().order_by('name'),
+                                       label=_("Laboratory"), required=True)
 class AddObjectForm(forms.Form):
     amount= forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'))
     date=forms.DateField(widget=genwidgets.DateInput, label=_('Date'))
