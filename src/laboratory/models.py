@@ -3,7 +3,7 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q,Count
 from django.utils.translation import ugettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
@@ -521,6 +521,10 @@ class ObjectLogChange(models.Model):
     provider= models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
     bill = models.CharField(max_length=100, blank=True, null=True)
 
+    def get_object_count(self):
+        x=ObjectLogChange.objects.filter(object=self.object, update_time__month=self.update_time.strftime("%m"),laboratory=self.laboratory).first()
+        y=ObjectLogChange.objects.filter(object=self.object, update_time__month=self.update_time.strftime("%m"),laboratory=self.laboratory).last()
+        return y.new_value-x.new_value
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
