@@ -379,59 +379,6 @@ def make_book_objects(objects, summary=False, type_id=None):
                                            ])
     return content
 
-def make_book_precursors(objects, lab,summary=False, type_id=None):
-
-    description = [
-        _("NOMBRE DE LA SUSTANCIA O PRODUCTO"), _("UNID."), _("SALDO FINAL DEL REPORTE ANTERIOR"), _("INGRESOS DURANTE EL MES "),
-        _('Proveedor que suplió el producto adquirido'), _("TOTAL DE EXISTENCIA"),_("DESPACHO O GASTO DURANTE ESTE MES "),
-        _("SALDO AL FINAL DEL MES REPORTADO EN ESTE INFORME"),_("RAZÓN DEL DESPACHO O GASTO")
-    ]
-    laboratory=Laboratory.objects.get(pk=lab)
-    first_line = [
-        _("Coordinator"), laboratory.coordinator, _('Unidad'), '',
-    ]
-    second_line = [
-        _("Laboratorio o centro de trabajo"), laboratory.name, _('Mes'), '',
-    ]
-    third_line = [
-        _("e-mail"), laboratory.email, _('Teléfono'), laboratory.phone_number,
-    ]
-    content = {
-        'objects': [
-            first_line,
-            second_line,
-            third_line,
-            [],
-            description,
-        ]
-    }
-    objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
-                               measurement_unit=Min('shelfobject__measurement_unit'))
-    for object in objects:
-        obj_info = [
-            object.code,
-            object.name,
-            object.get_type_display(),
-            object.quantity_total,
-            ShelfObject.get_units(object.measurement_unit)]
-        if type_id == '0':
-            obj_info += [
-                get_molecular_formula(object),
-                get_cas(object, ''),
-                object.is_precursor,
-                str(get_imdg(object, ''))]
-
-        content['objects'].append(obj_info)
-        if not summary:
-            for shelfobj in object.shelfobject_set.all():
-                content['objects'].append(['', shelfobj.shelf.furniture.name,
-                                           shelfobj.shelf.name,
-                                           shelfobj.quantity,
-                                           shelfobj.get_measurement_unit_display()
-                                           ])
-    return content
-
-
 @has_lab_assigned()
 @permission_required('laboratory.do_report')
 def report_objects(request, *args, **kwargs):
@@ -517,7 +464,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_precursors(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
+            make_book_objects(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
         'verbose_name': "Reactive precursor objects",
@@ -721,6 +668,9 @@ class ReactivePrecursorObjectList(ListView):
 
 
 class FilterForm(GTForm, forms.Form):
+    consult = forms.ChoiceField(choices=(
+        ('1', _('Period')),
+        ('2', _('Month'))), required=False)
     period = forms.CharField(widget=DateRangeInput, required=False)
     precursor = forms.BooleanField(widget=YesNoInput,  required=False)
     all_laboratories = forms.BooleanField(widget=YesNoInput, required=False)
@@ -758,9 +708,14 @@ class LogObjectView(ReportListView):
         dates = text.split('-')
         if len(dates) != 2:
             return queryset
-        dates[0] = self.format_date(dates[0].strip())
-        dates[1] = self.format_date(dates[1].strip())
-        return queryset.filter(update_time__range=dates)
+        if self.request.GET.get('consult')=='1':
+            dates[0] = self.format_date(dates[0].strip())
+            dates[1] = self.format_date(dates[1].strip())
+            return queryset.filter(update_time__range=dates)
+        else:
+            month= int(dates[0].split('/')[1])
+            year= int(dates[0].split('/')[2])
+            return queryset.filter(update_time__month=month,update_time__year=year)
 
     def resume_queryset(self, queryset):
         objects = set(queryset.values_list('object', flat=True))
@@ -819,7 +774,6 @@ class LogObjectView(ReportListView):
                  ]]
 
         for obj in context['object_list']:
-
             book.append([obj.user.get_full_name(),
                          str(obj.laboratory),
                          str(obj.object),
@@ -828,6 +782,47 @@ class LogObjectView(ReportListView):
                          obj.new_value,
                          obj.diff_value,
                          str(obj.measurement_unit)
+                         ])
+        if self.request.GET.get('precursor'):
+            return self.get_precursor(context)
+        return book
+
+    def get_precursor(self, context):
+        laboratory = Laboratory.objects.get(pk=self.lab)
+        first_line = [
+            _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), '',
+        ]
+        second_line = [
+            _("Laboratorio o centro de trabajo"), laboratory.name, _('Mes'), '',
+        ]
+        third_line = [
+            _("E-mail"), laboratory.email, _('Teléfono'), laboratory.phone_number,
+        ]
+        book = [first_line, second_line, third_line, [str(_('Nombre de la sustancia o producto')),
+                                                      str(_('Unid')),
+                                                      str(_('Saldo final de reporte anterior')),
+                                                      str(_('Ingresos durante el mes')),
+                                                      str(_('Numero de factura')),
+                                                      str(_('Proveedor')),
+                                                      str(_('Total de existencias')),
+                                                      str(_('Gasto durante el mes')),
+                                                      str(_('Saldo al final del mes reportado en este informe')),
+                                                      str(_('Razon de gasto o despacho')),
+                                                      str(_('Asunto')),
+                                                      ]]
+
+        for obj in context['object_list']:
+            book.append([str(obj.object.name),
+                         str(obj.measurement_unit),
+                         obj.new_value,
+                         2,
+                         obj.bill,
+                         2,
+                         obj.provider,
+                         0,
+                         0,
+                         0,
+                         obj.subject,
                          ])
         return book
 
