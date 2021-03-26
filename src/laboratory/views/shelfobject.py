@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from djgentelella.widgets.selects import AutocompleteSelect
 from ..logsustances import log_object_change,log_object_add_change
 from django.views.generic.edit import FormView
-from laboratory.forms import ReservationModalForm
+from laboratory.forms import ReservationModalForm,AddObjectForm,TransferObjectForm,SubtractObjectForm
 from laboratory.decorators import has_lab_assigned
 from django.http import JsonResponse
 
@@ -117,7 +117,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity,"Create", create=True)
+        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity,1,"Create", create=True)
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
         return {
@@ -150,7 +150,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
 
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,"Edit", create=False)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,3,"Edit", create=False)
 
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
@@ -168,7 +168,6 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
-        print(kwargs)
         return kwargs
 
 
@@ -197,7 +196,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         self.fvalid = True
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         response = UpdateView.form_valid(self, form)
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,"Update", create=False)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,3,"Update", create=False)
         return response
 
     def post(self, request, *args, **kwargs):
@@ -257,17 +256,42 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 
 @permission_required('laboratory.change_shelfobject')
 def add_object(request,pk):
-    if int(request.POST.get('options')) == 2:
-        print('op')
-        object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
-        old = object.quantity
-        new = old+int(request.POST.get('amount'))
-        object.quantity = new
-        object.save()
-        log_object_add_change(request.user, pk, object, old, new,"Add", request.POST.get('provider'),request.POST.get('bill'), create=False)
-        return JsonResponse({'msg': True})
+    """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
+    action=int(request.POST.get('options'))
+    form=AddObjectForm(request.POST)
+    if action == 2:
+        if form.is_valid():
+            object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
+            old = object.quantity
+            new = old+int(request.POST.get('amount'))
+            object.quantity = new
+            object.save()
+            log_object_add_change(request.user, pk, object, old, new,"Add", request.POST.get('provider'),request.POST.get('bill'), create=False)
+            return JsonResponse({'msg': True})
+        else:
+            return JsonResponse({'msg': False})
+    elif action == 4:
+        return subtract_object(request, pk)
     else:
         return transfer_object(request,pk)
+    return JsonResponse({'msg': True})
+
+@permission_required('laboratory.change_shelfobject')
+def subtract_object(request,pk):
+    object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
+    old = object.quantity
+    form = SubtractObjectForm(request.POST)
+    if form.is_valid():
+        amount = float(form.cleaned_data['discount'])
+        if old >= amount:
+            new = old-amount
+            object.quantity = new
+            object.save()
+            log_object_change(request.user, pk, object, old, new,3,"Substract", create=False)
+        else:
+            return JsonResponse({'msg': False})
+    else:
+        return JsonResponse({'msg': False})
     return JsonResponse({'msg': True})
 
 @permission_required('laboratory.change_shelfobject')
@@ -276,9 +300,10 @@ def transfer_object(request,pk):
                                                  object_id=request.POST.get('object')).first()
     object_send = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
     amount = int(request.POST.get('amount_send'))
+
     if object_received is not None:
-        if object_send.quantity >= amount:
-            print('io')
+        form=TransferObjectForm(request.POST)
+        if object_send.quantity >= amount and form.is_valid():
             old_received = object_received.quantity
             new_received = old_received + amount
             object_received.quantity = new_received
@@ -289,8 +314,8 @@ def transfer_object(request,pk):
             object_send.quantity = new_send
             object_send.save()
 
-            log_object_change(request.user, pk, object_send, old_send, new_send, "Tranfer", create=False)
-            log_object_change(request.user, pk, object_received, old_received, new_received, "Add", create=False)
+            log_object_change(request.user, pk, object_send, old_send, new_send, 2,"Tranfer", create=False)
+            log_object_change(request.user, pk, object_received, old_received, new_received,1, "Add", create=False)
         else:
             return JsonResponse({'msg': False})
     else:

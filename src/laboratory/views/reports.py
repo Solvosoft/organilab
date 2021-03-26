@@ -15,7 +15,7 @@ from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -34,11 +34,6 @@ from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElem
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
-from django.template.loader import render_to_string
-
-from weasyprint import HTML
-from weasyprint.fonts import FontConfiguration
-
 
 #Convert html URI to absolute
 def link_callback(uri, rel):
@@ -668,9 +663,6 @@ class ReactivePrecursorObjectList(ListView):
 
 
 class FilterForm(GTForm, forms.Form):
-    consult = forms.ChoiceField(choices=(
-        ('1', _('Period')),
-        ('2', _('Month'))), required=False)
     period = forms.CharField(widget=DateRangeInput, required=False)
     precursor = forms.BooleanField(widget=YesNoInput,  required=False)
     all_laboratories = forms.BooleanField(widget=YesNoInput, required=False)
@@ -708,14 +700,9 @@ class LogObjectView(ReportListView):
         dates = text.split('-')
         if len(dates) != 2:
             return queryset
-        if self.request.GET.get('consult')=='1':
-            dates[0] = self.format_date(dates[0].strip())
-            dates[1] = self.format_date(dates[1].strip())
-            return queryset.filter(update_time__range=dates)
-        else:
-            month= int(dates[0].split('/')[1])
-            year= int(dates[0].split('/')[2])
-            return queryset.filter(update_time__month=month,update_time__year=year)
+        dates[0] = self.format_date(dates[0].strip())
+        dates[1] = self.format_date(dates[1].strip())
+        return queryset.filter(update_time__range=dates)
 
     def resume_queryset(self, queryset):
         objects = set(queryset.values_list('object', flat=True))
@@ -793,12 +780,12 @@ class LogObjectView(ReportListView):
             _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), '',
         ]
         second_line = [
-            _("Laboratorio o centro de trabajo"), laboratory.name, _('Mes'), '',
+            _("Laboratorio o centro de trabajo"), laboratory.name, _('Month'), '',
         ]
         third_line = [
-            _("E-mail"), laboratory.email, _('Teléfono'), laboratory.phone_number,
+            _("Email"), laboratory.email, _('Phone'), laboratory.phone_number,
         ]
-        book = [first_line, second_line, third_line, [str(_('Nombre de la sustancia o producto')),
+        book = [first_line, second_line, third_line,[], [str(_('Nombre de la sustancia o producto')),
                                                       str(_('Unid')),
                                                       str(_('Saldo final de reporte anterior')),
                                                       str(_('Ingresos durante el mes')),
@@ -811,17 +798,18 @@ class LogObjectView(ReportListView):
                                                       str(_('Asunto')),
                                                       ]]
 
+
         for obj in context['object_list']:
             book.append([str(obj.object.name),
                          str(obj.measurement_unit),
                          obj.new_value,
-                         2,
+                         obj.get_object_count()['total'],
                          obj.bill,
-                         2,
-                         obj.provider,
-                         0,
-                         0,
-                         0,
+                         obj.provider.name if obj.provider is not None else '',
+                         '',
+                         '',
+                         '',
+                         '',
                          obj.subject,
                          ])
         return book

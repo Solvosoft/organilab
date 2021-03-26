@@ -828,6 +828,18 @@ msgstr "Agregar estante"
 msgid "Close"
 msgstr "Cerrar"
 
+#: laboratory/templates/laboratory/reservation_modal.html:48
+#~ msgid "Tranfer"
+#~ msgstr "Tranferir"
+
+#: laboratory/templates/laboratory/reservation_modal.html:48
+#~ msgid "Subtract"
+#~ msgstr "Substraer"
+
+#: laboratory/templates/laboratory/reservation_modal.html:48
+#~ msgid "Reservation"
+#~ msgstr "Reservacion"
+
 #: laboratory/templates/laboratory/block_object_notification.html:3
 msgid "Block object notifications"
 msgstr ""
@@ -2636,3 +2648,4 @@ msgstr "Hay errores en la definición de la solución, intente de nuevo"
 
 #~ msgid "Coordinator"
 #~ msgstr "Coordinador"
+

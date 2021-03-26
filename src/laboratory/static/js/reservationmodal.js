@@ -57,6 +57,7 @@ function add_reservation() {
         "user": data.user,
         "status": 3
     }
+    if($('#option').find('option:selected').val()==1){
     $.get(document.date_validation_script_url, input,
         function({ is_valid }) {
             if (is_valid) {
@@ -69,36 +70,57 @@ function add_reservation() {
                 $("#modal_reservation").modal('hide');
                 clear_inputs();
             } else {
-                if ($('#alert_message').css('display') != 'block')
-                {
-                    $('#alert_message').css('display', 'block');
-                }
+                    error_message('#alert_message')
             }
         });
+        }else{
+                $.ajax({
+                    url: document.api_modal,
+                    type: 'POST',
+                    data: data,
+                    success: function({msg}) {
+                      if(msg){
+                         $("#modal_reservation").modal('hide');
+                            clear_inputs();
+                        }else{
+                        error_message('#alert_message_objects')
+                        }
+                    }
+                });
+
+        }
     }
+function error_message(id){
+  if ($(`${id}`).css('display') != 'block')
+      $(`${id}`).css('display', 'block');
+ }
+
 function clear_inputs(){
     input_fields = $('#content').find(':input');
     for (const input of input_fields) {
         input.value='';
     }
 }
-function select_action(reserved_state, tranfer_state, add_state){
+function select_action(reserved_state, tranfer_state, add_state, subtract_state){
     $('#reserved').css('display',reserved_state);
     $('#tranfer').css('display',tranfer_state);
     $('#add').css('display',add_state);
+    $('#subtract').css('display',subtract_state);
 }
 
 function choose_action(){
    let option=$('#option').find('option:selected').val();
-    select_action('block','none','none');
+    select_action('block','none','none','none');
     document.api_modal=reservation_url;
    if(option==3){
-    select_action('none','block','none');
+    select_action('none','block','none','none');
+    document.api_modal=$('#edit_url').val();
+ }else if(option==2){
+    select_action('none','none','block','none');
      document.api_modal=$('#edit_url').val();
-  }else if(option==2){
-    select_action('none','none','block');
-     document.api_modal=$('#edit_url').val();
-  }
+  }else if(option==4){
+  select_action('none','none','none','block');
+     document.api_modal=$('#edit_url').val();  }
  }
 $( document ).ready(()=>{
 
