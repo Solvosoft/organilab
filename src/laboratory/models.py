@@ -3,7 +3,7 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q,Count
+from django.db.models import Q,Sum
 from django.utils.translation import ugettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
@@ -499,9 +499,9 @@ class ProfilePermission(models.Model):
 
 class Provider(models.Model):
     name= models.CharField(max_length=255, blank=True, default='')
-    phone_number=models.CharField(max_length=25, blank=True, default='')
+    phone_number= models.CharField(max_length=25, blank=True, default='')
     email= models.EmailField(blank=True)
-    legal_identity=models.CharField(max_length=50,blank=True,default='')
+    legal_identity= models.CharField(max_length=50,blank=True,default='')
 
     def __str__(self):
         return self.name
@@ -518,13 +518,17 @@ class ObjectLogChange(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     subject = models.CharField(max_length=100, blank=True, null=True)
-    provider= models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
+    provider= models.ForeignKey(Provider, blank=True,on_delete=models.DO_NOTHING, null=True, default='')
     bill = models.CharField(max_length=100, blank=True, null=True)
+    type_action=models.IntegerField(default=0)
 
     def get_object_count(self):
-        x=ObjectLogChange.objects.filter(object=self.object, update_time__month=self.update_time.strftime("%m"),laboratory=self.laboratory).first()
-        y=ObjectLogChange.objects.filter(object=self.object, update_time__month=self.update_time.strftime("%m"),laboratory=self.laboratory).last()
-        return y.new_value-x.new_value
+        x=ObjectLogChange.objects.values('object', 'laboratory')\
+            .filter(laboratory=self.laboratory,object=self.object).annotate(total=Sum('diff_value'),)
+
+        return x[0]
+    def __str__(self):
+        return self.object.name
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))

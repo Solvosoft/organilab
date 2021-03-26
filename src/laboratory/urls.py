@@ -140,7 +140,7 @@ solutions_urls = [
         name='solution_detail')
 ]
 
-x=[
+add_objects=[
     url(r"^add/(?P<pk>\d+)$", shelfobject.add_object,
         name="add_object"),
 
@@ -192,4 +192,4 @@ urlpatterns += sustance_urls + organization_urls + [
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
-] +reports_all_lab+x
+] +reports_all_lab+add_objects

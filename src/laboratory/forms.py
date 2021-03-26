@@ -111,15 +111,16 @@ class ReservationModalForm(GTForm, ModelForm):
 
 class TransferObjectForm(GTForm):
     amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all().order_by('name'),
-                                       label=_("Laboratory"), required=True)
-class AddObjectForm(forms.Form):
-    amount= forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'))
-    date=forms.DateField(widget=genwidgets.DateInput, label=_('Date'))
-    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill number"))
-    provider= forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
-                                       label=_("Provider"))
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
 
+class AddObjectForm(forms.Form):
+    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'), required=True)
+    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
+    provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
+                                       label=_("Provider"),required=False)
+
+class SubtractObjectForm(GTForm):
+    discount = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))

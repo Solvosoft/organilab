@@ -39,13 +39,17 @@
                     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                     <strong id="error_message">The initial date is already been added for this object</strong>
                 </div>
+                <div class="alert" id="alert_message_objects" style="display: none;">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    <strong id="error_message_object">{% trans 'Complete the fields' %}</strong>
+                </div>
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label>Type Action</label>
+                        <label>{% trans 'Action'%}</label>
                         <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
                             {% for option in options %}
-                            <option value="{{forloop.counter}}">{{option}}</option>
+                            <option value="{{forloop.counter}}">{% trans option %}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -69,10 +73,13 @@
                     </div>
                    </div>
                     <div  id="add" style="display:none;" class="form-group">
-                        {{add_object.as_p}}
+                        {{add_object_form.as_p}}
                     </div>
                     <div id="tranfer" style="display:none;" class="form-group">
-                        {{tranfer_form.as_p}}
+                        {{tranfer_object_form.as_p}}
+                    </div>
+                    <div id="subtract" style="display:none;" class="form-group">
+                        {{subtract_object_form.as_p}}
                     </div>
                 </div>
                 </form>
