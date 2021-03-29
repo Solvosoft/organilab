@@ -23,6 +23,7 @@
   color: black;
 }
 </style>
+<input type="hidden" id="edit_url" value="{% url 'laboratory:add_object' pk=laboratory %}">
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -38,9 +39,49 @@
                     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                     <strong id="error_message">The initial date is already been added for this object</strong>
                 </div>
+                <div class="alert" id="alert_message_objects" style="display: none;">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    <strong id="error_message_object">{% trans 'Complete the fields' %}</strong>
+                </div>
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
-                    {{ modal_form_reservation.as_p }}
+                    <div class="form-group">
+                        <label>{% trans 'Action'%}</label>
+                        <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
+                            {% for option in options %}
+                            <option value="{{forloop.counter}}">{% trans option %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="content">
+                    <div id="reserved">
+                    <div class="form-group">
+                        <label>Amount Required</label>
+                        <div class="input-group">
+                        {{modal_form_reservation.amount_required}}
+                            <span class="input-group-addon" id="unit">L</span>
+                    </div>
+                    </div>
+                             <div class="form-group">
+                        <label>Initial Date</label>
+                        {{modal_form_reservation.initial_date}}
+                    </div>
+                      <div class="form-group">
+                        <label>Final Date</label>
+                        {{modal_form_reservation.final_date}}
+
+                    </div>
+                   </div>
+                    <div  id="add" style="display:none;" class="form-group">
+                        {{add_object_form.as_p}}
+                    </div>
+                    <div id="tranfer" style="display:none;" class="form-group">
+                        {{tranfer_object_form.as_p}}
+                    </div>
+                    <div id="subtract" style="display:none;" class="form-group">
+                        {{subtract_object_form.as_p}}
+                    </div>
+                </div>
                 </form>
             </div>
             <div class="modal-footer">

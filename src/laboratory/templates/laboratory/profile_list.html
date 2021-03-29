@@ -9,7 +9,7 @@
 {% block content %}
   	<div class="page-header"><h1>{% trans ' Laboratory Profiles' %}</h1></div>
 		<br><br>
-		{% if perms.laboratory.view_object  %}
+		{% if perms.laboratory.view_profile  %}
 			<table id="profilestable" class="table">
 				<thead>
 					<tr>
@@ -28,7 +28,7 @@
 							<td class="text-center">{{ obj.id_card }}</td>
 							<td class="text-center">{{ obj.job_position }}  </td>
 							<td class="text-center"> <a class="btn btn-md btn-success"
-									href="{% url 'laboratory:update_lab_profile' pk=obj.pk %}?lab_pk={{obj.pk}}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+									href="{% url 'laboratory:update_lab_profile' pk=lab_pk profile_pk=obj.pk %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
 							</td>
 						</tr>
 					{% empty %}

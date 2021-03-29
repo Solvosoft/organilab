@@ -4,7 +4,7 @@
 {% block content %}
 	<div class="row">
 		<h1 align="center">{% trans 'Profile Management' %}</h1>
-		{% if perms.laboratory.manage_laboratory  %}
+		{% if perms.laboratory.change_profile  %}
 			<form method="POST">
 				{% csrf_token %}
 				{{ profile_form | bootstrap  }}
