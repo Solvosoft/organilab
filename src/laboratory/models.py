@@ -3,7 +3,7 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q,Sum
 from django.utils.translation import ugettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
@@ -139,7 +139,6 @@ class ShelfObject(models.Model):
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
@@ -321,7 +320,7 @@ class Furniture(models.Model):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def __str__(self):
-        return '%s' % (self.name,)
+        return '%s' % (self.name)
 
 
 class OrganizationStructureManager(models.Manager):
@@ -406,7 +405,9 @@ class Laboratory(models.Model):
     location = models.CharField(_('Location'), default='', max_length=255)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
-
+    email= models.EmailField(_('Email'),blank=True)
+    coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
+    unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
@@ -496,6 +497,14 @@ class ProfilePermission(models.Model):
     def __str__(self):
         return '%s' % (self.profile,)
 
+class Provider(models.Model):
+    name= models.CharField(max_length=255, blank=True, default='')
+    phone_number= models.CharField(max_length=25, blank=True, default='')
+    email= models.EmailField(blank=True)
+    legal_identity= models.CharField(max_length=50,blank=True,default='')
+
+    def __str__(self):
+        return self.name
 
 class ObjectLogChange(models.Model):
     object = models.ForeignKey(Object, db_constraint=False, on_delete=models.DO_NOTHING)
@@ -508,8 +517,18 @@ class ObjectLogChange(models.Model):
     precursor = models.BooleanField(default=False)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    subject = models.CharField(max_length=100, blank=True, null=True)
+    provider= models.ForeignKey(Provider, blank=True,on_delete=models.DO_NOTHING, null=True, default='')
+    bill = models.CharField(max_length=100, blank=True, null=True)
+    type_action=models.IntegerField(default=0)
 
+    def get_object_count(self):
+        x=ObjectLogChange.objects.values('object', 'laboratory')\
+            .filter(laboratory=self.laboratory,object=self.object).annotate(total=Sum('diff_value'),)
 
+        return x[0]
+    def __str__(self):
+        return self.object.name
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
@@ -521,4 +540,5 @@ class BlockedListNotification(models.Model):
         verbose_name_plural = _('Bloked List Notifications')
     
     def __str__(self):
-        return f"{self.object}: {self.laboratory}: {self.user}" 
+        return f"{self.object}: {self.laboratory}: {self.user}"
+

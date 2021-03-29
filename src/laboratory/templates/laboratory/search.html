@@ -5,11 +5,12 @@
 {% include 'laboratory/reservation_modal.html' %}
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
 {% for object in object_list%}
   <div class="panel panel-default">
 	<div class="panel-heading" role="tab" id="heading{{object.pk}}">
 	  <h4 class="panel-title">
-	      
+
 	<div class="row">
 		<div class="col-md-1">
 		
@@ -24,7 +25,8 @@
 				
 				  <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
 				  <div class="col-md-3"><p class="text-info">{{object.shelf.furniture.name}}
-				  -- {{object.shelf.name}}	
+				  -- {{object.shelf.name}}
+
 				  </p></div>
 				  <div class="col-md-4">{{object.object.name}} </div>
 				</div>
@@ -40,10 +42,10 @@
 
 		 <div class="row">
 			 <div class="col-md-4">
-				 {% if perms.reservation_management.add_reserved_product %}
+				 {% if perms.reservations_management.add_reservedproducts %}
 				 <a data-toggle="modal"
 					data-target="#modal_reservation"
-					style="margin-right: 10px;" onclick="initialize_modal({{object.pk}},{{request.user.id}})"
+					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
 					class="btn btn-danger"> {% trans "Reserve object" %}</a>
 				 {% endif %}
 		 	</div>
@@ -85,6 +87,7 @@
 {{block.super}}
 <script>
     document.api_modal = '{% url "laboratory:api_reservation_create"%}';
+    document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 </script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>

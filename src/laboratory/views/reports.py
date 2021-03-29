@@ -15,7 +15,7 @@ from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -34,7 +34,6 @@ from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElem
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
-
 
 #Convert html URI to absolute
 def link_callback(uri, rel):
@@ -336,6 +335,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     description = [
         _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
     ]
+
     if type_id == '0':
         description += [
             _("Molecular formula"),
@@ -346,7 +346,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     content = {
         'objects': [
             description,
-        ]
+    ]
     }
     objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
                                measurement_unit=Min('shelfobject__measurement_unit'))
@@ -373,7 +373,6 @@ def make_book_objects(objects, summary=False, type_id=None):
                                            shelfobj.get_measurement_unit_display()
                                            ])
     return content
-
 
 @has_lab_assigned()
 @permission_required('laboratory.do_report')
@@ -431,6 +430,7 @@ def report_objects(request, *args, **kwargs):
     pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+
     return response
 
 
@@ -459,7 +459,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
+            make_book_objects(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
         'verbose_name': "Reactive precursor objects",
@@ -761,7 +761,6 @@ class LogObjectView(ReportListView):
                  ]]
 
         for obj in context['object_list']:
-
             book.append([obj.user.get_full_name(),
                          str(obj.laboratory),
                          str(obj.object),
@@ -770,6 +769,48 @@ class LogObjectView(ReportListView):
                          obj.new_value,
                          obj.diff_value,
                          str(obj.measurement_unit)
+                         ])
+        if self.request.GET.get('precursor'):
+            return self.get_precursor(context)
+        return book
+
+    def get_precursor(self, context):
+        laboratory = Laboratory.objects.get(pk=self.lab)
+        first_line = [
+            _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), '',
+        ]
+        second_line = [
+            _("Laboratorio o centro de trabajo"), laboratory.name, _('Month'), '',
+        ]
+        third_line = [
+            _("Email"), laboratory.email, _('Phone'), laboratory.phone_number,
+        ]
+        book = [first_line, second_line, third_line,[], [str(_('Nombre de la sustancia o producto')),
+                                                      str(_('Unid')),
+                                                      str(_('Saldo final de reporte anterior')),
+                                                      str(_('Ingresos durante el mes')),
+                                                      str(_('Numero de factura')),
+                                                      str(_('Proveedor')),
+                                                      str(_('Total de existencias')),
+                                                      str(_('Gasto durante el mes')),
+                                                      str(_('Saldo al final del mes reportado en este informe')),
+                                                      str(_('Razon de gasto o despacho')),
+                                                      str(_('Asunto')),
+                                                      ]]
+
+
+        for obj in context['object_list']:
+            book.append([str(obj.object.name),
+                         str(obj.measurement_unit),
+                         obj.new_value,
+                         obj.get_object_count()['total'],
+                         obj.bill,
+                         obj.provider.name if obj.provider is not None else '',
+                         '',
+                         '',
+                         '',
+                         '',
+                         obj.subject,
                          ])
         return book
 

@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.utils.translation import ugettext_lazy as _
 from django.core import serializers
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,permission_required
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm,PersonalTemplatesForm
@@ -22,8 +22,7 @@ from django.core.files.storage import FileSystemStorage
 from xhtml2pdf import pisa
 from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
-from django.core.files.storage import default_storage
-import os
+from django.utils.decorators import method_decorator
 
 register = Library()
 
@@ -31,6 +30,7 @@ register = Library()
 @require_http_methods(["POST"])
 def render_pdf_view(request):
     json_data = request.POST.get("json_data", None)
+
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
@@ -412,6 +412,7 @@ def index_organilab(request):
     return render(request, 'index_organilab.html', {'form': form})
 
 @login_required
+@permission_required('sga.add_personaltemplatesga')
 def create_personal_template(request):
     user = request.user
     templates = PersonalTemplateSGA.objects.filter(user=user)
@@ -437,10 +438,10 @@ def show_preview(request,pk):
     context = {"object": templates.json_representation}
     return JsonResponse(context)
 
-@login_required
+
+@permission_required('sga.change_personaltemplatesga')
 def edit_personal_template(request,pk):
     if request.method=='POST':
-
         form=PersonalTemplatesForm(request.POST)
 
         if form.is_valid():
@@ -518,13 +519,16 @@ def getTemplates(request):
     data=json.dumps(aux)
     return JsonResponse(data,safe=False)
 
+@login_required
+@permission_required('sga.delete_personaltemplatesga')
 def delete_personal(request):
-    pk = request.GET.get('pk', '')
-    user = request.user
-    obj = PersonalTemplateSGA.objects.get(pk=pk)
-    obj.delete()
-    templates=PersonalTemplateSGA.objects.filter(user=user)
-    templates = serializers.serialize("json",templates)
+    templates = PersonalTemplateSGA.objects.filter(user=request.user)
+    if request.is_ajax():
+        pk = request.GET.get('pk', '')
+        obj = PersonalTemplateSGA.objects.get(pk=pk)
+        obj.delete()
+
+    templates = serializers.serialize("json", templates)
     return JsonResponse(templates, safe=False)
 
 def saveImages(img):
@@ -541,4 +545,4 @@ def get_files(request):
         if 'barcode' in request.FILES:
             data.append(saveImages(request.FILES['barcode']))
 
-        return JsonResponse({'logo': data})
+        return JsonResponse({'data': data})

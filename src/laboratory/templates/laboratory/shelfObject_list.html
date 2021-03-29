@@ -32,7 +32,7 @@
         <a class="pull-right"
            data-toggle="modal"
            data-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="initialize_modal({{shelfobject.pk}}, {{request.user.id}})">
+           style="margin-right: 10px;" onclick="initialize_reservation_modal({{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
             <span aria-hidden="true" class="glyphicon glyphicon-book" title="{% trans 'Reserve' %}"></span>
         </a>
         {% endif %}

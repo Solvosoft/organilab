@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission
+from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
@@ -55,6 +55,19 @@ class LaboratoryCreate(forms.ModelForm):
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
 
+class LaboratoryEdit(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(LaboratoryEdit, self).__init__(*args, **kwargs)
+        self.fields['organization'].queryset = \
+            OrganizationStructure.os_manager.filter_user(user)
+
+    class Meta:
+        model = Laboratory
+        fields = ['name', 'coordinator', 'unit','phone_number', 'email', 'location',
+                  'geolocation', 'organization']
+
 
 class H_CodeForm(forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
@@ -76,7 +89,8 @@ class SearchUserForm(CustomForm):
 
 class ProfilePermissionForm(GTForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=genwidgets.SelectMultiple, label=_('Roles'))
+    rol = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Rol.objects.all(), required=False,
+                                         label=_("Roles"))
 
     def __init__(self, *args, **kwargs):
         users_list = kwargs.pop('users_list')
@@ -94,6 +108,19 @@ class ReservationModalForm(GTForm, ModelForm):
             'final_date': genwidgets.DateTimeInput,
             'amount_required': genwidgets.NumberInput
         }
+
+class TransferObjectForm(GTForm):
+    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
+
+class AddObjectForm(forms.Form):
+    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'), required=True)
+    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
+    provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
+                                       label=_("Provider"),required=False)
+
+class SubtractObjectForm(GTForm):
+    discount = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
