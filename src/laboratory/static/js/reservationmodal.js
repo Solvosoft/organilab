@@ -16,7 +16,7 @@ function initialize_reservation_modal(shelf_obj_pk,object_pk, user_pk,units) {
     object_id= object_pk;
     user_id = user_pk;
     $('.unit').text(units);
-
+    get_detail()
     }
 
 /* Function that appends an input field to the form 
@@ -126,3 +126,14 @@ $( document ).ready(()=>{
 
     choose_action()
 });
+
+function get_detail(){
+     $.ajax({
+              url: $('#detail_url').val(),
+               type: 'POST',
+               data: {'shelf_object':shelf_object_id},
+               success: function({obj}) {
+                    $('#obj').text(obj)
+                    }
+                });
+}

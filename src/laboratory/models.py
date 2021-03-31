@@ -159,6 +159,8 @@ class ShelfObject(models.Model):
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
 
+    def get_object_detail(self):
+        return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
 class LaboratoryRoom(models.Model):
     name = models.CharField(_('Name'), max_length=255)

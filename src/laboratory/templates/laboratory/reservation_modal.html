@@ -23,7 +23,8 @@
   color: black;
 }
 </style>
-<input type="hidden" id="edit_url" value="{% url 'laboratory:add_object' pk=laboratory %}">
+<input type="hidden" id="edit_url" value="{% url 'laboratory:edit_object' pk=laboratory %}">
+<input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -45,6 +46,7 @@
                 </div>
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
+                    <label class="pull-right" id="obj"></label>
                     <div class="form-group">
                         <label>{% trans 'Action'%}</label>
                         <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
