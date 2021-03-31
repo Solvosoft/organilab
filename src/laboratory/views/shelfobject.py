@@ -23,7 +23,7 @@ from django.views.generic.edit import FormView
 from laboratory.forms import ReservationModalForm,AddObjectForm,TransferObjectForm,SubtractObjectForm
 from laboratory.decorators import has_lab_assigned
 from django.http import JsonResponse
-
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
@@ -322,3 +322,9 @@ def transfer_object(request,pk):
         return JsonResponse({'msg': False})
 
     return JsonResponse({'msg': True})
+
+@csrf_exempt
+def send_detail(request):
+    obj=ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
+
+    return JsonResponse({'obj': obj.get_object_detail()})
