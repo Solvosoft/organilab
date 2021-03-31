@@ -121,6 +121,7 @@ class AddObjectForm(forms.Form):
 
 class SubtractObjectForm(GTForm):
     discount = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, label=_('Description'), required=False)
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
