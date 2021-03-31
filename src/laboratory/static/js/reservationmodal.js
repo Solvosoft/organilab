@@ -15,7 +15,7 @@ function initialize_reservation_modal(shelf_obj_pk,object_pk, user_pk,units) {
     shelf_object_id = shelf_obj_pk;
     object_id= object_pk;
     user_id = user_pk;
-    $('#unit').text(units);
+    $('.unit').text(units);
 
     }
 
