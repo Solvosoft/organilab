@@ -59,7 +59,7 @@
                         <label>Amount Required</label>
                         <div class="input-group">
                         {{modal_form_reservation.amount_required}}
-                            <span class="input-group-addon" id="unit">L</span>
+                            <span class="input-group-addon unit" ></span>
                     </div>
                     </div>
                              <div class="form-group">
@@ -73,13 +73,55 @@
                     </div>
                    </div>
                     <div  id="add" style="display:none;" class="form-group">
-                        {{add_object_form.as_p}}
+                        {% for field in add_object_form %}
+                            {% if 'amount' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{field.helper_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div id="tranfer" style="display:none;" class="form-group">
-                        {{tranfer_object_form.as_p}}
+                             {% for field in tranfer_object_form %}
+                            {% if 'amount_send' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{field.helper_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div id="subtract" style="display:none;" class="form-group">
-                        {{subtract_object_form.as_p}}
+                        {% for field in subtract_object_form %}
+                            {% if 'discount' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{field.helper_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
                 </form>

@@ -110,18 +110,18 @@ class ReservationModalForm(GTForm, ModelForm):
         }
 
 class TransferObjectForm(GTForm):
-    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
+    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),help_text='Use dot like 0.344 on decimal', required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
 
 class AddObjectForm(forms.Form):
-    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'), required=True)
+    amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
                                        label=_("Provider"),required=False)
 
 class SubtractObjectForm(GTForm):
-    discount = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, label=_('Description'), required=False)
+    discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',label=_('Description'), required=False)
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
