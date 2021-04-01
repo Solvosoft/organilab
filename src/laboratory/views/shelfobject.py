@@ -257,13 +257,19 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 @permission_required('laboratory.change_shelfobject')
 def add_object(request,pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
-    action=int(request.POST.get('options'))
-    form=AddObjectForm(request.POST)
+    action = int(request.POST.get('options'))
+    form = AddObjectForm(request.POST)
+
+    try:
+        amount=float(request.POST.get('amount'))
+    except ValueError:
+        return JsonResponse({'msg': False})
+
     if action == 2:
         if form.is_valid():
             object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
             old = object.quantity
-            new = old+int(request.POST.get('amount'))
+            new = old+amount
             object.quantity = new
             object.save()
             log_object_add_change(request.user, pk, object, old, new,"Add", request.POST.get('provider'),request.POST.get('bill'), create=False)
@@ -282,7 +288,10 @@ def subtract_object(request,pk):
     old = object.quantity
     form = SubtractObjectForm(request.POST)
     if form.is_valid():
-        amount = float(form.cleaned_data['discount'])
+        try:
+            amount = float(form.cleaned_data['discount'])
+        except ValueError:
+            return JsonResponse({'msg': False})
         if old >= amount:
             new = old-amount
             object.quantity = new
@@ -299,7 +308,10 @@ def transfer_object(request,pk):
     object_received = ShelfObject.objects.filter(shelf_id=request.POST.get('laboratory'),
                                                  object_id=request.POST.get('object')).first()
     object_send = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
-    amount = int(request.POST.get('amount_send'))
+    try:
+        amount = float(request.POST.get('amount_send'))
+    except ValueError:
+        return JsonResponse({'msg': False})
 
     if object_received is not None:
         form=TransferObjectForm(request.POST)
