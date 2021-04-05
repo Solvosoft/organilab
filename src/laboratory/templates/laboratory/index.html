@@ -119,7 +119,9 @@
                   <a href="{% url 'laboratory:lab_profiles' laboratory %}"><strong>{% trans 'Profiles' %}</strong></a>
                 </li>
               {% endif %}
-            </ul>
+             <li class="list-group-item">
+                  <a href="{% url 'laboratory:transfer_objects' laboratory %}?lab={{laboratory}}"><strong>{% trans 'Transfer' %}</strong></a>
+                </li> </ul>
           </div>
         </div>
       {% endif %}

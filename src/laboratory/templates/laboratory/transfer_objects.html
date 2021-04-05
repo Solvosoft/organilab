@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% block title %}{% trans 'Mis Tranferencias' %}{% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+{% endblock %}
+{% block content %}
+{% include 'laboratory/transfer_object_modal.html' %}
+<style>
+    .select2 {
+    width: 100%!important;
+}
+span.select2-container {
+    z-index:10050;
+}
+</style>
+
+    <table id="table_id" class="display table table-striped table-bordered text-center" style="width:100%">
+        <thead>
+            <tr>
+                <th>{% trans 'Object' %}</th>
+                <th>{% trans 'Amount' %}</th>
+                <th>{% trans 'Laboratory send' %}</th>
+                <th>{% trans 'Laboratory received' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list%}
+            <tr id="table_data">
+                <td id="shelf_object">{{obj.object.object}}</td>
+                <td id="amount_required">{{obj.quantify}}  {{obj.object.measurement_unit}}</td>
+                <td id="initial_date">{{obj.laboratory_send}}</td>
+                <td id="initial_date">{{obj.laboratory_received}}</td>
+                <td id="final_date">{{obj.update_time}}</td>
+                <td id="status">{{obj.get_status_display}}</td>
+                <td>
+                   <button data-toggle="modal" class="btn btn-success"
+                                data-target="#add_tranfer_object"
+                                aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}})">
+                            <span aria-hidden="true">+</span>
+                        </button>
+                   <button data-toggle="modal"
+                                data-target="#delete_selected_obj_reservation_modal"
+                                aria-label="{% trans 'Remove' %}" type="button"
+                            class="btn btn-danger"
+                           onclick="init_remove_reservation({{obj.id}})">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                     </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block js %}
+<script>
+     document.update_shelf = '{% url "laboratory:update_transfer" %}';
+     document.get_shelfs = '{% url "laboratory:get_shelfs" %}';
+
+</script>
+<script src="{% static 'js/transfer_objects.js' %}"></script>
+{% endblock %}

@@ -60,7 +60,6 @@ function create_table(data){
       let tbody=document.querySelector('#template_list');
         tbody.innerHTML='';
         data.forEach((item,i)=>{
-        console.log(item['fields'])
          tbody.innerHTML+=`<tr>
                 <td>${item['fields']['name']}</td>
                 <td><a class="btn btn-md btn-info" href="/sga/get_pdf/${item.pk}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>

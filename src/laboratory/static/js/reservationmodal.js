@@ -82,6 +82,7 @@ function add_reservation() {
                       if(msg){
                          $("#modal_reservation").modal('hide');
                             clear_inputs();
+                            location.reload();
                         }else{
                         error_message('#alert_message_objects')
                         }

@@ -51,6 +51,7 @@ admin.site.register(models.Rol, RolAdmin)
 admin.site.register(models.ProfilePermission)
 admin.site.register(models.Provider)
 admin.site.register(models.ObjectLogChange)
+admin.site.register(models.TranferObject)
 
 
 admin.site.register(models.OrganizationStructure,

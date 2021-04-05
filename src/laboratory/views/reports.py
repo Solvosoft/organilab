@@ -674,6 +674,14 @@ class FilterForm(GTForm, forms.Form):
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False)
+class PrecursorFilterForm(GTForm, forms.Form):
+    month = forms.DateField(widget=forms.DateInput(attrs={'class':'form-control','type':'date'}), required=False)
+    format = forms.ChoiceField(choices=(
+        ('html', _('On screen')),
+        ('xls', 'XSL'),
+        ('xlsx', 'XLSX'),
+        ('ods', 'ODS')
+    ), required=False)
 
 
 @method_decorator(has_lab_assigned(), name="dispatch")
@@ -770,11 +778,70 @@ class LogObjectView(ReportListView):
                          obj.diff_value,
                          str(obj.measurement_unit)
                          ])
-        if self.request.GET.get('precursor'):
-            return self.get_precursor(context)
         return book
 
-    def get_precursor(self, context):
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class PrecursorsView(ReportListView):
+    model = ObjectLogChange
+    paginate_by = 100
+    form_class=PrecursorFilterForm
+    DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
+    template_name = 'laboratory/precursor_report.html'
+
+
+    def format_date(self, value):
+        dev = None
+        try:
+            dev = datetime.strptime(value, self.DATEFORMAT)
+        except ValueError as e:
+            pass
+        return dev
+
+    def filter_period(self, text, queryset):
+        if not str:
+            return queryset
+        dates = text.split('-')
+        if len(dates) != 2:
+            return queryset
+        dates[0] = self.format_date(dates[0].strip())
+        dates[1] = self.format_date(dates[1].strip())
+        return queryset.filter(update_time__range=dates)
+
+    def resume_queryset(self, queryset):
+        objects = set(queryset.values_list('object', flat=True))
+        list_obj = []
+        for obj in objects:
+            ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
+            end = queryset.filter(object=obj).last()
+            diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
+            list_obj.append(ResultQueryElement({'user': end.user,
+                                                'laboratory': end.laboratory,
+                                                'object': end.object,
+                                                'update_time': end.update_time,
+                                                'old_value': ini,
+                                                'new_value': end.new_value,
+                                                'diff_value': diff,
+                                                'measurement_unit': end.measurement_unit
+                                                })
+                            )
+        return list_obj
+
+    def get_queryset(self):
+        query = super().get_queryset().order_by('update_time')
+        self.form = self.form_class(self.request.GET)
+        self.form.is_valid()
+        query = query.filter(laboratory=self.lab)
+        return query
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+
+
+        return context
+
+    def get_book(self, context):
         laboratory = Laboratory.objects.get(pk=self.lab)
         first_line = [
             _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), '',
@@ -797,20 +864,25 @@ class LogObjectView(ReportListView):
                                                       str(_('Razon de gasto o despacho')),
                                                       str(_('Asunto')),
                                                       ]]
+        dates= self.request.GET.get('month')
+        dates= dates.split('-')
+        object_list = ObjectLogChange.objects.values('object','measurement_unit__key','object__name', 'laboratory') \
+            .filter(laboratory=self.lab, precursor=True,
+                    update_time__month=int(dates[1]), update_time__year=int(dates[0])).annotate(amount=Sum('diff_value'), )
+        for obj in object_list:
+            providers=ObjectLogChange.objects.values('provider','provider__name') \
+                    .filter(laboratory=self.lab, precursor=True,
+                            update_time__month=int(dates[1]), update_time__year=int(dates[0]))
 
-
-        for obj in context['object_list']:
-            book.append([str(obj.object.name),
-                         str(obj.measurement_unit),
-                         obj.new_value,
-                         obj.get_object_count()['total'],
-                         obj.bill,
-                         obj.provider.name if obj.provider is not None else '',
+            book.append([str(obj['object__name']),
+                         str(obj['measurement_unit__key']),
+                         str(obj['amount']),
                          '',
                          '',
                          '',
                          '',
-                         obj.subject,
+                         '',
+                         '',
                          ])
         return book
 
