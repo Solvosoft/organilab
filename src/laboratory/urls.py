@@ -85,6 +85,7 @@ shelf_object_urls = [
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
+    url(r"transfer_objects$", shelfobject.ListTranferObjects.as_view(), name="transfer_objects"),
 ]
 
 lab_reports_urls = [
@@ -112,6 +113,7 @@ lab_reports_urls = [
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list'),
     url('^objectchanges$', reports.LogObjectView.as_view(), name='object_change_logs'),
+    url('^precursors$', reports.PrecursorsView.as_view(), name='precursor_report'),
     url('^organizationreactivepresence/$', reports.OrganizationReactivePresenceList.as_view(), name='organizationreactivepresence'),
 
 ]
@@ -145,6 +147,8 @@ edit_objects=[
         name="edit_object"),
     url(r"^get_object_detail", shelfobject.send_detail,
         name="get_object_detail"),
+    url(r"update_transfer$", shelfobject.objects_transfer, name="update_transfer"),
+    url(r"shelfs_list$", shelfobject.get_shelf_list, name="get_shelfs"),
 
 ]
 reports_all_lab=[

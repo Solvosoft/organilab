@@ -208,6 +208,9 @@ class Shelf(models.Model):
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
 
+    def get_shelf(self):
+        return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
+
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
@@ -524,11 +527,6 @@ class ObjectLogChange(models.Model):
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action=models.IntegerField(default=0)
 
-    def get_object_count(self):
-        x=ObjectLogChange.objects.values('object', 'laboratory')\
-            .filter(laboratory=self.laboratory,object=self.object).annotate(total=Sum('diff_value'),)
-
-        return x[0]
     def __str__(self):
         return self.object.name
 class BlockedListNotification(models.Model):
@@ -544,3 +542,20 @@ class BlockedListNotification(models.Model):
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 
+REQUESTED = 0
+ACCEPTED = 1
+
+
+TRANFEROBJECT_STATUS = (
+    (REQUESTED, _("Requested")),
+    (ACCEPTED, _("Accepted")),
+)
+
+class TranferObject(models.Model):
+    object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
+    laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
+    laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
+    quantify = models.FloatField()
+    update_time = models.DateTimeField(auto_now_add=True)
+    state = models.BooleanField(default=True)
+    status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
