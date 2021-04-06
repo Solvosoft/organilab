@@ -318,7 +318,7 @@ def transfer_object(request,pk):
     TranferObject.objects.create(object=object,
     laboratory_send = lab_send,
     laboratory_received = lab_received,
-    quantify =amount
+    quantity =amount
     )
     return JsonResponse({'msg': True})
 
@@ -336,7 +336,7 @@ class ListTranferObjects(ListView):
 
     def get_queryset(self):
         return TranferObject.objects.filter(Q(laboratory_send__id=self.request.GET.get('lab')) |
-                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by('update_time')
+                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by('update_time')\
 
 def get_shelf_list(request):
     shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
@@ -349,6 +349,24 @@ def get_shelf_list(request):
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
     object=data.object.object
-    lab_received_obj=ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
-    print(lab_received_obj)
+    lab_send_obj=ShelfObject.objects.get(pk=data.object.pk)
+    try:
+        lab_received_obj=ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
+        lab_received_obj.quantity += data.quantity
+        lab_received_obj.save()
+    except ShelfObject.DoesNotExist:
+        return JsonResponse({'data': False})
+
+    lab_send_obj.quantity -= data.quantity
+    lab_send_obj.save()
+    data.status=1
+    data.save()
     return JsonResponse({'data': True})
+
+def delete_tranfer(request):
+    try:
+        transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
+        transfer.delete()
+    except TranferObject.DoesNotExist:
+        return JsonResponse({'data': False})
+    return JsonResponse({'data':True})

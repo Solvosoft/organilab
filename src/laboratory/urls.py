@@ -149,6 +149,7 @@ edit_objects=[
         name="get_object_detail"),
     url(r"update_transfer$", shelfobject.objects_transfer, name="update_transfer"),
     url(r"shelfs_list$", shelfobject.get_shelf_list, name="get_shelfs"),
+    url(r"delete_transfer$", shelfobject.delete_tranfer, name="delete_transfer"),
 
 ]
 reports_all_lab=[
