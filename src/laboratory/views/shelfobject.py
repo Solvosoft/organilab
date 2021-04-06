@@ -336,7 +336,7 @@ class ListTranferObjects(ListView):
 
     def get_queryset(self):
         return TranferObject.objects.filter(Q(laboratory_send__id=self.request.GET.get('lab')) |
-                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by('update_time')\
+                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by('pk').reverse()
 
 def get_shelf_list(request):
     shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
@@ -348,19 +348,26 @@ def get_shelf_list(request):
 
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
-    object=data.object.object
-    lab_send_obj=ShelfObject.objects.get(pk=data.object.pk)
+    object = data.object.object
+    lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
     try:
-        lab_received_obj=ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
+        lab_received_obj = ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
+        old = lab_received_obj.quantity
         lab_received_obj.quantity += data.quantity
         lab_received_obj.save()
+        log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old, lab_received_obj.quantity, 1, "Transfer", create=False)
+
     except ShelfObject.DoesNotExist:
         return JsonResponse({'data': False})
 
+    old = lab_send_obj.quantity
     lab_send_obj.quantity -= data.quantity
     lab_send_obj.save()
-    data.status=1
+    data.status = 1
     data.save()
+    log_object_change(request.user, data.laboratory_send.pk, lab_send_obj, old, lab_send_obj.quantity, 1,
+                      "Transfer", create=False)
+
     return JsonResponse({'data': True})
 
 def delete_tranfer(request):
@@ -369,4 +376,4 @@ def delete_tranfer(request):
         transfer.delete()
     except TranferObject.DoesNotExist:
         return JsonResponse({'data': False})
-    return JsonResponse({'data':True})
+    return JsonResponse({'data': True})
