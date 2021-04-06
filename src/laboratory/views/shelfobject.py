@@ -14,13 +14,14 @@ from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core
-from laboratory.models import ShelfObject, Shelf, Object,Laboratory,TranferObject
-from .djgeneric import CreateView, UpdateView, DeleteView,ListView
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
+from .djgeneric import CreateView, UpdateView, DeleteView, ListView
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.widgets.selects import AutocompleteSelect
-from ..logsustances import log_object_change,log_object_add_change
+from ..logsustances import log_object_change, log_object_add_change
 from django.views.generic.edit import FormView
-from laboratory.forms import ReservationModalForm,AddObjectForm,TransferObjectForm,SubtractObjectForm,AddTransferObjectForm
+from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
+    AddTransferObjectForm
 from laboratory.decorators import has_lab_assigned
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -56,7 +57,6 @@ class ShelfObjectReservationModal(FormView):
     form_class = ReservationModalForm
     success_message = "Reservation done successfully"
     success_url = "/"
-
 
 
 @login_required
@@ -120,7 +120,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity,1,"Create", create=True)
+        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, 1, "Create", create=True)
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
         return {
@@ -150,10 +150,9 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
 
     def form_valid(self, form):
-
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,3,"Edit", create=False)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, 3, "Edit", create=False)
 
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
@@ -199,7 +198,8 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         self.fvalid = True
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         response = UpdateView.form_valid(self, form)
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity,3,"Update", create=False)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, 3, "Update",
+                          create=False)
         return response
 
     def post(self, request, *args, **kwargs):
@@ -248,7 +248,6 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         self.row = request.POST.get("row")
         self.col = request.POST.get("col")
 
-
         return {
             'inner-fragments': {
                 '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
@@ -257,8 +256,9 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
             },
         }
 
+
 @permission_required('laboratory.change_shelfobject')
-def add_object(request,pk):
+def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     action = int(request.POST.get('options'))
     form = AddObjectForm(request.POST)
@@ -271,21 +271,23 @@ def add_object(request,pk):
                 return JsonResponse({'msg': False})
             object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
             old = object.quantity
-            new = old+amount
+            new = old + amount
             object.quantity = new
             object.save()
-            log_object_add_change(request.user, pk, object, old, new,"Add", request.POST.get('provider'),request.POST.get('bill'), create=False)
+            log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
+                                  request.POST.get('bill'), create=False)
             return JsonResponse({'msg': True})
         else:
             return JsonResponse({'msg': False})
     elif action == 4:
         return subtract_object(request, pk)
     else:
-        return transfer_object(request,pk)
+        return transfer_object(request, pk)
     return JsonResponse({'msg': True})
 
+
 @permission_required('laboratory.change_shelfobject')
-def subtract_object(request,pk):
+def subtract_object(request, pk):
     object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
     old = object.quantity
     form = SubtractObjectForm(request.POST)
@@ -295,17 +297,18 @@ def subtract_object(request,pk):
         except ValueError:
             return JsonResponse({'msg': False})
         if old >= amount:
-            new = old-amount
+            new = old - amount
             object.quantity = new
             object.save()
-            log_object_change(request.user, pk, object, old, new,3,"Substract", create=False)
+            log_object_change(request.user, pk, object, old, new, 3, "Substract", create=False)
         else:
             return JsonResponse({'msg': False})
     else:
         return JsonResponse({'msg': False})
     return JsonResponse({'msg': True})
 
-def transfer_object(request,pk):
+
+def transfer_object(request, pk):
     try:
         amount = float(request.POST.get('amount_send'))
         print(amount)
@@ -316,61 +319,68 @@ def transfer_object(request,pk):
     lab_send = Laboratory.objects.filter(pk=pk).first()
     lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
     TranferObject.objects.create(object=object,
-    laboratory_send = lab_send,
-    laboratory_received = lab_received,
-    quantity =amount
-    )
+                                 laboratory_send=lab_send,
+                                 laboratory_received=lab_received,
+                                 quantity=amount
+                                 )
     return JsonResponse({'msg': True})
+
 
 @csrf_exempt
 def send_detail(request):
-    obj=ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
+    obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
-def list_tranfer_objects(request,pk):
-    shelf=Shelf.objects.filter(furniture__labroom__laboratory__id=pk)
 
-class ListTranferObjects(ListView):
+class ListTransferObjects(ListView):
     model = TranferObject
     template_name = 'laboratory/transfer_objects.html'
 
     def get_queryset(self):
         return TranferObject.objects.filter(Q(laboratory_send__id=self.request.GET.get('lab')) |
-                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by('pk').reverse()
+                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by(
+            'pk').reverse()
+
 
 def get_shelf_list(request):
     shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
-    aux=[]
+    transfer_detail = TranferObject.objects.filter(pk=int(request.POST.get('id'))).first()
+    aux = []
     for shelf in shelfs:
-        aux.append({'id':shelf.pk, 'shelf':shelf.get_shelf()})
-    data=json.dumps(aux)
-    return JsonResponse({'data': data})
+        aux.append({'id': shelf.pk, 'shelf': shelf.get_shelf()})
+    data = json.dumps(aux)
+    return JsonResponse({'data': data, 'msg': transfer_detail.get_object_detail()})
+
 
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
     object = data.object.object
     lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
-    try:
-        lab_received_obj = ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
-        old = lab_received_obj.quantity
-        lab_received_obj.quantity += data.quantity
-        lab_received_obj.save()
-        log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old, lab_received_obj.quantity, 1, "Transfer", create=False)
+    if lab_send_obj.quantity >= data.quantity:
+        try:
+            lab_received_obj = ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
+            old = lab_received_obj.quantity
+            lab_received_obj.quantity += data.quantity
+            lab_received_obj.save()
+            log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
+                              lab_received_obj.quantity, 1, "Transfer", create=False)
 
-    except ShelfObject.DoesNotExist:
-        return JsonResponse({'data': False})
+        except ShelfObject.DoesNotExist:
+            return JsonResponse({'status': False, 'msg': 'The Shelf dont exist'})
 
-    old = lab_send_obj.quantity
-    lab_send_obj.quantity -= data.quantity
-    lab_send_obj.save()
-    data.status = 1
-    data.save()
-    log_object_change(request.user, data.laboratory_send.pk, lab_send_obj, old, lab_send_obj.quantity, 1,
-                      "Transfer", create=False)
+        old = lab_send_obj.quantity
+        lab_send_obj.quantity -= data.quantity
+        lab_send_obj.save()
+        data.status = 1
+        data.save()
+        log_object_change(request.user, data.laboratory_send.pk, lab_send_obj, old, lab_send_obj.quantity, 1,
+                          "Transfer", create=False)
+    else:
+        return JsonResponse({'status': False, 'msg': _('Need to create the object into the Shelf')})
+    return JsonResponse({'status': True, 'msg': ''})
 
-    return JsonResponse({'data': True})
 
-def delete_tranfer(request):
+def delete_transfer(request):
     try:
         transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
         transfer.delete()

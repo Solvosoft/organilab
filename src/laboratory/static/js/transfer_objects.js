@@ -1,6 +1,6 @@
 function init_add_object(id, object, object_name,lab_received){
     $('#transfer_obj').val(id)
-    get_shelfs({'lab':lab_received})
+    get_shelfs({'lab':lab_received,'id':id})
 }
 
 function get_shelfs(lab){
@@ -9,8 +9,8 @@ function get_shelfs(lab){
             type: 'POST',
             data: lab,
             headers: {'X-CSRFToken': getCookie('csrftoken') },
-            success: function({data}) {
-
+            success: function({data,msg}) {
+            $('#obj').text(msg)
             let shelfs=JSON.parse(data);
             let selector=document.querySelector('#shelf_list');
             selector.innerHTML='';
@@ -38,13 +38,22 @@ function send_form(){
             url: document.update_shelf,
             type: 'POST',
             data: data,
-            success: function({msg}) {
+            success: function({status,msg}) {
+                console.log(status)
+                if(status){
                 location.reload()
-            }
+                }else{
+                   error_message('#alert_message',msg)
+                }
+                            }
             });
 
 }
-
+function error_message(id,msg){
+  if ($(`${id}`).css('display') != 'block')
+      $(`${id}`).css('display', 'block');
+      $('#error_message').text(msg);
+ }
 function delete_transfer(id){
     $.ajax({
             url: document.delete_transfer,
@@ -97,7 +106,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 })
 
 swalWithBootstrapButtons.fire({
-  title: 'Esta seguro de eLiminar la transferencia?',
+  title: 'Esta seguro de eliminar la transferencia?',
   text: "Estas a tiempo de revertir esta acción!",
   icon: 'warning',
   showCancelButton: true,
@@ -118,7 +127,7 @@ swalWithBootstrapButtons.fire({
   ) {
     swalWithBootstrapButtons.fire(
       'Cancelado',
-      'El dato no fue eliminado :)',
+      'El dato no fue eliminado',
       'error'
     )
   }

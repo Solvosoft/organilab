@@ -559,3 +559,6 @@ class TranferObject(models.Model):
     update_time = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
+
+    def get_object_detail(self):
+        return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
