@@ -106,7 +106,7 @@ class ReservationModalForm(GTForm, ModelForm):
         widgets = {
             'initial_date': genwidgets.DateTimeInput,
             'final_date': genwidgets.DateTimeInput,
-            'amount_required': genwidgets.NumberInput
+            'amount_required': genwidgets.TextInput
         }
 
 class TransferObjectForm(GTForm):

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% load i18n laboratory %}
-
-{% block title %}{% trans 'Mis Tranferencias' %}{% endblock %}
+29
+{% block title %}{% trans 'My Transfers' %}{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
 {% endblock %}
@@ -16,7 +16,11 @@ span.select2-container {
     z-index:10050;
 }
 </style>
-
+    <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13" align="center">
+              <h3 class="heading-1" ><span> {% trans 'Transfer of objects' %}  </span></h3>
+            </div>
+    </div>
     <table id="table_id" class="display table table-striped table-bordered text-center" style="width:100%">
         <thead>
             <tr>
@@ -62,6 +66,9 @@ span.select2-container {
      document.update_shelf = '{% url "laboratory:update_transfer" %}';
      document.get_shelfs = '{% url "laboratory:get_shelfs" %}';
      document.remove_transfer = '{% url "laboratory:delete_transfer" %}';
+     (function(){
+    $("#table_id").DataTable({responsive: true });
+    })(jQuery);
 </script>
 <script src="{% static 'js/transfer_objects.js' %}"></script>
 {% endblock %}

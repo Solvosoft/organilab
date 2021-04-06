@@ -85,7 +85,7 @@ shelf_object_urls = [
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
-    url(r"transfer_objects$", shelfobject.ListTranferObjects.as_view(), name="transfer_objects"),
+    url(r"transfer_objects$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
 ]
 
 lab_reports_urls = [
@@ -149,7 +149,7 @@ edit_objects=[
         name="get_object_detail"),
     url(r"update_transfer$", shelfobject.objects_transfer, name="update_transfer"),
     url(r"shelfs_list$", shelfobject.get_shelf_list, name="get_shelfs"),
-    url(r"delete_transfer$", shelfobject.delete_tranfer, name="delete_transfer"),
+    url(r"delete_transfer$", shelfobject.delete_transfer, name="delete_transfer"),
 
 ]
 reports_all_lab=[

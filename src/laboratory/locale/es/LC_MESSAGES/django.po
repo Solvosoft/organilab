@@ -2159,6 +2159,22 @@ msgstr "Definición incorrecta de soluto"
 msgid "There are errors in the solution definition, please try again"
 msgstr "Hay errores en la definición de la solución, intente de nuevo"
 
+#: laboratory/templates/transfer_objects.html:21
+#~ msgid "Transfer of objects"
+#~ msgstr "Transferencia de objectos"
+
+#: laboratory/templates/transfer_objects.html:5
+#~ msgid "My Transfers"
+#~ msgstr "Mis Transferencias"
+
+#: laboratory/templates/transfer_objects.html:29
+#~ msgid "Laboratory send"
+#~ msgstr "Laboratorio envía"
+
+#: laboratory/templates/transfer_objects.html:30
+#~ msgid "Laboratory received"
+#~ msgstr "Laboratorio receptor"
+
 #~ msgid "Search by username, name or lastname"
 #~ msgstr "Buscar por nombre de usuario, nombre o apellido"
 
@@ -2648,4 +2664,6 @@ msgstr "Hay errores en la definición de la solución, intente de nuevo"
 
 #~ msgid "Coordinator"
 #~ msgstr "Coordinador"
+
+
 

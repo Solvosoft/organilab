@@ -63,6 +63,7 @@
                         {{modal_form_reservation.amount_required}}
                             <span class="input-group-addon unit" ></span>
                     </div>
+                        {{modal_form_reservation.amount_required.help_text}}
                     </div>
                              <div class="form-group">
                         <label>Initial Date</label>
@@ -83,7 +84,7 @@
                                         {{ field }}
                                 <span class="input-group-addon unit"></span>
                                  </div>
-                                        {{field.helper_text}}
+                                        {{field.help_text}}
                                 </div>
                             {% else %}
                                       {{field.label_tag}}
@@ -100,11 +101,11 @@
                                         {{ field }}
                                 <span class="input-group-addon unit"></span>
                                  </div>
-                                        {{field.helper_text}}
+                                        {{ field.help_text }}
                                 </div>
                             {% else %}
                               {{field.label_tag}}
-                        {{field}}
+                                {{field}}
                         {% endif %}
                         {% endfor %}
                     </div>
@@ -117,7 +118,7 @@
                                         {{ field }}
                                 <span class="input-group-addon unit"></span>
                                  </div>
-                                        {{field.helper_text}}
+                                        {{field.help_text}}
                                 </div>
                             {% else %}
                                       {{field.label_tag}}
