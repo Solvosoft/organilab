@@ -10,6 +10,7 @@ function get_shelfs(lab){
             data: lab,
             headers: {'X-CSRFToken': getCookie('csrftoken') },
             success: function({data}) {
+
             let shelfs=JSON.parse(data);
             let selector=document.querySelector('#shelf_list');
             selector.innerHTML='';
@@ -38,7 +39,20 @@ function send_form(){
             type: 'POST',
             data: data,
             success: function({msg}) {
-                console.log(msg)
+                location.reload()
+            }
+            });
+
+}
+
+function delete_transfer(id){
+    $.ajax({
+            url: document.delete_transfer,
+            type: 'POST',
+            data: {'id':id},
+            headers: {'X-CSRFToken': getCookie('csrftoken') },
+            success: function({msg}) {
+                location.reload()
             }
             });
 
@@ -58,3 +72,55 @@ function getCookie(name) {
             }
             return cookieValue;
         }
+
+const sendrequest=(element=>{
+
+     $.ajax({
+        url: document.remove_transfer,
+        type:'POST',
+        data: {'id':element},
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function ({data}) {
+        location.reload()
+      }
+        });
+
+});
+function delete_transfer(element){
+
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+})
+
+swalWithBootstrapButtons.fire({
+  title: 'Esta seguro de eLiminar la transferencia?',
+  text: "Estas a tiempo de revertir esta acción!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Si',
+  cancelButtonText: 'No',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    swalWithBootstrapButtons.fire(
+      'Eliminado!',
+      'La Transferencia ha sido eliminada.',
+      'success'
+    )
+        sendrequest(element);
+
+  } else if (
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Cancelado',
+      'El dato no fue eliminado :)',
+      'error'
+    )
+  }
+})
+}

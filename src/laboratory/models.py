@@ -555,7 +555,7 @@ class TranferObject(models.Model):
     object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
     laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
     laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
-    quantify = models.FloatField()
+    quantity = models.FloatField()
     update_time = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
