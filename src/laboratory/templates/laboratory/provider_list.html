@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+{% block title %}{% trans 'Laboratory providers management' %}{% endblock %}
+
+{% block content %}
+  	<div class="page-header"><h1>{% trans ' Laboratory Providers' %}</h1></div>
+		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' laboratory%}">+ {% trans 'Add' %}</a>
+		{% if perms.laboratory.view_provider  %}
+			<table id="providertable" class="table">
+				<thead>
+					<tr>
+						<th class="text-center">{% trans "Name:" %}</th>
+						<th class="text-center">{% trans "Phone:" %}</th>
+						<th class="text-center">{% trans "Email:" %}</th>
+						<th class="text-center">{% trans 'Action' %}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for obj in object_list %}
+						<tr>
+							<td class="text-center">{{ obj.name }}</td>
+							<td class="text-center">{{ obj.phone_number }}</td>
+							<td class="text-center">{{ obj.email }}</td>
+							<td class="text-center"> <a class="btn btn-md btn-success"
+									href="{% url 'laboratory:update_lab_provider' pk=obj.pk %}"  title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+							</td>
+						</tr>
+					{% empty %}
+						<tr><td colspan="6"> {% trans "No objects" %}</td> </tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			{% include 'laboratory/action_denied.html' %}
+		{% endif %}
+		<div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{block.super}}
+	<script>
+		$("#providertable").DataTable();
+	</script>
+{% endblock %}
+

@@ -31,7 +31,7 @@ class LaboratoryRoomsList(ListView):
         context = super().get_context_data(**kwargs)
         context['modal_form_reservation'] = ReservationModalForm()
         context['tranfer_object_form'] = TransferObjectForm(users=self.request.user.profile.pk,lab_send=self.lab)
-        context['add_object_form'] = AddObjectForm()
+        context['add_object_form'] = AddObjectForm(lab=self.lab)
         context['subtract_object_form'] = SubtractObjectForm()
         context['options']=['Reservation','Add','Transfer','Subtract']
         context['user'] = self.request.user
