@@ -119,9 +119,16 @@
                   <a href="{% url 'laboratory:lab_profiles' laboratory %}"><strong>{% trans 'Profiles' %}</strong></a>
                 </li>
               {% endif %}
+
              <li class="list-group-item">
-                  <a href="{% url 'laboratory:transfer_objects' laboratory %}?lab={{laboratory}}"><strong>{% trans 'Transfer' %}</strong></a>
-                </li> </ul>
+                  <a href="{% url 'laboratory:transfer_objects' laboratory %}?lab={{laboratory}}"><strong>{% trans 'Transfers' %}</strong></a>
+                </li>
+            {% if perms.laboratory.add_provider %}
+            <li class="list-group-item">
+                  <a href="{% url 'laboratory:list_provider' laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
+                </li>
+            {% endif %}
+            </ul>
           </div>
         </div>
       {% endif %}

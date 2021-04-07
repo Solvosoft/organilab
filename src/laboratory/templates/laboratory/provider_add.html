@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load bootstrap i18n laboratory %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <div class="page-header col-xs-13" align="center">
+        <h3 class="heading-1" center=""><span>{% trans 'Create Provider' %}</span></h3>
+      </div>
+    </div>
+  </div>
+  {% if perms.laboratory.add_provider %}
+    <div class="row">
+      <form method="POST"  class="form-horizontal">
+          {% csrf_token %}
+        <div class=" body ">
+          {{ form.as_horizontal }}
+        </div>
+        <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
+      </form>
+    </div>
+{% endif %}
+{% endblock%}
+
+{% block js %}
+   {{ form.media }}
+{% endblock %}

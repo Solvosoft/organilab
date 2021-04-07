@@ -20,6 +20,7 @@ from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateV
 from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
+from laboratory.views.provider import ProviderCreate,ProviderList,ProviderUpdate
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
@@ -179,6 +180,11 @@ lab_profiles_urls = [
     url(r"list/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
 ] 
 
+provider_urls=[
+    url(r"provider$", ProviderCreate.as_view(), name="add_provider"),
+    url(r"update_provider/(?P<pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
+    url(r"list$", ProviderList.as_view(), name="list_provider"),
+]
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
@@ -196,6 +202,7 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
     url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)?/',include(provider_urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 

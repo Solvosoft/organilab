@@ -503,10 +503,11 @@ class ProfilePermission(models.Model):
         return '%s' % (self.profile,)
 
 class Provider(models.Model):
-    name= models.CharField(max_length=255, blank=True, default='')
-    phone_number= models.CharField(max_length=25, blank=True, default='')
-    email= models.EmailField(blank=True)
-    legal_identity= models.CharField(max_length=50,blank=True,default='')
+    name= models.CharField(max_length=255, blank=True, default='',verbose_name=_('name'))
+    phone_number= models.CharField(max_length=25, blank=True, default='',verbose_name=_('phone'))
+    email= models.EmailField(blank=True,verbose_name=_('email'))
+    legal_identity= models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,blank=True, null=True)
 
     def __str__(self):
         return self.name

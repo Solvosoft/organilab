@@ -125,7 +125,11 @@ class AddObjectForm(forms.Form):
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
                                        label=_("Provider"),required=False)
-
+    def __init__(self, *args, **kwargs):
+        lab = kwargs.pop('lab')
+        super(AddObjectForm, self).__init__(*args, **kwargs)
+        providers = Provider.objects.filter(laboratory__id=int(lab))
+        self.fields['provider'].queryset = providers
 class SubtractObjectForm(GTForm):
     discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',label=_('Description'), required=False)
@@ -145,3 +149,14 @@ class AddTransferObjectForm(GTForm):
         super(AddTransferObjectForm, self).__init__(*args, **kwargs)
         shelf = Shelf.objects.filter(furniture__labroom__laboratory__id=int(lab))
         self.fields['shelf'].queryset = shelf
+
+class ProviderForm(forms.ModelForm,GTForm):
+
+    class Meta:
+        model = Provider
+        fields = ['name','phone_number','email','legal_identity']
+        widgets = {'name': genwidgets.TextInput,
+                 'phone_number': genwidgets.TextInput,
+                 'email': genwidgets.EmailMaskInput,
+                 'legal_identity': genwidgets.TextInput,
+                   }
