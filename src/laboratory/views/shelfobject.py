@@ -120,7 +120,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, 1, "Create", create=True)
+        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True)
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
         return {
@@ -152,7 +152,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, 3, "Edit", create=False)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', 0,"Edit", create=False)
 
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
@@ -198,7 +198,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         self.fvalid = True
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         response = UpdateView.form_valid(self, form)
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, 3, "Update",
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', 0, "Update",
                           create=False)
         return response
 
@@ -261,7 +261,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     action = int(request.POST.get('options'))
-    form = AddObjectForm(request.POST)
+    form = AddObjectForm(request.POST, lab=request.POST.get('lab'))
 
     if action == 2:
         if form.is_valid():
@@ -300,18 +300,17 @@ def subtract_object(request, pk):
             new = old - amount
             object.quantity = new
             object.save()
-            log_object_change(request.user, pk, object, old, new, 3, "Substract", create=False)
+            log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
         else:
             return JsonResponse({'msg': False})
     else:
         return JsonResponse({'msg': False})
     return JsonResponse({'msg': True})
 
-
+@permission_required('laboratory.add_tranfer_object')
 def transfer_object(request, pk):
     try:
         amount = float(request.POST.get('amount_send'))
-        print(amount)
     except ValueError:
         return JsonResponse({'msg': False})
 
@@ -330,7 +329,6 @@ def transfer_object(request, pk):
 def send_detail(request):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
-
 
 class ListTransferObjects(ListView):
     model = TranferObject
@@ -351,19 +349,23 @@ def get_shelf_list(request):
     data = json.dumps(aux)
     return JsonResponse({'data': data, 'msg': transfer_detail.get_object_detail()})
 
-
+@permission_required('laboratory.change_tranfer_object')
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
     object = data.object.object
     lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
+
     if lab_send_obj.quantity >= data.quantity:
         try:
             lab_received_obj = ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
             old = lab_received_obj.quantity
             lab_received_obj.quantity += data.quantity
             lab_received_obj.save()
+
             log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
-                              lab_received_obj.quantity, 1, "Transfer", create=False)
+                              lab_received_obj.quantity,
+                              'Transferencia de %s por parte del laboratorio %s'% (data.get_object_detail(), data.laboratory_send.name),
+                1,"Transfer", create=False)
 
         except ShelfObject.DoesNotExist:
             return JsonResponse({'status': False, 'msg': 'The Shelf dont exist'})
@@ -373,13 +375,14 @@ def objects_transfer(request):
         lab_send_obj.save()
         data.status = 1
         data.save()
-        log_object_change(request.user, data.laboratory_send.pk, lab_send_obj, old, lab_send_obj.quantity, 1,
-                          "Transfer", create=False)
+        log_object_change(request.user, data.laboratory_send.pk, lab_send_obj, old, lab_send_obj.quantity,
+                    'Transferencia de %s al laboratorio %s'% (data.get_object_detail(), data.laboratory_received.name),
+                          2, "Transfer", create=False)
     else:
         return JsonResponse({'status': False, 'msg': _('Need to create the object into the Shelf')})
     return JsonResponse({'status': True, 'msg': ''})
 
-
+@permission_required('laboratory.delete_tranfer_object')
 def delete_transfer(request):
     try:
         transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))

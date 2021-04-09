@@ -784,61 +784,11 @@ class LogObjectView(ReportListView):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class PrecursorsView(ReportListView):
     model = ObjectLogChange
-    paginate_by = 100
-    form_class=PrecursorFilterForm
-    DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
     template_name = 'laboratory/precursor_report.html'
-
-
-    def format_date(self, value):
-        dev = None
-        try:
-            dev = datetime.strptime(value, self.DATEFORMAT)
-        except ValueError as e:
-            pass
-        return dev
-
-    def filter_period(self, text, queryset):
-        if not str:
-            return queryset
-        dates = text.split('-')
-        if len(dates) != 2:
-            return queryset
-        dates[0] = self.format_date(dates[0].strip())
-        dates[1] = self.format_date(dates[1].strip())
-        return queryset.filter(update_time__range=dates)
-
-    def resume_queryset(self, queryset):
-        objects = set(queryset.values_list('object', flat=True))
-        list_obj = []
-        for obj in objects:
-            ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
-            end = queryset.filter(object=obj).last()
-            diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
-            list_obj.append(ResultQueryElement({'user': end.user,
-                                                'laboratory': end.laboratory,
-                                                'object': end.object,
-                                                'update_time': end.update_time,
-                                                'old_value': ini,
-                                                'new_value': end.new_value,
-                                                'diff_value': diff,
-                                                'measurement_unit': end.measurement_unit
-                                                })
-                            )
-        return list_obj
-
-    def get_queryset(self):
-        query = super().get_queryset().order_by('update_time')
-        self.form = self.form_class(self.request.GET)
-        self.form.is_valid()
-        query = query.filter(laboratory=self.lab)
-        return query
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form
-
-
+        context['form'] = PrecursorFilterForm
         return context
 
     def get_book(self, context):
@@ -866,25 +816,114 @@ class PrecursorsView(ReportListView):
                                                       ]]
         dates= self.request.GET.get('month')
         dates= dates.split('-')
+        month=int(dates[1])
+        year=int(dates[0])
+
         object_list = ObjectLogChange.objects.values('object','measurement_unit__key','object__name', 'laboratory') \
             .filter(laboratory=self.lab, precursor=True,
-                    update_time__month=int(dates[1]), update_time__year=int(dates[0])).annotate(amount=Sum('diff_value'), )
+                    update_time__month=month,type_action__lte=1, update_time__year=year).annotate(amount=Sum('diff_value'), )
+
         for obj in object_list:
-            providers=ObjectLogChange.objects.values('provider','provider__name') \
-                    .filter(laboratory=self.lab, precursor=True,
-                            update_time__month=int(dates[1]), update_time__year=int(dates[0]))
+
+            providers = ', '.join(self.get_providers(month, year, obj['object']))
+            subjects = ', '.join(self.get_subjects(month, year, obj['object']))
+            last_month_amount = float(self.get_pre_amount(month, year, obj['object']))
+            notes = ', '.join(self.get_notes(month, year, obj['object']))
+            bills = ', '.join(self.get_bills(month, year, obj['object']))
+            amount_spend = abs(self.get_amount_spend(month, year, obj['object']))
 
             book.append([str(obj['object__name']),
                          str(obj['measurement_unit__key']),
+                         last_month_amount,
                          str(obj['amount']),
-                         '',
-                         '',
-                         '',
-                         '',
-                         '',
-                         '',
+                         bills,
+                         providers,
+                         last_month_amount+float(obj['amount']),
+                         amount_spend,
+                         obj['amount']-amount_spend,
+                         notes,
+                         subjects,
                          ])
         return book
+
+    def get_pre_month(self, month, year):
+
+        if month == 1:
+            month = 12
+            year = year-1
+        else:
+            month = month-1
+
+        return {'month': month,
+                'year': year}
+
+    def get_providers(self, month, year, obj):
+        providers = ObjectLogChange.objects.values('object', 'provider__name', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for p in providers:
+            if p['provider__name'] is not None:
+                data.append(p['provider__name'])
+
+        return set(data)
+
+    def get_subjects(self, month, year, obj):
+        subjects = ObjectLogChange.objects.values('object', 'subject', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for s in subjects:
+            if s['subject'] is not None:
+                data.append(s['subject'])
+
+        return set(data)
+
+    def get_notes(self, month, year, obj):
+        notes = ObjectLogChange.objects.values('object', 'note', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for n in notes:
+            if n['note'] is not None and len(n['note']) > 0:
+                data.append(n['note'])
+
+        return set(data)
+
+    def get_bills(self, month, year, obj):
+        bills = ObjectLogChange.objects.values('object', 'bill', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for b in bills:
+            if b['bill'] is not None:
+                data.append(b['bill'])
+
+        return set(data)
+
+    def get_pre_amount(self, month, year, obj):
+
+        date = self.get_pre_month(month,year)
+        amount = 0
+        object_list = ObjectLogChange.objects.values('object', 'new_value','laboratory') \
+            .filter(laboratory=self.lab, precursor=True,object=obj,
+                    update_time__month=date['month'], update_time__year=date['year']).last()
+
+        if object_list is not None:
+            amount = object_list['new_value']
+
+        return amount
+
+    def get_amount_spend(self, month, year, obj):
+        amount = 0
+        object_list = ObjectLogChange.objects.values('object','laboratory') \
+            .filter(laboratory=self.lab, precursor=True,object=obj,
+                    update_time__month=month, type_action=2, update_time__year=year).annotate(spend=Sum('diff_value'))
+
+        if len(object_list) > 0:
+            amount=object_list[0]['spend']
+
+        return amount
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
