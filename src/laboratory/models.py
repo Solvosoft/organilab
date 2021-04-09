@@ -524,9 +524,10 @@ class ObjectLogChange(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     subject = models.CharField(max_length=100, blank=True, null=True)
-    provider= models.ForeignKey(Provider, blank=True,on_delete=models.DO_NOTHING, null=True, default='')
+    provider= models.ForeignKey(Provider, blank=True, db_constraint=False, on_delete=models.DO_NOTHING, null=True)
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action=models.IntegerField(default=0)
+    note = models.CharField(default='',blank=True, null=True, max_length=255)
 
     def __str__(self):
         return self.object.name
@@ -563,3 +564,4 @@ class TranferObject(models.Model):
 
     def get_object_detail(self):
         return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
+
