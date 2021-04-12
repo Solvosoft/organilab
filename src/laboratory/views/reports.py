@@ -6,7 +6,7 @@ Created on 26/12/2016
 '''
 
 import os
-from datetime import datetime
+from datetime import datetime, date
 from django.contrib.auth.decorators import permission_required
 import django_excel
 from django import forms
@@ -26,7 +26,7 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput
 from xhtml2pdf import pisa
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, Profile, SustanceCharacteristics
+    OrganizationStructure, Profile, SustanceCharacteristics,PrecursorReport
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.utils import get_user_laboratories
@@ -674,15 +674,6 @@ class FilterForm(GTForm, forms.Form):
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False)
-class PrecursorFilterForm(GTForm, forms.Form):
-    month = forms.DateField(widget=forms.DateInput(attrs={'class':'form-control','type':'date'}), required=False)
-    format = forms.ChoiceField(choices=(
-        ('html', _('On screen')),
-        ('xls', 'XSL'),
-        ('xlsx', 'XLSX'),
-        ('ods', 'ODS')
-    ), required=False)
-
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
@@ -783,21 +774,23 @@ class LogObjectView(ReportListView):
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class PrecursorsView(ReportListView):
-    model = ObjectLogChange
+    model = PrecursorReport
     template_name = 'laboratory/precursor_report.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = PrecursorFilterForm
+        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab))
         return context
 
     def get_book(self, context):
         laboratory = Laboratory.objects.get(pk=self.lab)
+        month = date.today()
+        month=month.strftime("%B")
         first_line = [
-            _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), '',
+            _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), str(self.request.GET.get('consecutive')),
         ]
         second_line = [
-            _("Laboratorio o centro de trabajo"), laboratory.name, _('Month'), '',
+            _("Laboratorio o centro de trabajo"), laboratory.name, _('Month'), _(month),
         ]
         third_line = [
             _("Email"), laboratory.email, _('Phone'), laboratory.phone_number,
@@ -814,10 +807,8 @@ class PrecursorsView(ReportListView):
                                                       str(_('Razon de gasto o despacho')),
                                                       str(_('Asunto')),
                                                       ]]
-        dates= self.request.GET.get('month')
-        dates= dates.split('-')
-        month=int(dates[1])
-        year=int(dates[0])
+        month = int(self.request.GET.get('month'))
+        year = int(self.request.GET.get('year'))
 
         object_list = ObjectLogChange.objects.values('object','measurement_unit__key','object__name', 'laboratory') \
             .filter(laboratory=self.lab, precursor=True,
