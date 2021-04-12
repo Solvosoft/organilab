@@ -15,13 +15,7 @@
            style="margin-left: 10px; color:red">
             <span aria-hidden="true" class="glyphicon glyphicon-trash"></span> </a>
         {% endif %}
-        {% if perms.laboratory.change_shelfobject %}
-        <a class="pull-right"
-           data-ajax="true"
-           data-success="processResponseshelfobjectUpdate"
-           href="{% url 'laboratory:shelfobject_edit' laboratory shelfobject.pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}">
-            <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span> </a>
-        {% endif %}
+
         {% if perms.laboratory.do_report %}
         <a class=" pull-right" href="{% url 'laboratory:reports_shelf_objects' laboratory %}?pk={{ shelfobject.pk }}"
            style="margin-right: 10px;">
@@ -32,7 +26,7 @@
         <a class="pull-right"
            data-toggle="modal"
            data-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="initialize_modal({{shelfobject.pk}}, {{request.user.id}})">
+           style="margin-right: 10px;" onclick="initialize_reservation_modal({{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
             <span aria-hidden="true" class="glyphicon glyphicon-book" title="{% trans 'Reserve' %}"></span>
         </a>
         {% endif %}

@@ -57,6 +57,7 @@ def users_management(request, pk):
             if roles is not None:
                 for rol in roles:
                     profile_permission.rol.add(rol)
+
             group, created = Group.objects.get_or_create(name="General")
             group.user_set.add(user)
 

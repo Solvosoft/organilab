@@ -98,3 +98,7 @@ def show_laboratory_name(context):
         if lab:
             return str(lab)
     return ''
+
+@register.filter()
+def to_int(value):
+   return int(value)

@@ -270,6 +270,10 @@ CELERYBEAT_SCHEDULE = {
     'check_product_limits': {
         'task': 'laboratory.tasks.notify_about_product_limit_reach',
         'schedule': crontab(minute=10, hour=0),
+    },
+    'create_precursor_reports': {
+        'task': 'laboratory.tasks.create_precursor_reports',
+        'schedule': crontab(minute=2, hour=0, day_of_month=1),
     }
 }
 

@@ -15,11 +15,12 @@ from laboratory.sustance.views import create_edit_sustance, sustance_list, Susta
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
 from laboratory.views.access import access_management, users_management, delete_user
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
+from laboratory.views.provider import ProviderCreate,ProviderList,ProviderUpdate
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
@@ -85,6 +86,7 @@ shelf_object_urls = [
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     url(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
+    url(r"transfer_objects$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
 ]
 
 lab_reports_urls = [
@@ -112,6 +114,7 @@ lab_reports_urls = [
     url(r'^list/reactive_precursor_objects$', reports.ReactivePrecursorObjectList.as_view(),
         name='reactive_precursor_object_list'),
     url('^objectchanges$', reports.LogObjectView.as_view(), name='object_change_logs'),
+    url('^precursors$', reports.PrecursorsView.as_view(), name='precursor_report'),
     url('^organizationreactivepresence/$', reports.OrganizationReactivePresenceList.as_view(), name='organizationreactivepresence'),
 
 ]
@@ -140,7 +143,16 @@ solutions_urls = [
         name='solution_detail')
 ]
 
+edit_objects=[
+    url(r"^edit_object/(?P<pk>\d+)$", shelfobject.add_object,
+        name="edit_object"),
+    url(r"^get_object_detail", shelfobject.send_detail,
+        name="get_object_detail"),
+    url(r"update_transfer$", shelfobject.objects_transfer, name="update_transfer"),
+    url(r"shelfs_list$", shelfobject.get_shelf_list, name="get_shelfs"),
+    url(r"delete_transfer$", shelfobject.delete_transfer, name="delete_transfer"),
 
+]
 reports_all_lab=[
     url(r'^reports/hcode$', laboratory.HCodeReports.as_view(), name='h_code_reports'),
     url(r'^reports/download/hcode$', reports.report_h_code, name='download_h_code_reports'),
@@ -149,9 +161,9 @@ reports_all_lab=[
 sustance_urls = [
     url('sustance/edit/(?P<pk>\d+)?/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
     url('sustance/add/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_add'),
-    url('sustance/delete/(?P<pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
+    url('sustance/delete/(?P<pk>\d+)/lab/(?P<lab_pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
     url('sustance/(?P<lab_pk>\d+)$', sustance_list, name='sustance_list'),
-    url('sustance/json/(?P<lab_pk>\d+)?$', SustanceListJson.as_view(), name='sustance_list_json'),
+    url('sustance/json/(?P<pk>\d+)?$', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 organization_urls = [
@@ -165,12 +177,18 @@ organization_urls = [
 
 lab_profiles_urls = [
     url(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
-    url(r"list/(?P<pk>\d+)?$", ProfileUpdateView.as_view(), name="update_lab_profile"),
+    url(r"list/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
 ] 
 
+provider_urls=[
+    url(r"provider$", ProviderCreate.as_view(), name="add_provider"),
+    url(r"update_provider/(?P<pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
+    url(r"list$", ProviderList.as_view(), name="list_provider"),
+]
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     url(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
+    url(r'^lab/(?P<pk>\d+)/edit', LaboratoryEdit.as_view(), name="laboratory_edit"),
     url(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     url(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     url(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
@@ -184,7 +202,8 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
     url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
+    url(r'^lab/(?P<lab_pk>\d+)?/',include(provider_urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
-] +reports_all_lab
+] +reports_all_lab+edit_objects

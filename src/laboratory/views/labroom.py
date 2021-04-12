@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.views.furniture import FurnitureCreateForm
-from laboratory.forms import ReservationModalForm
+from laboratory.forms import ReservationModalForm,AddObjectForm,TransferObjectForm,SubtractObjectForm
 from laboratory.decorators import has_lab_assigned
 
 
@@ -30,6 +30,10 @@ class LaboratoryRoomsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['modal_form_reservation'] = ReservationModalForm()
+        context['tranfer_object_form'] = TransferObjectForm(users=self.request.user.profile.pk,lab_send=self.lab)
+        context['add_object_form'] = AddObjectForm(lab=self.lab)
+        context['subtract_object_form'] = SubtractObjectForm()
+        context['options']=['Reservation','Add','Transfer','Subtract']
         context['user'] = self.request.user
         return context
 

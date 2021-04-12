@@ -6,7 +6,7 @@ Created on 26/12/2016
 '''
 
 import os
-from datetime import datetime
+from datetime import datetime, date
 from django.contrib.auth.decorators import permission_required
 import django_excel
 from django import forms
@@ -15,7 +15,7 @@ from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -26,7 +26,7 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput
 from xhtml2pdf import pisa
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, Profile, SustanceCharacteristics
+    OrganizationStructure, Profile, SustanceCharacteristics,PrecursorReport
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.utils import get_user_laboratories
@@ -34,7 +34,6 @@ from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElem
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
-
 
 #Convert html URI to absolute
 def link_callback(uri, rel):
@@ -336,6 +335,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     description = [
         _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
     ]
+
     if type_id == '0':
         description += [
             _("Molecular formula"),
@@ -346,7 +346,7 @@ def make_book_objects(objects, summary=False, type_id=None):
     content = {
         'objects': [
             description,
-        ]
+    ]
     }
     objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
                                measurement_unit=Min('shelfobject__measurement_unit'))
@@ -373,7 +373,6 @@ def make_book_objects(objects, summary=False, type_id=None):
                                            shelfobj.get_measurement_unit_display()
                                            ])
     return content
-
 
 @has_lab_assigned()
 @permission_required('laboratory.do_report')
@@ -431,6 +430,7 @@ def report_objects(request, *args, **kwargs):
     pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
     if pisaStatus.err:
         return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+
     return response
 
 
@@ -459,7 +459,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
+            make_book_objects(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
         'verbose_name': "Reactive precursor objects",
@@ -675,7 +675,6 @@ class FilterForm(GTForm, forms.Form):
         ('ods', 'ODS')
     ), required=False)
 
-
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LogObjectView(ReportListView):
@@ -761,7 +760,6 @@ class LogObjectView(ReportListView):
                  ]]
 
         for obj in context['object_list']:
-
             book.append([obj.user.get_full_name(),
                          str(obj.laboratory),
                          str(obj.object),
@@ -772,6 +770,151 @@ class LogObjectView(ReportListView):
                          str(obj.measurement_unit)
                          ])
         return book
+
+@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class PrecursorsView(ReportListView):
+    model = PrecursorReport
+    template_name = 'laboratory/precursor_report.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab))
+        return context
+
+    def get_book(self, context):
+        laboratory = Laboratory.objects.get(pk=self.lab)
+        month = date.today()
+        month=month.strftime("%B")
+        first_line = [
+            _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, _('#Consecutivo'), str(self.request.GET.get('consecutive')),
+        ]
+        second_line = [
+            _("Laboratorio o centro de trabajo"), laboratory.name, _('Month'), _(month),
+        ]
+        third_line = [
+            _("Email"), laboratory.email, _('Phone'), laboratory.phone_number,
+        ]
+        book = [first_line, second_line, third_line,[], [str(_('Nombre de la sustancia o producto')),
+                                                      str(_('Unid')),
+                                                      str(_('Saldo final de reporte anterior')),
+                                                      str(_('Ingresos durante el mes')),
+                                                      str(_('Numero de factura')),
+                                                      str(_('Proveedor')),
+                                                      str(_('Total de existencias')),
+                                                      str(_('Gasto durante el mes')),
+                                                      str(_('Saldo al final del mes reportado en este informe')),
+                                                      str(_('Razon de gasto o despacho')),
+                                                      str(_('Asunto')),
+                                                      ]]
+        month = int(self.request.GET.get('month'))
+        year = int(self.request.GET.get('year'))
+
+        object_list = ObjectLogChange.objects.values('object','measurement_unit__key','object__name', 'laboratory') \
+            .filter(laboratory=self.lab, precursor=True,
+                    update_time__month=month,type_action__lte=1, update_time__year=year).annotate(amount=Sum('diff_value'), )
+
+        for obj in object_list:
+
+            providers = ', '.join(self.get_providers(month, year, obj['object']))
+            subjects = ', '.join(self.get_subjects(month, year, obj['object']))
+            last_month_amount = float(self.get_pre_amount(month, year, obj['object']))
+            notes = ', '.join(self.get_notes(month, year, obj['object']))
+            bills = ', '.join(self.get_bills(month, year, obj['object']))
+            amount_spend = abs(self.get_amount_spend(month, year, obj['object']))
+
+            book.append([str(obj['object__name']),
+                         str(obj['measurement_unit__key']),
+                         last_month_amount,
+                         str(obj['amount']),
+                         bills,
+                         providers,
+                         last_month_amount+float(obj['amount']),
+                         amount_spend,
+                         obj['amount']-amount_spend,
+                         notes,
+                         subjects,
+                         ])
+        return book
+
+    def get_pre_month(self, month, year):
+
+        if month == 1:
+            month = 12
+            year = year-1
+        else:
+            month = month-1
+
+        return {'month': month,
+                'year': year}
+
+    def get_providers(self, month, year, obj):
+        providers = ObjectLogChange.objects.values('object', 'provider__name', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for p in providers:
+            if p['provider__name'] is not None:
+                data.append(p['provider__name'])
+
+        return set(data)
+
+    def get_subjects(self, month, year, obj):
+        subjects = ObjectLogChange.objects.values('object', 'subject', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for s in subjects:
+            if s['subject'] is not None:
+                data.append(s['subject'])
+
+        return set(data)
+
+    def get_notes(self, month, year, obj):
+        notes = ObjectLogChange.objects.values('object', 'note', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for n in notes:
+            if n['note'] is not None and len(n['note']) > 0:
+                data.append(n['note'])
+
+        return set(data)
+
+    def get_bills(self, month, year, obj):
+        bills = ObjectLogChange.objects.values('object', 'bill', 'laboratory').\
+            filter(laboratory=self.lab, precursor=True, object__pk=obj, update_time__month=int(month),
+                   update_time__year=int(year))
+        data = []
+        for b in bills:
+            if b['bill'] is not None:
+                data.append(b['bill'])
+
+        return set(data)
+
+    def get_pre_amount(self, month, year, obj):
+
+        date = self.get_pre_month(month,year)
+        amount = 0
+        object_list = ObjectLogChange.objects.values('object', 'new_value','laboratory') \
+            .filter(laboratory=self.lab, precursor=True,object=obj,
+                    update_time__month=date['month'], update_time__year=date['year']).last()
+
+        if object_list is not None:
+            amount = object_list['new_value']
+
+        return amount
+
+    def get_amount_spend(self, month, year, obj):
+        amount = 0
+        object_list = ObjectLogChange.objects.values('object','laboratory') \
+            .filter(laboratory=self.lab, precursor=True,object=obj,
+                    update_time__month=month, type_action=2, update_time__year=year).annotate(spend=Sum('diff_value'))
+
+        if len(object_list) > 0:
+            amount=object_list[0]['spend']
+
+        return amount
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
