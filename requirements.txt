@@ -2,7 +2,7 @@ async-notifications==0.1.19
 chardet==3.0.4
 coreschema==0.0.4
 defusedxml==0.6.0
-Django==2.2.13
+Django==2.2.20
 django-datatables-view==1.19.1
 django-bootstrap-form==3.4
 django-ckeditor==5.6.1
@@ -14,7 +14,7 @@ django-location-field==2.1.0
 django-recaptcha2==1.4.1
 django-reservation==0.2.9
 django-xmlrpc==0.1.8
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 et-xmlfile==1.0.1
 html5lib==1.0.1
@@ -37,7 +37,7 @@ pyexcel-xlsx==0.5.8
 PyJWT==1.7.1
 PyPDF2==1.26.0
 Pyphen==0.9.5
-PyYAML==5.1
+PyYAML>=5.4
 reportlab==3.5.20
 scipy==1.4.1
 six
