@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load i18n laboratory %}
+29
+{% block title %}{% trans 'My Transfers' %}{% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+{% endblock %}
+{% block content %}
+{% include 'laboratory/transfer_object_modal.html' %}
+<style>
+    .select2 {
+    width: 100%!important;
+}
+span.select2-container {
+    z-index:10050;
+}
+</style>
+    <div class="col-md-offset-2 col-md-8">
+            <div class="page-header col-xs-13" align="center">
+              <h3 class="heading-1" ><span> {% trans 'Transfer of objects' %}  </span></h3>
+            </div>
+    </div>
+    <table id="table_id" class="display table table-striped table-bordered text-center" style="width:100%">
+        <thead>
+            <tr>
+                <th>{% trans 'Object' %}</th>
+                <th>{% trans 'Amount' %}</th>
+                <th>{% trans 'Laboratory send' %}</th>
+                <th>{% trans 'Laboratory received' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list%}
+            <tr id="table_data">
+                <td>{{obj.object.object}}</td>
+                <td>{{obj.quantity}}  {{obj.object.measurement_unit}}</td>
+                <td>{{obj.laboratory_send}}</td>
+                <td>{{obj.laboratory_received}}</td>
+                <td>{{obj.update_time}}</td>
+                <td>{{obj.get_status_display}}</td>
+                <td>
+                   {% if laboratory|to_int == obj.laboratory_received.pk and obj.status == 0 %}
+                    <button data-toggle="modal" class="btn btn-success"
+                                data-target="#add_tranfer_object"
+                                aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}})">
+                            <span aria-hidden="true">+</span>
+                        </button>
+                    {% endif %}
+                    {% if obj.status == 0 %}
+                   <button class="btn btn-danger"  onclick="delete_transfer({{obj.id}})">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    {% endif %}
+                     </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block js %}
+<script>
+     document.update_shelf = '{% url "laboratory:update_transfer" %}';
+     document.get_shelfs = '{% url "laboratory:get_shelfs" %}';
+     document.remove_transfer = '{% url "laboratory:delete_transfer" %}';
+     (function(){
+    $("#table_id").DataTable({responsive: true });
+    })(jQuery);
+</script>
+<script src="{% static 'js/transfer_objects.js' %}"></script>
+{% endblock %}

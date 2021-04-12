@@ -15,7 +15,7 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from laboratory.forms import LaboratoryCreate, H_CodeForm
+from laboratory.forms import LaboratoryCreate, H_CodeForm,LaboratoryEdit
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
 from laboratory.utils import get_user_laboratories
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -30,7 +30,7 @@ class LaboratoryEdit(UpdateView):
     lab_pk_field = 'pk'
 
     #fields = ['name', 'phone_number', 'location', 'geolocation']
-    form_class = LaboratoryCreate
+    form_class = LaboratoryEdit
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)

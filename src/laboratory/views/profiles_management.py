@@ -6,7 +6,6 @@ from laboratory.models import Profile
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
 
-
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_profile'), name='dispatch')
 class ProfilesListView(ListView):
@@ -19,7 +18,7 @@ class ProfilesListView(ListView):
         context['laboratory'] = self.kwargs['lab_pk']
         return context
 
-@method_decorator(has_lab_assigned(), name="dispatch")
+@method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
 @method_decorator(permission_required('laboratory.change_profile'), name='dispatch')
 class ProfileUpdateView(FormView, LoginRequiredMixin):
     template_name = 'laboratory/profile_form.html'
@@ -29,7 +28,8 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = dict()
-        profile = Profile.objects.get(pk=self.kwargs['pk'])
+        profile = Profile.objects.filter(pk=self.kwargs['profile_pk']).first()
+
         context['profile_form'] = ProfileForm(initial=
             {
                 'first_name': profile.user.first_name,
@@ -39,13 +39,13 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
                 'profile_id': profile.id
             }
         )
-        context['lab_pk'] = self.kwargs['lab_pk']
-        context['laboratory'] = self.kwargs['lab_pk']
+        context['lab_pk'] = self.kwargs['pk']
+        context['laboratory'] = self.kwargs['pk']
 
         return context
 
     def get_success_url(self, **kwargs):
-        lab_pk = self.kwargs['lab_pk']
+        lab_pk = self.kwargs['pk']
         success_url = f'/lab/{lab_pk}/profiles/list'
         return success_url
 

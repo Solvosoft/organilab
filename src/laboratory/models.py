@@ -3,7 +3,7 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q,Sum
 from django.utils.translation import ugettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
@@ -139,7 +139,6 @@ class ShelfObject(models.Model):
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
@@ -160,6 +159,8 @@ class ShelfObject(models.Model):
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
 
+    def get_object_detail(self):
+        return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
 class LaboratoryRoom(models.Model):
     name = models.CharField(_('Name'), max_length=255)
@@ -206,6 +207,9 @@ class Shelf(models.Model):
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
+
+    def get_shelf(self):
+        return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
@@ -321,7 +325,7 @@ class Furniture(models.Model):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def __str__(self):
-        return '%s' % (self.name,)
+        return '%s' % (self.name)
 
 
 class OrganizationStructureManager(models.Manager):
@@ -406,7 +410,9 @@ class Laboratory(models.Model):
     location = models.CharField(_('Location'), default='', max_length=255)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
-
+    email= models.EmailField(_('Email'),blank=True)
+    coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
+    unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
@@ -496,6 +502,15 @@ class ProfilePermission(models.Model):
     def __str__(self):
         return '%s' % (self.profile,)
 
+class Provider(models.Model):
+    name= models.CharField(max_length=255, blank=True, default='',verbose_name=_('name'))
+    phone_number= models.CharField(max_length=25, blank=True, default='',verbose_name=_('phone'))
+    email= models.EmailField(blank=True,verbose_name=_('email'))
+    legal_identity= models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
 class ObjectLogChange(models.Model):
     object = models.ForeignKey(Object, db_constraint=False, on_delete=models.DO_NOTHING)
@@ -508,8 +523,14 @@ class ObjectLogChange(models.Model):
     precursor = models.BooleanField(default=False)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    subject = models.CharField(max_length=100, blank=True, null=True)
+    provider= models.ForeignKey(Provider, blank=True, db_constraint=False, on_delete=models.DO_NOTHING, null=True)
+    bill = models.CharField(max_length=100, blank=True, null=True)
+    type_action=models.IntegerField(default=0)
+    note = models.CharField(default='',blank=True, null=True, max_length=255)
 
-
+    def __str__(self):
+        return self.object.name
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
@@ -521,4 +542,45 @@ class BlockedListNotification(models.Model):
         verbose_name_plural = _('Bloked List Notifications')
     
     def __str__(self):
-        return f"{self.object}: {self.laboratory}: {self.user}" 
+        return f"{self.object}: {self.laboratory}: {self.user}"
+
+REQUESTED = 0
+ACCEPTED = 1
+
+
+TRANFEROBJECT_STATUS = (
+    (REQUESTED, _("Requested")),
+    (ACCEPTED, _("Accepted")),
+)
+
+class TranferObject(models.Model):
+    object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
+    laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
+    laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
+    quantity = models.FloatField()
+    update_time = models.DateTimeField(auto_now_add=True)
+    state = models.BooleanField(default=True)
+    status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
+
+    def get_object_detail(self):
+        return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
+
+MONTHS=(
+    (1, _('January')),
+    (2, _('February')),
+    (3, _('March')),
+    (4, _('April')),
+    (5, _('May')),
+    (6, _('June')),
+    (7, _('July')),
+    (8, _('August')),
+    (9, _('September')),
+    (10, _('October')),
+    (11, _('November')),
+    (12, _('December')),
+)
+class PrecursorReport(models.Model):
+    month = models.IntegerField(choices=MONTHS)
+    year = models.IntegerField()
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
+    consecutive = models.IntegerField(default=1)
