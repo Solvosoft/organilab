@@ -543,3 +543,8 @@ msgid ""
 "exact phrases and the AND/OR boolean operators combined with parenthesis for "
 "complex queries."
 msgstr ""
+
+
+#: templates/gentelella/app/top_navigation.html:110
+msgid "Precursors Report"
+msgstr "Reporte de Precursores"

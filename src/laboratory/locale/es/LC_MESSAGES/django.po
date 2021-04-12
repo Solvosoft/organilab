@@ -1933,6 +1933,14 @@ msgstr "Sin Características de objeto"
 msgid "No Objects Elements"
 msgstr "No hay Objetos"
 
+#: laboratory/templates/precursor_report.html:26
+msgid "Month"
+msgstr "Mes"
+
+#: laboratory/templates/precursor_report.html:25
+msgid "Consecutive"
+msgstr "Consecutivo"
+
 #: laboratory/validators.py:12
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
