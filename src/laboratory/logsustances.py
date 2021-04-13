@@ -1,7 +1,7 @@
 from laboratory.models import ObjectLogChange
 
 
-def log_object_change(user, laboratory, shelfobject, old, new, type, msg=None, create=False):
+def log_object_change(user, laboratory, shelfobject, old, new, note,type_action, msg=None, create=False):
     ObjectLogChange.objects.create(
         object=shelfobject.object,
         laboratory_id=int(laboratory),
@@ -12,7 +12,8 @@ def log_object_change(user, laboratory, shelfobject, old, new, type, msg=None, c
         precursor=shelfobject.object.is_precursor,
         measurement_unit=shelfobject.measurement_unit,
         subject=msg,
-        type_action=type
+        type_action=type_action,
+        note=note
     )
 
 def log_object_add_change(user, laboratory, shelfobject, old, new, msg, provider,bill, create=False):
@@ -28,5 +29,5 @@ def log_object_add_change(user, laboratory, shelfobject, old, new, msg, provider
         subject=msg,
         provider_id=provider,
         bill=bill,
-        type_action=1
+        note=''
     )

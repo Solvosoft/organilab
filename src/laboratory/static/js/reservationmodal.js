@@ -15,8 +15,8 @@ function initialize_reservation_modal(shelf_obj_pk,object_pk, user_pk,units) {
     shelf_object_id = shelf_obj_pk;
     object_id= object_pk;
     user_id = user_pk;
-    $('#unit').text(units);
-
+    $('.unit').text(units);
+    get_detail()
     }
 
 /* Function that appends an input field to the form 
@@ -82,6 +82,7 @@ function add_reservation() {
                       if(msg){
                          $("#modal_reservation").modal('hide');
                             clear_inputs();
+                            location.reload();
                         }else{
                         error_message('#alert_message_objects')
                         }
@@ -126,3 +127,14 @@ $( document ).ready(()=>{
 
     choose_action()
 });
+
+function get_detail(){
+     $.ajax({
+              url: $('#detail_url').val(),
+               type: 'POST',
+               data: {'shelf_object':shelf_object_id},
+               success: function({obj}) {
+                    $('#obj').text(obj)
+                    }
+                });
+}
