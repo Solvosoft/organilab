@@ -307,6 +307,7 @@ def subtract_object(request, pk):
         return JsonResponse({'msg': False})
     return JsonResponse({'msg': True})
 
+
 @permission_required('laboratory.add_tranfer_object')
 def transfer_object(request, pk):
     try:
@@ -330,6 +331,7 @@ def send_detail(request):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
+
 class ListTransferObjects(ListView):
     model = TranferObject
     template_name = 'laboratory/transfer_objects.html'
@@ -349,6 +351,7 @@ def get_shelf_list(request):
     data = json.dumps(aux)
     return JsonResponse({'data': data, 'msg': transfer_detail.get_object_detail()})
 
+
 @permission_required('laboratory.change_tranfer_object')
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
@@ -356,19 +359,25 @@ def objects_transfer(request):
     lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
 
     if lab_send_obj.quantity >= data.quantity:
-        try:
-            lab_received_obj = ShelfObject.objects.get(object_id=object.id, shelf_id=int(request.POST.get('shelf')))
-            old = lab_received_obj.quantity
-            lab_received_obj.quantity += data.quantity
-            lab_received_obj.save()
+        lab_received_obj = ShelfObject.objects.filter(object_id=object.id, shelf_id=int(request.POST.get('shelf'))).first()
+        if lab_received_obj is not None:
+             old = lab_received_obj.quantity
+             lab_received_obj.quantity += data.quantity
+             lab_received_obj.save()
 
-            log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
-                              lab_received_obj.quantity,
-                              'Transferencia de %s por parte del laboratorio %s'% (data.get_object_detail(), data.laboratory_send.name),
-                1,"Transfer", create=False)
+             log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
+                                  lab_received_obj.quantity,
+                                  'Transferencia de %s por parte del laboratorio %s'% (data.get_object_detail(), data.laboratory_send.name),
+                    1,"Transfer", create=False)
 
-        except ShelfObject.DoesNotExist:
-            return JsonResponse({'status': False, 'msg': 'The Shelf dont exist'})
+        else:
+            get_shelf = Shelf.objects.get(pk=int(request.POST.get('shelf')))
+            new_object = ShelfObject.objects.create(shelf=get_shelf,
+                                           object=object,
+                                           quantity=data.quantity,
+                                           limit_quantity=0,
+                                           measurement_unit=lab_send_obj.measurement_unit)
+            new_object.save()
 
         old = lab_send_obj.quantity
         lab_send_obj.quantity -= data.quantity
@@ -381,6 +390,7 @@ def objects_transfer(request):
     else:
         return JsonResponse({'status': False, 'msg': _('Need to create the object into the Shelf')})
     return JsonResponse({'status': True, 'msg': ''})
+
 
 @permission_required('laboratory.delete_tranfer_object')
 def delete_transfer(request):
