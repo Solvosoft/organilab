@@ -355,11 +355,17 @@ def get_shelf_list(request):
 @permission_required('laboratory.change_tranfer_object')
 def objects_transfer(request):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
-    object = data.object.object
+    obj = data.object.object
     lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
 
+    try:
+        shelf = int(request.POST.get('shelf'))
+    except ValueError:
+        return JsonResponse({'status': False, 'msg': _('Need to create a Shelf')})
+
     if lab_send_obj.quantity >= data.quantity:
-        lab_received_obj = ShelfObject.objects.filter(object_id=object.id, shelf_id=int(request.POST.get('shelf'))).first()
+        lab_received_obj = ShelfObject.objects.filter(object_id=obj.id, shelf_id=shelf).first()
+
         if lab_received_obj is not None:
              old = lab_received_obj.quantity
              lab_received_obj.quantity += data.quantity
@@ -371,9 +377,9 @@ def objects_transfer(request):
                     1,"Transfer", create=False)
 
         else:
-            get_shelf = Shelf.objects.get(pk=int(request.POST.get('shelf')))
+            get_shelf = Shelf.objects.get(pk=shelf)
             new_object = ShelfObject.objects.create(shelf=get_shelf,
-                                           object=object,
+                                           object=obj,
                                            quantity=data.quantity,
                                            limit_quantity=0,
                                            measurement_unit=lab_send_obj.measurement_unit)
@@ -388,7 +394,7 @@ def objects_transfer(request):
                     'Transferencia de %s al laboratorio %s'% (data.get_object_detail(), data.laboratory_received.name),
                           2, "Transfer", create=False)
     else:
-        return JsonResponse({'status': False, 'msg': _('Need to create the object into the Shelf')})
+        return JsonResponse({'status': False, 'msg': _('The amount sends is more than the laboratory have')})
     return JsonResponse({'status': True, 'msg': ''})
 
 
