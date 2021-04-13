@@ -23,7 +23,8 @@
   color: black;
 }
 </style>
-<input type="hidden" id="edit_url" value="{% url 'laboratory:add_object' pk=laboratory %}">
+<input type="hidden" id="edit_url" value="{% url 'laboratory:edit_object' pk=laboratory %}">
+<input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog"
      tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -45,6 +46,8 @@
                 </div>
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
+                    <input type="hidden" value="{{laboratory}}" name="lab">
+                    <label class="pull-right" id="obj"></label>
                     <div class="form-group">
                         <label>{% trans 'Action'%}</label>
                         <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
@@ -59,8 +62,9 @@
                         <label>Amount Required</label>
                         <div class="input-group">
                         {{modal_form_reservation.amount_required}}
-                            <span class="input-group-addon" id="unit">L</span>
+                            <span class="input-group-addon unit" ></span>
                     </div>
+                        {{modal_form_reservation.amount_required.help_text}}
                     </div>
                              <div class="form-group">
                         <label>Initial Date</label>
@@ -73,13 +77,55 @@
                     </div>
                    </div>
                     <div  id="add" style="display:none;" class="form-group">
-                        {{add_object_form.as_p}}
+                        {% for field in add_object_form %}
+                            {% if 'amount' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{field.help_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div id="tranfer" style="display:none;" class="form-group">
-                        {{tranfer_object_form.as_p}}
+                             {% for field in tranfer_object_form %}
+                            {% if 'amount_send' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{ field.help_text }}
+                                </div>
+                            {% else %}
+                              {{field.label_tag}}
+                                {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div id="subtract" style="display:none;" class="form-group">
-                        {{subtract_object_form.as_p}}
+                        {% for field in subtract_object_form %}
+                            {% if 'discount' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-addon unit"></span>
+                                 </div>
+                                        {{field.help_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
                 </form>

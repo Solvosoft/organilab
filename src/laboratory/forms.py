@@ -106,21 +106,38 @@ class ReservationModalForm(GTForm, ModelForm):
         widgets = {
             'initial_date': genwidgets.DateTimeInput,
             'final_date': genwidgets.DateTimeInput,
-            'amount_required': genwidgets.NumberInput
+            'amount_required': genwidgets.TextInput
         }
 
+
 class TransferObjectForm(GTForm):
-    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
+    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),help_text='Use dot like 0.344 on decimal', required=True)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(), label=_("Laboratory"), required=True)
+
+    def __init__(self, *args, **kwargs):
+        users = kwargs.pop('users')
+        lab=kwargs.pop('lab_send')
+        super(TransferObjectForm, self).__init__(*args, **kwargs)
+        profile = Profile.objects.filter(pk=users).first()
+        self.fields['laboratory'].queryset = profile.laboratories
+
 
 class AddObjectForm(forms.Form):
-    amount = forms.CharField(widget=genwidgets.NumberInput, max_length=7, label=_('Amount'), required=True)
+    amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
                                        label=_("Provider"),required=False)
 
+    def __init__(self, *args, **kwargs):
+        lab = kwargs.pop('lab')
+        super(AddObjectForm, self).__init__(*args, **kwargs)
+        providers = Provider.objects.filter(laboratory__id=int(lab))
+        self.fields['provider'].queryset = providers
+
+
 class SubtractObjectForm(GTForm):
-    discount = forms.CharField(widget=genwidgets.TextInput, max_length=7, label=_('Amount'), required=True)
+    discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',label=_('Description'), required=False)
 
 class ProfileForm(forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
@@ -128,3 +145,23 @@ class ProfileForm(forms.Form):
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
     profile_id = forms.CharField(widget=forms.HiddenInput())
+
+class AddTransferObjectForm(GTForm):
+    shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
+
+    def __init__(self, *args, **kwargs):
+        lab = kwargs.pop('lab')
+        super(AddTransferObjectForm, self).__init__(*args, **kwargs)
+        shelf = Shelf.objects.filter(furniture__labroom__laboratory__id=int(lab))
+        self.fields['shelf'].queryset = shelf
+
+class ProviderForm(forms.ModelForm,GTForm):
+
+    class Meta:
+        model = Provider
+        fields = ['name','phone_number','email','legal_identity']
+        widgets = {'name': genwidgets.TextInput,
+                 'phone_number': genwidgets.TextInput,
+                 'email': genwidgets.EmailMaskInput,
+                 'legal_identity': genwidgets.TextInput,
+                   }

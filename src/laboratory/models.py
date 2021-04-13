@@ -159,6 +159,8 @@ class ShelfObject(models.Model):
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
 
+    def get_object_detail(self):
+        return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
 class LaboratoryRoom(models.Model):
     name = models.CharField(_('Name'), max_length=255)
@@ -205,6 +207,9 @@ class Shelf(models.Model):
     class Meta:
         verbose_name = _('Shelf')
         verbose_name_plural = _('Shelves')
+
+    def get_shelf(self):
+        return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
@@ -498,10 +503,11 @@ class ProfilePermission(models.Model):
         return '%s' % (self.profile,)
 
 class Provider(models.Model):
-    name= models.CharField(max_length=255, blank=True, default='')
-    phone_number= models.CharField(max_length=25, blank=True, default='')
-    email= models.EmailField(blank=True)
-    legal_identity= models.CharField(max_length=50,blank=True,default='')
+    name= models.CharField(max_length=255, blank=True, default='',verbose_name=_('name'))
+    phone_number= models.CharField(max_length=25, blank=True, default='',verbose_name=_('phone'))
+    email= models.EmailField(blank=True,verbose_name=_('email'))
+    legal_identity= models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -518,15 +524,11 @@ class ObjectLogChange(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     subject = models.CharField(max_length=100, blank=True, null=True)
-    provider= models.ForeignKey(Provider, blank=True,on_delete=models.DO_NOTHING, null=True, default='')
+    provider= models.ForeignKey(Provider, blank=True, db_constraint=False, on_delete=models.DO_NOTHING, null=True)
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action=models.IntegerField(default=0)
+    note = models.CharField(default='',blank=True, null=True, max_length=255)
 
-    def get_object_count(self):
-        x=ObjectLogChange.objects.values('object', 'laboratory')\
-            .filter(laboratory=self.laboratory,object=self.object).annotate(total=Sum('diff_value'),)
-
-        return x[0]
     def __str__(self):
         return self.object.name
 class BlockedListNotification(models.Model):
@@ -542,3 +544,43 @@ class BlockedListNotification(models.Model):
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 
+REQUESTED = 0
+ACCEPTED = 1
+
+
+TRANFEROBJECT_STATUS = (
+    (REQUESTED, _("Requested")),
+    (ACCEPTED, _("Accepted")),
+)
+
+class TranferObject(models.Model):
+    object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
+    laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
+    laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
+    quantity = models.FloatField()
+    update_time = models.DateTimeField(auto_now_add=True)
+    state = models.BooleanField(default=True)
+    status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
+
+    def get_object_detail(self):
+        return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
+
+MONTHS=(
+    (1, _('January')),
+    (2, _('February')),
+    (3, _('March')),
+    (4, _('April')),
+    (5, _('May')),
+    (6, _('June')),
+    (7, _('July')),
+    (8, _('August')),
+    (9, _('September')),
+    (10, _('October')),
+    (11, _('November')),
+    (12, _('December')),
+)
+class PrecursorReport(models.Model):
+    month = models.IntegerField(choices=MONTHS)
+    year = models.IntegerField()
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
+    consecutive = models.IntegerField(default=1)
