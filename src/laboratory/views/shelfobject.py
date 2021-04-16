@@ -256,7 +256,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
             },
         }
 
-
+@has_lab_assigned(lab_pk="pk")
 @permission_required('laboratory.change_shelfobject')
 def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
@@ -285,6 +285,7 @@ def add_object(request, pk):
         return transfer_object(request, pk)
     return JsonResponse({'msg': True})
 
+add_object.lab_pk_field= 'pk'
 
 @permission_required('laboratory.change_shelfobject')
 def subtract_object(request, pk):
@@ -352,8 +353,8 @@ def get_shelf_list(request):
     return JsonResponse({'data': data, 'msg': transfer_detail.get_object_detail()})
 
 
-@permission_required('laboratory.change_tranfer_object')
-def objects_transfer(request):
+@permission_required('laboratory.add_tranferobject')
+def objects_transfer(request,pk):
     data = TranferObject.objects.get(pk=int(request.POST.get('transfer_id')))
     obj = data.object.object
     lab_send_obj = ShelfObject.objects.get(pk=data.object.pk)
@@ -398,11 +399,17 @@ def objects_transfer(request):
     return JsonResponse({'status': True, 'msg': ''})
 
 
-@permission_required('laboratory.delete_tranfer_object')
-def delete_transfer(request):
+objects_transfer.lab_pk_field = 'pk'
+
+
+@permission_required('laboratory.delete_tranferobject')
+def delete_transfer(request,pk):
     try:
         transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
         transfer.delete()
     except TranferObject.DoesNotExist:
         return JsonResponse({'data': False})
     return JsonResponse({'data': True})
+
+
+delete_transfer.lab_pk_field = 'pk'
