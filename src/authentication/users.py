@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
-from authentication.forms import CreateUserForm, PasswordChangeForm
+from authentication.forms import CreateUserForm, PasswordChangeForm,EditUserForm
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Profile, ProfilePermission, Laboratory
 
@@ -73,7 +73,7 @@ class AddUser(CreateView):
 @method_decorator(permission_required("laboratory.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
     model = User
-    form_class = CreateUserForm
+    form_class = EditUserForm
     template_name = "auth/change_user.html"
 
     def dispatch(self, request, *args, **kwargs):
