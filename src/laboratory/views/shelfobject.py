@@ -314,16 +314,18 @@ def transfer_object(request, pk):
     try:
         amount = float(request.POST.get('amount_send'))
     except ValueError:
-        return JsonResponse({'msg': False})
-
-    object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
-    lab_send = Laboratory.objects.filter(pk=pk).first()
-    lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
-    TranferObject.objects.create(object=object,
-                                 laboratory_send=lab_send,
-                                 laboratory_received=lab_received,
-                                 quantity=amount
-                                 )
+        return JsonResponse({'status': False, 'msg': _('Only can accept whole numbers or decimal numbers with .')})
+    obj = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
+    if amount <= obj.quantity:
+        lab_send = Laboratory.objects.filter(pk=pk).first()
+        lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
+        TranferObject.objects.create(object=obj,
+                                     laboratory_send=lab_send,
+                                     laboratory_received=lab_received,
+                                     quantity=amount
+                                     )
+    else:
+        return JsonResponse({'status': False, 'msg': _('The amount sending is less that the amount we have in the Shelf')})
     return JsonResponse({'msg': True})
 
 
