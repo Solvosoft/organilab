@@ -9,6 +9,7 @@ from laboratory.decorators import has_lab_assigned
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from laboratory.models import Profile, ProfilePermission
+from django.http import JsonResponse
 
 
 # FIXME to manage add separately bootstrap, we need a workaround to to this.
@@ -36,6 +37,7 @@ def access_management(request):
     context['labs'] = request.user.profile.laboratories.all()
     context['orgs'] = OrganizationStructure.objects.filter(organizationusermanagement__users=request.user)
     context['form'] = form
+    context['groups'] = Group.objects.all()
     return render(request, 'laboratory/access_management.html', context=context)
 
 
@@ -85,3 +87,15 @@ def delete_user(request, pk, user_pk):
 
 
 delete_user.lab_pk_field = 'pk'
+
+@permission_required('laboratory.change_organizationusermanagement')
+def edit_management(request):
+    parent = None
+    if request.method == 'POST':
+        pk = int(request.POST["org_pk"])
+        orga=OrganizationStructure.objects.filter(pk=pk).first()
+        orga.name = request.POST["name"]
+        orga.save()
+        messages.success(request, _('Organization added sucessfully'))
+        return redirect('laboratory:access_list')
+
