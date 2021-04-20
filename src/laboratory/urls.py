@@ -14,7 +14,7 @@ from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
-from laboratory.views.access import access_management, users_management, delete_user,get_organization, edit_management
+from laboratory.views.access import access_management, users_management, delete_user, edit_management
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
