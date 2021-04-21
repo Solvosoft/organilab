@@ -130,12 +130,12 @@ $( document ).ready(()=>{
 });
 
 function get_detail(){
-     $.ajax({
-              url: $('#detail_url').val(),
-               type: 'POST',
-               data: {'shelf_object':shelf_object_id},
-               success: function({obj}) {
-                    $('#obj').text(obj)
-                    }
-                });
+    $.ajax({
+       url: $('#detail_url').val(),
+       type: 'POST',
+       data: {'shelf_object':shelf_object_id},
+       success: function({obj}) {
+        $('#obj').text(obj)
+        }
+       });
 }
