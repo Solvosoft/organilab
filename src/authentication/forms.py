@@ -39,9 +39,6 @@ class CreateUserForm(CustomForm, forms.ModelForm):
 
 
 class EditUserForm(CustomForm, forms.ModelForm):
-    phone_number = forms.CharField(max_length=25, label=_('Phone'), widget=djgenwidgets.PhoneNumberMaskInput)
-    id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
-    job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
 
     class Meta:
         model = User
