@@ -5,5 +5,6 @@ span.select2-container {
     z-index:10050;
 }
 #modalConfirmDelete{
-    margin-top:15%;
+    margin-top:5%;
+    z-index:11000;
 }
