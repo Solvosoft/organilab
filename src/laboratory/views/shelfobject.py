@@ -276,14 +276,14 @@ def add_object(request, pk):
             object.save()
             log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
                                   request.POST.get('bill'), create=False)
-            return JsonResponse({'msg': True})
+            return JsonResponse({'msg': True, 'msg': _('Add done successfully')})
         else:
-            return JsonResponse({'msg': False})
+            return JsonResponse({'msg': False,'msg':_('Complete the fields')})
     elif action == 4:
         return subtract_object(request, pk)
     else:
         return transfer_object(request, pk)
-    return JsonResponse({'msg': True})
+    return JsonResponse({'msg': True, 'msg': _('Add done successfully')})
 
 add_object.lab_pk_field= 'pk'
 
@@ -303,10 +303,10 @@ def subtract_object(request, pk):
             object.save()
             log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
         else:
-            return JsonResponse({'msg': False})
+            return JsonResponse({'status': False, 'msg': _('The amount of subtract is more that shelf have')})
     else:
-        return JsonResponse({'msg': False})
-    return JsonResponse({'msg': True})
+        return JsonResponse({'status': False, 'msg': _('Complete the fields')})
+    return JsonResponse({'status': True, 'msg': _('Accion done successfully')})
 
 
 @permission_required('laboratory.add_tranfer_object')
@@ -326,7 +326,7 @@ def transfer_object(request, pk):
                                      )
     else:
         return JsonResponse({'status': False, 'msg': _('The amount sending is less that the amount we have in the Shelf')})
-    return JsonResponse({'msg': True})
+    return JsonResponse({'status': True, 'msg': _('Transfer done successfully')})
 
 
 @csrf_exempt
@@ -398,11 +398,10 @@ def objects_transfer(request,pk):
                           2, "Transfer", create=False)
     else:
         return JsonResponse({'status': False, 'msg': _('The amount sends is more than the laboratory have')})
-    return JsonResponse({'status': True, 'msg': ''})
+    return JsonResponse({'status': True, 'msg': _('Transfer done successfully')})
 
 
 objects_transfer.lab_pk_field = 'pk'
-
 
 @permission_required('laboratory.delete_tranferobject')
 def delete_transfer(request,pk):

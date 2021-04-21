@@ -94,12 +94,6 @@ class ChangeUser(UpdateView):
 
     def form_valid(self, form):
         instance = form.save()
-        user = User.objects.get(username=form.cleaned_data['username'])
-        p, created = Profile.objects.get_or_create(user=user)
-        p.phone_number = form.cleaned_data['phone_number']
-        p.id_card = form.cleaned_data['id_card']
-        p.job_position = form.cleaned_data['job_position']
-        p.save()
         return super(ChangeUser, self).form_valid(form)
 
 
