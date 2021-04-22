@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from laboratory.models import Profile,Rol,ProfilePermission
+from laboratory.models import Profile,Rol,ProfilePermission,Laboratory
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
 
@@ -67,7 +67,8 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
         profile.user.save()
         profile.save()
 
-        pp = ProfilePermission.objects.filter(profile__id=profile.id, laboratories__id=self.kwargs['pk']).first()
+        lab = Laboratory.objects.filter(pk=int(self.kwargs['pk'])).first()
+        pp, created = ProfilePermission.objects.get_or_create(profile=profile, laboratories=lab)
 
         if pp is not None:
             pp.rol.clear()

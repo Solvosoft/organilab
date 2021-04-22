@@ -5,7 +5,6 @@ from django.urls import reverse
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile_student
 from laboratory.models import Profile
 
-
 def check_perms(lab_pk, request, perm):
     user = request.user
     lab = None
@@ -52,10 +51,14 @@ view_user_group_perms = user_group_perms
 def has_lab_assigned(lab_pk='lab_pk'):
     def decorator(view_func):
         def wrap(request, *args, **kwargs):
-            lab_in = request.user.profile.laboratories.filter(pk=kwargs[lab_pk] ).first()
-            if lab_in:
-                return view_func(request, *args, **kwargs)
+            profile = request.user
+            if hasattr(profile,'profile'):
+                lab_in = request.user.profile.laboratories.filter(pk=kwargs[lab_pk]).first()
+                if lab_in:
+                    return view_func(request, *args, **kwargs)
+                else:
+                    return redirect(reverse('permission_denied'))
             else:
-                return redirect(reverse('permission_denied'))
+                return redirect(reverse('login'))
         return wrap
     return decorator
