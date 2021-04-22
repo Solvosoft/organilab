@@ -55,7 +55,7 @@ future==0.18.2
 django-fontawesome==1.0
 django-tagging==0.4.6
 django-picklefield==2.1.1
-django-debug-toolbar==2.2
+django-debug-toolbar>=2.2.1
 django-celery-beat==2.0.0
 celery==4.4.1
 django-paypal==1.0.0
