@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from organilab import settings
 from laboratory.models import ProfilePermission
 from django.shortcuts import redirect
 from django.urls import reverse
