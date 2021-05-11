@@ -34,8 +34,14 @@ function add_object(){
         data: form,
         processData: false,
         contentType: false,
-        success: function(data) {
-            generate_table(data);
+        success: function({data, status, msg}) {
+            generate_table(JSON.parse(data));
+            if(!status){
+            Swal.fire({
+                icon: 'error',
+                text: msg,
+            })
+            }
         }
         });
   }
@@ -48,8 +54,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td><span class="btn btn-success" onclick=""><i class="fa fa-edit"></i> Editar</span>
-        <a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> Eliminar</a>
+        <td><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> Eliminar</a>
               </td>
         </tr>`;
     });
@@ -78,8 +83,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td><span class="btn btn-success" onclick=""><i class="fa fa-edit"></i> Editar</span>
-            <a class="btn btn-md btn-danger" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
+             <td><a class="btn btn-md btn-danger" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
             </tr>`
 
     });
@@ -171,3 +175,16 @@ swalWithBootstrapButtons.fire({
 })
 }
 
+function add_reservation(){
+  form= new FormData(document.getElementById('reservation_form'));
+    $.ajax({
+        url: document.reservation,
+        type: 'POST',
+        data: form,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log(response)
+        }
+        });
+  }

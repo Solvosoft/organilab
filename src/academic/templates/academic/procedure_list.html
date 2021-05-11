@@ -20,6 +20,7 @@
     <table  id="datatable" class="table table-bordered table-hover">
         <thead>
         <tr>
+        <th style="display:none"></th>
         <th>{% trans 'Title' %}</th>
         <th>{% trans 'Description' %}</th>
         <th>{% trans 'Actions' %}</th>
@@ -28,6 +29,7 @@
         <tbody>
             {% for procedure in object_list %}
                 <tr>
+                    <td style="display:none">{{procedure.pk}}</td>
                     <td>{{procedure.title}}</td>
                     <td>{{ procedure.description | safe }}</td>
                     <td><a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=lab %}">{{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
@@ -57,12 +59,13 @@
                 <form id="reservation_form">
                     {% csrf_token %}
                     {{reservation_form | bootstrap}}
-                    <input type="hidden" id="procedure" name="procedure_pk" value="">
+                    <input type="hidden" id="procedure" name="procedure" value="">
+                    <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-dismiss="modal">{% trans 'Save changes' %}</button>
+                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>
@@ -73,9 +76,10 @@
 	{{block.super}}
 	<script>
 	    document.getProcedure="{% url 'get_procedure' %}"
+	    document.reservation="{% url 'generate_reservation' %}"
 	    document.remove_procedure="{% url 'delete_procedure' %}"
-
-		$("#datatable").DataTable();
+		var table=$("#datatable").DataTable();
+		table.order( [ 0, 'desc' ] ).draw();
 	</script>
     <script src="{% static 'js/procedures.js'%}"></script>
 {% endblock %}
