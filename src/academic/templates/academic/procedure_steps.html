@@ -15,7 +15,7 @@
 }
 </style>
 <div class="box-body">
-    <a class="btn btn-primary" href="{% url 'procedure_list' pk=pk %}"><<</a>
+    <a class="btn btn-primary" href="{% url 'procedure_list' pk=lab_pk %}"><<</a>
     <div class="page-header">
       <h1 class="text-center">Crear Paso</h1>
     </div>
@@ -49,8 +49,7 @@
             <tr>
                 <td>{{ obj.object }}</td>
                 <td>{{ obj.quantity }} {{obj.get_measurement_unit_display}}</td>
-                <td><span class="btn btn-success" onclick="remove_object({{obj.pk}})"><i class="fa fa-edit"></i> {% trans 'Edit'%}</span>
-                <span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"><i class="fa fa-trash"></i> {% trans 'Delete'%}</span></td>
+                <td><span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"><i class="fa fa-trash"></i> {% trans 'Delete'%}</span></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -75,8 +74,7 @@
        {% for obs in step.procedureobservations_set.all %}
             <tr>
                 <td>{{ obs.description }}</td>
-                <td><span class="btn btn-success" onclick=""><i class="fa fa-edit"></i> {% trans 'Edit' %}</span>
-                    <span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
+                <td><span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -90,7 +88,7 @@
     {% block js %}
 
     <script>
-        document.save_object="{% url 'save_object' pk=step.id %}";
+        document.save_object="{% url 'save_object' pk=step.id lab_pk=lab_pk %}";
         document.remove_object="{% url 'remove_object' pk=step.id%}";
         document.save_observation="{% url 'add_observation' pk=step.id %}";
         document.remove_observation="{% url 'remove_observation' pk=step.id%}";

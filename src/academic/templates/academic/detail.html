@@ -46,7 +46,8 @@
         	<ul class="list-group">
     {% for obj in step.procedurerequiredobject_set.all %}
 		  <li class="list-group-item">
-		    <span class="badge">{{obj.quantity}} {{obj.get_measurement_unit_display}} </span>
+              {{obj.measurement_unit}}
+		    <span class="badge">{{obj.quantity}}  </span>
 		    {{obj.object}}
 		  </li>
     {% endfor %}
