@@ -83,6 +83,9 @@ def delete_user(request, pk, user_pk):
     user = Profile.objects.filter(pk=user_pk).first()
     if user and lab:
         user.laboratories.remove(pk)
+        pp = ProfilePermission.objects.filter(profile=user, laboratories=lab).first()
+        if pp is not None:
+            pp.delete()
     return redirect('laboratory:users_management', pk=pk)
 
 
