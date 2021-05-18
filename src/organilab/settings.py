@@ -302,7 +302,7 @@ CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
     'default': {
         'height': 500,
-        'width': 875,
+        'width': 'auto',
     },
 }
 ASYNC_SMTP_DEBUG=False
