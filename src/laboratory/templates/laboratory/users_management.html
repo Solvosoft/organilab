@@ -120,14 +120,12 @@
   {% if perms.laboratory.delete_organizationusermanagement %}
     <script>
       (function(){
-        $("#userstable").DataTable();
-
         $(".delete_user").on('click', function(){
             var url = "{% url 'laboratory:delete_user' organization.pk %}".concat(String($(this).data('id')));
             $("#modal_delete_user").attr('href', url);
             $("div.modal_user").text($(this).data('name'));
         });
-
+        $("#userstable").DataTable();
       })(jQuery);
     </script>
   {% endif %}
