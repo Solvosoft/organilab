@@ -4,7 +4,8 @@ from celery import Celery
 from laboratory.models import ShelfObject, Laboratory,PrecursorReport
 from async_notifications.utils import send_email_from_template
 from datetime import date
-from limit_shelfobject import send_email_limit_objs
+from .limit_shelfobject import send_email_limit_objs
+
 app = Celery()
 
 def get_limited_shelf_objects(lab):
