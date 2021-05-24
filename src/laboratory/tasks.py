@@ -20,7 +20,7 @@ def get_limited_shelf_objects(lab):
     return object_list
 
 
-#@app.task
+@app.task
 def notify_about_product_limit_reach():
     labs = Laboratory.objects.all()
     object_list=[]
@@ -29,6 +29,7 @@ def notify_about_product_limit_reach():
                 object_list.append(shelfobjects)
         send_email_limitobjs(lab,object_list, enqueued=False)
         object_list.clear()
+
 
 @app.on_after_configure.connect
 def setup_daily_tasks(sender, **kwargs):
