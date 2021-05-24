@@ -2,11 +2,9 @@ from __future__ import absolute_import, unicode_literals
 
 from celery import Celery
 from laboratory.models import ShelfObject, Laboratory,PrecursorReport
-from laboratory.signals import send_email_to_ptech_limitobjs, send_email_limitobjs
-
-from django.db.models.expressions import F
+from async_notifications.utils import send_email_from_template
 from datetime import date
-
+from limit_shelfobject import send_email_limit_objs
 app = Celery()
 
 def get_limited_shelf_objects(lab):
@@ -27,7 +25,7 @@ def notify_about_product_limit_reach():
     for lab in labs:
         for shelfobjects in get_limited_shelf_objects(lab):
                 object_list.append(shelfobjects)
-        send_email_limitobjs(lab,object_list, enqueued=False)
+        send_email_limit_objs(lab,object_list, enqueued=False)
         object_list.clear()
 
 
@@ -56,3 +54,4 @@ def add_consecutive(lab):
         consecutive = int(report.consecutive)+1
 
     return consecutive
+
