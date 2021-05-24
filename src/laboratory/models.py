@@ -7,6 +7,7 @@ from django.db.models import Q,Sum
 from django.utils.translation import ugettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
+from django.db.models.expressions import F
 
 from . import catalog
 
@@ -323,6 +324,9 @@ class Furniture(models.Model):
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
+
+    def get_limited_shelf_objects(self):
+        return ShelfObject.objects.filter(shelf__furniture=self,quantity__lte=F('limit_quantity'))
 
     def __str__(self):
         return '%s' % (self.name)
