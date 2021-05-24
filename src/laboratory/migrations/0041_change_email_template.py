@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
         template = model.objects.filter(code='Shelf object in limit').first()
         if template is not None:
             template.context_dic = {
-                "Lista de objectos que se encuentra en el limite del laboratorio {{Laboratory.name}}": [
+                "Lista de objectos que se encuentra en el limite del laboratorio {{ laboratory.name }}": [
                     ["shelf_object", "Object in limit"], ["laboratory", "Laboratory where is the object"]]}
             template.save()
 
