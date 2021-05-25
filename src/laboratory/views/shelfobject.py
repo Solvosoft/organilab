@@ -276,14 +276,14 @@ def add_object(request, pk):
             object.save()
             log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
                                   request.POST.get('bill'), create=False)
-            return JsonResponse({'msg': True, 'msg': _('Add done successfully')})
+            return JsonResponse({'status': True, 'msg': _('Add done successfully')})
         else:
-            return JsonResponse({'msg': False,'msg':_('Complete the fields')})
+            return JsonResponse({'status': False,'msg':_('Complete the fields')})
     elif action == 4:
         return subtract_object(request, pk)
     else:
         return transfer_object(request, pk)
-    return JsonResponse({'msg': True, 'msg': _('Add done successfully')})
+    return JsonResponse({'status': True, 'msg': _('Add done successfully')})
 
 add_object.lab_pk_field= 'pk'
 
