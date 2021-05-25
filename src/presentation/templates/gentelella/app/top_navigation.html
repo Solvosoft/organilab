@@ -115,7 +115,7 @@
 
 		  {% if perms.djreservation.add_reservation %}
         <li id="reservation_list_id"><a
-          href="{% url 'laboratory:my_reservations' %}">{% trans 'My reservations' %}  </a>
+          href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %}  </a>
         </li>
       {% endif %}
 	  {% endif %}
