@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import permission_required
 class MyReservationView(ListView):
     model = ReservedProducts
     template_name = "laboratory/my_reservations_list.html"
-    
+    lab_pk_field='pk'
+
     def get_queryset(self):
         return ReservedProducts.objects.filter(user_id=self.request.user)
+
+MyReservationView.lab_pk_field='pk'
