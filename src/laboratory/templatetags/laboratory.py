@@ -102,3 +102,13 @@ def show_laboratory_name(context):
 @register.filter()
 def to_int(value):
    return int(value)
+
+@register.filter()
+def get_lab_pk(value):
+    if isinstance(value, str):
+        if len(value)==0:
+            return 0
+        else:
+            return value
+    elif isinstance(value, int):
+        return value

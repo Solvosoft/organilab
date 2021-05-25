@@ -34,16 +34,13 @@ class ProfileMiddleware:
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                           laboratories_id=view_kwargs['lab_pk']).first()
 
-
         elif 'lab_pk' in request.GET and request.GET['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                           laboratories_id=request.GET.get('lab_pk')).first()
 
-
         elif 'lab_pk' in request.POST and request.POST['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                       laboratories_id=request.POST.get('lab_pk')).first()
-
 
         elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
             view_func.view_class.lab_pk_field in view_kwargs  and  view_kwargs[view_func.view_class.lab_pk_field] is not None and \
@@ -56,6 +53,10 @@ class ProfileMiddleware:
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                           laboratories_id=view_kwargs[view_func.lab_pk_field]).first()
 
+        elif 'lab' in request.GET and request.GET['lab'] is not None and hasattr(user,'profile') and \
+                int(request.GET['lab']) > 0:
+            profile_in = ProfilePermission.objects.filter(profile=user.profile,
+                                                          laboratories_id=request.GET.get('lab')).first()
         if profile_in:
             roles = profile_in.rol.all()
             user_permissions = []
