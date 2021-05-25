@@ -30,7 +30,6 @@ class ProfileMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         profile_in = None
         user = request.user
-
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                           laboratories_id=view_kwargs['lab_pk']).first()
@@ -60,7 +59,6 @@ class ProfileMiddleware:
         if profile_in:
             roles = profile_in.rol.all()
             user_permissions = []
-
             for rol in roles:
                 user_permissions += list(rol.permissions.values_list('content_type__app_label', 'codename').order_by())
 
