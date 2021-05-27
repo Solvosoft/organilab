@@ -2,7 +2,6 @@ from reservations_management.models import ReservedProducts
 from laboratory.models import ShelfObject
 from django.http import JsonResponse
 
-
 def return_laboratory_of_shelf_id(request):
     labs = []
     if request.method == 'GET':
