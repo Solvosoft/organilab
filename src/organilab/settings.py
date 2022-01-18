@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'sga',
     'async_notifications',
     'ckeditor',
-    'fontawesome',
+    #'fontawesome',
     'tagging',
     'ckeditor_uploader',
     #    'debug_toolbar',
