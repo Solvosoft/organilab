@@ -86,7 +86,7 @@ msgstr ""
 #: presentation/templates/gentelella/app/top_navigation.html:21
 #: presentation/templates/gentelella/app/top_navigation.html:22
 msgid "My laboratories"
-msgstr ""
+msgstr "Mis Laboratorios"
 
 #: presentation/templates/gentelella/app/top_navigation.html:30
 msgid "Administration"
@@ -164,6 +164,14 @@ msgstr ""
 #: presentation/templates/gentelella/app/top_navigation.html:115
 msgid "My reservations"
 msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:110
+msgid "Precursor report"
+msgstr "Reporte sobre precursores"
+
+#: presentation/templates/gentelella/app/top_navigation.html:101
+msgid "Object changes"
+msgstr "Movimiento de Objectos"
 
 #: presentation/templates/gentelella/app/top_navigation.html:122
 msgid "Tutorials"

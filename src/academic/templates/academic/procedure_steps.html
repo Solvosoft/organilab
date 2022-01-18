@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load bootstrap i18n static%}
+
+{% block title %}{% trans "Procedures" %}{% endblock %}
+
+
+
+{% block content %}
+<style>
+.django-ckeditor-widget{
+  width: 100% !important;
+}
+.select2 {
+    width: 100%!important;
+}
+</style>
+<div class="box-body">
+    <a class="btn btn-primary" href="{% url 'procedure_list' pk=lab_pk %}"><<</a>
+    <div class="page-header">
+      <h1 class="text-center">Crear Paso</h1>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+     <form method="post">
+          {% csrf_token %}
+            {{form.as_p | safe}}
+            {{ form.media }}
+          <input class="btn btn-success pull-right" type="submit" value="{% trans 'Save' %}">
+    </form>
+      </div>
+    </div>
+
+    <br>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <h3 class="panel-title">{% trans 'Object List'%}</h3>
+      </div>
+      <div class="panel-body">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th width="60%">{% trans 'Name' %}</th>
+            <th width="15%">{% trans 'Amount' %}</th>
+            <th width="20%">{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody id="object_list">
+        {% for obj in step.procedurerequiredobject_set.all %}
+            <tr>
+                <td>{{ obj.object }}</td>
+                <td>{{ obj.quantity }} {{obj.get_measurement_unit_display}}</td>
+                <td><span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"><i class="fa fa-trash"></i> {% trans 'Delete'%}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+          <span class="btn btn-success pull-right" data-target="#object_modal" data-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Crear' %}</span>
+      </div>
+    </div>
+        <br>
+        <div class="panel panel-default">
+      <div class="panel-heading">
+          <h3 class="panel-title">{% trans 'Observations'%}</h3>
+      </div>
+      <div class="panel-body">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th width="80%">{% trans 'Description' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody id="observation_list">
+       {% for obs in step.procedureobservations_set.all %}
+            <tr>
+                <td>{{ obs.description }}</td>
+                <td><span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+          <span class="btn btn-success pull-right" data-target="#observation_modal" data-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Crear' %}</span>
+      </div>
+    </div>
+    {% include 'academic/step_modal.html'%}
+    {% endblock %}
+
+    {% block js %}
+
+    <script>
+        document.save_object="{% url 'save_object' pk=step.id lab_pk=lab_pk %}";
+        document.remove_object="{% url 'remove_object' pk=step.id%}";
+        document.save_observation="{% url 'add_observation' pk=step.id %}";
+        document.remove_observation="{% url 'remove_observation' pk=step.id%}";
+
+    </script>
+    <script src="{% static 'js/procedures.js'%}"></script>
+
+
+{% endblock %}
