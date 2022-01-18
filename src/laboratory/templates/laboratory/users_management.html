@@ -97,7 +97,7 @@
  </table>
 </div>
 {% if perms.laboratory.delete_organizationusermanagement %}
-<div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:11000s">
   <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
     <div class="modal-content text-center">
       <div class="modal-header d-flex justify-content-center">
@@ -120,14 +120,12 @@
   {% if perms.laboratory.delete_organizationusermanagement %}
     <script>
       (function(){
-        $("#userstable").DataTable();
-
         $(".delete_user").on('click', function(){
             var url = "{% url 'laboratory:delete_user' organization.pk %}".concat(String($(this).data('id')));
             $("#modal_delete_user").attr('href', url);
             $("div.modal_user").text($(this).data('name'));
         });
-
+        $("#userstable").DataTable();
       })(jQuery);
     </script>
   {% endif %}

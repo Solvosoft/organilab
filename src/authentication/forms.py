@@ -38,6 +38,19 @@ class CreateUserForm(CustomForm, forms.ModelForm):
         }
 
 
+class EditUserForm(CustomForm, forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+        widgets = {
+            'username': djgenwidgets.TextInput,
+            'first_name': djgenwidgets.TextInput,
+            'last_name': djgenwidgets.TextInput,
+            'email': djgenwidgets.EmailMaskInput
+        }
+
+
 class PasswordChangeForm(CustomForm, forms.Form):
     password = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)
     password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)

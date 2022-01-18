@@ -44,6 +44,10 @@ class ProcedureRequiredObject(models.Model):
     quantity = models.FloatField(_('Material quantity'))
     measurement_unit = catalog.GTForeignKey(Catalog,  on_delete=models.DO_NOTHING,
                              verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+
+    def get_object_detail(self):
+        return "%s %s" % (self.object, str(self.measurement_unit))
+
     def __str__(self):
         return "%s %.2f %s" % (
             self.object,
