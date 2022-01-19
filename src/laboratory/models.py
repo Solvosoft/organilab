@@ -107,7 +107,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="IDMG")
     white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key",
                                             key_value="white_organ", blank=True)
-    bioaccumulable = models.NullBooleanField(default=False)
+    bioaccumulable = models.BooleanField(null=True)
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)

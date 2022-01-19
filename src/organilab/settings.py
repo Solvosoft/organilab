@@ -331,3 +331,5 @@ DATETIME_INPUT_FORMATS = [
 PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
 MY_PAYPAL_HOST="http://localhost:8000/"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
