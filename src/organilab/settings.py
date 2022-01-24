@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'async_notifications',
     'ckeditor',
     #'fontawesome',
+    'django_celery_results',
     'tagging',
     'ckeditor_uploader',
     #    'debug_toolbar',
@@ -215,12 +216,18 @@ BROKER_URL = os.getenv(
     'BROKER_URL', 'amqp://guest:guest@localhost:5672/organilabvhost')
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_MODULE = "organilab.celery"
-CELERY_RESULT_BACKEND = os.getenv(
-    'CELERY_RESULT_BACKEND', 'amqp://guest:guest@localhost:5672/organilabvhost')
+CELERY_RESULT_BACKEND ="django-db"
+CELERY_CACHE_BACKEND = 'django-cache'
+#os.getenv('CELERY_RESULT_BACKEND', 'amqp://guest:guest@localhost:5672/organilabvhost')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
 LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
     'map.provider': 'openstreetmap',
