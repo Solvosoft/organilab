@@ -56,7 +56,8 @@ django-fontawesome==1.0
 django-tagging==0.5.0
 django-picklefield==2.1.1
 django-debug-toolbar>=2.2.1
-django-celery-beat==2.0.0
-celery==4.4.1
+django-celery-beat==2.2.1
+django-celery-results==2.2.0
+celery==5.2.3
 django-paypal==1.0.0
 weasyprint==52.2
