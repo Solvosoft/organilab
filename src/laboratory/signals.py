@@ -20,7 +20,7 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
     labroom = shelf_object.shelf.furniture.labroom
     laboratory = labroom.laboratory_set.first()
     context = {
-        'shelf_object': shelf_object,
+        'shelf_object': [shelf_object],
         'labroom': labroom,
         'laboratory': laboratory
     }
