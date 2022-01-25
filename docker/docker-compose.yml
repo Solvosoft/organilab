@@ -15,7 +15,9 @@ services:
     restart: always
     container_name: "postgresdb"
     environment:
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=0rg4n1l4b
+      - POSTGRES_DB=organilab
+      - POSTGRES_USER=organilab_user
     networks:
       - apps
     volumes:
@@ -34,7 +36,7 @@ services:
     networks:
       - apps
     volumes:
-      - db-backup:/var/lib/pgadmin/storage/
+      - db-backup:/var/lib/pgadmin4/storage/
     ports:
       - 8088:80
 
