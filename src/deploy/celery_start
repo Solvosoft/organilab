@@ -8,5 +8,5 @@ DJANGO_WSGI_MODULE=organilab.wsgi  # WSGI module name
 
 cd $DJANGODIR 
 
-exec celery worker -A organilab -l info  -c $NUM_WORKERS --pidfile="/run/worker_`date  +"%Y%m%d%H%M%S"`.pid"
+exec celery -A organilab worker -l info  -c $NUM_WORKERS --pidfile="/run/worker_`date  +"%Y%m%d%H%M%S"`.pid"
 

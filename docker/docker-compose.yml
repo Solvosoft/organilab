@@ -11,13 +11,13 @@ services:
       - RABBITMQ_DEFAULT_PASS=0rg4n1l4b
       - RABBITMQ_DEFAULT_VHOST=vhostorganilab
   postgresdb:
-    image: postgres
+    image: postgres:latest
     restart: always
     container_name: "postgresdb"
     environment:
       - POSTGRES_PASSWORD=0rg4n1l4b
-      - POSTGRES_DB=organilab
       - POSTGRES_USER=organilab_user
+      - POSTGRES_DB=organilab
     networks:
       - apps
     volumes:
@@ -27,7 +27,7 @@ services:
       - 5431:5432
 
   pgadmin4:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     container_name: "pgadmin"
     environment:
@@ -36,7 +36,7 @@ services:
     networks:
       - apps
     volumes:
-      - db-backup:/var/lib/pgadmin4/storage/
+      - ./run/pgadmin4:/var/lib/pgadmin/storage
     ports:
       - 8088:80
 
@@ -54,12 +54,18 @@ services:
     networks:
       - apps
     environment:
-      - DBHOST=postgresdb
       - BROKER_URL=amqp://organilab:0rg4n1l4b@rabbitmq:5672/vhostorganilab
+      - DEVELOPMENT=true
+      - DBNAME=organilab
+      - DBUSER=organilab_user
+      - DBPASSWORD=0rg4n1l4b
+      - DBHOST=postgresdb
+      
+      
     ports:
-      - 8001:80
+      - 8001:8000
 #    volumes:
-#      - /mnt/docker/organilab/media:/organilab/media
+#      - vol-organilab:/organilab
 #      - /mnt/docker/organilab/settings.py:/organilab/organilab/settings.py
 
 networks:
@@ -70,3 +76,4 @@ volumes:
   db-data:
   db-files:
   db-backup:
+  vol-organilab:
