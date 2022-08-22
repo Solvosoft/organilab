@@ -11,20 +11,18 @@
 {% load bootstrap   %}
 {# CSS #}
 {% block css %}
-    <link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
+    <link href="{% static 'svgedit.css' %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block js %}
-    <script src="{% static 'js/bootstrap-colorpicker.js' %}"> </script>
-    <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
-    <script src="{% static 'sga/js/label_editor.js' %}"> </script>
+    <script src="{% static 'sga/sga-bundle.js' %}"> </script>
+
 {{form.media}}
 {% endblock %}
-
-
 
 {% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-sm-12">
 
@@ -44,17 +42,6 @@
         </div>
         <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
-            <!-- <button style="width:10%" disabled><i class="fa fa-undo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-redo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-cut"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-copy"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-paste"></i></button>-->
-
-         <!--<button style="width:10%" disabled><i class="fa fa-search-plus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-search-minus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-edit"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-tint"></i></button>
-            -->
         </div>
     </div>
 </div>
@@ -80,7 +67,7 @@
             {% trans 'Pictogram' %}</a>
         </li>
       </ul>
-  <div class="tab-content" style="padding: 15px 20px 10px;">
+        <div class="tab-content" style="padding: 15px 20px 10px;">
     <div role="tabpanel" class="tab-pane active" id="home">
 
         		<form id="sgaform"  method="post" action="{% url 'sga:editor' %}">
@@ -234,20 +221,11 @@
 
     <div class="col-sm-6 col-md-9" >
         <div id="canvasContainer" class="canvas-container"  style="width:100%">
-        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100% !important"></canvas>
+
+            <div id="canvas_editor" style="width:100%;height:100vh"></div>
         </div>
     </div>
 </div>
 
-<div id="hiddencanvas" class="hide hidden">
-</div>
 
-<style>
-    .canvas-container canvas{
-        margin: 0 auto;
-        border: 1px solid #aaa;
-    }
-
-
-</style>
 {% endblock content %}
