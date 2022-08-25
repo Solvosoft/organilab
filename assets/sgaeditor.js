@@ -1,4 +1,5 @@
 import Editor from 'svgedit/dist/editor/Editor';
+import ExtSeleccionado from 'sga-editor-extension/texto_seleccionado/ext-texto_seleccionado';
 
 const svgEditor = new Editor(document.getElementById('canvas_editor'))
 svgEditor.init()
@@ -7,8 +8,13 @@ svgEditor.setConfig({
           imgPath: '/static/editor/images',
           extensions: [],
           noDefaultExtensions: true,
-          userExtensions: [/* { pathName: './react-extensions/react-test/dist/react-test.js' } */]
+          userExtensions: [
+
+          /* {pathName: 'textoseleccionado-bundle.js'} { pathName: './react-extensions/react-test/dist/react-test.js' } */]
         })
+
+
+svgEditor.extAdded(window, ExtSeleccionado);
 // Variable XDOMAIN below is created by Rollup for the Xdomain build (see rollup.config.js)
 /* globals XDOMAIN */
 try { // try clause to avoid js to complain if XDOMAIN undefined
