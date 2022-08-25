@@ -163,16 +163,21 @@ def personal_templates(request):
 # SGA editor
 def editor(request):
     finstance = None
+    clean_canvas_editor = True
     if 'instance' in request.POST:
         finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
     if 'instance' in request.GET:
         finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
     sgaform = EditorForm(instance=finstance)
+
     if request.method == "POST":
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
             finstance = sgaform.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
+            return redirect('sga:editor')
+        else:
+            clean_canvas_editor = False
 
     context = {
         'laboratory': None,
@@ -181,7 +186,8 @@ def editor(request):
         "pictograms": Pictogram.objects.all(),
         "warningwords": WarningWord.objects.all(),
         'templateinstance': finstance,
-        'templates': TemplateSGA.objects.all()
+        'templates': TemplateSGA.objects.all(),
+        'clean_canvas_editor': clean_canvas_editor
     }
     return render(request, 'editor.html', context)
 
