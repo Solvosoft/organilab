@@ -5,6 +5,7 @@ svgEditor.init()
 svgEditor.setConfig({
           allowInitialUserOverride: true,
           imgPath: '/static/editor/images',
+          extPreurl: '/static/editor/',
           extensions: [],
           noDefaultExtensions: true,
           userExtensions: [

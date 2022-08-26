@@ -1,4 +1,8 @@
 $(window).load(function(){
+
+    let elem = document.querySelector('#canvas_editor');
+    let rect = elem.getBoundingClientRect();
+
     var urlParams = new URLSearchParams(window.location.search);
     var instance = urlParams.get('instance');
     var svgContent = $("#id_json_representation").val();

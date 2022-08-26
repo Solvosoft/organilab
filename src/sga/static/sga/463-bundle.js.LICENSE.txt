@@ -1,8 +1,0 @@
-/**
- * @file ext-pictograms.js
- *
- * @license MIT
- *
- * @copyright 2022 Luis Zarate Montero
- *
- */
