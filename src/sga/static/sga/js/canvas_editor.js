@@ -1,11 +1,12 @@
 function update_resolution(width, height){
     var viewBox = "0 0";
-    svgEditor.svgCanvas.setResolution(width*10, height*10, 1);
+    var value = 37.795275591;
+    svgEditor.svgCanvas.setResolution(width*value, height*value, 1);
     svgEditor.updateCanvas();
-    viewBox +=  " " + width*30;
-    viewBox += " " + height*30;
+    viewBox +=  " " + width*value+40;
+    viewBox += " " + height*value+40;
+    svgEditor.svgCanvas.selectAllInCurrentLayer();
     svgEditor.svgCanvas.svgContent.setAttribute("viewBox",  viewBox);
-}
 
 $(window).load(function(){
 
