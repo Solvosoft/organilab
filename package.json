@@ -7,6 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
+    "build": "webpack --mode production",
     "dev": "webpack --mode development --watch"
   },
   "repository": {
@@ -31,6 +32,5 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "svgedit": "^7.2.0"
   }
 }
