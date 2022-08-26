@@ -69,3 +69,29 @@ function create_table(data){
       });
 
 }
+
+
+$("#btnpreview").on('click', function(){
+    var url = document.url_get_preview;
+    var id = $(this).data('id');
+    if(id){
+        url = url.replace('0', id);
+    }
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(result) {
+          if(result.svgString){
+            var decoded = unescape(encodeURIComponent(result.svgString));
+            var base64 = btoa(decoded);
+            var imgSource = 'data:image/svg+xml;base64,'+base64;
+            $("#svgtemplate img").attr('src', imgSource);
+            $("#svgtemplate").modal();
+          }
+        },
+        error: function(xhr, resp, text) {
+            console.log(xhr, resp, text);
+        }
+    });
+});
