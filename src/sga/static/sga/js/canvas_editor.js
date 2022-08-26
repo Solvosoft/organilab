@@ -5,10 +5,12 @@ function update_resolution(width, height){
     viewBox +=  " " + width*30;
     viewBox += " " + height*30;
     svgEditor.svgCanvas.svgContent.setAttribute("viewBox",  viewBox);
-
 }
 
 $(window).load(function(){
+
+    let elem = document.querySelector('#canvas_editor');
+    let rect = elem.getBoundingClientRect();
 
     var urlParams = new URLSearchParams(window.location.search);
     var instance = urlParams.get('instance');
