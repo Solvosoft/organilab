@@ -1,28 +1,30 @@
 # Import functions of another modules
-from django.shortcuts import render, get_object_or_404,redirect
-from django.utils.translation import ugettext_lazy as _
-from django.core import serializers
-from django.contrib.auth.decorators import login_required,permission_required
-from organilab import settings
-from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm,PersonalForm,PersonalTemplatesForm
-from sga.models import TemplateSGA, RecipientSize, Substance, Donation,PersonalTemplateSGA
-from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse
-from django.db.models.query_utils import Q
-from django.template import Library
-from django.http import JsonResponse, HttpResponseRedirect
-from django.urls import reverse
 import json
+
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core import serializers
 from django.core.files import temp as tempfile
-from django.views.decorators.http import require_http_methods
-from .json2html import json2html
 from django.core.files.storage import FileSystemStorage
-from xhtml2pdf import pisa
+from django.db.models.query_utils import Q
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template import Library
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_http_methods
 from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
-from django.utils.decorators import method_decorator
+from xhtml2pdf import pisa
+
+from organilab import settings
+from sga import utils_pictograms
+from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
+    PersonalForm, PersonalTemplatesForm
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
+from .json2html import json2html
+from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 
 register = Library()
 
@@ -163,16 +165,21 @@ def personal_templates(request):
 # SGA editor
 def editor(request):
     finstance = None
+    clean_canvas_editor = True
     if 'instance' in request.POST:
         finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
     if 'instance' in request.GET:
         finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
     sgaform = EditorForm(instance=finstance)
+
     if request.method == "POST":
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
             finstance = sgaform.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
+            return redirect('sga:editor')
+        else:
+            clean_canvas_editor = False
 
     context = {
         'laboratory': None,
@@ -181,8 +188,12 @@ def editor(request):
         "pictograms": Pictogram.objects.all(),
         "warningwords": WarningWord.objects.all(),
         'templateinstance': finstance,
-        'templates': TemplateSGA.objects.all()
+        'templates': TemplateSGA.objects.all(),
+        'clean_canvas_editor': clean_canvas_editor
     }
+    if finstance:
+        context.update({'width': finstance.recipient_size.width, 'height': finstance.recipient_size.height})
+
     return render(request, 'editor.html', context)
 
 
@@ -546,3 +557,15 @@ def get_files(request):
             data.append(saveImages(request.FILES['barcode']))
 
         return JsonResponse({'data': data})
+
+
+@login_required
+def get_recipient_size(request, pk):
+    recipient = get_object_or_404(RecipientSize, pk=pk)
+    return JsonResponse({'size': {'width': recipient.width, 'height': recipient.height}})
+
+
+@login_required
+def get_preview(request, pk):
+    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    return JsonResponse({'svgString': template.json_representation})

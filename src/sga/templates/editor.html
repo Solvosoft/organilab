@@ -11,20 +11,26 @@
 {% load bootstrap   %}
 {# CSS #}
 {% block css %}
-    <link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
+    <link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block js %}
-    <script src="{% static 'js/bootstrap-colorpicker.js' %}"> </script>
-    <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
-    <script src="{% static 'sga/js/label_editor.js' %}"> </script>
+    <script>
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
+        document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
+        {% if width %}document.width = {{width}};{% endif %}
+        {% if height %}document.height = {{height}};{% endif %}
+    </script>
+    <script src="{% static 'sga/sga-bundle.js' %}"> </script>
+    <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
+    <script src="{% static 'sga/js/codigosPH.js' %}"></script>
+
 {{form.media}}
 {% endblock %}
-
-
 
 {% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-sm-12">
 
@@ -44,17 +50,6 @@
         </div>
         <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
-            <!-- <button style="width:10%" disabled><i class="fa fa-undo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-redo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-cut"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-copy"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-paste"></i></button>-->
-
-         <!--<button style="width:10%" disabled><i class="fa fa-search-plus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-search-minus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-edit"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-tint"></i></button>
-            -->
         </div>
     </div>
 </div>
@@ -80,7 +75,7 @@
             {% trans 'Pictogram' %}</a>
         </li>
       </ul>
-  <div class="tab-content" style="padding: 15px 20px 10px;">
+        <div class="tab-content" style="padding: 15px 20px 10px;">
     <div role="tabpanel" class="tab-pane active" id="home">
 
         		<form id="sgaform"  method="post" action="{% url 'sga:editor' %}">
@@ -90,115 +85,54 @@
                     {% endif %}
                     {{generalform|bootstrap}}
                 </form>
-        <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
-
-        <button type="button" class="btn btn-sm" onclick="addLine()"> {% trans 'Line' %}</button>
-
-        <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
-
-        <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
-        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#FFFFFF"  class="btn" >
-        <input type="color"  style="width: 25%;" id="text-bg-color"  value="#FFFFFF" class="btn" >
-        <br>
-
-        <div class="form-group">
-        <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
-        <input type="range" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action"
-            bind-value-to="fontSize">
-          <p>{% trans 'actual' %}: <span id="font-size-label">20</span></p>
-        </div>
-        <div class="form-group">
-        <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
-            <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
-              <option value="arial">Arial</option>
-              <option value="helvetica" selected>Helvetica</option>
-              <option value="myriad pro">Myriad Pro</option>
-              <option value="delicious">Delicious</option>
-              <option value="verdana">Verdana</option>
-              <option value="georgia">Georgia</option>
-              <option value="courier">Courier</option>
-              <option value="comic sans ms">Comic Sans MS</option>
-              <option value="impact">Impact</option>
-              <option value="monaco">Monaco</option>
-              <option value="optima">Optima</option>
-              <option value="hoefler text">Hoefler Text</option>
-              <option value="plaster">Plaster</option>
-              <option value="engagement">Engagement</option>
-            </select>
-          </div>
-
-        <div class="form-group">
-            <label for="textalign" style="display:inline-block">Text align:</label>
-            <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
-              <option value="left" selected>Left</option>
-              <option value="center">Center</option>
-              <option value="right" >Right</option>
-              <option value="Justify">Justify</option>
-              <option value="Justify-left">Justify-left</option>
-              <option value="Justify-right">Justify-right</option>
-              <option value="Justify-center"> Justify-center</option>
-            </select>
-        </div>
-
 
     </div>
     <div role="tabpanel" class="tab-pane" id="profile">
         <label >{% trans 'Warning Words' %}</label>
         <ul>
         {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
+            <li><p class="genericitem text_content"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext"  >{{word}}</p></li>
         {% endfor %}
         </ul>
         <label>Cuadros de Textos</label>
         <ul>
-            <li><a class="genericitem" id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox" href="#">Agregue Adiccional</a></li>
+            <li><p class="genericitem " id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox">Agregue Adiccional</p></li>
         </ul>
         {{form|bootstrap  }}
     </div>
     <div role="tabpanel" class="tab-pane" id="messages">
         <ul>
             <li>
-                <a class="genericitem"  id="warningword" data-ftype="itext" href="#" id="warningword">
-                {% trans 'Warning Word' %}</a>
+                <p class="genericitem text_content"  id="warningword" data-ftype="itext" >
+                {% trans 'Warning Word' %}</p>
             </li>
             <li>
-                <a class="genericitem"  id="dangerindication"  data-ftype="textbox" href="#"> {% trans 'Danger Indication' %}</a>
+                <p class="genericitem text_content"  id="dangerindication"  data-ftype="textbox"> {% trans 'Danger Indication' %}</p>
             </li>
             <li>
-                <a class="genericitem"  id="prudenceadvice" data-ftype="textbox" href="#"> {% trans 'Prudence Advice' %}</a>
+                <p class="genericitem text_content"  id="prudenceadvice" data-ftype="textbox"> {% trans 'Prudence Advice' %}</p>
             </li>
             <li>
-                <a class="genericitem"  id="substancename"  data-ftype="itext"  href="#" > {% trans 'Substance Name' %} </a>
+                <p class="genericitem text_content"  id="substancename"  data-ftype="itext" > {% trans 'Substance Name' %} </>
             </li>
             <li>
-                <a class="genericitem"  id="uipa"  data-ftype="itext"  href="#" > {% trans 'UIPA Name' %} </a>
+                <p class="genericitem text_content"  id="uipa"  data-ftype="itext" > {% trans 'UIPA Name' %} </p>
             </li>
             <li>
-                <a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a>
+                <p class="genericitem text_content"  id="casnumber"  data-ftype="itext" > {% trans 'Cas number' %} </p>
+            </li>
+
+            <li>
+                <a class="genericitem text_content"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a>
             </li>
             <li>
-                <a class="genericitem"  id="pictogram"  data-ftype="image"  href="#"  title="/static/sga/img/pictograms/example.gif" >
-                <img width="64px" height="64px" src="/static/sga/img/pictograms/example.gif" alt="pictogram" class="img-rounded"> </a>
+                <a class="genericitem text_content" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a>
             </li>
             <li>
-                <a class="genericitem"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a>
+                <a class="genericitem text_content" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a>
             </li>
             <li>
-                <a class="genericitem" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a>
-            </li>
-            <li>
-                <a class="genericitem" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="logo"  data-ftype="image"  href="#"  title="/static/sga/img/logogen.jpg" >
-                <img width="64px" height="64px" src="/static/sga/img/logogen.jpg" alt="pictogram" class="img-rounded"> </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="barcode"  data-ftype="image"  href="#"  title="/static/sga/img/barcodegen.jpg" >
-                <img width="64px" height="64px" src="/static/sga/img/barcodegen.jpg" alt="pictogram" class="img-rounded"> </a>
+                <a class="genericitem text_content"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
             </li>
         </ul>
     </div>
@@ -218,13 +152,7 @@
                   src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
     </div>
 {%  endif %}
-{% for pictogram in pictograms %}
-        <div class="col-md-4">
-             <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                      src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
 
-          </div>
-      {% endfor %}
         </div>
     </div>
   </div>
@@ -233,21 +161,13 @@
     </div>
 
     <div class="col-sm-6 col-md-9" >
-        <div id="canvasContainer" class="canvas-container"  style="width:100%">
-        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100% !important"></canvas>
+        <div class="clearfix visible-xs-block"></div>
+        <div id="canvasContainer" class="canvas-container" >
+
+            <div id="canvas_editor"  style="height: 600px;"></div>
         </div>
     </div>
 </div>
 
-<div id="hiddencanvas" class="hide hidden">
-</div>
 
-<style>
-    .canvas-container canvas{
-        margin: 0 auto;
-        border: 1px solid #aaa;
-    }
-
-
-</style>
 {% endblock content %}

@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
-from authentication.forms import CreateUserForm, PasswordChangeForm
+from authentication.forms import CreateUserForm, PasswordChangeForm,EditUserForm
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Profile, ProfilePermission, Laboratory
 
@@ -70,10 +70,10 @@ class AddUser(CreateView):
         return response
 
 
-@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
+@method_decorator(permission_required("auth.change_user"), name="dispatch")
 class ChangeUser(UpdateView):
     model = User
-    form_class = CreateUserForm
+    form_class = EditUserForm
     template_name = "auth/change_user.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -94,16 +94,10 @@ class ChangeUser(UpdateView):
 
     def form_valid(self, form):
         instance = form.save()
-        user = User.objects.get(username=form.cleaned_data['username'])
-        p, created = Profile.objects.get_or_create(user=user)
-        p.phone_number = form.cleaned_data['phone_number']
-        p.id_card = form.cleaned_data['id_card']
-        p.job_position = form.cleaned_data['job_position']
-        p.save()
         return super(ChangeUser, self).form_valid(form)
 
 
-@method_decorator(permission_required("laboratory.change_user"), name="dispatch")
+@method_decorator(permission_required("auth.change_user"), name="dispatch")
 @sensitive_post_parameters('password', 'password_confirm')
 @require_http_methods(["POST"])
 def password_change(request, pk):
