@@ -49,7 +49,7 @@
                 <div class="form-group">
                     <!--Add new sustance-->
                     <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
-                        href="{% url 'admin:sga_substance_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+                        href="{% url 'sga:add_substance' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
                 </div>
                 <!-- View substance label information for a future implementation -->
                 <!--
@@ -129,7 +129,7 @@
                 </select>
             </div>
             <!--Add new recipient-->
-            <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+            <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'sga:add_recipient_size' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
             <!--============================================================================================================-->
            <div class="form-group">
                 <label><span class="label label-info">7</span>&nbsp;{% trans 'Template' %}</label><br>
