@@ -14,7 +14,7 @@ from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
-from laboratory.views.access import access_management, users_management, delete_user
+from laboratory.views.access import access_management, users_management, delete_user, edit_management
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     url(r'rp/api/reservedProducts/(?P<pk>\d+)/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     url(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
-    url(r"my_reservations$", MyReservationView.as_view(), name="my_reservations"),
+    url(r"my_reservations/(?P<pk>\d+)$", MyReservationView.as_view(), name="my_reservations"),
     url(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     url(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     url(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
@@ -148,9 +148,9 @@ edit_objects=[
         name="edit_object"),
     url(r"^get_object_detail", shelfobject.send_detail,
         name="get_object_detail"),
-    url(r"update_transfer$", shelfobject.objects_transfer, name="update_transfer"),
+    url(r"update_transfer/(?P<pk>\d+)$", shelfobject.objects_transfer, name="update_transfer"),
     url(r"shelfs_list$", shelfobject.get_shelf_list, name="get_shelfs"),
-    url(r"delete_transfer$", shelfobject.delete_transfer, name="delete_transfer"),
+    url(r"delete_transfer(?P<pk>\d+)$", shelfobject.delete_transfer, name="delete_transfer"),
 
 ]
 reports_all_lab=[
@@ -173,6 +173,8 @@ organization_urls = [
     url('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
     url('profile/(?P<pk>\d+)/info$', ChangeUser.as_view(), name='profile'),
     url('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
+    url('access_list/edit$', edit_management, name="edit_organization"),
+
 ]
 
 lab_profiles_urls = [

@@ -67,11 +67,12 @@
               {% endif %}
               {% if perms.academic.view_procedure %}
                 <li class="list-group-item">
-                  <a href="{% url 'academic_procedure_list' %}">
+                  <a href="{% url 'procedure_list' laboratory%}">
                     <strong>{% trans 'Procedures' %}</strong>
                   </a>
                 </li>
               {% endif %}
+
               {% if perms.laboratory.view_solution %}
 			          <li class="list-group-item">
                   <a href="{% url 'laboratory:solution_list' laboratory %}">
@@ -102,7 +103,7 @@
                 </li>
               {% endif %}
 
-              {% if perms.laboratory.add_object %}                         
+                {% if perms.laboratory.add_object %}
                 <li class="list-group-item">
                     <a  href="{% url 'laboratory:sustance_list' lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
                     /  <a  href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
@@ -120,7 +121,7 @@
                 </li>
               {% endif %}
 
-              {% if perms.laboratory.view_tranfer_object %}
+              {% if perms.laboratory.view_tranferobject %}
              <li class="list-group-item">
                   <a href="{% url 'laboratory:transfer_objects' laboratory %}?lab={{laboratory}}"><strong>{% trans 'Transfers' %}</strong></a>
                 </li>

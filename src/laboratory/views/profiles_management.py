@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from laboratory.models import Profile
+from laboratory.models import Profile,Rol,ProfilePermission,Laboratory
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
 
@@ -39,9 +39,15 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
                 'profile_id': profile.id
             }
         )
+        permissions=ProfilePermission.objects.filter(profile__id=profile.id,laboratories__id=self.kwargs['pk']).first()
+        roles=list
+        if permissions is not None:
+            roles=permissions.rol.all()
         context['lab_pk'] = self.kwargs['pk']
         context['laboratory'] = self.kwargs['pk']
-
+        context['profile_pk'] = profile.id
+        context['roles'] = Rol.objects.all()
+        context['pp']=roles
         return context
 
     def get_success_url(self, **kwargs):
@@ -60,5 +66,15 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
         profile.user.last_name = form.cleaned_data.get('last_name')
         profile.user.save()
         profile.save()
-        
+
+        lab = Laboratory.objects.filter(pk=int(self.kwargs['pk'])).first()
+        pp, created = ProfilePermission.objects.get_or_create(profile=profile, laboratories=lab)
+
+        if pp is not None:
+            pp.rol.clear()
+            roles = self.request.POST.getlist('roles')
+
+            for rol in roles:
+                pp.rol.add(rol)
+
         return response

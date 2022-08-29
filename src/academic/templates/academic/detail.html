@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static i18n bootstrap%}
+
+{% block title %}{% trans 'Procedures' %}{% endblock %}
+
+
+{% block content %}
+<style>
+    .select2 {
+    width: 100%!important;
+}
+</style>
+<a href="{% url 'procedure_update' pk=procedure lab_pk=lab_pk%}" class="btn btn-primary">{% trans 'Edit' %}</a>
+<div class="box-body">
+
+    <div class="page-header">
+      <h1 class="text-center">{{object.title}}</h1>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+            {{object.description|safe}}
+      </div>
+    </div>
+
+    <h2>{% trans 'Steps' %} </h2>
+
+{% for step in object.procedurestep_set.all %}
+<div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{forloop.counter}} -- {{step.title}}
+
+    <a class="btn pull-right" title="{% trans 'remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
+    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
+
+    <a class="btn pull-right" title="{% trans 'Edit' %}" href="{% url 'update_step' pk=step.pk lab_pk=lab_pk %}">
+    <span class="glyphicon glyphicon-edit" title="{% trans 'Edit' %}"aria-hidden="true"></span> </a>
+    </h3>
+
+  </div>
+  <div class="panel-body">
+
+  	{{step.description|safe}}
+     {% if step.procedurerequiredobject_set.all.count %}
+    <hr>
+    <h3>{% trans 'Required objects' %} </h3>
+        	<ul class="list-group">
+    {% for obj in step.procedurerequiredobject_set.all %}
+		  <li class="list-group-item">
+              {{obj.measurement_unit}}
+		    <span class="badge">{{obj.quantity}}  </span>
+		    {{obj.object}}
+		  </li>
+    {% endfor %}
+    </ul>
+  </div>
+    {% if step.procedureobservations_set.all.count %}
+        <div class="panel-footer ">
+        <h2>{% trans 'Observations' %}</h2>
+        <ol>
+        {% for observation in step.procedureobservations_set.all %}
+            <li>{{observation}}</li>
+        {%endfor%}
+           </ol>
+        </div>
+    {% endif %}
+	{% endif %}
+</div>
+{% endfor %}
+    <div class="box-footer">
+      <a href="{% url 'procedure_list' pk=lab_pk %}" class="btn btn-primary">{% trans "Back to list" %}</a>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        document.remove_step="{% url 'delete_step' %}";
+    </script>
+    <script src="{% static 'js/procedures.js'%}"></script>
+
+
+{% endblock %}
