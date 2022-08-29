@@ -1,3 +1,13 @@
+function update_resolution(width, height){
+    var viewBox = "0 0";
+    var value = 37.795275591;
+    svgEditor.svgCanvas.setResolution(width*value, height*value, 1);
+    svgEditor.updateCanvas();
+    viewBox +=  " " + width*value+40;
+    viewBox += " " + height*value+40;
+    svgEditor.svgCanvas.selectAllInCurrentLayer();
+    svgEditor.svgCanvas.svgContent.setAttribute("viewBox",  viewBox);
+
 $(window).load(function(){
 
     let elem = document.querySelector('#canvas_editor');
@@ -5,12 +15,13 @@ $(window).load(function(){
 
     var urlParams = new URLSearchParams(window.location.search);
     var instance = urlParams.get('instance');
-    var svgContent = $("#id_json_representation").val();
+    var svg_content = $("#id_json_representation").val();
 
-    if(instance && svgContent){
+    if(instance && svg_content){
         svgEditor.svgCanvas.clear();
         try {
-            svgEditor.loadSvgString(svgContent);
+            svgEditor.loadSvgString(svg_content);
+            update_resolution(document.width, document.height);
         } catch (err) {
         if (err.name !== 'AbortError') {
             console.log(err);
@@ -19,21 +30,48 @@ $(window).load(function(){
     }else{
         if(document.clean_canvas_editor){
             svgEditor.svgCanvas.clear();
+            svgEditor.svgCanvas.setResolution(640, 480, 1);
+            svgEditor.updateCanvas();
         }
     }
-    svgEditor.updateCanvas();
+
 });
 
 
 $("#editor_save").on('click', function(){
-    var svgText = svgEditor.svgCanvas.getSvgString();
-    $("#id_json_representation").val(svgText);
+    var svg_text = svgEditor.svgCanvas.getSvgString();
+    $("#id_json_representation").val(svg_text);
 
-    var svgElement = document.getElementById('svgcontent');
-    var svgString = new XMLSerializer().serializeToString(svgElement);
-    var decoded = unescape(encodeURIComponent(svgString));
+    var svg_element = document.getElementById('svgcontent');
+    var svg_string = new XMLSerializer().serializeToString(svg_element);
+    var decoded = unescape(encodeURIComponent(svg_string));
     var base64 = btoa(decoded);
      $("#id_preview").val(base64);
 
      $("#sgaform").submit();
+});
+
+
+
+$("#id_recipient_size").on("change", function(){
+    var id = $(this).val();
+    var url = document.url_get_recipient_size;
+    if(id){
+        url = url.replace('0', id);
+    }
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(result) {
+          if(result.size){
+            update_resolution(result.size.width, result.size.height);
+          }
+        },
+        error: function(xhr, resp, text) {
+            console.log(xhr, resp, text);
+        }
+
+    });
+
 });
