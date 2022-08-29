@@ -23,11 +23,20 @@
   <!--
   <h1>SVGEdit</h1>
   <div id="container" style="width:100%;height:550px"></div>
-  <h1>End</h1>
-  -->
-  <p class="text_content">Quimicos</p>
-  <p class="text_content">Biologicos</p>
-  <p class="text_content">Fisicos</p>
+  <h1>End</h1>-->
+  <button id="add">ADD</button>
+<div id="text_options" style="width:200px">
+
+  <p class="text_content" id="warningword">Palabra de advertencia</p>
+  <p class="text_content" id="dangerindication">Indicación de peligro</p>
+  <p class="text_content" id="prudenceword">Consejo de prudencia</p>
+  <p class="text_content" id="substancename">Nombre de la sustancia</p>
+  <p class="text_content" id="uipa">UIPA</p>
+  
+</div>
+
+
+
   <div id="container" style="width:100%;height:100vh"></div>
 </body>
  <!-- If you do not wish to add extensions by URL, you can add calls
@@ -55,4 +64,24 @@ try { // try clause to avoid js to complain if XDOMAIN undefined
   }
         } catch (error) { /* empty fn */ }
       </script>
+<script>
+  
+       function create_container(message,classname){
+        let div = document.createElement('div');
+      div.appendChild(create_message(message));
+      document.getElementById('text_options').appendChild(div)
+    }
+    function create_message(message){
+      let textbox= document.createElement('p');
+      textbox.classList.add('text_content');
+      textbox.textContent=message;
+      textbox.setAttribute('title',message);
+    return textbox;
+    }
+    document.getElementById('add').addEventListener('click', ()=>{
+      
+      create_container('Hello world','x')
+    })
+    
+</script>
 </html>
