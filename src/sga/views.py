@@ -104,7 +104,6 @@ def information_creator(request):
     template= RecipientSize.objects.all()
     context = {
         'laboratory': None,
-        'recipients': recipients,
         'templates': template,
     }
     if request.method == 'POST':
@@ -175,7 +174,9 @@ def editor(request):
     if request.method == "POST":
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
-            finstance = sgaform.save()
+            finstance = sgaform.save(commit=False)
+            finstance.creator = request.user
+            finstance.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
             return redirect('sga:editor')
         else:
@@ -188,7 +189,7 @@ def editor(request):
         "pictograms": Pictogram.objects.all(),
         "warningwords": WarningWord.objects.all(),
         'templateinstance': finstance,
-        'templates': TemplateSGA.objects.all(),
+        'templates': TemplateSGA.objects.filter(creator=request.user),
         'clean_canvas_editor': clean_canvas_editor
     }
     if finstance:
