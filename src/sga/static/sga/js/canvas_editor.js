@@ -1,12 +1,9 @@
 function update_resolution(width, height){
-    var viewBox = "0 0";
-    var value = 37.795275591;
+    var value = 37.795275591; //CM VALUE IN PIXELES
     svgEditor.svgCanvas.setResolution(width*value, height*value, 1);
     svgEditor.updateCanvas();
-    viewBox +=  " " + width*value+40;
-    viewBox += " " + height*value+40;
     svgEditor.svgCanvas.selectAllInCurrentLayer();
-    svgEditor.svgCanvas.svgContent.setAttribute("viewBox",  viewBox);
+}
 
 $(window).load(function(){
 
