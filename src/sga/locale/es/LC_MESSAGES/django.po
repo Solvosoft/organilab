@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-09 23:26-0600\n"
-"PO-Revision-Date: 2021-03-10 15:47-0600\n"
+"PO-Revision-Date: 2022-08-29 16:07-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: sga/admin.py:21
 msgid "Download Label"
@@ -164,9 +164,9 @@ msgstr "Componentes"
 msgid "Comercial name"
 msgstr "Nombre comercial"
 
-#: sga/models.py:144
+#: sga/models.py:144 #: sga/templates/editor.html:174 sga/form:9 sga/form:67
 msgid "UIPA name"
-msgstr ""
+msgstr "nombre UIPA"
 
 #: sga/models.py:149
 msgid "Danger indications"
@@ -334,13 +334,10 @@ msgstr "Encuesta"
 
 #: sga/templates/danger_indication_info.html:80
 msgid ""
-"Are you a professional in chemistry, chemical engineering or industrial "
-"maintenance?\n"
-"                        If the answer is yes, we appreciate you completing "
-"the following form."
+"Are you a professional in chemistry, chemical engineering or industrial maintenance?\n"
+"                        If the answer is yes, we appreciate you completing the following form."
 msgstr ""
-"Es usted profesional en química, ingeniería química o mantenimiento "
-"industrial?\n"
+"Es usted profesional en química, ingeniería química o mantenimiento industrial?\n"
 "Si la respuesta es sí le agradecemos llenar el siguiente formulario."
 
 #: sga/templates/danger_indication_info.html:82
@@ -392,9 +389,7 @@ msgstr "Plantillas disponibles"
 
 #: sga/templates/editor.html:45 sga/templates/label_editor.html:37
 msgid "Customize the selected template using the canvas editor and it elements"
-msgstr ""
-"Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
-"elementos"
+msgstr "Personaliza la plantilla seleccionada usando el editor de cuadro y sus elementos"
 
 #: sga/templates/editor.html:68 sga/templates/label_editor.html:56
 #: sga/templates/template.html:64
@@ -442,10 +437,6 @@ msgstr "Familia de fuentes"
 msgid "Substance Name"
 msgstr "Nombre de la sustancia"
 
-#: sga/templates/editor.html:174
-msgid "UIPA Name"
-msgstr "Nombre UIPA"
-
 #: sga/templates/editor.html:177 sga/templates/label_editor.html:145
 msgid "Cas number"
 msgstr "Número CAS"
@@ -476,9 +467,7 @@ msgstr "Buscador de información del SGA"
 
 #: sga/templates/index_organilab.html:11
 msgid "Enter in the following searcher the danger indication codes (H-Codes)."
-msgstr ""
-"Introduzca en el siguiente buscador los códigos de indicación de peligro "
-"(Códigos H)."
+msgstr "Introduzca en el siguiente buscador los códigos de indicación de peligro (Códigos H)."
 
 #: sga/templates/index_organilab.html:23
 msgid "Search"
@@ -494,12 +483,8 @@ msgid "GHS Label Creator"
 msgstr "Creador de etiquetas del SGA"
 
 #: sga/templates/index_sga.html:27
-msgid ""
-"Doesn't have templates created yet, go to the editor and generate your "
-"custom templates!"
-msgstr ""
-"No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas "
-"personalizadas!"
+msgid "Doesn't have templates created yet, go to the editor and generate your custom templates!"
+msgstr "No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas personalizadas!"
 
 #: sga/templates/index_sga.html:28
 msgid "Go to Editor"
@@ -510,12 +495,8 @@ msgid "Go to custom templates"
 msgstr "Ir a tus plantillas"
 
 #: sga/templates/index_sga.html:36 sga/templates/label_index.html:69
-msgid ""
-"Create your own chemical label according to the Globally Harmonized System "
-"(GHS)."
-msgstr ""
-"Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente "
-"Armonizado (SGA)."
+msgid "Create your own chemical label according to the Globally Harmonized System (GHS)."
+msgstr "Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA)."
 
 #: sga/templates/index_sga.html:43
 msgid "GHS Label Example and Requirements"
@@ -526,16 +507,8 @@ msgid "Online GHS Solution"
 msgstr "Solución GHS en línea"
 
 #: sga/templates/index_sga.html:48
-msgid ""
-"Create and customize a chemical label according to Globally Harmonized "
-"System (GHS).On the other hand, this tool helps suppliers and downstream "
-"users such as laboratories to quickly adopt the new standard and avoid the "
-"risk of non-compliance."
-msgstr ""
-"Crear y personalizar una etiqueta química de acuerdo con el Sistema "
-"Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los "
-"proveedores y usuarios intermedios, como los laboratorios, a adoptar "
-"rápidamente la nueva norma y evitar el riesgo de incumplimiento."
+msgid "Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance."
+msgstr "Crear y personalizar una etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los proveedores y usuarios intermedios, como los laboratorios, a adoptar rápidamente la nueva norma y evitar el riesgo de incumplimiento."
 
 #: sga/templates/index_sga.html:49
 msgid "Moreover, the solution contains multiples features:"
@@ -568,8 +541,7 @@ msgstr "Potenciado por"
 
 #: sga/templates/information.html:36 sga/templates/label_information.html:24
 msgid "Enter all required label and recipient information"
-msgstr ""
-"Introduzca toda la información necesaria sobre la etiqueta y el destinatario"
+msgstr "Introduzca toda la información necesaria sobre la etiqueta y el destinatario"
 
 #: sga/templates/information.html:43 sga/templates/label_information.html:30
 msgid "Substance"
@@ -655,12 +627,8 @@ msgid "GHS"
 msgstr "SGA"
 
 #: sga/templates/label_template.html:21 sga/templates/template.html:27
-msgid ""
-"Create a new label template or select a pre-designed template in accordance "
-"with your needs"
-msgstr ""
-"Cree una nueva plantilla de etiquetas o seleccione una plantilla prediseñada "
-"de acuerdo con tus necesidades"
+msgid "Create a new label template or select a pre-designed template in accordance with your needs"
+msgstr "Cree una nueva plantilla de etiquetas o seleccione una plantilla prediseñada de acuerdo con tus necesidades"
 
 #: sga/templates/label_template.html:28 sga/templates/template.html:34
 msgid "Edit basic information"
@@ -720,9 +688,24 @@ msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
 #: sga/views.py:472
-msgid ""
-"Your donation was completed successfully, thank you for support this project!"
+msgid "Your donation was completed successfully, thank you for support this project!"
 msgstr ""
+
+#: sga/templates/add_recipient_size.html:9
+msgid "Create New Recipient"
+msgstr "Crear Nuevo Recipiente"
+
+#: sga/templates/add_substance.py:9
+msgid "Create New Substance"
+msgstr "Crear Nueva Sustancia"
+
+#: sga/views.py:581
+msgid "The substance saved successfully"
+msgstr "La sustancias fue guardada con éxito"
+
+#: sga/views.py:594
+msgid "The Recipient size saved successfully"
+msgstr "El recipiente fue guardado con éxito"
 
 #~ msgid "Logo and Bar Code"
 #~ msgstr "Logotipo y código de barras"
