@@ -66,10 +66,6 @@ $(document).ready(function () {
             comercial_information: {
                 maxlength: 250
             },
-            recipients: {
-                required: true,
-                maxlength: 180
-            },
         }
     });
     // Save label information in JSON
@@ -98,18 +94,7 @@ $(document).ready(function () {
                 label_JSON.company_phone =  $('#company_phone').val();
                 // #3: Product Identification
                 label_JSON.commercial_information =  $('#commercial_information').val();
-                // #4: Recipient Size
-                var recipient_select_box = document.getElementById("recipients");
-                var recipient_name = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-name');
-                label_JSON.recipient_name = recipient_name;
-                var height = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height');
-                label_JSON.height = height;
-                var height_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-height_unit');
-                label_JSON.height_unit = height_unit;
-                var width = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width');
-                label_JSON.width = width;
-                var width_unit = recipient_select_box.options[recipient_select_box.selectedIndex].getAttribute('data-width_unit');
-                label_JSON.width_unit = width_unit;
+
                 // Save label information in local storage
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('information', label_JSON_String);
@@ -122,54 +107,8 @@ $(document).ready(function () {
             }
         //}
     });
-  let recipient=$('#recipients');
-  let pk=$(recipient).find('option:selected');
-    if(pk.index()>0){
-        $.ajax({
-        url: 'sga/getList/',
-        type:'POST',
-        data: {'pk':pk.val()},
-        headers: {'X-CSRFToken': getCookie('csrftoken') },
-        success: function (data) {
-        templateList(data);
-      }
-        });
-        }
 });
 
-$('#recipients').change(function(){
-    let pk=$(this).find('option:selected').val();
-    console.log(pk)
-     $.ajax({
-        url: 'sga/getList/',
-        type:'POST',
-        data: {pk},
-        headers: {'X-CSRFToken': getCookie('csrftoken') },
-        success: function (data) {
-        templateList(data);
-      }
-        });
-});
-
-
-// Select box place holder
 function changePlaceHolder(sel) {
     sel.style.cssText = 'color: #000 !important';
-}
-function templateList(data){
-    let templates=document.querySelector('#templates')
-    templates.innerHTML='';
-    let y= JSON.parse(data);
-    let errors=document.querySelector(".error");
-    errors.style.display='block';
-    if(y.length>0){
-    y.forEach(e=>{
-       templates.innerHTML+=`<option value=${e.id}>${e.name}</option>`;
-    });
-    errors.style.display='none';
-    }
-}
-// Element contains a class 
-function hasClass(element, cls) {
-    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
