@@ -24,9 +24,9 @@
     <div class="x_title">
                     {% csrf_token %}
         <h2>{% trans 'List of SGA Labels' %}</h2>
-        <ul class="nav navbar-right panel_toolbox">
-
-        </ul>
+        <div class="pull-right">
+            <button type="button" class="btn btn-success form-control" id="newsgalabel">{% trans 'New SGA Label' %}</button>
+        </div>
         <div class="clearfix"></div>
     </div>
         <table class="table table-bordered text-center" id="table_template_list">
@@ -64,4 +64,31 @@
             </div>
         </div>
     </div>
+
+
+
+    <div class="modal fade" id="newsgalabelmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left" id="exampleModalLabel">{% trans 'New SGA Label' %}</h5>
+                    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newsgalabelform"  method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>{% trans 'Label Name' %}</label>
+                            <input type="text" name="name" class="form-control">
+                            <input type="hidden" name="template" id="id_template">
+                        </div>
+                        <button type="submit" class="btn btn-success" id="save_">{% trans 'Continue' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
   {% endblock content %}

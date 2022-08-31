@@ -38,18 +38,20 @@ $(window).load(function(){
 
 });
 
-
-$("#editor_save").on('click', function(){
+function load_data_form(idform){
     var svg_text = svgEditor.svgCanvas.getSvgString();
     $("#id_json_representation").val(svg_text);
-
     var svg_element = document.getElementById('svgcontent');
     var svg_string = new XMLSerializer().serializeToString(svg_element);
     var decoded = unescape(encodeURIComponent(svg_string));
     var base64 = btoa(decoded);
-     $("#id_preview").val(base64);
+    $("#id_preview").val(base64);
+}
 
-     $("#sgaform").submit();
+
+$("#editor_save").on('click', function(){
+     load_data_form("sgaform");
+     $("#"+idform).submit();
 });
 
 
@@ -77,4 +79,12 @@ $("#id_recipient_size, #id_templates").on("change", function(){
             console.log(xhr, resp, text);
         }
     });
+});
+
+
+$("#savesgalabel").on('click', function(){
+    load_data_form("personal");
+    var sgatemplate = $("#id_templates").val();
+    $("#id_template").val(sgatemplate);
+    $("#save_template").modal();
 });

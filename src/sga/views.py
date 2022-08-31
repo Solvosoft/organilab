@@ -1,6 +1,8 @@
 # Import functions of another modules
 import json
 
+import cairosvg
+from cairocffi import cairo
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
@@ -42,7 +44,7 @@ def render_user_pdf(request,pk):
 
     instance = get_object_or_404(PersonalTemplateSGA, pk=pk)
     json_data = instance.json_representation
-    recipient=RecipientSize.objects.get(pk=instance.recipient_size.pk)
+    recipient=RecipientSize.objects.get(pk=instance.template.recipient_size.pk)
     global_info_recipient = {'height_value': recipient.height, 'height_unit': recipient.height_unit, 'width_value': recipient.width, 'width_unit': recipient.width_unit}
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
@@ -137,12 +139,10 @@ def template(request):
         form = RecipientInformationForm(request.POST, user=request.user)
     else:
         form = None
-    template_sizes=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
     context = {
         'laboratory': None,
         'form': form,
         'sgatemplates': sgatemplates,
-        'sizes': template_sizes,
         'barcode_file_url':  barcode_file_url,
         'logo_file_url': logo_file_url,
         'formselects': SGAEditorForm,
@@ -432,16 +432,18 @@ def create_personal_template(request):
     templates = PersonalTemplateSGA.objects.filter(user=user)
     context = {"templates": templates }
     if request.method == 'POST':
-        form = PersonalForm(request.POST)
+        form = PersonalForm(request.POST, user=user)
         if form.is_valid():
-            recipient=RecipientSize.objects.get(pk=form.cleaned_data['sizes'])
             personal = PersonalTemplateSGA(
                 user=user,  name=form.cleaned_data['name'],
                 json_representation=request.POST.get('json_representation',''),
-                recipient_size=recipient
+                preview = form.cleaned_data['preview'],
+                template= form.cleaned_data['template']
             )
             personal.save()
             return redirect('sga:add_personal')
+        else:
+            print(form.errors)
 
     else:
 

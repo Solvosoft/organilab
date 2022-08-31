@@ -45,8 +45,15 @@ class SearchDangerIndicationForm(CustomForm, forms.Form):
 
 class PersonalForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
-    json_representation = forms.CharField(widget=forms.HiddenInput()),
-    sizes = forms.CharField(required=True, widget=genwidgets.NumberInput)
+    json_representation = forms.CharField(widget=forms.HiddenInput())
+    preview = forms.CharField(widget=forms.HiddenInput())
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(PersonalForm, self).__init__(*args, **kwargs)
+        filter = Q(community_share=True) | Q(creator=user)
+        self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
 
 class DonateForm(GTForm, forms.Form):
     name = forms.CharField(
