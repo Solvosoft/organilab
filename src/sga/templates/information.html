@@ -106,36 +106,20 @@
                         placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
                 </div>
             </div>
-            <!--============================================================================================================-->
 
             <!--=========================================Recipient==========================================================-->
-            <div class="form-group">
-                <label><span class="label label-info">6</span>&nbsp;{% trans 'Recipient' %}</label><br>
-                <!--<a>{{ recipients }}</a>-->
-                <select name="recipients" id="recipients" class="form-control" onchange="changePlaceHolder(this)">
-                    <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
 
-                    {% if recipients != null %}
-                    {% for recipient in recipients %}
-                    <option value="{{recipient.pk}}" data-name="{{recipient.name}}"
-                        data-height="{{recipient.height}}"
-                        data-height_unit="{{recipient.height_unit}}"
-                        data-width="{{recipient.width}}"
-                        data-width_unit="{{recipient.width_unit}}">{{recipient.name}}
-                        - {{recipient.height}}{{recipient.height_unit}} x
-                        {{recipient.width}}{{recipient.width_unit}}</option>
-                    {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <!--Add new recipient-->
-            <label>{% trans 'Did you find the recipient?' %}</label>&nbsp;&nbsp;<a href="{% url 'admin:sga_recipientsize_add' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+
             <!--============================================================================================================-->
            <div class="form-group">
                 <label><span class="label label-info">7</span>&nbsp;{% trans 'Template' %}</label><br>
                 <!--<a>{{ recipients }}</a>-->
                 <select name="templates" id="templates" class="form-control" onchange="changePlaceHolder(this)">
-                    <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option></select>
+                    <option disabled selected hidden>{% trans 'Name - Height x Width' %}</option>
+                    {% for tem in templates %}
+                        <option value="{{tem.pk}}">{{tem.name}} ({{tem.recipient_size.name}} - {{tem.recipient_size.height}}{{tem.recipient_size.height_unit}} x {{tem.recipient_size.width}}{{tem.recipient_size.width_unit}})</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="error"><lead>No hay plantillas de la medida solicitada</lead></div>
             <!--Add new recipient-->
