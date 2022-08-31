@@ -20,8 +20,12 @@
         {% if width %}document.width = {{width}};{% endif %}
         {% if height %}document.height = {{height}};{% endif %}
     </script>
-    <script src="{% static 'editor/Editor.js' %}"> </script>
-    <script src="{% static 'sga/sga-bundle.js' %}"> </script>
+   <!-- <script src="{% static 'editor/Editor.js' %}" type="module"> </script> -->
+   <!--    <script id="SvgCanvas" src="{% static 'svgcanvas/svgcanvas.js' %}" type="module"> </script> -->
+    <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
+    window.SvgCanvas=SvgCanvas;
+</script>
+    <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
     <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
     <script src="{% static 'sga/js/codigosPH.js' %}"></script>
 

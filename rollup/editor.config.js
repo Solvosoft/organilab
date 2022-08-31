@@ -11,11 +11,16 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import url from '@rollup/plugin-url' // for XML/SVG files
 import html from 'rollup-plugin-html'
+import replace from 'rollup-plugin-replace-imports-with-vars'
 
 import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
 import { terser } from 'rollup-plugin-terser'
 // import progress from 'rollup-plugin-progress';
-import filesize from 'rollup-plugin-filesize'
+//import filesize from 'rollup-plugin-filesize'
+
+const globals = {
+  '@svgedit/svgcanvas': "window.SvgCanvas",
+}
 
 // utility function
 const getDirectories = (source) => {
@@ -31,13 +36,17 @@ const dirPath = path.join(__dirname, '/assets/svgedit');
 const extensionDirs = getDirectories(dirPath+'/src/editor/extensions')
 
 const dest = ['src/sga/static/editor']
+const rmdest = process.env.dest === 'rm'
 
+if(rmdest){
 // remove existing distribution
 rimraf('./src/sga/static/editor', () => console.info('recreating static editor'))
+}
 
 // config for svgedit core module
 const config = [{
   input: [dirPath+'/src/editor/Editor.js'],
+  external: ['@svgedit/svgcanvas'],
   output: [
     {
       format: 'es',
@@ -49,11 +58,13 @@ const config = [{
   plugins: [
     copy({
       targets: [
+         { src: dirPath+'/src/editor/locale', dest },
         { src: dirPath+'/src/editor/images', dest },
         { src: dirPath+'/src/editor/components/jgraduate/images', dest: dest.map((d) => `${d}/components/jgraduate`) },
-        { src: dirPath+'/src/editor/extensions/ext-shapes/shapelib', dest: dest.map((d) => `${d}/extensions/ext-shapes`) },
-        { src: dirPath+'/src/editor/extensions/ext-pictograms/shapelib', dest: dest.map((d) => `${d}/extensions/ext-pictograms`) },
-        { src: dirPath+'/src/editor/svgedit.css', dest }
+      //  { src: dirPath+'/src/editor/extensions/ext-shapes/shapelib', dest: dest.map((d) => `${d}/extensions/ext-shapes`) },
+      //  { src: dirPath+'/src/editor/extensions/ext-pictograms/shapelib', dest: dest.map((d) => `${d}/extensions/ext-pictograms`) },
+        { src: dirPath+'/src/editor/svgedit.css', dest },
+        { src: dirPath+'/src/editor/extensions', dest }
       ]
     }),
     html({
@@ -68,23 +79,13 @@ const config = [{
       preferBuiltins: false
     }),
     commonjs(),
+    replace({ varType: 'var', replacementLookup: globals }),
     dynamicImportVars({ include: dirPath+'/src/editor/locale.js' }),
     babel({ babelHelpers: 'bundled', exclude: [/\/core-js\//] }), // exclude core-js to avoid circular dependencies.
     terser({ keep_fnames: true }), // keep_fnames is needed to avoid an error when calling extensions.
-    filesize()
+    //filesize()
+
   ]
-},
-{
-input: 'assets/sgaeditor.js',
-output: [
-    {
-      format: 'es',
-      inlineDynamicImports: false,
-      sourcemap: false,
-      file: './src/sga/static/sga-bundle.js'
-    },
-  ],
-external: ['editor/Editor']
 }
 ]
 
@@ -97,7 +98,7 @@ extensionDirs.forEach((extensionDir) => {
       output: [
         {
           format: 'es',
-          dir: `${dirPath}/src/sga/static/editor/extensions/${extensionName}`,
+          dir: `../src/sga/static/editor/extensions/${extensionName}`,
           inlineDynamicImports: true,
           sourcemap: true
         }
