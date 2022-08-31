@@ -65,3 +65,34 @@ class DonateForm(GTForm, forms.Form):
 class PersonalTemplatesForm(CustomForm, forms.Form):
     name = forms.CharField(max_length=100, required=True)
     json_data = forms.CharField(widget=forms.TextInput)
+
+class SubstanceForm(GTForm,forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SubstanceForm, self).__init__(*args, **kwargs)
+        self.fields['uipa_name'].label= _('UIPA name')
+    class Meta:
+        model = Substance
+        fields= '__all__'
+        widgets = {
+            'comercial_name':genwidgets.TextInput,
+            'uipa_name': genwidgets.TextInput,
+            'components': genwidgets.SelectMultiple(),
+            'danger_indications': genwidgets.SelectMultiple(),
+            'synonymous': genwidgets.TextInput,
+            'agrochemical': genwidgets.YesNoInput
+        }
+
+class RecipientSizeForm(GTForm,forms.ModelForm):
+
+    class Meta:
+        model = RecipientSize
+        fields= '__all__'
+        widgets = {
+            'name':genwidgets.TextInput,
+            'height': genwidgets.NumberInput,
+            'height_unit': genwidgets.Select,
+            'width': genwidgets.NumberInput,
+            'width_unit': genwidgets.Select,
+
+        }
