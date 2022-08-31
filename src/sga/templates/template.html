@@ -46,7 +46,6 @@
       <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
                     {% csrf_token %}
             {{form|bootstrap}}
-            <input type="hidden" name="json_representation" id="id_json_representation" value="{{sgatemplates.json_representation}}">
             <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
         </form>
     </div>
@@ -184,13 +183,13 @@
               </div>
   </div>
     {% if request.user.is_authenticated %}
-        <button class="btn btn-success" id="save" data-toggle="modal" data-target="#save_template">Save</button>
+        <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
     {% endif %}
        <div class="modal fade" id="save_template" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title pull-left" id="exampleModalLabel">Deseas Guardar la plantilla?</h5>
+            <h5 class="modal-title pull-left" id="exampleModalLabel">{% trans '¿Would you like to save this SGA label?' %}</h5>
             <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -199,11 +198,12 @@
           <form id="personal"  method="post" action="{% url 'sga:add_personal' %}">
                     {% csrf_token %}
 
-              <input type="hidden" name="json_representation" id="json_representation">
-              <input type="hidden" name="sizes" id="sizes">
+              <input type="hidden" name="json_representation" id="id_json_representation" value="{{sgatemplates.json_representation}}">
               <div class="form-group">
                   <label>Nombre de la plantilla</label>
                   <input type="text" name="name" class="form-control">
+                  <input type="hidden" name="preview" id="id_preview">
+                  <input type="hidden" name="template" id="id_template">
               </div>
             <button type="submit" class="btn btn-success" id="save_">Save</button>
               </form>
