@@ -1,8 +1,9 @@
-import defaultConfig from './editor.rollup.config.js';
+import EditorConfig from './rollup/editor.config.js';
+import SgaEditorConfig from './rollup/sga.editor.config.js';
 
 export default commandLineArgs => {
   if (commandLineArgs.configDebug === true) {
-    return defaultConfig;  // debugConfig
+    return EditorConfig;
   }
-  return defaultConfig;
+  return SgaEditorConfig;  // debugConfig
 };

@@ -1,7 +1,7 @@
 import Editor from '../editor/Editor.js';
 
-const svgEditor = new Editor(document.getElementById('canvas_editor'))
-svgEditor.init()
+const svgEditor = new Editor(document.getElementById('canvas_editor'));
+svgEditor.init();
 svgEditor.setConfig({
           allowInitialUserOverride: true,
           imgPath: '/static/editor/images',
@@ -11,7 +11,7 @@ svgEditor.setConfig({
           userExtensions: [
 
           /* {pathName: 'textoseleccionado-bundle.js'} { pathName: './react-extensions/react-test/dist/react-test.js' } */]
-        })
+        });
 
 // Variable XDOMAIN below is created by Rollup for the Xdomain build (see rollup.config.js)
 /* globals XDOMAIN */
@@ -20,7 +20,7 @@ try { // try clause to avoid js to complain if XDOMAIN undefined
             svgEditor.setConfig({
               canvasName: 'xdomain', // Namespace this
               allowedOrigins: [ '*' ]
-            })
-    console.info('xdomain config activated')
+            });
+    console.info('xdomain config activated');
   }
 } catch (error) { /* empty fn */ }

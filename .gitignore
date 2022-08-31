@@ -6,6 +6,8 @@ __pycache__/
 /entorno
 docker/*
 assets/svgedit
+assets/svgcanvas
+
 # C extensions
 *.so
 4.2
