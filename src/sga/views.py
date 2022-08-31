@@ -100,11 +100,10 @@ def index_sga(request):
 
 # SGA information
 def information_creator(request):
-    recipients = RecipientSize.objects.all()
-    template= RecipientSize.objects.all()
+    filter = Q(community_share=True) | Q(creator=request.user)
+    template= TemplateSGA.objects.filter(filter)
     context = {
         'laboratory': None,
-        'recipients': recipients,
         'templates': template,
     }
     if request.method == 'POST':
@@ -135,7 +134,7 @@ def template(request):
     request.session['logo_file_url'] = logo_file_url
     request.session['barcode_file_url'] = barcode_file_url
     if request.method == 'POST':
-        form = RecipientInformationForm(request.POST)
+        form = RecipientInformationForm(request.POST, user=request.user)
     else:
         form = None
     template_sizes=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
@@ -148,7 +147,9 @@ def template(request):
         'logo_file_url': logo_file_url,
         'formselects': SGAEditorForm,
         'pictograms': Pictogram.objects.all(),
-        'warningwords': WarningWord.objects.all()
+        'warningwords': WarningWord.objects.all(),
+        'width': sgatemplates.recipient_size.width,
+        'height': sgatemplates.recipient_size.height
 
     }
     return render(request, 'template.html', context)
@@ -175,7 +176,9 @@ def editor(request):
     if request.method == "POST":
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
-            finstance = sgaform.save()
+            finstance = sgaform.save(commit=False)
+            finstance.creator = request.user
+            finstance.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
             return redirect('sga:editor')
         else:
@@ -188,7 +191,7 @@ def editor(request):
         "pictograms": Pictogram.objects.all(),
         "warningwords": WarningWord.objects.all(),
         'templateinstance': finstance,
-        'templates': TemplateSGA.objects.all(),
+        'templates': TemplateSGA.objects.filter(creator=request.user),
         'clean_canvas_editor': clean_canvas_editor
     }
     if finstance:
@@ -561,8 +564,26 @@ def get_files(request):
 
 @login_required
 def get_recipient_size(request, pk):
-    recipient = get_object_or_404(RecipientSize, pk=pk)
-    return JsonResponse({'size': {'width': recipient.width, 'height': recipient.height}})
+    response = {'size': {'width': 0.0, 'height': 0.0}}
+    template = TemplateSGA.objects.filter(pk=pk)
+    if template.exists:
+        template = template.first()
+        response.update({
+            'size': {
+                'width': template.recipient_size.width,
+                'height': template.recipient_size.height},
+            'svg_content': template.json_representation
+        })
+    else:
+        recipient = get_object_or_404(RecipientSize, pk=pk)
+        response['size']['width'] = recipient.width
+        response['size']['height'] = recipient.height
+        response.update({
+            'size': {
+                'width': recipient.width,
+                'height': recipient.height}
+        })
+    return JsonResponse(response)
 
 
 @login_required

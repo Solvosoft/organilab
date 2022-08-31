@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
@@ -13,8 +14,13 @@ class RecipientInformationForm(forms.Form):
     phone = forms.CharField(max_length=15, required=True )
     address = forms.CharField(max_length=100, required=True )
     commercial_information = forms.Textarea( )
-    recipients = forms.ModelChoiceField(queryset=RecipientSize.objects.all())
-    templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.all())
+    templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(RecipientInformationForm, self).__init__(*args, **kwargs)
+        filter = Q(community_share=True) | Q(creator=user)
+        self.fields['templates'].queryset = TemplateSGA.objects.filter(filter)
 
 class SGAEditorForm(CustomForm,forms.ModelForm):
     class Meta:

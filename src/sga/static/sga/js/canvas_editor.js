@@ -1,12 +1,9 @@
 function update_resolution(width, height){
-    var viewBox = "0 0";
-    var value = 37.795275591;
+    var value = 37.795275591; //CM VALUE IN PIXELES
     svgEditor.svgCanvas.setResolution(width*value, height*value, 1);
     svgEditor.updateCanvas();
-    viewBox +=  " " + width*value+40;
-    viewBox += " " + height*value+40;
     svgEditor.svgCanvas.selectAllInCurrentLayer();
-    svgEditor.svgCanvas.svgContent.setAttribute("viewBox",  viewBox);
+}
 
 $(window).load(function(){
 
@@ -15,6 +12,10 @@ $(window).load(function(){
 
     var urlParams = new URLSearchParams(window.location.search);
     var instance = urlParams.get('instance');
+    if(document.instance){
+        instance = true;
+    }
+
     var svg_content = $("#id_json_representation").val();
 
     if(instance && svg_content){
@@ -53,7 +54,7 @@ $("#editor_save").on('click', function(){
 
 
 
-$("#id_recipient_size").on("change", function(){
+$("#id_recipient_size, #id_templates").on("change", function(){
     var id = $(this).val();
     var url = document.url_get_recipient_size;
     if(id){
@@ -64,6 +65,10 @@ $("#id_recipient_size").on("change", function(){
         url: url,
         type: 'GET',
         success: function(result) {
+          if(result.svg_content){
+            svgEditor.loadSvgString(result.svg_content);
+          }
+
           if(result.size){
             update_resolution(result.size.width, result.size.height);
           }
@@ -71,7 +76,5 @@ $("#id_recipient_size").on("change", function(){
         error: function(xhr, resp, text) {
             console.log(xhr, resp, text);
         }
-
     });
-
 });
