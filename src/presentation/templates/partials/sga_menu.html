@@ -21,6 +21,15 @@
             </a>
         </li>
          {% endif %}
+
+        {% if perms.laboratory.change_object %}
+         <li>
+            <a href="{% url 'sga:add_substance'%}">
+                {% trans 'Add Substance' %}
+            </a>
+        </li>
+        {% endif %}
+
         {% if perms.msds.view_msdsobject %}
         <li>
             <a href="{% url 'msds:index_msds'%}">

@@ -6,5 +6,173 @@
  * @copyright 2010 Redou Mine, 2010 Alexis Deveria
  *
  */
-const loadExtensionTranslation=async function(e){let r;const a=e.configObj.pref("lang");try{r=await function __variableDynamicImportRuntime0__(e){switch(e){case"./locale/en.js":return Promise.resolve().then((function(){return t}));case"./locale/fr.js":return Promise.resolve().then((function(){return n}));case"./locale/tr.js":return Promise.resolve().then((function(){return o}));case"./locale/zh-CN.js":return Promise.resolve().then((function(){return i}));default:return new Promise((function(t,n){("function"==typeof queueMicrotask?queueMicrotask:setTimeout)(n.bind(null,new Error("Unknown variable dynamic import: "+e)))}))}}("./locale/".concat(a,".js"))}catch(e){console.warn("Missing translation (".concat(a,") for ").concat("grid"," - using 'en'")),r=await Promise.resolve().then((function(){return t}))}e.i18next.addResourceBundle(a,"grid",r.default)};var e={name:"grid",async init(){const e=this;await loadExtensionTranslation(e);const{svgCanvas:t}=e,{$id:n,$click:o,NS:i}=t,r=n("svgcanvas").ownerDocument,{assignAttributes:a}=t,s=document.createElement("canvas"),c=n("canvasBackground"),l=t.getTypeMap(),d=[.01,.1,1,10,100,1e3];let u=e.configObj.curConfig.showGrid||!1;s.style.display="none",e.$svgEditor.appendChild(s);const g=r.createElementNS(i.SVG,"svg");a(g,{id:"canvasGrid",width:"100%",height:"100%",x:0,y:0,overflow:"visible",display:"none"}),c.appendChild(g);const h=r.createElementNS(i.SVG,"defs"),p=r.createElementNS(i.SVG,"pattern");a(p,{id:"gridpattern",patternUnits:"userSpaceOnUse",x:0,y:0,width:100,height:100});const f=r.createElementNS(i.SVG,"image");a(f,{x:0,y:0,width:100,height:100}),p.append(f),h.append(p),n("canvasGrid").appendChild(h);const m=r.createElementNS(i.SVG,"rect");a(m,{width:"100%",height:"100%",x:0,y:0,"stroke-width":0,stroke:"none",fill:"url(#gridpattern)",style:"pointer-events: none; display:visible;"}),n("canvasGrid").appendChild(m);const updateGrid=n=>{const o=l[e.configObj.curConfig.baseUnit]*n,i=100/o;let r=1;d.some((e=>(r=e,i<=e)));const a=r*o;s.width=a,s.height=a;const c=s.getContext("2d"),u=.5,g=a/10;c.globalAlpha=.2,c.strokeStyle=e.configObj.curConfig.gridColor;for(let e=1;e<10;e++){const t=Math.round(g*e)+.5,n=0;c.moveTo(t,a),c.lineTo(t,n),c.moveTo(a,t),c.lineTo(n,t)}c.stroke(),c.beginPath(),c.globalAlpha=.5,c.moveTo(u,a),c.lineTo(u,0),c.moveTo(a,u),c.lineTo(0,u),c.stroke();const h=s.toDataURL("image/png");f.setAttribute("width",a),f.setAttribute("height",a),f.parentNode.setAttribute("width",a),f.parentNode.setAttribute("height",a),t.setHref(f,h)},gridUpdate=()=>{u&&updateGrid(t.getZoom()),n("canvasGrid").style.display=u?"block":"none",n("view_grid").pressed=u};return{name:e.i18next.t("".concat("grid",":name")),zoomChanged(e){u&&updateGrid(e)},callback(){const t=document.createElement("template"),i="".concat("grid",":buttons.0.title");t.innerHTML='\n          <se-button id="view_grid" title="'.concat(i,'" src="grid.svg"></se-button>\n        '),n("editor_panel").append(t.content.cloneNode(!0)),o(n("view_grid"),(()=>{e.configObj.curConfig.showGrid=u=!u,gridUpdate()})),u&&gridUpdate()}}}},t=Object.freeze({__proto__:null,default:{name:"View Grid",buttons:[{title:"Show/Hide Grid"}]}}),n=Object.freeze({__proto__:null,default:{name:"Grille",buttons:[{title:"Afficher/Cacher Grille"}]}}),o=Object.freeze({__proto__:null,default:{name:"Izgarayı Görüntüle",buttons:[{title:"Izgara Göster/Gizle"}]}}),i=Object.freeze({__proto__:null,default:{name:"网格视图",buttons:[{title:"显示/隐藏网格"}]}});export{e as default};
-//# sourceMappingURL=ext-grid.js.map
+
+const name = 'grid'
+
+const loadExtensionTranslation = async function (svgEditor) {
+  let translationModule
+  const lang = svgEditor.configObj.pref('lang')
+  try {
+    translationModule = await import(`./locale/${lang}.js`)
+  } catch (_error) {
+    console.warn(`Missing translation (${lang}) for ${name} - using 'en'`)
+    translationModule = await import('./locale/en.js')
+  }
+  svgEditor.i18next.addResourceBundle(lang, name, translationModule.default)
+}
+
+export default {
+  name,
+  async init () {
+    const svgEditor = this
+    await loadExtensionTranslation(svgEditor)
+    const { svgCanvas } = svgEditor
+    const { $id, $click, NS } = svgCanvas
+    const svgdoc = $id('svgcanvas').ownerDocument
+    const { assignAttributes } = svgCanvas
+    const hcanvas = document.createElement('canvas')
+    const canvBG = $id('canvasBackground')
+    const units = svgCanvas.getTypeMap() // Assumes prior `init()` call on `units.js` module
+    const intervals = [0.01, 0.1, 1, 10, 100, 1000]
+    let showGrid = svgEditor.configObj.curConfig.showGrid || false
+
+    hcanvas.style.display = 'none'
+    svgEditor.$svgEditor.appendChild(hcanvas)
+
+    const canvasGrid = svgdoc.createElementNS(NS.SVG, 'svg')
+    assignAttributes(canvasGrid, {
+      id: 'canvasGrid',
+      width: '100%',
+      height: '100%',
+      x: 0,
+      y: 0,
+      overflow: 'visible',
+      display: 'none'
+    })
+    canvBG.appendChild(canvasGrid)
+    const gridDefs = svgdoc.createElementNS(NS.SVG, 'defs')
+    // grid-pattern
+    const gridPattern = svgdoc.createElementNS(NS.SVG, 'pattern')
+    assignAttributes(gridPattern, {
+      id: 'gridpattern',
+      patternUnits: 'userSpaceOnUse',
+      x: 0, // -(value.strokeWidth / 2), // position for strokewidth
+      y: 0, // -(value.strokeWidth / 2), // position for strokewidth
+      width: 100,
+      height: 100
+    })
+
+    const gridimg = svgdoc.createElementNS(NS.SVG, 'image')
+    assignAttributes(gridimg, {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100
+    })
+    gridPattern.append(gridimg)
+    gridDefs.append(gridPattern)
+    $id('canvasGrid').appendChild(gridDefs)
+
+    // grid-box
+    const gridBox = svgdoc.createElementNS(NS.SVG, 'rect')
+    assignAttributes(gridBox, {
+      width: '100%',
+      height: '100%',
+      x: 0,
+      y: 0,
+      'stroke-width': 0,
+      stroke: 'none',
+      fill: 'url(#gridpattern)',
+      style: 'pointer-events: none; display:visible;'
+    })
+    $id('canvasGrid').appendChild(gridBox)
+
+    /**
+     *
+     * @param {Float} zoom
+     * @returns {void}
+     */
+    const updateGrid = (zoom) => {
+      // TODO: Try this with <line> elements, then compare performance difference
+      const unit = units[svgEditor.configObj.curConfig.baseUnit] // 1 = 1px
+      const uMulti = unit * zoom
+      // Calculate the main number interval
+      const rawM = 100 / uMulti
+      let multi = 1
+      intervals.some((num) => {
+        multi = num
+        return rawM <= num
+      })
+      const bigInt = multi * uMulti
+
+      // Set the canvas size to the width of the container
+      hcanvas.width = bigInt
+      hcanvas.height = bigInt
+      const ctx = hcanvas.getContext('2d')
+      const curD = 0.5
+      const part = bigInt / 10
+
+      ctx.globalAlpha = 0.2
+      ctx.strokeStyle = svgEditor.configObj.curConfig.gridColor
+      for (let i = 1; i < 10; i++) {
+        const subD = Math.round(part * i) + 0.5
+        // const lineNum = (i % 2)?12:10;
+        const lineNum = 0
+        ctx.moveTo(subD, bigInt)
+        ctx.lineTo(subD, lineNum)
+        ctx.moveTo(bigInt, subD)
+        ctx.lineTo(lineNum, subD)
+      }
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.globalAlpha = 0.5
+      ctx.moveTo(curD, bigInt)
+      ctx.lineTo(curD, 0)
+
+      ctx.moveTo(bigInt, curD)
+      ctx.lineTo(0, curD)
+      ctx.stroke()
+
+      const datauri = hcanvas.toDataURL('image/png')
+      gridimg.setAttribute('width', bigInt)
+      gridimg.setAttribute('height', bigInt)
+      gridimg.parentNode.setAttribute('width', bigInt)
+      gridimg.parentNode.setAttribute('height', bigInt)
+      svgCanvas.setHref(gridimg, datauri)
+    }
+
+    /**
+     *
+     * @returns {void}
+     */
+    const gridUpdate = () => {
+      if (showGrid) {
+        updateGrid(svgCanvas.getZoom())
+      }
+      $id('canvasGrid').style.display = (showGrid) ? 'block' : 'none'
+      $id('view_grid').pressed = showGrid
+    }
+    return {
+      name: svgEditor.i18next.t(`${name}:name`),
+      zoomChanged (zoom) {
+        if (showGrid) { updateGrid(zoom) }
+      },
+      callback () {
+        // Add the button and its handler(s)
+        const buttonTemplate = document.createElement('template')
+        const title = `${name}:buttons.0.title`
+        buttonTemplate.innerHTML = `
+          <se-button id="view_grid" title="${title}" src="grid.svg"></se-button>
+        `
+        $id('editor_panel').append(buttonTemplate.content.cloneNode(true))
+        $click($id('view_grid'), () => {
+          svgEditor.configObj.curConfig.showGrid = showGrid = !showGrid
+          gridUpdate()
+        })
+        if (showGrid) {
+          gridUpdate()
+        }
+      }
+    }
+  }
+}

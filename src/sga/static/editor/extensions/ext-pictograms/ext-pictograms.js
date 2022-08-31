@@ -6,5 +6,185 @@
  * @copyright 2022 Luis Zarate Montero
  *
  */
-const e="pictograms",loadExtensionTranslation=async function(t){let n;const s=t.configObj.pref("lang");try{n=await function __variableDynamicImportRuntime0__(e){switch(e){case"./locale/en.js":return Promise.resolve().then((function(){return a}));case"./locale/fr.js":return Promise.resolve().then((function(){return o}));case"./locale/tr.js":return Promise.resolve().then((function(){return r}));case"./locale/zh-CN.js":return Promise.resolve().then((function(){return l}));default:return new Promise((function(t,a){("function"==typeof queueMicrotask?queueMicrotask:setTimeout)(a.bind(null,new Error("Unknown variable dynamic import: "+e)))}))}}("./locale/".concat(s,".js"))}catch(t){console.warn("Missing translation (".concat(s,") for ").concat(e," - using 'en'")),n=await Promise.resolve().then((function(){return a}))}t.i18next.addResourceBundle(s,e,n.default)};var t={name:e,async init(){const e=this,t=e.svgCanvas,{$id:a,$click:o}=t,r=t.getSvgRoot();let l={};await loadExtensionTranslation(e);const n="tool_pictogram",s={};let i,c,m;return{callback(){if(null===a("tool_pictogram")){const r=e.configObj.curConfig.extPath,l='<se-explorerbutton id="tool_pictogram" title="pictogram" lib="'.concat(r,'/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>');t.insertChildAtIndex(a("tools_left"),l),o(a("tool_pictogram"),(()=>{this.leftPanel.updateLeftPanel("tool_pictogram")&&t.setMode(n)}))}},mouseDown(e){if(t.getMode()!==n)return;c=e.start_x;const a=c;m=e.start_y;const r=m;s.x=e.event.clientX,s.y=e.event.clientY;const u=t.getStyle();var g=document.getElementById("tool_pictogram").dataset.draw;return g.endsWith(".svg")?(t.setStarted(!0),i=t.addSVGElementsFromJson({element:"image",attr:{x:a,y:r,width:100,height:100,id:t.getNextId(),opacity:u.opacity/2,style:"pointer-events:inherit"}}),t.setHref(i,document.getElementById("tool_pictogram").$img.src),t.setImageURL(document.getElementById("tool_pictogram").$img.src),t.setSelectedElements(0,i),o(i,(e=>{e.preventDefault()}))):(i=t.addSVGElementsFromJson({element:"path",curStyles:!0,attr:{d:g,id:t.getNextId(),opacity:u.opacity/2,style:"pointer-events:none"}}),i.setAttribute("transform","translate("+a+","+r+") scale(0.005) translate("+-a+","+-r+")")),t.recalculateDimensions(i),l=i.getBBox(),{started:!0}},mouseMove(e){const a=t.getMode();if(console.log(a),a!==n)return;const o=t.getZoom(),s=e.event,u=e.mouse_x/o,g=e.mouse_y/o,h=i.transform.baseVal,d=i.getBBox(),p=d.x,b=d.y;Math.min(c,u),Math.min(m,g),Math.abs(u-c),Math.abs(g-m);l.width,l.height;let f=0;u<c&&(f=l.width);let _=0;g<m&&(_=l.height);const y=r.createSVGTransform(),j=r.createSVGTransform(),v=r.createSVGTransform();y.setTranslate(-(p+f),-(b+_)),s.shiftKey,j.setScale(1,1),v.setTranslate(p+f,b+_),h.appendItem(v),h.appendItem(j),h.appendItem(y),t.recalculateDimensions(i),l=i.getBBox()},mouseUp(e){if(t.getMode()!==n)return;return{keep:e.event.clientX!==s.x&&e.event.clientY!==s.y,element:i,started:!1}}}}},a=Object.freeze({__proto__:null,default:{loading:"Loading...",categories:{basic:"Basic",object:"Objects",symbol:"Symbols",arrow:"Arrows",flowchart:"Flowchart",animal:"Animals",game:"Cards & Chess",dialog_balloon:"Dialog balloons",electronics:"Electronics",math:"Mathematical",music:"Music",misc:"Miscellaneous",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Shape library"}]}}),o=Object.freeze({__proto__:null,default:{loading:"Chargement...",categories:{basic:"Basique",object:"Objets",symbol:"Symboles",arrow:"Flèches",flowchart:"Flowchart",animal:"Animaux",game:"Cartes & Echecs",dialog_balloon:"Dialog balloons",electronics:"Electronique",math:"Mathematiques",music:"Musique",misc:"Divers",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Bibliothèque d'images"}]}}),r=Object.freeze({__proto__:null,default:{loading:"Yükleniyor...",categories:{basic:"Temel",object:"Nesneler",symbol:"Semboller",arrow:"Oklar",flowchart:"Akış Şemaları",animal:"Hayvanlar",game:"Kartlar & Satranç",dialog_balloon:"Diyalog baloncukları",electronics:"Elektronikler",math:"Matematikseller",music:"Müzik",misc:"Diğerleri",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Şekil kütüphanesi"}]}}),l=Object.freeze({__proto__:null,default:{loading:"正在加载...",categories:{basic:"基本",object:"对象",symbol:"符号",arrow:"箭头",flowchart:"工作流",animal:"动物",game:"棋牌",dialog_balloon:"会话框",electronics:"电子",math:"数学",music:"音乐",misc:"其他",raphael_1:"raphaeljs.com 集合 1",raphael_2:"raphaeljs.com 集合 2"},buttons:[{title:"图元库"}]}});export{t as default};
-//# sourceMappingURL=ext-pictograms.js.map
+
+const name = 'pictograms'
+
+const loadExtensionTranslation = async function (svgEditor) {
+  let translationModule
+  const lang = svgEditor.configObj.pref('lang')
+  try {
+    translationModule = await import(`./locale/${lang}.js`)
+  } catch (_error) {
+    console.warn(`Missing translation (${lang}) for ${name} - using 'en'`)
+    translationModule = await import('./locale/en.js')
+  }
+  svgEditor.i18next.addResourceBundle(lang, name, translationModule.default)
+}
+
+export default {
+  name,
+  async init () {
+    const svgEditor = this
+    const canv = svgEditor.svgCanvas
+    const { $id, $click } = canv
+    const svgroot = canv.getSvgRoot()
+    let lastBBox = {}
+    await loadExtensionTranslation(svgEditor)
+
+    const modeId = 'tool_pictogram'
+    const startClientPos = {}
+
+    let curShape
+    let startX
+    let startY
+
+    return {
+      callback () {	
+        if ($id('tool_pictogram') === null) {
+          const extPath = svgEditor.configObj.curConfig.extPath
+          const buttonTemplate = `<se-explorerbutton id="tool_pictogram" title="pictogram" lib="${extPath}/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>`
+          canv.insertChildAtIndex($id('tools_left'), buttonTemplate	)
+          $click($id('tool_pictogram'), () => {
+            if (this.leftPanel.updateLeftPanel('tool_pictogram')) {
+              canv.setMode(modeId)
+            }
+          })
+        }
+      },
+      mouseDown (opts) {
+        const mode = canv.getMode()
+        if (mode !== modeId) { return undefined }
+
+        startX = opts.start_x
+        const x = startX
+        startY = opts.start_y
+        const y = startY
+        startClientPos.x = opts.event.clientX 
+        startClientPos.y = opts.event.clientY
+        
+        const curStyle = canv.getStyle()
+        
+        var currentD = document.getElementById('tool_pictogram').dataset.draw
+        if (currentD.endsWith('.svg')){
+				
+	    canv.setStarted(true)
+        curShape = canv.addSVGElementsFromJson({
+					element: 'image',
+					attr: {
+					  x,
+					  y,
+					  width: 100,
+					  height: 100,
+					  id: canv.getNextId(),
+					  opacity: curStyle.opacity / 2,
+					  style: 'pointer-events:inherit'
+					}
+				  })
+		canv.setHref(curShape, document.getElementById('tool_pictogram').$img.src)
+		canv.setImageURL(document.getElementById('tool_pictogram').$img.src)
+		canv.setSelectedElements(0, curShape)
+		
+		$click(curShape, (e) => { e.preventDefault() })	
+		//canv.setMode('image')
+		//canv.clearSelection(true)
+		//canv.setCurrentMode('select')
+		
+		}else{
+			        
+		curShape = canv.addSVGElementsFromJson({
+          element: 'path',
+          curStyles: true,
+          attr: {
+            d: currentD,
+            id: canv.getNextId(),
+            opacity: curStyle.opacity / 2,
+            style: 'pointer-events:none'
+          }
+        })
+        
+		curShape.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(0.005) translate(' + -x + ',' + -y + ')')
+	}
+		
+		canv.recalculateDimensions(curShape)
+        lastBBox = curShape.getBBox()
+
+        return {
+          started: true
+        }
+      },
+      mouseMove (opts) {
+        const mode = canv.getMode()
+        console.log(mode);
+        if (mode !== modeId) { return }
+
+
+        const zoom = canv.getZoom()
+        const evt = opts.event
+
+        const x = opts.mouse_x / zoom
+        const y = opts.mouse_y / zoom
+
+        const tlist = curShape.transform.baseVal
+        const box = curShape.getBBox()
+        const left = box.x; const top = box.y
+
+        const newbox = {
+          x: Math.min(startX, x),
+          y: Math.min(startY, y),
+          width: Math.abs(x - startX),
+          height: Math.abs(y - startY)
+        }
+
+        let sx = (newbox.width / lastBBox.width) || 1
+        let sy = (newbox.height / lastBBox.height) || 1
+
+        // Not perfect, but mostly works...
+        let tx = 0
+        if (x < startX) {
+          tx = lastBBox.width
+        }
+        let ty = 0
+        if (y < startY) {
+          ty = lastBBox.height
+        }
+
+
+        // update the transform list with translate,scale,translate
+        const translateOrigin = svgroot.createSVGTransform()
+        const scale = svgroot.createSVGTransform()
+        const translateBack = svgroot.createSVGTransform()
+
+        translateOrigin.setTranslate(-(left + tx), -(top + ty))
+        if (!evt.shiftKey) {
+          const max = Math.min(Math.abs(sx), Math.abs(sy))
+
+          sx = max * (sx < 0 ? -1 : 1)
+          sy = max * (sy < 0 ? -1 : 1)
+        }
+        //scale.setScale(sx || 1, sy || 1)
+		scale.setScale(1, 1)
+        translateBack.setTranslate(left + tx, top + ty)
+        tlist.appendItem(translateBack)
+        tlist.appendItem(scale)
+        tlist.appendItem(translateOrigin)
+
+        canv.recalculateDimensions(curShape)
+
+        lastBBox = curShape.getBBox()
+      
+      },
+      mouseUp (opts) {
+        const mode = canv.getMode()
+        if (mode !== modeId) { return undefined }
+
+        const keepObject = (opts.event.clientX !== startClientPos.x && opts.event.clientY !== startClientPos.y)
+
+        return {
+          keep: keepObject,
+          element: curShape,
+          started: false
+        }
+      }
+    }
+  }
+}

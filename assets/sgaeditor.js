@@ -1,4 +1,4 @@
-import Editor from 'editor/Editor';
+import Editor from '../editor/Editor.js';
 
 const svgEditor = new Editor(document.getElementById('canvas_editor'))
 svgEditor.init()

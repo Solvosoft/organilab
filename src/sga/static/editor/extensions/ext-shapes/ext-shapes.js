@@ -6,5 +6,157 @@
  * @copyright 2010 Christian Tzurcanu, 2010 Alexis Deveria
  *
  */
-const e="shapes",loadExtensionTranslation=async function(t){let s;const r=t.configObj.pref("lang");try{s=await function __variableDynamicImportRuntime0__(e){switch(e){case"./locale/en.js":return Promise.resolve().then((function(){return a}));case"./locale/fr.js":return Promise.resolve().then((function(){return o}));case"./locale/tr.js":return Promise.resolve().then((function(){return l}));case"./locale/zh-CN.js":return Promise.resolve().then((function(){return n}));default:return new Promise((function(t,a){("function"==typeof queueMicrotask?queueMicrotask:setTimeout)(a.bind(null,new Error("Unknown variable dynamic import: "+e)))}))}}("./locale/".concat(r,".js"))}catch(t){console.warn("Missing translation (".concat(r,") for ").concat(e," - using 'en'")),s=await Promise.resolve().then((function(){return a}))}t.i18next.addResourceBundle(r,e,s.default)};var t={name:e,async init(){const t=this,a=t.svgCanvas,{$id:o,$click:l}=a,n=a.getSvgRoot();let s={};await loadExtensionTranslation(t);const r="shapelib",i={};let c,m,u;return{callback(){if(null===o("tool_shapelib")){const n=t.configObj.curConfig.extPath,s='\n          <se-explorerbutton id="tool_shapelib" title="'.concat(t.i18next.t("".concat(e,":buttons.0.title")),'" lib="').concat(n,'/ext-shapes/shapelib/"\n          src="shapelib.svg"></se-explorerbutton>\n          ');a.insertChildAtIndex(o("tools_left"),s,9),l(o("tool_shapelib"),(()=>{this.leftPanel.updateLeftPanel("tool_shapelib")&&a.setMode(r)}))}},mouseDown(e){if(a.getMode()!==r)return;const t=document.getElementById("tool_shapelib").dataset.draw;m=e.start_x;const o=m;u=e.start_y;const l=u,n=a.getStyle();return i.x=e.event.clientX,i.y=e.event.clientY,c=a.addSVGElementsFromJson({element:"path",curStyles:!0,attr:{d:t,id:a.getNextId(),opacity:n.opacity/2,style:"pointer-events:none"}}),c.setAttribute("transform","translate("+o+","+l+") scale(0.005) translate("+-o+","+-l+")"),a.recalculateDimensions(c),s=c.getBBox(),{started:!0}},mouseMove(e){if(a.getMode()!==r)return;const t=a.getZoom(),o=e.event,l=e.mouse_x/t,i=e.mouse_y/t,h=c.transform.baseVal,b=c.getBBox(),p=b.x,d=b.y,f=(Math.min(m,l),Math.min(u,i),Math.abs(l-m)),g=Math.abs(i-u);let _=f/s.width||1,y=g/s.height||1,j=0;l<m&&(j=s.width);let w=0;i<u&&(w=s.height);const M=n.createSVGTransform(),v=n.createSVGTransform(),x=n.createSVGTransform();if(M.setTranslate(-(p+j),-(d+w)),!o.shiftKey){const e=Math.min(Math.abs(_),Math.abs(y));_=e*(_<0?-1:1),y=e*(y<0?-1:1)}v.setScale(_,y),x.setTranslate(p+j,d+w),h.appendItem(x),h.appendItem(v),h.appendItem(M),a.recalculateDimensions(c),s=c.getBBox()},mouseUp(e){if(a.getMode()!==r)return;return{keep:e.event.clientX!==i.x&&e.event.clientY!==i.y,element:c,started:!1}}}}},a=Object.freeze({__proto__:null,default:{loading:"Loading...",categories:{basic:"Basic",object:"Objects",symbol:"Symbols",arrow:"Arrows",flowchart:"Flowchart",animal:"Animals",game:"Cards & Chess",dialog_balloon:"Dialog balloons",electronics:"Electronics",math:"Mathematical",music:"Music",misc:"Miscellaneous",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Shape library"}]}}),o=Object.freeze({__proto__:null,default:{loading:"Chargement...",categories:{basic:"Basique",object:"Objets",symbol:"Symboles",arrow:"Flèches",flowchart:"Flowchart",animal:"Animaux",game:"Cartes & Echecs",dialog_balloon:"Dialog balloons",electronics:"Electronique",math:"Mathematiques",music:"Musique",misc:"Divers",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Bibliothèque d'images"}]}}),l=Object.freeze({__proto__:null,default:{loading:"Yükleniyor...",categories:{basic:"Temel",object:"Nesneler",symbol:"Semboller",arrow:"Oklar",flowchart:"Akış Şemaları",animal:"Hayvanlar",game:"Kartlar & Satranç",dialog_balloon:"Diyalog baloncukları",electronics:"Elektronikler",math:"Matematikseller",music:"Müzik",misc:"Diğerleri",raphael_1:"raphaeljs.com set 1",raphael_2:"raphaeljs.com set 2"},buttons:[{title:"Şekil kütüphanesi"}]}}),n=Object.freeze({__proto__:null,default:{loading:"正在加载...",categories:{basic:"基本",object:"对象",symbol:"符号",arrow:"箭头",flowchart:"工作流",animal:"动物",game:"棋牌",dialog_balloon:"会话框",electronics:"电子",math:"数学",music:"音乐",misc:"其他",raphael_1:"raphaeljs.com 集合 1",raphael_2:"raphaeljs.com 集合 2"},buttons:[{title:"图元库"}]}});export{t as default};
-//# sourceMappingURL=ext-shapes.js.map
+const name = 'shapes'
+
+const loadExtensionTranslation = async function (svgEditor) {
+  let translationModule
+  const lang = svgEditor.configObj.pref('lang')
+  try {
+    translationModule = await import(`./locale/${lang}.js`)
+  } catch (_error) {
+    console.warn(`Missing translation (${lang}) for ${name} - using 'en'`)
+    translationModule = await import('./locale/en.js')
+  }
+  svgEditor.i18next.addResourceBundle(lang, name, translationModule.default)
+}
+
+export default {
+  name,
+  async init () {
+    const svgEditor = this
+    const canv = svgEditor.svgCanvas
+    const { $id, $click } = canv
+    const svgroot = canv.getSvgRoot()
+    let lastBBox = {}
+    await loadExtensionTranslation(svgEditor)
+
+    const modeId = 'shapelib'
+    const startClientPos = {}
+
+    let curShape
+    let startX
+    let startY
+
+    return {
+      callback () {
+        if ($id('tool_shapelib') === null) {
+          const extPath = svgEditor.configObj.curConfig.extPath
+          const buttonTemplate = `
+          <se-explorerbutton id="tool_shapelib" title="${svgEditor.i18next.t(`${name}:buttons.0.title`)}" lib="${extPath}/ext-shapes/shapelib/"
+          src="shapelib.svg"></se-explorerbutton>
+          `
+          canv.insertChildAtIndex($id('tools_left'), buttonTemplate, 9)
+          $click($id('tool_shapelib'), () => {
+            if (this.leftPanel.updateLeftPanel('tool_shapelib')) {
+              canv.setMode(modeId)
+            }
+          })
+        }
+      },
+      mouseDown (opts) {
+        const mode = canv.getMode()
+        if (mode !== modeId) { return undefined }
+
+        const currentD = document.getElementById('tool_shapelib').dataset.draw
+        startX = opts.start_x
+        const x = startX
+        startY = opts.start_y
+        const y = startY
+        const curStyle = canv.getStyle()
+
+        startClientPos.x = opts.event.clientX
+        startClientPos.y = opts.event.clientY
+
+        curShape = canv.addSVGElementsFromJson({
+          element: 'path',
+          curStyles: true,
+          attr: {
+            d: currentD,
+            id: canv.getNextId(),
+            opacity: curStyle.opacity / 2,
+            style: 'pointer-events:none'
+          }
+        })
+
+        curShape.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(0.005) translate(' + -x + ',' + -y + ')')
+
+        canv.recalculateDimensions(curShape)
+
+        lastBBox = curShape.getBBox()
+
+        return {
+          started: true
+        }
+      },
+      mouseMove (opts) {
+        const mode = canv.getMode()
+        if (mode !== modeId) { return }
+
+        const zoom = canv.getZoom()
+        const evt = opts.event
+
+        const x = opts.mouse_x / zoom
+        const y = opts.mouse_y / zoom
+
+        const tlist = curShape.transform.baseVal
+        const box = curShape.getBBox()
+        const left = box.x; const top = box.y
+
+        const newbox = {
+          x: Math.min(startX, x),
+          y: Math.min(startY, y),
+          width: Math.abs(x - startX),
+          height: Math.abs(y - startY)
+        }
+
+        let sx = (newbox.width / lastBBox.width) || 1
+        let sy = (newbox.height / lastBBox.height) || 1
+
+        // Not perfect, but mostly works...
+        let tx = 0
+        if (x < startX) {
+          tx = lastBBox.width
+        }
+        let ty = 0
+        if (y < startY) {
+          ty = lastBBox.height
+        }
+
+        // update the transform list with translate,scale,translate
+        const translateOrigin = svgroot.createSVGTransform()
+        const scale = svgroot.createSVGTransform()
+        const translateBack = svgroot.createSVGTransform()
+
+        translateOrigin.setTranslate(-(left + tx), -(top + ty))
+        if (!evt.shiftKey) {
+          const max = Math.min(Math.abs(sx), Math.abs(sy))
+
+          sx = max * (sx < 0 ? -1 : 1)
+          sy = max * (sy < 0 ? -1 : 1)
+        }
+        scale.setScale(sx, sy)
+
+        translateBack.setTranslate(left + tx, top + ty)
+        tlist.appendItem(translateBack)
+        tlist.appendItem(scale)
+        tlist.appendItem(translateOrigin)
+
+        canv.recalculateDimensions(curShape)
+
+        lastBBox = curShape.getBBox()
+      },
+      mouseUp (opts) {
+        const mode = canv.getMode()
+        if (mode !== modeId) { return undefined }
+
+        const keepObject = (opts.event.clientX !== startClientPos.x && opts.event.clientY !== startClientPos.y)
+
+        return {
+          keep: keepObject,
+          element: curShape,
+          started: false
+        }
+      }
+    }
+  }
+}
