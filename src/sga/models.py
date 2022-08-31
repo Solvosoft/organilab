@@ -243,7 +243,7 @@ class TemplateSGA(models.Model):
     recipient_size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"), on_delete=models.CASCADE)
     json_representation = models.TextField()
     community_share = models.BooleanField(default=True, verbose_name=_("Share with community"))
-    preview = models.TextField(help_text="B64 preview image")
+    preview = models.TextField(help_text="B64 preview image", null=True)
 
     def __str__(self):
         return self.name
