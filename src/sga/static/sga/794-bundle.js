@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkorganilab=self.webpackChunkorganilab||[]).push([[794],{794:(e,t,o)=>{o.r(t),Boolean(document.createElementNS&&document.createElementNS("http://www.w3.org/2000/svg","svg").createSVGRect)||(window.location="./browser-not-supported.html")}}]);
