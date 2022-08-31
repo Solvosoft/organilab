@@ -21,7 +21,7 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
-    PersonalForm, PersonalTemplatesForm
+    PersonalForm, PersonalTemplatesForm, SubstanceForm, RecipientSizeForm
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
 from .json2html import json2html
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
@@ -590,3 +590,30 @@ def get_recipient_size(request, pk):
 def get_preview(request, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
+
+@login_required
+@permission_required('laboratory.change_object')
+def create_substance(request):
+    form=SubstanceForm()
+    if request.method == 'POST':
+        form =SubstanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,_('The substance saved successfully'))
+            return redirect('sga:add_substance')
+        else:
+            return redirect('sga:add_substance')
+    return render(request, 'add_substance.html', context={'form':form})
+
+@login_required
+def create_recipient(request):
+    form=RecipientSizeForm()
+    if request.method == 'POST':
+        form =RecipientSizeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,_('The Recipient size saved successfully'))
+            return redirect('sga:add_recipient_size')
+        else:
+            return redirect('sga:add_recipient_size')
+    return render(request, 'add_recipient_size.html', context={'form':form})
