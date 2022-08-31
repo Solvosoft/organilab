@@ -55,5 +55,7 @@ urlpatterns = [
     url(r'getData', views.delete_personal, name='getData'),
     url(r'get_pdf/(?P<pk>\d+)$', views.render_user_pdf, name='get_pdf'),
     url(r'get_images', views.get_files, name='get_images'),
+    url(r'add_substance', views.create_substance, name='add_substance'),
+    url(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
 
 ]

@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: sga/templates/information.html:48 sga/templates/label_information.html:35
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-31 10:03-0600\n"
+"POT-Creation-Date: 2022-08-31 10:46-0600\n"
 "PO-Revision-Date: 2022-08-31 10:05-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -47,6 +48,10 @@ msgstr ""
 msgid "Add me to the donators list"
 msgstr ""
 
+#: sga/forms.py:80 sga/models.py:144
+msgid "UIPA name"
+msgstr "nombre UIPA"
+
 #: sga/models.py:11
 msgid "Type of danger"
 msgstr "Tipo de peligro"
@@ -75,18 +80,18 @@ msgstr "Clases de peligro"
 msgid "Weigth"
 msgstr "Peso"
 
-#: sga/models.py:56 sga/templates/editor.html:106
+#: sga/models.py:56 sga/templates/editor.html:112
 #: sga/templates/label_editor.html:141
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
 #: sga/models.py:57 sga/templates/danger_indication_info.html:40
-#: sga/templates/editor.html:90 sga/templates/label_editor.html:131
+#: sga/templates/editor.html:96 sga/templates/label_editor.html:131
 #: sga/templates/template.html:151 sga/templates/template_edit.html:140
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
-#: sga/models.py:72 sga/templates/editor.html:74
+#: sga/models.py:72 sga/templates/editor.html:80
 #: sga/templates/label_editor.html:64 sga/templates/template.html:74
 #: sga/templates/template_edit.html:54
 msgid "Pictogram"
@@ -105,7 +110,7 @@ msgstr "Código"
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
 
-#: sga/models.py:91 sga/templates/editor.html:112
+#: sga/models.py:91 sga/templates/editor.html:118
 #: sga/templates/label_editor.html:143
 msgid "Prudence Advice"
 msgstr "Consejo de prudencia"
@@ -134,7 +139,7 @@ msgstr "Categorías de peligro"
 msgid "Prudence advice"
 msgstr "Consejos de prudencia"
 
-#: sga/models.py:117 sga/templates/editor.html:109
+#: sga/models.py:117 sga/templates/editor.html:115
 #: sga/templates/label_editor.html:142
 msgid "Danger Indication"
 msgstr "Indicación de peligro"
@@ -164,10 +169,6 @@ msgstr "Componentes"
 #: sga/models.py:142
 msgid "Comercial name"
 msgstr "Nombre comercial"
-
-#: sga/models.py:144
-msgid "UIPA name"
-msgstr ""
 
 #: sga/models.py:149
 msgid "Danger indications"
@@ -243,7 +244,7 @@ msgstr "Tamaño de recipiente"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: sga/models.py:229 sga/templates/editor.html:134
+#: sga/models.py:229 sga/templates/editor.html:140
 #: sga/templates/information.html:102 sga/templates/label_editor.html:151
 #: sga/templates/label_information.html:79
 msgid "Commercial Information"
@@ -307,6 +308,25 @@ msgstr "Donar"
 msgid "Donations"
 msgstr "Donar"
 
+#: sga/templates/add_recipient_size.html:9
+msgid "Create New Recipient"
+msgstr "Crear Nuevo Recipiente"
+
+#: sga/templates/add_recipient_size.html:22 sga/templates/add_substance.html:22
+#: sga/templates/donate_organilab.html:24
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: sga/templates/add_recipient_size.html:23 sga/templates/add_substance.html:23
+#: sga/templates/donate_organilab.html:25
+#: sga/templates/personal_template.html:87
+msgid "Continue"
+msgstr "Continuar"
+
+#: sga/templates/add_substance.html:9
+msgid "Create New Substance"
+msgstr "Crear Nueva Sustancia"
+
 #: sga/templates/danger_indication_info.html:4
 #: sga/templates/index_organilab.html:4
 msgid "SGA Search"
@@ -361,15 +381,6 @@ msgstr ""
 msgid "Thank for support this project making your donation."
 msgstr ""
 
-#: sga/templates/donate_organilab.html:24
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: sga/templates/donate_organilab.html:25
-#: sga/templates/personal_template.html:87
-msgid "Continue"
-msgstr "Continuar"
-
 #: sga/templates/donate_organilab.html:32
 msgid "Donation Details"
 msgstr ""
@@ -388,58 +399,58 @@ msgstr "Sí"
 msgid "No"
 msgstr "Ninguno"
 
-#: sga/templates/editor.html:39 sga/templates/label_editor.html:26
+#: sga/templates/editor.html:45 sga/templates/label_editor.html:26
 msgid "Available templates"
 msgstr "Plantillas disponibles"
 
-#: sga/templates/editor.html:50 sga/templates/label_editor.html:37
+#: sga/templates/editor.html:56 sga/templates/label_editor.html:37
 msgid "Customize the selected template using the canvas editor and it elements"
 msgstr ""
 "Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
 "elementos"
 
-#: sga/templates/editor.html:62 sga/templates/label_editor.html:56
+#: sga/templates/editor.html:68 sga/templates/label_editor.html:56
 #: sga/templates/template.html:70 sga/templates/template_edit.html:50
 msgid "General"
 msgstr "General"
 
-#: sga/templates/editor.html:66 sga/templates/label_editor.html:59
+#: sga/templates/editor.html:72 sga/templates/label_editor.html:59
 msgid "Live"
 msgstr "En vivo"
 
-#: sga/templates/editor.html:70 sga/templates/label_editor.html:62
+#: sga/templates/editor.html:76 sga/templates/label_editor.html:62
 msgid "Generic"
 msgstr "Genérico"
 
-#: sga/templates/editor.html:115 sga/templates/label_editor.html:144
+#: sga/templates/editor.html:121 sga/templates/label_editor.html:144
 msgid "Substance Name"
 msgstr "Nombre de la sustancia"
 
-#: sga/templates/editor.html:118
+#: sga/templates/editor.html:124
 msgid "UIPA Name"
 msgstr "Nombre UIPA"
 
-#: sga/templates/editor.html:121 sga/templates/label_editor.html:145
+#: sga/templates/editor.html:127 sga/templates/label_editor.html:145
 msgid "Cas number"
 msgstr "Número CAS"
 
-#: sga/templates/editor.html:125 sga/templates/label_editor.html:148
+#: sga/templates/editor.html:131 sga/templates/label_editor.html:148
 msgid "Seler name"
 msgstr "Nombre del vendedor"
 
-#: sga/templates/editor.html:128 sga/templates/label_editor.html:149
+#: sga/templates/editor.html:134 sga/templates/label_editor.html:149
 msgid "Seler phone"
 msgstr "Teléfono del vendedor"
 
-#: sga/templates/editor.html:131 sga/templates/label_editor.html:150
+#: sga/templates/editor.html:137 sga/templates/label_editor.html:150
 msgid "Seler address"
 msgstr "Dirección del vendedor"
 
-#: sga/templates/editor.html:158 sga/templates/label_editor.html:171
+#: sga/templates/editor.html:164 sga/templates/label_editor.html:171
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
-#: sga/templates/editor.html:159 sga/templates/label_editor.html:172
+#: sga/templates/editor.html:165 sga/templates/label_editor.html:172
 #: sga/templates/template.html:186 sga/templates/template_edit.html:124
 msgid "Save"
 msgstr "Guardar"
@@ -540,8 +551,8 @@ msgstr "Nombre o número CAS"
 msgid "Did you find the substance?"
 msgstr "¿Encontraste la sustancia?"
 
-#: sga/templates/information.html:52 sga/templates/information.html:126
-#: sga/templates/label_information.html:39
+#: sga/templates/information.html:52 sga/templates/information.html:132
+#: sga/templates/information.html:142 sga/templates/label_information.html:39
 #: sga/templates/label_information.html:111
 msgid "Create it Here!"
 msgstr "¡Créalo aquí!"
@@ -566,19 +577,28 @@ msgstr "Código de barras"
 msgid "Additionals product identifiers"
 msgstr "Identificadores de productos adicionales"
 
-#: sga/templates/information.html:115 sga/templates/label_index.html:86
-msgid "Template"
-msgstr "Plantilla"
+#: sga/templates/information.html:113 sga/templates/label_information.html:92
+msgid "Recipient"
+msgstr "Recipientes"
 
-#: sga/templates/information.html:118 sga/templates/label_information.html:95
+#: sga/templates/information.html:116 sga/templates/information.html:138
+#: sga/templates/label_information.html:95
 msgid "Name - Height x Width"
 msgstr "Nombre - Altura x Anchura"
 
-#: sga/templates/information.html:126
+#: sga/templates/information.html:132 sga/templates/label_information.html:111
+msgid "Did you find the recipient?"
+msgstr "¿Encontraste al recipiente?"
+
+#: sga/templates/information.html:135 sga/templates/label_index.html:86
+msgid "Template"
+msgstr "Plantilla"
+
+#: sga/templates/information.html:142
 msgid "Did you find the template?"
 msgstr "¿Encontraste la plantilla?"
 
-#: sga/templates/information.html:137
+#: sga/templates/information.html:153
 msgid "Next"
 msgstr "Siguiente"
 
@@ -633,14 +653,6 @@ msgstr "Editor"
 #: sga/templates/label_index.html:100
 msgid "GHS"
 msgstr "SGA"
-
-#: sga/templates/label_information.html:92
-msgid "Recipient"
-msgstr "Recipientes"
-
-#: sga/templates/label_information.html:111
-msgid "Did you find the recipient?"
-msgstr "¿Encontraste al recipiente?"
 
 #: sga/templates/label_template.html:21 sga/templates/template.html:34
 msgid ""
@@ -745,6 +757,14 @@ msgstr "Plantilla de la etiqueta guardada con éxito"
 msgid ""
 "Your donation was completed successfully, thank you for support this project!"
 msgstr ""
+
+#: sga/views.py:604
+msgid "The substance saved successfully"
+msgstr "La sustancias fue guardada con éxito"
+
+#: sga/views.py:617
+msgid "The Recipient size saved successfully"
+msgstr "El recipiente fue guardado con éxito"
 
 #~ msgid "Logo and Bar Code"
 #~ msgstr "Logotipo y código de barras"
