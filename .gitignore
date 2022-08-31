@@ -5,7 +5,7 @@ __pycache__/
 *$py.class
 /entorno
 docker/*
-
+assets/svgedit
 # C extensions
 *.so
 4.2
