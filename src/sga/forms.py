@@ -39,9 +39,14 @@ class SearchDangerIndicationForm(CustomForm, forms.Form):
 
 class PersonalForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
+    company_name = forms.CharField(max_length=150, required=True)
+    address = forms.Textarea()
+    phone = forms.CharField(max_length=50, required=True)
     json_representation = forms.CharField(widget=forms.HiddenInput())
     preview = forms.CharField(widget=forms.HiddenInput())
-    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none())
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False)
+    substance = forms.ModelChoiceField(queryset=Substance.objects.all())
+    commercial_information = forms.Textarea()
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')

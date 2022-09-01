@@ -227,7 +227,6 @@ class Label(models.Model):
     commercial_information = models.TextField(
         null=True, blank=True,
         verbose_name=_("Commercial Information"))
-    size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"), on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.sustance)
@@ -257,7 +256,8 @@ class PersonalTemplateSGA(models.Model):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     json_representation = models.TextField()
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
-    preview = models.TextField(help_text="B64 preview image")
+    preview = models.TextField(help_text="B64 preview image", null=True)
+    label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
 
     def __str__(self):
         recipient=RecipientSize.objects.get(pk=self.template.recipient_size.pk)
