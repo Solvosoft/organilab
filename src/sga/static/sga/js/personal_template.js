@@ -71,7 +71,7 @@ function create_table(data){
 }
 
 
-$("#btnpreview").on('click', function(){
+$(".btnpreview").on('click', function(){
     var url = document.url_get_preview;
     var id = $(this).data('id');
     if(id){

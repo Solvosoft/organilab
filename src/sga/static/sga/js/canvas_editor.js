@@ -16,7 +16,7 @@ function load_substance(id){
         success: function(result) {
           if(result.label){
             $("#substance_id").val(id);
-            $('#substance_id').data("name", result.label); // save the selected text to hidden input
+            $('#substance_id').data("name", result.label);
             $('#substance').val(result.label);
           }
         },
@@ -58,7 +58,7 @@ $(window).load(function(){
 
     var svg_content = $("#id_json_representation").val();
 
-    if(instance && svg_content){
+    if(instance || svg_content){
         svgEditor.svgCanvas.clear();
         try {
             svgEditor.loadSvgString(svg_content);
@@ -91,11 +91,12 @@ function load_data_form(idform){
 
 $("#editor_save").on('click', function(){
      load_data_form("sgaform");
-     $("#"+idform).submit();
+     $("#sgaform").submit();
 });
 
 
 function load_canvas_editor_template(url){
+
     $.ajax({
         url: url,
         type: 'GET',
@@ -126,6 +127,17 @@ $("#id_recipient_size").on("change", function(){
 
 
 $("#savesgalabel").on('click', function(){
-    load_data_form("personal");
-    $("#sgaform").submit();
+    errorsValidation.validate();
+    if (errorsValidation.valid() == false) {
+        /*
+        swal({
+            type: 'error',
+            title: 'Información incompleta',
+            text: 'Por favor, compruebe los datos solicitados.'
+        })
+        */
+    } else {
+        load_data_form("personal");
+        $("#sgaform").submit();
+    }
 });

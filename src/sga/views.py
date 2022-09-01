@@ -24,7 +24,7 @@ from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, PersonalTemplatesForm, SubstanceForm, RecipientSizeForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, BuilderInformation
 from .json2html import json2html
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 
@@ -413,11 +413,26 @@ def create_personal_template(request):
 
         form = PersonalForm(request.POST, user=user)
         if form.is_valid():
+            address = request.POST.get('address', '')
+            commercial_information = request.POST.get('commercial_information', '')
+            builderInformation = BuilderInformation(
+                name=form.cleaned_data['company_name'],
+                phone=form.cleaned_data['phone'],
+                address=address
+            )
+            builderInformation.save()
+            label = Label(
+                sustance=form.cleaned_data['substance'],
+                builderInformation=builderInformation,
+                commercial_information=commercial_information
+            )
+            label.save()
             personal = PersonalTemplateSGA(
-                user=user,  name=form.cleaned_data['name'],
-                json_representation=request.POST.get('json_representation',''),
-                preview = form.cleaned_data['preview'],
-                template= form.cleaned_data['template']
+                user=user, name=form.cleaned_data['name'],
+                json_representation=form.cleaned_data['json_representation'],
+                preview=form.cleaned_data['preview'],
+                template=form.cleaned_data['template'],
+                label=label
             )
             personal.save()
             return redirect('sga:add_personal')
@@ -430,24 +445,40 @@ def show_preview(request,pk):
 
 
 @permission_required('sga.change_personaltemplatesga')
-def edit_personal_template(request,pk):
+def edit_personal_template(request, pk):
     if request.method=='POST':
-        form=PersonalTemplatesForm(request.POST)
+        form=PersonalForm(request.POST, user=request.user)
 
         if form.is_valid():
-
             template = PersonalTemplateSGA.objects.get(pk=pk)
+            address = request.POST.get('address', '')
+            commercial_information = request.POST.get('commercial_information', '')
+
+            builderInformation = template.label.builderInformation
+            builderInformation.name=form.cleaned_data['company_name']
+            builderInformation.phone=form.cleaned_data['phone']
+            builderInformation.address=address
+            builderInformation.save()
+
+            label = template.label
+            label.sustance=form.cleaned_data['substance']
+            label.builderInformation=builderInformation
+            label.commercial_information=commercial_information
+            label.save()
+
             template.name = form.cleaned_data['name']
-            template.json_representation = form.cleaned_data['json_data']
+            template.json_representation = form.cleaned_data['json_representation']
+            template.preview = form.cleaned_data['preview']
             template.save()
             return redirect(reverse('sga:add_personal'))
 
     templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
     context={
-        'pictograms': Pictogram.objects.all(),
         'warningwords': WarningWord.objects.all(),
         'formselects': SGAEditorForm,
         "sgatemplates": templates,
+        "width": templates.template.recipient_size.width,
+        "height": templates.template.recipient_size.height
     }
     return render(request, 'template_edit.html', context)
 
