@@ -69,9 +69,9 @@ const config = [{
     }),
     html({
       include: [
-        '../../../svgeditor/svgedit/src/editor/panels/*.html',
-        '../../../svgeditor/svgedit/src/editor/templates/*.html',
-        '../../../svgeditor/svgedit/src/editor/dialogs/*.html'
+        '../svgeditor/src/editor/panels/*.html',
+        '../svgeditor/src/editor/templates/*.html',
+        '../svgeditor/src/editor/dialogs/*.html'
       ]
     }),
     nodeResolve({
