@@ -120,37 +120,12 @@ def information_creator(request):
 
 # SGA template visualize
 def template(request):
-    sgatemplates = TemplateSGA.objects.get(pk=request.POST.get('templates'))
-    barcode_file_url = logo_file_url = False
-    request.session['commercial_information'] = request.POST.get('commercial_information', '')
-    if request.method == 'POST' and request.FILES.get('logo', False):
-        logo = request.FILES['logo']
-        fs_logo = FileSystemStorage()
-        logo_filename = fs_logo.save(logo.name, logo)
-        logo_file_url = fs_logo.url(logo_filename)
-    if request.FILES.get('barcode', False):
-        barcode = request.FILES['barcode']
-        fs_barcode = FileSystemStorage()
-        barcode_filename = fs_barcode.save(barcode.name, barcode)
-        barcode_file_url = fs_barcode.url(barcode_filename)
-    request.session['logo_file_url'] = logo_file_url
-    request.session['barcode_file_url'] = barcode_file_url
-    if request.method == 'POST':
-        form = RecipientInformationForm(request.POST, user=request.user)
-    else:
-        form = None
+
     context = {
         'laboratory': None,
-        'form': form,
-        'sgatemplates': sgatemplates,
-        'barcode_file_url':  barcode_file_url,
-        'logo_file_url': logo_file_url,
         'formselects': SGAEditorForm,
         'pictograms': Pictogram.objects.all(),
-        'warningwords': WarningWord.objects.all(),
-        'width': sgatemplates.recipient_size.width,
-        'height': sgatemplates.recipient_size.height
-
+        'warningwords': WarningWord.objects.all()
     }
     return render(request, 'template.html', context)
 
@@ -393,6 +368,7 @@ def search_autocomplete_sustance(request):
         else:
             search_qs = Substance.objects.filter(
                 components__cas_number__icontains=q)
+
         results = []
         for r in search_qs:
             results.append({'label': r.comercial_name +
@@ -429,9 +405,12 @@ def index_organilab(request):
 @permission_required('sga.add_personaltemplatesga')
 def create_personal_template(request):
     user = request.user
-    templates = PersonalTemplateSGA.objects.filter(user=user)
-    context = {"templates": templates }
+    personal_templates = PersonalTemplateSGA.objects.filter(user=user)
+    filter = Q(community_share=True) | Q(creator=user)
+    sga_templates = TemplateSGA.objects.filter(filter)
+    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates}
     if request.method == 'POST':
+
         form = PersonalForm(request.POST, user=user)
         if form.is_valid():
             personal = PersonalTemplateSGA(
@@ -442,12 +421,7 @@ def create_personal_template(request):
             )
             personal.save()
             return redirect('sga:add_personal')
-        else:
-            print(form.errors)
-
-    else:
-
-        return render(request, 'personal_template.html', context)
+    return render(request, 'personal_template.html', context)
 
 def show_preview(request,pk):
     templates = PersonalTemplateSGA.objects.get(pk=pk)
@@ -566,7 +540,7 @@ def get_files(request):
 
 @login_required
 def get_recipient_size(request, pk):
-    response = {'size': {'width': 0.0, 'height': 0.0}}
+    response = {}
     template = TemplateSGA.objects.filter(pk=pk)
     if template.exists:
         template = template.first()
@@ -578,8 +552,6 @@ def get_recipient_size(request, pk):
         })
     else:
         recipient = get_object_or_404(RecipientSize, pk=pk)
-        response['size']['width'] = recipient.width
-        response['size']['height'] = recipient.height
         response.update({
             'size': {
                 'width': recipient.width,
@@ -587,6 +559,12 @@ def get_recipient_size(request, pk):
         })
     return JsonResponse(response)
 
+
+@login_required
+def get_label_substance(request, pk):
+    substance = get_object_or_404(Substance, pk=pk)
+    response = {'label': substance.comercial_name + ' : ' + substance.synonymous}
+    return JsonResponse(response)
 
 @login_required
 def get_preview(request, pk):

@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody id="template_list">
-            {% for template in templates %}
+            {% for template in personal_templates %}
             <tr>
                 <td>{{template.name}}</td>
                 <td><a class="btn  btn-md  btn-info" title="{% trans 'Preview' %}" id="btnpreview" data-id="{{template.pk}}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
@@ -77,12 +77,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="newsgalabelform"  method="post" action="">
+                    <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' %}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label>{% trans 'Label Name' %}</label>
-                            <input type="text" name="name" class="form-control">
-                            <input type="hidden" name="template" id="id_template">
+                            <label>{% trans 'Name' %}</label>
+                            <input type="text" name="name" class="form-control" required>
+                            <label>{% trans 'Template' %}</label>
+                            <select name="template" id="id_template" class="form-control" required>
+                                {% for tem in sga_templates %}
+                                    <option value="{{tem.pk}}">{{tem.name}} ({{tem.recipient_size.name}} - {{tem.recipient_size.height}}{{tem.recipient_size.height_unit}} x {{tem.recipient_size.width}}{{tem.recipient_size.width_unit}})</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-success" id="save_">{% trans 'Continue' %}</button>
                     </form>
