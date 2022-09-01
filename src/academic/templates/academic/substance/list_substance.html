@@ -34,13 +34,13 @@
             {% for substance in substances %}
                 <tr>
                     <td>{{substance.comercial_name}}</td>
-                    <td>{{substance.uipa_name}}</td>
+                    <td>{{substance.sustancecharacteristicssga.cas_id_number}}</td>
                     {% if substance.is_approved %}
                         <td><p class="bg-green text-center text-white"> {% trans 'Yes' %}</p></td>
                     {% else %}
                     <td><p class="bg-red text-center text-white"> No</p></td>
                     {% endif %}
-                    <td><a href="#" class="btn btn-warning">Actualizar</a><a href="#" class="btn btn-danger">Eliminar</a></td>
+                    <td><a href="{% url 'update_substance' substance.pk  %}" class="btn btn-warning">Actualizar</a><br><a href="{% url 'delete_substance' substance.pk  %}" class="btn btn-danger">Eliminar</a></td>
                 </tr>
             {% endfor %}
         </tbody>

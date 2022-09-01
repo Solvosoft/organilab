@@ -22,7 +22,15 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-5">
-            {{objform.as_inline}}
+            {% for form in objform %}
+                <div class="form-group">
+                {{ form.label_tag }} {{ form }}
+                </div>
+                {% if form.id_for_label == 'id_components' %}
+                   <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a>
+                {% endif %}
+            {% endfor %}
+
         </div>
         <div class="col-md-5">
            {{ suschacform.as_inline  }}
