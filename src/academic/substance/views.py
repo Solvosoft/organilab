@@ -15,7 +15,7 @@ def create_edit_sustance(request, pk=None):
 
     suscharobj=None
     if instance:
-        suscharobj = instance.sustancecharacteristics
+        suscharobj = instance.sustancecharacteristicssga
     postdata=None
     filesdata = None
     if request.method == 'POST':
@@ -79,3 +79,10 @@ def approve_substances(request,pk):
         substances.save()
         return redirect('approved_substance')
     return redirect('approved_substance')
+
+def delete_substance(request,pk):
+    substances=SubstanceSGA.objects.filter(pk=pk).first()
+    if substances:
+        substances.delete()
+        return redirect('get_substance')
+    return redirect('get_substance')

@@ -7,7 +7,8 @@ from academic.views import add_steps_wrapper, ProcedureListView,\
     ProcedureCreateView, ProcedureUpdateView,procedureStepDetail,ProcedureStepCreateView,\
     ProcedureStepUpdateView, save_object,remove_object,save_observation,remove_observation,\
     delete_step,get_procedure, delete_procedure, generate_reservation
-from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, approve_substances
+from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
+    approve_substances, delete_substance
 
 
 from django.conf.urls import url
@@ -35,8 +36,10 @@ urlpatterns = [
     url(r'academic/remove_observation/(?P<pk>\d+)$', remove_observation, name='remove_observation'),
     url(r'academic/generate_reservation', generate_reservation, name='generate_reservation'),
     url(r'academic/sustance', create_edit_sustance, name='create_sustance'),
+    url(r'academic/update_substance/(?P<pk>\d+)$', create_edit_sustance, name='update_substance'),
     url(r'academic/get_substance', get_substances, name='get_substance'),
     url(r'academic/approved_substance', get_list_substances, name='approved_substance'),
     url(r'academic/accept_substance/(?P<pk>\d+)$', approve_substances, name='accept_substance'),
+    url(r'academic/delete_substance/(?P<pk>\d+)$', delete_substance, name='delete_substance'),
 
 ]
