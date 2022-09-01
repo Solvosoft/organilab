@@ -18,137 +18,125 @@
 {% block js %}
     <script>
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
+        document.url_get_label_substance = "{% url 'sga:get_label_substance' 0 %}";
         document.clean_canvas_editor = true;
-        {% if width %}document.width = {{width}};{% endif %}
-        {% if height %}document.height = {{height}};{% endif %}
-        document.instance = {{sgatemplates.pk}};
     </script>
-    <script src="{% static 'sga/sga-bundle.js' %}"> </script>
+    <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
+    window.SvgCanvas=SvgCanvas;
+    </script>
+    <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
     <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
+    <script src="{% static 'sga/js/codigosPH.js' %}"></script>
+    <script src="{% static 'sga/js/jquery.validate.min.js' %}"> </script>
+    <script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
+    <script src="{% static 'sga/js/label_information.js' %}"> </script>
+    <script src="{% static 'sga/js/messages_es.js' %}"> </script>
 {% endblock %}
 
 {% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
 
-    <h5 class="info-text">{% trans 'Create a new label template or select a pre-designed template in accordance with your needs' %}</h5>
-    <!-- Nav tabs -->
-<div class="row">
-    {% if form %}
-
-    <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseForm" aria-expanded="false"
-       aria-controls="collapseForm">
-  {% trans 'Edit basic information' %}
-</a>
-
-    <div class="collapse" id="collapseForm">
-  <div class="well">
-      <form id="sgaform"  method="post" action="{% url 'sga:template' %}">
-                    {% csrf_token %}
-            {{form|bootstrap}}
-            <input type="submit" class="btn btn-success" value="{% trans 'Change information' %}">
-        </form>
-    </div>
-  </div>
-    {% endif %}
-</div>
-<hr>
 <div id="messages" class="row text-center">
   <div class="col-md-offset-1 col-md-10">
       <div class="messages">
 
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <p>{% trans 'There can only be one Indication of Danger or Attention' %}</p>
-                </div>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <p>{% trans 'There can only be one Indication of Danger or Attention' %}</p>
+        </div>
       </div>
   </div>
 </div>
 <div class="row">
+
     <div class="col-md-3">
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-        {% trans 'General' %}</a></li>
-    <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
-        {% trans 'En vivo' %}</a></li>
-    <li role="presentation"><a href="#pictograms" aria-controls="pictograms" role="tab" data-toggle="tab">
-        {% trans 'Pictogram' %}</a></li>
-  </ul>
-  <div class="tab-content" style="padding: 15px 20px 10px;">
-    <div role="tabpanel" class="tab-pane active" id="home">
+        <form id="sgaform"  method="POST" action="{% url 'sga:add_personal' %}">
+            {% csrf_token %}
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+            {% trans 'General' %}</a></li>
+        <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
+            {% trans 'En vivo' %}</a></li>
+      </ul>
+        <div class="tab-content" style="padding: 15px 20px 10px;">
+            <div role="tabpanel" class="tab-pane active" id="home">
 
-        <div class="form-group">
-    <label>Cuadros de Textos</label>
-         <ul>
-             <li><a class="genericitem" id="Agregue Informacion"  title="{% trans 'Additional Information' %}" data-ftype="textbox" href="#">{% trans 'Additional Information' %}</a></li>
-         </ul>
+    <input type="hidden" name="preview" id="id_preview">
+    <input type="hidden" name="template" id="id_template">
+    <input type="hidden" name="json_representation" id="id_json_representation" value="">
+
+    <div class="form-group">
+        <label><span class="label label-info">1</span>&nbsp;{% trans 'Label Name' %}</label><br>
+        <input type="text" class="form-control" id="id_name" name="name">
     </div>
 
+    <!--==============================================Substance=====================================================-->
 
-         <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
+    <div class="form-group">
 
-
-        <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
-        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#FFFFFF"  class="btn" >
-        <input type="color"  style="width: 25%;"  id="text-bg-color"  value="#FFFFFF" class="btn" >
-        <br>
-
-
-          <div class="form-group">
-            <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
-            <input type="number" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action form-control"
-                bind-value-to="fontSize">
-          </div>
+        <label><span class="label label-info">2</span>&nbsp;{% trans 'Substance' %}</label>
+        <!--Search substance with autocomplete-->
+        <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
+            aria-describedby="sustanceHelp">
+        <input type="hidden" id="substance_id" name="substance" />
+        <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
         <div class="form-group">
-        <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
-            <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
-              <option value="arial">Arial</option>
-              <option value="helvetica" selected>Helvetica</option>
-              <option value="myriad pro">Myriad Pro</option>
-              <option value="delicious">Delicious</option>
-              <option value="verdana">Verdana</option>
-              <option value="georgia">Georgia</option>
-              <option value="Courier">Courier</option>
-              <option value="comic sans ms">Comic Sans MS</option>
-              <option value="Impact">Impact</option>
-              <option value="monaco">Monaco</option>
-              <option value="optima">Optima</option>
-              <option value="hoefler text">Hoefler Text</option>
-              <option value="plaster">Plaster</option>
-              <option value="engagement">Engagement</option>
-            </select>
-          </div>
-
-        <div class="form-group">
-           <label for="textalign" style="display:inline-block">Text align:</label>
-            <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
-              <option value="left" selected>Left</option>
-              <option value="center">Center</option>
-              <option value="right" >Right</option>
-              <option value="Justify">Justify</option>
-              <option value="Justify-left">Justify-left</option>
-              <option value="Justify-right">Justify-right</option>
-              <option value="Justify-center"> Justify-center</option>
-            </select>
+            <!--Add new sustance-->
+            <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
+                href="{% url 'sga:add_substance' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
         </div>
 
+        <!--=========================================Supplier Identification============================================-->
 
-      <!--  <button type="button" class="btn btn-sm" onclick="addLine()"> {% trans 'Line' %}</button>
-        -->
-    </div>
-       <div role="tabpanel" class="tab-pane" id="pictograms">
-        <div class="row">
-
-{% for pictogram in pictograms %}
-        <div class="col-md-4">
-             <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                      src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
-
-          </div>
-      {% endfor %}
+        <div class="form-group">
+            <label><span class="label label-info">3</span>&nbsp;{% trans 'Supplier Identification' %}</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon
+                        glyphicon-home"></i></span>
+                <input name="company_name" id="id_company_name" placeholder="{% trans 'Name' %}" class="form-control"
+                    aria-describedby="sustanceHelp">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon
+                        glyphicon-pushpin"></i></span><input
+                    name="address" id="company_address"
+                    placeholder="{% trans 'Address' %}"
+                    class="form-control" aria-describedby="sustanceHelp">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon
+                        glyphicon-earphone"></i></span>
+                <input name="phone" id="company_phone"
+                    placeholder="{% trans 'Phone' %}" class="form-control"
+                    aria-describedby="sustanceHelp">
+            </div>
         </div>
     </div>
-          <div role="tabpanel" class="tab-pane" id="live">
-        <label >{% trans 'Warning Words' %}</label>
+
+    <!--=========================================Logo and Barcode==========================================================-->
+
+        <div class="form-group">
+            <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
+            <input type="file" id="logo" name="logo">
+        </div>
+        <div class="form-group">
+            <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
+            <input type="file" id="barcode" name="barcode">
+        </div>
+
+    <!--=========================================Comercial information==============================================-->
+       <div class="form-group">
+            <label><span class="label label-info">6</span>&nbsp;{% trans 'Commercial Information' %}</label>
+            <div class="form-group shadow-textarea">
+                <textarea name="commercial_information" class="form-control
+                    z-depth-1" id="commercial_information" rows="2"
+                    placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
+            </div>
+        </div>
+
+</div>
+            <div role="tabpanel" class="tab-pane" id="live">
+                <label >{% trans 'Warning Words' %}</label>
         <ul>
         {% for word in warningwords %}
             <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
@@ -156,62 +144,14 @@
         </ul>
         {{formselects|bootstrap  }}
 
-
-           {% if barcode_file_url %}
-          <div class="row p-4">
-
-    <div class="col-md-12">
-        <label>Codigo de barra</label>
-        <br>
-        <a class="genericitem " id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
-    </div>
-    </div>
-{% endif%}
-{% if logo_file_url %}
-      <div class="row pt-4">
-
-    <div class="col-md-12">
-        <label>Logotipo</label>
-        <br>
-         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
-    </div>
-    </div>
-{%  endif %}
-
-              </div>
-  </div>
-    {% if request.user.is_authenticated %}
-        <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
-    {% endif %}
-       <div class="modal fade" id="save_template" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title pull-left" id="exampleModalLabel">{% trans '¿Would you like to save this SGA label?' %}</h5>
-            <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-          <form id="personal"  method="post" action="{% url 'sga:add_personal' %}">
-                    {% csrf_token %}
-
-              <input type="hidden" name="json_representation" id="id_json_representation" value="{{sgatemplates.json_representation}}">
-              <div class="form-group">
-                  <label>Nombre de la plantilla</label>
-                  <input type="text" name="name" class="form-control">
-                  <input type="hidden" name="preview" id="id_preview">
-                  <input type="hidden" name="template" id="id_template">
-              </div>
-            <button type="submit" class="btn btn-success" id="save_">Save</button>
-              </form>
           </div>
         </div>
-      </div>
-    </div>
-        </div>
+        {% if request.user.is_authenticated %}
+            <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
+        {% endif %}
+        </form>
+   </div>
+
       <div class="col-md-9">
         <div class="clearfix visible-xs-block"></div>
         <div id="canvasContainer" class="canvas-container" >

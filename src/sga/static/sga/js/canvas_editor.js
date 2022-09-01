@@ -5,16 +5,56 @@ function update_resolution(width, height){
     svgEditor.svgCanvas.selectAllInCurrentLayer();
 }
 
+function load_substance(id){
+    var url = document.url_get_label_substance;
+    if(id){
+        url = url.replace('0', id);
+    }
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(result) {
+          if(result.label){
+            $("#substance_id").val(id);
+            $('#substance_id').data("name", result.label); // save the selected text to hidden input
+            $('#substance').val(result.label);
+          }
+        },
+        error: function(xhr, resp, text) {
+            console.log(xhr, resp, text);
+        }
+    });
+}
+
+function load_data_sga_label_form(urlParams){
+
+    var label_name = urlParams.get('name');
+    var substance = urlParams.get('substance');
+    var template = urlParams.get('template');
+
+    if(label_name){
+        $("#id_name").val(label_name);
+    }
+    if(substance){
+        load_substance(substance);
+    }
+    if(template){
+        var url = document.url_get_recipient_size;
+        url = url.replace('0', template);
+        load_canvas_editor_template(url);
+        $("#id_template").val(template);
+    }
+
+}
+
 $(window).load(function(){
 
     let elem = document.querySelector('#canvas_editor');
     let rect = elem.getBoundingClientRect();
 
     var urlParams = new URLSearchParams(window.location.search);
+    load_data_sga_label_form(urlParams);
     var instance = urlParams.get('instance');
-    if(document.instance){
-        instance = true;
-    }
 
     var svg_content = $("#id_json_representation").val();
 
@@ -55,14 +95,7 @@ $("#editor_save").on('click', function(){
 });
 
 
-
-$("#id_recipient_size, #id_templates").on("change", function(){
-    var id = $(this).val();
-    var url = document.url_get_recipient_size;
-    if(id){
-        url = url.replace('0', id);
-    }
-
+function load_canvas_editor_template(url){
     $.ajax({
         url: url,
         type: 'GET',
@@ -79,12 +112,20 @@ $("#id_recipient_size, #id_templates").on("change", function(){
             console.log(xhr, resp, text);
         }
     });
+}
+
+
+$("#id_recipient_size").on("change", function(){
+    var id = $(this).val();
+    var url = document.url_get_recipient_size;
+    if(id){
+        url = url.replace('0', id);
+    }
+    load_canvas_editor_template(url);
 });
 
 
 $("#savesgalabel").on('click', function(){
     load_data_form("personal");
-    var sgatemplate = $("#id_templates").val();
-    $("#id_template").val(sgatemplate);
-    $("#save_template").modal();
+    $("#sgaform").submit();
 });

@@ -38,6 +38,7 @@ urlpatterns = [
     # sga/editor
     url(r'editor', editor, name='editor'),
     url(r'recipient_size/(?P<pk>\d+)$', views.get_recipient_size, name='get_recipient_size'),
+    url(r'label_substance/(?P<pk>\d+)$', views.get_label_substance, name='get_label_substance'),
     url(r'get_preview/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
 
     url(r'download/', render_pdf_view, name='download'),

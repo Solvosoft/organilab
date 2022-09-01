@@ -23,18 +23,7 @@ $(document).ready(function () {
             return false;
         }
     })
-    // View substance label information for a future implementation
-    /*
-    $("#substanceInformation").click(function () {
-        if (!$("#substance").val()) {
-            alert("Please enter substance information");
-        } else {
-            //Validate information
-            //Show Modal Popup with tabs
 
-        }
-    });
-    */
     // Valid substance entered
     $.validator.addMethod("validSubstance", function () {
         if ($('#substance_id').data("name") != $('#substance').val() || $('#substance_id').data("name") == 'No results') {
@@ -98,12 +87,7 @@ $(document).ready(function () {
                 // Save label information in local storage
                 var label_JSON_String = JSON.stringify(label_JSON);
                 localStorage.setItem('information', label_JSON_String);
-                // Set blank templates according to provided information
-                //set_blank_templates();
-                // Show loading message
                 $('#loadingMessage').modal("show");
-                // Set pre designed templates according to provided information
-                //setTimeout(set_pre_designed_templates, 0);
             }
         //}
     });
