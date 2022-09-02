@@ -1,6 +1,6 @@
 function update_resolution(width, height){
-    var value = 37.795275591; //CM VALUE IN PIXELES
-    svgEditor.svgCanvas.setResolution(width*value, height*value, 1);
+    var value = 37.795280352; //CM VALUE IN PIXELES
+    svgEditor.svgCanvas.setResolution(Math.round(width*value), Math.round(height*value), 1);
     svgEditor.updateCanvas();
     svgEditor.svgCanvas.selectAllInCurrentLayer();
 }
@@ -40,7 +40,8 @@ function load_data_sga_label_form(urlParams){
     }
     if(template){
         var url = document.url_get_recipient_size;
-        url = url.replace('0', template);
+        url = url.replace('0', '1');
+        url = url+template;
         load_canvas_editor_template(url);
         $("#id_template").val(template);
     }
@@ -120,7 +121,7 @@ $("#id_recipient_size").on("change", function(){
     var id = $(this).val();
     var url = document.url_get_recipient_size;
     if(id){
-        url = url.replace('0', id);
+        url = url+id;
     }
     load_canvas_editor_template(url);
 });

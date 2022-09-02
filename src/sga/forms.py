@@ -47,6 +47,9 @@ class PersonalForm(forms.Form):
     template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False)
     substance = forms.ModelChoiceField(queryset=Substance.objects.all())
     commercial_information = forms.Textarea()
+    barcode = forms.FileField(required=False)
+    logo = forms.FileField(required=False)
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')

@@ -40,13 +40,12 @@ window.SvgCanvas=SvgCanvas;
 
 {% block content %}
      <div class="wizard-header">
-    <h5 class="info-text">{% trans 'Edit your template' %}</h5>
+    <h5 class="info-text">{% trans 'Edit your label' %}</h5>
 
             <div class="col-sm-12" style="text-align:right">
-                    <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
-                    <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
-                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to custom templates' %}</a>
-                    <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:information' %}" >{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
+                <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
+                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to your labels' %}</a>
             </div>
         </div>
 <hr>
@@ -129,11 +128,11 @@ window.SvgCanvas=SvgCanvas;
 
         <div class="form-group">
             <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
-            <input type="file" id="logo" name="logo">
+            <input type="file" id="logo" name="logo" value="{% if sgatemplates.logo %}{{sgatemplates.logo.url}}{% endif %}">
         </div>
         <div class="form-group">
             <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
-            <input type="file" id="barcode" name="barcode">
+            <input type="file" id="barcode" name="barcode" value="{% if sgatemplates.barcode %}{{sgatemplates.barcode}}{% endif %}">
         </div>
 
     <!--=========================================Comercial information==============================================-->
@@ -147,6 +146,11 @@ window.SvgCanvas=SvgCanvas;
                 </textarea>
             </div>
         </div>
+        {% if request.user.is_authenticated %}
+            <div class="form-group text-center">
+                <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
+            </div>
+        {% endif %}
     </div>
           <div role="tabpanel" class="tab-pane" id="live">
         <label >{% trans 'Warning Words' %}</label>
@@ -156,24 +160,10 @@ window.SvgCanvas=SvgCanvas;
         {% endfor %}
         </ul>
         {{formselects|bootstrap  }}
-<!--         <br>-->
-<!--              <form class="form_image">-->
-<!--               <div class="form-group">-->
-<!--                   <label>Logo</label>-->
-<!--                   <input type="file" name="logo" id="logo" class="logo form-control">-->
-<!--              </div>-->
-<!--               <div class="form-group">-->
-<!--                   <label>Codigo de barras</label>-->
-<!--                   <input type="file" name="barcode"  id="barcode" class="logo form-control">-->
-<!--              </div>-->
-<!--                  <br>-->
-<!--                <button type="submit" class="btn btn-success">{% trans 'Load' %}</button>-->
-<!--              </form>-->
+
               </div>
   </div>
-        {% if request.user.is_authenticated %}
-            <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
-        {% endif %}
+
         </form>
     </div>
         <div class="col-md-9">
@@ -183,16 +173,6 @@ window.SvgCanvas=SvgCanvas;
             </div>
           </div>
     </div>
-        <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
-            {% csrf_token %}
-
-            <input type="hidden" value="" name="json_data" id="json_data">
-            <input type="hidden" value="{ sgatemplates.pk }" name="template_sga_pk" id="template_sga_pk">
-        </form>
-<!--<form id="sgaform"  method="post" action="{% url 'sga:template' %}">-->
-<!--                    {% csrf_token %}-->
-<!--    <input type="hidden" name="pk">-->
-<!--    </form>-->
 
     {% endblock content %}
 
