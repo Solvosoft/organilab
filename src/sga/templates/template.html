@@ -133,7 +133,11 @@
                     placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
             </div>
         </div>
-
+        {% if request.user.is_authenticated %}
+            <div class="form-group text-center">
+                <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
+            </div>
+        {% endif %}
 </div>
             <div role="tabpanel" class="tab-pane" id="live">
                 <label >{% trans 'Warning Words' %}</label>
@@ -146,9 +150,6 @@
 
           </div>
         </div>
-        {% if request.user.is_authenticated %}
-            <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
-        {% endif %}
         </form>
    </div>
 
@@ -159,11 +160,6 @@
         </div>
       </div>
 </div>
-    <form action="{% url 'sga:download' %}" method="post" name="download_pdf" enctype="application/json">
-        {% csrf_token %}
-        <input type="hidden" value="" name="json_data" id="json_data">
-        <input type="hidden" value="{ sgatemplates.pk }" name="template_sga_pk" id="template_sga_pk">
-    </form>
 
 {% endblock content %}
 

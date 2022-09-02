@@ -258,6 +258,8 @@ class PersonalTemplateSGA(models.Model):
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
     preview = models.TextField(help_text="B64 preview image", null=True)
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
+    barcode = models.FileField(_('Barcode'), upload_to='sga/barcode/', null=True, blank=True)
+    logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
 
     def __str__(self):
         recipient=RecipientSize.objects.get(pk=self.template.recipient_size.pk)

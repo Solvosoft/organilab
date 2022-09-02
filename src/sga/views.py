@@ -302,9 +302,6 @@ def show_editor_preview(request, pk):
             value = " "
         representation = representation.replace(key, value)
 
-
-
-
     files = {'logo_url': request.session['logo_file_url'],
              'barcode_url': request.session['barcode_file_url']}
     representation = utils_pictograms.pic_selected(representation,
@@ -465,7 +462,6 @@ def edit_personal_template(request, pk):
             label.builderInformation=builderInformation
             label.commercial_information=commercial_information
             label.save()
-
             template.name = form.cleaned_data['name']
             template.json_representation = form.cleaned_data['json_representation']
             template.preview = form.cleaned_data['preview']
@@ -570,17 +566,19 @@ def get_files(request):
 
 
 @login_required
-def get_recipient_size(request, pk):
+def get_recipient_size(request, is_template, pk):
     response = {}
-    template = TemplateSGA.objects.filter(pk=pk)
-    if template.exists:
-        template = template.first()
-        response.update({
-            'size': {
-                'width': template.recipient_size.width,
-                'height': template.recipient_size.height},
-            'svg_content': template.json_representation
-        })
+
+    if int(is_template):
+        template = TemplateSGA.objects.filter(pk=pk)
+        if template.exists():
+            template = template.first()
+            response.update({
+                'size': {
+                    'width': template.recipient_size.width,
+                    'height': template.recipient_size.height},
+                'svg_content': template.json_representation
+            })
     else:
         recipient = get_object_or_404(RecipientSize, pk=pk)
         response.update({
@@ -628,3 +626,25 @@ def create_recipient(request):
         else:
             return redirect('sga:add_recipient_size')
     return render(request, 'add_recipient_size.html', context={'form':form})
+
+
+def get_svgexport(request, is_pdf, pk):
+    personalsga = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    svg = personalsga.json_representation
+    type = "png"
+
+    try:
+        if int(is_pdf):
+            file = cairosvg.svg2pdf(svg)
+            type = "pdf"
+        else:
+            file = cairosvg.svg2png(svg)
+        response = HttpResponse(file, content_type='application/'+type)
+    except IOError:
+        return HttpResponseNotFound()
+    response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
+
+    return response
+
+
+
