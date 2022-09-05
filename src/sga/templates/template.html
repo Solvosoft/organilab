@@ -78,7 +78,7 @@
         <!--Search substance with autocomplete-->
         <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
             aria-describedby="sustanceHelp">
-        <input type="hidden" id="substance_id" name="substance" />
+        <input type="hidden" id="substance_id" name="sustance" />
         <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
         <div class="form-group">
             <!--Add new sustance-->
@@ -95,20 +95,23 @@
                         glyphicon-home"></i></span>
                 <input name="company_name" id="id_company_name" placeholder="{% trans 'Name' %}" class="form-control"
                     aria-describedby="sustanceHelp">
+                <input name="bi-name" type="hidden">
             </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon
                         glyphicon-pushpin"></i></span><input
-                    name="address" id="company_address"
+                    name="company_address" id="company_address"
                     placeholder="{% trans 'Address' %}"
                     class="form-control" aria-describedby="sustanceHelp">
+                <input name="bi-address" type="hidden">
             </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon
                         glyphicon-earphone"></i></span>
-                <input name="phone" id="company_phone"
+                <input name="company_phone" id="company_phone"
                     placeholder="{% trans 'Phone' %}" class="form-control"
                     aria-describedby="sustanceHelp">
+                <input name="bi-phone" type="hidden">
             </div>
         </div>
     </div>
@@ -117,11 +120,12 @@
 
         <div class="form-group">
             <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
-            <input type="file" id="logo" name="logo">
+            {{form.logo}}
+            {{form.logo_upload_id}}
         </div>
         <div class="form-group">
             <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
-            <input type="file" id="barcode" name="barcode">
+            {{form.barcode}}
         </div>
 
     <!--=========================================Comercial information==============================================-->
