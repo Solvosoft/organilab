@@ -36,16 +36,39 @@
                     <td>{{substance.comercial_name}}</td>
                     <td>{{substance.sustancecharacteristicssga.cas_id_number}}</td>
                     {% if substance.is_approved %}
-                        <td><p class="bg-green text-center text-white"> {% trans 'Yes' %}</p></td>
+                        <td><p class="text-center"> {% trans 'Yes' %}</p></td>
                     {% else %}
-                    <td><p class="bg-red text-center text-white"> No</p></td>
+                    <td><p class="text-center"> No</p></td>
                     {% endif %}
-                    <td><a href="{% url 'update_substance' substance.pk  %}" class="btn btn-warning">Actualizar</a><br><a href="{% url 'delete_substance' substance.pk  %}" class="btn btn-danger">Eliminar</a></td>
+                    <td><a href="{% url 'update_substance' substance.pk  %}" class="btn btn-warning"><i class="icons fa fa-edit"></i></a>
+                        <a data-target="#delete_modal" data-toggle="modal" data-substance="{{substance.pk}}" class="btn btn-danger remove"><i class="icons fa fa-trash"></a></td>
                 </tr>
             {% endfor %}
         </tbody>
   </table>
 </div>
+</div>
+
+
+<div aria-hidden="true"  class="modal fade" id="delete_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Delete Substance' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>{% trans '¿You want to remove the substance?' %}</label>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <a class="btn btn-success" id="remove_substance">{% trans 'Delete' %}</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -59,6 +82,16 @@
 
 (function(){
     $("#sustancetable").DataTable();
+    $(".remove").click((e)=>{
+        var id = e.target.dataset['substance']
+        var url = "{% url 'delete_substance' 0 %}";
+        if(id){
+            url = url.replace('0', id);
+        }
+
+        document.querySelector("#remove_substance").setAttribute('href',url)
+
+    })
 })(jQuery);
 </script>
 
