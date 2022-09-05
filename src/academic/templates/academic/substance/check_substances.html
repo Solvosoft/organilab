@@ -34,7 +34,7 @@
                 <tr>
                     <td>{{substance.creator}}</td>
                     <td>{{substance.comercial_name}}</td>
-                    <td><a href="{% url 'accept_substance' substance.pk %}" class="btn btn-warning">Aprobar</a></td>
+                    <td><a href="{% url 'accept_substance' substance.pk %}" class="btn btn-warning">{% trans 'Approve' %}</a></td>
                 </tr>
             {% endfor %}
         </tbody>
