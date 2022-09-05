@@ -37,8 +37,10 @@ urlpatterns = [
     url(r'label_editor', views.label_editor, name='label_editor'),
     # sga/editor
     url(r'editor', editor, name='editor'),
-    url(r'recipient_size/(?P<pk>\d+)$', views.get_recipient_size, name='get_recipient_size'),
+    url(r'recipient_size/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
+    url(r'label_substance/(?P<pk>\d+)$', views.get_label_substance, name='get_label_substance'),
     url(r'get_preview/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
+    url(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
     url(r'download/', render_pdf_view, name='download'),
     # sga/prudence

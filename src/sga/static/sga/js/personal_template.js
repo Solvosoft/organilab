@@ -71,7 +71,7 @@ function create_table(data){
 }
 
 
-$("#btnpreview").on('click', function(){
+$(".btnpreview").on('click', function(){
     var url = document.url_get_preview;
     var id = $(this).data('id');
     if(id){
@@ -94,4 +94,9 @@ $("#btnpreview").on('click', function(){
             console.log(xhr, resp, text);
         }
     });
+});
+
+
+$("#newsgalabel").on("click", function(){
+    $("#newsgalabelmodal").modal();
 });

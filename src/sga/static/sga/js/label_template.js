@@ -167,14 +167,3 @@ function get_canvas(pk){
             return canvas.canv_obj;
      }
 }
-
-function get_as_pdf(pk){
-    const canvas = get_canvas(pk);
-    const json_data = JSON.stringify(canvas);
-
-    $('#json_data').attr('value',json_data);
-    $('#template_sga_pk').attr('value',pk)
-
-    document.download_pdf.submit();
-}
-
