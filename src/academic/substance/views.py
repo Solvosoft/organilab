@@ -7,6 +7,8 @@ from academic.models import SubstanceSGA
 from django.contrib.auth.models import User
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm
 from laboratory.validators import isValidate_molecular_formula
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 
 @permission_required('laboratory.change_object')
@@ -83,6 +85,7 @@ def approve_substances(request,pk):
 def delete_substance(request,pk):
     substances=SubstanceSGA.objects.filter(pk=pk).first()
     if substances:
+        messages.success(request, _("The substance is removed successfully"))
         substances.delete()
         return redirect('get_substance')
     return redirect('get_substance')
