@@ -5,7 +5,8 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.forms.forms import GTForm
-from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence,PersonalTemplateSGA
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
+    BuilderInformation, Label
 
 
 class RecipientInformationForm(forms.Form):
@@ -47,8 +48,9 @@ class PersonalForm(forms.Form):
     template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False)
     substance = forms.ModelChoiceField(queryset=Substance.objects.all())
     commercial_information = forms.Textarea()
-    barcode = forms.FileField(required=False)
-    logo = forms.FileField(required=False)
+    barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
+    logo = forms.FileField(widget=genwidgets.FileInput, required=False)
+    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
 
     def __init__(self, *args, **kwargs):
@@ -56,6 +58,35 @@ class PersonalForm(forms.Form):
         super(PersonalForm, self).__init__(*args, **kwargs)
         filter = Q(community_share=True) | Q(creator=user)
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
+
+
+class PersonalSGAForm(forms.ModelForm):
+    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = PersonalTemplateSGA
+        fields = ['name', 'logo', 'barcode', 'template', 'logo_upload_id', 'json_representation', 'preview']
+        exclude = ['template', 'user']
+        widgets = {
+            'logo': genwidgets.FileInput,
+        }
+
+
+class BuilderInformationForm(forms.ModelForm):
+    class Meta:
+        model = BuilderInformation
+        fields = "__all__"
+
+
+class LabelForm(forms.ModelForm):
+    class Meta:
+        model = Label
+        fields = ['sustance', 'commercial_information']
+        exclude = ['builderInformation']
+        widgets = {
+            'sustance': genwidgets.Select
+        }
+
 
 class DonateForm(GTForm, forms.Form):
     name = forms.CharField(

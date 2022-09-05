@@ -2,7 +2,7 @@
 import json
 
 import cairosvg
-from cairocffi import cairo
+from chunked_upload.models import ChunkedUpload
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
@@ -23,8 +23,9 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
-    PersonalForm, PersonalTemplatesForm, SubstanceForm, RecipientSizeForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, BuilderInformation
+    PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
+    LabelForm
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
 from .json2html import json2html
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 
@@ -125,7 +126,8 @@ def template(request):
         'laboratory': None,
         'formselects': SGAEditorForm,
         'pictograms': Pictogram.objects.all(),
-        'warningwords': WarningWord.objects.all()
+        'warningwords': WarningWord.objects.all(),
+        'form': PersonalForm(user=request.user)
     }
     return render(request, 'template.html', context)
 
@@ -406,33 +408,37 @@ def create_personal_template(request):
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates}
-    if request.method == 'POST':
 
-        form = PersonalForm(request.POST, user=user)
+    template = TemplateSGA.objects.get(name="Plantilla Base")
+
+    if request.method == 'POST':
+        template_pk = request.POST.get('template', None)
+        if template_pk:
+            template = get_object_or_404(TemplateSGA, pk=int(template_pk))
+
+        form = PersonalSGAForm(request.POST)
+        label_form = LabelForm(request.POST)
+        builder_information_form = BuilderInformationForm(request.POST, prefix='bi')
+
         if form.is_valid():
-            address = request.POST.get('address', '')
-            commercial_information = request.POST.get('commercial_information', '')
-            builderInformation = BuilderInformation(
-                name=form.cleaned_data['company_name'],
-                phone=form.cleaned_data['phone'],
-                address=address
-            )
-            builderInformation.save()
-            label = Label(
-                sustance=form.cleaned_data['substance'],
-                builderInformation=builderInformation,
-                commercial_information=commercial_information
-            )
-            label.save()
-            personal = PersonalTemplateSGA(
-                user=user, name=form.cleaned_data['name'],
-                json_representation=form.cleaned_data['json_representation'],
-                preview=form.cleaned_data['preview'],
-                template=form.cleaned_data['template'],
-                label=label
-            )
-            personal.save()
+            instance = form.save(commit=False)
+            instance.template = template
+            instance.user = request.user
+            upload_id = form.cleaned_data['logo_upload_id']
+
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.logo = tmpupload.get_uploaded_file()
+
+            if builder_information_form.is_valid() and label_form.is_valid():
+                builder_info = builder_information_form.save()
+                label = label_form.save(commit=False)
+                label.builderInformation = builder_info
+                label.save()
+                instance.label = label
+            instance.save()
             return redirect('sga:add_personal')
+
     return render(request, 'personal_template.html', context)
 
 def show_preview(request,pk):
@@ -443,30 +449,36 @@ def show_preview(request,pk):
 
 @permission_required('sga.change_personaltemplatesga')
 def edit_personal_template(request, pk):
-    if request.method=='POST':
-        form=PersonalForm(request.POST, user=request.user)
+    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    label_form, builder_information_form = None, None
+
+    if request.method == 'POST':
+
+        form = PersonalSGAForm(request.POST, instance=template)
+
+        if template.label:
+            label_form = LabelForm(request.POST, instance=template.label)
+            builder_information_form = BuilderInformationForm(request.POST, instance=template.label.builderInformation, prefix='bi')
 
         if form.is_valid():
-            template = PersonalTemplateSGA.objects.get(pk=pk)
-            address = request.POST.get('address', '')
-            commercial_information = request.POST.get('commercial_information', '')
+            instance = form.save(commit=False)
+            upload_id = form.cleaned_data['logo_upload_id']
 
-            builderInformation = template.label.builderInformation
-            builderInformation.name=form.cleaned_data['company_name']
-            builderInformation.phone=form.cleaned_data['phone']
-            builderInformation.address=address
-            builderInformation.save()
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.logo = tmpupload.get_uploaded_file()
 
-            label = template.label
-            label.sustance=form.cleaned_data['substance']
-            label.builderInformation=builderInformation
-            label.commercial_information=commercial_information
-            label.save()
-            template.name = form.cleaned_data['name']
-            template.json_representation = form.cleaned_data['json_representation']
-            template.preview = form.cleaned_data['preview']
-            template.save()
-            return redirect(reverse('sga:add_personal'))
+            instance.save()
+
+            if builder_information_form and label_form:
+
+                if builder_information_form.is_valid():
+                    builder_information_form.save()
+
+                if label_form.is_valid():
+                    label_form.save()
+
+            return redirect('sga:add_personal')
 
     templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
     context={
@@ -474,8 +486,15 @@ def edit_personal_template(request, pk):
         'formselects': SGAEditorForm,
         "sgatemplates": templates,
         "width": templates.template.recipient_size.width,
-        "height": templates.template.recipient_size.height
+        "height": templates.template.recipient_size.height,
+        "form": PersonalSGAForm(instance=template)
     }
+
+    if template.logo:
+        name = template.logo.name.split('/')
+        if len(name) == 3:
+            name = name[2]
+            context.update({'logo_name': name})
     return render(request, 'template_edit.html', context)
 
 
@@ -628,6 +647,7 @@ def create_recipient(request):
     return render(request, 'add_recipient_size.html', context={'form':form})
 
 
+@login_required
 def get_svgexport(request, is_pdf, pk):
     personalsga = get_object_or_404(PersonalTemplateSGA, pk=pk)
     svg = personalsga.json_representation
@@ -645,6 +665,3 @@ def get_svgexport(request, is_pdf, pk):
     response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
 
     return response
-
-
-

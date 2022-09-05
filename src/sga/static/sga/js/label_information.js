@@ -48,11 +48,11 @@ $(document).ready(function () {
                 required: true,
                 maxlength: 150
             },
-            address: {
+            company_address: {
                 required: true,
                 maxlength: 100
             },
-            phone: {
+            company_phone: {
                 required: true,
                 maxlength: 15
             },

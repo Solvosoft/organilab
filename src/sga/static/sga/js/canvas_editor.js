@@ -48,6 +48,7 @@ function load_data_sga_label_form(urlParams){
 
 }
 
+
 $(window).load(function(){
 
     let elem = document.querySelector('#canvas_editor');
@@ -75,6 +76,10 @@ $(window).load(function(){
             svgEditor.svgCanvas.setResolution(640, 480, 1);
             svgEditor.updateCanvas();
         }
+    }
+
+    if(document.logo_name){
+        $("input[name='logo_upload_id']").attr('data-url', document.logo_url);
     }
 
 });
@@ -139,6 +144,16 @@ $("#savesgalabel").on('click', function(){
         */
     } else {
         load_data_form("personal");
+        $("input[name='bi-name']").val($("input[name='company_name']"));
+        $("input[name='bi-phone']").val($("input[name='company_phone']"));
+        $("input[name='bi-address']").val($("input[name='company_address']"));
         $("#sgaform").submit();
+    }
+});
+
+
+$(document).on( "fileuploaddone", function(e, data){
+    if(data.result){
+        $("#id_logo_upload_id").val(data.result.upload_id);
     }
 });
