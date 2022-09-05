@@ -1,6 +1,8 @@
 # Import functions of another modules
 import json
 
+import cairosvg
+from chunked_upload.models import ChunkedUpload
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
@@ -21,7 +23,8 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga import utils_pictograms
 from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
-    PersonalForm, PersonalTemplatesForm, SubstanceForm, RecipientSizeForm
+    PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
+    LabelForm
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
 from .json2html import json2html
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
@@ -42,7 +45,7 @@ def render_user_pdf(request,pk):
 
     instance = get_object_or_404(PersonalTemplateSGA, pk=pk)
     json_data = instance.json_representation
-    recipient=RecipientSize.objects.get(pk=instance.recipient_size.pk)
+    recipient=RecipientSize.objects.get(pk=instance.template.recipient_size.pk)
     global_info_recipient = {'height_value': recipient.height, 'height_unit': recipient.height_unit, 'width_value': recipient.width, 'width_unit': recipient.width_unit}
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
@@ -118,39 +121,13 @@ def information_creator(request):
 
 # SGA template visualize
 def template(request):
-    sgatemplates = TemplateSGA.objects.get(pk=request.POST.get('templates'))
-    barcode_file_url = logo_file_url = False
-    request.session['commercial_information'] = request.POST.get('commercial_information', '')
-    if request.method == 'POST' and request.FILES.get('logo', False):
-        logo = request.FILES['logo']
-        fs_logo = FileSystemStorage()
-        logo_filename = fs_logo.save(logo.name, logo)
-        logo_file_url = fs_logo.url(logo_filename)
-    if request.FILES.get('barcode', False):
-        barcode = request.FILES['barcode']
-        fs_barcode = FileSystemStorage()
-        barcode_filename = fs_barcode.save(barcode.name, barcode)
-        barcode_file_url = fs_barcode.url(barcode_filename)
-    request.session['logo_file_url'] = logo_file_url
-    request.session['barcode_file_url'] = barcode_file_url
-    if request.method == 'POST':
-        form = RecipientInformationForm(request.POST, user=request.user)
-    else:
-        form = None
-    template_sizes=RecipientSize.objects.filter(templatesga__pk=sgatemplates.id)
+
     context = {
         'laboratory': None,
-        'form': form,
-        'sgatemplates': sgatemplates,
-        'sizes': template_sizes,
-        'barcode_file_url':  barcode_file_url,
-        'logo_file_url': logo_file_url,
         'formselects': SGAEditorForm,
         'pictograms': Pictogram.objects.all(),
         'warningwords': WarningWord.objects.all(),
-        'width': sgatemplates.recipient_size.width,
-        'height': sgatemplates.recipient_size.height
-
+        'form': PersonalForm(user=request.user)
     }
     return render(request, 'template.html', context)
 
@@ -327,9 +304,6 @@ def show_editor_preview(request, pk):
             value = " "
         representation = representation.replace(key, value)
 
-
-
-
     files = {'logo_url': request.session['logo_file_url'],
              'barcode_url': request.session['barcode_file_url']}
     representation = utils_pictograms.pic_selected(representation,
@@ -393,6 +367,7 @@ def search_autocomplete_sustance(request):
         else:
             search_qs = Substance.objects.filter(
                 components__cas_number__icontains=q)
+
         results = []
         for r in search_qs:
             results.append({'label': r.comercial_name +
@@ -429,23 +404,42 @@ def index_organilab(request):
 @permission_required('sga.add_personaltemplatesga')
 def create_personal_template(request):
     user = request.user
-    templates = PersonalTemplateSGA.objects.filter(user=user)
-    context = {"templates": templates }
+    personal_templates = PersonalTemplateSGA.objects.filter(user=user)
+    filter = Q(community_share=True) | Q(creator=user)
+    sga_templates = TemplateSGA.objects.filter(filter)
+    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates}
+
+    template = TemplateSGA.objects.get(name="Plantilla Base")
+
     if request.method == 'POST':
-        form = PersonalForm(request.POST)
+        template_pk = request.POST.get('template', None)
+        if template_pk:
+            template = get_object_or_404(TemplateSGA, pk=int(template_pk))
+
+        form = PersonalSGAForm(request.POST)
+        label_form = LabelForm(request.POST)
+        builder_information_form = BuilderInformationForm(request.POST, prefix='bi')
+
         if form.is_valid():
-            recipient=RecipientSize.objects.get(pk=form.cleaned_data['sizes'])
-            personal = PersonalTemplateSGA(
-                user=user,  name=form.cleaned_data['name'],
-                json_representation=request.POST.get('json_representation',''),
-                recipient_size=recipient
-            )
-            personal.save()
+            instance = form.save(commit=False)
+            instance.template = template
+            instance.user = request.user
+            upload_id = form.cleaned_data['logo_upload_id']
+
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.logo = tmpupload.get_uploaded_file()
+
+            if builder_information_form.is_valid() and label_form.is_valid():
+                builder_info = builder_information_form.save()
+                label = label_form.save(commit=False)
+                label.builderInformation = builder_info
+                label.save()
+                instance.label = label
+            instance.save()
             return redirect('sga:add_personal')
 
-    else:
-
-        return render(request, 'personal_template.html', context)
+    return render(request, 'personal_template.html', context)
 
 def show_preview(request,pk):
     templates = PersonalTemplateSGA.objects.get(pk=pk)
@@ -454,25 +448,53 @@ def show_preview(request,pk):
 
 
 @permission_required('sga.change_personaltemplatesga')
-def edit_personal_template(request,pk):
-    if request.method=='POST':
-        form=PersonalTemplatesForm(request.POST)
+def edit_personal_template(request, pk):
+    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    label_form, builder_information_form = None, None
+
+    if request.method == 'POST':
+
+        form = PersonalSGAForm(request.POST, instance=template)
+
+        if template.label:
+            label_form = LabelForm(request.POST, instance=template.label)
+            builder_information_form = BuilderInformationForm(request.POST, instance=template.label.builderInformation, prefix='bi')
 
         if form.is_valid():
+            instance = form.save(commit=False)
+            upload_id = form.cleaned_data['logo_upload_id']
 
-            template = PersonalTemplateSGA.objects.get(pk=pk)
-            template.name = form.cleaned_data['name']
-            template.json_representation = form.cleaned_data['json_data']
-            template.save()
-            return redirect(reverse('sga:add_personal'))
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.logo = tmpupload.get_uploaded_file()
+
+            instance.save()
+
+            if builder_information_form and label_form:
+
+                if builder_information_form.is_valid():
+                    builder_information_form.save()
+
+                if label_form.is_valid():
+                    label_form.save()
+
+            return redirect('sga:add_personal')
 
     templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
     context={
-        'pictograms': Pictogram.objects.all(),
         'warningwords': WarningWord.objects.all(),
         'formselects': SGAEditorForm,
         "sgatemplates": templates,
+        "width": templates.template.recipient_size.width,
+        "height": templates.template.recipient_size.height,
+        "form": PersonalSGAForm(instance=template)
     }
+
+    if template.logo:
+        name = template.logo.name.split('/')
+        if len(name) == 3:
+            name = name[2]
+            context.update({'logo_name': name})
     return render(request, 'template_edit.html', context)
 
 
@@ -563,21 +585,21 @@ def get_files(request):
 
 
 @login_required
-def get_recipient_size(request, pk):
-    response = {'size': {'width': 0.0, 'height': 0.0}}
-    template = TemplateSGA.objects.filter(pk=pk)
-    if template.exists:
-        template = template.first()
-        response.update({
-            'size': {
-                'width': template.recipient_size.width,
-                'height': template.recipient_size.height},
-            'svg_content': template.json_representation
-        })
+def get_recipient_size(request, is_template, pk):
+    response = {}
+
+    if int(is_template):
+        template = TemplateSGA.objects.filter(pk=pk)
+        if template.exists():
+            template = template.first()
+            response.update({
+                'size': {
+                    'width': template.recipient_size.width,
+                    'height': template.recipient_size.height},
+                'svg_content': template.json_representation
+            })
     else:
         recipient = get_object_or_404(RecipientSize, pk=pk)
-        response['size']['width'] = recipient.width
-        response['size']['height'] = recipient.height
         response.update({
             'size': {
                 'width': recipient.width,
@@ -585,6 +607,12 @@ def get_recipient_size(request, pk):
         })
     return JsonResponse(response)
 
+
+@login_required
+def get_label_substance(request, pk):
+    substance = get_object_or_404(Substance, pk=pk)
+    response = {'label': substance.comercial_name + ' : ' + substance.synonymous}
+    return JsonResponse(response)
 
 @login_required
 def get_preview(request, pk):
@@ -617,3 +645,23 @@ def create_recipient(request):
         else:
             return redirect('sga:add_recipient_size')
     return render(request, 'add_recipient_size.html', context={'form':form})
+
+
+@login_required
+def get_svgexport(request, is_pdf, pk):
+    personalsga = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    svg = personalsga.json_representation
+    type = "png"
+
+    try:
+        if int(is_pdf):
+            file = cairosvg.svg2pdf(svg)
+            type = "pdf"
+        else:
+            file = cairosvg.svg2png(svg)
+        response = HttpResponse(file, content_type='application/'+type)
+    except IOError:
+        return HttpResponseNotFound()
+    response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
+
+    return response

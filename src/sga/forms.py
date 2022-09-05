@@ -5,7 +5,8 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.forms.forms import GTForm
-from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication,DangerPrudence,PersonalTemplateSGA
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
+    BuilderInformation, Label
 
 
 class RecipientInformationForm(forms.Form):
@@ -14,13 +15,7 @@ class RecipientInformationForm(forms.Form):
     phone = forms.CharField(max_length=15, required=True )
     address = forms.CharField(max_length=100, required=True )
     commercial_information = forms.Textarea( )
-    templates = forms.ModelChoiceField(queryset=TemplateSGA.objects.none())
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user')
-        super(RecipientInformationForm, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(creator=user)
-        self.fields['templates'].queryset = TemplateSGA.objects.filter(filter)
 
 class SGAEditorForm(CustomForm,forms.ModelForm):
     class Meta:
@@ -45,8 +40,53 @@ class SearchDangerIndicationForm(CustomForm, forms.Form):
 
 class PersonalForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
-    json_representation = forms.CharField(widget=forms.HiddenInput()),
-    sizes = forms.CharField(required=True, widget=genwidgets.NumberInput)
+    company_name = forms.CharField(max_length=150, required=True)
+    address = forms.Textarea()
+    phone = forms.CharField(max_length=50, required=True)
+    json_representation = forms.CharField(widget=forms.HiddenInput())
+    preview = forms.CharField(widget=forms.HiddenInput())
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False)
+    substance = forms.ModelChoiceField(queryset=Substance.objects.all())
+    commercial_information = forms.Textarea()
+    barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
+    logo = forms.FileField(widget=genwidgets.FileInput, required=False)
+    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(PersonalForm, self).__init__(*args, **kwargs)
+        filter = Q(community_share=True) | Q(creator=user)
+        self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
+
+
+class PersonalSGAForm(forms.ModelForm):
+    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = PersonalTemplateSGA
+        fields = ['name', 'logo', 'barcode', 'template', 'logo_upload_id', 'json_representation', 'preview']
+        exclude = ['template', 'user']
+        widgets = {
+            'logo': genwidgets.FileInput,
+        }
+
+
+class BuilderInformationForm(forms.ModelForm):
+    class Meta:
+        model = BuilderInformation
+        fields = "__all__"
+
+
+class LabelForm(forms.ModelForm):
+    class Meta:
+        model = Label
+        fields = ['sustance', 'commercial_information']
+        exclude = ['builderInformation']
+        widgets = {
+            'sustance': genwidgets.Select
+        }
+
 
 class DonateForm(GTForm, forms.Form):
     name = forms.CharField(

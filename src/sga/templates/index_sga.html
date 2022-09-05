@@ -24,7 +24,6 @@
          <div class="wizard-header">
 
             <div class="col-sm-12" style="text-align:right">
-                    <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
                 {% if request.user.is_authenticated %}
                 <a type="button" class="btn btn-info btn-fill" href="{% url 'sga:add_personal' %}" >{% trans 'Go to custom labels' %}</a>
                 {% endif %}
@@ -51,7 +50,7 @@
                        <li><p style="font-size:100%;">{% trans 'Social Media Options.' %}</p></li>
                        <li><p style="font-size:100%;">{% trans 'Printing Management.' %}</p></li>
                      </ul>
-                    <p style="font-size:15px; font-weight:bold">{% trans 'Do you have templates already created, print them!' %}</p>
+                    <p style="font-size:15px; font-weight:bold">{% trans 'Do you have labels already created, print them!' %}</p>
                 </div>
             </div>
         </div>
