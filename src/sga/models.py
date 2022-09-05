@@ -237,7 +237,7 @@ class Label(models.Model):
 
 
 class TemplateSGA(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     recipient_size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"), on_delete=models.CASCADE)
     json_representation = models.TextField()
@@ -258,7 +258,7 @@ class PersonalTemplateSGA(models.Model):
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
     preview = models.TextField(help_text="B64 preview image", null=True)
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
-    barcode = models.FileField(_('Barcode'), upload_to='sga/barcode/', null=True, blank=True)
+    barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
     logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
 
     def __str__(self):
