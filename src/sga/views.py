@@ -9,7 +9,7 @@ from django.core import serializers
 from django.core.files import temp as tempfile
 from django.core.files.storage import FileSystemStorage
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse, Http404
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Library
@@ -120,15 +120,26 @@ def information_creator(request):
 
 
 # SGA template visualize
-def template(request):
+def template(request, sustancetype):
+    if sustancetype =='academic':
+        context = {
+            'laboratory': None,
+            'formselects': SGAEditorForm,
+            'warningwords': WarningWord.objects.all(),
+            'form': PersonalForm(user=request.user),
+            'form_url': reverse('sga:add_personal')
 
-    context = {
-        'laboratory': None,
-        'formselects': SGAEditorForm,
-        'pictograms': Pictogram.objects.all(),
-        'warningwords': WarningWord.objects.all(),
-        'form': PersonalForm(user=request.user)
-    }
+        }
+    elif 'laboratory':
+        context = {
+                'laboratory': None,
+                'formselects': SGAEditorForm,
+                'warningwords': WarningWord.objects.all(),
+                'form': PersonalForm(user=request.user),
+                'form_url': reverse('sga:add_personal')
+        }
+    else:
+        raise Http404('Not found sustance type')
     return render(request, 'template.html', context)
 
 def personal_templates(request):

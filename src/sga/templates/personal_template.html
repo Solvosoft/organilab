@@ -79,8 +79,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' %}">
-                        {% csrf_token %}
+                    <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' 'laboratory' %}">
+                       
                         <div class="form-group">
                             <label>{% trans 'Name' %}</label>
                             <input type="text" name="name" class="form-control" required>
