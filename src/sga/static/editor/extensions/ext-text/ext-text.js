@@ -10,9 +10,10 @@ export default {
     return {
            name: svgEditor.i18next.t(`${name}:name`),
            callback () {
-
+            var classes=''
+            var text_color=''
             const elements= document.querySelectorAll('.text_options')
-    
+
             document.body.addEventListener('click',(e)=>{
               if (e.target.classList.contains('text_content')) {
 
@@ -20,13 +21,21 @@ export default {
 
               let target_id=e.target.id
 
-              const curStyle = svgCanvas.getStyle()  
+              const curStyle = svgCanvas.getStyle()
+
+              if(target_id==='Peligro'){
+                text_color="#FF0000"
+              }else{
+                text_color="#000000"
+              }
+              classes = target_id
               const curShape = svgCanvas.addSVGElementsFromJson({
                   element: 'text',
                   curStyles: true,
                   attr: {
                     x:100,
                     y:100,
+                    class:classes,
                     id: svgCanvas.getNextId(),
                     fill: svgCanvas.getCurText('fill'),
                     'stroke-width': svgCanvas.getCurText('stroke_width'),
@@ -37,21 +46,10 @@ export default {
                     opacity: curStyle.opacity
                   }
               })
-              if(target_id==='dangerindication' || target_id==='warningword' || 
-              target_id ==='prudenceword'){
-                curShape.textContent = `{{${target_id}}}`
-                curShape.attributes.fill.value="#FF0000"
-              }else if(target_id==='uipa' || target_id ==='casname' 
-              || target_id === "substancename" || target_id === "selername"
-              || target_id ==="seleraddress" || target_id === "commercialinformation"){
-                curShape.textContent=`{{${target_id}}}`
-                curShape.attributes.fill.value="#000000"
-              }else{
-                curShape.textContent=content
-                curShape.attributes.fill.value="#000000"
+               curShape.attributes.fill.value=text_color
+               curShape.textContent=content
 
-              }
-            svgCanvas.setSelectedElements(0, curShape)  
+            svgCanvas.setSelectedElements(0, curShape)
             }
             })
         },
@@ -59,11 +57,11 @@ export default {
              // Check the mode on mouseup
              if (svgCanvas.getMode() === 'tool_textcodes') {
                const zoom = svgCanvas.getZoom()
-     
+
                // Get the actual coordinate by dividing by the zoom value
                const x = opts.mouse_x / zoom
                const y = opts.mouse_y / zoom
-     
+
                const text = svgEditor.i18next.t(`${name}:text`, { x, y })
 
              }
