@@ -50,7 +50,7 @@
 <div class="row">
 
     <div class="col-md-3">
-        <form id="sgaform"  method="POST" action="{% url 'sga:add_personal' %}">
+        <form id="sgaform"  method="POST" action="{{form_post}}">
             {% csrf_token %}
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
