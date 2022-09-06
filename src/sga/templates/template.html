@@ -2,8 +2,6 @@
 @organization: Solvo
 @license: GNU General Public License v3.0
 @date: Created on 26 sept. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
 -->
 
 {% extends 'label_index.html' %}
@@ -20,6 +18,11 @@
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
         document.url_get_label_substance = "{% url 'sga:get_label_substance' 0 %}";
         document.clean_canvas_editor = true;
+        document.urls={
+            'danger_indication_url': '{% url 'sga:get_danger_indication' %}',
+            'prudence_advice_url': '{% url 'sga:prudence' %}',
+
+        };
     </script>
     <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
     window.SvgCanvas=SvgCanvas;
@@ -27,10 +30,9 @@
     <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
     <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
     <script src="{% static 'sga/js/codigosPH.js' %}"></script>
-    <script src="{% static 'sga/js/jquery.validate.min.js' %}"> </script>
-    <script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
     <script src="{% static 'sga/js/label_information.js' %}"> </script>
     <script src="{% static 'sga/js/messages_es.js' %}"> </script>
+{{form.media}}
 {% endblock %}
 
 {% block extrameta%}{% endblock extrameta %}
@@ -50,111 +52,19 @@
 <div class="row">
 
     <div class="col-md-3">
-        <form id="sgaform"  method="POST" action="{{form_post}}">
-            {% csrf_token %}
+
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+        <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">
             {% trans 'General' %}</a></li>
         <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
             {% trans 'En vivo' %}</a></li>
       </ul>
+
         <div class="tab-content" style="padding: 15px 20px 10px;">
-            <div role="tabpanel" class="tab-pane active" id="home">
-
-    <input type="hidden" name="preview" id="id_preview">
-    <input type="hidden" name="template" id="id_template">
-    <input type="hidden" name="json_representation" id="id_json_representation" value="">
-
-    <div class="form-group">
-        <label><span class="label label-info">1</span>&nbsp;{% trans 'Label Name' %}</label><br>
-        <input type="text" class="form-control" id="id_name" name="name">
-    </div>
-
-    <!--==============================================Substance=====================================================-->
-
-    <div class="form-group">
-
-        <label><span class="label label-info">2</span>&nbsp;{% trans 'Substance' %}</label>
-        <!--Search substance with autocomplete-->
-        <input id="substance" name="substance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
-            aria-describedby="sustanceHelp">
-        <input type="hidden" id="substance_id" name="sustance" />
-        <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
-        <div class="form-group">
-            <!--Add new sustance-->
-            <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
-                href="{% url 'sga:add_substance' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+             {% include 'editor/general.html' %}
+             {% include 'editor/live.html' %}
         </div>
 
-        <!--=========================================Supplier Identification============================================-->
-
-        <div class="form-group">
-            <label><span class="label label-info">3</span>&nbsp;{% trans 'Supplier Identification' %}</label>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-home"></i></span>
-                <input name="company_name" id="id_company_name" placeholder="{% trans 'Name' %}" class="form-control"
-                    aria-describedby="sustanceHelp">
-                <input name="bi-name" type="hidden">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-pushpin"></i></span><input
-                    name="company_address" id="company_address"
-                    placeholder="{% trans 'Address' %}"
-                    class="form-control" aria-describedby="sustanceHelp">
-                <input name="bi-address" type="hidden">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-earphone"></i></span>
-                <input name="company_phone" id="company_phone"
-                    placeholder="{% trans 'Phone' %}" class="form-control"
-                    aria-describedby="sustanceHelp">
-                <input name="bi-phone" type="hidden">
-            </div>
-        </div>
-    </div>
-
-    <!--=========================================Logo and Barcode==========================================================-->
-
-        <div class="form-group">
-            <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
-            {{form.logo}}
-            {{form.logo_upload_id}}
-        </div>
-        <div class="form-group">
-            <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
-            {{form.barcode}}
-        </div>
-
-    <!--=========================================Comercial information==============================================-->
-       <div class="form-group">
-            <label><span class="label label-info">6</span>&nbsp;{% trans 'Commercial Information' %}</label>
-            <div class="form-group shadow-textarea">
-                <textarea name="commercial_information" class="form-control
-                    z-depth-1" id="commercial_information" rows="2"
-                    placeholder="{% trans 'Additionals product identifiers' %}"></textarea>
-            </div>
-        </div>
-        {% if request.user.is_authenticated %}
-            <div class="form-group text-center">
-                <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
-            </div>
-        {% endif %}
-</div>
-            <div role="tabpanel" class="tab-pane" id="live">
-                <label >{% trans 'Warning Words' %}</label>
-        <ul>
-        {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
-        {% endfor %}
-        </ul>
-        {{formselects|bootstrap  }}
-
-          </div>
-        </div>
-        </form>
    </div>
 
       <div class="col-md-9">

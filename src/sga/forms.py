@@ -1,7 +1,6 @@
 from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.forms.forms import GTForm
@@ -17,7 +16,7 @@ class RecipientInformationForm(forms.Form):
     commercial_information = forms.Textarea( )
 
 
-class SGAEditorForm(CustomForm,forms.ModelForm):
+class SGAEditorForm(GTForm,forms.ModelForm):
     class Meta:
         model = DangerPrudence
         fields = ('prudence_advice','danger_indication')
@@ -26,28 +25,33 @@ class SGAEditorForm(CustomForm,forms.ModelForm):
             'danger_indication': AutocompleteSelect('dangersearch')
         }
 
-class EditorForm(forms.ModelForm):
+class EditorForm(GTForm, forms.ModelForm):
     preview = forms.CharField(widget=forms.HiddenInput())
     json_representation = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = TemplateSGA
         fields = ('name', 'recipient_size', 'json_representation', 'community_share', 'preview')
+        widgets={
+            'name': genwidgets.TextInput,
+            'recipient_size': genwidgets.Select,
+            'community_share': genwidgets.YesNoInput
+        }
 
 
-class SearchDangerIndicationForm(CustomForm, forms.Form):
+class SearchDangerIndicationForm(GTForm, forms.Form):
 
     codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"), widget=genwidgets.SelectMultiple, required=True)
 
-class PersonalForm(forms.Form):
-    name = forms.CharField(max_length=100, required=True)
-    company_name = forms.CharField(max_length=150, required=True)
-    address = forms.Textarea()
-    phone = forms.CharField(max_length=50, required=True)
+class PersonalForm(GTForm, forms.Form):
+    name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput)
+    company_name = forms.CharField(max_length=150, required=True, widget=genwidgets.TextInput)
+    address = forms.CharField(widget=genwidgets.Textarea)
+    phone = forms.CharField(max_length=50, required=True, widget=genwidgets.TextInput)
     json_representation = forms.CharField(widget=forms.HiddenInput())
     preview = forms.CharField(widget=forms.HiddenInput())
-    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False)
-    substance = forms.ModelChoiceField(queryset=Substance.objects.all())
-    commercial_information = forms.Textarea()
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False, widget=genwidgets.HiddenInput)
+    substance = forms.ModelChoiceField(queryset=Substance.objects.all(), widget=genwidgets.Select)
+    commercial_information = forms.CharField(widget=genwidgets.Textarea)
     barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
     logo = forms.FileField(widget=genwidgets.FileInput, required=False)
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -102,7 +106,7 @@ class DonateForm(GTForm, forms.Form):
         initial=True)
 
 
-class PersonalTemplatesForm(CustomForm, forms.Form):
+class PersonalTemplatesForm(GTForm, forms.Form):
     name = forms.CharField(max_length=100, required=True)
     json_data = forms.CharField(widget=forms.TextInput)
 
