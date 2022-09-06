@@ -24,7 +24,7 @@ urlpatterns = [
     # sga/label_information/
     path('information', information_creator, name='information'),
     # sga/label_template/
-    path('editor_edit/<str:sustancetype>', template, name='template'),
+    path('label_editor_builder/<str:sustancetype>', template, name='template'),
     path('sga_editor_options', get_sga_editor_options, name='get_sga_editor_options'),
     path('show_editor_preview/<int:pk>', views.show_editor_preview, name='show_editor_preview'),
     # sga/label_creator/
@@ -45,9 +45,9 @@ urlpatterns = [
 
     url(r'download/', render_pdf_view, name='download'),
     # sga/prudence
-    url(r'prudence', views.get_prudence_advice, name='prudence'),
+    path('prudence', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
-    url(r'danger', views.get_danger_indication, name='get_danger_indication'),
+    path('danger', views.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
     url(r'getList', views.getTemplates, name='getList'),
 

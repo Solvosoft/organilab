@@ -124,18 +124,18 @@ def template(request, sustancetype):
     if sustancetype =='academic':
         context = {
             'laboratory': None,
-            'formselects': SGAEditorForm,
+            'form': SGAEditorForm(),
             'warningwords': WarningWord.objects.all(),
-            'form': PersonalForm(user=request.user),
+            'generalform': PersonalForm(user=request.user),
             'form_url': reverse('sga:add_personal')
 
         }
     elif 'laboratory':
         context = {
                 'laboratory': None,
-                'formselects': SGAEditorForm,
+                'form': SGAEditorForm(),
                 'warningwords': WarningWord.objects.all(),
-                'form': PersonalForm(user=request.user),
+                'generalform': PersonalForm(user=request.user),
                 'form_url': reverse('sga:add_personal')
         }
     else:
@@ -159,7 +159,6 @@ def editor(request):
         finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
     if 'instance' in request.GET:
         finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
-    sgaform = EditorForm(instance=finstance)
 
     if request.method == "POST":
         sgaform = EditorForm(request.POST, instance=finstance)
@@ -171,16 +170,18 @@ def editor(request):
             return redirect('sga:editor')
         else:
             clean_canvas_editor = False
+    else:
+        sgaform = EditorForm(instance=finstance)
 
     context = {
         'laboratory': None,
         "form": SGAEditorForm(),
         "generalform": sgaform,
-        "pictograms": Pictogram.objects.all(),
         "warningwords": WarningWord.objects.all(),
         'templateinstance': finstance,
         'templates': TemplateSGA.objects.filter(creator=request.user),
-        'clean_canvas_editor': clean_canvas_editor
+        'clean_canvas_editor': clean_canvas_editor,
+        'form_url': reverse('sga:editor')
     }
     if finstance:
         context.update({'width': finstance.recipient_size.width, 'height': finstance.recipient_size.height})

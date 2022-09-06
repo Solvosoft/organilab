@@ -2,7 +2,7 @@ $('#id_prudence_advice').change(function(){
 
     let pk=$(this).find('option:selected').val();
     $.ajax({
-        url: 'sga/prudence/',
+        url: document.urls['prudence_advice_url'],
         type:'POST',
         data: {pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
@@ -19,7 +19,7 @@ $('#id_prudence_advice').change(function(){
 $('#id_danger_indication').change(function(){
     let pk=$(this).find('option:selected').val();
     $.ajax({
-        url: 'sga/get_danger_indication/',
+        url: document.urls['danger_indication_url'],
         type:'POST',
         data: {pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },

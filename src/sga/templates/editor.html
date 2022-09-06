@@ -2,8 +2,6 @@
 @organization: Solvo
 @license: GNU General Public License v3.0
 @date: Created on 4 oct. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
 -->
 {% extends 'label_index.html' %}
 {% load i18n %}
@@ -19,9 +17,12 @@
         document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
         {% if width %}document.width = {{width}};{% endif %}
         {% if height %}document.height = {{height}};{% endif %}
+        document.urls={
+            'danger_indication_url': '{% url 'sga:get_danger_indication' %}',
+            'prudence_advice_url': '{% url 'sga:prudence' %}',
+
+        };
     </script>
-   <!-- <script src="{% static 'editor/Editor.js' %}" type="module"> </script> -->
-   <!--    <script id="SvgCanvas" src="{% static 'svgcanvas/svgcanvas.js' %}" type="module"> </script> -->
     <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
     window.SvgCanvas=SvgCanvas;
 </script>
@@ -64,102 +65,29 @@
 
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+            <a href="#general" aria-controls="general" role="tab" data-toggle="tab">
             {% trans 'General' %}</a>
         </li>
         <li role="presentation">
-            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+            <a href="#live" aria-controls="live" role="tab" data-toggle="tab">
             {% trans 'Live' %}</a>
         </li>
         <li role="presentation">
-            <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+            <a href="#generic" aria-controls="generic" role="tab" data-toggle="tab">
             {% trans 'Generic' %} </a>
         </li>
         <li role="presentation">
-            <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-            {% trans 'Pictogram' %}</a>
+            <a href="#custom" aria-controls="custom" role="tab" data-toggle="tab">
+            {% trans 'Custom' %}</a>
         </li>
       </ul>
         <div class="tab-content" style="padding: 15px 20px 10px;">
-    <div role="tabpanel" class="tab-pane active" id="home">
 
-        		<form id="sgaform"  method="post" action="{% url 'sga:editor' %}">
-                    {% csrf_token %}
-                    {% if templateinstance %}
-                        <input type="hidden" name="instance" value="{{templateinstance.pk}}">
-                    {% endif %}
-                    {{generalform|bootstrap}}
-                </form>
+    {% include 'editor/general.html' %}
+    {% include 'editor/live.html' %}
+    {% include 'editor/generic.html' %}
+    {% include 'editor/custom.html' %}
 
-    </div>
-    <div role="tabpanel" class="tab-pane" id="profile">
-        <label >{% trans 'Warning Words' %}</label>
-        <ul>
-        {% for word in warningwords %}
-            <li><p class="genericitem text_content"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext"  >{{word}}</p></li>
-        {% endfor %}
-        </ul>
-        <label>Cuadros de Textos</label>
-        <ul>
-            <li><p class="genericitem " id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox">Agregue Adiccional</p></li>
-        </ul>
-        {{form|bootstrap  }}
-    </div>
-    <div role="tabpanel" class="tab-pane" id="messages">
-        <ul>
-            <li>
-                <p class="genericitem text_content"  id="warningword" data-ftype="itext" >
-                {% trans 'Warning Word' %}</p>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="dangerindication"  data-ftype="textbox"> {% trans 'Danger Indication' %}</p>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="prudenceadvice" data-ftype="textbox"> {% trans 'Prudence Advice' %}</p>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="substancename"  data-ftype="itext" > {% trans 'Substance Name' %} </>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="uipa"  data-ftype="itext" > {% trans 'UIPA Name' %} </p>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="casnumber"  data-ftype="itext" > {% trans 'Cas number' %} </p>
-            </li>
-
-            <li>
-                <p class="genericitem text_content"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</p>
-            </li>
-            <li>
-                <p class="genericitem text_content" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</p>
-            </li>
-            <li>
-                <p class="genericitem text_content" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </p>
-            </li>
-            <li>
-                <p class="genericitem text_content"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </p>
-            </li>
-        </ul>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="settings">
-        <div class="row">
-
-
-{% if barcode_file_url %}
-    <div class="col-md-4">
-        <a class="genericitem" id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
-    </div>
-{% endif%}
-{% if logo_file_url %}
-    <div class="col-md-4">
-         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
-    </div>
-{%  endif %}
-
-        </div>
-    </div>
   </div>
             {% trans 'Use save before finish' %}
         <button id="editor_save" type="submit" class="btn btn-success" >{% trans 'Save' %} </button>
@@ -168,7 +96,6 @@
     <div class="col-sm-6 col-md-9" >
         <div class="clearfix visible-xs-block"></div>
         <div id="canvasContainer" class="canvas-container" >
-
             <div id="canvas_editor"  style="height: 600px;"></div>
         </div>
     </div>
