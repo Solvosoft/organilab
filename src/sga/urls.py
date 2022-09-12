@@ -26,25 +26,22 @@ urlpatterns = [
 
     # sga/editor
     url(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
-    url(r'recipient_size/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
-    url(r'label_substance/(?P<pk>\d+)$', views.get_label_substance, name='get_label_substance'),
-    url(r'get_preview/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
+    url(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
+    url(r'label_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_label_substance, name='get_label_substance'),
+    url(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
     url(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
     url(r'download/', render_pdf_view, name='download'),
     # sga/prudence
-    path('prudence', views.get_prudence_advice, name='prudence'),
+    path('prudence/(?P<organilabcontext>\w+)', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
-    path('danger', views.get_danger_indication, name='get_danger_indication'),
+    path('danger/(?P<organilabcontext>\w+)', views.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
-    url(r'getList', views.getTemplates, name='getList'),
-
-    url(r'add_personal/(?P<organilabcontext>\w+)/', views.create_personal_template, name='add_personal'),
+    url(r'add_personal/(?P<organilabcontext>\w+)', views.create_personal_template, name='add_personal'),
     url(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
 
-    url(r'getData', views.delete_personal, name='getData'),
-    url(r'get_images', views.get_files, name='get_images'),
-    url(r'add_substance', views.create_substance, name='add_substance'),
+    url(r'getData/(?P<organilabcontext>\w+)', views.delete_personal, name='getData'),
+    url(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
     url(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
 
 ]
