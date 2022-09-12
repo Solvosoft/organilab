@@ -49,7 +49,7 @@ class AdminDangerIndication(admin.ModelAdmin):
 
 
 class AdminSustance(admin.ModelAdmin):
-    filter_horizontal = ['components', 'danger_indications']
+    filter_horizontal = ['components_sga', 'danger_indications']
 
 
 class DonationAdmin(admin.ModelAdmin):

@@ -6,6 +6,9 @@ from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 
+from sga.managers import OrganilabContextQueryset
+from laboratory import catalog
+
 class WarningClass(MPTTModel):
     TYPE = (
         ("typeofdanger", _("Type of danger")),
@@ -48,7 +51,7 @@ class WarningClass(MPTTModel):
 class WarningWord(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     weigth = models.SmallIntegerField(default=0, verbose_name=_("Weigth"))
-
+    objects = OrganilabContextQueryset.as_manager()
     def __str__(self):
         return self.name
 
@@ -64,6 +67,7 @@ class Pictogram(models.Model):
     name = models.CharField(max_length=150, primary_key=True,
                             verbose_name=_("Name"))
     warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE)
+    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         return self.name
@@ -83,6 +87,7 @@ class PrudenceAdvice(models.Model):
     prudence_advice_help = models.TextField(
         null=True, blank=True,
         verbose_name=_("Help for prudence advice"))
+    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         return self.code + ": " + self.name
@@ -109,6 +114,7 @@ class DangerIndication(models.Model):
         verbose_name=_("Warning category"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
+    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         return "(%s) %s" % (self.code, self.description)
@@ -123,6 +129,7 @@ class DangerPrudence(models.Model):
         DangerIndication, verbose_name=_("Danger indication"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
+    objects = OrganilabContextQueryset.as_manager()
 
 
 class Component(models.Model):
@@ -142,14 +149,18 @@ class Substance(models.Model):
                                       verbose_name=_("Comercial name"))
     uipa_name= models.CharField(max_length=250, default="",
                                 verbose_name=_("UIPA name"))
-    components = models.ManyToManyField(
-        Component, verbose_name=_("Components"))
+    components_sga = models.ManyToManyField(
+        "self", verbose_name=_("Components"))
     danger_indications = models.ManyToManyField(
         DangerIndication,
         verbose_name=_("Danger indications"))
     synonymous = TagField(verbose_name=_("Synonymous"))
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
+    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
+
+    objects = OrganilabContextQueryset.as_manager()
+
 
     @property
     def warning_word(self):
@@ -171,6 +182,37 @@ class Substance(models.Model):
 
 register(Substance)
 
+class SustanceCharacteristics(models.Model):
+    substance = models.OneToOneField(Substance, on_delete=models.CASCADE)
+    iarc = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_iarcrel_sga", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IARC")
+    imdg = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_imdg_sga", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IDMG")
+    white_organ = catalog.GTManyToManyField("laboratory.Catalog", related_name="gt_white_organ_sga", key_name="key",
+                                            key_value="white_organ", blank=True)
+    bioaccumulable = models.BooleanField(null=True)
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
+    cas_id_number = models.CharField(
+        _('Cas ID Number'), max_length=255, null=True, blank=True)
+    security_sheet = models.FileField(
+        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+    is_precursor = models.BooleanField(_('Is precursor'), default=False)
+    precursor_type = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_precursor_sga", on_delete=models.SET_NULL,
+                                          null=True, blank=True, key_name="key", key_value="Precursor")
+
+    h_code = models.ManyToManyField(DangerIndication, related_name="sga_h_code", verbose_name=_("Danger Indication"), blank=True)
+    valid_molecular_formula = models.BooleanField(default=False)
+    ue_code = catalog.GTManyToManyField("laboratory.Catalog", related_name="gt_ue_sga", key_name="key",
+                                        key_value="ue_code", blank=True, verbose_name=_('UE codes'))
+    nfpa = catalog.GTManyToManyField("laboratory.Catalog", related_name="gt_nfpa_sga", key_name="key",
+                                     key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
+    storage_class = catalog.GTManyToManyField("laboratory.Catalog", related_name="gt_storage_class_sga", key_name="key",
+                                              key_value="storage_class", blank=True, verbose_name=_('Storage class'))
+    seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
+
+    class Meta:
+        verbose_name = _('Sustance characteristic SGA')
+        verbose_name_plural = _('Sustance characteristics SGA')
 
 # build information
 
@@ -179,7 +221,8 @@ class BuilderInformation(models.Model):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     phone = models.TextField(max_length=15, verbose_name=_("Phone"))
     address = models.TextField(max_length=100, verbose_name=_("Address"))
-
+    user = models.ForeignKey(User, verbose_name=_("User"),on_delete=models.DO_NOTHING, null=True)
+    community_share = models.BooleanField(default=False,blank=True, verbose_name=_("Share with community"))
     def __str__(self):
         return self.name
 
@@ -243,6 +286,7 @@ class TemplateSGA(models.Model):
     json_representation = models.TextField()
     community_share = models.BooleanField(default=True, verbose_name=_("Share with community"))
     preview = models.TextField(help_text="B64 preview image", null=True)
+    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         return self.name
@@ -260,6 +304,7 @@ class PersonalTemplateSGA(models.Model):
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
     logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
+    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         recipient=RecipientSize.objects.get(pk=self.template.recipient_size.pk)
