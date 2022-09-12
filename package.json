@@ -80,7 +80,7 @@
     "bwip-js": "^3.1.0",
     "core-js": "3.24.1",
     "elix": "15.0.1",
-    "html2canvas": "1.4.1",
+    "html2canvas": "^1.4.1",
     "i18next": "21.9.0",
     "jspdf": "2.5.1",
     "pathseg": "1.2.1",

@@ -1,4 +1,15 @@
+import html2canvas from 'html2canvas';
 import Editor from '../editor/Editor.js';
+
+async function generateSVGfromTextArea(elem){
+    // Capture specific element
+
+    html2canvas(elem).then(canvas => {
+        console.log(elem);
+        console.log(canvas);
+        //document.body.appendChild(canvas)
+    });
+}
 
 const svgEditor = new Editor(document.getElementById('canvas_editor'))
 svgEditor.init()
@@ -9,18 +20,8 @@ svgEditor.setConfig({
           extensions: [],
           noDefaultExtensions: true,
           userExtensions: [
-
+            {pathName: '/static/userextensions/text-multiline/text-multiline.js'}
           /* {pathName: 'textoseleccionado-bundle.js'} { pathName: './react-extensions/react-test/dist/react-test.js' } */]
         })
 
-// Variable XDOMAIN below is created by Rollup for the Xdomain build (see rollup.config.js)
-/* globals XDOMAIN */
-try { // try clause to avoid js to complain if XDOMAIN undefined
-          if (XDOMAIN) {
-            svgEditor.setConfig({
-              canvasName: 'xdomain', // Namespace this
-              allowedOrigins: [ '*' ]
-            })
-    console.info('xdomain config activated')
-  }
-} catch (error) { /* empty fn */ }
+svgEditor.generateSVGfromTextArea=generateSVGfromTextArea;
