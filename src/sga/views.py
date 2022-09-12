@@ -26,6 +26,7 @@ from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, Searc
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
     LabelForm
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
+from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
 
@@ -37,16 +38,6 @@ def render_pdf_view(request):
     json_data = request.POST.get("json_data", None)
 
     global_info_recipient = request.session['global_info_recipient']
-    html_data = json2html(json_data, global_info_recipient)
-    response = generate_pdf(html_data) #html2pdf(html_data)
-    return response
-
-def render_user_pdf(request,pk):
-
-    instance = get_object_or_404(PersonalTemplateSGA, pk=pk)
-    json_data = instance.json_representation
-    recipient=RecipientSize.objects.get(pk=instance.template.recipient_size.pk)
-    global_info_recipient = {'height_value': recipient.height, 'height_unit': recipient.height_unit, 'width_value': recipient.width, 'width_unit': recipient.width_unit}
     html_data = json2html(json_data, global_info_recipient)
     response = generate_pdf(html_data) #html2pdf(html_data)
     return response
@@ -101,58 +92,22 @@ def index_sga(request):
     return render(request, 'index_sga.html', {})
 
 
-# SGA information
-def information_creator(request):
-    filter = Q(community_share=True) | Q(creator=request.user)
-    template= TemplateSGA.objects.filter(filter)
+# SGA template visualize
+@organilab_context_decorator
+def template(request, organilabcontext):
     context = {
         'laboratory': None,
-        'templates': template,
+        'form': SGAEditorForm(),
+        'warningwords': WarningWord.objects.all(),
+        'generalform': PersonalForm(user=request.user),
+        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
     }
-    if request.method == 'POST':
-        form = RecipientInformationForm(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect(reverse('index_sga.html'))
-        else:
-            form = RecipientInformationForm()
-
-    return render(request, 'information.html', context)
-
-
-# SGA template visualize
-def template(request, sustancetype):
-    if sustancetype =='academic':
-        context = {
-            'laboratory': None,
-            'form': SGAEditorForm(),
-            'warningwords': WarningWord.objects.all(),
-            'generalform': PersonalForm(user=request.user),
-            'form_url': reverse('sga:add_personal')
-
-        }
-    elif 'laboratory':
-        context = {
-                'laboratory': None,
-                'form': SGAEditorForm(),
-                'warningwords': WarningWord.objects.all(),
-                'generalform': PersonalForm(user=request.user),
-                'form_url': reverse('sga:add_personal')
-        }
-    else:
-        raise Http404('Not found sustance type')
     return render(request, 'template.html', context)
 
-def personal_templates(request):
-    context={
-        'pictograms': Pictogram.objects.all(),
-        'warningwords': WarningWord.objects.all(),
-        'formselects': SGAEditorForm
-
-    }
-    return render(request,'personal_template.html', context)
 
 # SGA editor
-def editor(request):
+@organilab_context_decorator
+def editor(request, organilabcontext):
     finstance = None
     clean_canvas_editor = True
     if 'instance' in request.POST:
@@ -167,7 +122,7 @@ def editor(request):
             finstance.creator = request.user
             finstance.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
-            return redirect('sga:editor')
+            return redirect(reverse('sga:editor', kwargs={'organilabcontext': organilabcontext}))
         else:
             clean_canvas_editor = False
     else:
@@ -181,7 +136,7 @@ def editor(request):
         'templateinstance': finstance,
         'templates': TemplateSGA.objects.filter(creator=request.user),
         'clean_canvas_editor': clean_canvas_editor,
-        'form_url': reverse('sga:editor')
+        'form_url': reverse('sga:editor', kwargs={'organilabcontext': organilabcontext})
     }
     if finstance:
         context.update({'width': finstance.recipient_size.width, 'height': finstance.recipient_size.height})
@@ -202,195 +157,9 @@ def get_step(step):
     return step
 
 
-def label_creator(request, step=0):
-    step = get_step(step)
-    context = {
-        'laboratory': None,
-    }
-    form = None
-    if step == 0 or step == 1:
-        context['recipients'] = RecipientSize.objects.all()
-        if request.method == 'POST':
-            form = RecipientInformationForm(request.POST)
-            if form.is_valid():
-                step += 1
-    if step == 1:
-        if form is None:
-            form = RecipientInformationForm()
-        context.update({
-            'sgatemplates': TemplateSGA.objects.all(),
-            'form': form,
-        })
-
-    if step == 2:
-        finstance = None
-        if 'instance' in request.POST:
-            finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
-        if 'instance' in request.GET:
-            finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
-        sgaform = EditorForm(instance=finstance)
-        if request.method == "POST":
-            sgaform = EditorForm(request.POST, instance=finstance)
-            if sgaform.is_valid():
-                finstance = sgaform.save()
-                messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
-
-        context.update({
-            "form": SGAEditorForm(),
-            "generalform": sgaform,
-            "pictograms": Pictogram.objects.all(),
-            "warningwords": WarningWord.objects.all(),
-            'templateinstance': finstance,
-            'templates': TemplateSGA.objects.all()
-        })
-
-    context.update({'step': step,
-                    'next_step': step + 1,
-                    'prev_step': step - 1 if step > 0 else step})
-
-    return render(request, 'label_creator.html', context)
-
-
 # SGA Label Information Page
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
-
-
-def show_editor_preview(request, pk):
-    recipients = get_object_or_404(RecipientSize, pk=request.POST.get('recipients', ''))
-    request.session['global_info_recipient'] = {'height_value': recipients.height,
-                                                'height_unit': recipients.height_unit,
-                                                'width_value': recipients.width, 'width_unit': recipients.width_unit}
-    substance = get_object_or_404(Substance, pk=request.POST.get('substance', ''))
-    weight = -1
-    warningword = "{{warningword}}"
-    dangerindications = 'Indicaciones de Peligro\n'
-    casnumber = ''
-    pictograms = {}
-    prudenceAdvice = 'Consejos de Prudencia\n'
-
-    for di in substance.danger_indications.all():
-        if di.warning_words.weigth > weight:
-            if di.warning_words.name == "Sin palabra de advertencia":
-                warningword = ""
-            else:
-                warningword = di.warning_words.name
-            weight = di.warning_words.weigth
-        # get danger indications from substance here
-        if di.description == "Sin indicación de peligro":
-            dangerindications += ""
-        else:
-            if dangerindications == '':
-                dangerindications += di.description
-            else:
-                dangerindications += di.description
-
-        pictograms.update(dict([x.name, x] for x in di.pictograms.all()))
-
-        for advice in di.prudence_advice.all():
-            if prudenceAdvice != '':
-                prudenceAdvice += ' '
-            prudenceAdvice += advice.name
-    for component in substance.components.all():
-        if casnumber != '':
-            casnumber += ' '
-        casnumber += "CAS: "+component.cas_number
-    template_context = {
-        '{{warningword}}': clean_json_text(warningword),
-        '{{dangerindication}}': clean_json_text(dangerindications),
-        '{{selername}}': clean_json_text(request.POST.get('name', '{{selername}}')),
-        "{{selerphone}}": clean_json_text(request.POST.get('phone', "{{selerphone}}")),
-        "{{seleraddress}}": clean_json_text(request.POST.get('address', '{{seleraddress}}')),
-        "{{commercialinformation}}": clean_json_text(request.session['commercial_information']),
-        "{{substancename}}": clean_json_text(substance.comercial_name),
-        "{{uipa}}": clean_json_text(substance.uipa_name),
-        '{{casnumber}}': clean_json_text(casnumber),
-        '{{prudenceadvice}}': clean_json_text(prudenceAdvice)
-    }
-
-    obj = get_object_or_404(TemplateSGA, pk=pk)
-    representation = obj.json_representation
-
-    for key, value in template_context.items():
-        if value == 'Sin palabra de advertencia':
-            value = " "
-        representation = representation.replace(key, value)
-
-    files = {'logo_url': request.session['logo_file_url'],
-             'barcode_url': request.session['barcode_file_url']}
-    representation = utils_pictograms.pic_selected(representation,
-                                                   pictograms, files)
-    representation['objects'] = orderby_elements(representation['objects'])
-    context = {
-        'object': representation,
-        'preview': obj.preview
-    }
-
-    return JsonResponse(context)
-
-
-def orderby_elements(datalist):
-
-    for i in range(len(datalist) - 1, 0, -1):
-        for j in range(i):
-            if datalist[j]['top'] > datalist[j + 1]['top']:
-                aux = datalist[j]
-                datalist[j] = datalist[j + 1]
-                datalist[j + 1] = aux
-    return datalist
-
-def label_information(request):
-    # Includes recipient search
-    context = RecipientSize.objects.all()
-    return render(request, 'label_information.html', {'recipients': context})
-
-
-# SGA Label Template Page
-def label_template(request):
-    recipients = RecipientSize.objects.all()
-
-    return render(request, 'label_template.html', {'recipients': recipients,
-                                                   'laboratory': None
-                                                   })
-
-
-def get_sga_editor_options(request):
-    content = {
-        'warningword': list(WarningWord.objects.values('pk', 'name', 'weigth')),
-        'dangerindication': list(DangerIndication.objects.values('pk', 'code', 'description')),
-        'prudenceadvice': list(PrudenceAdvice.objects.values('pk', 'code', 'name'))}
-    return JsonResponse(content, content_type='application/json')
-
-
-# SGA Label Editor Page
-def label_editor(request):
-    return render(request, 'label_editor.html', {})
-
-
-# SGA Search sustance with autocomplete
-def search_autocomplete_sustance(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        # Contains the typed characters, is valid since the first character
-        # Search Parameter: Comercial Name or CAS Number
-        if any(c.isalpha() for c in q):
-            search_qs = Substance.objects.filter(
-                Q(comercial_name__icontains=q) | Q(synonymous__icontains=q))
-        else:
-            search_qs = Substance.objects.filter(
-                components__cas_number__icontains=q)
-
-        results = []
-        for r in search_qs:
-            results.append({'label': r.comercial_name +
-                                     ' : ' + r.synonymous, 'value': r.id})
-        if not results:
-            results.append('No results')
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
 
 
 def index_organilab(request):
@@ -414,12 +183,13 @@ def index_organilab(request):
 
 @login_required
 @permission_required('sga.add_personaltemplatesga')
-def create_personal_template(request):
+@organilab_context_decorator
+def create_personal_template(request, organilabcontext):
     user = request.user
     personal_templates = PersonalTemplateSGA.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
-    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates}
+    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates, "organilabcontext": organilabcontext}
 
     template = TemplateSGA.objects.get(name="Plantilla Base")
 
@@ -449,18 +219,14 @@ def create_personal_template(request):
                 label.save()
                 instance.label = label
             instance.save()
-            return redirect('sga:add_personal')
+            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
 
     return render(request, 'personal_template.html', context)
 
-def show_preview(request,pk):
-    templates = PersonalTemplateSGA.objects.get(pk=pk)
-    context = {"object": templates.json_representation}
-    return JsonResponse(context)
-
 
 @permission_required('sga.change_personaltemplatesga')
-def edit_personal_template(request, pk):
+@organilab_context_decorator
+def edit_personal_template(request, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     label_form, builder_information_form = None, None
 
@@ -490,7 +256,7 @@ def edit_personal_template(request, pk):
                 if label_form.is_valid():
                     label_form.save()
 
-            return redirect('sga:add_personal')
+            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
 
     templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
     context={
