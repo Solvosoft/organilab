@@ -192,6 +192,7 @@ def create_personal_template(request, organilabcontext):
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates, "organilabcontext": organilabcontext}
 
     template = TemplateSGA.objects.get(name="Plantilla Base")
+    print(organilabcontext)
 
     if request.method == 'POST':
         template_pk = request.POST.get('template', None)
@@ -219,6 +220,7 @@ def create_personal_template(request, organilabcontext):
                 label.save()
                 instance.label = label
             instance.save()
+            print(organilabcontext)
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
 
     return render(request, 'personal_template.html', context)
@@ -265,14 +267,17 @@ def edit_personal_template(request, organilabcontext, pk):
         "sgatemplates": templates,
         "width": templates.template.recipient_size.width,
         "height": templates.template.recipient_size.height,
+        'organilabcontext': organilabcontext,
         "form": PersonalSGAForm(instance=template)
     }
 
-    if template.logo:
-        name = template.logo.name.split('/')
-        if len(name) == 3:
-            name = name[2]
-            context.update({'logo_name': name})
+    if template is not None:
+        pass
+        """   if template.logo:
+                name = template.logo.name.split('/')
+                if len(name) == 3:
+                    name = name[2]
+                    context.update({'logo_name': name})"""
     return render(request, 'template_edit.html', context)
 
 
@@ -312,30 +317,23 @@ def donate_success(request):
     messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
     return HttpResponseRedirect(reverse('donate'))
 
-def get_prudence_advice(request):
+@organilab_context_decorator
+def get_prudence_advice(request,organilabcontext):
     pk = request.POST.get('pk', '')
     data = PrudenceAdvice.objects.get(pk=pk)
     return HttpResponse(data.name)
 
-
-def get_danger_indication(request):
+@organilab_context_decorator
+def get_danger_indication(request,organilabcontext):
     pk = request.POST.get('pk', '')
     data = DangerIndication.objects.get(pk=pk)
     return HttpResponse(data.description)
 
-def getTemplates(request):
-    pk = request.POST.get('pk', '')
-
-    templates = TemplateSGA.objects.filter(recipient_size=pk)
-    aux=[]
-    for template in templates:
-        aux.append({'id':template.pk, 'name':template.name})
-    data=json.dumps(aux)
-    return JsonResponse(data,safe=False)
 
 @login_required
 @permission_required('sga.delete_personaltemplatesga')
-def delete_personal(request):
+@organilab_context_decorator
+def delete_personal(request, organilabcontext):
     templates = PersonalTemplateSGA.objects.filter(user=request.user)
     if request.is_ajax():
         pk = request.GET.get('pk', '')
@@ -345,25 +343,9 @@ def delete_personal(request):
     templates = serializers.serialize("json", templates)
     return JsonResponse(templates, safe=False)
 
-def saveImages(img):
-    fs_image = FileSystemStorage()
-    image_filename = fs_image.save(img.name, img)
-    path = fs_image.url(image_filename)
-    return path
-
-def get_files(request):
-    data = []
-    if request.is_ajax():
-        if 'logo' in request.FILES:
-            data.append(saveImages(request.FILES['logo']))
-        if 'barcode' in request.FILES:
-            data.append(saveImages(request.FILES['barcode']))
-
-        return JsonResponse({'data': data})
-
-
 @login_required
-def get_recipient_size(request, is_template, pk):
+@organilab_context_decorator
+def get_recipient_size(request, organilabcontext, is_template, pk):
     response = {}
 
     if int(is_template):
@@ -387,19 +369,22 @@ def get_recipient_size(request, is_template, pk):
 
 
 @login_required
-def get_label_substance(request, pk):
+@organilab_context_decorator
+def get_label_substance(request,organilabcontext, pk):
     substance = get_object_or_404(Substance, pk=pk)
     response = {'label': substance.comercial_name + ' : ' + substance.synonymous}
     return JsonResponse(response)
 
 @login_required
-def get_preview(request, pk):
+@organilab_context_decorator
+def get_preview(request, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
 
 @login_required
 @permission_required('laboratory.change_object')
-def create_substance(request):
+@organilab_context_decorator
+def create_substance(request,organilabcontext):
     form=SubstanceForm()
     if request.method == 'POST':
         form =SubstanceForm(request.POST)

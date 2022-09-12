@@ -28,7 +28,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 })
 
 swalWithBootstrapButtons.fire({
-  title: 'Esta seguro de eLiminar la plantilla?',
+  title: 'Esta seguro de eliminar la plantilla?',
   text: "Estas a tiempo de revertir esta acción!",
   icon: 'warning',
   showCancelButton: true,

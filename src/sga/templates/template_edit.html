@@ -46,8 +46,8 @@ window.SvgCanvas=SvgCanvas;
 
             <div class="col-sm-12" style="text-align:right">
                 <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
-                <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' organilabcontext='laboratory' %}" >{% trans 'Go to Editor' %}</a>
-                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to your labels' %}</a>
+                <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' organilabcontext %}" >{% trans 'Go to Editor' %}</a>
+                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' organilabcontext %}" >{% trans 'Go to your labels' %}</a>
             </div>
         </div>
 <hr>
@@ -64,7 +64,7 @@ window.SvgCanvas=SvgCanvas;
 </div>
 <div class="row">
     <div class="col-md-3">
-        <form id="sgaform"  method="POST" action="{% url 'sga:edit_personal' organilabcontext='laboratory' sgatemplates.pk %}">
+        <form id="sgaform"  method="POST" action="{% url 'sga:edit_personal' organilabcontext sgatemplates.pk %}">
             {% csrf_token %}
             <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
