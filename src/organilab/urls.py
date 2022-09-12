@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import re_path
+from django.urls import re_path, path
 
 from laboratory import urls as laboratory_urls
 
@@ -40,6 +40,7 @@ from reservations_management.urls import urlpatterns as reservation_management_u
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 
 urlpatterns = urls_djgentelela + auth_urls + [
+    path('derb/', include('derb.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^$', index_organilab, name='index'),
     url(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
