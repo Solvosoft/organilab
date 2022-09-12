@@ -70,7 +70,7 @@ And finally each change you make in your local files will restart the environmen
 
 1) Create in `assert` folder 2 links 
    - assets/svgcanvas   <- svgeditor/packages/svgcanvas
-   - assets/svgedit  <- svgeditor
+   - assets/svgedit  <- svgedit
 2) Install dependencies usin `npm i`
 3) Install svgcanvas dependencies using `npm i` in folder `assets/svgcanvas`
 4) Build de project 
