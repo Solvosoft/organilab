@@ -42,7 +42,7 @@ swalWithBootstrapButtons.fire({
       'La plantilla a sido eliminada.',
       'success'
     )
-        sendrequest(element);
+        //sendrequest(element);
 
   } else if (
     result.dismiss === Swal.DismissReason.cancel

@@ -20,6 +20,7 @@ class SGAEditorForm(GTForm,forms.ModelForm):
     class Meta:
         model = DangerPrudence
         fields = ('prudence_advice','danger_indication')
+        exclude = ['']
         widgets = {
             'prudence_advice':AutocompleteSelect('prudencesearch'),
             'danger_indication': AutocompleteSelect('dangersearch')
