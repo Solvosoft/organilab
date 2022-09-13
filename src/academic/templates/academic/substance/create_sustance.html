@@ -26,19 +26,29 @@
         <div class="col-md-1"></div>
         <div class="col-md-5">
             {% for form in objform %}
-                <div class="form-group">
+            <div class="form-group">
                 {{ form.label_tag }} {{ form }}
-                </div>
+            </div>
+                {% if form.id_for_label == 'id_components_sga' %}
+                   <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a>
+                {% endif %}
 
             {% endfor %}
 
         </div>
         <div class="col-md-5">
-           {{ suschacform.as_inline  }}
+            {% for form in suschacform %}
+                <div class="form-group">
+                    {{ form.label_tag }} {{ form }}
+                </div>
+            {% if form.id_for_label == 'id_h_code' %}
+                       <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
-    <div class="col-md-11" style="display:inline-block">
-    <input type="submit" class="btn btn-info" value="{% trans 'Submit' %}">
+    <div class="col-md-11 text-center" style="display:inline-block">
+        <button type="submit" class="btn btn-success">Continuar</button>
     </div>
     </form>
     </div>
