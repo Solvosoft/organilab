@@ -114,7 +114,6 @@ export default {
       },
       mouseMove (opts) {
         const mode = canv.getMode()
-        console.log(mode);
         if (mode !== modeId) { return }
 
 
