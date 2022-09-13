@@ -33,9 +33,9 @@ urlpatterns = [
 
     url(r'download/', render_pdf_view, name='download'),
     # sga/prudence
-    path('prudence/(?P<organilabcontext>\w+)', views.get_prudence_advice, name='prudence'),
+    path('prudence/<str:organilabcontext>', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
-    path('danger/(?P<organilabcontext>\w+)', views.get_danger_indication, name='get_danger_indication'),
+    path('danger/<str:organilabcontext>', views.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
     url(r'add_personal/(?P<organilabcontext>\w+)', views.create_personal_template, name='add_personal'),
     url(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),

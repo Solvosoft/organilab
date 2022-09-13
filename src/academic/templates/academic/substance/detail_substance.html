@@ -1,0 +1,164 @@
+{% load static i18n gtsettings %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Creator' %}: </label></div>
+            <div class="col-sm-7"><p>{% if object.creator %} {{object.creator}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Nombre: </label></div>
+            <div class="col-sm-7"><p>{% if object.comercial_name %} {{object.comercial_name}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Sinonimos: </label></div>
+            <div class="col-sm-7"><p>{% if object.synonymous %} {{object.synonymous}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Nombre UIPA: </label></div>
+            <div class="col-sm-7"><p>{% if object.uipa_name %} {{object.uipa_name}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Componentes: </label></div>
+            <div class="col-sm-7">
+                {% if object.components %}
+                <ul>
+                    {% for component in object.components.all %}
+                    <li>{{component.name}}({{component.cas_number}})</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Agroquímicos: </label></div>
+            <div class="col-sm-7"><p>{% if object.agrochemical %} {% trans 'Yes' %} {% else %}No {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Descripción: </label></div>
+            <div class="col-sm-7"><p>{% if object.descripcion %} {{object.descripcion}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+    </div>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-5"><label>IARC: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.iarc %}
+                <p>{{object.sustancecharacteristicssga.iarc}}</p>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>IMDG: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.imdg %}
+                <p>{{object.sustancecharacteristicssga.imdg}}</p>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>White Organ: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.white_organ %}
+                <ul>
+                    {% for organ in object.sustancecharacteristicssga.white_organ.all %}
+                    <li>{{organ}}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Bioaccomulable: </label></div>
+            <div class="col-sm-7"><p>{% if object.bioaccumulable %} {{object.bioaccumulable}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Formula Molecular: </label></div>
+            <div class="col-sm-7"><p>{% if object.molecular_formula %} {{object.molecular_formula}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Numero CAS: </label></div>
+            <div class="col-sm-7"><p>{% if object.cas_id_number %} {{object.cas_id_number}} {% else %} Desconocido {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Codigos H: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.h_code %}
+                <ul>
+                    {% for h_code in object.sustancecharacteristicssga.h_code.all %}
+                    <li>{{h_code}}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No se agregaron</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Codigos UE: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.ue_code %}
+                <ul>
+                    {% for ue_code in object.sustancecharacteristicssga.ue_code.all %}
+                    <li>{{ue_code}}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>NFPA: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.nfpa %}
+                <ul>
+                    {% for nfpa in object.sustancecharacteristicssga.nfpa.all %}
+                    <li>{{nfpa}}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>Clases de Almacenamiento: </label></div>
+            <div class="col-sm-7">
+                {% if object.sustancecharacteristicssga.storage_class %}
+                <ul>
+                    {% for storage_class in object.sustancecharacteristicssga.storage_class.all %}
+                    <li>{{storage_class}}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No existe</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>

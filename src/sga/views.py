@@ -100,6 +100,7 @@ def template(request, organilabcontext):
         'form': SGAEditorForm(),
         'warningwords': WarningWord.objects.all(),
         'generalform': PersonalForm(user=request.user),
+        'organilabcontext': organilabcontext,
         'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
     }
     return render(request, 'template.html', context)
@@ -192,7 +193,7 @@ def create_personal_template(request, organilabcontext):
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates, "organilabcontext": organilabcontext}
 
     template = TemplateSGA.objects.get(name="Plantilla Base")
-    print(organilabcontext)
+
 
     if request.method == 'POST':
         template_pk = request.POST.get('template', None)
@@ -220,7 +221,7 @@ def create_personal_template(request, organilabcontext):
                 label.save()
                 instance.label = label
             instance.save()
-            print(organilabcontext)
+
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
 
     return render(request, 'personal_template.html', context)
