@@ -13,7 +13,7 @@
 {% endblock css %}
 {% block js %}
     <script>
-        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
         document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
         {% if width %}document.width = {{width}};{% endif %}
         {% if height %}document.height = {{height}};{% endif %}
@@ -48,7 +48,7 @@
             <ul class="dropdown-menu">
 
               {% for tem in templates %}
-                <li><a href="{% url 'sga:editor' organilabcontext='laboratory' %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li><a href="{% url 'sga:editor' organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
 
             </ul>

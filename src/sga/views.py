@@ -7,9 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.core.files import temp as tempfile
-from django.core.files.storage import FileSystemStorage
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse, Http404
+from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Library
@@ -21,14 +20,13 @@ from weasyprint import HTML
 from xhtml2pdf import pisa
 
 from organilab import settings
-from sga import utils_pictograms
-from sga.forms import SGAEditorForm, RecipientInformationForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
+from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
     LabelForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label
 from .decorators import organilab_context_decorator
 from .json2html import json2html
-from .models import Substance, RecipientSize, DangerIndication, PrudenceAdvice, Pictogram, WarningWord
+from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
 
 register = Library()
 
@@ -100,6 +98,7 @@ def template(request, organilabcontext):
         'form': SGAEditorForm(),
         'warningwords': WarningWord.objects.all(),
         'generalform': PersonalForm(user=request.user),
+        'organilabcontext': organilabcontext,
         'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
     }
     return render(request, 'template.html', context)
@@ -133,9 +132,10 @@ def editor(request, organilabcontext):
         "form": SGAEditorForm(),
         "generalform": sgaform,
         "warningwords": WarningWord.objects.all(),
-        'templateinstance': finstance,
+        'instance': finstance,
         'templates': TemplateSGA.objects.filter(creator=request.user),
         'clean_canvas_editor': clean_canvas_editor,
+        'organilabcontext': organilabcontext,
         'form_url': reverse('sga:editor', kwargs={'organilabcontext': organilabcontext})
     }
     if finstance:
@@ -191,37 +191,40 @@ def create_personal_template(request, organilabcontext):
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates, "organilabcontext": organilabcontext}
 
-    template = TemplateSGA.objects.get(name="Plantilla Base")
-    print(organilabcontext)
-
     if request.method == 'POST':
-        template_pk = request.POST.get('template', None)
-        if template_pk:
-            template = get_object_or_404(TemplateSGA, pk=int(template_pk))
-
         form = PersonalSGAForm(request.POST)
         label_form = LabelForm(request.POST)
-        builder_information_form = BuilderInformationForm(request.POST, prefix='bi')
+        builder_information_form = BuilderInformationForm(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
             instance = form.save(commit=False)
-            instance.template = template
-            instance.user = request.user
-            upload_id = form.cleaned_data['logo_upload_id']
+            instance.user = user
+            logo_upload_id = form.cleaned_data['logo_upload_id']
 
-            if upload_id:
-                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+            if logo_upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=logo_upload_id)
                 instance.logo = tmpupload.get_uploaded_file()
 
-            if builder_information_form.is_valid() and label_form.is_valid():
-                builder_info = builder_information_form.save()
-                label = label_form.save(commit=False)
-                label.builderInformation = builder_info
-                label.save()
-                instance.label = label
+            builder_info = builder_information_form.save(commit=False)
+            builder_info.user = user
+            builder_info.save()
+            label = label_form.save(commit=False)
+            label.builderInformation = builder_info
+            label.save()
+            instance.label = label
             instance.save()
-            print(organilabcontext)
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
+        else:
+            messages.error(request, _("Invalid form"))
+            context = {
+                'laboratory': None,
+                'form': SGAEditorForm(),
+                'warningwords': WarningWord.objects.all(),
+                'generalform': PersonalForm(request.POST, user=user),
+                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}),
+                'organilabcontext': organilabcontext
+            }
+            return render(request, 'template.html', context)
 
     return render(request, 'personal_template.html', context)
 
@@ -229,18 +232,16 @@ def create_personal_template(request, organilabcontext):
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
 def edit_personal_template(request, organilabcontext, pk):
-    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
-    label_form, builder_information_form = None, None
+    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    user = request.user
 
     if request.method == 'POST':
 
-        form = PersonalSGAForm(request.POST, instance=template)
+        form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
+        label_form = LabelForm(request.POST, instance=personaltemplateSGA.label)
+        builder_information_form = BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
 
-        if template.label:
-            label_form = LabelForm(request.POST, instance=template.label)
-            builder_information_form = BuilderInformationForm(request.POST, instance=template.label.builderInformation, prefix='bi')
-
-        if form.is_valid():
+        if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
             instance = form.save(commit=False)
             upload_id = form.cleaned_data['logo_upload_id']
 
@@ -249,35 +250,38 @@ def edit_personal_template(request, organilabcontext, pk):
                 instance.logo = tmpupload.get_uploaded_file()
 
             instance.save()
-
-            if builder_information_form and label_form:
-
-                if builder_information_form.is_valid():
-                    builder_information_form.save()
-
-                if label_form.is_valid():
-                    label_form.save()
+            builder_information_form.save()
+            label_form.save()
 
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
+        else:
+            pass
 
-    templates = PersonalTemplateSGA.objects.filter(pk=pk).first()
+    initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
+               'barcode': personaltemplateSGA.barcode}
+
+    if personaltemplateSGA.label:
+        bi_info = personaltemplateSGA.label.builderInformation
+        initial.update({'substance': personaltemplateSGA.label.substance,
+            'commercial_information': personaltemplateSGA.label.commercial_information})
+        if bi_info:
+            initial.update({'company_name': bi_info.name, 'phone': bi_info.phone, 'address': bi_info.address})
+
     context={
         'warningwords': WarningWord.objects.all(),
         'formselects': SGAEditorForm,
-        "sgatemplates": templates,
-        "width": templates.template.recipient_size.width,
-        "height": templates.template.recipient_size.height,
+        "instance": personaltemplateSGA,
+        "width": personaltemplateSGA.template.recipient_size.width,
+        "height": personaltemplateSGA.template.recipient_size.height,
         'organilabcontext': organilabcontext,
-        "form": PersonalSGAForm(instance=template)
+        "generalform": PersonalForm(user=user, initial=initial)
     }
 
-    if template is not None:
-        pass
-        """   if template.logo:
-                name = template.logo.name.split('/')
-                if len(name) == 3:
-                    name = name[2]
-                    context.update({'logo_name': name})"""
+    if personaltemplateSGA.logo:
+        name = personaltemplateSGA.logo.name.split('/')
+        if len(name) == 3:
+            name = name[2]
+            context.update({'logo_name': name})
     return render(request, 'template_edit.html', context)
 
 
@@ -370,13 +374,6 @@ def get_recipient_size(request, organilabcontext, is_template, pk):
 
 @login_required
 @organilab_context_decorator
-def get_label_substance(request,organilabcontext, pk):
-    substance = get_object_or_404(Substance, pk=pk)
-    response = {'label': substance.comercial_name + ' : ' + substance.synonymous}
-    return JsonResponse(response)
-
-@login_required
-@organilab_context_decorator
 def get_preview(request, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
@@ -391,9 +388,9 @@ def create_substance(request,organilabcontext):
         if form.is_valid():
             form.save()
             messages.success(request,_('The substance saved successfully'))
-            return redirect('sga:add_substance')
+            return redirect(reverse('sga:add_substance', kwargs={'organilabcontext': organilabcontext}))
         else:
-            return redirect('sga:add_substance')
+            return redirect(reverse('sga:add_substance', kwargs={'organilabcontext': organilabcontext}))
     return render(request, 'add_substance.html', context={'form':form})
 
 @login_required
