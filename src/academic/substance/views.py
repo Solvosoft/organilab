@@ -19,8 +19,10 @@ def create_edit_sustance(request, organilabcontext, pk=None):
     instance = Substance.objects.filter(pk=pk).first()
 
     suscharobj=None
+
     if instance:
-        suscharobj = instance.sustancecharacteristicssga
+        suscharobj = instance.substancecharacteristics
+
     postdata=None
     filesdata = None
     if request.method == 'POST':
@@ -31,6 +33,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
+            obj.creator=request.user
             obj.creator=request.user
             obj.organilab_context=organilabcontext
             obj.save()
@@ -45,7 +48,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
-            return redirect(reverse('index'))
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext}))
 
 
     return render(request, 'academic/substance/create_sustance.html', {
