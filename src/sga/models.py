@@ -163,6 +163,7 @@ class Substance(models.Model):
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
+    description = models.TextField(blank=True,null=True)
     organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
     objects = OrganilabContextQueryset.as_manager()
 
