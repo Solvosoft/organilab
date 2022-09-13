@@ -27,7 +27,6 @@ urlpatterns = [
     # sga/editor
     url(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
     url(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
-    url(r'label_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_label_substance, name='get_label_substance'),
     url(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
     url(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
