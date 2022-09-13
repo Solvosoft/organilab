@@ -3,7 +3,7 @@ from djgentelella.forms.forms import GTForm
 
 from djgentelella.widgets import core as genwidgets
 
-from sga.models import Substance,SustanceCharacteristics
+from sga.models import Substance,SubstanceCharacteristics
 from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
@@ -30,7 +30,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         exclude = ['substance', 'valid_molecular_formula','security_sheet']
         widgets = {
             'iarc': genwidgets.Select,
