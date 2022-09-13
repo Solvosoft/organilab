@@ -182,14 +182,14 @@ class Substance(models.Model):
         return self.comercial_name
 
     class Meta:
-        verbose_name = _('Sustance')
-        verbose_name_plural = _('Sustances')
+        verbose_name = _('Substance')
+        verbose_name_plural = _('Substances')
 
 
 register(Substance)
 
-class SustanceCharacteristics(models.Model):
-    substance = models.OneToOneField(Substance, on_delete=models.CASCADE)
+class SubstanceCharacteristics(models.Model):
+    substance = models.OneToOneField(Substance, on_delete=models.CASCADE, null=True)
     iarc = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_iarcrel_sga", on_delete=models.DO_NOTHING,
                                 null=True, blank=True, key_name="key", key_value="IARC")
     imdg = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_imdg_sga", on_delete=models.DO_NOTHING,
@@ -217,8 +217,8 @@ class SustanceCharacteristics(models.Model):
     seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
 
     class Meta:
-        verbose_name = _('Sustance characteristic SGA')
-        verbose_name_plural = _('Sustance characteristics SGA')
+        verbose_name = _('Substance characteristic SGA')
+        verbose_name_plural = _('Substance characteristics SGA')
 
 # build information
 
@@ -267,9 +267,9 @@ class RecipientSize(models.Model):
 
 
 class Label(models.Model):
-    sustance = models.ForeignKey(Substance,
-                                 verbose_name=_("Sustance"),
-                                 on_delete=models.CASCADE)
+    substance = models.ForeignKey(Substance,
+                                 verbose_name=_("Substance"),
+                                 on_delete=models.CASCADE, null=True)
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
         on_delete=models.CASCADE)
@@ -278,7 +278,7 @@ class Label(models.Model):
         verbose_name=_("Commercial Information"))
 
     def __str__(self):
-        return str(self.sustance)
+        return str(self.substance)
 
     class Meta:
         verbose_name = _('Label')

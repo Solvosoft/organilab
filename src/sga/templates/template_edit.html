@@ -17,13 +17,12 @@
 {% endblock css %}
 {% block js %}
 <script>
-document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
-document.url_get_label_substance = "{% url 'sga:get_label_substance' 0 %}";
+document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
 document.clean_canvas_editor = true;
 {% if width %}document.width = {{width}};{% endif %}
 {% if height %}document.height = {{height}};{% endif %}
 document.logo_name = "{{logo_name}}";
-document.logo_url = "{{sgatemplates.logo.url}}";
+document.logo_url = "{{instance.logo.url}}";
 </script>
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
@@ -64,118 +63,27 @@ window.SvgCanvas=SvgCanvas;
 </div>
 <div class="row">
     <div class="col-md-3">
-        <form id="sgaform"  method="POST" action="{% url 'sga:edit_personal' organilabcontext sgatemplates.pk %}">
-            {% csrf_token %}
-            <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-        {% trans 'General' %}</a></li>
-    <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
-        {% trans 'En vivo' %}</a></li>
-  </ul>
-            <div class="tab-content" style="padding: 15px 20px 10px;">
-    <div role="tabpanel" class="tab-pane active" id="home">
-        <input type="hidden" name="preview" id="id_preview">
-    <input type="hidden" name="template" id="id_template">
-    <input type="hidden" name="json_representation" id="id_json_representation" value="{{sgatemplates.json_representation}}">
 
-    <div class="form-group">
-        <label><span class="label label-info">1</span>&nbsp;{% trans 'Label Name' %}</label><br>
-        <input type="text" class="form-control" id="id_name" name="name" value="{{sgatemplates.name}}">
-    </div>
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">
+            {% trans 'General' %}</a></li>
+        <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
+            {% trans 'En vivo' %}</a></li>
+      </ul>
 
-    <!--==============================================Substance=====================================================-->
-
-    <div class="form-group">
-
-        <label><span class="label label-info">2</span>&nbsp;{% trans 'Substance' %}</label>
-        <!--Search substance with autocomplete-->
-        <input id="substance" name="sustance_name" placeholder="{% trans 'Name or CAS number' %}" class="form-control"
-            aria-describedby="sustanceHelp" value="{{sgatemplates.label.sustance.comercial_name}} : {{sgatemplates.label.sustance.synonymous}}">
-        <input type="hidden" id="substance_id" name="sustance" value="{{sgatemplates.label.sustance.id}}" data-name="{{sgatemplates.label.sustance.comercial_name}} : {{sgatemplates.label.sustance.synonymous}}" />
-        <small id="sustanceHelp" class="text-muted">{% trans '' %}</small><br>
-        <div class="form-group">
-            <!--Add new sustance-->
-            <label>{% trans 'Did you find the substance?' %}</label>&nbsp;&nbsp;<a
-                href="{% url 'sga:add_substance' %}"><u>{% trans 'Create it Here!' %}</u></a><br>
+        <div class="tab-content" style="padding: 15px 20px 10px;">
+             {% include 'editor/general.html' %}
+             {% include 'editor/live.html' %}
+            <button id="savesgalabel" type="button" class="btn btn-success" >{% trans 'Save' %} </button>
         </div>
 
-        <!--=========================================Supplier Identification============================================-->
-
-        <div class="form-group">
-            <label><span class="label label-info">3</span>&nbsp;{% trans 'Supplier Identification' %}</label>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-home"></i></span>
-                <input name="company_name" id="id_company_name" placeholder="{% trans 'Name' %}" class="form-control"
-                    aria-describedby="sustanceHelp" value="{{sgatemplates.label.builderInformation.name}}">
-                <input name="bi-name" type="hidden">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-pushpin"></i></span><input
-                    name="company_address" id="id_company_address"
-                    placeholder="{% trans 'Address' %}"
-                    class="form-control" aria-describedby="sustanceHelp" value="{{sgatemplates.label.builderInformation.address}}">
-                    <input name="bi-address" type="hidden">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon
-                        glyphicon-earphone"></i></span>
-                <input name="company_phone" id="id_company_phone"
-                    placeholder="{% trans 'Phone' %}" class="form-control"
-                    aria-describedby="sustanceHelp" value="{{sgatemplates.label.builderInformation.phone}}">
-                <input name="bi-phone" type="hidden">
-            </div>
+   </div>
+    <div class="col-md-9">
+        <div class="clearfix visible-xs-block"></div>
+        <div id="canvasContainer" class="canvas-container" >
+            <div id="canvas_editor"  style="height: 600px;"></div>
         </div>
-    </div>
-
-    <!--=========================================Logo and Barcode==========================================================-->
-
-        <div class="form-group">
-            <label><span class="label label-info">4</span>&nbsp;{% trans 'Logo' %}</label><br>
-                {{form.logo}}
-                {{form.logo_upload_id}}
-                {% if logo_name %}<label>{{logo_name}}</label>{% endif %}
-        </div>
-        <div class="form-group">
-            <label><span class="label label-info">5</span>&nbsp;{% trans 'Barcode' %}</label><br>
-            <input type="text" class="form-control" id="id_barcode" name="barcode" value="{% if not sgatemplates.barcode is None and not sgatemplates.barcode == 'None' %}{{sgatemplates.barcode}}{% endif %}" />
-        </div>
-
-    <!--=========================================Comercial information==============================================-->
-       <div class="form-group">
-            <label><span class="label label-info">6</span>&nbsp;{% trans 'Commercial Information' %}</label>
-            <div class="form-group shadow-textarea">
-                <textarea name="commercial_information" class="form-control" id="commercial_information" rows="2"
-                    placeholder="{% trans 'Additionals product identifiers' %}">{% if sgatemplates.label %}{% if sgatemplates.label.commercial_information %}{{sgatemplates.label.commercial_information}}{% endif %}{% endif %}</textarea>
-            </div>
-        </div>
-        {% if request.user.is_authenticated %}
-            <div class="form-group text-center">
-                <button class="btn btn-success" id="savesgalabel">{% trans 'Save' %}</button>
-            </div>
-        {% endif %}
-    </div>
-          <div role="tabpanel" class="tab-pane" id="live">
-        <label >{% trans 'Warning Words' %}</label>
-        <ul>
-        {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
-        {% endfor %}
-        </ul>
-        {{formselects|bootstrap  }}
-
-              </div>
-  </div>
-
-        </form>
-    </div>
-        <div class="col-md-9">
-            <div class="clearfix visible-xs-block"></div>
-            <div id="canvasContainer" class="canvas-container" >
-                <div id="canvas_editor"  style="height: 600px;"></div>
-            </div>
-          </div>
+      </div>
     </div>
 
     {% endblock content %}
