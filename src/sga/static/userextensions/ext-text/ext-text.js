@@ -1,11 +1,24 @@
 const name = 'textcodes'
 
+const loadExtensionTranslation = async function (svgEditor) {
+  let translationModule
+  const lang = svgEditor.configObj.pref('lang')
+  try {
+    translationModule = await import(`./locale/${lang}.js`)
+  } catch (_error) {
+    console.warn(`Missing translation (${lang}) for ${name} - using 'en'`)
+    translationModule = await import('./locale/en.js')
+  }
+  svgEditor.i18next.addResourceBundle(lang, name, translationModule.default)
+}
+
 export default {
   name,
-  async init ({ _importLocale }) {
+  async init () {
     const svgEditor = this
     const { svgCanvas } = svgEditor
     const modeId = 'tool_textcodes'
+    await loadExtensionTranslation(svgEditor)
 
     return {
            name: svgEditor.i18next.t(`${name}:name`),
@@ -18,38 +31,31 @@ export default {
               if (e.target.classList.contains('text_content')) {
 
               let content=e.target.textContent
-
               let target_id=e.target.id
 
-              const curStyle = svgCanvas.getStyle()
-
-              if(target_id==='Peligro'){
-                text_color="#FF0000"
-              }else{
-                text_color="#000000"
-              }
-              classes = target_id
-              const curShape = svgCanvas.addSVGElementsFromJson({
-                  element: 'text',
+        const textclass="textelementforeign"
+        const curStyle = svgCanvas.getStyle()
+        const curShape = svgCanvas.addSVGElementsFromJson({
+                  element: 'foreignObject',
                   curStyles: true,
                   attr: {
                     x:100,
                     y:100,
-                    class:classes,
+                    height: 100,
+                    width: 100,
+                    class: textclass,
                     id: svgCanvas.getNextId(),
-                    fill: svgCanvas.getCurText('fill'),
-                    'stroke-width': svgCanvas.getCurText('stroke_width'),
-                    'font-size': svgCanvas.getCurText('font_size'),
-                    'font-family': svgCanvas.getCurText('font_family'),
-                    'text-anchor': 'middle',
-                    'xml:space': 'preserve',
                     opacity: curStyle.opacity
+
                   }
               })
-               curShape.attributes.fill.value=text_color
-               curShape.textContent=content
-
+            curShape.innerHTML="<p>"+content+"</p>"
+            curShape.addEventListener("dblclick", editText);
             svgCanvas.setSelectedElements(0, curShape)
+            svgCanvas.setCurrentMode('select')
+            svgEditor.leftPanel.updateLeftPanel('tool_select')
+
+
             }
             })
         },

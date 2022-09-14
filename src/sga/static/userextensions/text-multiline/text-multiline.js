@@ -24,7 +24,14 @@ export default {
     const insertAfter = (referenceNode, newNode) => {
       referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
     }
-
+    const registerTextEvent= ()=>{
+        document.body.addEventListener('click',(e)=>{
+              if (e.target.classList.contains('text_content')) {
+                let content=e.target.textContent;
+                addTextToDom(content);
+              }
+        })
+    }
     const editText = (event)=>{
 
          let selects = svgCanvas.getSelectedElements()
@@ -33,37 +40,34 @@ export default {
              $('#wyswygmodal').modal('show');
          }
     }
+
+    const addTextToDom= (content)=>{
+        const textclass="textelementforeign"
+        const curStyle = svgCanvas.getStyle()
+        const curShape = svgCanvas.addSVGElementsFromJson({
+              element: 'foreignObject',
+              curStyles: true,
+              attr: { x:100, y:100,  height: 100,  width: 100,
+                      class: textclass, id: svgCanvas.getNextId(),
+                      opacity: curStyle.opacity
+                    }
+            })
+        curShape.innerHTML=content
+        curShape.addEventListener("dblclick", editText);
+        svgCanvas.setSelectedElements(0, curShape)
+        svgCanvas.setCurrentMode('select')
+        svgEditor.leftPanel.updateLeftPanel('tool_select')
+    }
+
     const addText = (event)=>{
         let content = tinymce.get("wyswygmodaltextarea").getContent()
         let selects = svgCanvas.getSelectedElements()
         if(selects.length==1 && selects[0].attributes.class.value=="textelementforeign"){
             selects[0].innerHTML=content
         }else{
-
-
-        const textclass="textelementforeign"
-        const curStyle = svgCanvas.getStyle()
-        const curShape = svgCanvas.addSVGElementsFromJson({
-                  element: 'foreignObject',
-                  curStyles: true,
-                  attr: {
-                    x:100,
-                    y:100,
-                    height: 100,
-                    width: 100,
-                    class: textclass,
-                    id: svgCanvas.getNextId(),
-                    opacity: curStyle.opacity
-
-                  }
-              })
-               curShape.innerHTML=content
-            curShape.addEventListener("dblclick", editText);
-            svgCanvas.setSelectedElements(0, curShape)
-            svgCanvas.setCurrentMode('select')
-            svgEditor.leftPanel.updateLeftPanel('tool_select')
-            }
-            $('#wyswygmodal').modal('hide');
+            addTextToDom(content);
+        }
+        $('#wyswygmodal').modal('hide');
     }
 
     document.getElementById("btnsave-multiline").addEventListener("click", addText);
@@ -75,9 +79,8 @@ export default {
                htmlelement.style.cssText = htmlelement.attributes['data-mce-style'].value
             }
             if(htmlelement.children !== undefined){
-                    addStyleText(Array.from(htmlelement.children))
+               addStyleText(Array.from(htmlelement.children))
             }
-
         })
     }
 
@@ -88,7 +91,8 @@ export default {
             // Add the button and its handler(s)
             const buttonTemplate = document.createElement('template')
         buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="panning.svg"></se-button>`
-         insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
+        insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
+        registerTextEvent()
         $click($id(`${plugId}`), () => {
           if (this.leftPanel.updateLeftPanel(`${plugId}`)) {
             svgCanvas.setMode(modeId)
