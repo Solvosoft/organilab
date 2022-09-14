@@ -1,0 +1,36 @@
+{% extends 'label_index.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-6">
+            <form method="post">{% csrf_token %}
+                {{form.as_inline}}
+            <input type="submit" value="Save" />
+            </form>
+    </div>
+    <div class="col-sm-6">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Palabra de Advertencia</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for elem in listado %}
+                <tr>
+                    <td>{{elem.code}}</td>
+                    <td>{{elem.description}}</td>
+                    <td>{{elem.warning_words}}</td>
+                    <td>
+                        <a class="btn btn-warning" type="button" href="{% url 'create_danger_indication' organilabcontext elem.pk %}">Editar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
