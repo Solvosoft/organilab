@@ -1,0 +1,30 @@
+<div id="wizard" class="form_wizard wizard_horizontal">
+    <ul class="wizard_steps anchor">
+        <li>
+            <a href="{% url 'create_sustance' 'academic' %}" class="{% if step == 1 %}selected{%else%}disabled{% endif %}" isdone="1" rel="1">
+                <span class="step_no">1</span>
+                <span class="step_descr">Crear Sustancias</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'step_two' 'academic' %}" class="{% if step == 2 %}selected{%else%}disabled{% endif %}" isdone="0" rel="2">
+                <span class="step_no">2</span>
+                <span class="step_descr">Informacion Comercial</span>
+            </a>
+        </li>
+        <li>
+            <a href="" class="{% if step == 3 %}selected{%else%}disabled{% endif %}" isdone="0" rel="3">
+                <span class="step_no">3</span>
+                <span class="step_descr">Generar Etiqueta</span>
+            </a>
+        </li>
+        <li>
+            <a href="" class="{% if step == 4 %}selected{%else%}disabled{%endif%}" isdone="0" rel="4">
+                <span class="step_no">4</span>
+                <span class="step_descr">
+                    <small>Hojas de Seguridad</small>
+                </span>
+            </a>
+        </li>
+    </ul>
+</div>

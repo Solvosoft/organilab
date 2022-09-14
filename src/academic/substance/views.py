@@ -1,8 +1,6 @@
 from django.urls import reverse
-from django.contrib.auth.decorators import permission_required
-from django.shortcuts import redirect, render
-from django.views.generic import ListView
-
+from django.contrib.auth.decorators import permission_required, login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from academic.models import SubstanceSGA
 from django.contrib.auth.models import User
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm
@@ -10,10 +8,15 @@ from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
+from sga.decorators import organilab_context_decorator
+from sga.forms import SGAEditorForm, PersonalForm
+from sga.models import Substance, WarningWord
 
+@login_required
 @permission_required('laboratory.change_object')
-def create_edit_sustance(request, pk=None):
-    instance = SubstanceSGA.objects.filter(pk=pk).first()
+@organilab_context_decorator
+def create_edit_sustance(request, organilabcontext, pk=None):
+    instance = Substance.objects.filter(pk=pk).first()
 
     suscharobj=None
     if instance:
@@ -29,10 +32,12 @@ def create_edit_sustance(request, pk=None):
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
             obj.creator=request.user
+            obj.organilab_context=organilabcontext
             obj.save()
             objform.save_m2m()
             suscharinst = suschacform.save(commit=False)
             suscharinst.substance = obj
+            suscharinst.organilab_context=organilabcontext
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             if isValidate_molecular_formula(molecular_formula):
@@ -47,45 +52,98 @@ def create_edit_sustance(request, pk=None):
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
+        'step':1
     })
 
-
-def get_substances(request):
+@login_required
+@permission_required('sga.view_substance')
+@organilab_context_decorator
+def get_substances(request, organilabcontext):
     substances=None
 
     if request.user:
-        substances = SubstanceSGA.objects.filter(creator=request.user)
+        substances = Substance.objects.filter(creator=request.user)
+    context = {
+        'substances':substances,
+        'organilabcontext': organilabcontext
+    }
 
-    return render(request, 'academic/substance/list_substance.html', context={'substances':substances})
+    return render(request, 'academic/substance/list_substance.html', context=context)
 
-def get_list_substances(request):
+
+@login_required
+@permission_required('sga.view_substance')
+@organilab_context_decorator
+def get_list_substances(request,organilabcontext):
     substances=None
 
     if request.user:
-        substances = SubstanceSGA.objects.filter(is_approved=False).order_by('-id')
+        substances = Substance.objects.all().order_by('-id')
 
-    return render(request, 'academic/substance/check_substances.html', context={'substances':substances})
+    context = {
+        'substances':substances,
+        'organilabcontext': organilabcontext
+    }
 
-def check_list_substances(request):
+    return render(request, 'academic/substance/check_substances.html', context=context)
+
+@login_required
+@permission_required('sga.view_substance')
+@organilab_context_decorator
+def check_list_substances(request,organilabcontext):
     substances=None
 
     if request.user:
         substances = SubstanceSGA.objects.filter(is_approved=False).order_by('--pk')
 
-    return render(request, 'academic/substance/check_substances.html', context={'substances':substances})
+    context = {
+        'substances':substances,
+        'organilabcontext': organilabcontext
+    }
 
-def approve_substances(request,pk):
-    substances=SubstanceSGA.objects.filter(pk=pk).first()
+    return render(request, 'academic/substance/check_substances.html', context=context)
+@login_required
+@permission_required('sga.change_substance')
+@organilab_context_decorator
+def approve_substances(request,organilabcontext,pk):
+    substances=Substance.objects.filter(pk=pk).first()
     if substances:
         substances.is_approved=True
         substances.save()
         return redirect('approved_substance')
     return redirect('approved_substance')
 
-def delete_substance(request,pk):
-    substances=SubstanceSGA.objects.filter(pk=pk).first()
+@login_required
+@permission_required('sga.delete_substance')
+@organilab_context_decorator
+def delete_substance(request,organilabcontext,pk):
+    substances=Substance.objects.filter(pk=pk).first()
     if substances:
         messages.success(request, _("The substance is removed successfully"))
         substances.delete()
-        return redirect('get_substance')
-    return redirect('get_substance')
+
+        return redirect(reverse("get_substance", kwargs={'organilabcontext':organilabcontext}))
+    return redirect(reverse("get_substance", kwargs={'organilabcontext':organilabcontext}))
+
+@login_required
+@permission_required('sga.change_substance')
+@organilab_context_decorator
+def detail_substance(request, organilabcontext, pk):
+    detail = None
+    if pk:
+        detail = get_object_or_404(Substance, pk=int(pk))
+
+    return render(request, "academic/substance/detail.html",context={'object':detail})
+
+@login_required
+@organilab_context_decorator
+def step_two(request, organilabcontext):
+    context = {
+        'form': SGAEditorForm(),
+        'warningwords': WarningWord.objects.all(),
+        'generalform': PersonalForm(user=request.user),
+        'organilabcontext': organilabcontext,
+        'step':2,
+        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
+    }
+    return render(request, 'academic/substance/step_two.html', context)
