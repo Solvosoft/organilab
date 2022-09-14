@@ -18,8 +18,8 @@
         {% if width %}document.width = {{width}};{% endif %}
         {% if height %}document.height = {{height}};{% endif %}
         document.urls={
-            'danger_indication_url': '{% url 'sga:get_danger_indication' %}',
-            'prudence_advice_url': '{% url 'sga:prudence' %}',
+            'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',
+            'prudence_advice_url': '{% url 'sga:prudence' organilabcontext %}',
 
         };
     </script>
