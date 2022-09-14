@@ -143,3 +143,15 @@ class SustanceCharacteristicsSGA(models.Model):
         verbose_name = _('Sustance characteristicSGA')
         verbose_name_plural = _('Sustance characteristicsSGA')
 
+
+class SubstanceObservation(models.Model):
+    substance = models.ForeignKey("sga.Substance",on_delete=models.CASCADE)
+    description = models.TextField(verbose_name=_('Description'))
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,verbose_name=_('Creator'))
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Date'))
+
+    class Meta:
+        verbose_name = _('Observation')
+        verbose_name_plural = _('Observations')
+    def __str__(self):
+        return f'{self.substance} {self.creator}'
