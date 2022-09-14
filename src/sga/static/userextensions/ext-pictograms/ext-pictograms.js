@@ -42,7 +42,7 @@ export default {
       callback () {	
         if ($id('tool_pictogram') === null) {
           const extPath = svgEditor.configObj.curConfig.extPath
-          const buttonTemplate = `<se-explorerbutton id="tool_pictogram" title="pictogram" lib="${extPath}/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>`
+          const buttonTemplate = `<se-explorerbutton id="tool_pictogram" title="pictogram" lib="../userextensions/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>`
           canv.insertChildAtIndex($id('tools_left'), buttonTemplate	)
           $click($id('tool_pictogram'), () => {
             if (this.leftPanel.updateLeftPanel('tool_pictogram')) {
@@ -76,15 +76,18 @@ export default {
 					  width: 100,
 					  height: 100,
 					  id: canv.getNextId(),
-					  opacity: curStyle.opacity / 2,
+					  opacity: curStyle.opacity,
 					  style: 'pointer-events:inherit'
 					}
 				  })
 		canv.setHref(curShape, document.getElementById('tool_pictogram').$img.src)
 		canv.setImageURL(document.getElementById('tool_pictogram').$img.src)
 		canv.setSelectedElements(0, curShape)
-		
-		$click(curShape, (e) => { e.preventDefault() })	
+
+		canv.setCurrentMode('select')
+        svgEditor.leftPanel.updateLeftPanel('tool_select')
+
+		//$click(curShape, (e) => { e.preventDefault() })
 		//canv.setMode('image')
 		//canv.clearSelection(true)
 		//canv.setCurrentMode('select')
@@ -114,7 +117,6 @@ export default {
       },
       mouseMove (opts) {
         const mode = canv.getMode()
-        console.log(mode);
         if (mode !== modeId) { return }
 
 
