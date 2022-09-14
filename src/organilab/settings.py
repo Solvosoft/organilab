@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'reservations_management',
     'django_celery_beat',
     'paypal.standard.ipn',
+    'derb'
 ]
 
 if DEBUG_TOOLBAR:

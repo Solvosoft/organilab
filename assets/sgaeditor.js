@@ -1,5 +1,6 @@
 import Editor from '../editor/Editor.js';
 
+
 const svgEditor = new Editor(document.getElementById('canvas_editor'))
 svgEditor.init()
 svgEditor.setConfig({
@@ -9,18 +10,9 @@ svgEditor.setConfig({
           extensions: [],
           noDefaultExtensions: true,
           userExtensions: [
-
+            {pathName: '/static/userextensions/text-multiline/text-multiline.js'},
+            {pathName: '/static/userextensions/ext-pictograms/ext-pictograms.js'}
+//            {pathName: '/static/userextensions/ext-text/ext-text.js'}
           /* {pathName: 'textoseleccionado-bundle.js'} { pathName: './react-extensions/react-test/dist/react-test.js' } */]
         })
 
-// Variable XDOMAIN below is created by Rollup for the Xdomain build (see rollup.config.js)
-/* globals XDOMAIN */
-try { // try clause to avoid js to complain if XDOMAIN undefined
-          if (XDOMAIN) {
-            svgEditor.setConfig({
-              canvasName: 'xdomain', // Namespace this
-              allowedOrigins: [ '*' ]
-            })
-    console.info('xdomain config activated')
-  }
-} catch (error) { /* empty fn */ }

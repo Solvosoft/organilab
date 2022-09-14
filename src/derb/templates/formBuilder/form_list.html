@@ -1,0 +1,98 @@
+{% load static%}
+
+<!DOCTYPE html>
+
+<script src="{% static 'js/list.js' %}"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">    
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<html lang="en">
+    
+    <head>
+        <meta charset="UTF-8">
+        <Title>My Forms</TItle>
+    </head>
+
+    <body>
+        <h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            My Forms &nbsp; 
+            <a title="Create form" class="btn btn-sm btn-primary create_btn" >Create Form</a> 
+                                
+        </h1>
+        <br>
+        
+        <div align="center">
+            <div id="forms" style="width: 90%;">
+                {% csrf_token %}
+                <script>
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                </script>
+                <table class="table table-hover table" id="form_table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Form Name
+                            </th>
+    
+                            <th>
+                                Status
+                            </th>
+    
+                            <th>
+                                &nbsp;
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+                        {% for form in forms %}
+                        
+                            <tr id="tr_{{ form.id }}">
+
+                                <td>
+                                    {{form.name}}
+                                </td>
+    
+                                <td id="n">
+                                    {{ form.status}}
+                                </td>
+    
+                                <td style="width: 120px">
+                                    <a title="Preview form" class="btn btn-sm btn-default preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                    <a title="Edit form" class="btn btn-sm btn-default edit_btn" form_id="{{ form.id }}"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                    <a title="Delete form" class="btn btn-sm btn-default delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><span class="glyphicon glyphicon-trash"></span> </a> 
+                                
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>    
+        </div>
+    </body>
+    <script>
+    window.urls = {
+    delete: "{% url 'derb:delete_form' '0' %}",
+    editview: "{% url 'derb:edit_view' %}",
+    formlist: "{% url 'derb:form_list' %}",
+    edit: "{% url 'derb:edit_view' 0 %}",
+    create: "{% url 'derb:create_form' %}"
+    }
+</script>
+    <script>
+
+        $(document).ready(loadDataTable);
+        $('body').on('click', '.delete_btn', deleteForm);
+        $('body').on('click', '.create_btn', createForm);
+        $('body').on('click', '.edit_btn', editForm);
+    </script>
+</html>
