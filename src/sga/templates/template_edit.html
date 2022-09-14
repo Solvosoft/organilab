@@ -22,7 +22,9 @@ document.clean_canvas_editor = true;
 {% if width %}document.width = {{width}};{% endif %}
 {% if height %}document.height = {{height}};{% endif %}
 document.logo_name = "{{logo_name}}";
-document.logo_url = "{{instance.logo.url}}";
+{% if instance.logo %}
+    document.logo_url = "{{instance.logo.url}}";
+{% endif %}
 </script>
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
@@ -74,7 +76,7 @@ window.SvgCanvas=SvgCanvas;
         <div class="tab-content" style="padding: 15px 20px 10px;">
              {% include 'editor/general.html' %}
              {% include 'editor/live.html' %}
-            <button id="savesgalabel" type="button" class="btn btn-success" >{% trans 'Save' %} </button>
+            <button id="savesgalabel" type="button" class="btn btn-success" style="margin-top: 3%;">{% trans 'Save' %} </button>
         </div>
 
    </div>

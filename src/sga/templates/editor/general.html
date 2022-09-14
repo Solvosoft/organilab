@@ -6,6 +6,9 @@
             <input type="hidden" name="instance" value="{{instance.pk}}">
         {% endif %}
         {{generalform}}
+        {% if instance.logo %}
+            <span>{{logo_name}}</span>
+        {% endif %}
     </form>
 
 </div>
