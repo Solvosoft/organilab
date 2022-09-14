@@ -90,7 +90,7 @@ export default {
             const btitle = `${name}:buttons.0.title`
             // Add the button and its handler(s)
             const buttonTemplate = document.createElement('template')
-        buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="panning.svg"></se-button>`
+        buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="multilinetext.svg"></se-button>`
         insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
         registerTextEvent()
         $click($id(`${plugId}`), () => {
