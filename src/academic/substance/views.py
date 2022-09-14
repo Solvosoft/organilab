@@ -3,14 +3,15 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from academic.models import SubstanceSGA
 from django.contrib.auth.models import User
-from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm
+from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm
 from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm
-from sga.models import Substance, WarningWord
+from sga.models import Substance, WarningWord, DangerIndication
+
 
 @login_required
 @permission_required('laboratory.change_object')
@@ -149,4 +150,33 @@ def step_two(request, organilabcontext):
         'step':2,
         'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
     }
-    return render(request, 'academic/substance/step_two.html', context)
+    return render(request, 'academic/substance/step_two.html', context)\
+
+@login_required
+@organilab_context_decorator
+def create_danger_indication(request, organilabcontext, pk=None):
+    instance = None
+    if pk:
+        instance = get_object_or_404(DangerIndication, pk=pk)
+    if request.method == 'POST':
+        form = DangerIndicationForm(request.POST, instance=instance)
+        if form.is_valid():
+            instance = form.save()
+    else:
+        form = DangerIndicationForm(instance=instance)
+
+    listado = list(DangerIndication.objects.all())
+    return render(request, 'di.html', context={'form': form, 'listado': listado, 'organilabcontext': organilabcontext})
+
+@organilab_context_decorator
+def view_danger_indication(request, organilabcontext):
+    listado = list(DangerIndication.objects.all())
+    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado, 'organilabcontext': organilabcontext})
+
+
+"""@organilab_context_decorator
+def delete_danger_indication(request, organilabcontext, pk):
+    instance = get_object_or_404(DangerIndication, pk=pk)
+    instance.delete()
+    url = reverse('create_danger_indication', kwargs={'organilabcontext': organilabcontext})
+    return redirect(url)"""

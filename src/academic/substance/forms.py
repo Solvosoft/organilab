@@ -3,7 +3,7 @@ from djgentelella.forms.forms import GTForm
 
 from djgentelella.widgets import core as genwidgets
 
-from sga.models import Substance,SubstanceCharacteristics
+from sga.models import Substance, SubstanceCharacteristics, DangerIndication
 from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
@@ -49,3 +49,9 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             # 'security_sheet': genwidgets.FileInput
 
         }
+
+class DangerIndicationForm(forms.ModelForm, GTForm):
+
+    class Meta:
+        model = DangerIndication
+        exclude = ('organilab_context',)
