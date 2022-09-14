@@ -42,7 +42,7 @@ export default {
       callback () {	
         if ($id('tool_pictogram') === null) {
           const extPath = svgEditor.configObj.curConfig.extPath
-          const buttonTemplate = `<se-explorerbutton id="tool_pictogram" title="pictogram" lib="${extPath}/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>`
+          const buttonTemplate = `<se-explorerbutton id="tool_pictogram" title="pictogram" lib="../userextensions/ext-pictograms/shapelib/" src="warning.svg"></se-explorerbutton>`
           canv.insertChildAtIndex($id('tools_left'), buttonTemplate	)
           $click($id('tool_pictogram'), () => {
             if (this.leftPanel.updateLeftPanel('tool_pictogram')) {
