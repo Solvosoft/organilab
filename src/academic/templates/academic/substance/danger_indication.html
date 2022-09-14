@@ -1,14 +1,11 @@
 {% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-6">
-            <form method="post">{% csrf_token %}
-                {{form.as_inline}}
-            <input type="submit" value="Save" />
-            </form>
-    </div>
-    <div class="col-sm-6">
+
+    <div class="col-sm-12">
+        <a class="btn btn-success pull-right">{% trans 'Add' %}</a>
         <table class="table table-bordered">
             <thead>
                 <tr>
