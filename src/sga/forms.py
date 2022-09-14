@@ -20,6 +20,7 @@ class SGAEditorForm(GTForm,forms.ModelForm):
     class Meta:
         model = DangerPrudence
         fields = ('prudence_advice','danger_indication')
+        exclude = ['']
         widgets = {
             'prudence_advice':AutocompleteSelect('prudencesearch'),
             'danger_indication': AutocompleteSelect('dangersearch')
@@ -62,6 +63,8 @@ class PersonalForm(GTForm, forms.Form):
         super(PersonalForm, self).__init__(*args, **kwargs)
         filter = Q(community_share=True) | Q(creator=user)
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
+        self.fields['address'].widget.attrs['rows'] = 4
+        self.fields['commercial_information'].widget.attrs['rows'] = 4
 
 
 class PersonalSGAForm(forms.ModelForm):
@@ -70,25 +73,27 @@ class PersonalSGAForm(forms.ModelForm):
     class Meta:
         model = PersonalTemplateSGA
         fields = ['name', 'logo', 'barcode', 'template', 'logo_upload_id', 'json_representation', 'preview']
-        exclude = ['template', 'user']
+        exclude = ['user']
         widgets = {
             'logo': genwidgets.FileInput,
+            'template': genwidgets.HiddenInput
         }
 
 
 class BuilderInformationForm(forms.ModelForm):
     class Meta:
         model = BuilderInformation
-        fields = "__all__"
+        fields = ['address', 'phone', 'name']
+        exclude = ['user', 'community_share']
 
 
 class LabelForm(forms.ModelForm):
     class Meta:
         model = Label
-        fields = ['sustance', 'commercial_information']
+        fields = ['substance', 'commercial_information']
         exclude = ['builderInformation']
         widgets = {
-            'sustance': genwidgets.Select
+            'substance': genwidgets.Select
         }
 
 

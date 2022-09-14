@@ -1,32 +1,36 @@
 from django import forms
 from djgentelella.forms.forms import GTForm
 
-from academic.models import SubstanceSGA, SustanceCharacteristicsSGA
 from djgentelella.widgets import core as genwidgets
 
+from sga.models import Substance,SubstanceCharacteristics
+from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SustanceObjectForm,self).__init__(*args, **kwargs)
+        self.fields['components_sga'].required = False
+
     class Meta:
-        model = SubstanceSGA
+        model = Substance
         fields = [
             'comercial_name', 'synonymous',
-            'uipa_name', 'components',
-            'agrochemical', 'is_public',
-            'description',
+            'uipa_name', 'components_sga',
+            'agrochemical', 'description',
         ]
         widgets = {
             'comercial_name': genwidgets.TextInput,
             'uipa_name': genwidgets.TextInput,
-            'components': genwidgets.SelectMultiple,
-            'synonymous': genwidgets.TextInput,
-            'is_public': genwidgets.YesNoInput,
+            'synonymous': TaggingInput,
+            'components_sga': genwidgets.SelectMultiple,
             'agrochemical': genwidgets.YesNoInput,
             'description': genwidgets.Textarea,
         }
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
-        model = SustanceCharacteristicsSGA
+        model = SubstanceCharacteristics
         exclude = ['substance', 'valid_molecular_formula','security_sheet']
         widgets = {
             'iarc': genwidgets.Select,

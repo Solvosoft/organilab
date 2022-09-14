@@ -5,27 +5,6 @@ function update_resolution(width, height){
     svgEditor.svgCanvas.selectAllInCurrentLayer();
 }
 
-function load_substance(id){
-    var url = document.url_get_label_substance;
-    if(id){
-        url = url.replace('0', id);
-    }
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(result) {
-          if(result.label){
-            $("#substance_id").val(id);
-            $('#substance_id').data("name", result.label);
-            $('#substance').val(result.label);
-          }
-        },
-        error: function(xhr, resp, text) {
-            console.log(xhr, resp, text);
-        }
-    });
-}
-
 function load_data_sga_label_form(urlParams){
 
     var label_name = urlParams.get('name');
@@ -36,7 +15,7 @@ function load_data_sga_label_form(urlParams){
         $("#id_name").val(label_name);
     }
     if(substance){
-        load_substance(substance);
+        $("#id_sustance").val(substance);
     }
     if(template){
         var url = document.url_get_recipient_size;
@@ -78,10 +57,12 @@ $(window).load(function(){
         }
     }
 
+});
+
+$(window).ready(function(){
     if(document.logo_name){
         $("input[name='logo_upload_id']").attr('data-url', document.logo_url);
     }
-
 });
 
 function load_data_form(idform){
@@ -133,22 +114,8 @@ $("#id_recipient_size").on("change", function(){
 
 
 $("#savesgalabel").on('click', function(){
-    errorsValidation.validate();
-    if (errorsValidation.valid() == false) {
-        /*
-        swal({
-            type: 'error',
-            title: 'Información incompleta',
-            text: 'Por favor, compruebe los datos solicitados.'
-        })
-        */
-    } else {
-        load_data_form("personal");
-        $("input[name='bi-name']").val($("input[name='company_name']"));
-        $("input[name='bi-phone']").val($("input[name='company_phone']"));
-        $("input[name='bi-address']").val($("input[name='company_address']"));
-        $("#sgaform").submit();
-    }
+    load_data_form("personal");
+    $("#sgaform").submit();
 });
 
 

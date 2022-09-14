@@ -1,0 +1,74 @@
+{% extends 'label_index.html' %}
+{% load i18n %}
+{% load static bootstrap %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
+<link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
+{% endblock css %}
+{% block js %}
+    <script>
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+        document.url_get_label_substance = "{% url 'sga:get_label_substance' organilabcontext 0 %}";
+        document.clean_canvas_editor = true;
+        document.urls={
+            'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',
+            'prudence_advice_url': '{% url 'sga:prudence' organilabcontext %}',
+
+        };
+    </script>
+    <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
+    window.SvgCanvas=SvgCanvas;
+    </script>
+    <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
+    <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
+    <script src="{% static 'sga/js/codigosPH.js' %}"></script>
+    <script src="{% static 'sga/js/label_information.js' %}"> </script>
+    <script src="{% static 'sga/js/messages_es.js' %}"> </script>
+{{form.media}}
+{% endblock %}
+
+{% block extrameta%}{% endblock extrameta %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+          {% include 'academic/substance/steps.html' %}
+          <br>
+            <div id="messages" class="row text-center">
+                <div class="col-md-offset-1 col-md-10">
+                    <div class="messages">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <p>{% trans 'There can only be one Indication of Danger or Attention' %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">
+                            {% trans 'General' %}</a>
+                        </li>
+                        <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-toggle="tab">
+                            {% trans 'En vivo' %}</a></li>
+                    </ul>
+                    <div class="tab-content" style="padding: 15px 20px 10px;">
+                        {% include 'editor/general.html' %}
+                        {% include 'editor/live.html' %}
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="clearfix visible-xs-block"></div>
+                    <div id="canvasContainer" class="canvas-container" >
+                        <div id="canvas_editor"  style="height: 600px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            {% endblock content %}
+        </div>
+    </div>
+</div>

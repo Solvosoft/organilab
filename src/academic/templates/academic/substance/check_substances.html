@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 
-{% block extra_css %}
-<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" />
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
 {% endblock %}
 
 {% block content %}
@@ -17,7 +17,7 @@
 <div class="row">
 <div class="col-md-12">
     <div class="add-container pull-right">
-        <a class="btn btn-success" href="{% url 'create_sustance' %}"><i class="glyphicon glyphicon-plus white"
+        <a class="btn btn-success" href="{% url 'create_sustance' organilabcontext %}"><i class="glyphicon glyphicon-plus white"
                                                         title="{% trans 'Add new Substance' %}"></i> {% trans 'Add' %}</a>
     </div>
     <br>
@@ -34,7 +34,8 @@
                 <tr>
                     <td>{{substance.creator}}</td>
                     <td>{{substance.comercial_name}}</td>
-                    <td><a href="{% url 'accept_substance' substance.pk %}" class="btn btn-warning">{% trans 'Approve' %}</a></td>
+                    <td><a title="{% trans 'Approve' %}" href="{% url 'accept_substance' organilabcontext substance.pk %}" class="btn btn-success"><i class="icons fa fa-check"></i></a>
+                        <a class="btn btn-info" href="{% url 'detail_substance' organilabcontext substance.pk %}"><i class="icons fa fa-eye"></i></a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -45,9 +46,6 @@
 
 {% block js %}
 {{block.super}}
-
-<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
 
 <script>
 

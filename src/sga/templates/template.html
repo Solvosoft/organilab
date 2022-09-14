@@ -15,12 +15,12 @@
 {% endblock css %}
 {% block js %}
     <script>
-        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
-        document.url_get_label_substance = "{% url 'sga:get_label_substance' 0 %}";
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+        document.url_get_label_substance = "{% url 'sga:get_label_substance' organilabcontext 0 %}";
         document.clean_canvas_editor = true;
         document.urls={
-            'danger_indication_url': '{% url 'sga:get_danger_indication' %}',
-            'prudence_advice_url': '{% url 'sga:prudence' %}',
+            'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',
+            'prudence_advice_url': '{% url 'sga:prudence' organilabcontext %}',
 
         };
     </script>
@@ -30,8 +30,6 @@
     <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
     <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
     <script src="{% static 'sga/js/codigosPH.js' %}"></script>
-    <script src="{% static 'sga/js/label_information.js' %}"> </script>
-    <script src="{% static 'sga/js/messages_es.js' %}"> </script>
 {{form.media}}
 {% endblock %}
 
@@ -63,6 +61,7 @@
         <div class="tab-content" style="padding: 15px 20px 10px;">
              {% include 'editor/general.html' %}
              {% include 'editor/live.html' %}
+            <button id="savesgalabel" type="button" class="btn btn-success" >{% trans 'Save' %} </button>
         </div>
 
    </div>
@@ -74,6 +73,4 @@
         </div>
       </div>
 </div>
-
 {% endblock content %}
-
