@@ -9,6 +9,7 @@
 {% block js %}
 <script>
     document.url_get_preview = "{% url 'sga:get_preview' organilabcontext 0 %}";
+    document.url_delete_sgalabel = "{% url 'sga:delete_sgalabel' organilabcontext 0 %}";
 </script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}"></script>

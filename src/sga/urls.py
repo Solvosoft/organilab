@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'add_personal/(?P<organilabcontext>\w+)', views.create_personal_template, name='add_personal'),
     url(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
 
-    url(r'getData/(?P<organilabcontext>\w+)', views.delete_personal, name='getData'),
+    url(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
     url(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
     url(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
 
