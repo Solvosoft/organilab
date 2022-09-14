@@ -10,7 +10,6 @@
 {% block js %}
     <script>
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
-        document.url_get_label_substance = "{% url 'sga:get_label_substance' organilabcontext 0 %}";
         document.clean_canvas_editor = true;
         document.urls={
             'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',

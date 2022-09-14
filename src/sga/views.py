@@ -255,7 +255,16 @@ def edit_personal_template(request, organilabcontext, pk):
 
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
         else:
-            pass
+            messages.error(request, _("Invalid form"))
+            context = {
+                'laboratory': None,
+                'form': SGAEditorForm(),
+                'warningwords': WarningWord.objects.all(),
+                'generalform': PersonalForm(request.POST, user=user),
+                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}),
+                'organilabcontext': organilabcontext
+            }
+            return render(request, 'template_edit.html', context)
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
                'barcode': personaltemplateSGA.barcode}
@@ -264,12 +273,15 @@ def edit_personal_template(request, organilabcontext, pk):
         bi_info = personaltemplateSGA.label.builderInformation
         initial.update({'substance': personaltemplateSGA.label.substance,
             'commercial_information': personaltemplateSGA.label.commercial_information})
+
         if bi_info:
-            initial.update({'company_name': bi_info.name, 'phone': bi_info.phone, 'address': bi_info.address})
+            initial.update({'company_name': bi_info.name,
+                            'phone': bi_info.phone,
+                            'address': bi_info.address})
 
     context={
         'warningwords': WarningWord.objects.all(),
-        'formselects': SGAEditorForm,
+        'form': SGAEditorForm,
         "instance": personaltemplateSGA,
         "width": personaltemplateSGA.template.recipient_size.width,
         "height": personaltemplateSGA.template.recipient_size.height,
@@ -337,15 +349,14 @@ def get_danger_indication(request,organilabcontext):
 @login_required
 @permission_required('sga.delete_personaltemplatesga')
 @organilab_context_decorator
-def delete_personal(request, organilabcontext):
-    templates = PersonalTemplateSGA.objects.filter(user=request.user)
-    if request.is_ajax():
-        pk = request.GET.get('pk', '')
-        obj = PersonalTemplateSGA.objects.get(pk=pk)
-        obj.delete()
-
-    templates = serializers.serialize("json", templates)
-    return JsonResponse(templates, safe=False)
+def delete_sgalabel(request, organilabcontext, pk):
+    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    if template.user == request.user:
+        template.delete()
+        messages.success(request, _("SGA label was deleted successfully"))
+    else:
+        messages.error(request, _("Error, user is not creator label"))
+    return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}))
 
 @login_required
 @organilab_context_decorator
