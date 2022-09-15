@@ -5,7 +5,7 @@
 <div class="row">
 
     <div class="col-sm-12">
-        <a class="btn btn-success pull-right">{% trans 'Add' %}</a>
+        <a href="{% url 'add_danger_indication' organilabcontext %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -22,7 +22,7 @@
                     <td>{{elem.description}}</td>
                     <td>{{elem.warning_words}}</td>
                     <td>
-                        <a class="btn btn-warning" type="button" href="{% url 'create_danger_indication' organilabcontext elem.pk %}">Editar</a>
+                        <a class="btn btn-warning" type="button" href="">Editar</a>
                     </td>
                 </tr>
             {% endfor %}
