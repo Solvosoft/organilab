@@ -23,9 +23,20 @@
                 {% trans 'Check of Substances' %}
             </a>
         </li>
+
+        <li>
+            <a href="{% url 'warning_words' organilabcontext='academic' %}">
+                {% trans 'Warning Words' %}
+            </a>
+        </li>
         <li>
             <a href="{% url 'danger_indications' organilabcontext='academic' %}">
                 {% trans 'Danger Indication' %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'prudence_advices' organilabcontext='academic' %}">
+                {% trans 'Prudence Advice' %}
             </a>
         </li>
 
