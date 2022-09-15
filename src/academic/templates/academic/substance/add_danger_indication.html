@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static i18n gtsettings %}
+
+{% block content %}
+
+<div class="box-body">
+
+    <a class="btn btn-primary" href="{{view_url}}"><<</a>
+
+    <div class="page-header">
+      <h1 class="text-center">Crear Indicacion de peligro</h1>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+     <form action="{{url}}" method="post">
+          {% csrf_token %}
+            {{form.as_inline}}
+          <input class="btn btn-success pull-right" type="submit" value="{% trans 'Save' %}">
+    </form>
+      </div>
+    </div>
+    {% endblock %}

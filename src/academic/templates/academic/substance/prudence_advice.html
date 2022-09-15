@@ -1,0 +1,33 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <a href="{% url 'add_prudence_advice' organilabcontext %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Mensaje de Ayuda</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for elem in listado %}
+                <tr>
+                    <td>{{elem.code}}</td>
+                    <td>{{elem.name}}</td>
+                    <td>{{elem.prudence_advice_help}}</td>
+                    <td>
+                        <a class="btn btn-warning" type="button" href="">Editar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
