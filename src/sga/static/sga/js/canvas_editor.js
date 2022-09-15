@@ -15,7 +15,8 @@ function load_data_sga_label_form(urlParams){
         $("#id_name").val(label_name);
     }
     if(substance){
-        $("#id_sustance").val(substance);
+        $("#id_substance").val(substance);
+        $("#id_substance").change();
     }
     if(template){
         var url = document.url_get_recipient_size;
