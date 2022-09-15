@@ -81,18 +81,8 @@
                 </div>
                 <div class="modal-body">
                     <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' organilabcontext='laboratory' %}">
-                       
-                        <div class="form-group">
-                            <label>{% trans 'Name' %}</label>
-                            <input type="text" name="name" class="form-control" required>
-                            <label>{% trans 'Template' %}</label>
-                            <select name="template" id="id_template" class="form-control" required>
-                                {% for tem in sga_templates %}
-                                    <option value="{{tem.pk}}">{{tem.name}} ({{tem.recipient_size.name}} - {{tem.recipient_size.height}}{{tem.recipient_size.height_unit}} x {{tem.recipient_size.width}}{{tem.recipient_size.width_unit}})</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success" id="save_">{% trans 'Continue' %}</button>
+                        {{form}}
+                        <button type="submit" class="btn btn-success" style="margin-top: 3%;">{% trans 'Continue' %}</button>
                     </form>
                 </div>
             </div>

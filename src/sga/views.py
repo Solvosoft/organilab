@@ -22,7 +22,7 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm
+    LabelForm, PersonalTemplateForm
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label
 from .decorators import organilab_context_decorator
 from .json2html import json2html
@@ -189,7 +189,8 @@ def create_personal_template(request, organilabcontext):
     personal_templates = PersonalTemplateSGA.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
-    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates, "organilabcontext": organilabcontext}
+    context = {"personal_templates": personal_templates, 'sga_templates': sga_templates,
+               "organilabcontext": organilabcontext, "form": PersonalTemplateForm(user=request.user)}
 
     if request.method == 'POST':
         form = PersonalSGAForm(request.POST)

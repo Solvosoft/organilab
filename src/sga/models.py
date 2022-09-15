@@ -296,7 +296,7 @@ class TemplateSGA(models.Model):
     objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.recipient_size.name} - {self.recipient_size.height}{self.recipient_size.height_unit} x {self.recipient_size.width}{self.recipient_size.width_unit}'
 
     class Meta:
         verbose_name = _('Template SGA')
