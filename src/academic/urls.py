@@ -8,7 +8,8 @@ from academic.views import add_steps_wrapper, ProcedureListView,\
     ProcedureStepUpdateView, save_object,remove_object,save_observation,remove_observation,\
     delete_step,get_procedure, delete_procedure, generate_reservation
 from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
-    approve_substances, delete_substance, step_two, detail_substance, view_danger_indication
+    approve_substances, delete_substance, step_two, detail_substance, \
+    view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements
 
 from django.conf.urls import url
 
@@ -42,6 +43,10 @@ urlpatterns = [
     url(r'academic/delete_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', delete_substance, name='delete_substance'),
     url(r'academic/detail_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', detail_substance, name='detail_substance'),
     url(r'academic/substance/step_two/(?P<organilabcontext>\w+)', step_two, name='step_two'),
-    url(r'academic/substance/danger_indications/(?P<organilabcontext>\w+)/(?P<pk>\w+)?', view_danger_indication, name='danger_indications'),
-
+    url(r'academic/substance/danger_indications/(?P<organilabcontext>\w+)?', view_danger_indications, name='danger_indications'),
+    url(r'academic/substance/warning_words/(?P<organilabcontext>\w+)?', view_warning_words, name='warning_words'),
+    url(r'academic/substance/prudence_advices/(?P<organilabcontext>\w+)?', view_prudence_advices, name='prudence_advices'),
+    url(r'academic/substance/add_danger_indication/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'danger'}, name='add_danger_indication'),
+    url(r'academic/substance/add_warning_words/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'warning'}, name='add_warning_word'),
+    url(r'academic/substance/add_prudence_advice/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'prudence'}, name='add_prudence_advice'),
 ]

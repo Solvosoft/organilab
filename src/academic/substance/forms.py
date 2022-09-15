@@ -3,7 +3,7 @@ from djgentelella.forms.forms import GTForm
 
 from djgentelella.widgets import core as genwidgets
 
-from sga.models import Substance, SubstanceCharacteristics, DangerIndication
+from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice
 from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
@@ -50,8 +50,36 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
 
         }
 
-class DangerIndicationForm(forms.ModelForm, GTForm):
+class DangerIndicationForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = DangerIndication
-        exclude = ('organilab_context',)
+        exclude = ['organilab_context']
+        widgets = {
+            'code' : genwidgets.TextInput,
+            'description' : genwidgets.Textarea,
+            'warning_words' : genwidgets.Select(),
+            'pictograms' : genwidgets.SelectMultiple(),
+            'warning_class': genwidgets.SelectMultiple(),
+            'warning_category' : genwidgets.SelectMultiple(),
+            'prudence_advice' : genwidgets.SelectMultiple()
+        }
+class WarningWordForm(GTForm,forms.ModelForm):
+
+    class Meta:
+        model = WarningWord
+        exclude = ['organilab_context']
+        widgets = {
+            'name' : genwidgets.TextInput,
+            'weigth' : genwidgets.NumberInput,
+        }
+class PrudenceAdviceForm(GTForm,forms.ModelForm):
+
+    class Meta:
+        model = PrudenceAdvice
+        exclude = ['organilab_context']
+        widgets = {
+            'code' : genwidgets.TextInput,
+            'name' : genwidgets.TextInput,
+            'prudence_advice_help' : genwidgets.Textarea,
+        }
