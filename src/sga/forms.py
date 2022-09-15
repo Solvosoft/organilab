@@ -8,12 +8,15 @@ from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, 
     BuilderInformation, Label
 
 
-class RecipientInformationForm(forms.Form):
-    substance = forms.ModelChoiceField(queryset=Substance.objects.all())
-    name = forms.CharField(max_length=150, required=True )
-    phone = forms.CharField(max_length=15, required=True )
-    address = forms.CharField(max_length=100, required=True )
-    commercial_information = forms.Textarea( )
+class PersonalTemplateForm(forms.Form):
+    name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput, label=_('Name'))
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=True, widget=genwidgets.Select, label=_('Template'))
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(PersonalTemplateForm, self).__init__(*args, **kwargs)
+        filter = Q(community_share=True) | Q(creator=user)
+        self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
 
 
 class SGAEditorForm(GTForm,forms.ModelForm):
