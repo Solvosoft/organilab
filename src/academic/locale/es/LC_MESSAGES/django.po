@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-05 16:31-0600\n"
+"POT-Creation-Date: 2022-09-15 10:27-0600\n"
 "PO-Revision-Date: 2021-05-10 17:30-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -19,14 +19,14 @@ msgstr ""
 "X-Generator: Poedit 2.4.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: academic/forms.py:33 academic/forms.py:45 academic/models.py:13
-#: academic/models.py:27 academic/models.py:66
-#: academic/templates/academic/procedure_list.html:25
+#: academic/forms.py:33 academic/forms.py:45 academic/models.py:16
+#: academic/models.py:30 academic/models.py:69 academic/models.py:103
+#: academic/models.py:149 academic/templates/academic/procedure_list.html:25
 #: academic/templates/academic/procedure_steps.html:69
 msgid "Description"
 msgstr "Descripción"
 
-#: academic/forms.py:37 academic/models.py:43
+#: academic/forms.py:37 academic/models.py:46
 msgid "Object"
 msgstr "Objeto"
 
@@ -44,56 +44,185 @@ msgstr "Unidad"
 msgid "title"
 msgstr "Título"
 
-#: academic/models.py:12 academic/models.py:26
+#: academic/models.py:15 academic/models.py:29
 #: academic/templates/academic/procedure_list.html:24
 msgid "Title"
 msgstr "Título"
 
-#: academic/models.py:20 academic/models.py:25
+#: academic/models.py:23 academic/models.py:28
 #: academic/templates/academic/procedure_list.html:9
 msgid "Procedure"
 msgstr "Procedimientos"
 
-#: academic/models.py:21 academic/templates/academic/detail.html:4
+#: academic/models.py:24 academic/templates/academic/detail.html:4
 #: academic/templates/academic/procedure_steps.html:4
 msgid "Procedures"
 msgstr "Procedimientos"
 
-#: academic/models.py:32
+#: academic/models.py:35
 msgid "No titled step"
 msgstr "Paso sin título"
 
-#: academic/models.py:36
+#: academic/models.py:39
 msgid "Procedure step"
 msgstr "Paso en procedimiento"
 
-#: academic/models.py:37
+#: academic/models.py:40
 msgid "Procedure steps"
 msgstr "Pasos en los procedimientos"
 
-#: academic/models.py:44
+#: academic/models.py:47
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: academic/models.py:46
+#: academic/models.py:49
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: academic/models.py:60
+#: academic/models.py:63
 msgid "Procedure Required Object"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: academic/models.py:61
+#: academic/models.py:64
 msgid "Procedure Required Objects"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: academic/models.py:73
+#: academic/models.py:76
 msgid "Procedure Observation"
 msgstr "Observaciones del procedimiento"
 
-#: academic/models.py:74
+#: academic/models.py:77
 msgid "Procedure Observations"
 msgstr "Observaciones del procedimiento"
+
+#: academic/models.py:80 academic/templates/academic/procedure_steps.html:42
+#: academic/templates/academic/substance/list_substance.html:26
+msgid "Name"
+msgstr "Nombre"
+
+#: academic/models.py:81
+#, fuzzy
+#| msgid "CAS ID Number:"
+msgid "CAS number"
+msgstr "Número ID CAS"
+
+#: academic/models.py:87
+msgid "ComponentSGA"
+msgstr ""
+
+#: academic/models.py:88
+msgid "ComponentsSGA"
+msgstr ""
+
+#: academic/models.py:91
+#, fuzzy
+#| msgid "Material management"
+msgid "Comercial name"
+msgstr "Administración de Materiales"
+
+#: academic/models.py:92
+msgid "Synonymous"
+msgstr ""
+
+#: academic/models.py:95
+msgid "UIPA name"
+msgstr ""
+
+#: academic/models.py:97
+msgid "Components"
+msgstr ""
+
+#: academic/models.py:99
+msgid "Agrochemical"
+msgstr ""
+
+#: academic/models.py:100
+msgid "Share with others"
+msgstr ""
+
+#: academic/models.py:109
+msgid "SustanceSGA"
+msgstr ""
+
+#: academic/models.py:110
+msgid "SustancesSGA"
+msgstr ""
+
+#: academic/models.py:123
+msgid "Molecular formula"
+msgstr "Formula molecular"
+
+#: academic/models.py:125
+msgid "Cas ID Number"
+msgstr "Número CAS"
+
+#: academic/models.py:127
+msgid "Security sheet"
+msgstr "Hoja de seguridad"
+
+#: academic/models.py:128
+msgid "Is precursor"
+msgstr "¿Es precursor"
+
+#: academic/models.py:132
+msgid "Danger Indication"
+msgstr ""
+
+#: academic/models.py:135
+msgid "UE codes"
+msgstr ""
+
+#: academic/models.py:137
+msgid "NFPA codes"
+msgstr ""
+
+#: academic/models.py:139
+msgid "Storage class"
+msgstr ""
+
+#: academic/models.py:140
+msgid "Is Seveso list III?"
+msgstr ""
+
+#: academic/models.py:143
+#, fuzzy
+#| msgid "Characteristic"
+msgid "Sustance characteristicSGA"
+msgstr "Características"
+
+#: academic/models.py:144
+#, fuzzy
+#| msgid "Characteristic"
+msgid "Sustance characteristicsSGA"
+msgstr "Características"
+
+#: academic/models.py:150
+#: academic/templates/academic/substance/check_substances.html:27
+#: academic/templates/academic/substance/detail_substance.html:5
+msgid "Creator"
+msgstr ""
+
+#: academic/models.py:151
+#, fuzzy
+#| msgid "Date:"
+msgid "Date"
+msgstr "Fecha:"
+
+#: academic/models.py:154
+#, fuzzy
+#| msgid "Observations"
+msgid "Observation"
+msgstr "Observaciones"
+
+#: academic/models.py:155 academic/templates/academic/detail.html:58
+#: academic/templates/academic/procedure_steps.html:63
+#: academic/templates/academic/step_modal.html:32
+msgid "Observations"
+msgstr "Observaciones"
+
+#: academic/substance/views.py:126
+msgid "The substance is removed successfully"
+msgstr ""
 
 #: academic/templates/academic/detail.html:13
 #: academic/templates/academic/detail.html:35
@@ -113,12 +242,6 @@ msgstr ""
 msgid "Required objects"
 msgstr "Objetos requeridos"
 
-#: academic/templates/academic/detail.html:58
-#: academic/templates/academic/procedure_steps.html:63
-#: academic/templates/academic/step_modal.html:32
-msgid "Observations"
-msgstr "Observaciones"
-
 #: academic/templates/academic/detail.html:70
 msgid "Back to list"
 msgstr "Volver a la lista"
@@ -136,6 +259,8 @@ msgstr "Guardar"
 #: academic/templates/academic/procedure_list.html:26
 #: academic/templates/academic/procedure_steps.html:44
 #: academic/templates/academic/procedure_steps.html:70
+#: academic/templates/academic/substance/check_substances.html:29
+#: academic/templates/academic/substance/list_substance.html:29
 msgid "Actions"
 msgstr "Acciones"
 
@@ -153,6 +278,9 @@ msgstr "Observaciones"
 #: academic/templates/academic/step_modal.html:44
 #: academic/templates/academic/step_modal.html:58
 #: academic/templates/academic/step_modal.html:67
+#: academic/templates/academic/substance/create_sustance.html:99
+#: academic/templates/academic/substance/list_substance.html:56
+#: academic/templates/academic/substance/list_substance.html:64
 msgid "Close"
 msgstr "Cerrar"
 
@@ -167,12 +295,9 @@ msgstr "Guardar cambios"
 msgid "Object List"
 msgstr "Objetos"
 
-#: academic/templates/academic/procedure_steps.html:42
-msgid "Name"
-msgstr "Nombre"
-
 #: academic/templates/academic/procedure_steps.html:52
 #: academic/templates/academic/procedure_steps.html:77
+#: academic/templates/academic/substance/list_substance.html:65
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -191,6 +316,161 @@ msgstr ""
 
 #: academic/templates/academic/step_modal.html:68
 msgid "Remove"
+msgstr ""
+
+#: academic/templates/academic/substance/check_substances.html:12
+#: academic/templates/academic/substance/list_substance.html:11
+msgid "List of Substances"
+msgstr ""
+
+#: academic/templates/academic/substance/check_substances.html:21
+#: academic/templates/academic/substance/list_substance.html:20
+msgid "Add new Substance"
+msgstr ""
+
+#: academic/templates/academic/substance/check_substances.html:21
+#: academic/templates/academic/substance/danger_indication.html:8
+#: academic/templates/academic/substance/list_substance.html:20
+msgid "Add"
+msgstr "Agregar"
+
+#: academic/templates/academic/substance/check_substances.html:28
+msgid "Substances"
+msgstr ""
+
+#: academic/templates/academic/substance/check_substances.html:37
+msgid "Approve"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:13
+#: academic/templates/academic/substance/create_sustance.html:14
+#, fuzzy
+#| msgid "Help us!"
+msgid "Help"
+msgstr "¡Colabora!"
+
+#: academic/templates/academic/substance/create_sustance.html:20
+#, fuzzy
+#| msgid "Solution management"
+msgid "Substance Management"
+msgstr "Administración de soluciones"
+
+#: academic/templates/academic/substance/create_sustance.html:63
+msgid "Representing Chemical Substances in pyEQL"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:68
+msgid ""
+"pyEQL interprets the chemical formula of a substance to calculate its "
+"molecular\n"
+"            weight and formal charge. The formula is also used as a key to "
+"search the\n"
+"            database for parameters (e.g. diffusion coefficient) that are "
+"used in subsequent\n"
+"            calculations."
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:73
+msgid "How to Enter Valid Chemical Formulas"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:74
+msgid ""
+"Generally speaking, type the chemical formula of your solute the “normal” "
+"way\n"
+"            and pyEQL should be able to interpret it. Here are some examples:"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:77
+msgid "Sodium Chloride - NaCl"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:78
+msgid "Sodium Sulfate - Na(SO4)2"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:79
+msgid "Methanol - CH4OH or CH5O"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:80
+msgid "Magnesium Ion - Mg+2"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:81
+msgid "Chloride Ion - Cl-"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:83
+#, fuzzy
+#| msgid "Formula"
+msgid "Formula Rules:"
+msgstr "Fórmula"
+
+#: academic/templates/academic/substance/create_sustance.html:85
+msgid "Are composed of valid atomic symbols that start with capital letters"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:86
+msgid "Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:87
+msgid ""
+"If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘\n"
+"            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a "
+"series of\n"
+"            charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’)"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:90
+msgid "Formula must contain matching numbers of ‘(‘ and ‘)’"
+msgstr ""
+
+#: academic/templates/academic/substance/create_sustance.html:91
+msgid "Open parentheses must precede closed parentheses"
+msgstr ""
+
+#: academic/templates/academic/substance/detail.html:8
+#, fuzzy
+#| msgid "Descriptive name of the solution"
+msgid "Description of the Substance"
+msgstr "Nombre descriptivo para la solución"
+
+#: academic/templates/academic/substance/detail_substance.html:41
+msgid "Yes"
+msgstr ""
+
+#: academic/templates/academic/substance/list_substance.html:27
+msgid "Cas code"
+msgstr ""
+
+#: academic/templates/academic/substance/list_substance.html:28
+msgid "Status"
+msgstr ""
+
+#: academic/templates/academic/substance/list_substance.html:55
+#, fuzzy
+#| msgid "Delete furniture"
+msgid "Delete Substance"
+msgstr "Eliminar pieza de mueble"
+
+#: academic/templates/academic/substance/list_substance.html:61
+msgid "¿You want to remove the substance?"
+msgstr ""
+
+#: academic/templates/academic/substance/step_two.html:43
+msgid "There can only be one Indication of Danger or Attention"
+msgstr ""
+
+#: academic/templates/academic/substance/step_two.html:52
+#, fuzzy
+#| msgid "General use"
+msgid "General"
+msgstr "Uso general"
+
+#: academic/templates/academic/substance/step_two.html:55
+msgid "En vivo"
 msgstr ""
 
 #: academic/views.py:128
@@ -232,9 +512,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Search by name, code or CAS number"
 #~ msgstr "Buscar por nombre, código o número de CAS"
-
-#~ msgid "General use"
-#~ msgstr "Uso general"
 
 #~ msgid "Security equipment"
 #~ msgstr "Equipo de seguridad"
@@ -283,18 +560,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Type"
 #~ msgstr "Tipo"
-
-#~ msgid "Molecular formula"
-#~ msgstr "Formula molecular"
-
-#~ msgid "Cas ID Number"
-#~ msgstr "Número CAS"
-
-#~ msgid "Security sheet"
-#~ msgstr "Hoja de seguridad"
-
-#~ msgid "Is precursor"
-#~ msgstr "¿Es precursor"
 
 #~ msgid "IMDG code"
 #~ msgstr "Código IMDG"
@@ -482,9 +747,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ "Aquí puedes crear y finalizar una reservación registrada en el sistema "
 #~ "Organilab"
 
-#~ msgid "Help us!"
-#~ msgstr "¡Colabora!"
-
 #~ msgid ""
 #~ "If you have an issue testing or using Organilab, let us know. We'll be "
 #~ "eager to help you"
@@ -569,9 +831,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Send"
 #~ msgstr "Enviar"
 
-#~ msgid "Delete furniture"
-#~ msgstr "Eliminar pieza de mueble"
-
 #~ msgid "Are you sure you want to delete"
 #~ msgstr "¿Está seguro que desea eliminar "
 
@@ -598,9 +857,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Laboratory Management"
 #~ msgstr "Administración de laboratorio"
-
-#~ msgid "Add"
-#~ msgstr "Agregar"
 
 #~ msgid "Previous"
 #~ msgstr "Anterior"
@@ -677,9 +933,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Reactive management"
 #~ msgstr "Administración de Reactivos"
 
-#~ msgid "Material management"
-#~ msgstr "Administración de Materiales"
-
 #~ msgid "Equipment management"
 #~ msgstr "Administración de Equipos"
 
@@ -691,9 +944,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Laboratory management"
 #~ msgstr "Administración de sala de laboratorio"
-
-#~ msgid "Solution management"
-#~ msgstr "Administración de soluciones"
 
 #~ msgid "Reactive precursor objects"
 #~ msgstr "Objetos reactivos precursores"
@@ -747,9 +997,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Molecular formula:"
 #~ msgstr "Fórmula molecular:"
-
-#~ msgid "CAS ID Number:"
-#~ msgstr "Número ID CAS"
 
 #~ msgid "Furniture report"
 #~ msgstr "Reporte de muebles"
@@ -805,9 +1052,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Information"
 #~ msgstr "Información"
 
-#~ msgid "Characteristic"
-#~ msgstr "Características"
-
 #~ msgid "Not found"
 #~ msgstr "No encontrado"
 
@@ -850,9 +1094,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Calculate new solution"
 #~ msgstr "Calcular una nueva solución"
 
-#~ msgid "Formula"
-#~ msgstr "Fórmula"
-
 #~ msgid "Solution properties"
 #~ msgstr "Propiedades de la solución"
 
@@ -867,9 +1108,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Organilab Furniture Report"
 #~ msgstr "Organilab: Reporte de Muebles"
-
-#~ msgid "Date:"
-#~ msgstr "Fecha:"
 
 #~ msgid "of"
 #~ msgstr "de"
@@ -977,9 +1215,6 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
 #~ msgid "Water activity"
 #~ msgstr "Actividad del agua"
-
-#~ msgid "Descriptive name of the solution"
-#~ msgstr "Nombre descriptivo para la solución"
 
 #~ msgid ""
 #~ "Write in each line the formula along with its amount, separated by a comma"
