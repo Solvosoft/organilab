@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 15:13-0600\n"
-"PO-Revision-Date: 2022-09-16 15:15-0600\n"
+"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"PO-Revision-Date: 2022-09-16 16:05-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -352,13 +352,13 @@ msgstr "Crear Nuevo Recipiente"
 
 #: sga/templates/add_recipient_size.html:22 sga/templates/add_substance.html:22
 #: sga/templates/donate_organilab.html:24
-#: sga/templates/personal_template.html:113
+#: sga/templates/personal_template.html:111
 msgid "Cancel"
 msgstr "Cancelar"
 
 #: sga/templates/add_recipient_size.html:23 sga/templates/add_substance.html:23
 #: sga/templates/donate_organilab.html:25
-#: sga/templates/personal_template.html:85
+#: sga/templates/personal_template.html:83
 msgid "Continue"
 msgstr "Continuar"
 
@@ -591,7 +591,7 @@ msgid "List of SGA Labels"
 msgstr "Listado de Etiquetas SGA"
 
 #: sga/templates/personal_template.html:29
-#: sga/templates/personal_template.html:77
+#: sga/templates/personal_template.html:75
 msgid "New SGA Label"
 msgstr "Nueva etiqueta SGA"
 
@@ -617,15 +617,15 @@ msgid "Generate PDF"
 msgstr "Generar PDF"
 
 #: sga/templates/personal_template.html:48
-#: sga/templates/personal_template.html:114
+#: sga/templates/personal_template.html:112
 msgid "Delete"
 msgstr "Borrar"
 
-#: sga/templates/personal_template.html:99
+#: sga/templates/personal_template.html:97
 msgid "Are you sure?"
 msgstr "¿Esta seguro?"
 
-#: sga/templates/personal_template.html:102
+#: sga/templates/personal_template.html:100
 msgid "This action is irreversible"
 msgstr "Esta acción es irreversible"
 
