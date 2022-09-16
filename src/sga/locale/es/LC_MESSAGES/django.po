@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-15 10:27-0600\n"
-"PO-Revision-Date: 2022-09-15 10:37-0600\n"
+"POT-Creation-Date: 2022-09-16 15:13-0600\n"
+"PO-Revision-Date: 2022-09-16 15:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -22,32 +22,35 @@ msgstr ""
 msgid "Download Label"
 msgstr "Descargar etiquetas"
 
-#: sga/forms.py:102 sga/models.py:18 sga/models.py:52 sga/models.py:69
-#: sga/models.py:88 sga/models.py:141 sga/models.py:227 sga/models.py:249
-#: sga/models.py:290 sga/models.py:307 sga/models.py:327
+#: sga/forms.py:12 sga/forms.py:105 sga/models.py:18 sga/models.py:52
+#: sga/models.py:69 sga/models.py:88 sga/models.py:141 sga/models.py:227
+#: sga/models.py:249 sga/models.py:290 sga/models.py:307 sga/models.py:327
 #: sga/templates/donate_organilab.html:37
 #: sga/templates/personal_template.html:36
-#: sga/templates/personal_template.html:86
 msgid "Name"
 msgstr "Nombre"
 
-#: sga/forms.py:105 sga/models.py:329 sga/templates/donate_organilab.html:45
+#: sga/forms.py:13 sga/templates/label_index.html:82
+msgid "Template"
+msgstr "Plantilla"
+
+#: sga/forms.py:108 sga/models.py:329 sga/templates/donate_organilab.html:45
 msgid "Amount"
 msgstr ""
 
-#: sga/forms.py:106
+#: sga/forms.py:109
 msgid "*Type the amount in dollars"
 msgstr ""
 
-#: sga/forms.py:108 sga/models.py:328 sga/templates/donate_organilab.html:41
+#: sga/forms.py:111 sga/models.py:328 sga/templates/donate_organilab.html:41
 msgid "Email"
 msgstr ""
 
-#: sga/forms.py:110 sga/models.py:331
+#: sga/forms.py:113 sga/models.py:331
 msgid "Add me to the donators list"
 msgstr ""
 
-#: sga/forms.py:122 sga/models.py:156
+#: sga/forms.py:125 sga/models.py:156
 msgid "UIPA name"
 msgstr "nombre UIPA"
 
@@ -349,12 +352,13 @@ msgstr "Crear Nuevo Recipiente"
 
 #: sga/templates/add_recipient_size.html:22 sga/templates/add_substance.html:22
 #: sga/templates/donate_organilab.html:24
+#: sga/templates/personal_template.html:113
 msgid "Cancel"
 msgstr "Cancelar"
 
 #: sga/templates/add_recipient_size.html:23 sga/templates/add_substance.html:23
 #: sga/templates/donate_organilab.html:25
-#: sga/templates/personal_template.html:95
+#: sga/templates/personal_template.html:85
 msgid "Continue"
 msgstr "Continuar"
 
@@ -407,7 +411,7 @@ msgstr "Ir al formulario"
 msgid "Close"
 msgstr "Cerrar"
 
-#: sga/templates/donate_organilab.html:4 sga/views.py:314
+#: sga/templates/donate_organilab.html:4 sga/views.py:304
 msgid "Donate Organilab"
 msgstr ""
 
@@ -431,39 +435,39 @@ msgstr "Sí"
 msgid "No"
 msgstr "No"
 
-#: sga/templates/editor.html:46
+#: sga/templates/editor.html:49
 msgid "Available templates"
 msgstr "Plantillas disponibles"
 
-#: sga/templates/editor.html:57
+#: sga/templates/editor.html:60
 msgid "Customize the selected template using the canvas editor and it elements"
 msgstr ""
 "Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
 "elementos"
 
-#: sga/templates/editor.html:69 sga/templates/template.html:54
-#: sga/templates/template_edit.html:71
+#: sga/templates/editor.html:72 sga/templates/template.html:54
+#: sga/templates/template_edit.html:80
 msgid "General"
 msgstr "General"
 
-#: sga/templates/editor.html:73
+#: sga/templates/editor.html:76
 msgid "Live"
 msgstr "En vivo"
 
-#: sga/templates/editor.html:77
+#: sga/templates/editor.html:80
 msgid "Generic"
 msgstr "Genérico"
 
-#: sga/templates/editor.html:81
+#: sga/templates/editor.html:84
 msgid "Custom"
 msgstr ""
 
-#: sga/templates/editor.html:92
+#: sga/templates/editor.html:95
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
-#: sga/templates/editor.html:93 sga/templates/template.html:62
-#: sga/templates/template_edit.html:79
+#: sga/templates/editor.html:96 sga/templates/template.html:62
+#: sga/templates/template_edit.html:88
 msgid "Save"
 msgstr "Guardar"
 
@@ -510,7 +514,7 @@ msgid "Donate"
 msgstr "Donar"
 
 #: sga/templates/index_sga.html:20 sga/templates/index_sga.html:33
-#: sga/templates/label_index.html:68
+#: sga/templates/label_index.html:64
 msgid "GHS Label Creator"
 msgstr "Creador de etiquetas del SGA"
 
@@ -518,7 +522,7 @@ msgstr "Creador de etiquetas del SGA"
 msgid "Go to custom labels"
 msgstr "Ir a tus etiquetas"
 
-#: sga/templates/index_sga.html:34 sga/templates/label_index.html:69
+#: sga/templates/index_sga.html:34 sga/templates/label_index.html:65
 msgid ""
 "Create your own chemical label according to the Globally Harmonized System "
 "(GHS)."
@@ -570,19 +574,15 @@ msgstr "¿Tienes etiquetas ya creadas? ¡Imprímelas!"
 msgid "Create a GHS Label"
 msgstr "Crear una etiqueta SGA"
 
-#: sga/templates/label_index.html:80
+#: sga/templates/label_index.html:76
 msgid "Information"
 msgstr "Información"
 
-#: sga/templates/label_index.html:86 sga/templates/personal_template.html:88
-msgid "Template"
-msgstr "Plantilla"
-
-#: sga/templates/label_index.html:92
+#: sga/templates/label_index.html:88
 msgid "Editor"
 msgstr "Editor"
 
-#: sga/templates/label_index.html:100
+#: sga/templates/label_index.html:96
 msgid "GHS"
 msgstr "SGA"
 
@@ -617,23 +617,32 @@ msgid "Generate PDF"
 msgstr "Generar PDF"
 
 #: sga/templates/personal_template.html:48
+#: sga/templates/personal_template.html:114
 msgid "Delete"
 msgstr "Borrar"
 
+#: sga/templates/personal_template.html:99
+msgid "Are you sure?"
+msgstr "¿Esta seguro?"
+
+#: sga/templates/personal_template.html:102
+msgid "This action is irreversible"
+msgstr "Esta acción es irreversible"
+
 # templates/templates.html:57
-#: sga/templates/template.html:43 sga/templates/template_edit.html:61
+#: sga/templates/template.html:43 sga/templates/template_edit.html:70
 msgid "There can only be one Indication of Danger or Attention"
 msgstr "Sólo puede haber una Indicación de Peligro o Atención"
 
-#: sga/templates/template.html:56 sga/templates/template_edit.html:73
+#: sga/templates/template.html:56 sga/templates/template_edit.html:82
 msgid "En vivo"
 msgstr ""
 
-#: sga/templates/template_edit.html:46
+#: sga/templates/template_edit.html:56
 msgid "Edit your label"
 msgstr "Edita tu etiqueta"
 
-#: sga/templates/template_edit.html:49
+#: sga/templates/template_edit.html:59
 msgid ""
 "Doesn't have templates created yet, go to the editor and generate your "
 "custom templates!"
@@ -641,11 +650,11 @@ msgstr ""
 "No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas "
 "personalizadas!"
 
-#: sga/templates/template_edit.html:50
+#: sga/templates/template_edit.html:60
 msgid "Go to Editor"
 msgstr "Ir al editor"
 
-#: sga/templates/template_edit.html:51
+#: sga/templates/template_edit.html:61
 msgid "Go to your labels"
 msgstr "Ir a tus etiquetas"
 
@@ -653,28 +662,28 @@ msgstr "Ir a tus etiquetas"
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
-#: sga/views.py:218 sga/views.py:258
+#: sga/views.py:216 sga/views.py:256
 msgid "Invalid form"
 msgstr "Formulario Inválido"
 
-#: sga/views.py:333
+#: sga/views.py:323
 msgid ""
 "Your donation was completed successfully, thank you for support this project!"
 msgstr ""
 
-#: sga/views.py:356
+#: sga/views.py:346
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
 
-#: sga/views.py:358
+#: sga/views.py:348
 msgid "Error, user is not creator label"
 msgstr "Error, usuario no es el creador de la etiqueta"
 
-#: sga/views.py:401
+#: sga/views.py:391
 msgid "The substance saved successfully"
 msgstr "La sustancias fue guardada con éxito"
 
-#: sga/views.py:414
+#: sga/views.py:404
 msgid "The Recipient size saved successfully"
 msgstr "El recipiente fue guardado con éxito"
 
