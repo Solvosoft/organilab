@@ -24,9 +24,13 @@ class BarcodeManager {
     }
 
     registerEvent(){
-        document.getElementById('id_barcode').addEventListener('change',
-        this.calleventAddOrUpdateCode(this)
-        );
+        if(document.getElementById('id_barcode') != undefined){
+            document.getElementById('id_barcode').addEventListener('change',
+            this.calleventAddOrUpdateCode(this)
+            );
+            return true;
+        }
+        return false;
     }
     addelement(){
         const curStyle = this.svgCanvas.getStyle()
@@ -77,18 +81,19 @@ export default {
     return {
            name: svgEditor.i18next.t(`${name}:name`),
            callback () {
-                barcodemanager.registerEvent()
-                const btitle = `${name}:buttons.0.title`
-                // Add the button and its handler(s)
-                const buttonTemplate = document.createElement('template')
-                buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="context_menu.svg"></se-button>`
-                insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
+                if(barcodemanager.registerEvent()){
+                    const btitle = `${name}:buttons.0.title`
+                    // Add the button and its handler(s)
+                    const buttonTemplate = document.createElement('template')
+                    buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="context_menu.svg"></se-button>`
+                    insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
 
-                $click($id(`${plugId}`), () => {
-                  if (this.leftPanel.updateLeftPanel(`${plugId}`)) {
-                    barcodemanager.eventAddOrUpdateCode()
-                  }
-                })
+                    $click($id(`${plugId}`), () => {
+                      if (this.leftPanel.updateLeftPanel(`${plugId}`)) {
+                        barcodemanager.eventAddOrUpdateCode()
+                      }
+                    })
+                }
           },
           mouseDown () {
            if (svgCanvas.getMode() === modeId) {
