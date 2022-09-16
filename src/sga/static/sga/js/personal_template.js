@@ -4,42 +4,15 @@ $( document ).ready(function() {
 
 
 function delete_template(element){
-    const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-success',
-            cancelButton: 'btn btn-danger'
-        },
-        buttonsStyling: false
-    })
 
-    swalWithBootstrapButtons.fire({
-        title: 'Esta seguro de eliminar la plantilla?',
-        text: "Estas a tiempo de revertir esta acción!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Si',
-        cancelButtonText: 'No',
-        reverseButtons: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var id =element.getAttribute('data-id');
-            var url = document.url_delete_sgalabel;
+    var id = element.getAttribute('data-id');
+    var url = document.url_delete_sgalabel;
 
-            if(id){
-                url = url.replace('0', id);
-            }
-            window.location = url;
-
-    } else if (
-        result.dismiss === Swal.DismissReason.cancel
-    ){
-        swalWithBootstrapButtons.fire(
-            'Cancelado',
-            'El archivo no fue eliminado :)',
-            'error'
-        )
+    if(id){
+        url = url.replace('0', id);
     }
-    })
+    $("#btndeletesgalabel").attr('href', url);
+    $("#deletesgalabelmodal").modal();
 }
 
 

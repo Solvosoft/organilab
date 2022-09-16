@@ -15,12 +15,16 @@
     <script>
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
         document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
-        {% if width %}document.width = {{width}};{% endif %}
-        {% if height %}document.height = {{height}};{% endif %}
         document.urls={
             'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',
             'prudence_advice_url': '{% url 'sga:prudence' organilabcontext %}',
         };
+        {% if instance.template %}
+            document.canvas_size = {
+                'width': {{instance.recipient_size.width}},
+                'height': {{instance.recipient_size.height}},
+            };
+        {% endif %}
     </script>
     <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
     window.SvgCanvas=SvgCanvas;
