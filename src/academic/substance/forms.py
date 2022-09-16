@@ -53,6 +53,11 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
 
 class DangerIndicationForm(GTForm,forms.ModelForm):
 
+    def __init__(self, *arg, **kwargs):
+        super(DangerIndicationForm, self).__init__(*arg,**kwargs)
+        self.fields['pictograms'].required=False
+        self.fields['warning_words'].required=False
+
     class Meta:
         model = DangerIndication
         exclude = ['organilab_context']
