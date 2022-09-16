@@ -9,6 +9,7 @@
   "scripts": {
     "editor": "dest=rm rollup -c --configDebug",
     "svgcanvas": "rollup -c rollup/svgcanvas.config.js",
+    "barcode": "rollup -c rollup/barcode.config.js",
     "build": "rollup -c",
     "dev": "rollup -c --watch"
   },
@@ -82,6 +83,7 @@
     "elix": "15.0.1",
     "html2canvas": "^1.4.1",
     "i18next": "21.9.0",
+    "jsbarcode": "^3.11.5",
     "jspdf": "2.5.1",
     "pathseg": "1.2.1",
     "regenerator-runtime": "0.13.9",
