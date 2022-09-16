@@ -7,7 +7,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Nombre: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Name' %}: </label></div>
             <div class="col-sm-7"><p>{% if object.comercial_name %} {{object.comercial_name}} {% else %} Desconocido {% endif %}</p></div>
         </div>
         <hr>
@@ -22,7 +22,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Componentes: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Components' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.components %}
                 <ul>
@@ -42,7 +42,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Descripción: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Descriptión' %}: </label></div>
             <div class="col-sm-7"><p>{% if object.descripcion %} {{object.descripcion}} {% else %} Desconocido {% endif %}</p></div>
         </div>
         <hr>
@@ -71,7 +71,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>White Organ: </label></div>
+            <div class="col-sm-5"><label>{% trans 'White Organ' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.sustancecharacteristicssga.white_organ %}
                 <ul>
@@ -86,7 +86,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Bioaccomulable: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Bioaccomulable' %}: </label></div>
             <div class="col-sm-7"><p>{% if object.bioaccumulable %} {{object.bioaccumulable}} {% else %} Desconocido {% endif %}</p></div>
         </div>
         <hr>
@@ -96,7 +96,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Numero CAS: </label></div>
+            <div class="col-sm-5"><label>{% trans 'CAS number' %}: </label></div>
             <div class="col-sm-7"><p>{% if object.cas_id_number %} {{object.cas_id_number}} {% else %} Desconocido {% endif %}</p></div>
         </div>
         <hr>
