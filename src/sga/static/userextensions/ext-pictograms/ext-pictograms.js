@@ -34,6 +34,12 @@ export default {
     const modeId = 'tool_pictogram'
     const startClientPos = {}
 
+    const getImageG=(image)=>{
+        image = image.replace("data:image/svg+xml;base64,", "")
+        var doc = new DOMParser().parseFromString(atob(image), "text/xml");
+
+        return doc
+    }
     let curShape
     let startX
     let startY
@@ -68,32 +74,33 @@ export default {
         if (currentD.endsWith('.svg')){
 				
 	    canv.setStarted(true)
+
         curShape = canv.addSVGElementsFromJson({
-					element: 'image',
+					element: 'g',
+					curStyles: true,
 					attr: {
-					  x,
-					  y,
+					  x: startX,
+					  y: startY,
 					  width: 100,
 					  height: 100,
+					  class: "pictogram",
 					  id: canv.getNextId(),
-					  opacity: curStyle.opacity,
-					  style: 'pointer-events:inherit'
+					  opacity: curStyle.opacity
 					}
 				  })
-		canv.setHref(curShape, document.getElementById('tool_pictogram').$img.src)
-		canv.setImageURL(document.getElementById('tool_pictogram').$img.src)
+		let dom =getImageG(document.getElementById('tool_pictogram').$img.src)
+		if (dom.firstChild.firstElementChild.childElementCount<2) {
+            curShape.appendChild(dom.firstChild.firstElementChild.firstElementChild)
+		}else{
+    	    curShape.appendChild(dom.firstChild.firstElementChild.lastElementChild)
+        }
 		canv.setSelectedElements(0, curShape)
 
 		canv.setCurrentMode('select')
         svgEditor.leftPanel.updateLeftPanel('tool_select')
 
-		//$click(curShape, (e) => { e.preventDefault() })
-		//canv.setMode('image')
-		//canv.clearSelection(true)
-		//canv.setCurrentMode('select')
-		
 		}else{
-			        
+
 		curShape = canv.addSVGElementsFromJson({
           element: 'path',
           curStyles: true,
@@ -104,11 +111,9 @@ export default {
             style: 'pointer-events:none'
           }
         })
-        
-		curShape.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(0.005) translate(' + -x + ',' + -y + ')')
-	}
-		
-		canv.recalculateDimensions(curShape)
+
+			}
+        canv.recalculateDimensions(curShape)
         lastBBox = curShape.getBBox()
 
         return {
