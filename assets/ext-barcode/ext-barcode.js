@@ -1,3 +1,5 @@
+// https://lindell.me/JsBarcode/#download
+
 import JsBarcode from 'jsbarcode';
 const name = 'barcode'
 
