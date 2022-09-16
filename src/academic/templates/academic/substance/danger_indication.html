@@ -9,10 +9,10 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Palabra de Advertencia</th>
-                    <th>Acciones</th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Warning Words' %}</th>
+                    <th>{% trans 'Actions' %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +22,7 @@
                     <td>{{elem.description}}</td>
                     <td>{{elem.warning_words}}</td>
                     <td>
-                        <a class="btn btn-warning" type="button" href="">Editar</a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_danger_indication' organilabcontext elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}
