@@ -138,9 +138,6 @@ def editor(request, organilabcontext):
         'organilabcontext': organilabcontext,
         'form_url': reverse('sga:editor', kwargs={'organilabcontext': organilabcontext})
     }
-    if finstance:
-        context.update({'width': finstance.recipient_size.width, 'height': finstance.recipient_size.height})
-
     return render(request, 'editor.html', context)
 
 
@@ -268,7 +265,7 @@ def edit_personal_template(request, organilabcontext, pk):
             return render(request, 'template_edit.html', context)
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
-               'barcode': personaltemplateSGA.barcode}
+               'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
 
     if personaltemplateSGA.label:
         bi_info = personaltemplateSGA.label.builderInformation
@@ -284,17 +281,9 @@ def edit_personal_template(request, organilabcontext, pk):
         'warningwords': WarningWord.objects.all(),
         'form': SGAEditorForm,
         "instance": personaltemplateSGA,
-        "width": personaltemplateSGA.template.recipient_size.width,
-        "height": personaltemplateSGA.template.recipient_size.height,
         'organilabcontext': organilabcontext,
         "generalform": PersonalForm(user=user, initial=initial)
     }
-
-    if personaltemplateSGA.logo:
-        name = personaltemplateSGA.logo.name.split('/')
-        if len(name) == 3:
-            name = name[2]
-            context.update({'logo_name': name})
     return render(request, 'template_edit.html', context)
 
 

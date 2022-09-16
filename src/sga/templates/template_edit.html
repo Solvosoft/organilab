@@ -19,12 +19,25 @@
 <script>
 document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
 document.clean_canvas_editor = true;
-{% if width %}document.width = {{width}};{% endif %}
-{% if height %}document.height = {{height}};{% endif %}
-document.logo_name = "{{logo_name}}";
+
+{% if instance.template %}
+    document.canvas_size = {
+        'width': {{instance.template.recipient_size.width}},
+        'height': {{instance.template.recipient_size.height}},
+    };
+{% endif %}
+
 {% if instance.logo %}
     document.logo_url = "{{instance.logo.url}}";
+    var logo_name = "{{instance.logo.name}}";
+    const name = logo_name.split('/');
+    if(name.length == 3){
+        document.logo_name = name[2];
+    }else{
+        document.logo_name = name[1];
+    }
 {% endif %}
+
 </script>
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
@@ -33,7 +46,6 @@ window.SvgCanvas=SvgCanvas;
 <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
 <script src="{% static 'sga/js/codigosPH.js' %}"></script>
 <script src="{% static 'sga/js/jquery-ui.min.js' %}"> </script>
-<script src="{% static 'sga/js/label_information.js' %}"> </script>
 {% endblock %}
 
 
@@ -54,10 +66,9 @@ window.SvgCanvas=SvgCanvas;
 <div id="messages" class="row text-center">
   <div class="col-md-offset-1 col-md-10">
       <div class="messages">
-
-                <div class="alert alert-danger alert-dismissible" role="alert">
+          <div class="alert alert-info alert-dismissible" role="alert">
                     <p>{% trans 'There can only be one Indication of Danger or Attention' %}</p>
-                </div>
+          </div>
       </div>
   </div>
 </div>

@@ -44,7 +44,9 @@ $(window).load(function(){
         svgEditor.svgCanvas.clear();
         try {
             svgEditor.loadSvgString(svg_content);
-            update_resolution(document.width, document.height);
+            if(document.canvas_size){
+                update_resolution(document.canvas_size.width, document.canvas_size.height);
+            }
         } catch (err) {
         if (err.name !== 'AbortError') {
             console.log(err);
@@ -63,6 +65,7 @@ $(window).load(function(){
 $(window).ready(function(){
     if(document.logo_name){
         $("input[name='logo_upload_id']").attr('data-url', document.logo_url);
+        $("#logo_name").html(document.logo_name);
     }
 });
 
