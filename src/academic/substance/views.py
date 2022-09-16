@@ -58,6 +58,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
+        'organilabcontext':organilabcontext,
         'step':1
     })
 
@@ -181,9 +182,9 @@ def add_sga_complements(request, organilabcontext,element):
                  'danger': 'danger_indications',
                  'prudence': 'prudence_advices',
             }
-    titles = {'warning': _('Add a Warning Word'),
-              'danger': _('Add a Danger Indication'),
-              'prudence': _('Add a Prudence Advice'),
+    titles = {'warning': _('Create Warning Word'),
+              'danger': _('Create Danger Indication'),
+              'prudence': _('Create Prudence Advice'),
                 }
 
     forms = {'warning': WarningWordForm(),
@@ -214,7 +215,7 @@ def add_sga_complements(request, organilabcontext,element):
         'title': titles[element]
     }
 
-    return render(request, 'academic/substance/add_danger_indication.html', context=context)
+    return render(request, 'academic/substance/sga_components.html', context=context)
 
 @organilab_context_decorator
 def view_danger_indications(request, organilabcontext):
@@ -260,8 +261,6 @@ def add_observation(request, organilabcontext, substance):
 @login_required
 def update_observation(request):
 
-    obj = None
-    form = None
     if request.method == 'POST':
 
         substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
@@ -273,13 +272,11 @@ def update_observation(request):
             return JsonResponse({'status':True})
         else:
             return JsonResponse({'status':False})
-    return JsonResponse({'status': False})\
+    return JsonResponse({'status': False})
 
 @login_required
 def delete_observation(request):
 
-    obj = None
-    form = None
     if request.method == 'POST':
 
         substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
@@ -291,10 +288,67 @@ def delete_observation(request):
             return JsonResponse({'status':False})
     return JsonResponse({'status': False})
 
+@login_required
+@organilab_context_decorator
+def change_warning_word(request,organilabcontext,pk):
+    instance = get_object_or_404(WarningWord, pk=pk)
+    form = None
+    context ={}
 
-"""@organilab_context_decorator
-def delete_danger_indication(request, organilabcontext, pk):
+    if request.method =='POST':
+        form = WarningWordForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('warning_words', kwargs={'organilabcontext':organilabcontext}))
+    else:
+        form = WarningWordForm(instance=instance)
+        context = {
+            'form':form,
+            'view_url':reverse('warning_words', kwargs={'organilabcontext':organilabcontext}),
+            'title':_('Update the Warning Word')+" "+instance.name,
+            'url':reverse('update_warning_word', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+        }
+    return render(request, 'academic/substance/sga_components.html', context=context)
+@login_required
+@organilab_context_decorator
+def change_prudence_advice(request,organilabcontext,pk):
+    instance = get_object_or_404(PrudenceAdvice, pk=pk)
+    form = None
+    context ={}
+
+    if request.method =='POST':
+        form = PrudenceAdviceForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('prudence_advices', kwargs={'organilabcontext':organilabcontext}))
+    else:
+        form = PrudenceAdviceForm(instance=instance)
+        context = {
+            'form':form,
+            'view_url':reverse('prudence_advices', kwargs={'organilabcontext':organilabcontext}),
+            'title':_('Update the Prudence Advice')+" "+instance.name,
+            'url':reverse('update_prudence_advice', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+        }
+    return render(request, 'academic/substance/sga_components.html', context=context)
+@login_required
+@organilab_context_decorator
+def change_danger_indication(request,organilabcontext,pk):
     instance = get_object_or_404(DangerIndication, pk=pk)
-    instance.delete()
-    url = reverse('create_danger_indication', kwargs={'organilabcontext': organilabcontext})
-    return redirect(url)"""
+    form = None
+    context ={}
+
+    if request.method =='POST':
+        form = DangerIndicationForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('danger_indications', kwargs={'organilabcontext':organilabcontext}))
+    else:
+        form = DangerIndicationForm(instance=instance)
+        context = {
+            'form':form,
+            'view_url':reverse('danger_indications', kwargs={'organilabcontext':organilabcontext}),
+            'title':_('Update the Danger indication')+" "+instance.code,
+            'url':reverse('update_danger_indication', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+        }
+    return render(request, 'academic/substance/sga_components.html', context=context)
+
