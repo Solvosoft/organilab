@@ -9,7 +9,8 @@ from academic.views import add_steps_wrapper, ProcedureListView,\
     delete_step,get_procedure, delete_procedure, generate_reservation
 from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
     approve_substances, delete_substance, step_two, detail_substance, \
-    view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements
+    view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
+    update_observation, delete_observation
 
 from django.conf.urls import url
 
@@ -49,4 +50,7 @@ urlpatterns = [
     url(r'academic/substance/add_danger_indication/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'danger'}, name='add_danger_indication'),
     url(r'academic/substance/add_warning_words/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'warning'}, name='add_warning_word'),
     url(r'academic/substance/add_prudence_advice/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'prudence'}, name='add_prudence_advice'),
+    url(r'academic/substance/add_observation/(?P<organilabcontext>\w+)/(?P<substance>\d+)$', add_observation, name='add_observation'),
+    url(r'academic/substance/update_observation$', update_observation, name='update_observation'),
+    url(r'academic/substance/deleta_observation$', delete_observation, name='delete_observation'),
 ]

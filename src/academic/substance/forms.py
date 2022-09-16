@@ -3,6 +3,7 @@ from djgentelella.forms.forms import GTForm
 
 from djgentelella.widgets import core as genwidgets
 
+from academic.models import SubstanceObservation
 from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice
 from djgentelella.widgets.tagging import TaggingInput
 
@@ -82,4 +83,16 @@ class PrudenceAdviceForm(GTForm,forms.ModelForm):
             'code' : genwidgets.TextInput,
             'name' : genwidgets.TextInput,
             'prudence_advice_help' : genwidgets.Textarea,
+        }
+
+
+class ObservacionForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = SubstanceObservation
+        fields = ['description']
+
+        widgets = {
+            'description': genwidgets.Textarea
+
         }
