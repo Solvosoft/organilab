@@ -35,7 +35,7 @@ export default {
     const editText = (event)=>{
 
          let selects = svgCanvas.getSelectedElements()
-         if(selects.length==1 && selects[0].attributes.class.value=="textelementforeign"){
+         if(selects.length==1 && selects[0].attributes.class != undefined && selects[0].attributes.class.value=="textelementforeign"){
              tinymce.get("wyswygmodaltextarea").setContent(selects[0].innerHTML);
              $('#wyswygmodal').modal('show');
          }
@@ -62,7 +62,7 @@ export default {
     const addText = (event)=>{
         let content = tinymce.get("wyswygmodaltextarea").getContent()
         let selects = svgCanvas.getSelectedElements()
-        if(selects.length==1 && selects[0].attributes.class.value=="textelementforeign"){
+        if(selects.length==1 && selects[0].attributes.class != undefined && selects[0].attributes.class.value=="textelementforeign"){
             selects[0].innerHTML=content
         }else{
             addTextToDom(content);

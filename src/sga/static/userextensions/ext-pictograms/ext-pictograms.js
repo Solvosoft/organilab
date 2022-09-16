@@ -77,24 +77,24 @@ export default {
 
         curShape = canv.addSVGElementsFromJson({
 					element: 'g',
-					curStyles: true,
 					attr: {
-					  x: startX,
-					  y: startY,
-					  width: 100,
-					  height: 100,
 					  class: "pictogram",
-					  id: canv.getNextId(),
-					  opacity: curStyle.opacity
+					  id: canv.getNextId()
 					}
 				  })
 		let dom =getImageG(document.getElementById('tool_pictogram').$img.src)
+//		let viewport=dom.firstChild.firstElementChild;
+//		viewport.attributes.removeNamedItem('height')
+//		viewport.attributes.removeNamedItem('width')
+//		viewport.attributes.removeNamedItem('viewBox')
+//		curShape.appendChild(viewport)
 		if (dom.firstChild.firstElementChild.childElementCount<2) {
             curShape.appendChild(dom.firstChild.firstElementChild.firstElementChild)
 		}else{
     	    curShape.appendChild(dom.firstChild.firstElementChild.lastElementChild)
         }
 		canv.setSelectedElements(0, curShape)
+        canv.uniquifyElems(curShape)
 
 		canv.setCurrentMode('select')
         svgEditor.leftPanel.updateLeftPanel('tool_select')
@@ -113,9 +113,6 @@ export default {
         })
 
 			}
-        canv.recalculateDimensions(curShape)
-        lastBBox = curShape.getBBox()
-
         return {
           started: true
         }
