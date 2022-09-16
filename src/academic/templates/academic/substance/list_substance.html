@@ -35,9 +35,9 @@
                     <td>{{substance.comercial_name}}</td>
                     <td>{{substance.substancecharacteristics.cas_id_number}}</td>
                     <td><p class="text-center"> No</p></td>
-                    <td><a href="{% url 'update_substance' organilabcontext substance.pk  %}" class="btn btn-warning"><i class="icons fa fa-edit"></i></a>
-                        <a data-target="#delete_modal" data-toggle="modal" data-substance="{{substance.pk}}" class="btn btn-danger remove"><i class="icons fa fa-trash"></i></a>
-                        <a class="btn btn-info" href="{% url 'detail_substance' organilabcontext substance.pk %}"><i class="icons fa fa-eye"></i></a>
+                    <td><a href="{% url 'update_substance' organilabcontext substance.pk  %}" class="btn btn-warning" title="{% trans 'Edit' %}"><i class="icons fa fa-edit"></i></a>
+                        <a data-target="#delete_modal" data-toggle="modal" data-substance="{{substance.pk}}" class="btn btn-danger remove" title="{% trans 'Remove' %}"><i class="icons fa fa-trash"></i></a>
+                        <a class="btn btn-info" href="{% url 'detail_substance' organilabcontext substance.pk %}" title="{% trans 'Review' %}" }><i class="icons fa fa-eye"></i></a>
                     </td>
                 </tr>
             {% endfor %}

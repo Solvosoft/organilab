@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-15 10:27-0600\n"
-"PO-Revision-Date: 2021-05-10 17:30-0600\n"
+"PO-Revision-Date: 2022-09-16 17:29-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: academic/forms.py:33 academic/forms.py:45 academic/models.py:16
@@ -39,8 +39,6 @@ msgid "Unit"
 msgstr "Unidad"
 
 #: academic/forms.py:43
-#, fuzzy
-#| msgid "Title"
 msgid "title"
 msgstr "Título"
 
@@ -321,7 +319,7 @@ msgstr ""
 #: academic/templates/academic/substance/check_substances.html:12
 #: academic/templates/academic/substance/list_substance.html:11
 msgid "List of Substances"
-msgstr ""
+msgstr "Listado de Sustancias"
 
 #: academic/templates/academic/substance/check_substances.html:21
 #: academic/templates/academic/substance/list_substance.html:20
@@ -361,12 +359,9 @@ msgstr ""
 
 #: academic/templates/academic/substance/create_sustance.html:68
 msgid ""
-"pyEQL interprets the chemical formula of a substance to calculate its "
-"molecular\n"
-"            weight and formal charge. The formula is also used as a key to "
-"search the\n"
-"            database for parameters (e.g. diffusion coefficient) that are "
-"used in subsequent\n"
+"pyEQL interprets the chemical formula of a substance to calculate its molecular\n"
+"            weight and formal charge. The formula is also used as a key to search the\n"
+"            database for parameters (e.g. diffusion coefficient) that are used in subsequent\n"
 "            calculations."
 msgstr ""
 
@@ -376,8 +371,7 @@ msgstr ""
 
 #: academic/templates/academic/substance/create_sustance.html:74
 msgid ""
-"Generally speaking, type the chemical formula of your solute the “normal” "
-"way\n"
+"Generally speaking, type the chemical formula of your solute the “normal” way\n"
 "            and pyEQL should be able to interpret it. Here are some examples:"
 msgstr ""
 
@@ -418,8 +412,7 @@ msgstr ""
 #: academic/templates/academic/substance/create_sustance.html:87
 msgid ""
 "If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘\n"
-"            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a "
-"series of\n"
+"            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of\n"
 "            charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’)"
 msgstr ""
 
@@ -447,13 +440,7 @@ msgstr ""
 
 #: academic/templates/academic/substance/list_substance.html:28
 msgid "Status"
-msgstr ""
-
-#: academic/templates/academic/substance/list_substance.html:55
-#, fuzzy
-#| msgid "Delete furniture"
-msgid "Delete Substance"
-msgstr "Eliminar pieza de mueble"
+msgstr "EStado"
 
 #: academic/templates/academic/substance/list_substance.html:61
 msgid "¿You want to remove the substance?"
@@ -476,6 +463,55 @@ msgstr ""
 #: academic/views.py:128
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
+
+#: academic/templates/academic/substance/list_substance.html:55
+#, fuzzy
+msgid "Delete Substance"
+msgstr "Eliminar sustancia"
+
+#: academic/templates/academic/substance/list_substance.html:61
+msgid "¿Do you want to remove the substance?"
+msgstr "¿Deseas eliminar la sustancia?"
+
+#: academic/templates/academic/substance/detail.html:8
+msgid "Information about the Substance"
+msgstr "Informacion sobre la sustancia"
+
+#: academic/templates/academic/substance/observations.html:54
+msgid "New observation"
+msgstr "Nueva observación"
+
+#: academic/templates/academic/substance/observations.html:54
+msgid "Edit observation"
+msgstr "Editar observación"
+
+#: academic/substance/views.html:350
+msgid "Update the Danger indication"
+msgstr "Actualizar indicacion de peligro"
+
+#: academic/substance/views.html:308
+msgid "Update the Warning Word"
+msgstr "Actualizar palabra de advertencia"
+
+#: academic/substance/views.html:329
+msgid "Update the Prudence Advice"
+msgstr "Actualizar consejo de prudencia"
+
+#: academic/substance/views.html:150
+msgid "Create Warning Word"
+msgstr "Crear palabra de advertencia"
+
+#: academic/substance/views.html:151
+msgid "Create Danger Indication"
+msgstr "Crear indicación de peligro"
+
+#: academic/substance/views.html:152
+msgid "Create Prudence Advice"
+msgstr "Crear consejo de prudencia"
+
+#: academic/templates/academic/substance/observations.html:5
+msgid "If you want to edit or delete the observations that you have created, you must double click on it"
+msgstr "Si desea editar o eliminar los observaciones que usted ha creado debe dar doble click sobre el mismo"
 
 #~ msgid "Don't exist this object in the inventory"
 #~ msgstr "No existe ese objeto en el inventario"
@@ -657,102 +693,56 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Hello!"
 #~ msgstr "¡Hola!"
 
-#~ msgid ""
-#~ "Welcome to Organilab, the simple laboratory organizer. Let's take a look "
-#~ "of the main features of this system"
-#~ msgstr ""
-#~ "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las "
-#~ "características principales de este sistema."
+#~ msgid "Welcome to Organilab, the simple laboratory organizer. Let's take a look of the main features of this system"
+#~ msgstr "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las características principales de este sistema."
 
-#~ msgid ""
-#~ "The laboratory view is Organilab's main feature because it offers a "
-#~ "general view of the structure of the laboratory for its management"
-#~ msgstr ""
-#~ "La vista de laboratorio es el pilar principal de Organilab porque ofrece "
-#~ "una vista general de la estructura del laboratorio para llevar a cabo su "
-#~ "administración"
+#~ msgid "The laboratory view is Organilab's main feature because it offers a general view of the structure of the laboratory for its management"
+#~ msgstr "La vista de laboratorio es el pilar principal de Organilab porque ofrece una vista general de la estructura del laboratorio para llevar a cabo su administración"
 
 #~ msgid "Management"
 #~ msgstr "Administración"
 
-#~ msgid ""
-#~ "In the management views you can find everything you need to control the "
-#~ "components of the laboratory, from rooms to objects."
-#~ msgstr ""
-#~ "En las vistas de administración puedes encontrar todo lo que necesitas "
-#~ "para controlar los componentes del laboratorio, desde las salas hasta "
-#~ "objetos."
+#~ msgid "In the management views you can find everything you need to control the components of the laboratory, from rooms to objects."
+#~ msgstr "En las vistas de administración puedes encontrar lo que necesitas para controlar los componentes del laboratorio, desde las salas hasta objetos."
 
 #~ msgid "Reports"
 #~ msgstr "Reportes"
 
-#~ msgid ""
-#~ "If you need a full inventory of the whole laboratory or an specific "
-#~ "component, this is the place to do it"
-#~ msgstr ""
-#~ "Si necesitas un inventorio completo de todo el laboratorio o de un "
-#~ "componente específico, este es el lugar para hacerlo"
+#~ msgid "If you need a full inventory of the whole laboratory or an specific component, this is the place to do it"
+#~ msgstr "Si necesitas un inventorio completo del laboratorio o de un componente específico, este es el lugar para hacerlo"
 
 #~ msgid "Select laboratory"
 #~ msgstr "Seleccione su laboratorio"
 
-#~ msgid ""
-#~ "You can have access to multiple laboratories, select the one you want to "
-#~ "manage by clicking this link"
-#~ msgstr ""
-#~ "Puedes tener acceso a multiples laboratorios, selecciona el que deseas "
-#~ "haciendo click aquí"
+#~ msgid "You can have access to multiple laboratories, select the one you want to manage by clicking this link"
+#~ msgstr "Puedes tener acceso a multiples laboratorios, selecciona el que deseas haciendo click aquí"
 
 #~ msgid "Laboratory view"
 #~ msgstr "Vista de laboratorio"
 
-#~ msgid ""
-#~ "In this view you can manage most of the components related to the lab, "
-#~ "including its rooms, furniture and objects"
-#~ msgstr ""
-#~ "En esta vista puedes administrar la mayoría de los componentes "
-#~ "relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
+#~ msgid "In this view you can manage most of the components related to the lab, including its rooms, furniture and objects"
+#~ msgstr "En esta vista puedes administrar la mayoría de los componentes relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
 
 #~ msgid "Management views"
 #~ msgstr "Vistas de administración"
 
-#~ msgid ""
-#~ "This views manage the different objects handled by the Organilab system "
-#~ "for the current laboratory"
-#~ msgstr ""
-#~ "Estas vistas permiten administrar los diferentes objectos manipulados por "
-#~ "el sistema Organilab para el laboratorio actual"
+#~ msgid "This views manage the different objects handled by the Organilab system for the current laboratory"
+#~ msgstr "Estas vistas permiten administrar los diferentes objectos manipulados por el sistema Organilab para el laboratorio actual"
 
-#~ msgid ""
-#~ "Here you can see and retrieve the reports generated by the different "
-#~ "components handled and saved in the Organilab system"
-#~ msgstr ""
-#~ "Aquí puedes ver y obtener los reportes generados a partir de los "
-#~ "diferentes componentes manipulados y guardados en el sistema Organilab"
+#~ msgid "Here you can see and retrieve the reports generated by the different components handled and saved in the Organilab system"
+#~ msgstr "Aquí puedes ver y obtener los reportes generados a partir de los diferentes componentes manipulados y guardados en el sistema Organilab"
 
-#~ msgid ""
-#~ "In this view you can check out all the reservations related to you and "
-#~ "their current status."
-#~ msgstr ""
-#~ "En esta vista puedes revisar todas las reservaciones relacionadas contigo "
-#~ "y su estado actual"
+#~ msgid "In this view you can check out all the reservations related to you and their current status."
+#~ msgstr "En esta vista puedes revisar todas las reservaciones relacionadas contigo y su estado actual"
 
 #~ msgid "Reservation administration"
 #~ msgstr "Administración de reservaciones"
 
-#~ msgid ""
-#~ "Here you create and finish a given reservation registered in the "
-#~ "Organilab system"
-#~ msgstr ""
-#~ "Aquí puedes crear y finalizar una reservación registrada en el sistema "
-#~ "Organilab"
+#~ msgid "Here you create and finish a given reservation registered in the Organilab system"
+#~ msgstr "Aquí puedes crear y finalizar una reservación registrada en el sistema Organilab"
 
-#~ msgid ""
-#~ "If you have an issue testing or using Organilab, let us know. We'll be "
-#~ "eager to help you"
-#~ msgstr ""
-#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber. "
-#~ "Estaremos ansiosos por corregirlo."
+#~ msgid "If you have an issue testing or using Organilab, let us know. We'll be eager to help you"
+#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber. Estaremos ansiosos por corregirlo."
 
 #~ msgid "Please use an email client with HTML support"
 #~ msgstr "Por favor use un cliente con soporte a HTML"
@@ -760,19 +750,11 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Hi,"
 #~ msgstr "Hola"
 
-#~ msgid ""
-#~ "You have received this email because you are in charge of a laboratory in "
-#~ "the Organilab system."
-#~ msgstr ""
-#~ "Usted ha recibido este correo porque tiene un cambio en un laboratorio en "
-#~ "el sistema Organilab."
+#~ msgid "You have received this email because you are in charge of a laboratory in the Organilab system."
+#~ msgstr "Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab."
 
-#~ msgid ""
-#~ "This message is to notify you that one or more of the shelf objects of "
-#~ "your laboratory has reached its limit"
-#~ msgstr ""
-#~ "Este mensaje es para notificarle que uno o más estantes en el laboratorio "
-#~ "han llegado a su cuota mínima"
+#~ msgid "This message is to notify you that one or more of the shelf objects of your laboratory has reached its limit"
+#~ msgstr "Este mensaje es para notificarle que uno o más estantes en el laboratorio han llegado a su cuota mínima"
 
 #~ msgid "This are the details of the products:"
 #~ msgstr "Detalle de los productos"
@@ -795,12 +777,8 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "No shelf objects have reached their limit."
 #~ msgstr "No hay  objetos en mínimos límites."
 
-#~ msgid ""
-#~ "Please refill this product or contact the people that reserved it to "
-#~ "balance the current quantity."
-#~ msgstr ""
-#~ "Por favor recargue este producto o contacte a la persona que pueda "
-#~ "hacerlo."
+#~ msgid "Please refill this product or contact the people that reserved it to balance the current quantity."
+#~ msgstr "Por favor recargue este producto o contacte a la persona que pueda hacerlo."
 
 #~ msgid "Thanks,"
 #~ msgstr "Gracias,"
@@ -808,12 +786,8 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Organilab system"
 #~ msgstr "Organilab: Reporte de objetos"
 
-#~ msgid ""
-#~ "This message is to notify you that one of the shelf objects of your "
-#~ "laboratory has reached its limit"
-#~ msgstr ""
-#~ "Este mensaje es para notificarle que uno o más objetos en su laboratorio "
-#~ "están en las cuotas mínimas."
+#~ msgid "This message is to notify you that one of the shelf objects of your laboratory has reached its limit"
+#~ msgstr "Este mensaje es para notificarle que uno o más objetos en su laboratorio están en las cuotas mínimas."
 
 #~ msgid "This are the details of the product:"
 #~ msgstr "Detalle de productos"
@@ -825,8 +799,7 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgstr "Retroalimentación"
 
 #~ msgid "If you had some problem using Organilab, please let us know about it"
-#~ msgstr ""
-#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+#~ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
 
 #~ msgid "Send"
 #~ msgstr "Enviar"
@@ -964,9 +937,7 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgstr "Permiso denegado"
 
 #~ msgid "You don't have the permissions required to access this section"
-#~ msgstr ""
-#~ "Usted no cuenta con los privilegios suficientes para acceder este "
-#~ "laboratorio"
+#~ msgstr "Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
 
 #~ msgid "Please"
 #~ msgstr "Por favor"
@@ -1148,10 +1119,8 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "%(value)s is not a valid molecular formula"
 #~ msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
 
-#~ msgid ""
-#~ "Thank you for your help. We are gonna check your problem as soon as we can"
-#~ msgstr ""
-#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
+#~ msgid "Thank you for your help. We are gonna check your problem as soon as we can"
+#~ msgstr "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
 
 #~ msgid "Invalid format in shelf dataconfig "
 #~ msgstr "Formato inválido en dataconfig del estante"
@@ -1216,11 +1185,8 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 #~ msgid "Water activity"
 #~ msgstr "Actividad del agua"
 
-#~ msgid ""
-#~ "Write in each line the formula along with its amount, separated by a comma"
-#~ msgstr ""
-#~ "Escriba en cada línea la fórmula junto con su cantidad, separada por una "
-#~ "coma"
+#~ msgid "Write in each line the formula along with its amount, separated by a comma"
+#~ msgstr "Escriba en cada línea la fórmula junto con su cantidad, separada por una coma"
 
 #~ msgid "For example: 500 mL, 1 L"
 #~ msgstr "Por ejemplo: 500 mL, 1 L"
