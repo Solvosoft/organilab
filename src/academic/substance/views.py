@@ -1,10 +1,11 @@
+from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from academic.models import SubstanceSGA
+from academic.models import SubstanceSGA, SubstanceObservation
 from django.contrib.auth.models import User
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
-    WarningWordForm, PrudenceAdviceForm
+    WarningWordForm, PrudenceAdviceForm, ObservacionForm
 from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -135,10 +136,24 @@ def delete_substance(request,organilabcontext,pk):
 @organilab_context_decorator
 def detail_substance(request, organilabcontext, pk):
     detail = None
+    observation = None
+    step = 1
+    if 'step' in request.session:
+        step=request.session['step']
+        del request.session['step']
+
     if pk:
         detail = get_object_or_404(Substance, pk=int(pk))
-
-    return render(request, "academic/substance/detail.html",context={'object':detail})
+        observation = SubstanceObservation.objects.filter(substance =detail)
+    context = {
+        'object':detail,
+        'observations': observation,
+        'organilabcontext': organilabcontext,
+        'observationForm':ObservacionForm(),
+        'step':step,
+        'url': reverse('add_observation',kwargs={'organilabcontext':organilabcontext, 'substance':pk})
+    }
+    return render(request, "academic/substance/detail.html",context=context)
 
 @login_required
 @organilab_context_decorator
@@ -213,6 +228,68 @@ def view_warning_words(request, organilabcontext):
 def view_prudence_advices(request, organilabcontext):
     listado = list(PrudenceAdvice.objects.all())
     return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado, 'organilabcontext': organilabcontext})
+
+@login_required
+@organilab_context_decorator
+def add_observation(request, organilabcontext, substance):
+
+    obj = None
+    form = None
+
+    if substance and request.method == 'POST':
+        substance_obj = get_object_or_404(Substance, pk=int(substance))
+
+        form = ObservacionForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.substance=substance_obj
+            obj.creator = request.user
+            request.session['step'] = 2
+            obj.save()
+            messages.success(request, 'Se Guardo correctamente')
+            return redirect(reverse('detail_substance',kwargs={'organilabcontext':organilabcontext,'pk':substance}))
+        else:
+            request.session['step'] = 2
+            messages.error(request, 'Datos invalidos')
+            return redirect(reverse('detail_substance',kwargs={'organilabcontext':organilabcontext,'pk':substance}))
+    else:
+        request.session['step'] = 2
+        return redirect(reverse('detail_substance', kwargs={'organilabcontext': organilabcontext, 'pk': substance}))
+    return redirect(reverse('detail_substance', kwargs={'organilabcontext': organilabcontext, 'pk': substance}))
+
+@login_required
+def update_observation(request):
+
+    obj = None
+    form = None
+    if request.method == 'POST':
+
+        substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
+        if substance_obj:
+            substance_obj.description=request.POST.get('description','')
+            substance_obj.save()
+            request.session['step'] = 2
+
+            return JsonResponse({'status':True})
+        else:
+            return JsonResponse({'status':False})
+    return JsonResponse({'status': False})\
+
+@login_required
+def delete_observation(request):
+
+    obj = None
+    form = None
+    if request.method == 'POST':
+
+        substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
+        if substance_obj:
+            substance_obj.delete()
+            request.session['step'] = 2
+            return JsonResponse({'status':True})
+        else:
+            return JsonResponse({'status':False})
+    return JsonResponse({'status': False})
 
 
 """@organilab_context_decorator
