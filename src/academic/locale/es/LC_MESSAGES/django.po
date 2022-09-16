@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-15 10:27-0600\n"
+"POT-Creation-Date: 2022-09-16 15:13-0600\n"
 "PO-Revision-Date: 2021-05-10 17:30-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -220,8 +220,20 @@ msgstr "Observaciones"
 msgid "Observations"
 msgstr "Observaciones"
 
-#: academic/substance/views.py:126
+#: academic/substance/views.py:127
 msgid "The substance is removed successfully"
+msgstr ""
+
+#: academic/substance/views.py:169
+msgid "Add a Warning Word"
+msgstr ""
+
+#: academic/substance/views.py:170
+msgid "Add a Danger Indication"
+msgstr ""
+
+#: academic/substance/views.py:171
+msgid "Add a Prudence Advice"
 msgstr ""
 
 #: academic/templates/academic/detail.html:13
@@ -253,6 +265,7 @@ msgstr "Detalle de"
 #: academic/templates/academic/procedure_create.html:31
 #: academic/templates/academic/procedure_steps.html:28
 #: academic/templates/academic/step_modal.html:45
+#: academic/templates/academic/substance/add_danger_indication.html:18
 msgid "Save"
 msgstr "Guardar"
 
@@ -331,6 +344,8 @@ msgstr ""
 #: academic/templates/academic/substance/check_substances.html:21
 #: academic/templates/academic/substance/danger_indication.html:8
 #: academic/templates/academic/substance/list_substance.html:20
+#: academic/templates/academic/substance/prudence_advice.html:8
+#: academic/templates/academic/substance/warning_words.html:8
 msgid "Add"
 msgstr "Agregar"
 
@@ -459,17 +474,17 @@ msgstr "Eliminar pieza de mueble"
 msgid "¿You want to remove the substance?"
 msgstr ""
 
-#: academic/templates/academic/substance/step_two.html:43
+#: academic/templates/academic/substance/step_two.html:41
 msgid "There can only be one Indication of Danger or Attention"
 msgstr ""
 
-#: academic/templates/academic/substance/step_two.html:52
+#: academic/templates/academic/substance/step_two.html:50
 #, fuzzy
 #| msgid "General use"
 msgid "General"
 msgstr "Uso general"
 
-#: academic/templates/academic/substance/step_two.html:55
+#: academic/templates/academic/substance/step_two.html:53
 msgid "En vivo"
 msgstr ""
 

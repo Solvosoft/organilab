@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-15 10:27-0600\n"
+"POT-Creation-Date: 2022-09-16 15:13-0600\n"
 "PO-Revision-Date: 2022-09-05 11:05-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -409,8 +409,16 @@ msgstr "Mis Sustancias"
 msgid "Check of Substances"
 msgstr "Revision de Sustancias"
 
-#: presentation/templates/partials/sga_academic.html:28
+#: presentation/templates/partials/sga_academic.html:29
+msgid "Warning Words"
+msgstr ""
+
+#: presentation/templates/partials/sga_academic.html:34
 msgid "Danger Indication"
+msgstr ""
+
+#: presentation/templates/partials/sga_academic.html:39
+msgid "Prudence Advice"
 msgstr ""
 
 #: presentation/templates/partials/sga_menu.html:6
