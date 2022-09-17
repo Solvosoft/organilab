@@ -42,7 +42,7 @@
                     {{ form.label_tag }} {{ form }}
                 </div>
             {% if form.id_for_label == 'id_h_code' %}
-                       <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a>
+                       <label>¿Encontraste el componente codigo_H?</label><a href="{% url 'add_danger_indication' organilabcontext %}">¡Créalo aquí!</a>
                 {% endif %}
             {% endfor %}
         </div>

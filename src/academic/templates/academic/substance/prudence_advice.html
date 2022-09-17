@@ -22,7 +22,7 @@
                     <td>{{elem.name}}</td>
                     <td>{{elem.prudence_advice_help}}</td>
                     <td>
-                        <a class="btn btn-warning" type="button" href="">Editar</a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_prudence_advice' organilabcontext elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}

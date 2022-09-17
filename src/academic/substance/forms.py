@@ -3,6 +3,7 @@ from djgentelella.forms.forms import GTForm
 
 from djgentelella.widgets import core as genwidgets
 
+from academic.models import SubstanceObservation
 from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice
 from djgentelella.widgets.tagging import TaggingInput
 
@@ -52,6 +53,11 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
 
 class DangerIndicationForm(GTForm,forms.ModelForm):
 
+    def __init__(self, *arg, **kwargs):
+        super(DangerIndicationForm, self).__init__(*arg,**kwargs)
+        self.fields['pictograms'].required=False
+        self.fields['warning_words'].required=False
+
     class Meta:
         model = DangerIndication
         exclude = ['organilab_context']
@@ -82,4 +88,16 @@ class PrudenceAdviceForm(GTForm,forms.ModelForm):
             'code' : genwidgets.TextInput,
             'name' : genwidgets.TextInput,
             'prudence_advice_help' : genwidgets.Textarea,
+        }
+
+
+class ObservacionForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = SubstanceObservation
+        fields = ['description']
+
+        widgets = {
+            'description': genwidgets.Textarea
+
         }
