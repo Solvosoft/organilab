@@ -1,12 +1,14 @@
 {% extends 'label_index.html' %}
 {% load static i18n gtsettings %}
-
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
 {% block content %}
 <div class="row">
 
     <div class="col-sm-12">
-        <a href="{% url 'add_warning_word' organilabcontext %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
-        <table class="table table-bordered">
+        <a href="{% url 'add_warning_word' %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
+        <table id="warning_word_table" class="table table-bordered text-center">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -20,7 +22,7 @@
                     <td>{{elem.name}}</td>
                     <td>{{elem.weigth}}</td>
                     <td>
-                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_warning_word' organilabcontext elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_warning_word' elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}
@@ -28,4 +30,17 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+
+<script>
+
+(function(){
+    $("#warning_word_table").DataTable();
+})(jQuery);
+</script>
+
+
 {% endblock %}
