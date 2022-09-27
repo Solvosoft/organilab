@@ -51,8 +51,7 @@ class WarningClass(MPTTModel):
 class WarningWord(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     weigth = models.SmallIntegerField(default=0, verbose_name=_("Weigth"))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
+
     def __str__(self):
         return self.name
 
@@ -68,8 +67,7 @@ class Pictogram(models.Model):
     name = models.CharField(max_length=150, primary_key=True,
                             verbose_name=_("Name"))
     warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE)
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
+
 
     def __str__(self):
         return self.name
@@ -89,8 +87,7 @@ class PrudenceAdvice(models.Model):
     prudence_advice_help = models.TextField(
         null=True, blank=True,
         verbose_name=_("Help for prudence advice"))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
+
 
     def __str__(self):
         return self.code + ": " + self.name
@@ -117,8 +114,7 @@ class DangerIndication(models.Model):
         verbose_name=_("Warning category"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
+
 
     def __str__(self):
         return "(%s) %s" % (self.code, self.description)
@@ -133,8 +129,6 @@ class DangerPrudence(models.Model):
         DangerIndication, verbose_name=_("Danger indication"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
 
 
 class Component(models.Model):
@@ -272,7 +266,7 @@ class Label(models.Model):
                                  on_delete=models.CASCADE, null=True)
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE, null=True)
     commercial_information = models.TextField(
         null=True, blank=True,
         verbose_name=_("Commercial Information"))
@@ -292,8 +286,7 @@ class TemplateSGA(models.Model):
     json_representation = models.TextField()
     community_share = models.BooleanField(default=True, verbose_name=_("Share with community"))
     preview = models.TextField(help_text="B64 preview image", null=True)
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
+
 
     def __str__(self):
         return f'{self.name} {self.recipient_size.name} - {self.recipient_size.height}{self.recipient_size.height_unit} x {self.recipient_size.width}{self.recipient_size.width_unit}'
