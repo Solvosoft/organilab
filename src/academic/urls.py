@@ -13,6 +13,7 @@ from academic.substance.views import create_edit_sustance, get_substances, get_l
     update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication
 
 from django.conf.urls import url
+from django.urls import path
 
 
 
@@ -43,17 +44,18 @@ urlpatterns = [
     url(r'academic/accept_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', approve_substances, name='accept_substance'),
     url(r'academic/delete_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', delete_substance, name='delete_substance'),
     url(r'academic/detail_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', detail_substance, name='detail_substance'),
-    url(r'academic/substance/step_two/(?P<organilabcontext>\w+)?', step_two, name='step_two'),
-    url(r'academic/substance/danger_indications/(?P<organilabcontext>\w+)?', view_danger_indications, name='danger_indications'),
-    url(r'academic/substance/warning_words/(?P<organilabcontext>\w+)?', view_warning_words, name='warning_words'),
-    url(r'academic/substance/prudence_advices/(?P<organilabcontext>\w+)?', view_prudence_advices, name='prudence_advices'),
-    url(r'academic/substance/add_danger_indication/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'danger'}, name='add_danger_indication'),
-    url(r'academic/substance/add_warning_words/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'warning'}, name='add_warning_word'),
-    url(r'academic/substance/add_prudence_advice/(?P<organilabcontext>\w+)?', add_sga_complements, kwargs={'element':'prudence'}, name='add_prudence_advice'),
+    url(r'academic/substance/step_one/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', create_edit_sustance, name='step_one'),
+    url(r'academic/substance/step_two/(?P<organilabcontext>\w+)/(?P<template>\d+)/(?P<substance>\d+)$', step_two, name='step_two'),
+    url(r'academic/substance/danger_indications$', view_danger_indications, name='danger_indications'),
+    url(r'academic/substance/warning_words$', view_warning_words, name='warning_words'),
+    url(r'academic/substance/prudence_advices$', view_prudence_advices, name='prudence_advices'),
+    url(r'academic/substance/add_danger_indication$', add_sga_complements, kwargs={'element':'danger'}, name='add_danger_indication'),
+    url(r'academic/substance/add_warning_words/', add_sga_complements, kwargs={'element':'warning'}, name='add_warning_word'),
+    url(r'academic/substance/add_prudence_advice$', add_sga_complements, kwargs={'element':'prudence'}, name='add_prudence_advice'),
     url(r'academic/substance/add_observation/(?P<organilabcontext>\w+)/(?P<substance>\d+)$', add_observation, name='add_observation'),
     url(r'academic/substance/update_observation$', update_observation, name='update_observation'),
     url(r'academic/substance/deleta_observation$', delete_observation, name='delete_observation'),
-    url(r'academic/substance/update_danger_indication/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', change_danger_indication, name='update_danger_indication'),
-    url(r'academic/substance/update_warning_words/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', change_warning_word, name='update_warning_word'),
-    url(r'academic/substance/update_prudence_advice/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', change_prudence_advice,name='update_prudence_advice'),
+    path(r'academic/substance/update_danger_indication/<str:pk>', change_danger_indication, name='update_danger_indication'),
+    url(r'academic/substance/update_warning_words/(?P<pk>\d+)$', change_warning_word, name='update_warning_word'),
+    url(r'academic/substance/update_prudence_advice/(?P<pk>\d+)$', change_prudence_advice,name='update_prudence_advice'),
 ]

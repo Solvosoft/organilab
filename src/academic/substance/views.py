@@ -1,3 +1,4 @@
+from chunked_upload.models import ChunkedUpload
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required
@@ -11,29 +12,36 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
-from sga.forms import SGAEditorForm, PersonalForm
-from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice
+from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
+    BuilderInformationForm
+from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
+    TemplateSGA, Label, PersonalTemplateSGA
 
 
 @login_required
 @permission_required('laboratory.change_object')
 @organilab_context_decorator
 def create_edit_sustance(request, organilabcontext, pk=None):
+
     instance = Substance.objects.filter(pk=pk).first()
 
     suscharobj=None
+    template = None
 
     if instance:
         suscharobj = instance.substancecharacteristics
 
     postdata=None
     filesdata = None
+
     if request.method == 'POST':
         postdata = request.POST
 
     objform = SustanceObjectForm(postdata, instance=instance)
     suschacform = SustanceCharacteristicsForm(postdata, instance=suscharobj)
+
     if request.method == 'POST':
+
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
             obj.creator=request.user
@@ -44,6 +52,9 @@ def create_edit_sustance(request, organilabcontext, pk=None):
             suscharinst = suschacform.save(commit=False)
             suscharinst.substance = obj
             suscharinst.organilab_context=organilabcontext
+            label, created= Label.objects.get_or_create(substance= obj)
+            template= TemplateSGA.objects.filter(pk=330)[0]
+            personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             if isValidate_molecular_formula(molecular_formula):
@@ -51,15 +62,29 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext}))
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personal.pk, 'substance':obj.pk}))
 
+    elif instance == None and request.method=='GET':
+
+            substance = Substance.objects.create(organilab_context=organilabcontext, creator=request.user)
+            SubstanceCharacteristics.objects.create(substance=substance)
+
+            return redirect(reverse('step_one', kwargs={'organilabcontext':organilabcontext,'pk':substance.pk}))
+
+
+    label, created_label= Label.objects.get_or_create(substance= instance)
+    template= TemplateSGA.objects.get(pk=330)
+    personal, created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
     return render(request, 'academic/substance/create_sustance.html', {
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
         'organilabcontext':organilabcontext,
-        'step':1
+        'step':1,
+        'template':personal.pk,
+        'substance':instance.pk,
+        'pk':instance.pk
     })
 
 @login_required
@@ -101,7 +126,7 @@ def check_list_substances(request,organilabcontext):
     substances=None
 
     if request.user:
-        substances = SubstanceSGA.objects.filter(is_approved=False).order_by('--pk')
+        substances = Substance.objects.filter(is_approved=False).order_by('--pk')
 
     context = {
         'substances':substances,
@@ -157,21 +182,7 @@ def detail_substance(request, organilabcontext, pk):
     return render(request, "academic/substance/detail.html",context=context)
 
 @login_required
-@organilab_context_decorator
-def step_two(request, organilabcontext):
-    context = {
-        'form': SGAEditorForm(),
-        'warningwords': WarningWord.objects.all(),
-        'generalform': PersonalForm(user=request.user),
-        'organilabcontext': organilabcontext,
-        'step':2,
-        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
-    }
-    return render(request, 'academic/substance/step_two.html', context)\
-
-@login_required
-@organilab_context_decorator
-def add_sga_complements(request, organilabcontext,element):
+def add_sga_complements(request, element):
 
     form = None
     urls = {'warning': 'add_warning_word',
@@ -199,36 +210,34 @@ def add_sga_complements(request, organilabcontext,element):
         form = forms[element]
 
         if form.is_valid():
-            obj = form.save(commit=False)
-            obj.organilab_context='academic'
-            obj.save()
-            return redirect(reverse(view_urls[element], kwargs={'organilabcontext':organilabcontext}))
+            obj = form.save()
+            return redirect(reverse(view_urls[element]))
 
     else:
         form = forms[element]
 
     context = {
         'form':form,
-        'organilabcontext':organilabcontext,
-        'url': reverse(urls[element], kwargs={'organilabcontext':organilabcontext}),
-        'view_url': reverse(view_urls[element], kwargs={'organilabcontext':organilabcontext}),
+        'url': reverse(urls[element]),
+        'view_url': reverse(view_urls[element]),
         'title': titles[element]
     }
 
     return render(request, 'academic/substance/sga_components.html', context=context)
 
-@organilab_context_decorator
-def view_danger_indications(request, organilabcontext):
+
+@login_required
+def view_danger_indications(request):
     listado = list(DangerIndication.objects.all())
-    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado, 'organilabcontext': organilabcontext})
-@organilab_context_decorator
-def view_warning_words(request, organilabcontext):
+    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado})
+@login_required
+def view_warning_words(request):
     listado = list(WarningWord.objects.all())
-    return render(request, 'academic/substance/warning_words.html', context={'listado': listado, 'organilabcontext': organilabcontext})
-@organilab_context_decorator
-def view_prudence_advices(request, organilabcontext):
+    return render(request, 'academic/substance/warning_words.html', context={'listado': listado})
+@login_required
+def view_prudence_advices(request):
     listado = list(PrudenceAdvice.objects.all())
-    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado, 'organilabcontext': organilabcontext})
+    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado})
 
 @login_required
 @organilab_context_decorator
@@ -289,8 +298,7 @@ def delete_observation(request):
     return JsonResponse({'status': False})
 
 @login_required
-@organilab_context_decorator
-def change_warning_word(request,organilabcontext,pk):
+def change_warning_word(request,pk):
     instance = get_object_or_404(WarningWord, pk=pk)
     form = None
     context ={}
@@ -299,19 +307,18 @@ def change_warning_word(request,organilabcontext,pk):
         form = WarningWordForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-            return redirect(reverse('warning_words', kwargs={'organilabcontext':organilabcontext}))
+            return redirect(reverse('warning_words'))
     else:
         form = WarningWordForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('warning_words', kwargs={'organilabcontext':organilabcontext}),
+            'view_url':reverse('warning_words'),
             'title':_('Update the Warning Word')+" "+instance.name,
-            'url':reverse('update_warning_word', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+            'url':reverse('update_warning_word', kwargs={'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 @login_required
-@organilab_context_decorator
-def change_prudence_advice(request,organilabcontext,pk):
+def change_prudence_advice(request, pk):
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
     form = None
     context ={}
@@ -320,19 +327,18 @@ def change_prudence_advice(request,organilabcontext,pk):
         form = PrudenceAdviceForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-            return redirect(reverse('prudence_advices', kwargs={'organilabcontext':organilabcontext}))
+            return redirect(reverse('prudence_advices'))
     else:
         form = PrudenceAdviceForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('prudence_advices', kwargs={'organilabcontext':organilabcontext}),
+            'view_url':reverse('prudence_advices'),
             'title':_('Update the Prudence Advice')+" "+instance.name,
-            'url':reverse('update_prudence_advice', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+            'url':reverse('update_prudence_advice', kwargs={'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 @login_required
-@organilab_context_decorator
-def change_danger_indication(request,organilabcontext,pk):
+def change_danger_indication(request, pk):
     instance = get_object_or_404(DangerIndication, pk=pk)
     form = None
     context ={}
@@ -341,14 +347,81 @@ def change_danger_indication(request,organilabcontext,pk):
         form = DangerIndicationForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-            return redirect(reverse('danger_indications', kwargs={'organilabcontext':organilabcontext}))
+            return redirect(reverse('danger_indications'))
     else:
         form = DangerIndicationForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('danger_indications', kwargs={'organilabcontext':organilabcontext}),
+            'view_url':reverse('danger_indications'),
             'title':_('Update the Danger indication')+" "+instance.code,
-            'url':reverse('update_danger_indication', kwargs={'organilabcontext':organilabcontext,'pk':instance.pk})
+            'url':reverse('update_danger_indication', kwargs={'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 
+@permission_required('sga.change_personaltemplatesga')
+@organilab_context_decorator
+def step_two(request, organilabcontext, template, substance):
+    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
+    user = request.user
+
+    if request.method == 'POST':
+
+        form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
+        label_form = LabelForm(request.POST, instance=personaltemplateSGA.label)
+
+        builder_information_form = BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
+        if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
+            instance = form.save(commit=False)
+            upload_id = form.cleaned_data['logo_upload_id']
+
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.logo = tmpupload.get_uploaded_file()
+
+            instance.save()
+            builder = builder_information_form.save(commit=False)
+            builder.user=request.user
+            builder.save()
+            label = label_form.save(commit=False)
+            label.builderInformation= builder
+            label.save()
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+        else:
+            messages.error(request, _("Invalid form"))
+            context = {
+                'laboratory': None,
+                'form': SGAEditorForm(),
+                'warningwords': WarningWord.objects.all(),
+                'generalform': PersonalFormAcademic(request.POST, user=user, substance=substance),
+                'form_url': reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}),
+                'organilabcontext': organilabcontext,
+                'step': 2,
+                'template': personaltemplateSGA.pk,
+                'substance': personaltemplateSGA.label.substance.pk,
+            }
+            return render(request, 'academic/substance/step_two.html', context)
+
+    initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
+               'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
+
+    if personaltemplateSGA.label:
+        bi_info = personaltemplateSGA.label.builderInformation
+        initial.update({'substance': personaltemplateSGA.label.substance.pk,
+            'commercial_information': personaltemplateSGA.label.commercial_information})
+
+        if bi_info:
+            initial.update({'company_name': bi_info.name,
+                            'phone': bi_info.phone,
+                            'address': bi_info.address})
+
+    context={
+        'warningwords': WarningWord.objects.all(),
+        'form': SGAEditorForm,
+        "instance": personaltemplateSGA,
+        'organilabcontext': organilabcontext,
+        "generalform": PersonalFormAcademic(user=user, substance=substance, initial=initial),
+        'step': 2,
+        'template': personaltemplateSGA.pk,
+        'substance': personaltemplateSGA.label.substance.pk,
+    }
+    return render(request, 'academic/substance/step_two.html', context)
