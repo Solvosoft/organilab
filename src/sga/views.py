@@ -213,6 +213,7 @@ def create_personal_template(request, organilabcontext):
             instance.save()
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
         else:
+            print(form.errors)
             messages.error(request, _("Invalid form"))
             context = {
                 'laboratory': None,
