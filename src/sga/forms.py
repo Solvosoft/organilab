@@ -69,6 +69,31 @@ class PersonalForm(GTForm, forms.Form):
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
+class PersonalFormAcademic(GTForm, forms.Form):
+    name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput)
+    company_name = forms.CharField(max_length=150, required=True, widget=genwidgets.TextInput)
+    address = forms.CharField(widget=genwidgets.Textarea)
+    phone = forms.CharField(max_length=50, required=True, widget=genwidgets.TextInput)
+    json_representation = forms.CharField(widget=forms.HiddenInput())
+    preview = forms.CharField(widget=forms.HiddenInput())
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False, widget=genwidgets.HiddenInput)
+    substance = forms.CharField(widget=forms.HiddenInput())
+    commercial_information = forms.CharField(widget=genwidgets.Textarea)
+    barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
+    logo = forms.FileField(widget=genwidgets.FileInput, required=False)
+    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        substance = kwargs.pop('substance')
+        super(PersonalFormAcademic, self).__init__(*args, **kwargs)
+        filter = Q(community_share=True) | Q(creator=user)
+        self.fields['substance'].initial = substance
+        self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
+        self.fields['address'].widget.attrs['rows'] = 4
+        self.fields['commercial_information'].widget.attrs['rows'] = 4
+
 
 class PersonalSGAForm(forms.ModelForm):
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
