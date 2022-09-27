@@ -20,7 +20,7 @@
                 <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
             </div>
     <br>
-    <form class="form-horizontal" action="" method="POST">
+    <form class="form-horizontal" action="{% url 'step_one' organilabcontext pk %}" method="POST">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-1"></div>
@@ -30,7 +30,7 @@
                 {{ form.label_tag }} {{ form }}
             </div>
                 {% if form.id_for_label == 'id_components_sga' %}
-                   <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a>
+                 <!--  <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a> -->
                 {% endif %}
 
             {% endfor %}
@@ -42,7 +42,7 @@
                     {{ form.label_tag }} {{ form }}
                 </div>
             {% if form.id_for_label == 'id_h_code' %}
-                       <label>¿Encontraste el componente codigo_H?</label><a href="{% url 'add_danger_indication' organilabcontext %}">¡Créalo aquí!</a>
+                       <label>¿Encontraste el componente codigo_H?</label><a href="{% url 'add_danger_indication' %}">¡Créalo aquí!</a>
                 {% endif %}
             {% endfor %}
         </div>
