@@ -2,10 +2,10 @@ from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.forms.forms import GTForm
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label
+    BuilderInformation, Label, SGAComplement
 
 
 class PersonalTemplateForm(forms.Form):
@@ -172,4 +172,14 @@ class RecipientSizeForm(GTForm,forms.ModelForm):
             'width': genwidgets.NumberInput,
             'width_unit': genwidgets.Select,
 
+        }
+
+class SGAComplementsForm(GTForm,forms.ModelForm):
+    class Meta:
+        model = SGAComplement
+        fields = ('prudence_advice','danger_indication')
+        widgets = {
+            'prudence_advice':AutocompleteSelectMultiple('prudencesearch'),
+            'danger_indication': AutocompleteSelectMultiple('dangersearch'),
+            'substance': genwidgets.HiddenInput
         }

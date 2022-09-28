@@ -331,3 +331,10 @@ class Donation(models.Model):
 
     def __str__(self):
         return f'{self.name}: ${self.amount}'
+
+class SGAComplement(models.Model):
+    substance = models.ForeignKey(Substance, on_delete=models.DO_NOTHING, null=True)
+    danger_indication = models.ManyToManyField(
+        DangerIndication, verbose_name=_("Danger indication"))
+    prudence_advice = models.ManyToManyField(
+        PrudenceAdvice, verbose_name=_("Prudence advice"))
