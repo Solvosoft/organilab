@@ -13,9 +13,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm
+    BuilderInformationForm, SGAComplementsForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
-    TemplateSGA, Label, PersonalTemplateSGA
+    TemplateSGA, Label, PersonalTemplateSGA, SGAComplement
 
 
 @login_required
@@ -53,6 +53,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
             suscharinst.substance = obj
             suscharinst.organilab_context=organilabcontext
             label, created= Label.objects.get_or_create(substance= obj)
+            complement, complement_created= SGAComplement.objects.get_or_create(substance= obj)
             template= TemplateSGA.objects.filter(pk=330)[0]
             personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
@@ -62,7 +63,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personal.pk, 'substance':obj.pk}))
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personal.pk, 'substance':obj.pk, 'complement':complement.pk}))
 
     elif instance == None and request.method=='GET':
 
@@ -75,6 +76,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
     label, created_label= Label.objects.get_or_create(substance= instance)
     template= TemplateSGA.objects.get(pk=330)
     personal, created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
+    complement, sga_created = SGAComplement.objects.get_or_create(substance = instance)
 
     return render(request, 'academic/substance/create_sustance.html', {
         'objform': objform,
@@ -84,6 +86,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
         'step':1,
         'template':personal.pk,
         'substance':instance.pk,
+        'complement':complement.pk,
         'pk':instance.pk
     })
 
@@ -360,10 +363,10 @@ def change_danger_indication(request, pk):
 
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
-def step_two(request, organilabcontext, template, substance):
+def step_three(request, organilabcontext, template, substance):
     personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
     user = request.user
-
+    complement =  get_object_or_404(SGAComplement, substance__pk=substance)
     if request.method == 'POST':
 
         form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
@@ -385,7 +388,9 @@ def step_two(request, organilabcontext, template, substance):
             label = label_form.save(commit=False)
             label.builderInformation= builder
             label.save()
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+            return redirect(reverse('step_three',
+                                    kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk,
+                                            'substance':personaltemplateSGA.label.substance.pk}))
         else:
             messages.error(request, _("Invalid form"))
             context = {
@@ -393,13 +398,15 @@ def step_two(request, organilabcontext, template, substance):
                 'form': SGAEditorForm(),
                 'warningwords': WarningWord.objects.all(),
                 'generalform': PersonalFormAcademic(request.POST, user=user, substance=substance),
-                'form_url': reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}),
+                'form_url': reverse('step_three',
+                                    kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk,
+                                            'substance':personaltemplateSGA.label.substance.pk}),
                 'organilabcontext': organilabcontext,
-                'step': 2,
+                'step': 3,
                 'template': personaltemplateSGA.pk,
                 'substance': personaltemplateSGA.label.substance.pk,
             }
-            return render(request, 'academic/substance/step_two.html', context)
+            return render(request, 'academic/substance/step_three.html', context)
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
                'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
@@ -419,9 +426,43 @@ def step_two(request, organilabcontext, template, substance):
         'form': SGAEditorForm,
         "instance": personaltemplateSGA,
         'organilabcontext': organilabcontext,
+        'complement': complement.pk,
+        'sga_elements': complement,
         "generalform": PersonalFormAcademic(user=user, substance=substance, initial=initial),
-        'step': 2,
+        'step': 3,
         'template': personaltemplateSGA.pk,
         'substance': personaltemplateSGA.label.substance.pk,
+    }
+    return render(request, 'academic/substance/step_three.html', context)
+
+
+def step_two(request, organilabcontext, pk):
+    complement = get_object_or_404(SGAComplement, pk=pk)
+    form= None
+    context ={}
+    personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=complement.substance.pk).first()
+    if request.method == 'POST':
+        form = SGAComplementsForm(request.POST, instance=complement)
+        if form.is_valid():
+            obj = form.save()
+            return  redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+        else:
+            messages.error(request, _("Invalid form"))
+            context={
+                'form': SGAComplementsForm(instance=complement),
+                'organilabcontext': organilabcontext,
+                'step': 2,
+                'template': personaltemplateSGA.pk,
+                'complement': complement.pk,
+                'substance': complement.substance.pk,
+            }
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext,'complement':complement.pk, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+    context = {
+        'form': SGAComplementsForm(instance=complement),
+        'organilabcontext': organilabcontext,
+        'step': 2,
+        'complement': complement.pk,
+        'template': personaltemplateSGA.pk,
+        'substance': complement.substance.pk,
     }
     return render(request, 'academic/substance/step_two.html', context)
