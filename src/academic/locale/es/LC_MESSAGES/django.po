@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2021-05-10 17:30-0600\n"
+"PO-Revision-Date: 2022-09-28 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -457,12 +457,27 @@ msgstr ""
 
 #: academic/templates/academic/substance/list_substance.html:28
 msgid "Status"
-msgstr "EStado"
+msgstr "Estado"
+
+#: academic/templates/academic/substance/steps.html:8
+msgid "Create Substances"
+msgstr "Crear Sustancias"
+
+#: academic/templates/academic/substance/steps.html:14
+msgid "SGA Components"
+msgstr "Componentes SGA"
+
+#: academic/templates/academic/substance/steps.html:21
+msgid "Commercial Information"
+msgstr "Información Comercial"
+
+#: academic/templates/academic/substance/steps.html:29
+msgid "Security Leafs"
+msgstr "Hojas de Seguridad"
 
 #: academic/templates/academic/substance/list_substance.html:55
 #, fuzzy
-#| msgid "Delete furniture"
-msgid "Delete Substance"
+msgid "Delete furniture"
 msgstr "Eliminar pieza de mueble"
 
 #: academic/templates/academic/substance/list_substance.html:61
@@ -541,6 +556,12 @@ msgstr "Si desea editar o eliminar los observaciones que usted ha creado debe da
 
 #~ msgid "List of"
 #~ msgstr "Lista de"
+
+#~ msgid "Review"
+#~ msgstr "Revisión"
+
+#~ msgid "Detail"
+#~ msgstr "Detalle"
 
 #~ msgid "Create new "
 #~ msgstr "Crear nuevo"
