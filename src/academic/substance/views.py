@@ -63,7 +63,7 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'template':personal.pk, 'substance':obj.pk, 'complement':complement.pk}))
+            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'pk':complement.pk}))
 
     elif instance == None and request.method=='GET':
 
