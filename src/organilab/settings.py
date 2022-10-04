@@ -269,12 +269,12 @@ CELERYBEAT_SCHEDULE = {
     },
     'check_product_limits': {
         'task': 'laboratory.tasks.notify_about_product_limit_reach',
-        'schedule': crontab(minute=10, hour=0),
+        'schedule': crontab(minute=50, hour=10),
     },
     'create_precursor_reports': {
         'task': 'laboratory.tasks.create_precursor_reports',
         'schedule': crontab(minute=2, hour=0, day_of_month=1),
-    }
+    },
 }
 
 LOGGING = {
@@ -302,7 +302,7 @@ CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
     'default': {
         'height': 500,
-        'width': 875,
+        'width': 'auto',
     },
 }
 ASYNC_SMTP_DEBUG=False

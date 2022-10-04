@@ -36,6 +36,7 @@
                 <th>{% trans 'New' %}</th>
                 <th>{% trans 'Difference' %}</th>
                 <th>{% trans 'Unit' %}</th>
+                <th>{% trans 'Precursor' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -49,6 +50,11 @@
                 <td>{{obj.new_value}}</td>
                 <td>{{obj.diff_value}}</td>
                 <td>{{obj.measurement_unit}}</td>
+            {% if obj.precursor %}
+                 <td>{% trans 'Precursor'%}</td>
+            {% else %}
+                 <td></td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>

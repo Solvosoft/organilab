@@ -119,8 +119,8 @@ class TransferObjectForm(GTForm):
         lab=kwargs.pop('lab_send')
         super(TransferObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users).first()
-        self.fields['laboratory'].queryset = profile.laboratories
 
+        self.fields['laboratory'].queryset = profile.laboratories.all().exclude(pk=lab)
 
 class AddObjectForm(forms.Form):
     amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
