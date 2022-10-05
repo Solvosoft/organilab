@@ -338,3 +338,115 @@ class SGAComplement(models.Model):
         DangerIndication, verbose_name=_("Danger indication"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
+
+class Provider(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Name"))
+    country = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Country"))
+    direction = models.TextField(blank=True,null=True, verbose_name=_("Direction"))
+    telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Numero de Telefono"))
+    fax = models.CharField(max_length=30, null=True, blank=True)
+    email = models.CharField(max_length=100, verbose_name=_("Email"), null=True)
+    provider = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, verbose_name=_("Provider"), related_name="providersga")
+    emergency_phone =  models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Emergency number"))
+
+class SecurityLeaf(models.Model):
+    substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
+    provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
+    """Primeros Auxilios"""
+    general = models.TextField(null=True,blank=True)
+    inhalation = models.TextField(null=True,blank=True)
+    skin_contact = models.TextField(null=True,blank=True)
+    eye_contact = models.TextField(null=True,blank=True)
+    ingestion = models.TextField(null=True,blank=True)
+    symptoms = models.TextField(null=True,blank=True)
+    other_causes = models.TextField(null=True,blank=True)
+    medical_indication = models.TextField(null=True,blank=True)
+
+    """Medidas de lucha contra incendios"""
+    appropriate   = models.TextField(null=True,blank=True)
+    no_appropriate = models.TextField(null=True,blank=True)
+    specific_dangers = models.TextField(null=True,blank=True)
+    combustion_products = models.TextField(null=True,blank=True)
+    recomendations = models.TextField(null=True,blank=True)
+    other_info = models.TextField(null=True,blank=True)
+
+    """Medidas en caso de vertido accidental"""
+    personal_caution   = models.TextField(null=True,blank=True)
+    environmental_caution = models.TextField(null=True,blank=True)
+    methods_material_contention = models.TextField(null=True,blank=True)
+    combustion_products = models.TextField(null=True,blank=True)
+    references_sections = models.TextField(null=True,blank=True)
+    """"Manipulación_Almacenamiento"""
+    safe_handling = models.TextField(null=True,blank=True)
+    storage_conditions = models.TextField(null=True,blank=True)
+    specific_end_uses = models.TextField(null=True,blank=True)
+    """Controles de exposición/protección individual"""
+    approppiate_control = models.TextField(null=True, blank=True)
+    eye_face_protection = models.TextField(null=True, blank=True)
+    skin_protection = models.TextField(null=True, blank=True)
+    corporal_protection = models.TextField(null=True, blank=True)
+    breath_protection = models.TextField(null=True,blank=True)
+    environmental_exposition = models.TextField(null=True, blank=True)
+    """Propiedades físicas y químicas"""
+    aspect = models.TextField(null=True, blank=True, verbose_name=_("Aspect"))
+    smell = models.TextField(null=True, blank=True, verbose_name=_("Smell"))
+    olfactory_threshold = models.TextField(null=True, blank=True, verbose_name=_("Olfactory threshold"))
+    pH = models.TextField(null=True, blank=True, verbose_name=_("pH"))
+    melting_point = models.TextField(null=True, blank=True, verbose_name=_("Melting point/ point of freezing"))
+    starting_point_boiling= models.TextField(null=True, blank=True, verbose_name=_("Starting point of boiling and range boiling"))
+    flashpoint = models.TextField(null=True, blank=True, verbose_name=_("Flashpoint"))
+    evaporation_rate = models.TextField(null=True, blank=True, verbose_name=_("Evaporation rate"))
+    inflammability_solid_gas = models.TextField(null=True, blank=True, verbose_name=_("Flammability (solid,gas"))
+    Inflammability_top_bottom = models.TextField(null=True, blank=True, verbose_name=_("Inflammability top/bottom or explosive limits"))
+    vapor_pressure = models.TextField(null=True, blank=True, verbose_name=_("Vapor pressure"))
+    vapor_density = models.TextField(null=True, blank=True, verbose_name=_("Vapor density"))
+    relative_density = models.TextField(null=True, blank=True, verbose_name=_("Relative density"))
+    water_solubility = models.TextField(null=True, blank=True, verbose_name=_("Water solubility"))
+    partition_coefficient = models.TextField(null=True, blank=True, verbose_name=_("Partition coefficient n-octanol/water"))
+    auto_temperature_inflammation = models.TextField(null=True, blank=True, verbose_name=_("Auto-temperature inflammation"))
+    temperature_decomposition = models.TextField(null=True, blank=True, verbose_name=_("Temperature of decomposition"))
+    viscosity = models.TextField(null=True, blank=True, verbose_name=_("Viscosity"))
+    explosive_properties = models.TextField(null=True, blank=True, verbose_name=_("Explosive properties"))
+    properties_oxidising = models.TextField(null=True, blank=True, verbose_name=_("Properties oxidising"))
+    """EstabilidadReactividad"""
+    reactivity = models.TextField(null=True,blank=True)
+    chemical_stability = models.TextField(null=True,blank=True)
+    dangerous_reactions = models.TextField(null=True,blank=True)
+    conditions_avoid = models.TextField(null=True,blank=True)
+    incompatible_materials = models.TextField(null=True,blank=True)
+    dangerous_decomposition_products = models.TextField(null=True,blank=True)
+
+    """InformaciónToxicologica"""
+    acute_toxicity = models.TextField(null=True,blank=True, verbose_name=_("Acute toxicity"))
+    skin_irritation = models.TextField(null=True,blank=True, verbose_name=_("Skin corrosion or irritation"))
+    eye_irritation = models.TextField(null=True,blank=True, verbose_name=_("Serious eye damage or irritation"))
+    respiratory_sensitization = models.TextField(null=True,blank=True, verbose_name=_("Respiratory or skin sensitization"))
+    germ_mutagenicity = models.TextField(null=True,blank=True, verbose_name=_("Germ cell mutagenicity"))
+    carcinogenicity = models.TextField(null=True,blank=True, verbose_name=_("Carcinogenicity"))
+    reproductive_toxicity = models.TextField(null=True,blank=True, verbose_name=_("Reproductive toxicity"))
+    unique_exhibition = models.TextField(null=True,blank=True, verbose_name=_("Specific target organ toxicity - single exposure"))
+    repeated_exposures = models.TextField(null=True,blank=True, verbose_name=_("Specific target organ toxicity - repeated exposure"))
+    aspiration_hazard = models.TextField(null=True,blank=True, verbose_name=_("Aspiration hazard"))
+    additional_information = models.TextField(null=True,blank=True, verbose_name=_("Additional Information"))
+    """InformaciónEcológica"""
+    toxicity = models.TextField(null=True,blank=True, verbose_name=_("Toxicity"))
+    Persistence_degradability = models.TextField(null=True,blank=True, verbose_name=_("Persistence and degradability"))
+    bioaccumulative_potential = models.TextField(null=True,blank=True, verbose_name=_("Bioaccumulative potential"))
+    soil_mobility = models.TextField(null=True,blank=True, verbose_name=_("Soil mobility"))
+    assessment_result = models.TextField(null=True,blank=True, verbose_name=_("Results of PBT and vPvB assessment"))
+    other_adverse_effects = models.TextField(null=True,blank=True, verbose_name=_("Other adverse effects"))
+
+    """ConsideracionesRelativasEliminación"""
+    product = models.TextField(null=True, blank=True, verbose_name=_("Product"))
+    contaminated_packaging = models.TextField(null=True, blank=True, verbose_name=_("contaminated packaging"))
+    """InformaciónTransporte"""
+    onu_number = models.TextField(null=True, blank=True, verbose_name=_("ONU Number"))
+    proper_shipping_name = models.TextField(null=True, blank=True, verbose_name=_("ONU proper shipping name"))
+    transport_hazard_class = models.TextField(null=True, blank=True, verbose_name=_("Transport hazard class"))
+    packaging_group = models.TextField(null=True, blank=True, verbose_name=_("Packaging group"))
+    environmental_hazards = models.TextField(null=True, blank=True, verbose_name=_("Environmental hazards"))
+    special_precautions = models.TextField(null=True, blank=True, verbose_name=_("Special precautions for users"))
+    """InformaciónReglamentaria"""
+
+    """OtraInformacion"""
+
