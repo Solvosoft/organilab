@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from academic.models import SubstanceSGA, SubstanceObservation
 from django.contrib.auth.models import User
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
-    WarningWordForm, PrudenceAdviceForm, ObservacionForm
+    WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm
 from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -15,7 +15,7 @@ from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
     BuilderInformationForm, SGAComplementsForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
-    TemplateSGA, Label, PersonalTemplateSGA, SGAComplement
+    TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
 
 @login_required
@@ -54,7 +54,8 @@ def create_edit_sustance(request, organilabcontext, pk=None):
             suscharinst.organilab_context=organilabcontext
             label, created= Label.objects.get_or_create(substance= obj)
             complement, complement_created= SGAComplement.objects.get_or_create(substance= obj)
-            template= TemplateSGA.objects.filter(pk=330)[0]
+            leaf, leaf_created= SecurityLeaf.objects.get_or_create(substance= obj)
+            template= TemplateSGA.objects.filter(is_default=True).first()
             personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
@@ -74,9 +75,10 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
 
     label, created_label= Label.objects.get_or_create(substance= instance)
-    template= TemplateSGA.objects.get(pk=330)
+    template= TemplateSGA.objects.get(is_default=True)
     personal, created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
     complement, sga_created = SGAComplement.objects.get_or_create(substance = instance)
+    leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
 
     return render(request, 'academic/substance/create_sustance.html', {
         'objform': objform,
@@ -466,3 +468,23 @@ def step_two(request, organilabcontext, pk):
         'substance': complement.substance.pk,
     }
     return render(request, 'academic/substance/step_two.html', context)
+
+def step_four(request,organilabcontext, substance):
+    security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
+    personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=substance).first()
+    complement = SGAComplement.objects.filter(substance__pk=substance).first()
+    context = {}
+    if request.method == 'POST':
+        form = SecurityLeafForm(request.POST, instance=security_leaf)
+        print(form.errors)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('step_four',kwargs={'organilabcontext':organilabcontext,'substance':substance}))
+    form = SecurityLeafForm(instance=security_leaf)
+    context = {'step': 4,
+               'organilabcontext': organilabcontext,
+               'complement': complement.pk,
+               'template': personaltemplateSGA.pk,
+               'form':form,
+               'substance': substance}
+    return render(request,'academic/substance/step_four.html',context=context)
