@@ -212,7 +212,7 @@ class SubstanceCharacteristics(models.Model):
     number_index = models.CharField(max_length=40, verbose_name=_("Number Index"), blank=True, null=True)
     number_ce = models.CharField(max_length=40, verbose_name=_("Number CE"), blank=True, null=True)
     molecular_weight = models.CharField(max_length=30, verbose_name=_("Molecular Weight"), null=True, blank=True)
-    concentration = models.CharField(max_length=30, verbose_name=_("Molecular Weight"), null=True, blank=True)
+    concentration = models.CharField(max_length=30, verbose_name=_("Concentration"), null=True, blank=True)
 
     class Meta:
         verbose_name = _('Substance characteristic SGA')
