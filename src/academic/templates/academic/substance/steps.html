@@ -23,7 +23,7 @@
         </li>
 
         <li>
-            <a href="" class="{% if step == 3 %}selected{%else%}disabled{%endif%}" isdone="0" rel="4">
+            <a href="{% url 'step_four' organilabcontext substance %}" class="{% if step == 4 %}selected{%else%}disabled{%endif%}" isdone="0" rel="4">
                 <span class="step_no">4</span>
                 <span class="step_descr">
                     <small>{% trans 'Security Leafs'%}</small>
