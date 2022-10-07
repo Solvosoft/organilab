@@ -4,7 +4,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 
 from academic.models import SubstanceObservation
-from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice
+from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice, SecurityLeaf
 from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
@@ -47,6 +47,10 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             'nfpa': genwidgets.SelectMultiple,
             'storage_class': genwidgets.SelectMultiple,
             'seveso_list': genwidgets.YesNoInput,
+            'number_index':genwidgets.TextInput,
+            'number_ce': genwidgets.TextInput,
+            'molecular_weight':genwidgets.TextInput,
+            'concentration':genwidgets.TextInput
             # 'security_sheet': genwidgets.FileInput
 
         }
@@ -101,3 +105,18 @@ class ObservacionForm(GTForm, forms.ModelForm):
             'description': genwidgets.Textarea
 
         }
+
+class SecurityLeafForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *arg, **kwargs):
+        super(SecurityLeafForm, self).__init__(*arg,**kwargs)
+        fields= self.fields
+        for field in fields.keys():
+            if field not in['provider','substance']:
+                self.fields[str(field)].widget = genwidgets.Textarea()
+        self.fields['provider'].widget= genwidgets.Select()
+        self.fields['provider'].required= False
+    class Meta:
+        model = SecurityLeaf
+        exclude = ['substance']
+        fields = "__all__"

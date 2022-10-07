@@ -11,7 +11,7 @@ from academic.substance.views import create_edit_sustance, get_substances, get_l
     approve_substances, delete_substance, step_two, detail_substance, \
     view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
     update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication, \
-    step_three
+    step_three, step_four
 
 from django.conf.urls import url
 from django.urls import path
@@ -46,8 +46,9 @@ urlpatterns = [
     url(r'academic/delete_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', delete_substance, name='delete_substance'),
     url(r'academic/detail_substance/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', detail_substance, name='detail_substance'),
     url(r'academic/substance/step_one/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', create_edit_sustance, name='step_one'),
-    url(r'academic/substance/step_three/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', step_two, name='step_two'),
-    url(r'academic/substance/step_two/(?P<organilabcontext>\w+)/(?P<template>\d+)/(?P<substance>\d+)$', step_three, name='step_three'),
+    url(r'academic/substance/step_two/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', step_two, name='step_two'),
+    url(r'academic/substance/step_three/(?P<organilabcontext>\w+)/(?P<template>\d+)/(?P<substance>\d+)$', step_three, name='step_three'),
+    url(r'academic/substance/step_four/(?P<organilabcontext>\w+)/(?P<substance>\d+)$', step_four, name='step_four'),
     url(r'academic/substance/danger_indications$', view_danger_indications, name='danger_indications'),
     url(r'academic/substance/warning_words$', view_warning_words, name='warning_words'),
     url(r'academic/substance/prudence_advices$', view_prudence_advices, name='prudence_advices'),
