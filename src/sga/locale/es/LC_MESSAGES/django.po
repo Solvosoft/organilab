@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-07 12:24-0600\n"
+"PO-Revision-Date: 2022-10-07 15:34-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -978,6 +978,22 @@ msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
 #: sga/models.py:466
 msgid "The full text of the R-phrases referred to in points 2 and 3"
 msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
+
+#: sga/models.py:355
+msgid "Provider"
+msgstr "Proveedor"
+
+#: sga/models.py:351
+msgid "Direction"
+msgstr "Dirección"
+
+#: sga/models.py:352
+msgid "Telephone number"
+msgstr "Numero de Telefono"
+
+#: sga/models.py:356
+msgid "Emergency number"
+msgstr "Numero de emergencia"
 
 #~ msgid "Sustance"
 #~ msgstr "Sustancia"
