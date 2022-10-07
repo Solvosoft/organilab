@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n laboratory static bootstrap%}
+{% load i18n laboratory static %}
 {% load gtsettings %}
 
 {% block pre_head %}
@@ -58,7 +58,7 @@
                  </div>
                 <form id="reservation_form">
                     {% csrf_token %}
-                    {{reservation_form | bootstrap}}
+                    {{ reservation_form.as_horizontal }}
                     <input type="hidden" id="procedure" name="procedure" value="">
                     <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
                 </form>

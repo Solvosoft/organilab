@@ -4,7 +4,7 @@ from laboratory import catalog
 from laboratory.models import Object, ShelfObject, Catalog, ObjectFeatures
 
 # Create your models here.
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from academic.presentation import HTMLPresentation
 from sga.models import DangerIndication
 from tagging.registry import register

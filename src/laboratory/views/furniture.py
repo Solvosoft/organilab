@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_ajax.decorators import ajax
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom

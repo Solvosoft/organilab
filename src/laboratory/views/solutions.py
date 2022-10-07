@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, DetailView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required

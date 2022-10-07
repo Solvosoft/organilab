@@ -6,7 +6,7 @@ Created on 29 jun. 2018
 
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django import forms
 from msds.models import MSDSObject
