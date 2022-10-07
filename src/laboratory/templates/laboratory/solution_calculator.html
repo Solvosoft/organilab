@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n bootstrap laboratory %}
+{% load i18n laboratory %}
 
 {% block title %}{% trans 'Solution calculator' %}{% endblock %}
 
@@ -7,7 +7,7 @@
 	<h1>{% trans 'Solution calculator' %}</h1>
 	{% if perms.laboratory.view_solution and perms.laboratory.add_solution %}
 		<form method="post" action="">{% csrf_token %}
-			{{ form | bootstrap }}
+			{{ form.as_horizontal }}
 			<input type="submit" class="btn btn-primary" value="{% trans 'Calculate' %}">
 		</form>
 

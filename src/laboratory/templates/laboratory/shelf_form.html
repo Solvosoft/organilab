@@ -1,4 +1,4 @@
-{% load bootstrap shelf_position i18n laboratory %}
+{% load shelf_position i18n laboratory %}
 
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
 		action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create' laboratory %}{%else%}{% url 'laboratory:shelf_edit' laboratory form.instance.pk form.row.value form.col.value %}{%endif%}" method="post">
@@ -10,7 +10,7 @@
 		{% endif %}
 		
 		{% csrf_token %}
-		{{ form|bootstrap }}
+		{{ form.as_horizontal }}
 	</div>
 	
 	<div class="modal-footer">

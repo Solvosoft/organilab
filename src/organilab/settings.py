@@ -39,13 +39,10 @@ INSTALLED_APPS = [
     'laboratory',
     'authentication',
     'academic',
-    "bootstrapform",
     "djreservation",
     "celery",
     'location_field',
     'mptt',
-    'constance',
-    'constance.backends.database',
     'rest_framework',
     'rest_framework.authtoken',
     'snowpenguin.django.recaptcha2',
@@ -106,8 +103,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
-                'django.contrib.messages.context_processors.messages',
-                'constance.context_processors.config',
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -223,24 +219,7 @@ LOCATION_FIELD = {
     'resources.root_path': LOCATION_FIELD_PATH,
 }
 
-CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
-CONSTANCE_CONFIG = {
-    'GROUP_ADMIN_PK': (1, 'User perms Group with complete access on laboratory, '
-                       'User Administrator of labotatory', int),
-    'GROUP_LABORATORIST_PK': (2, 'User perms Group with access controlling to laboratory '
-                       'User Laboratorist/Professor of labotatory', int),
-    'GROUP_STUDENT_PK': (3, 'User perms Group with low access to laboratory '
-                       'User Student of labotatory', int),
-    'ADSENSE_ACTIVE': (True, 'Active the Ads', bool),
-    'ADSENSE_PUB_TOKEN': ('ca-pub-1539451676311396', 'Google adsense public key'
-                          'for monitarize the website', str),
-}
 
-CONSTANCE_CONFIG_FIELDSETS = {
-    'Default Groups': ('GROUP_ADMIN_PK', 'GROUP_LABORATORIST_PK',
-                       'GROUP_STUDENT_PK', 'ADSENSE_ACTIVE',
-                       'ADSENSE_PUB_TOKEN'),
-}
 
 ACCOUNT_ACTIVATION_DAYS = 2
 CKEDITOR_UPLOAD_PATH = 'editoruploads/'

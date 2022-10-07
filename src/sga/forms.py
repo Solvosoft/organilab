@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.forms.forms import GTForm

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load laboratory bootstrap static i18n  %}
+{% load laboratory static i18n  %}
 
 {% block title %}{% trans 'Risk Zone Management' %}{% endblock %}
 {% block content %}
@@ -23,7 +23,7 @@
 
       {% csrf_token %}
 	      <div class="row">
-	          {{ form|bootstrap }}
+	          {{ form.as_horizontal }}
 	        <div id="save_button1" class="col-md-1">
 	          <button class="btn btn-success" type="submit">
 	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}

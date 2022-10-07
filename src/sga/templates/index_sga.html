@@ -1,19 +1,10 @@
-<!--
-@organization: Solvo
-@license: GNU General Public License v3.0
-@date: Created on 13 sept. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
--->
-
 {% extends 'base.html' %}
-{% load i18n bootstrap %}
+{% load i18n %}
 {% load static %}
 
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
-{# Paper Bootstrap Wizard #}
 <link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
 {% endblock css %}
 
@@ -59,6 +50,4 @@
                     <a type="button" class="btn btn-info btn-fill" href="{% url 'sga:information' %}" >{% trans 'Create a GHS Label' %}<span class="glyphicon glyphicon-chevron-right"></span></a>
                 </div>
         </div>
-
-{# End wizard container #}
 {% endblock content %}

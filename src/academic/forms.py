@@ -1,20 +1,21 @@
-from ckeditor.widgets import CKEditorWidget
 from django import forms
+from djgentelella.widgets.wysiwyg import TextareaWysiwyg
+
 from .models import ProcedureStep, Procedure
 from django.conf import settings
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from laboratory.models import Object,Catalog,Shelf
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from organilab.settings import DATETIME_INPUT_FORMATS
 
 
-class ProcedureForm(forms.ModelForm):
+class ProcedureForm(forms.ModelForm, GTForm):
     class Meta:
         model = Procedure
         fields = ['title', 'description']
         widgets = {
-            'description': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+            'description': TextareaWysiwyg,
             'title':genwidgets.TextInput()
         }
 
@@ -24,7 +25,7 @@ class ProcedureStepForm(forms.ModelForm,GTForm):
         model = ProcedureStep
         fields = ['title', 'description']
         widgets = {
-            'description': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+            'description': TextareaWysiwyg,
             'title': genwidgets.TextInput
         }
 
@@ -41,7 +42,7 @@ class ObjectForm(GTForm, forms.Form):
 
 class StepForm(GTForm, forms.Form):
     title = forms.CharField(widget=genwidgets.TextInput, label=_('title'))
-    description = forms.CharField(widget=CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+    description = forms.CharField(widget=TextareaWysiwyg,
                                   label=_('Description'))
 
 

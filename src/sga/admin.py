@@ -8,7 +8,7 @@ from .utils import render_pdf_view
 # Register your models here.
 #from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def make_label_pdf(modeladmin, request, queryset):

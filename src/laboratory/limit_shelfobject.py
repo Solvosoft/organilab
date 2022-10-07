@@ -1,4 +1,3 @@
-from __future__ import absolute_import, unicode_literals
 from laboratory.models import Profile
 from django.conf import settings
 from async_notifications.utils import send_email_from_template

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 
-{% block extra_css %}
-<link href="{% static 'vendors/datatables/dataTables.bootstrap.min.css' %}" />
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
 {% endblock %}
+
 
 {% block content %}
 <div class="row">
@@ -40,9 +41,6 @@
 
 {% block js %}
 {{block.super}}
-
-<script src="{% static 'vendors/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendors/datatables/dataTables.bootstrap.min.js' %}"></script>
 
 <script>
 

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n laboratory %}
+{% load i18n laboratory %}
 
 {% block title %}{% trans 'Organization laboratory report' %}{% endblock %}
 
@@ -10,7 +10,7 @@
   	 <form action="#" method="post" class="table-responsive">
 	        {% csrf_token %}
 	        <table class="table" >
-	        {{ form|bootstrap_horizontal }}
+	        {{ form.as_horizontal }}
 	        </table>
 	        <input cd type="submit" value={% trans 'Submit' %} />
 	 </form>
