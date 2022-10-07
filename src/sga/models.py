@@ -349,12 +349,14 @@ class Provider(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Name"))
     country = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Country"))
     direction = models.TextField(blank=True,null=True, verbose_name=_("Direction"))
-    telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Numero de Telefono"))
+    telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Telephone number"))
     fax = models.CharField(max_length=30, null=True, blank=True)
-    email = models.CharField(max_length=100, verbose_name=_("Email"), null=True)
+    email = models.CharField(max_length=100, verbose_name=_("Email"), null=True, blank=True)
     provider = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, verbose_name=_("Provider"), related_name="providersga")
     emergency_phone =  models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Emergency number"))
 
+    def __str__(self):
+        return self.name
 class SecurityLeaf(models.Model):
     substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
     provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
