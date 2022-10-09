@@ -14,8 +14,7 @@ from laboratory.models import (CLInventory,
                                OrganizationStructure,
                                OrganizationUserManagement,
                                Profile,
-                               Laboratory,
-                               Solution,
+                               Laboratory
                                )
 from academic.models import (Procedure,
                              ProcedureStep,
@@ -39,7 +38,6 @@ def create_perms(codename):
         "laboratoryroom": LaboratoryRoom,
         "organizationusermanagement": OrganizationUserManagement,
         "profile": Profile,
-        "solution": Solution,
         "procedure": Procedure,
         "procedurestep": ProcedureStep,
         "procedurerequiredobject": ProcedureRequiredObject,
@@ -95,10 +93,6 @@ def load_group_perms(apps, schema_editor):
         "view_procedurestep", "add_procedurestep", "change_procedurestep", "delete_procedurestep",
         # procedurerequiredobject
         "view_procedurerequiredobject", "add_procedurerequiredobject", "change_procedurerequiredobject", "delete_procedurerequiredobject",
-
-        # solutions
-        "view_solution", "add_solution", "change_solution",
-
         # laboratory
         "view_laboratory",
     ]
@@ -130,10 +124,7 @@ def load_group_perms(apps, schema_editor):
         # onsertation
         "view_observation", "add_observation", "change_observation", "delete_observation",
         # CL Inventory
-        "view_clinventory", "add_clinventory", "change_clinventory", "delete_clinventory", "add_solution",
-        # solutions
-        "view_solution", "add_solution", "change_solution", "delete_solution",
-
+        "view_clinventory", "add_clinventory", "change_clinventory", "delete_clinventory",
         # reports
         "view_report", "do_report",
     ]

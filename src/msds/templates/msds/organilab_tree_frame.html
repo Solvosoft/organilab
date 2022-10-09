@@ -1,10 +1,11 @@
 {% load mptt_tags %}
-{% load fontawesome %}
+
 <html>
 <head>
-  {% fontawesome_stylesheet %}
+
 <link href="https://revealjs.com/css/reveal.css" rel="stylesheet" type="text/css" />
 <link href="https://revealjs.com/css/theme/white.css" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
@@ -16,7 +17,8 @@
                    
            {% if not node.is_root_node %}
            		<a class="child_parent" href="#slide-{{node.parent_id}}"> 
-           		{% fontawesome_icon 'angle-left'  %}
+           		<i class="fa fa-angle-left" aria-hidden="true"></i>
+
            		{{node.parent.name}} </a>
            {% endif %}
         
@@ -35,7 +37,7 @@
 	         {% if child.icon and child.icon.as_html %}
 	         	{{child.icon.as_html }}
 	         {% else %}
-	        	{% fontawesome_icon 'android'  %}
+	        	<i class="fa fa-android" aria-hidden="true"></i>
 	         {% endif %}
        {% endif %}
          </a> </li>
@@ -48,10 +50,10 @@
         </section>
         
         
-       {% if not node.is_leaf_node %}
-             {{ children }}
-       {% endif %}
-    {% endrecursetree %}			
+           {% if not node.is_leaf_node %}
+                 {{ children }}
+           {% endif %}
+        {% endrecursetree %}
 			
 			</div>
     </div>

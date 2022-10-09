@@ -13,7 +13,7 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory, solutions, organizations
+from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.access import access_management, users_management, delete_user, edit_management
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
@@ -135,14 +135,6 @@ lab_features_urls = [
         name='object_feature_delete'),
 ]
 
-solutions_urls = [
-    url(r'^calculator$', solutions.SolutionCalculatorView.as_view(),
-        name='solution_calculator'),
-    url(r'^$', solutions.SolutionListView.as_view(), name='solution_list'),
-    url(r'^(?P<pk>\d+)$', solutions.SolutionDetailView.as_view(),
-        name='solution_detail')
-]
-
 edit_objects=[
     url(r"^edit_object/(?P<pk>\d+)$", shelfobject.add_object,
         name="edit_object"),
@@ -200,7 +192,6 @@ urlpatterns += sustance_urls + organization_urls + [
     url(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
-    url(r'^lab/(?P<lab_pk>\d+)/solutions/', include(solutions_urls)),
     url(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
     url(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),

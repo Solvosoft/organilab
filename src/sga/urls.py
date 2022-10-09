@@ -10,7 +10,6 @@ from django.urls import path
 from .views import index_sga, template, editor, render_pdf_view
 
 from django.conf.urls import url, include
-from ajax_select import urls as ajax_select_urls
 from . import views
 
 # SGA
@@ -21,9 +20,6 @@ urlpatterns = [
     # sga/index_sga/
     path('index_sga', index_sga, name='index_sga'),
     path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
-    # Django Ajax Selects
-    url(r'^ajax_select/', include(ajax_select_urls)),
-
     # sga/editor
     url(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
     url(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
