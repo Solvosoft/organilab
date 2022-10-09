@@ -1,16 +1,12 @@
 {% extends "base.html" %}
-{% load bootstrap i18n %}
+{% load i18n %}
 
 {% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
 
 
 
 {% block content %}
-<style>
-.django-ckeditor-widget{
-  width: 100% !important;
-}
-</style>
+
 <div class="box-body">
 
     <a class="btn btn-primary" href="{% url 'procedure_list' pk=lab_pk %}"><<</a>

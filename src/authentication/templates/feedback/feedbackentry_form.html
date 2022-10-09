@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n bootstrap %}
+{% load i18n %}
 
 {% block title %}{% trans 'Feedback' %}{% endblock %}
 
@@ -13,7 +13,7 @@
         <form action="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{% endif %}"
          method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          {{ form | bootstrap }}
+          {{ form.as_horizontal }}
           <input class='btn btn-primary' type='submit' value='{% trans "Send" %}'>
         </form>
       </div>

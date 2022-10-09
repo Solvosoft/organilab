@@ -4,7 +4,7 @@ import json
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
 from django.db.models import Q,Sum
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db.models.expressions import F

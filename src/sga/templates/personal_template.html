@@ -1,6 +1,6 @@
 {% extends 'label_index.html' %}
 {% load i18n %}
-{% load static bootstrap %}
+{% load static %}
 
 {# CSS #}
 {% block css %}
@@ -79,7 +79,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' organilabcontext='laboratory' %}">
-                        {{form}}
+                        {{form.as_horizontal}}
                         <button type="submit" class="btn btn-success" style="margin-top: 3%;">{% trans 'Continue' %}</button>
                     </form>
                 </div>

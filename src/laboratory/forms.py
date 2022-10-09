@@ -7,7 +7,7 @@ from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,S
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets

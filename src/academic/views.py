@@ -13,7 +13,7 @@ from laboratory.models import Object, Catalog, Furniture, ShelfObject
 from reservations_management.models import ReservedProducts
 from . import convertions
 import json
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 @permission_required('academic.add_procedurestep')

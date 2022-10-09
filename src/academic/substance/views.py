@@ -9,7 +9,7 @@ from academic.substance.forms import SustanceObjectForm, SustanceCharacteristics
     WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm
 from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \

@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from laboratory.models import Object

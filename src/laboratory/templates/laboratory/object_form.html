@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n laboratory %}
+{% load i18n laboratory %}
 
 {% block content %}
 	<div class="row">
 		<h1 align="center">{% trans 'Objects Management' %}</h1>
 		{% if perms.laboratory.change_object or perms.laboratory.add_object %}
 			<form action="" method="post">{% csrf_token %}
-				{{ form|bootstrap  }}
+				{{ form.as_horizontal  }}
 				<input type="submit" value="{% trans 'Save' %}">
 			</form>
 		{% else %}
