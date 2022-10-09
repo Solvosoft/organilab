@@ -1,4 +1,4 @@
-from chunked_upload.models import ChunkedUpload
+from djgentelella.models import ChunkedUpload
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required

@@ -448,41 +448,8 @@ class Profile(models.Model):
     laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
     job_position = models.CharField(_('Job Position'), max_length=100)
 
-
     def __str__(self):
         return '%s' % (self.user,)
-
-
-class Solution(models.Model):
-    name = models.CharField(_('Name'), default='', max_length=255)
-    solutes = models.TextField(_('Solutes'))
-    volume = models.CharField(_('Volumen'), max_length=100)
-    temperature = models.CharField(
-        _('Temperature'), default='25 degC', max_length=100)
-    pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
-    pH = models.IntegerField(_('pH'), default=7)
-
-    class Meta:
-        verbose_name = _('Solution')
-        verbose_name_plural = _('Solutions')
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def solute_list(self):
-        return ast.literal_eval(self.solutes)
-
-    @property
-    def solution_object(self):
-        from pyEQL import Solution as PySolution
-        return PySolution(
-            solutes=self.solute_list,
-            volume=self.volume,
-            temperature=self.temperature,
-            pressure=self.pressure,
-            pH=self.pH
-        )
 
 class Rol(models.Model):
     name = models.CharField(blank=True,max_length=100)

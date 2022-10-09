@@ -21,7 +21,6 @@ from laboratory import urls as laboratory_urls
 
 from djreservation import urls as djreservation_urls
 from academic.urls import urlpatterns as academic_urls
-from ajax_select import urls as ajax_select_urls
 from authentication.urls import urlpatterns as auth_urls
 from django.conf import settings
 
@@ -46,9 +45,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     url(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
     url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     url(r'^', include((api_urls,'api'), namespace='api')),
-    url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
-    url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^weblog/', include('djgentelella.blog.urls')),
     url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
     url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
