@@ -16,7 +16,7 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
 from .djgeneric import CreateView, UpdateView, DeleteView, ListView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djgentelella.widgets.selects import AutocompleteSelect
 from ..logsustances import log_object_change, log_object_add_change
 from django.views.generic.edit import FormView
