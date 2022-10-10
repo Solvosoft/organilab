@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
-{% load bootstrap recaptcha2 i18n %}
+{% load i18n %}
 
-{% block css %} {% recaptcha_init 'es' %} {% endblock %}
 {% block content %}
 <div class="row">
 <div class="col-md-offset-3 col-md-6" >
@@ -9,7 +8,7 @@
 	enctype="multipart/form-data" role="form">
 	    <legend>{% trans 'Add new MSDS' %}</legend>
 	    {% csrf_token %}
-	    {{ form|bootstrap }}
+	    {{ form.as_horizontal }}
 	    <div class="form-group">
 	      <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
 	    </div>

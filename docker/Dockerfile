@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7-buster
+FROM python:3.8-bullseye
 ENV PYTHONUNBUFFERED 1
 
 ARG UID=1000

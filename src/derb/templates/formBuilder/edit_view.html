@@ -1,0 +1,58 @@
+{% extends 'formBuilder/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+
+{% block head %}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> 
+    {% endblock %}
+
+    {% block content %}
+    <div class="row justify-content-center">
+        <h1 id="form_name"> </h1>
+        <a title="Change Name" onclick="editForm()" class="btn btn-sm btn-default edit_name_btn" ><span class="glyphicon glyphicon-pencil"></span> </a> 
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 pt-5 text-center">
+                <button class="btn btn-primary btn-block" id="save_btn" name="" onclick="save_form_schema()">Save Form</button>
+            </div>
+        </div>
+        <div class="row pt-2">
+            <div id='formio' class="col-md-12 pt-2"></div>
+        </div>
+
+        <br>
+        <button class="btn btn-sm btn-primary" onclick="save()" title="Form List" style="float: right;">Return to Form List</button> 
+    </div>
+    {% endblock %}
+
+    {% block javascript %}
+<script>
+    window.urls = {
+    editview: "{% url 'derb:edit_view' %}",
+    formlist: "{% url 'derb:form_list' %}"
+    }
+</script>
+    <script type="text/javascript">
+        var form_schema;
+        var saved = {{ saved_schema | safe }};    
+        document.getElementById("form_name").textContent = saved.name;
+
+        function save() {
+            saved.name = document.getElementById("form_name").textContent;
+            redirectSave();
+        }
+        
+    </script>
+    <script src="{% static 'js/edit_view.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/FormioController.js' %}"></script> 
+    {% endblock %}
+
+</html>

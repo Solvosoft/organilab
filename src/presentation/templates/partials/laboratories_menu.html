@@ -15,13 +15,6 @@
           <a href="{% url 'academic_procedure_list' %}">{% trans 'Procedures' %}</a>
         </li>
       {% endif %}
-      {% if laboratory.view_solution %}
-        <li>
-          <a href="{% url 'laboratory:solution_list' laboratory %}">
-            {% trans 'Dissolution calculator (experimental)' %}
-          </a>
-        </li>
-      {% endif %}
       {% if laboratory.change_laboratory %}
         <li>
           <a href="{% url 'laboratory:laboratory_update' laboratory %}">

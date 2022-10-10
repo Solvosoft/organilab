@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+                {% include 'academic/substance/steps.html' %}
+            <br>
+        </div>
+    </div>
+    <div class="row text-center">
+        <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
+    </div>
+    <br>
+    <form class="form-horizontal" action="{% url 'step_two' organilabcontext complement %}" method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-offset-2 col-md-8" >
+           {{ form }}
+        </div>
+    </div>
+    <div class="col-md-12 text-center" style="display:inline-block">
+        <button type="submit" class="btn btn-success">Continuar</button>
+    </div>
+    </form>
+    </div>
+
+</div>
+
+{% endblock %}
+

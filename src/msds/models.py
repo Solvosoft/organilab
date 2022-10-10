@@ -1,9 +1,7 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
-from fontawesome.fields import IconField
-# Create your models here.
 
 
 class MSDSObject(models.Model):
@@ -24,7 +22,7 @@ class OrganilabNode(MPTTModel):
     description = models.TextField(null=True, blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE,
                             null=True, blank=True, related_name='children')
-    icon = IconField(null=True, blank=True)
+    icon = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="nodes/", null=True, blank=True)
 
     def __str__(self):

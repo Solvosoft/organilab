@@ -1,0 +1,14 @@
+<div role="tabpanel" class="tab-pane active" id="general">
+
+    <form id="sgaform"  method="post" action="{{form_url}}">
+        {% csrf_token %}
+        {% if instance %}
+            <input type="hidden" name="instance" value="{{instance.pk}}">
+        {% endif %}
+        {{generalform}}
+        {% if instance.logo %}
+            <span id="logo_name"></span>
+        {% endif %}
+    </form>
+
+</div>

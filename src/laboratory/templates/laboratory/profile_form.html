@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n laboratory %}
+{% load i18n laboratory %}
 
 {% block content %}
 	<div class="row">
@@ -7,7 +7,7 @@
 		{% if perms.laboratory.change_profile  %}
 			<form method="POST">
 				{% csrf_token %}
-				{{ profile_form | bootstrap  }}
+				{{ profile_form.as_horizontal  }}
 				<div class="form-group">
 					<label>{% trans 'Roles' %}</label>
 				<select name="roles" data-widget="SelectMultiple" multiple class="form-control" required>

@@ -1,4 +1,4 @@
-{% load i18n bootstrap %}
+{% load i18n %}
 
 <div aria-hidden="true"  class="modal fade" id="object_modal" role="dialog"
      tabindex="-1">
@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <form id="object_form">
                     {% csrf_token %}
-                    {{object_form | bootstrap}}
+                    {{object_form.as_horizontal}}
                 </form>
             </div>
             <div class="modal-footer">

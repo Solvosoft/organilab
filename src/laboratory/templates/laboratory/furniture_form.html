@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load laboratory bootstrap staticfiles i18n  %}
+{% load laboratory static i18n  %}
 
 
 
@@ -21,7 +21,7 @@
       {% csrf_token %}
 	      <div class="row">
 	        <div id="furniture_form" class="col-md-4 col-md-offset-2">
-	          {{ form|bootstrap_horizontal }}
+	          {{ form.as_horizontal }}
 	        </div>
 	        <div id="save_button1" class="col-md-1">
 	          <button class="btn btn-success" type="submit">

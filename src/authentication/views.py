@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.urls.base import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from authentication.forms import DemoRequestForm

@@ -5,23 +5,22 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  re_path(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
-from django.urls import re_path
+from django.urls import re_path, path
 
 from laboratory import urls as laboratory_urls
 
 from djreservation import urls as djreservation_urls
 from academic.urls import urlpatterns as academic_urls
-from ajax_select import urls as ajax_select_urls
 from authentication.urls import urlpatterns as auth_urls
 from django.conf import settings
 
@@ -40,26 +39,24 @@ from reservations_management.urls import urlpatterns as reservation_management_u
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 
 urlpatterns = urls_djgentelela + auth_urls + [
-    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'^$', index_organilab, name='index'),
-    url(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
-    url(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
-    url(r'^', include((api_urls,'api'), namespace='api')),
-    url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
-    url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'^weblog/', include('djgentelella.blog.urls')),
-    url(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
-    url(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
-    url(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
-    url(r'^markitup/', include('markitup.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^donate$', donate, name='donate'),
-    url(r'^donate_success$', donate_success, name='donate_success'),
+    path('derb/', include('derb.urls')),
+    re_path(r'^$', index_organilab, name='index'),
+    re_path(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
+    re_path(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
+    re_path(r'^', include((api_urls,'api'), namespace='api')),
+    re_path(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
+    re_path(r'^weblog/', include('djgentelella.blog.urls')),
+    re_path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
+    re_path(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
+    re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
+    re_path(r'^markitup/', include('markitup.urls')),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^donate$', donate, name='donate'),
+    re_path(r'^donate_success$', donate_success, name='donate_success'),
 ]
 
 paypal_urls = [
-    url(r'^paypal/', include('paypal.standard.ipn.urls')),
+    re_path(r'^paypal/', include('paypal.standard.ipn.urls')),
 ]
 
 urlpatterns += paypal_urls
@@ -70,12 +67,5 @@ urlpatterns += reservations_management_api_urlpatterns
 
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-
-if settings.DEBUG_TOOLBAR:
-   import debug_toolbar
-   urlpatterns = [
-       url(r'^__debug__/', include(debug_toolbar.urls)),
-   ] + urlpatterns

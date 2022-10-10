@@ -4,7 +4,7 @@ import json
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
 from django.db.models import Q,Sum
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db.models.expressions import F
@@ -107,7 +107,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="IDMG")
     white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key",
                                             key_value="white_organ", blank=True)
-    bioaccumulable = models.NullBooleanField(default=False)
+    bioaccumulable = models.BooleanField(null=True)
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
@@ -448,41 +448,8 @@ class Profile(models.Model):
     laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
     job_position = models.CharField(_('Job Position'), max_length=100)
 
-
     def __str__(self):
         return '%s' % (self.user,)
-
-
-class Solution(models.Model):
-    name = models.CharField(_('Name'), default='', max_length=255)
-    solutes = models.TextField(_('Solutes'))
-    volume = models.CharField(_('Volumen'), max_length=100)
-    temperature = models.CharField(
-        _('Temperature'), default='25 degC', max_length=100)
-    pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
-    pH = models.IntegerField(_('pH'), default=7)
-
-    class Meta:
-        verbose_name = _('Solution')
-        verbose_name_plural = _('Solutions')
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def solute_list(self):
-        return ast.literal_eval(self.solutes)
-
-    @property
-    def solution_object(self):
-        from pyEQL import Solution as PySolution
-        return PySolution(
-            solutes=self.solute_list,
-            volume=self.volume,
-            temperature=self.temperature,
-            pressure=self.pressure,
-            pH=self.pH
-        )
 
 class Rol(models.Model):
     name = models.CharField(blank=True,max_length=100)

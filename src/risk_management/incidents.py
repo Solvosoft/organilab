@@ -12,7 +12,7 @@ from laboratory.decorators import user_group_perms
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from laboratory.decorators import has_lab_assigned
 
 

@@ -1,0 +1,47 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <a href="{% url 'add_danger_indication' %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
+        <table id="danger_table" class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Warning Words' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for elem in listado %}
+                <tr>
+                    <td>{{elem.code}}</td>
+                    <td>{{elem.description}}</td>
+                    <td>{{elem.warning_words}}</td>
+                    <td>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_danger_indication' elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+
+<script>
+
+(function(){
+    $("#danger_table").DataTable();
+})(jQuery);
+</script>
+
+{% endblock %}

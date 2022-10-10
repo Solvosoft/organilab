@@ -1,0 +1,28 @@
+{% load i18n %}
+{% if perms.sga.view_label %}
+<li>
+    <a>
+        <i class="fa fa-tags"></i>
+        {% trans 'SGA Components' %}
+        <span class="fa fa-chevron-down">
+    </span>
+    </a>
+    <ul class="nav child_menu">
+        <li>
+            <a href="{% url 'warning_words'%}">
+                {% trans 'Warning Words' %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'danger_indications'%}">
+                {% trans 'Danger Indication' %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'prudence_advices'%}">
+                {% trans 'Prudence Advice' %}
+            </a>
+        </li>
+    </ul>
+</li>
+{% endif %}

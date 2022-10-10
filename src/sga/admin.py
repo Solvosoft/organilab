@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from sga.models import TemplateSGA
+from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
     RecipientSize, Donation
@@ -8,7 +8,7 @@ from .utils import render_pdf_view
 # Register your models here.
 #from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def make_label_pdf(modeladmin, request, queryset):
@@ -49,7 +49,7 @@ class AdminDangerIndication(admin.ModelAdmin):
 
 
 class AdminSustance(admin.ModelAdmin):
-    filter_horizontal = ['components', 'danger_indications']
+    filter_horizontal = ['components_sga', 'danger_indications']
 
 
 class DonationAdmin(admin.ModelAdmin):
@@ -65,3 +65,5 @@ admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)
 admin.site.register(TemplateSGA)
 admin.site.register(Donation, DonationAdmin)
+admin.site.register(PersonalTemplateSGA)
+admin.site.register(SecurityLeaf)
