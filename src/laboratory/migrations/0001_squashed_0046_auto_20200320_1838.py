@@ -6,7 +6,10 @@ from django.db import migrations, models
 import django.db.models.deletion
 import laboratory.validators
 import location_field.models.plain
-import mptt.fields
+try:
+    import mptt.fields as mpttfields
+except:
+    mpttfields = None
 from ._migrations_run_python_code import create_groups, load_group_perms
 
 # Functions from the following migrations need manual copying.
@@ -230,7 +233,11 @@ class Migration(migrations.Migration):
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='auth.Group')),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure')),
+                ('parent', mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                                     related_name='children', to='laboratory.OrganizationStructure'
+                                                     ) if mpttfields else models.ForeignKey(blank=True, null=True,
+                    on_delete=django.db.models.deletion.CASCADE, related_name='children',
+                    to='laboratory.OrganizationStructure')),
             ],
             options={
                 'verbose_name': 'Organization',
@@ -281,12 +288,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='principaltechnician',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, blank=True, null=True,  to='laboratory.OrganizationStructure'),
         ),
         migrations.AddField(
             model_name='laboratory',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, blank=True, null=True,  to='laboratory.OrganizationStructure'),
         ),
         migrations.AlterModelOptions(
             name='feedbackentry',
@@ -343,7 +352,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratory',
             name='organization',
-            field=mptt.fields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
+            field=mpttfields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,  to='laboratory.OrganizationStructure'),
         ),
         migrations.DeleteModel(
             name='FeedbackEntry',
@@ -375,7 +385,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratory',
             name='organization',
-            field=mptt.fields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
+            field=mpttfields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, verbose_name='Organization',  to='laboratory.OrganizationStructure'),
         ),
         migrations.AlterField(
             model_name='laboratory',
@@ -400,7 +411,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organizationstructure',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure', verbose_name='Parent'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure', verbose_name='Parent') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, verbose_name='Parent', blank=True, null=True, related_name='children', to='laboratory.OrganizationStructure'),
         ),
         migrations.AlterField(
             model_name='principaltechnician',
@@ -410,7 +422,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='principaltechnician',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization') if mpttfields else models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, verbose_name='Organization', blank=True, null=True, to='laboratory.OrganizationStructure'),
         ),
         migrations.AlterField(
             model_name='shelf',

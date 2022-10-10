@@ -1,6 +1,5 @@
 from django.contrib import admin
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
-from mptt.admin import DraggableMPTTAdmin
 
 
 class msdsAdmin(admin.ModelAdmin):
@@ -8,7 +7,7 @@ class msdsAdmin(admin.ModelAdmin):
     list_display = ['provider', 'product']
 
 
-class OrganilabNodeMPTTAdmin(DraggableMPTTAdmin):
+class OrganilabNodeMPTTAdmin(admin.ModelAdmin):
     mptt_level_indent = 20
 
 
