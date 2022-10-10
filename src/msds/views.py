@@ -6,7 +6,7 @@ from djgentelella.cruds.base import CRUDView
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
 from django.shortcuts import render

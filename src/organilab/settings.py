@@ -15,7 +15,6 @@ SECRET_KEY = os.getenv('SECRET_KEY',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR', 'False') == 'True'
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
@@ -44,16 +43,11 @@ INSTALLED_APPS = [
     'location_field',
     'rest_framework',
     'rest_framework.authtoken',
-    'snowpenguin.django.recaptcha2',
+    'captcha',
     'msds',
     'sga',
     'async_notifications',
-    'ckeditor',
-    #'fontawesome',
     'django_celery_results',
-    'tagging',
-    'ckeditor_uploader',
-    #    'debug_toolbar',
     'risk_management',
     'markitup',
     'djgentelella',
@@ -66,9 +60,6 @@ INSTALLED_APPS = [
     'derb'
 ]
 
-if DEBUG_TOOLBAR:
-    INSTALLED_APPS += ['debug_toolbar',]
-
 
 IMAGE_CROPPING_JQUERY_URL = None
 MIDDLEWARE = [
@@ -78,11 +69,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-]
-if DEBUG_TOOLBAR:
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
-
-MIDDLEWARE += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djreservation.middleware.ReservationMiddleware',
     'authentication.middleware.ProfileMiddleware'
@@ -217,15 +203,12 @@ LOCATION_FIELD = {
     'resources.root_path': LOCATION_FIELD_PATH,
 }
 
-
-
 ACCOUNT_ACTIVATION_DAYS = 2
-CKEDITOR_UPLOAD_PATH = 'editoruploads/'
 DATATABLES_SUPPORT_LANGUAGES = {
     'es': '//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json'
 }
 
-ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'ckeditor.widgets.CKEditorWidget'
+ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 
 from celery.schedules import crontab
 
@@ -304,3 +287,9 @@ MY_PAYPAL_HOST="http://localhost:8000/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_ORGANILAB_CONTEXT = ['academic', 'laboratory']
+
+
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+

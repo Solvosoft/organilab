@@ -1,8 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-# Create your models here.
-from tagging.registry import register
-from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 
@@ -153,7 +150,7 @@ class Substance(models.Model):
     danger_indications = models.ManyToManyField(
         DangerIndication,
         verbose_name=_("Danger indications"))
-    synonymous = TagField(verbose_name=_("Synonymous"))
+    synonymous = models.TextField(verbose_name=_("Synonymous"))
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
@@ -180,7 +177,6 @@ class Substance(models.Model):
         verbose_name_plural = _('Substances')
 
 
-register(Substance)
 
 class SubstanceCharacteristics(models.Model):
     substance = models.OneToOneField(Substance, on_delete=models.CASCADE, null=True)

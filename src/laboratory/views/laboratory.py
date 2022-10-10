@@ -1,13 +1,12 @@
 # encoding: utf-8
 from django import forms
-from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.db.models import query
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -79,11 +78,10 @@ class LaboratoryView(object):
 
     def get_urls(self):
         return [
-            url(r'^list', self.list, name='laboratory_list'),
-            url(r'^create', self.create, name='laboratory_create'),
-            url(r'^edit/(?P<pk>\d+)$', self.edit, name='laboratory_update'),
-            url(r'^delete/(?P<pk>\d+)$', self.delete,
-                name='laboratory_delete'),
+            path('list', self.list, name='laboratory_list'),
+            path('create', self.create, name='laboratory_create'),
+            path('edit/<int:pk>/', self.edit, name='laboratory_update'),
+            path('delete/<int:pk>/', self.delete, name='laboratory_delete'),
         ]
 
 

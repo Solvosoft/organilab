@@ -1,15 +1,11 @@
-from django.db import models
-
-from laboratory import catalog
-from laboratory.models import Object, ShelfObject, Catalog, ObjectFeatures
-
-# Create your models here.
-from django.utils.translation import gettext_lazy as _
-from academic.presentation import HTMLPresentation
-from sga.models import DangerIndication
-from tagging.registry import register
-from tagging.fields import TagField
 from django.contrib.auth.models import User
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from academic.presentation import HTMLPresentation
+from laboratory import catalog
+from laboratory.models import Object, Catalog
+
 
 class Procedure(models.Model, HTMLPresentation):
     title = models.CharField(max_length=500, verbose_name=_('Title'))
@@ -38,7 +34,6 @@ class ProcedureStep(models.Model, HTMLPresentation):
         ordering = ('pk',)
         verbose_name = _('Procedure step')
         verbose_name_plural = _('Procedure steps')
-
 
 
 class ProcedureRequiredObject(models.Model):
@@ -76,6 +71,7 @@ class ProcedureObservations(models.Model):
         verbose_name = _('Procedure Observation')
         verbose_name_plural = _('Procedure Observations')
 
+
 class ComponentSGA(models.Model):
     name = models.CharField(max_length=250, verbose_name=_("Name"))
     cas_number = models.CharField(max_length=150, verbose_name=_("CAS number"))
@@ -86,10 +82,12 @@ class ComponentSGA(models.Model):
     class Meta:
         verbose_name = _('ComponentSGA')
         verbose_name_plural = _('ComponentsSGA')
+
+
 class SubstanceSGA(models.Model):
     comercial_name = models.CharField(max_length=250,
                                       verbose_name=_("Comercial name"))
-    synonymous = TagField(verbose_name=_("Synonymous"))
+    synonymous = models.TextField(verbose_name=_("Synonymous"))
 
     uipa_name= models.CharField(max_length=250, blank=True,
                                 verbose_name=_("UIPA name"))
@@ -102,6 +100,7 @@ class SubstanceSGA(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, verbose_name=_("Description"))
     is_approved = models.BooleanField(default=False, blank=True)
+
     def __str__(self):
         return self.comercial_name
 
@@ -109,7 +108,6 @@ class SubstanceSGA(models.Model):
         verbose_name = _('SustanceSGA')
         verbose_name_plural = _('SustancesSGA')
 
-register(SubstanceSGA)
 
 class SustanceCharacteristicsSGA(models.Model):
     substance = models.OneToOneField(SubstanceSGA, on_delete=models.CASCADE)
@@ -153,5 +151,6 @@ class SubstanceObservation(models.Model):
     class Meta:
         verbose_name = _('Observation')
         verbose_name_plural = _('Observations')
+
     def __str__(self):
         return f'{self.substance} {self.creator}'

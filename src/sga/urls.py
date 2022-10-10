@@ -5,11 +5,11 @@
 """
 
 # Import functions of another modules
-from django.urls import path
+from django.urls import path, re_path
 
 from .views import index_sga, template, editor, render_pdf_view
 
-from django.conf.urls import url, include
+from django.conf.urls import  include
 from . import views
 
 # SGA
@@ -21,22 +21,22 @@ urlpatterns = [
     path('index_sga', index_sga, name='index_sga'),
     path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
     # sga/editor
-    url(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
-    url(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
-    url(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
-    url(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
+    re_path(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
+    re_path(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
+    re_path(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
+    re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
-    url(r'download/', render_pdf_view, name='download'),
+    re_path(r'download/', render_pdf_view, name='download'),
     # sga/prudence
     path('prudence/<str:organilabcontext>', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
     path('danger/<str:organilabcontext>', views.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
-    url(r'add_personal/(?P<organilabcontext>\w+)', views.create_personal_template, name='add_personal'),
-    url(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
+    re_path(r'add_personal/(?P<organilabcontext>\w+)', views.create_personal_template, name='add_personal'),
+    re_path(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
 
-    url(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
-    url(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
-    url(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
+    re_path(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
+    re_path(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
+    re_path(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
 
 ]

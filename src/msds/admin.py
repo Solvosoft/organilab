@@ -1,10 +1,6 @@
 from django.contrib import admin
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
-#from mptt.admin import MPTTModelAdmin
 from mptt.admin import DraggableMPTTAdmin
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
-# Register your models here.
-from django.db import models
 
 
 class msdsAdmin(admin.ModelAdmin):
@@ -14,12 +10,6 @@ class msdsAdmin(admin.ModelAdmin):
 
 class OrganilabNodeMPTTAdmin(DraggableMPTTAdmin):
     mptt_level_indent = 20
-    formfield_overrides = {
-        models.TextField: {'widget': CKEditorUploadingWidget},
-    }
-    
-    class Media:
-        js  = ('js/ckeditor-init-overwrite.js',)
 
 
 admin.site.register(OrganilabNode, OrganilabNodeMPTTAdmin)
