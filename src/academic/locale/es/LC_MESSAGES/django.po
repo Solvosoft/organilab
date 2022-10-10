@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-07 12:18-0600\n"
+"PO-Revision-Date: 2022-10-10 14:26-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -550,6 +550,62 @@ msgstr "Crear consejo de prudencia"
 #: academic/templates/academic/substance/observations.html:5
 msgid "If you want to edit or delete the observations that you have created, you must double click on it"
 msgstr "Si desea editar o eliminar los observaciones que usted ha creado debe dar doble click sobre el mismo"
+
+#: academic/template/substance/step_four.html:23
+msgid "Provider"
+msgstr "Proveedores"
+
+#: academic/template/substance/step_four.html:48
+msgid "First aid"
+msgstr "Primeros Auxilios"
+
+#: academic/template/substance/step_four.html:91
+msgid "Fire-fighting measures"
+msgstr "Medidas de lucha contra incendios"
+
+#: academic/template/substance/step_four.html:117
+msgid "Measures in case of accidental spill"
+msgstr "Medidas en caso de vertido accidental"
+
+#: academic/template/substance/step_four.html:140
+msgid "Handling Storage"
+msgstr "Manipulación Almacenamiento"
+
+#: academic/template/substance/step_four.html:160
+msgid "Exposure controls/personal protection"
+msgstr "Controles de exposición/protección individual"
+
+#: academic/template/substance/step_four.html:192
+msgid "Physical and chemical properties"
+msgstr "Propiedades físicas y química"
+
+#: academic/template/substance/step_four.html:232
+msgid "Stability and Reactivity"
+msgstr "Estabilidad y Reactividad"
+
+#: academic/template/substance/step_four.html:257
+msgid "Toxicological informacion"
+msgstr "Información Toxicologica"
+
+#: academic/template/substance/step_four.html:287
+msgid "Ecological Information"
+msgstr "Información Ecológica"
+
+#: academic/template/substance/step_four.html:312
+msgid "Relative Considerations Disposal"
+msgstr "Consideraciones Relativas Eliminación"
+
+#: academic/template/substance/step_four.html:331
+msgid "Regulatory information"
+msgstr "Información Reglamentaria"
+
+#: academic/template/substance/step_four.html:350
+msgid "Other information"
+msgstr "Otra información"
+
+#: academic/template/substance/step_four.html:379
+msgid "Add Provider"
+msgstr "Agregar Proveedor"
 
 #~ msgid "Don't exist this object in the inventory"
 #~ msgstr "No existe ese objeto en el inventario"
