@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n laboratory %}
+{% load i18n laboratory %}
 
 {% block content %}
   <div class="row">
@@ -13,7 +13,7 @@
     <div class="row">
       <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
         <div class=" body ">
-          {{ form|bootstrap_horizontal }}
+          {{ form.as_horizontal }}
         </div>
         <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
       </form>

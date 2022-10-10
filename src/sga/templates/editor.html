@@ -2,29 +2,43 @@
 @organization: Solvo
 @license: GNU General Public License v3.0
 @date: Created on 4 oct. 2018
-@author: Guillermo Castro Sánchez
-@email: guillermoestebancs@gmail.com
 -->
 {% extends 'label_index.html' %}
 {% load i18n %}
 {% load static %}
-{% load bootstrap   %}
 {# CSS #}
 {% block css %}
-    <link href="{% static 'sga/css/label_editor.css' %}" rel="stylesheet">
+    <link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block js %}
-    <script src="{% static 'js/bootstrap-colorpicker.js' %}"> </script>
-    <script src="{% static 'sga/js/fabric.min.js' %}"> </script>
-    <script src="{% static 'sga/js/label_editor.js' %}"> </script>
+    <script>
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+        document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
+        document.urls={
+            'danger_indication_url': '{% url 'sga:get_danger_indication' organilabcontext %}',
+            'prudence_advice_url': '{% url 'sga:prudence' organilabcontext %}',
+        };
+        {% if instance.template %}
+            document.canvas_size = {
+                'width': {{instance.recipient_size.width}},
+                'height': {{instance.recipient_size.height}},
+            };
+        {% endif %}
+    </script>
+    <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
+    window.SvgCanvas=SvgCanvas;
+</script>
+    <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
+    <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
+    <script src="{% static 'sga/js/codigosPH.js' %}"></script>
+
 {{form.media}}
 {% endblock %}
-
-
 
 {% block extrameta %}{% endblock extrameta %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-sm-12">
 
@@ -36,7 +50,7 @@
             <ul class="dropdown-menu">
 
               {% for tem in templates %}
-                <li><a href="{% url 'sga:editor' %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li><a href="{% url 'sga:editor' organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
 
             </ul>
@@ -44,17 +58,6 @@
         </div>
         <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
-            <!-- <button style="width:10%" disabled><i class="fa fa-undo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-redo"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-cut"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-copy"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-paste"></i></button>-->
-
-         <!--<button style="width:10%" disabled><i class="fa fa-search-plus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-search-minus"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-edit"></i></button>
-        <button style="width:10%" disabled><i class="fa fa-tint"></i></button>
-            -->
         </div>
     </div>
 </div>
@@ -64,190 +67,39 @@
 
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+            <a href="#general" aria-controls="general" role="tab" data-toggle="tab">
             {% trans 'General' %}</a>
         </li>
         <li role="presentation">
-            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+            <a href="#live" aria-controls="live" role="tab" data-toggle="tab">
             {% trans 'Live' %}</a>
         </li>
         <li role="presentation">
-            <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+            <a href="#generic" aria-controls="generic" role="tab" data-toggle="tab">
             {% trans 'Generic' %} </a>
         </li>
         <li role="presentation">
-            <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-            {% trans 'Pictogram' %}</a>
+            <a href="#custom" aria-controls="custom" role="tab" data-toggle="tab">
+            {% trans 'Custom' %}</a>
         </li>
       </ul>
-  <div class="tab-content" style="padding: 15px 20px 10px;">
-    <div role="tabpanel" class="tab-pane active" id="home">
+        <div class="tab-content" style="padding: 15px 20px 10px;">
 
-        		<form id="sgaform"  method="post" action="{% url 'sga:editor' %}">
-                    {% csrf_token %}
-                    {% if templateinstance %}
-                        <input type="hidden" name="instance" value="{{templateinstance.pk}}">
-                    {% endif %}
-                    {{generalform|bootstrap}}
-                </form>
-        <button type="button" class="btn btn-danger" onclick="deleteSelectedObj()"> {% trans 'Delete' %}</button>
+    {% include 'editor/general.html' %}
+    {% include 'editor/live.html' %}
+    {% include 'editor/generic.html' %}
+    {% include 'editor/custom.html' %}
 
-        <button type="button" class="btn btn-sm" onclick="addLine()"> {% trans 'Line' %}</button>
-
-        <label for="colorfill">{% trans 'Fill / Stroke / Background' %}:</label>
-
-        <input id="colorfill"  style="width: 25%;" type="color"  bind-value-to="fill"  value="#000"  class="btn" >
-        <input id="colorstroke" style="width: 25%;" type="color"  bind-value-to="stroke" value="#FFFFFF"  class="btn" >
-        <input type="color"  style="width: 25%;" id="text-bg-color"  value="#FFFFFF" class="btn" >
-        <br>
-
-        <div class="form-group">
-        <label for="text-font-size" class="control-label">{% trans 'Font Size' %}</label>
-        <input type="range" value="20" min="1" max="120" step="1" id="text-font-size" class="btn-object-action"
-            bind-value-to="fontSize">
-          <p>{% trans 'actual' %}: <span id="font-size-label">20</span></p>
-        </div>
-        <div class="form-group">
-        <label for="fontfamily" style="display:inline-block">{% trans 'Font family' %}:</label>
-            <select id="fontfamily" class="btn-object-action form-control" bind-value-to="fontFamily">
-              <option value="arial">Arial</option>
-              <option value="helvetica" selected>Helvetica</option>
-              <option value="myriad pro">Myriad Pro</option>
-              <option value="delicious">Delicious</option>
-              <option value="verdana">Verdana</option>
-              <option value="georgia">Georgia</option>
-              <option value="courier">Courier</option>
-              <option value="comic sans ms">Comic Sans MS</option>
-              <option value="impact">Impact</option>
-              <option value="monaco">Monaco</option>
-              <option value="optima">Optima</option>
-              <option value="hoefler text">Hoefler Text</option>
-              <option value="plaster">Plaster</option>
-              <option value="engagement">Engagement</option>
-            </select>
-          </div>
-
-        <div class="form-group">
-            <label for="textalign" style="display:inline-block">Text align:</label>
-            <select id="textalign" class="btn-object-action form-control" bind-value-to="textAlign">
-              <option value="left" selected>Left</option>
-              <option value="center">Center</option>
-              <option value="right" >Right</option>
-              <option value="Justify">Justify</option>
-              <option value="Justify-left">Justify-left</option>
-              <option value="Justify-right">Justify-right</option>
-              <option value="Justify-center"> Justify-center</option>
-            </select>
-        </div>
-
-
-    </div>
-    <div role="tabpanel" class="tab-pane" id="profile">
-        <label >{% trans 'Warning Words' %}</label>
-        <ul>
-        {% for word in warningwords %}
-            <li><a class="genericitem"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext" href="#">{{word}}</a></li>
-        {% endfor %}
-        </ul>
-        <label>Cuadros de Textos</label>
-        <ul>
-            <li><a class="genericitem" id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox" href="#">Agregue Adiccional</a></li>
-        </ul>
-        {{form|bootstrap  }}
-    </div>
-    <div role="tabpanel" class="tab-pane" id="messages">
-        <ul>
-            <li>
-                <a class="genericitem"  id="warningword" data-ftype="itext" href="#" id="warningword">
-                {% trans 'Warning Word' %}</a>
-            </li>
-            <li>
-                <a class="genericitem"  id="dangerindication"  data-ftype="textbox" href="#"> {% trans 'Danger Indication' %}</a>
-            </li>
-            <li>
-                <a class="genericitem"  id="prudenceadvice" data-ftype="textbox" href="#"> {% trans 'Prudence Advice' %}</a>
-            </li>
-            <li>
-                <a class="genericitem"  id="substancename"  data-ftype="itext"  href="#" > {% trans 'Substance Name' %} </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="uipa"  data-ftype="itext"  href="#" > {% trans 'UIPA Name' %} </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="casnumber"  data-ftype="itext"  href="#" > {% trans 'Cas number' %} </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="pictogram"  data-ftype="image"  href="#"  title="/static/sga/img/pictograms/example.gif" >
-                <img width="64px" height="64px" src="/static/sga/img/pictograms/example.gif" alt="pictogram" class="img-rounded"> </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="selername" data-ftype="itext"  href="#"> {% trans 'Seler name' %}</a>
-            </li>
-            <li>
-                <a class="genericitem" id="selerphone" data-ftype="itext"  href="#"> {% trans 'Seler phone' %}</a>
-            </li>
-            <li>
-                <a class="genericitem" id="seleraddress" data-ftype="textbox" href="#"> {% trans 'Seler address' %} </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="commercialinformation"  data-ftype="textbox"  href="#"> {% trans 'Commercial Information' %}  </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="logo"  data-ftype="image"  href="#"  title="/static/sga/img/logogen.jpg" >
-                <img width="64px" height="64px" src="/static/sga/img/logogen.jpg" alt="pictogram" class="img-rounded"> </a>
-            </li>
-            <li>
-                <a class="genericitem"  id="barcode"  data-ftype="image"  href="#"  title="/static/sga/img/barcodegen.jpg" >
-                <img width="64px" height="64px" src="/static/sga/img/barcodegen.jpg" alt="pictogram" class="img-rounded"> </a>
-            </li>
-        </ul>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="settings">
-        <div class="row">
-
-
-{% if barcode_file_url %}
-    <div class="col-md-4">
-        <a class="genericitem" id="{{ barcode_file_url }}"  title="{{ barcode_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-              src="{{ barcode_file_url}}" alt="{{ barcode_file_url }}" class="img-rounded"> </a>
-    </div>
-{% endif%}
-{% if logo_file_url %}
-    <div class="col-md-4">
-         <a class="genericitem" id="{{ logo_file_url }}"  title="{{ logo_file_url }}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                  src="{{ logo_file_url}}" alt="{{ logo_file_url }}" class="img-rounded"> </a>
-    </div>
-{%  endif %}
-{% for pictogram in pictograms %}
-        <div class="col-md-4">
-             <a class="genericitem" id="{{pictogram}}"  title="/static/sga/img/pictograms/{{pictogram}}" data-ftype="image" href="#"> <img width="64px" height="64px"
-                      src="/static/sga/img/pictograms/{{pictogram}}" alt="{{pictogram}}" class="img-rounded"> </a>
-
-          </div>
-      {% endfor %}
-        </div>
-    </div>
   </div>
             {% trans 'Use save before finish' %}
         <button id="editor_save" type="submit" class="btn btn-success" >{% trans 'Save' %} </button>
     </div>
 
     <div class="col-sm-6 col-md-9" >
-        <div id="canvasContainer" class="canvas-container"  style="width:100%">
-        <canvas id="canvas_editor" class="pre_designed_template" style="width: 100% !important"></canvas>
-        </div>
+       {% include 'editor/canvas_and_utils.html' %}
     </div>
 </div>
 
-<div id="hiddencanvas" class="hide hidden">
-</div>
-
-<style>
-    .canvas-container canvas{
-        margin: 0 auto;
-        border: 1px solid #aaa;
-    }
 
 
-</style>
 {% endblock content %}

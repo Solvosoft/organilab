@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+
+{% block title %}{% trans 'Procedure' %}{% endblock %}
+{% block content %}
+
+<style>
+.select2 {
+    width: 100%!important;
+}
+</style>
+
+    <h2><a href="{% url 'procedure_create' lab_pk=lab%}" class="btn btn-primary">Crear Nuevo Procedimiento</a></h2>
+
+    <table  id="datatable" class="table table-bordered table-hover">
+        <thead>
+        <tr>
+        <th style="display:none"></th>
+        <th>{% trans 'Title' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for procedure in object_list %}
+                <tr>
+                    <td style="display:none">{{procedure.pk}}</td>
+                    <td>{{procedure.title}}</td>
+                    <td>{{ procedure.description | safe }}</td>
+                    <td><a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=lab %}">{{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
+                        <a class="btn btn-success btn-block" href="{% url 'add_steps_wrapper' pk=procedure.id lab_pk=lab %}">Nuevo paso</a>
+                        <a class="btn btn-dark btn-block" data-target="#reservation_modal" data-toggle="modal" onclick="get_procedure({{procedure.pk}})">Reservar</a>
+                        <a href="{% url 'procedure_update' pk=procedure.id lab_pk=lab %}" class="btn btn-primary btn-block">Editar</a>
+                        <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">Eliminar</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<div aria-hidden="true"  class="modal fade" id="reservation_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Reservation' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="p-4">
+                <label class="pull-right" id="procedure_title"></label>
+                 </div>
+                <form id="reservation_form">
+                    {% csrf_token %}
+                    {{ reservation_form.as_horizontal }}
+                    <input type="hidden" id="procedure" name="procedure" value="">
+                    <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+	{{block.super}}
+	<script>
+	    document.getProcedure="{% url 'get_procedure' %}"
+	    document.reservation="{% url 'generate_reservation' %}"
+	    document.remove_procedure="{% url 'delete_procedure' %}"
+		var table=$("#datatable").DataTable();
+		table.order( [ 0, 'desc' ] ).draw();
+	</script>
+    <script src="{% static 'js/procedures.js'%}"></script>
+{% endblock %}

@@ -3,10 +3,12 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q,Sum
-from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
-from mptt.models import MPTTModel, TreeForeignKey
+from django.db.models.expressions import F
+from tree_queries.fields import TreeNodeForeignKey
+from tree_queries.models import TreeNode
 
 from . import catalog
 
@@ -106,7 +108,7 @@ class SustanceCharacteristics(models.Model):
                                 null=True, blank=True, key_name="key", key_value="IDMG")
     white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key",
                                             key_value="white_organ", blank=True)
-    bioaccumulable = models.NullBooleanField(default=False)
+    bioaccumulable = models.BooleanField(null=True)
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
@@ -324,6 +326,9 @@ class Furniture(models.Model):
     def get_objects(self):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
+    def get_limited_shelf_objects(self):
+        return ShelfObject.objects.filter(shelf__furniture=self,quantity__lte=F('limit_quantity'))
+
     def __str__(self):
         return '%s' % (self.name)
 
@@ -350,16 +355,13 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
 
 
-class OrganizationStructure(MPTTModel):
+class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
-
-    parent = TreeForeignKey(
-        'self', blank=True, null=True, verbose_name=_("Parent"),
-        related_name='children', on_delete=models.CASCADE)
-
     os_manager = OrganizationStructureManager()
+    position = models.IntegerField(default=0)
 
     class Meta:
+        ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
         permissions = (
@@ -368,9 +370,6 @@ class OrganizationStructure(MPTTModel):
             ('delete_organizationusermanagement', _('Can delete organization user management')),
             ('view_organizationusermanagement', _('Can view organization user management')),
         )
-
-    class MPTTMeta:
-        order_insertion_by = ['name', ]
 
     def __str__(self):
         return "%s" % self.name
@@ -396,8 +395,6 @@ class OrganizationUserManagement(models.Model):
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
     users = models.ManyToManyField(User, blank=True)
 
-    class MPTTMeta:
-        order_insertion_by = ['organization__name', ]
 
     def __str__(self):
         return "%s" % self.organization.name
@@ -413,7 +410,7 @@ class Laboratory(models.Model):
     email= models.EmailField(_('Email'),blank=True)
     coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
     unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
-    organization = TreeForeignKey(
+    organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
     rooms = models.ManyToManyField(
@@ -426,9 +423,6 @@ class Laboratory(models.Model):
             ("view_report", _("Can see available reports")),
             ("do_report", _("Can download available reports")),
         )
-
-    class MPTTMeta:
-        order_insertion_by = ['name', ]
 
     def __str__(self):
         return '%s' % (self.name,)
@@ -444,41 +438,8 @@ class Profile(models.Model):
     laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
     job_position = models.CharField(_('Job Position'), max_length=100)
 
-
     def __str__(self):
         return '%s' % (self.user,)
-
-
-class Solution(models.Model):
-    name = models.CharField(_('Name'), default='', max_length=255)
-    solutes = models.TextField(_('Solutes'))
-    volume = models.CharField(_('Volumen'), max_length=100)
-    temperature = models.CharField(
-        _('Temperature'), default='25 degC', max_length=100)
-    pressure = models.CharField(_('Pressure'), default='1 atm', max_length=100)
-    pH = models.IntegerField(_('pH'), default=7)
-
-    class Meta:
-        verbose_name = _('Solution')
-        verbose_name_plural = _('Solutions')
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def solute_list(self):
-        return ast.literal_eval(self.solutes)
-
-    @property
-    def solution_object(self):
-        from pyEQL import Solution as PySolution
-        return PySolution(
-            solutes=self.solute_list,
-            volume=self.volume,
-            temperature=self.temperature,
-            pressure=self.pressure,
-            pH=self.pH
-        )
 
 class Rol(models.Model):
     name = models.CharField(blank=True,max_length=100)

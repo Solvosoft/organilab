@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+
+{% block content %}
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span>{% trans 'Information about the Substance' %} {{object.comercial_name}} </span></h3>
+        </div>
+</div>
+</div>
+
+  <div class="container">
+      <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="{% if step == 1 %} active {% endif %}"><a href="#detail" aria-controls="detail" role="tab" data-toggle="tab">Detalle</a></li>
+          <li role="presentation" class="{% if step == 2 %} active {% endif %}"><a href="#observations" aria-controls="preview" role="tab" data-toggle="tab">Observaciones</a></li>
+      </ul>
+<div class="x_panel">
+    <div class="x_content">
+        <div class="tab-content">
+            <div class="tab-pane {% if step == 1 %} active {% endif %}" role="tabpanel" id="detail">
+                {% include 'academic/substance/detail_substance.html' %}
+            </div>
+        <div class="tab-pane {% if step == 2 %} active {% endif %}" role="tabpanel" id="observations">
+            <h1>{% trans 'Observations' %}</h1>
+            {% include 'academic/substance/observations.html' %}
+
+        </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+<script type="text/javascript" src="{% static 'js/observations.js' %}"></script>
+
+{% endblock %}

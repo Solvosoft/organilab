@@ -3,8 +3,6 @@ from base64 import b64decode
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from pyEQL.chemical_formula import get_element_names
-
 from laboratory.models import Object
 
 
@@ -17,7 +15,7 @@ class ReactiveMolecularFormulaAPIView(APIView):
             if obj:
                 obj_name = obj.name
             else:
-                obj_name = get_element_names(name.decode())
+                raise FileNotFoundError()
 
             result = {
                 'name': obj_name

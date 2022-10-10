@@ -6,17 +6,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-09 23:26-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"PO-Revision-Date: 2022-09-05 11:05-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
+
 #: presentation/templates/gentelella/app/footer.html:4
 #: presentation/templates/gentelella/registration/footer.html:7
 msgid "All Rights Reserved."
@@ -30,52 +32,52 @@ msgstr ""
 msgid "Welcome,"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:33
+#: presentation/templates/gentelella/app/sidebar.html:34
 msgid "Manage Reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:39
+#: presentation/templates/gentelella/app/sidebar.html:40
 msgid "Requested reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:41
+#: presentation/templates/gentelella/app/sidebar.html:42
 msgid "Requested Reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:47
 #: presentation/templates/gentelella/app/sidebar.html:48
+#: presentation/templates/gentelella/app/sidebar.html:49
 msgid "Accepted Reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:53
 #: presentation/templates/gentelella/app/sidebar.html:54
+#: presentation/templates/gentelella/app/sidebar.html:55
 msgid "Denied Reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:59
 #: presentation/templates/gentelella/app/sidebar.html:60
+#: presentation/templates/gentelella/app/sidebar.html:61
 msgid "Closed Reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:69
 #: presentation/templates/gentelella/app/sidebar.html:70
+#: presentation/templates/gentelella/app/sidebar.html:71
 msgid "Access list"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:77
+#: presentation/templates/gentelella/app/sidebar.html:78
 msgid "blog entries"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:78
+#: presentation/templates/gentelella/app/sidebar.html:79
 msgid "Blog"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:84
 #: presentation/templates/gentelella/app/sidebar.html:85
+#: presentation/templates/gentelella/app/sidebar.html:86
 msgid "Regulation documents"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:91
+#: presentation/templates/gentelella/app/sidebar.html:92
 msgid "Feedback"
 msgstr ""
 
@@ -86,7 +88,7 @@ msgstr ""
 #: presentation/templates/gentelella/app/top_navigation.html:21
 #: presentation/templates/gentelella/app/top_navigation.html:22
 msgid "My laboratories"
-msgstr ""
+msgstr "Mis Laboratorios"
 
 #: presentation/templates/gentelella/app/top_navigation.html:30
 msgid "Administration"
@@ -155,21 +157,27 @@ msgstr ""
 
 #: presentation/templates/gentelella/app/top_navigation.html:101
 msgid "Object changes"
-msgstr ""
+msgstr "Movimiento de Objectos"
 
 #: presentation/templates/gentelella/app/top_navigation.html:106
 msgid "Limited shelf objects"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:115
+#: presentation/templates/gentelella/app/top_navigation.html:110
+#, fuzzy
+#| msgid "Precursor report"
+msgid "Precursor Report"
+msgstr "Reporte sobre precursores"
+
+#: presentation/templates/gentelella/app/top_navigation.html:118
 msgid "My reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:122
+#: presentation/templates/gentelella/app/top_navigation.html:125
 msgid "Tutorials"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:126
+#: presentation/templates/gentelella/app/top_navigation.html:129
 #: presentation/templates/gentelella/registration/login.html:43
 #: presentation/templates/gentelella/registration/password_reset_complete.html:15
 msgid "Log in"
@@ -385,6 +393,34 @@ msgstr ""
 msgid "H code Reports"
 msgstr ""
 
+#: presentation/templates/partials/sga_academic.html:6
+msgid "SGA"
+msgstr ""
+
+#: presentation/templates/partials/sga_academic.html:13
+msgid "Create Substances"
+msgstr "Crear Sustancias"
+
+#: presentation/templates/partials/sga_academic.html:18
+msgid "My Substances"
+msgstr "Mis Sustancias"
+
+#: presentation/templates/partials/sga_academic.html:23
+msgid "Check of Substances"
+msgstr "Revision de Sustancias"
+
+#: presentation/templates/partials/sga_academic.html:29
+msgid "Warning Words"
+msgstr ""
+
+#: presentation/templates/partials/sga_academic.html:34
+msgid "Danger Indication"
+msgstr ""
+
+#: presentation/templates/partials/sga_academic.html:39
+msgid "Prudence Advice"
+msgstr ""
+
 #: presentation/templates/partials/sga_menu.html:6
 msgid "SGA Management"
 msgstr ""
@@ -397,7 +433,7 @@ msgstr ""
 msgid "SGA Editor"
 msgstr ""
 
-#: presentation/templates/partials/sga_menu.html:27
+#: presentation/templates/partials/sga_menu.html:28
 msgid "MSDS: Security sheets"
 msgstr ""
 

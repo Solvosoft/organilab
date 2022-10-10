@@ -1,0 +1,74 @@
+{% load i18n %}
+
+<div aria-hidden="true"  class="modal fade" id="object_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Objects' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="object_form">
+                    {% csrf_token %}
+                    {{object_form.as_horizontal}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_object()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true"  class="modal fade" id="observation_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left">{% trans 'Observations' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="observation_form">
+                    {% csrf_token %}
+                    {{ observation_form }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_observation()">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div aria-hidden="true"  class="modal fade" id="remove_object_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left">{% trans 'Eliminar Objecto' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label>Deseas eliminar el objecto</label>
+            </div>
+            <div class="modal-footer">
+                <span class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</span>
+                <button class="btn btn-success" type="button" onclick="add_observation">{% trans 'Remove' %}</button>
+            </div>
+            </form>
+
+        </div>
+    </div>
+</div>

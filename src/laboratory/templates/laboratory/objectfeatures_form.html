@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap staticfiles i18n laboratory %}
+{% load static i18n laboratory %}
 
 {% block title %}{% trans 'Object features management' %}{% endblock %}
 
@@ -14,7 +14,7 @@
       {% if perms.laboratory.add_objectfeatures and perms.laboratory.change_objectfeatures or not create and perms.laboratory.change_objectfeatures or create and  perms.laboratory.add_objectfeatures%}
         <div class="col-md-8 col-md-offset-2">
           <form class="form-horizontal" action="" method="post">{% csrf_token %}
-            {{ form|bootstrap_horizontal }}
+            {{ form.as_horizontal }}
             <div class="form-group">
               <div class="col-sm-10 col-sm-offset-2">
                 <button class="btn btn-success" type="submit">

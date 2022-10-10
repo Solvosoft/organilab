@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput
 # for xhtml2pdf
@@ -459,7 +459,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_objects(rpo,lab, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
+            make_book_objects(rpo, summary=True, type_id='0'), fileformat, file_name="reactive_precursor.%s" % (fileformat,))
 
     context = {
         'verbose_name': "Reactive precursor objects",

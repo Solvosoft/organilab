@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap i18n static laboratory gtsettings %}
+{% load i18n static laboratory gtsettings %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
 {% endblock %}
@@ -82,6 +82,7 @@
                     <td>
                       <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Add organization' %}" onclick="update_pK_parent(this)" id="{{ node.pk }}" data-toggle="modal" data-target="#organizationsavemodal"> <i class="fa fa-university"></i></button>
                       <a class="btn btn-primary btn-sm" data-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.pk %}" target="_blank"><i class="fa fa-medkit"></i></a>
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" title="{% trans 'Edit organization' %}" onclick="add_pk(this)"  data-toggle="modal" data-target="#organizationeditmodal" data-id="{{ node.pk }}" data-name="{{ node.name }}"> <i class="fa fa-cogs" aria-hidden="true"></i></button>
                     </td>
                   </tr>
                 {% endfor %}
@@ -121,6 +122,32 @@
       </div>
     </div>
   </div>
+
+ <div id="organizationeditmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form action="{% url 'laboratory:edit_organization' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="org_pk" id="org_pk">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{% trans 'Edit descendant organization' %}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>{% trans 'Name' %}</label>
+              <input class="form-control" id="org_name" name="name" required="true">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 {% block js %}
   <script>
@@ -135,5 +162,10 @@
       $('#pk').val(parseInt($(element).attr('id')));
       $("#organizationsavemodal").modal("show");
     }
+    function add_pk(element){
+      $('#org_pk').val(parseInt($(element).attr('data-id')));
+      $("#organizationeditmodal").modal("show");
+      $('#org_name').val($(element).attr('data-name'));
+      }
   </script>
 {% endblock %}

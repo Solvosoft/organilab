@@ -7,7 +7,7 @@ from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,S
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
@@ -119,8 +119,8 @@ class TransferObjectForm(GTForm):
         lab=kwargs.pop('lab_send')
         super(TransferObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users).first()
-        self.fields['laboratory'].queryset = profile.laboratories
 
+        self.fields['laboratory'].queryset = profile.laboratories.all().exclude(pk=lab)
 
 class AddObjectForm(forms.Form):
     amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)

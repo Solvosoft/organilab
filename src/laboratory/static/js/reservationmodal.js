@@ -78,21 +78,22 @@ function add_reservation() {
                     url: document.api_modal,
                     type: 'POST',
                     data: data,
-                    success: function({msg}) {
-                      if(msg){
+                    success: function({status,msg}) {
+                      if(status){
                          $("#modal_reservation").modal('hide');
                             clear_inputs();
                             location.reload();
                         }else{
-                        error_message('#alert_message_objects')
+                        error_message('#alert_message_objects',msg)
                         }
                     }
                 });
 
         }
     }
-function error_message(id){
+function error_message(id,msg){
   if ($(`${id}`).css('display') != 'block')
+      $("#error_message_object").text(msg);
       $(`${id}`).css('display', 'block');
  }
 
@@ -129,12 +130,12 @@ $( document ).ready(()=>{
 });
 
 function get_detail(){
-     $.ajax({
-              url: $('#detail_url').val(),
-               type: 'POST',
-               data: {'shelf_object':shelf_object_id},
-               success: function({obj}) {
-                    $('#obj').text(obj)
-                    }
-                });
+    $.ajax({
+       url: $('#detail_url').val(),
+       type: 'POST',
+       data: {'shelf_object':shelf_object_id},
+       success: function({obj}) {
+        $('#obj').text(obj)
+        }
+       });
 }

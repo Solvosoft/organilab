@@ -4,9 +4,8 @@ Created on 29 jun. 2018
 @author: luis
 '''
 
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
-from django.utils.translation import ugettext_lazy as _
+from captcha.fields import ReCaptchaField
+
 
 from django import forms
 from msds.models import MSDSObject
@@ -16,7 +15,7 @@ from django.conf import settings
 
 
 class FormMSDSobject(forms.ModelForm):
-    captcha = ReCaptchaField(widget=ReCaptchaWidget())
+    captcha = ReCaptchaField()
 
     class Meta:
         model = MSDSObject
@@ -24,7 +23,7 @@ class FormMSDSobject(forms.ModelForm):
 
 
 class FormMSDSobjectUpdate(forms.ModelForm):
-    captcha = ReCaptchaField(widget=ReCaptchaWidget())
+    captcha = ReCaptchaField()
 
     class Meta:
         model = MSDSObject

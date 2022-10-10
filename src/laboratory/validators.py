@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from reservations_management.models import ReservedProducts
 from django.http import JsonResponse
 from datetime import datetime, timedelta

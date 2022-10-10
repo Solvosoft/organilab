@@ -11,7 +11,7 @@ class ProviderCreate(CreateView):
     model = Provider
     form_class = ProviderForm
     template_name = 'laboratory/provider_add.html'
-
+    lab_pk_field = 'pk'
 
     def form_valid(self, form):
         provider = form.save(commit=False)
