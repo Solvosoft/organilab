@@ -11,7 +11,7 @@ from academic.substance.views import create_edit_sustance, get_substances, get_l
     approve_substances, delete_substance, step_two, detail_substance, \
     view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
     update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication, \
-    step_three, step_four
+    step_three, step_four, add_sga_provider
 
 
 from django.urls import path, re_path
@@ -56,4 +56,5 @@ urlpatterns = [
     path(r'academic/substance/update_danger_indication/<str:pk>', change_danger_indication, name='update_danger_indication'),
     re_path(r'academic/substance/update_warning_words/(?P<pk>\d+)$', change_warning_word, name='update_warning_word'),
     re_path(r'academic/substance/update_prudence_advice/(?P<pk>\d+)$', change_prudence_advice,name='update_prudence_advice'),
+    re_path(r'academic/substance/provider$', add_sga_provider,name='add_sga_provider'),
 ]

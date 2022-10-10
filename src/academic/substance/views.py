@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm
+    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
@@ -476,7 +476,6 @@ def step_four(request,organilabcontext, substance):
     context = {}
     if request.method == 'POST':
         form = SecurityLeafForm(request.POST, instance=security_leaf)
-        print(form.errors)
         if form.is_valid():
             form.save()
             return redirect(reverse('step_four',kwargs={'organilabcontext':organilabcontext,'substance':substance}))
@@ -486,5 +485,15 @@ def step_four(request,organilabcontext, substance):
                'complement': complement.pk,
                'template': personaltemplateSGA.pk,
                'form':form,
+               'provider_form': ProviderSGAForm(),
                'substance': substance}
     return render(request,'academic/substance/step_four.html',context=context)
+
+def add_sga_provider(request):
+    form = ProviderSGAForm(request.POST)
+
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'result':True})
+    else:
+        return JsonResponse({'result':False})

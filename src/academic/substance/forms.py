@@ -114,9 +114,12 @@ class SecurityLeafForm(GTForm, forms.ModelForm):
         for field in fields.keys():
             if field not in['provider','substance']:
                 self.fields[str(field)].widget = genwidgets.Textarea()
-        self.fields['provider'].widget= genwidgets.Select()
         self.fields['provider'].required= False
     class Meta:
         model = SecurityLeaf
         exclude = ['substance']
         fields = "__all__"
+        widgets ={
+            'provider':genwidgets.Select
+        }
+

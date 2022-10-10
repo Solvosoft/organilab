@@ -18,6 +18,31 @@
             <div class = "container">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading">
+                            <h4 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
+                                    Proveedores
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseZero" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingZero">
+                            <div class="panel-body">
+                               <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            {{ form.provider.label_tag }}
+                                            <br>
+                                            <div class="input-group">
+                                                <span class="input-group-addon btn btn-success text-white" title="{% trans 'Add' %}" data-toggle="modal" data-target="#provider_modal" style="color: white !important;">+</span>
+                                                {{ form.provider }}
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -25,7 +50,7 @@
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -344,8 +369,51 @@
     </div>
 </div>
         <div class="col-md-12 text-center" style="display:inline-block">
-        <button type="submit" class="btn btn-success">Continuar</button>
-    </div>
+            <button type="submit" class="btn btn-success">Continuar</button>
+        </div>
     </form>
 </div>
+<div id="provider_modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Add Provider' %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="provider_form">
+                    {{provider_form.as_inline}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="provider_add" type="button" class="btn btn-success" data-dismiss="modal">{% trans 'Add' %}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+    $("#provider_add").click(()=>{
+    const formEntries = new FormData(document.querySelector('#provider_form')).entries();
+    const json = Object.assign(...Array.from(formEntries, ([x,y]) => ({[x]:y})));
+
+    $.ajax({
+      method: "POST",
+      url: "{% url 'add_sga_provider' %}",
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      data: json
+    }).done(function(data){
+        if(data.result){
+            document.getElementById("provider_form").reset();
+        }
+
+    })
+   })
+    </script>
 {% endblock %}
