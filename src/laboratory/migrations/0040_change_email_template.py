@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
                     ["shelf_object", "Object in limit"], ["laboratory", "Laboratory where is the object"]]}
             template.save()
     dependencies = [
+        ('async_notifications', '0004_auto_20200228_1653'),
         ('laboratory', '0039_precursorreport_consecutive'),
     ]
 

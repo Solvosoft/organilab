@@ -4,7 +4,10 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import migrations, models
 import django.db.models.deletion
-import mptt.fields
+try:
+    import mptt.fields as mpttfields
+except:
+    mpttfields = None
 
 from laboratory.utils import get_user_laboratories, filter_laboratorist_profile
 

@@ -5,9 +5,6 @@ from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
     RecipientSize, Donation
 from .utils import render_pdf_view
-# Register your models here.
-#from mptt.admin import MPTTModelAdmin
-from mptt.admin import DraggableMPTTAdmin
 from django.utils.translation import gettext_lazy as _
 
 
@@ -56,10 +53,8 @@ class DonationAdmin(admin.ModelAdmin):
     search_fields = ['details']
 
 
-admin.site.register(WarningClass, DraggableMPTTAdmin)
-admin.site.register(
-    [BuilderInformation, RecipientSize, PrudenceAdvice, Component,
-     WarningWord, Pictogram])
+admin.site.register(WarningClass)
+admin.site.register([BuilderInformation, RecipientSize, PrudenceAdvice, Component, WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)

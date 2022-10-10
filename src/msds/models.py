@@ -1,7 +1,7 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from mptt.models import MPTTModel, TreeForeignKey
+from tree_queries.models import TreeNode
 
 
 class MSDSObject(models.Model):
@@ -17,11 +17,9 @@ class MSDSObject(models.Model):
         verbose_name_plural = _('MSDS Object')
 
 
-class OrganilabNode(MPTTModel):
+class OrganilabNode(TreeNode):
     name = models.CharField(max_length=300)
     description = models.TextField(null=True, blank=True)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE,
-                            null=True, blank=True, related_name='children')
     icon = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="nodes/", null=True, blank=True)
 
@@ -32,9 +30,6 @@ class OrganilabNode(MPTTModel):
 
     class Meta:
         ordering = ["position"]
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
 
 
 class RegulationDocument(models.Model):

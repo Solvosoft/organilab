@@ -8,8 +8,10 @@ try:
     import fontawesome.fields as fontfields
 except:
     fontfields  = None
-import mptt.fields
-
+try:
+    import mptt.fields as mpttfields
+except:
+    mpttfields = None
 
 class Migration(migrations.Migration):
 
@@ -46,7 +48,9 @@ class Migration(migrations.Migration):
                 ('rght', models.PositiveIntegerField(editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(editable=False)),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='msds.OrganilabNode')),
+                ('parent', mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='msds.OrganilabNode') if mpttfields else models.ForeignKey(blank=True, null=True,
+                    on_delete=django.db.models.deletion.CASCADE, related_name='children',
+                    to='msds.OrganilabNode')),
                 ('icon', fontfields.IconField(blank=True, max_length=60, null=True) if fontfields else models.TextField(blank=True, null=True)),
                 ('image', models.ImageField(blank=True, null=True, upload_to='nodes/')),
             ],

@@ -23,7 +23,7 @@ PyYAML>=5.4
 xhtml2pdf==0.2.8
 xlwt==1.3.0
 django-markitup==4.1.0
-djgentelella==0.2.14
+djgentelella==0.2.15
 Markdown==3.2.2
 coreapi==2.3.3
 future==0.18.2
@@ -35,4 +35,3 @@ django-celery-results==2.2.0
 celery==5.2.3
 django-paypal==2.0
 weasyprint==56.1
-django-mptt==0.14.0

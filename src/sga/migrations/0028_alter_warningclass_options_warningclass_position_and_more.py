@@ -2,7 +2,11 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import mptt.fields
+try:
+    import mptt.fields as mpttfields
+except:
+    mpttfields = None
+
 
 def gen_position(apps, schema_editor):
     WarningClass = apps.get_model('sga', 'WarningClass')
@@ -49,7 +53,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='warningclass',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='sga.warningclass'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='sga.warningclass') if mpttfields else models.ForeignKey(blank=True, null=True,
+                    on_delete=django.db.models.deletion.CASCADE, related_name='children',
+                    to='sga.warningclass'),
         ),
         migrations.RunPython(gen_position, reverse_code=migrations.RunPython.noop),
     ]
