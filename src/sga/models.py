@@ -349,12 +349,14 @@ class Provider(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Name"))
     country = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Country"))
     direction = models.TextField(blank=True,null=True, verbose_name=_("Direction"))
-    telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Numero de Telefono"))
+    telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Telephone number"))
     fax = models.CharField(max_length=30, null=True, blank=True)
-    email = models.CharField(max_length=100, verbose_name=_("Email"), null=True)
+    email = models.CharField(max_length=100, verbose_name=_("Email"), null=True, blank=True)
     provider = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, verbose_name=_("Provider"), related_name="providersga")
     emergency_phone =  models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Emergency number"))
 
+    def __str__(self):
+        return self.name
 class SecurityLeaf(models.Model):
     substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
     provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
@@ -366,7 +368,7 @@ class SecurityLeaf(models.Model):
     ingestion = models.TextField(null=True,blank=True, verbose_name=_("if it is swallowed"))
     symptoms = models.TextField(null=True,blank=True, verbose_name=_("Most important symptoms and effects, both acute and delayed"))
     other_causes = models.TextField(null=True,blank=True, verbose_name=_("Other Causes"))
-    medical_indication = models.TextField(null=True,blank=True)
+    medical_indication = models.TextField(null=True,blank=True, verbose_name=_("Indication of any medical attention and special treatment that should be provided immediately"))
 
     """Medidas de lucha contra incendios"""
     appropriate   = models.TextField(null=True,blank=True, verbose_name=_("Suitable extinguishing media"))
@@ -407,7 +409,7 @@ class SecurityLeaf(models.Model):
     starting_point_boiling= models.TextField(null=True, blank=True, verbose_name=_("Starting point of boiling and range boiling"))
     flashpoint = models.TextField(null=True, blank=True, verbose_name=_("Flashpoint"))
     evaporation_rate = models.TextField(null=True, blank=True, verbose_name=_("Evaporation rate"))
-    inflammability_solid_gas = models.TextField(null=True, blank=True, verbose_name=_("Flammability (solid,gas"))
+    inflammability_solid_gas = models.TextField(null=True, blank=True, verbose_name=_("Flammability (solid,gas)"))
     Inflammability_top_bottom = models.TextField(null=True, blank=True, verbose_name=_("Inflammability top/bottom or explosive limits"))
     vapor_pressure = models.TextField(null=True, blank=True, verbose_name=_("Vapor pressure"))
     vapor_density = models.TextField(null=True, blank=True, verbose_name=_("Vapor density"))
@@ -419,12 +421,13 @@ class SecurityLeaf(models.Model):
     viscosity = models.TextField(null=True, blank=True, verbose_name=_("Viscosity"))
     explosive_properties = models.TextField(null=True, blank=True, verbose_name=_("Explosive properties"))
     properties_oxidising = models.TextField(null=True, blank=True, verbose_name=_("Properties oxidising"))
+    other_security_information = models.TextField(null=True, blank=True, verbose_name=_("Other security information"))
     """EstabilidadReactividad"""
     reactivity = models.TextField(null=True,blank=True, verbose_name=_("Reactivity"))
     chemical_stability = models.TextField(null=True,blank=True, verbose_name=_("Chemical stability"))
     dangerous_reactions = models.TextField(null=True,blank=True, verbose_name=_("Possibility of hazardous reactions"))
     conditions_avoid = models.TextField(null=True,blank=True, verbose_name=_("Conditions to avoid"))
-    incompatible_materials = models.TextField(null=True,blank=True, verbose_name=_("incompatible materials"))
+    incompatible_materials = models.TextField(null=True,blank=True, verbose_name=_("Incompatible materials"))
     dangerous_decomposition_products = models.TextField(null=True,blank=True, verbose_name=_("Hazardous decomposition products"))
 
     """InformaciónToxicologica"""
@@ -449,19 +452,17 @@ class SecurityLeaf(models.Model):
 
     """ConsideracionesRelativasEliminación"""
     product = models.TextField(null=True, blank=True, verbose_name=_("Product"))
-    contaminated_packaging = models.TextField(null=True, blank=True, verbose_name=_("contaminated packaging"))
+    contaminated_packaging = models.TextField(null=True, blank=True, verbose_name=_("Contaminated packaging"))
     """InformaciónTransporte"""
     onu_number = models.TextField(null=True, blank=True, verbose_name=_("ONU Number"))
-    proper_shipping_name = models.TextField(null=True, blank=True, verbose_name=_("ONU proper shipping name"))
+    proper_shipping_name = models.TextField(null=True, blank=True, verbose_name=_("United Nations proper shipping name"))
     transport_hazard_class = models.TextField(null=True, blank=True, verbose_name=_("Transport hazard class"))
     packaging_group = models.TextField(null=True, blank=True, verbose_name=_("Packaging group"))
     environmental_hazards = models.TextField(null=True, blank=True, verbose_name=_("Environmental hazards"))
     special_precautions = models.TextField(null=True, blank=True, verbose_name=_("Special precautions for users"))
     """InformaciónReglamentaria"""
-    regulations_legislation = models.TextField(null=True, blank=True, verbose_name=_("Regulations and legislation on safety, health and the environment specific to thesubstance or mixture"))
+    regulations_legislation = models.TextField(null=True, blank=True, verbose_name=_("Regulations and legislation on safety, health and the environment specific to the substance or mixture"))
     chemical_safety_assessment = models.TextField(null=True, blank=True, verbose_name=_("Chemical Safety Assessment"))
-
-
     """OtraInformacion"""
     full_text_statements = models.TextField(null=True, blank=True, verbose_name=_("Full text of the H-Statements referred to in sections 2 and 3."))
     full_text_phrases = models.TextField(null=True, blank=True, verbose_name=_("The full text of the R-phrases referred to in points 2 and 3"))

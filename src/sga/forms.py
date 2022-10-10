@@ -5,7 +5,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.forms.forms import GTForm
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label, SGAComplement
+    BuilderInformation, Label, SGAComplement, Provider
 
 
 class PersonalTemplateForm(forms.Form):
@@ -183,4 +183,23 @@ class SGAComplementsForm(GTForm,forms.ModelForm):
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
             'substance': genwidgets.HiddenInput,
             'other_dangers': genwidgets.Textarea
+        }
+
+class ProviderSGAForm(GTForm, forms.ModelForm):
+
+    def __init__(self,*args, **kwargs):
+        super(ProviderSGAForm, self).__init__(*args, **kwargs)
+        self.fields['provider'].required=False
+    class Meta:
+        model = Provider
+        fields= '__all__'
+        widgets = {
+            "name" : genwidgets.TextInput(),
+            "country" : genwidgets.TextInput(),
+            "direction" : genwidgets.Textarea(),
+            "telephone_number" : genwidgets.TextInput(),
+            "fax" : genwidgets.TextInput(),
+            "email" : genwidgets.EmailInput(),
+            "provider" : genwidgets.Select(),
+            "emergency_phone" : genwidgets.TextInput(),
         }
