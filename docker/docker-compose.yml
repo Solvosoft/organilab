@@ -33,8 +33,6 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=mypassword
     networks:
       - apps
-    volumes:
-      - db-backup:/var/lib/pgadmin/storage/
     ports:
       - 8088:80
 
