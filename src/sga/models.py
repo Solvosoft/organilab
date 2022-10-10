@@ -359,7 +359,7 @@ class Provider(models.Model):
         return self.name
 class SecurityLeaf(models.Model):
     substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
-    provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
+    provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True, verbose_name=_('Provider'))
     """Primeros Auxilios"""
     general = models.TextField(null=True,blank=True, verbose_name=_("General recommendations"))
     inhalation = models.TextField(null=True,blank=True, verbose_name=_("If inhaled"))
