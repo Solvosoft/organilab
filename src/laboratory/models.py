@@ -362,8 +362,10 @@ class OrganizationStructure(MPTTModel):
         related_name='children', on_delete=models.CASCADE)
 
     os_manager = OrganizationStructureManager()
+    position = models.IntegerField(default=0)
 
     class Meta:
+        ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
         permissions = (

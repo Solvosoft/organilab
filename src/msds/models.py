@@ -25,8 +25,13 @@ class OrganilabNode(MPTTModel):
     icon = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="nodes/", null=True, blank=True)
 
+    position = models.IntegerField(default=0)
+
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["position"]
 
     class MPTTMeta:
         order_insertion_by = ['name']
