@@ -1,7 +1,7 @@
 from laboratory.models import ShelfObject, Object
 from laboratory.utils import get_user_laboratories
 from django.db.models import F
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 def convert_hcodereport_list(data):
     context = [

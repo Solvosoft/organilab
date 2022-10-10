@@ -10,11 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
-from django.contrib.auth.models import User
-
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import ObjectSearchForm
-from babel.util import distinct
 from laboratory.forms import ReservationModalForm
 
 

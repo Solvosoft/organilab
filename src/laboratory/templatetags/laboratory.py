@@ -50,7 +50,6 @@ def index_permissions(context):
     dev = {
         'view_laboratory': has_perms(context, "laboratory.view_laboratory"),
         'view_procedure': has_perms(context, "academic.view_procedure"),
-        'view_solutions': has_perms(context, "laboratory.view_solution"),
         'delete_laboratory': has_perms(context, "laboratory.delete_laboratory"),
         'add_laboratory': has_perms(context, "laboratory.add_laboratory"),
         'manage_laboratory': has_perms(context, "laboratory.change_laboratory"),
@@ -66,7 +65,7 @@ def index_permissions(context):
         'delete_reserved_product': has_perms(context, "reservations_management.delete_reserved_product"),
     }
 
-    dev['show_labview'] = dev['view_laboratory'] or dev['view_procedure'] or dev['view_solutions']
+    dev['show_labview'] = dev['view_laboratory'] or dev['view_procedure']
     dev['admin_lab'] = dev['add_laboratory'] or dev['manage_laboratory'] \
                        or dev['add_furniture'] or dev['add_object'] \
                        or dev["add_features"]

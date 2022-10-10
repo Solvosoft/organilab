@@ -1,0 +1,14 @@
+{% load i18n %}
+<div role="tabpanel" class="tab-pane" id="live">
+    <label >{% trans 'Warning Words' %}</label>
+    <ul>
+    {% for word in warningwords %}
+        <li><p class="genericitem text_content"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext"  >{{word}}</p></li>
+    {% endfor %}
+    </ul>
+    <label>Cuadros de Textos</label>
+    <ul>
+        <li><p class="genericitem " id="Agregue Informacion"  title="Agregue Adiccional" data-ftype="textbox">Agregue Adiccional</p></li>
+    </ul>
+    {{form.as_plain }}
+</div>

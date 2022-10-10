@@ -7,16 +7,16 @@ Free as freedom will be 26/8/2016
 '''
 
 from django import forms
-from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.shortcuts import render
+from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidget
 from laboratory.models import Laboratory, BlockedListNotification
@@ -131,13 +131,13 @@ class ObjectView(object):
 
     def get_urls(self):
         return [
-            url(r"^list$", self.list,
+            path("list", self.list,
                 name="objectview_list"),
-            url(r"^create$", self.create,
+            path("create", self.create,
                 name="objectview_create"),
-            url(r"^edit/(?P<pk>\d+)$", self.edit,
+            path("edit/<int:pk>/", self.edit,
                 name="objectview_update"),
-            url(r"^delete/(?P<pk>\d+)$", self.delete,
+            path("delete/<int:pk>", self.delete,
                 name="objectview_delete"),
 
         ]

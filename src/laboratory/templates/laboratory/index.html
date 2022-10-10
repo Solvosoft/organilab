@@ -23,7 +23,7 @@
     {% include 'laboratory/search_widget.html' %}
 
     <div class="row">
-      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory or laboratory.view_solution %}
+      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
         <div id="index_labview_id" class="col-md-4">
         <h3 class="text-center">
           <strong>{% trans 'Laboratory view' %}</strong>
@@ -47,7 +47,7 @@
 		<br><br>
 
     <div class="row">
-      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory or laboratory.view_solution %}
+      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
         <div class="col-md-4 text-center">
           <div class="row">
             <img src="{% static 'images/laboratory.png' %}"
@@ -70,13 +70,6 @@
                   <a href="{% url 'procedure_list' laboratory%}">
                     <strong>{% trans 'Procedures' %}</strong>
                   </a>
-                </li>
-              {% endif %}
-
-              {% if perms.laboratory.view_solution %}
-			          <li class="list-group-item">
-                  <a href="{% url 'laboratory:solution_list' laboratory %}">
-                    <strong>{% trans 'Dissolution calculator' %}</strong></a>
                 </li>
               {% endif %}
 

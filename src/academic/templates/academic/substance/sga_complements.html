@@ -1,0 +1,21 @@
+{% load i18n %}
+<div role="tabpanel" class="tab-pane" id="live" style="overflow: scroll;">
+    <label >{% trans 'Warning Words' %}</label>
+    <ul>
+    {% for word in warningwords %}
+        <li><p class="genericitem text_content"  id="{{word}}"  title="{{word}}" data-ftype="danger-itext"  >{{word}}</p></li>
+    {% endfor %}
+    </ul>
+    <label>{% trans 'Danger Indication' %}</label>
+    <ul>
+      {% for danger in sga_elements.danger_indication.all %}
+        <li><p class="genericitem text_content">{{danger.description}}</p></li>
+      {% endfor %}
+    </ul>
+    <label>{% trans 'Prudence Advice' %}</label>
+    <ul>
+      {% for prudence in sga_elements.prudence_advice.all %}
+        <li><p class="genericitem text_content">{{prudence.name}}</p></li>
+      {% endfor %}
+    </ul>
+</div>

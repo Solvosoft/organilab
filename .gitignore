@@ -4,6 +4,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 /entorno
+docker/*
+assets/svgedit
+assets/svgcanvas
 
 # C extensions
 *.so
@@ -111,3 +114,7 @@ src/logs/
 
 #avoid postgres directory
 docker/postgres
+
+node_modules/
+package-lock.json
+venv39/
