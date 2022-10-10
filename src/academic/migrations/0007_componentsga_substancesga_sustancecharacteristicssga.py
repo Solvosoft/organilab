@@ -4,8 +4,10 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import laboratory.catalog
-import tagging.fields
-
+try:
+    import tagging.fields
+except:
+    fields = None
 
 class Migration(migrations.Migration):
 
@@ -34,7 +36,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('comercial_name', models.CharField(max_length=250, verbose_name='Comercial name')),
-                ('synonymous', tagging.fields.TagField(blank=True, max_length=255, verbose_name='Synonymous')),
+                ('synonymous', fields.TagField(blank=True, max_length=255, verbose_name='Synonymous') if fields else models.CharField(blank=True, max_length=255, verbose_name='Synonymous')) ,
                 ('uipa_name', models.CharField(blank=True, max_length=250, verbose_name='UIPA name')),
                 ('agrochemical', models.BooleanField(default=False, verbose_name='Agrochemical')),
                 ('is_public', models.BooleanField(default=True, verbose_name='Share with others')),

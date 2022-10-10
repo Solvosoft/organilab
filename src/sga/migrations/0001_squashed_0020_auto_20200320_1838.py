@@ -3,10 +3,14 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import mptt.fields
-import tagging.fields
 
 
+try:
+    import mptt.fields as mpttfields
+    import tagging.fields as taggingfields
+except:
+    taggingfields = None
+    mpttfields = None
 # Functions from the following migrations need manual copying.
 # Move them and any dependencies into this file, then update the
 # RunPython operations to refer to the local versions:
@@ -164,7 +168,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='substance',
             name='synonymous',
-            field=tagging.fields.TagField(blank=True, max_length=255, verbose_name='Synonymous'),
+            field=taggingfields.TagField(blank=True, max_length=255, verbose_name='Synonymous') if taggingfields else models.CharField(default='', max_length=255, verbose_name='Synonymous'),
         ),
         migrations.AlterField(
             model_name='builderinformation',
@@ -274,7 +278,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='warningclass',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='sga.WarningClass'),
+            field=mpttfields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='sga.WarningClass') if mpttfields else models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='sga.WarningClass', related_name='children', verbose_name='Warning words'),
         ),
         migrations.AddField(
             model_name='warningclass',
