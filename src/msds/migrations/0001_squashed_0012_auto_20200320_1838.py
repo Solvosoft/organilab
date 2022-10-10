@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import fontawesome.fields
+try:
+    import fontawesome.fields as fontfields
+except:
+    fontfields  = None
 import mptt.fields
 
 
@@ -44,7 +47,7 @@ class Migration(migrations.Migration):
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(editable=False)),
                 ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='msds.OrganilabNode')),
-                ('icon', fontawesome.fields.IconField(blank=True, max_length=60, null=True)),
+                ('icon', fontfields.IconField(blank=True, max_length=60, null=True) if fontfields else models.TextField(blank=True, null=True)),
                 ('image', models.ImageField(blank=True, null=True, upload_to='nodes/')),
             ],
             options={
