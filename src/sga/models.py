@@ -20,6 +20,7 @@ class WarningClass(MPTTModel):
     parent = TreeForeignKey('self',
                             on_delete=models.CASCADE, null=True, blank=True,
                             related_name='children')
+    position = models.IntegerField(default=0)
 
     def __str__(self):
         name = self.name
@@ -40,6 +41,7 @@ class WarningClass(MPTTModel):
     class Meta:
         verbose_name = _('Warning Class')
         verbose_name_plural = _('Warning Classes')
+        ordering = ["position"]
 
 
 # Pictograma de precaución
