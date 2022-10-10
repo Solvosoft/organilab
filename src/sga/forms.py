@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.forms.forms import GTForm
+from djgentelella.widgets.tagging import TaggingInput
+
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
     BuilderInformation, Label, SGAComplement
 
@@ -156,7 +158,7 @@ class SubstanceForm(GTForm,forms.ModelForm):
             'uipa_name': genwidgets.TextInput,
             'components': genwidgets.SelectMultiple(),
             'danger_indications': genwidgets.SelectMultiple(),
-            'synonymous': genwidgets.TextInput,
+            'synonymous': TaggingInput,
             'agrochemical': genwidgets.YesNoInput
         }
 

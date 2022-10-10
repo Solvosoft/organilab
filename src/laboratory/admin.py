@@ -2,7 +2,6 @@ from django.contrib import admin
 from laboratory import models
 from django.utils.translation import gettext_lazy as _
 from mptt.admin import MPTTModelAdmin, TreeRelatedFieldListFilter
-from constance.admin import ConstanceAdmin, ConstanceForm, Config
 
 
 class RelatedFieldListFilter(TreeRelatedFieldListFilter):
@@ -20,20 +19,9 @@ class OrganizationStrutureMPTTModelAdmin(MPTTModelAdmin):
     mptt_level_indent = 20
 
 
-class CustomConfigForm(ConstanceForm):
-    def __init__(self, *args, **kwargs):
-        super(CustomConfigForm, self).__init__(*args, **kwargs)
-        #... do stuff to make your settings form nice ...
-
-
-class ConfigAdmin(ConstanceAdmin):
-    change_list_form = CustomConfigForm
-
 class RolAdmin(admin.ModelAdmin):
     filter_horizontal = ['permissions']
 
-admin.site.unregister([Config])
-admin.site.register([Config], ConfigAdmin)
 
 admin.site.register(models.Laboratory)
 admin.site.register(models.LaboratoryRoom)

@@ -1,6 +1,6 @@
-from ckeditor.widgets import CKEditorWidget
 from django import forms
-from django.conf import settings
+from djgentelella.widgets.wysiwyg import TextareaWysiwyg
+
 from laboratory.utils import get_user_laboratories
 from risk_management.models import RiskZone, IncidentReport
 from djgentelella.widgets import core as djgentelella
@@ -31,12 +31,12 @@ class IncidentReportForm(forms.ModelForm):
         model = IncidentReport
         fields = '__all__'
         widgets = {
-            'causes': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+            'causes': TextareaWysiwyg,
             "incident_date": djgentelella.DateInput,
-            'infraestructure_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
-            'people_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
-            'environment_impact': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
-            'result_of_plans': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
-            'mitigation_actions': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
-            'recomendations': CKEditorWidget(attrs={'lang': settings.LANGUAGE_CODE }),
+            'infraestructure_impact': TextareaWysiwyg,
+            'people_impact': TextareaWysiwyg,
+            'environment_impact': TextareaWysiwyg,
+            'result_of_plans': TextareaWysiwyg,
+            'mitigation_actions': TextareaWysiwyg,
+            'recomendations': TextareaWysiwyg,
         }
