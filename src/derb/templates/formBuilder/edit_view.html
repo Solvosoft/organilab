@@ -1,18 +1,10 @@
-{% extends 'formBuilder/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
+{% block extra_css %}
+ <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}">
+{% endblock %}
 
-{% block head %}
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> 
-    {% endblock %}
-
-    {% block content %}
+{% block content %}
     <div class="row justify-content-center">
         <h1 id="form_name"> </h1>
         <a title="Change Name" onclick="editForm()" class="btn btn-sm btn-default edit_name_btn" ><span class="glyphicon glyphicon-pencil"></span> </a> 
@@ -33,7 +25,11 @@
     </div>
     {% endblock %}
 
-    {% block javascript %}
+    {% block js %}
+    <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}"></script>
+
 <script>
     window.urls = {
     editview: "{% url 'derb:edit_view' %}",
