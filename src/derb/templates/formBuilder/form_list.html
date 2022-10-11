@@ -1,27 +1,14 @@
-{% load static%}
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
 
-<!DOCTYPE html>
+{% block title %}{% trans 'Report Template List' %}{% endblock %}
 
-<script src="{% static 'js/list.js' %}"></script>
+{% block content %}
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">    
-
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<html lang="en">
-    
-    <head>
-        <meta charset="UTF-8">
-        <Title>My Forms</TItle>
-    </head>
-
-    <body>
         <h1>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             My Forms &nbsp; 
@@ -78,21 +65,25 @@
                 </table>
             </div>    
         </div>
-    </body>
-    <script>
-    window.urls = {
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/list.js' %}"></script>
+<script>
+window.urls = {
     delete: "{% url 'derb:delete_form' '0' %}",
     editview: "{% url 'derb:edit_view' %}",
     formlist: "{% url 'derb:form_list' %}",
     edit: "{% url 'derb:edit_view' 0 %}",
     create: "{% url 'derb:create_form' %}"
-    }
+}
 </script>
-    <script>
-
+<script>
         $(document).ready(loadDataTable);
         $('body').on('click', '.delete_btn', deleteForm);
         $('body').on('click', '.create_btn', createForm);
         $('body').on('click', '.edit_btn', editForm);
-    </script>
-</html>
+</script>
+{% endblock %}

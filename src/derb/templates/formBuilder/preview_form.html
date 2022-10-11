@@ -1,18 +1,11 @@
-{% extends 'formBuilder/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
 
-<html lang="en">
-    {% block head %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+{% block extra_css %}
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
+{% endblock %}
 
-    {% endblock %}
-
-    {% block content %}
+{% block content %}
     <div class="row justify-content-center">
         <h1 id="form_name"> </h1>
     </div>
@@ -24,9 +17,11 @@
         </div>
       </div>  
                                 
-    {% endblock %}
+{% endblock %}
 
-    {% block javascript %}
+{% block javascript %}
+    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
     <script type="text/javascript">
         var schema = {{ schema | safe }};    
         document.getElementById("form_name").textContent = schema.name;
@@ -38,6 +33,6 @@
         }
 
     </script>
-    {% endblock %}
+{% endblock %}
 
 </html>

@@ -40,10 +40,13 @@ from reservations_management.api.urls import urlpatterns as reservations_managem
 
 urlpatterns = urls_djgentelela + auth_urls + [
     path('derb/', include('derb.urls')),
+    path('index/', include('presentation.urls')),
+
+
     re_path(r'^$', index_organilab, name='index'),
-    re_path(r'^tutorials/', RedirectView.as_view(url=reverse_lazy('msds:organilab_tree')), name='tutorials'),
     re_path(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     re_path(r'^', include((api_urls,'api'), namespace='api')),
+
     re_path(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     re_path(r'^weblog/', include('djgentelella.blog.urls')),
     re_path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),

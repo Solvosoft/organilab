@@ -9,6 +9,7 @@ from location_field.models.plain import PlainLocationField
 from django.db.models.expressions import F
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
+from tree_queries.query import TreeQuerySet
 
 from . import catalog
 
@@ -342,9 +343,9 @@ class OrganizationStructureManager(models.Manager):
         orgs = None
         for org in organizations:
             if orgs is None:
-                orgs = Q(pk__in=org.get_descendants(include_self=True))
+                orgs = Q(pk__in=org.descendants(include_self=True))
             else:
-                orgs |= Q(pk__in=org.get_descendants(include_self=True))
+                orgs |= Q(pk__in=org.descendants(include_self=True))
 
         if orgs is None:
             return OrganizationStructure.objects.none()
@@ -357,8 +358,10 @@ class OrganizationStructureManager(models.Manager):
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
-    os_manager = OrganizationStructureManager()
     position = models.IntegerField(default=0)
+
+    objects = TreeQuerySet.as_manager()
+    os_manager = OrganizationStructureManager()
 
     class Meta:
         ordering = ["position"]
