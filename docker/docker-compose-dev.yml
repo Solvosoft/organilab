@@ -74,4 +74,4 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/antony30/Escritorio/Practica/Repositorios/organilab/src/
+      device: /home/user/organilab/src/
