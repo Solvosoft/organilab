@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
+from tree_queries.models import TreeNode
 
 from sga.managers import OrganilabContextQueryset
 from laboratory import catalog
 
-class WarningClass(MPTTModel):
+
+class WarningClass(TreeNode):
     TYPE = (
         ("typeofdanger", _("Type of danger")),
         ("class", _("Danger class")),
@@ -17,9 +18,7 @@ class WarningClass(MPTTModel):
         max_length=25, default="category", choices=TYPE,
         verbose_name=_("Danger type"))
 
-    parent = TreeForeignKey('self',
-                            on_delete=models.CASCADE, null=True, blank=True,
-                            related_name='children')
+    position = models.IntegerField(default=0)
 
     def __str__(self):
         name = self.name
@@ -40,6 +39,7 @@ class WarningClass(MPTTModel):
     class Meta:
         verbose_name = _('Warning Class')
         verbose_name_plural = _('Warning Classes')
+        ordering = ["position"]
 
 
 # Pictograma de precaución

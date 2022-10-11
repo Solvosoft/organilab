@@ -3,11 +3,13 @@ import json
 
 from django.contrib.auth.models import User, Group, Permission
 from django.db import models
-from django.db.models import Q,Sum
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
-from mptt.models import MPTTModel, TreeForeignKey
 from django.db.models.expressions import F
+from tree_queries.fields import TreeNodeForeignKey
+from tree_queries.models import TreeNode
+from tree_queries.query import TreeQuerySet
 
 from . import catalog
 
@@ -341,9 +343,9 @@ class OrganizationStructureManager(models.Manager):
         orgs = None
         for org in organizations:
             if orgs is None:
-                orgs = Q(pk__in=org.get_descendants(include_self=True))
+                orgs = Q(pk__in=org.descendants(include_self=True))
             else:
-                orgs |= Q(pk__in=org.get_descendants(include_self=True))
+                orgs |= Q(pk__in=org.descendants(include_self=True))
 
         if orgs is None:
             return OrganizationStructure.objects.none()
@@ -354,16 +356,15 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
 
 
-class OrganizationStructure(MPTTModel):
+class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
+    position = models.IntegerField(default=0)
 
-    parent = TreeForeignKey(
-        'self', blank=True, null=True, verbose_name=_("Parent"),
-        related_name='children', on_delete=models.CASCADE)
-
+    objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
 
     class Meta:
+        ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
         permissions = (
@@ -372,9 +373,6 @@ class OrganizationStructure(MPTTModel):
             ('delete_organizationusermanagement', _('Can delete organization user management')),
             ('view_organizationusermanagement', _('Can view organization user management')),
         )
-
-    class MPTTMeta:
-        order_insertion_by = ['name', ]
 
     def __str__(self):
         return "%s" % self.name
@@ -400,8 +398,6 @@ class OrganizationUserManagement(models.Model):
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
     users = models.ManyToManyField(User, blank=True)
 
-    class MPTTMeta:
-        order_insertion_by = ['organization__name', ]
 
     def __str__(self):
         return "%s" % self.organization.name
@@ -417,7 +413,7 @@ class Laboratory(models.Model):
     email= models.EmailField(_('Email'),blank=True)
     coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
     unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
-    organization = TreeForeignKey(
+    organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 
     rooms = models.ManyToManyField(
@@ -430,9 +426,6 @@ class Laboratory(models.Model):
             ("view_report", _("Can see available reports")),
             ("do_report", _("Can download available reports")),
         )
-
-    class MPTTMeta:
-        order_insertion_by = ['name', ]
 
     def __str__(self):
         return '%s' % (self.name,)

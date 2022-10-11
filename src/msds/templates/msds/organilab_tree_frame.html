@@ -1,5 +1,3 @@
-{% load mptt_tags %}
-
 <html>
 <head>
 
@@ -12,10 +10,11 @@
 	<div class="reveal">
 			<div class="slides">
 			
-    {% recursetree sections %}
+
+        {% for node in sections %}
         <section id="slide-{{node.pk}}">
                    
-           {% if not node.is_root_node %}
+           {% if node.is_not_root_node %}
            		<a class="child_parent" href="#slide-{{node.parent_id}}"> 
            		<i class="fa fa-angle-left" aria-hidden="true"></i>
 
@@ -29,7 +28,7 @@
     <div id="dock-container">
   <div id="dock">
   <ul>
- 	 {% for child in node.get_children %}
+ 	 {% for child in node.children.all %}
          <li>  <a href="#slide-{{child.pk}}"   title="{{child.name}}"  > 
        {% if child.image %}
        		 <img src="{{child.image.url}}" />
@@ -53,7 +52,7 @@
            {% if not node.is_leaf_node %}
                  {{ children }}
            {% endif %}
-        {% endrecursetree %}
+        {% endfor %}
 			
 			</div>
     </div>
