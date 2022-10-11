@@ -25,6 +25,16 @@ class OrganilabNode(TreeNode):
 
     position = models.IntegerField(default=0)
 
+    @property
+    def is_leaf_node(self):
+        return self.children.count() == 0
+
+    @property
+    def is_not_root_node(self):
+        return self.parent is not None
+
+
+
     def __str__(self):
         return self.name
 
