@@ -42,7 +42,7 @@ class UserAccessForm(forms.Form):
     # For delete users. Add a delete button.
 
 
-class LaboratoryCreate(forms.ModelForm):
+class LaboratoryCreate(GTForm,forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -54,8 +54,14 @@ class LaboratoryCreate(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
-
-class LaboratoryEdit(forms.ModelForm):
+        widgets = {
+            'name': genwidgets.TextInput,
+            'phone_number': genwidgets.TextInput,
+            'location': genwidgets.TextInput,
+            'geolocation': genwidgets.TextInput,
+            'organization': genwidgets.Select
+        }
+class LaboratoryEdit(GTForm,forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -67,7 +73,16 @@ class LaboratoryEdit(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'coordinator', 'unit','phone_number', 'email', 'location',
                   'geolocation', 'organization']
-
+        widgets = {
+            'name': genwidgets.TextInput,
+            'coordinator':genwidgets.TextInput,
+            'unit':genwidgets.TextInput,
+            'phone_number':genwidgets.TextInput,
+            'email':genwidgets.EmailInput,
+            'location':genwidgets.TextInput,
+            'geolocation':genwidgets.TextInput,
+            'organization':genwidgets.Select
+        }
 
 class H_CodeForm(forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
