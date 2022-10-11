@@ -1,5 +1,5 @@
 # encoding: utf-8
-
+from djgentelella.widgets import core as genwidgets
 
 '''
 Created on 26/12/2016
@@ -16,6 +16,8 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django_ajax.decorators import ajax
+from djgentelella.forms.forms import GTForm
+
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
@@ -69,13 +71,16 @@ class FurnitureCreateView(CreateView):
         return context
 
 
-class FurnitureCreateForm(forms.ModelForm):
+class FurnitureCreateForm( GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
+        widgets={
+            "name": genwidgets.TextInput,
+            "type": genwidgets.Select
+        }
 
-
-class FurnitureForm(forms.ModelForm):
+class FurnitureForm(GTForm,forms.ModelForm):
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
         validators=[RegexValidator(
