@@ -14,6 +14,7 @@
       <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
         <div class=" body ">
           {{ form.as_horizontal }}
+
         </div>
         <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
       </form>
