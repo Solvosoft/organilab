@@ -1,0 +1,10 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n %}
+{% block content %}
+<h2>Próximamente Manuales</h2>
+
+<ul class="list-group">
+    <li><a class="list-group-item" href="{% url 'msds:index_msds' %}"> {% trans 'MSDS Files' %}</a></li>
+    <li><a class="list-group-item"  href="{% url 'msds:regulation_docs' %}"> {% trans 'Regulation documents' %}</a></li>
+</ul>
+{% endblock %}

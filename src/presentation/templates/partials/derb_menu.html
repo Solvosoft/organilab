@@ -1,0 +1,20 @@
+{% load i18n %}
+
+{% if perms.derb.add_customform %}
+    <li>
+        <a>
+            <i class="fa fa-shopping-basket"></i>
+                {% trans 'Report Management' %}
+            <span class="fa fa-chevron-down"></span>
+        </a>
+        <ul class="nav child_menu">
+            <li>
+                <a class="nav-link" href="{% url 'derb:form_list' %}"
+        title="{% trans 'Report List' %}">
+            <i class="fa fa-child"></i>
+            {% trans 'Report List' %}
+                </a>
+            </li>
+        </ul>
+    </li>
+{% endif %}

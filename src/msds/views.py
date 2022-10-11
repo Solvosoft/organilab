@@ -151,19 +151,6 @@ class MSDSObjectCRUD(CRUDView):
         return ODeleteView
 
 
-def organilab_tree_frame(request):  
-    context = {}
-    context['sections'] = OrganilabNode.objects.all()
-    return render(request, 'msds/organilab_tree_frame.html', context)
-
-
-def organilab_tree(request):
-    content = request.GET.get('content', '')
-    if content:
-        return organilab_tree_frame(request)
-    return render(request, 'msds/organilab_tree.html')
-
-
 def regulation_view(request):
     regulations = RegulationDocument.objects.all()
     return render(request, 'regulation/regulations_document.html', {'object_list': regulations})
