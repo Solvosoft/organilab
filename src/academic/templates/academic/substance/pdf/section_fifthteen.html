@@ -1,0 +1,10 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 15: Información reglamentaria</label>
+<div class="container">
+    <label class="fw-bold">15.1 {% trans 'Regulations and legislation on safety, health and the environment specific to the substance or mixture' %}</label>
+    <br>
+    <label>{% if leaf.regulations_legislation %} {{leaf.regulations_legislation }} {% else %} Sin datos disponibles {% endif %}</label>
+    <br>
+    <label class="fw-bold">15.2 {% trans 'Chemical Safety Assessment' %}</label>
+</div>
+<hr>

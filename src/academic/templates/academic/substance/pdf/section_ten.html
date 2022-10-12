@@ -1,0 +1,28 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 10: Estabilidad y reactividad</label>
+<br>
+<label class="fw-bold">10.1 {% trans 'Reactivity' %}</label>
+<div class="container">
+    <label>{% if leaf.reactivity %} {{leaf.reactivity }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">10.2 {% trans 'Chemical stability' %}</label>
+<div class="container">
+    <label>{% if leaf.chemical_stability %} {{leaf.chemical_stability }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">10.3 {% trans 'Possibility of hazardous reactions' %}</label>
+<div class="container">
+    <label>{% if leaf.dangerous_reactions %} {{leaf.dangerous_reactions }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">10.4 {% trans 'Conditions to avoid' %}</label>
+<div class="container">
+    <label>{% if leaf.conditions_avoid %} {{leaf.conditions_avoid }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">10.5 {% trans 'Incompatible materials' %}</label>
+<div class="container">
+    <label>{% if leaf.incompatible_materials %} {{leaf.incompatible_materials }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">10.6 {% trans 'Hazardous decomposition products' %}</label>
+<div class="container">
+    <label>{% if leaf.dangerous_decomposition_products %} {{leaf.dangerous_decomposition_products }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<hr>

@@ -1,0 +1,38 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 5: Medidas de lucha contra incendios</label>
+<br>
+<label class="fw-bold">5.1 Medios de extinción</label>
+<div class="container">
+    <label class="fw-bold">{% trans 'Suitable extinguishing media' %}</label>
+    <br>
+    <label>{% if leaf.appropriate%} {{leaf.appropriate}} {% else %} sin datos disponibles {% endif %} </label>
+    <br>
+    <label class="fw-bold">{% trans 'Unsuitable extinguishing media' %}</label>
+    <br>
+    <label>{% if leaf.no_appropriate%} {{leaf.no_appropriate}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<label class="fw-bold">5.2 {% trans 'Specific hazards arising from the substance or mixture' %}</label>
+<br>
+<div class="container">
+    <label>{% if leaf.specific_dangers %} {{leaf.specific_dangers}} {% else %} sin datos disponibles {% endif %} </label>
+    <br>
+    <label class="fw-bold">{% trans 'Hazardous Combustion Products' %}</label>
+    <br>
+    <label>{% if leaf.combustion_products%} {{leaf.combustion_products}} {% else %} sin datos disponibles {% endif %} </label>
+    <br>
+</div>
+
+<label class="fw-bold">5.3 {% trans 'Recommendations for firefighters' %}</label>
+<br>
+<div class="container">
+    <label>{% if leaf.recomendations %} {{leaf.recomendations}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<label class="fw-bold">5.4 {% trans 'Other Information' %}</label>
+<br>
+<div class="container">
+    <label>{% if leaf.other_info %} {{leaf.other_info}} {% else %} sin datos disponibles {% endif %} </label>
+    <br>
+</div>
+<hr>

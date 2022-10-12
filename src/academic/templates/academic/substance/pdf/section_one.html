@@ -1,0 +1,26 @@
+{% load static i18n %}
+
+<label class="fw-bold">SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la empresa</label>
+<br>
+<label class="fw-bold">1.1 Identificadores del producto</label>
+<div class="row">
+    <div class="col-3"><label>Nombre del producto</label></div>
+    <div class="col-9">: {{substance.comercial_name}}</div>
+</div>
+<div class="row">
+    <div class="col-3"><label>Marca</label></div>
+    <div class="col-9"></div>
+</div>
+<div class="row">
+    <div class="col-3"><label>{% trans 'Number Index'%}</label></div>
+    <div class="col-9">: {{substance.substancecharacteristics.number_index}}</div>
+</div>
+<div class="row">
+    <div class="col-3"><label>REACH No.</label></div>
+    <div class="col-9">:</div>
+</div>
+<div class="row">
+    <div class="col-3"><label>Nombre del producto</label></div>
+    <div class="col-9">: {{leaf.substance.comercial_name}}</div>
+</div>
+<hr>

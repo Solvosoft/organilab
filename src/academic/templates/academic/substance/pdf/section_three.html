@@ -1,0 +1,60 @@
+{% load static i18n %}
+<label class="fw-bold">SECCION 3: Composición/Informacion sobre los componentes</label>
+<br>
+<label class="fw-bold"l>3.1 Sustancias</label>
+<div class="container ms-2">
+    <div class="row">
+        <div class="col-3"><label>{% trans 'Synonymous' %}</label></div>
+        <div class="col-9">: {{substance.synonymous}}</div>
+    </div>
+    <div class="row">
+        <div class="col-3"><label>{% trans 'Molecular formula' %}</label></div>
+        <div class="col-9">: {{substance.substancecharacteristics.molecular_formula}}</div>
+    </div>
+    <div class="row">
+        <div class="col-3"><label>{% trans 'Molecular Weight' %}</label></div>
+        <div class="col-9">: {{substance.substancecharacteristics.molecular_weight}}</div>
+    </div>
+    <div class="row">
+        <div class="col-3"><label>No.CAS</label></div>
+        <div class="col-9">: {{substance.substancecharacteristics.cas_id_number}}</div>
+    </div>
+    <div class="row">
+        <div class="col-3"><label>No.CE</label></div>
+        <div class="col-9">: {{substance.substancecharacteristics.number_ce}}</div>
+    </div>
+     <div class="row">
+         <div class="col-3"><label>{% trans 'Number Index' %}</label></div>
+         <div class="col-9">: {{substance.substancecharacteristics.number_index}}</div>
+    </div>
+        <label><strong>Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008</strong></label>
+        <table class="table table-bordered border-dark border-2">
+            <thead class="table-secondary border-dark">
+            <tr>
+                <th>{% trans 'Component' %}</th>
+                <th>{% trans 'Classification'%}</th>
+                <th>{% trans 'Concentration'%}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">{{substance.comercial_name}}</td>
+                </tr>
+                <tr class="text-center">
+                    <td>
+                        <div class="container">
+                            <div class="row">
+                                <label class="col-3">No CAS</label>
+                                <label class="col-9">{{substance.substancecharacteristics.cas_id_number}}</label>
+                            </div>
+                            <br>{{substance.substancecharacteristics.number_ce}}
+                            <br>{{substance.substancecharacteristics.number_index}}
+                        </div>
+                    </td>
+                    <td>zz</td>
+                    <td>{{substance.substancecharacteristics.concentration}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+<hr>
