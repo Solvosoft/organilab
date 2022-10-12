@@ -1,0 +1,14 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 13: Consideraciones relativas a la eliminación</label>
+<br>
+<label class="fw-bold">13.1 Métodos para el tratamiento de residuos</label>
+<div class="container">
+    <label class="fw-bold">{% trans 'Product' %}</label>
+    <br>
+    <label>{% if leaf.product %} {{leaf.product }} {% else %} Sin datos disponibles {% endif %}</label><label>{% trans 'Product' %}</label>
+    <br>
+    <label class="fw-bold">{% trans 'Contaminated packaging' %}</label>
+    <br>
+    <label>{% if leaf.contaminated_packaging %} {{leaf.contaminated_packaging }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<hr>

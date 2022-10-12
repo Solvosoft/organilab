@@ -1,0 +1,28 @@
+{% load static i18n %}
+    <label class="fw-bold">SECCIÓN 12: Información ecológica</label>
+    <br>
+    <label class="fw-bold">12.1 {% trans 'Toxicity' %}</label>
+    <div class="container">
+        <label>{% if leaf.toxicity %} {{leaf.toxicity }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.2 {% trans 'Persistence and degradability' %}</label>
+    <div class="container">
+        <label>{% if leaf.Persistence_degradability %} {{leaf.Persistence_degradability }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.3 {% trans 'Bioaccumulative potential' %}</label>
+    <div class="container">
+        <label>{% if leaf.bioaccumulative_potential %} {{leaf.bioaccumulative_potential }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.4 {% trans 'Soil mobility' %}</label>
+    <div class="container">
+        <label>{% if leaf.soil_mobility %} {{leaf.soil_mobility }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.5 {% trans 'Results of PBT and vPvB assessment' %}</label>
+    <div class="container">
+        <label>{% if leaf.assessment_result %} {{leaf.assessment_result }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.6 {% trans 'Other adverse effects' %}</label>
+    <div class="container">
+        <label>{% if leaf.other_adverse_effects %} {{leaf.other_adverse_effects }} {% else %} Sin datos disponibles {% endif %}</label>
+    </div>
+<hr>

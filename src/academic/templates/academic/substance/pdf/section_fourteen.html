@@ -1,0 +1,28 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 14: Información relativa al transporte</label>
+<br>
+<label class="fw-bold">14.1 {% trans 'ONU Number' %}</label>
+<div class="container">
+    <label>{% if leaf.onu_number %} {{leaf.onu_number }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">14.2 {% trans 'United Nations proper shipping name' %}</label>
+<div class="container">
+    <label>{% if leaf.proper_shipping_name %} {{leaf.proper_shipping_name }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">14.3 {% trans 'Transport hazard class' %}</label>
+<div class="container">
+    <label>{% if leaf.transport_hazard_class %} {{leaf.transport_hazard_class }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">14.4 {% trans 'Packaging group' %}</label>
+<div class="container">
+    <label>{% if leaf.packaging_group %} {{leaf.packaging_group }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">14.5 {% trans 'Environmental hazards' %}</label>
+<div class="container">
+    <label>{% if leaf.environmental_hazards %} {{leaf.environmental_hazards }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<label class="fw-bold">14.6 {% trans 'Special precautions for users' %}</label>
+<div class="container">
+    <label>{% if leaf.special_precautions %} {{leaf.special_precautions }} {% else %} Sin datos disponibles {% endif %}</label>
+</div>
+<hr>

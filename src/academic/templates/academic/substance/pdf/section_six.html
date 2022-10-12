@@ -1,0 +1,24 @@
+{% load static i18n %}
+<label class="fw-bold">SECCIÓN 6: Medidas en caso de vertido accidental</label>
+<br>
+<label class="fw-bold">6.1 {% trans 'Personnel who are not part of the emergency services' %}</label>
+<div class="container">
+    <label>{% if leaf.personal_caution%} {{leaf.personal_caution}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<label class="fw-bold">6.2 {% trans 'Environmental relative precautions' %}</label>
+<div class="container">
+    <label>{% if leaf.environmental_caution%} {{leaf.environmental_caution}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<label class="fw-bold">6.3 {% trans 'Methods and material for containment and cleaning up' %}</label>
+<div class="container">
+    <label>{% if leaf.methods_material_contention%} {{leaf.methods_material_contention}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<label class="fw-bold">6.4 {% trans 'Reference to other sections' %}</label>
+<div class="container">
+    <label>{% if leaf.references_sections%} {{leaf.references_sections}} {% else %} sin datos disponibles {% endif %} </label>
+</div>
+<br>
+<hr>
