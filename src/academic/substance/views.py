@@ -1,5 +1,5 @@
 from chunked_upload.models import ChunkedUpload
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -17,7 +17,8 @@ from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, Persona
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
-
+from django.template.loader import get_template
+from weasyprint import HTML
 @login_required
 @permission_required('laboratory.change_object')
 @organilab_context_decorator
@@ -499,3 +500,12 @@ def add_sga_provider(request):
         return JsonResponse({'result':True,'provider_pk':provider.pk,'provider':provider.name})
     else:
         return JsonResponse({'result':False})
+
+def security_leaf_pdf(request, substance):
+    leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
+    if leaf:
+        template = get_template('academic/substance/security_leaf_pdf.html')
+        context = {'leaf':leaf,'substance':leaf.substance, 'provider':leaf.provider}
+        html_template=template.render(context)
+        pdf = HTML(string=html_template).write_pdf()
+        return HttpResponse(pdf, content_type='application/pdf')
