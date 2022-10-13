@@ -1,40 +1,40 @@
 {% load static i18n %}
-<label class="fw-bold">SECCIÓN 8: Controles de exposición/protección individual</label>
+<label class="fw-bold">{% trans 'SECTION 8: Exposure controls/personal protection'%}</label>
 <br>
-<label class="fw-bold">8.2 Controles de la exposición</label>
+<label class="fw-bold">8.2 {% trans 'Exposure controls'%}</label>
 <div class="container">
     <label class="fw-bold">{% trans 'Appropriate technical controls' %}</label>
     <br>
-    <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Appropriate technical controls' %}</label>
     <br>
-    <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Eye/face protection' %}</label>
     <br>
-    <label>{% if leaf.eye_face_protection %} {{leaf.eye_face_protection}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.eye_face_protection %} {{leaf.eye_face_protection}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Skin protection' %}</label>
     <br>
-    <label>{% if leaf.skin_protection %} {{leaf.skin_protection}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.skin_protection %} {{leaf.skin_protection}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Corporal protection' %}</label>
     <br>
-    <label>{% if leaf.corporal_protection %} {{leaf.corporal_protection}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.corporal_protection %} {{leaf.corporal_protection}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Breath protection' %}</label>
     <br>
-    <label>{% if leaf.breath_protection %} {{leaf.breath_protection}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.breath_protection %} {{leaf.breath_protection}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Environmental exposure control' %}</label>
     <br>
-    <label>{% if leaf.environmental_exposition %} {{leaf.environmental_exposition}} {% else %} Sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.environmental_exposition %} {{leaf.environmental_exposition}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <hr>
