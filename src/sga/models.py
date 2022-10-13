@@ -148,6 +148,7 @@ class Substance(models.Model):
                                       verbose_name=_("Comercial name"))
     uipa_name= models.CharField(max_length=250, default="",
                                 verbose_name=_("UIPA name"))
+    brand = models.CharField(max_length=50, default="", verbose_name=_("Brand"))
     components_sga = models.ManyToManyField(
         "self", verbose_name=_("Components"))
     danger_indications = models.ManyToManyField(
@@ -344,6 +345,8 @@ class SGAComplement(models.Model):
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
     other_dangers = models.TextField(null=True,blank=True, verbose_name=_("Other Dangers"))
+    pictograms = models.ManyToManyField(Pictogram, verbose_name=_("Pictogram"))
+    warningword = models.ForeignKey(WarningWord, null=True,blank=True, on_delete=models.DO_NOTHING, verbose_name=_("WarningWord"))
 
 class Provider(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Name"))
@@ -358,8 +361,15 @@ class Provider(models.Model):
     def __str__(self):
         return self.name
 class SecurityLeaf(models.Model):
+    """Identificacion de sustancias"""
+    register_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("No. Registro"))
+    reach_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("REACH No."))
+    identified_uses = models.TextField(null=True, blank=True, verbose_name=_("Identified uses"))
+    reference = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Reference"))
     substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
     provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True, verbose_name=_('Provider'))
+    regulation_classification= models.TextField(null=True,blank=True, verbose_name=_("Classification according to Regulation (CE) 1272/2008"))
+    directives_classification= models.TextField(null=True,blank=True, verbose_name=_("Classification according to EU Directives 67/548/CEE or 1999/45/CE"))
     """Primeros Auxilios"""
     general = models.TextField(null=True,blank=True, verbose_name=_("General recommendations"))
     inhalation = models.TextField(null=True,blank=True, verbose_name=_("If inhaled"))
@@ -461,6 +471,7 @@ class SecurityLeaf(models.Model):
     environmental_hazards = models.TextField(null=True, blank=True, verbose_name=_("Environmental hazards"))
     special_precautions = models.TextField(null=True, blank=True, verbose_name=_("Special precautions for users"))
     """InformaciónReglamentaria"""
+    regulatory_information =models.TextField(null=True, blank=True, verbose_name=_("Regulatory information"))
     regulations_legislation = models.TextField(null=True, blank=True, verbose_name=_("Regulations and legislation on safety, health and the environment specific to the substance or mixture"))
     chemical_safety_assessment = models.TextField(null=True, blank=True, verbose_name=_("Chemical Safety Assessment"))
     """OtraInformacion"""
