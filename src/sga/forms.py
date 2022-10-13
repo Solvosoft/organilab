@@ -10,7 +10,7 @@ from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, 
     BuilderInformation, Label, SGAComplement, Provider
 
 
-class PersonalTemplateForm(forms.Form):
+class PersonalTemplateForm(GTForm,forms.Form):
     name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput, label=_('Name'))
     template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=True, widget=genwidgets.Select, label=_('Template'))
 

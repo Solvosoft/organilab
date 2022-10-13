@@ -3,12 +3,13 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
+from .models import Laboratory, Object, Profile,Rol,ProfilePermission,\
+    Provider,Shelf,OrganizationStructure, ObjectFeatures,LaboratoryRoom
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
-from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
+#from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
 from django.utils.translation import gettext_lazy as _
-from laboratory.models import OrganizationStructure
+#from laboratory.models import OrganizationStructure, ObjectFeatures
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from django.forms import ModelForm
@@ -42,7 +43,7 @@ class UserAccessForm(forms.Form):
     # For delete users. Add a delete button.
 
 
-class LaboratoryCreate(forms.ModelForm):
+class LaboratoryCreate(GTForm,forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -54,8 +55,15 @@ class LaboratoryCreate(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization']
+        widgets = {
+            'name': genwidgets.TextInput,
+            'phone_number': genwidgets.PhoneNumberTwoDigitMaskInput,
+            'location': genwidgets.TextInput,
+            'geolocation': genwidgets.TextInput,
+            'organization': genwidgets.Select
+        }
 
-class LaboratoryEdit(forms.ModelForm):
+class LaboratoryEdit(GTForm,forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -67,7 +75,16 @@ class LaboratoryEdit(forms.ModelForm):
         model = Laboratory
         fields = ['name', 'coordinator', 'unit','phone_number', 'email', 'location',
                   'geolocation', 'organization']
-
+        widgets = {
+            'name': genwidgets.TextInput,
+            'coordinator': genwidgets.TextInput,
+            'unit': genwidgets.TextInput,
+            'phone_number': genwidgets.PhoneNumberTwoDigitMaskInput,
+            'email': genwidgets.EmailMaskInput,
+            'location': genwidgets.TextInput,
+            'geolocation': genwidgets.TextInput,
+            'organization': genwidgets.Select
+        }
 
 class H_CodeForm(forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
@@ -139,7 +156,7 @@ class SubtractObjectForm(GTForm):
     discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',label=_('Description'), required=False)
 
-class ProfileForm(forms.Form):
+class ProfileForm(GTForm,forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
     last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
@@ -165,3 +182,20 @@ class ProviderForm(forms.ModelForm,GTForm):
                  'email': genwidgets.EmailMaskInput,
                  'legal_identity': genwidgets.TextInput,
                    }
+
+class ObjectFeaturesForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = ObjectFeatures
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput(),
+            'description': genwidgets.Textarea()
+        }
+
+class LaboratoryRoomForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = LaboratoryRoom
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput(),
+        }

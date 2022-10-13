@@ -7,16 +7,18 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 from laboratory.decorators import has_lab_assigned
-
+from laboratory.forms import ObjectFeaturesForm
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.add_objectfeatures'), name='dispatch')
 class FeatureCreateView(CreateView):
     model = ObjectFeatures
-    fields = '__all__'
+    form_class = ObjectFeaturesForm
+    #fields = '__all__'
 
     def get_context_data(self, **kwargs):
         paginator = Paginator(ObjectFeatures.objects.all().distinct(), 10)
@@ -44,7 +46,8 @@ class FeatureCreateView(CreateView):
 @method_decorator(permission_required('laboratory.change_objectfeatures'), name='dispatch')
 class FeatureUpdateView(UpdateView):
     model = ObjectFeatures
-    fields = '__all__'
+    form_class = ObjectFeaturesForm
+    #fields = '__all__'
 
     def get_success_url(self):
         if self.lab is not None:

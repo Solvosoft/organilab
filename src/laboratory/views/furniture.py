@@ -21,7 +21,8 @@ from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
 #from laboratory.decorators import check_lab_permissions, user_lab_perms
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
-
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as genwidgets
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
@@ -69,11 +70,14 @@ class FurnitureCreateView(CreateView):
         return context
 
 
-class FurnitureCreateForm(forms.ModelForm):
+class FurnitureCreateForm(GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
-
+        widgets = {
+            'name': genwidgets.TextInput(),
+            'type': genwidgets.Select,
+        }
 
 class FurnitureForm(forms.ModelForm):
     dataconfig = forms.CharField(

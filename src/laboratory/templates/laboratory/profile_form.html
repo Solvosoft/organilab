@@ -8,17 +8,19 @@
 			<form method="POST">
 				{% csrf_token %}
 				{{ profile_form.as_horizontal  }}
-				<div class="form-group">
-					<label>{% trans 'Roles' %}</label>
-				<select name="roles" data-widget="SelectMultiple" multiple class="form-control" required>
-				{% for rol in roles %}
-					{% if rol in pp %}
-					<option value="{{rol.id}}" selected>{{rol.name}}</option>
-					{% else %}
-					<option value="{{rol.id}}">{{rol.name}}</option>
-					{% endif %}
-				{% endfor %}
-					</select>
+				<div class="form-group row" >
+					<label class="col-sm-3">{% trans 'Roles' %}:</label>
+					<div class="col-sm-9">
+						<select name="roles" data-widget="SelectMultiple" multiple class="form-control" required>
+							{% for rol in roles %}
+							{% if rol in pp %}
+							<option value="{{rol.id}}" selected>{{rol.name}}</option>
+							{% else %}
+							<option value="{{rol.id}}">{{rol.name}}</option>
+							{% endif %}
+							{% endfor %}
+						</select>
+					</div>
 				</div>
 				<input type="submit" value="{% trans 'Save' %}">
 			</form>

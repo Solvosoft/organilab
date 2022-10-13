@@ -16,7 +16,7 @@ class ProcedureForm(forms.ModelForm, GTForm):
         fields = ['title', 'description']
         widgets = {
             'description': TextareaWysiwyg,
-            'title':genwidgets.TextInput()
+            'title': genwidgets.TextInput()
         }
 
 

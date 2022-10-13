@@ -16,7 +16,7 @@
           <form class="form-horizontal" action="" method="post">{% csrf_token %}
             {{ form.as_horizontal }}
             <div class="form-group">
-              <div class="col-sm-10 col-sm-offset-2">
+              <div class="col-sm-8 col-sm-offset-3">
                 <button class="btn btn-success" type="submit">
                   {% if create %}
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Save' %}
