@@ -1,15 +1,15 @@
 {% load static i18n %}
 <label class="fw-bold">{% trans 'SECTION' %} 16: {% trans 'Other information' %}</label>
 <div class="container">
-    <label class="fw-bold">15.1 {% trans 'Full text of the H-Statements referred to in sections 2 and 3.' %}</label>
+    <label class="fw-bold">16.1 {% trans 'Full text of the H-Statements referred to in sections 2 and 3.' %}</label>
     <br>
     <label>{% if leaf.full_text_statements %} {{leaf.full_text_statements }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
-    <label class="fw-bold">15.2 {% trans 'The full text of the R-phrases referred to in points 2 and 3' %}</label>
+    <label class="fw-bold">16.2 {% trans 'The full text of the R-phrases referred to in points 2 and 3' %}</label>
     <br>
     <label>{% if leaf.full_text_phrases %} {{leaf.full_text_phrases }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
-    <label class="fw-bold">15.3 {% trans 'Other data' %}</label>
+    <label class="fw-bold">16.3 {% trans 'Other data' %}</label>
     <br>
     <label>{% if leaf.other_data_text %} {{leaf.other_data_text }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>

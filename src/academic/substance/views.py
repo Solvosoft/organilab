@@ -19,6 +19,9 @@ from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice,
 
 from django.template.loader import get_template
 from weasyprint import HTML
+from datetime import datetime
+
+
 @login_required
 @permission_required('laboratory.change_object')
 @organilab_context_decorator
@@ -503,9 +506,11 @@ def add_sga_provider(request):
 
 def security_leaf_pdf(request, substance):
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
+    component = SGAComplement.objects.filter(substance__pk=substance).first()
+    date_print =datetime.today().strftime('%Y-%m-%d')
     if leaf:
         template = get_template('academic/substance/security_leaf_pdf.html')
-        context = {'leaf':leaf,'substance':leaf.substance, 'provider':leaf.provider}
+        context = {'leaf':leaf,'substance':leaf.substance, 'provider':leaf.provider,'component':component,'date_print':date_print,'date_check':leaf.created_at.strftime('%Y-%m-%d')}
         html_template=template.render(context)
         pdf = HTML(string=html_template).write_pdf()
         return HttpResponse(pdf, content_type='application/pdf')
