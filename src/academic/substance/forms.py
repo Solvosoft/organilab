@@ -19,6 +19,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             'comercial_name', 'synonymous',
             'uipa_name', 'components_sga',
             'agrochemical', 'description',
+            'brand'
         ]
         widgets = {
             'comercial_name': genwidgets.TextInput,
@@ -27,6 +28,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             'components_sga': genwidgets.SelectMultiple,
             'agrochemical': genwidgets.YesNoInput,
             'description': genwidgets.Textarea,
+            'brand': genwidgets.TextInput,
         }
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
@@ -114,6 +116,9 @@ class SecurityLeafForm(GTForm, forms.ModelForm):
         for field in fields.keys():
             if field not in['provider','substance']:
                 self.fields[str(field)].widget = genwidgets.Textarea()
+            if field in ['register_number','reach_number','reference']:
+                self.fields[str(field)].widget = genwidgets.TextInput()
+
         self.fields['provider'].required= False
     class Meta:
         model = SecurityLeaf
