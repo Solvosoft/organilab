@@ -1,33 +1,33 @@
 {% load static i18n %}
-<label class="fw-bold">SECCIÓN 9: Propiedades físicas y químicas</label>
+<label class="fw-bold">{% trans 'SECTION' %} 9: {% trans 'Physical and chemical properties' %}</label>
 <br>
-<label class="fw-bold">9.1 Información sobre propiedades físicas y químicas básicas</label>
+<label class="fw-bold">9.1 {% trans 'Information on basic physical and chemical properties' %}</label>
 <div class="container">
     <ol>
-        <li>{% trans 'Aspect' %}:  {% if leaf.aspect %} {{leaf.aspect}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Smell' %}:  {% if leaf.smell %} {{leaf.smell }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Olfactory threshold' %}:  {% if leaf.olfactory_threshold %} {{leaf.olfactory_threshold}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'pH' %}:  {% if leaf.pH %} {{leaf.pH }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Melting point/ point of freezing' %}:  {% if leaf.melting_point %} {{leaf.melting_point}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Starting point of boiling and range boiling' %}:  {% if leaf.starting_point_boiling %} {{leaf.starting_point_boiling }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Flashpoint' %}:  {% if leaf.flashpoint %} {{leaf.flashpoint}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Evaporation rate' %}:  {% if leaf.evaporation_rate %} {{leaf.evaporation_rate }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Flammability (solid,gas)' %}:  {% if leaf.inflammability_solid_gas %} {{leaf.inflammability_solid_gas}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Inflammability top/bottom or explosive limits' %}:  {% if leaf.Inflammability_top_bottom %} {{leaf.Inflammability_top_bottom }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Vapor pressure' %}:  {% if leaf.vapor_pressure %} {{leaf.vapor_pressure}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Vapor density' %}:  {% if leaf.vapor_density %} {{leaf.vapor_density }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Relative density' %}:  {% if leaf.relative_density %} {{leaf.relative_density}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Water solubility' %}:  {% if leaf.water_solubility %} {{leaf.water_solubility }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Partition coefficient n-octanol/water' %}:  {% if leaf.partition_coefficient %} {{leaf.partition_coefficient}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Auto-temperature inflammation' %}:  {% if leaf.auto_temperature_inflammation %} {{leaf.auto_temperature_inflammation }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Temperature of decomposition' %}:  {% if leaf.temperature_decomposition %} {{leaf.temperature_decomposition}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Viscosity' %}:  {% if leaf.viscosity %} {{leaf.viscosity }} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Explosive properties' %}:  {% if leaf.explosive_properties %} {{leaf.explosive_properties}} {% else %} Sin datos disponibles {% endif %}</li>
-        <li>{% trans 'Properties oxidising' %}:  {% if leaf.properties_oxidising %} {{leaf.properties_oxidising }} {% else %} Sin datos disponibles {% endif %}</li>
+        <li>{% trans 'Aspect' %}:  {% if leaf.aspect %} {{leaf.aspect}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Smell' %}:  {% if leaf.smell %} {{leaf.smell }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Olfactory threshold' %}:  {% if leaf.olfactory_threshold %} {{leaf.olfactory_threshold}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'pH' %}:  {% if leaf.pH %} {{leaf.pH }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Melting point/ point of freezing' %}:  {% if leaf.melting_point %} {{leaf.melting_point}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Starting point of boiling and range boiling' %}:  {% if leaf.starting_point_boiling %} {{leaf.starting_point_boiling }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Flashpoint' %}:  {% if leaf.flashpoint %} {{leaf.flashpoint}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Evaporation rate' %}:  {% if leaf.evaporation_rate %} {{leaf.evaporation_rate }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Flammability (solid,gas)' %}:  {% if leaf.inflammability_solid_gas %} {{leaf.inflammability_solid_gas}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Inflammability top/bottom or explosive limits' %}:  {% if leaf.Inflammability_top_bottom %} {{leaf.Inflammability_top_bottom }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Vapor pressure' %}:  {% if leaf.vapor_pressure %} {{leaf.vapor_pressure}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Vapor density' %}:  {% if leaf.vapor_density %} {{leaf.vapor_density }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Relative density' %}:  {% if leaf.relative_density %} {{leaf.relative_density}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Water solubility' %}:  {% if leaf.water_solubility %} {{leaf.water_solubility }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Partition coefficient n-octanol/water' %}:  {% if leaf.partition_coefficient %} {{leaf.partition_coefficient}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Auto-temperature inflammation' %}:  {% if leaf.auto_temperature_inflammation %} {{leaf.auto_temperature_inflammation }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Temperature of decomposition' %}:  {% if leaf.temperature_decomposition %} {{leaf.temperature_decomposition}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Viscosity' %}:  {% if leaf.viscosity %} {{leaf.viscosity }} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Explosive properties' %}:  {% if leaf.explosive_properties %} {{leaf.explosive_properties}} {% else %} {% trans 'no data available' %} {% endif %}</li>
+        <li>{% trans 'Properties oxidising' %}:  {% if leaf.properties_oxidising %} {{leaf.properties_oxidising }} {% else %} {% trans 'no data available' %} {% endif %}</li>
     </ol>
 </div>
 <label class="fw-bold">9.2 {% trans 'Other security information' %}</label>
 <div class="container">
-    <label>{% if leaf.other_security_information %} {{leaf.other_security_information }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.other_security_information %} {{leaf.other_security_information }} {% else %} {% trans 'no data available' %} {% endif %}</label>
 </div>
 <hr>

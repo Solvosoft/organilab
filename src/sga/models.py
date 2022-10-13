@@ -478,3 +478,4 @@ class SecurityLeaf(models.Model):
     full_text_statements = models.TextField(null=True, blank=True, verbose_name=_("Full text of the H-Statements referred to in sections 2 and 3."))
     full_text_phrases = models.TextField(null=True, blank=True, verbose_name=_("The full text of the R-phrases referred to in points 2 and 3"))
     other_data_text = models.TextField(null=True, blank=True, verbose_name=_("Otro datos"))
+    created_at = models.DateTimeField(auto_now_add=True)

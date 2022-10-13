@@ -1,51 +1,51 @@
 {% load static i18n %}
-<label class="fw-bold">SECCIÓN 11: Información toxicológica</label>
+<label class="fw-bold">{% trans 'SECTION' %} 11: {% trans 'Toxicological informacion' %}</label>
 <br>
-<label class="fw-bold">11.1 Información sobre los efectos toxicológicos</label>
+<label class="fw-bold">11.1 {% trans 'Information on toxicological effects'%}</label>
 <div class="container">
     <label class="fw-bold">{% trans 'Acute toxicity' %}</label>
     <br>
-    <label>{% if leaf.acute_toxicity %} {{leaf.acute_toxicity }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.acute_toxicity %} {{leaf.acute_toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Skin corrosion or irritation' %}</label>
     <br>
-    <label>{% if leaf.skin_irritation %} {{leaf.skin_irritation }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.skin_irritation %} {{leaf.skin_irritation }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Serious eye damage or irritation' %}</label>
     <br>
-    <label>{% if leaf.eye_irritation %} {{leaf.eye_irritation }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.eye_irritation %} {{leaf.eye_irritation }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Respiratory or skin sensitization' %}</label>
     <br>
-    <label>{% if leaf.respiratory_sensitization %} {{leaf.respiratory_sensitization }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.respiratory_sensitization %} {{leaf.respiratory_sensitization }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Germ cell mutagenicity' %}</label>
     <br>
-    <label>{% if leaf.germ_mutagenicity %} {{leaf.germ_mutagenicity }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.germ_mutagenicity %} {{leaf.germ_mutagenicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Carcinogenicity' %}</label>
     <br>
-    <label>{% if leaf.carcinogenicity %} {{leaf.carcinogenicity }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.carcinogenicity %} {{leaf.carcinogenicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Reproductive toxicity' %}</label>
     <br>
-    <label>{% if leaf.reproductive_toxicity %} {{leaf.reproductive_toxicity }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.reproductive_toxicity %} {{leaf.reproductive_toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Specific target organ toxicity - single exposure' %}</label>
     <br>
-    <label>{% if leaf.unique_exhibition %} {{leaf.unique_exhibition }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.unique_exhibition %} {{leaf.unique_exhibition }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Specific target organ toxicity - repeated exposure' %}</label>
     <br>
-    <label>{% if leaf.repeated_exposures %} {{leaf.repeated_exposures }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.repeated_exposures %} {{leaf.repeated_exposures }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Aspiration hazard' %}</label>
     <br>
-    <label>{% if leaf.aspiration_hazard %} {{leaf.aspiration_hazard }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.aspiration_hazard %} {{leaf.aspiration_hazard }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
     <label class="fw-bold">{% trans 'Additional Information' %}</label>
     <br>
-    <label>{% if leaf.additional_information %} {{leaf.additional_information }} {% else %} Sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.additional_information %} {{leaf.additional_information }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
 </div>
 <hr>

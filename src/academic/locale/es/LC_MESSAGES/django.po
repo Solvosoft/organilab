@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-10 14:26-0600\n"
+"PO-Revision-Date: 2022-10-13 15:50-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -475,6 +475,182 @@ msgstr "Información Comercial"
 msgid "Security Leafs"
 msgstr "Hojas de Seguridad"
 
+#: academic/templates/academic/substance/pdf/section_one.html:40
+msgid "Company"
+msgstr "Compañía"
+
+#: academic/templates/academic/substance/pdf/header.html:11
+msgid "SAFETY DATA SHEET"
+msgstr "FICHA DE DATOS DE SEGURIDAD"
+
+#: academic/templates/academic/substance/pdf/header.html:12
+msgid "according to Regulation (CE) No. 1907/2006"
+msgstr "de acuerdo el Reglamento (CE) No. 1907/2006"
+
+#: academic/templates/academic/substance/pdf/header.html:13
+msgid "Version 1.0 Revision Date"
+msgstr "Versión 1.0 Fecha de revisión"
+
+#: academic/templates/academic/substance/pdf/header.html:14
+msgid "Printing date"
+msgstr "Fecha de impresión"
+
+#: academic/templates/academic/substance/pdf/section_one.html:3
+msgid "SECTION 1: Identification of the substance or mixture and of the company or undertaking"
+msgstr "SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la empresa"
+
+#: academic/templates/academic/substance/pdf/section_one.html:5
+msgid "Product Identifiers"
+msgstr "Identificadores del producto"
+
+#: academic/templates/academic/substance/pdf/section_one.html:8
+msgid "Product name"
+msgstr "Nombre del producto"
+
+#: academic/templates/academic/substance/pdf/section_one.html:33
+msgid "Relevant identified uses of the substance or mixture and uses advised against"
+msgstr "Usos pertinentes identificados de la sustancia o de la mezcla y usos desaconsejados"
+
+#: academic/templates/academic/substance/pdf/section_one.html:37
+msgid "Details of the supplier of the safety data sheet"
+msgstr "Datos del proveedor de la ficha de datos de seguridad"
+
+#: academic/templates/academic/substance/pdf/section_one.html:64
+msgid "Emergency number"
+msgstr "Teléfono de emergencia"
+
+#: academic/templates/academic/substance/pdf/section_one.html:9
+msgid "data not available"
+msgstr "Dato no disponible"
+
+#: academic/templates/academic/substance/pdf/section_two.html:3
+msgid "SECTION 2: Hazard identification"
+msgstr "SECCIÓN 2: Identificación de los peligro"
+
+#: academic/templates/academic/substance/pdf/section_two.html:5
+msgid "Classification of the substance or mixture"
+msgstr "Clasificación de la sustancia o de la mezcla"
+
+#: academic/templates/academic/substance/pdf/section_two.html:7
+msgid "Classification according to Regulation (CE) 1272/2008"
+msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
+
+#: academic/templates/academic/substance/pdf/section_two.html:9
+msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
+msgstr "Clasificación de acuerdo con las Directivas de la UE 67/548/CEE ó 1999/45/CE"
+
+#: academic/templates/academic/substance/pdf/section_two.html:11
+msgid "Label elements"
+msgstr "Elementos de la etiqueta"
+
+#: academic/templates/academic/substance/pdf/section_two.html:17
+msgid "Labeling in accordance with Regulation (EC) 1272/2008"
+msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
+
+#: academic/templates/academic/substance/pdf/section_two.html:48
+msgid "Other dangers"
+msgstr "Otros Peligros"
+
+#: academic/templates/academic/substance/pdf/section_three.html:2
+msgid "SECTION 3: Composition/Information on ingredients"
+msgstr "SECCION 3: Composición/Informacion sobre los componentes"
+
+#: academic/templates/academic/substance/pdf/section_three.html:31
+msgid "Hazardous ingredients according to Regulation (EC) No. 1272/2008"
+msgstr "Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
+
+#: academic/templates/academic/substance/pdf/section_three.html:36
+msgid "Classification"
+msgstr "Clasificación"
+
+#: academic/templates/academic/substance/pdf/section_three.html:92
+msgid "Hazardous ingredients according to Directive 1999/45/EC"
+msgstr "Ingredientes peligrosos según la Directiva 1999/45/CE"
+
+#: academic/templates/academic/substance/pdf/section_four.html:2
+msgid "SECTION 4: First aid"
+msgstr "SECCIÓN 4: Primeros auxilios"
+
+#: academic/templates/academic/substance/pdf/section_four.html:4
+msgid "Description of first aid"
+msgstr "Descripción de los primeros auxilios"
+
+#: academic/templates/academic/substance/pdf/section_eleven.html:10
+msgid "Skin corrosion or irritation"
+msgstr "Corrosión o irritación cutáneas"
+
+#: academic/templates/academic/substance/pdf/section_five.html:2
+msgid "SECTION 5: Fire Fighting Measures"
+msgstr "SECCIÓN 5: Medidas de lucha contra incendios"
+
+#: academic/templates/academic/substance/pdf/section_five.html:4
+msgid "Extinguishing media"
+msgstr "Medios de extinción"
+
+#: academic/templates/academic/substance/pdf/section_six.html:2
+msgid "SECTION 6: Accidental Release Measures"
+msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
+
+#: academic/templates/academic/substance/pdf/section_seven.html:2
+msgid "SECTION 7: Handling and storage"
+msgstr "SECCIÓN 7: Manipulación y almacenamiento"
+
+#: academic/templates/academic/substance/pdf/section_eight.html:2
+msgid "SECTION 8: Exposure controls/personal protection"
+msgstr "SECCIÓN 8: Controles de exposición/protección individual"
+
+#: academic/templates/academic/substance/pdf/section_eight.html:4
+msgid "Exposure controls"
+msgstr "Controles de la exposición"
+
+#: academic/templates/academic/substance/pdf/section_nine.html:4
+msgid "Information on basic physical and chemical properties"
+msgstr "Información sobre propiedades físicas y químicas básicas"
+
+#: academic/templates/academic/substance/pdf/section_eleven.html:4
+msgid "Information on toxicological effects"
+msgstr "Información sobre los efectos toxicológicos"
+
+#: academic/templates/academic/substance/pdf/section_eleven.html:46
+msgid "Additional Information"
+msgstr "Información Adicional"
+
+#: academic/templates/academic/substance/pdf/section_twelve.html:4
+msgid "Ecological Information"
+msgstr "Información Ecológica"
+
+#: academic/templates/academic/substance/pdf/section_thirdteen.html:4
+msgid "Waste treatment methods"
+msgstr "Métodos para el tratamiento de residuos"
+
+#: academic/templates/academic/substance/pdf/section_fourteen.html:2
+msgid "Transport information"
+msgstr "Información relativa al transporte"
+
+#: academic/templates/academic/substance/pdf/section_fourteen.html:20
+msgid "Environmental hazards"
+msgstr "Peligros para el medio ambiente"
+
+#: academic/templates/academic/substance/pdf/section_fifthteen.html:2
+msgid "Regulatory information"
+msgstr "Información reglamentaria"
+
+#: academic/templates/academic/substance/pdf/section_sixteen.html:2
+msgid "Other data"
+msgstr "Otros datos"
+
+#: academic/templates/academic/substance/pdf/section_sixteen.html:6
+msgid "no data available"
+msgstr "Sin datos disponibles"
+
+#: academic/templates/academic/substance/pdf/section_sixteen.html:2
+msgid "SECTION"
+msgstr "SECCIÓN"
+
+#: academic/templates/academic/substance/pdf/section_sixteen.html:2
+msgid "Other information"
+msgstr "Otra información"
+
 #: academic/templates/academic/substance/list_substance.html:55
 #, fuzzy
 msgid "Delete furniture"
@@ -587,21 +763,9 @@ msgstr "Estabilidad y Reactividad"
 msgid "Toxicological informacion"
 msgstr "Información Toxicologica"
 
-#: academic/template/substance/step_four.html:287
-msgid "Ecological Information"
-msgstr "Información Ecológica"
-
 #: academic/template/substance/step_four.html:312
 msgid "Relative Considerations Disposal"
 msgstr "Consideraciones Relativas Eliminación"
-
-#: academic/template/substance/step_four.html:331
-msgid "Regulatory information"
-msgstr "Información Reglamentaria"
-
-#: academic/template/substance/step_four.html:350
-msgid "Other information"
-msgstr "Otra información"
 
 #: academic/template/substance/step_four.html:379
 msgid "Add Provider"

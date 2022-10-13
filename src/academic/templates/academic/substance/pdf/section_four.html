@@ -1,46 +1,46 @@
 {% load static i18n %}
-<label class="fw-bold">SECCIÓN 4: Primeros auxilios</label>
+<label class="fw-bold">{% trans 'SECTION 4: First aid'%}</label>
 <br>
-<label class="fw-bold">4.1 Descripción de los primeros auxilios</label>
-<div>
-    <label class="fw-bold">{% trans 'General recommendations' %}</label>
-</div>
-<label>{% if leaf.general%} {{leaf.general}} {% else %} sin datos disponibles {% endif %} </label>
-<br>
+<label class="fw-bold">4.1 {% trans 'Description of first aid'%}</label>
 <div class="container">
+    <div>
+        <label class="fw-bold">{% trans 'General recommendations' %}</label>
+    </div>
+    <label>{% if leaf.general%} {{leaf.general}} {% else %} {% trans 'no data available' %} {% endif %} </label>
+    <br>
     <div>
         <label class="fw-bold">{% trans 'If inhaled' %}</label>
     </div>
-    <label>{% if leaf.inhalation%} {{leaf.inhalation}} {% else %} sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.inhalation%} {{leaf.inhalation}} {% else %} {% trans 'no data available' %} {% endif %} </label>
     <br>
     <div>
         <label class="fw-bold">{% trans 'In case of skin contact' %}</label>
     </div>
-    <label>{% if leaf.skin_contact%} {{leaf.skin_contact}} {% else %} sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.skin_contact%} {{leaf.skin_contact}} {% else %} {% trans 'no data available' %} {% endif %} </label>
     <br>
     <div>
         <label class="fw-bold">{% trans 'In case of contact with eyes' %}</label>
     </div>
-    <label>{% if leaf.eye_contact%} {{leaf.eye_contact}} {% else %} sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.eye_contact%} {{leaf.eye_contact}} {% else %} {% trans 'no data available' %} {% endif %} </label>
     <br>
     <div>
         <label class="fw-bold">{% trans 'if it is swallowed' %}</label>
     </div>
-    <label>{% if leaf.ingestion%} {{leaf.ingestion}} {% else %} sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.ingestion%} {{leaf.ingestion}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <br>
 <label class="fw-bold">4.2 {% trans 'Most important symptoms and effects, both acute and delayed' %}</label>
 <div class="container">
-    <label>{% if leaf.symptoms%} {{leaf.symptoms}} {% else %} sin datos disponibles {% endif %} </label>
+    <label>{% if leaf.symptoms%} {{leaf.symptoms}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 </div>
 <br>
 <label class="fw-bold">4.3 {% trans 'Other Causes' %}</label>
 <div class="container">
-    <label>{% if leaf.other_causes %} {{leaf.other_causes}} {% else %} sin datos disponibles {% endif %}</label>
+    <label>{% if leaf.other_causes %} {{leaf.other_causes}} {% else %} {% trans 'no data available' %} {% endif %}</label>
 </div>
 <br>
 <div>
     <label class="fw-bold">{% trans 'Indication of any medical attention and special treatment that should be provided immediately' %}</label>
 </div>
-<label>{% if leaf.medical_indication%} {{leaf.medical_indication}} {% else %} sin datos disponibles {% endif %} </label>
+<label>{% if leaf.medical_indication%} {{leaf.medical_indication}} {% else %} {% trans 'no data available' %} {% endif %} </label>
 <hr>
