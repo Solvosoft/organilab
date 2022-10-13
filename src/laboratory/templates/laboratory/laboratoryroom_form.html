@@ -14,15 +14,16 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
+		<div class="row ">
+			<div class="container-fluid">
 				{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
 					<form class="form-horizontal" action="" method="post">{% csrf_token %}
 						{{ form.as_horizontal }}
 						<div class="form-group">
+
 						<div class="col-sm-9 col-sm-offset-3">
 							<button class="btn btn-success" type="submit">
+
 							{% if form.instance.pk %}
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Update' %}
 							{% else %}
@@ -55,7 +56,7 @@
 												{% endfor %}
 											</ul>
 										</div>
-										<button type="button" class="btn btn-success"
+										<button type="button" class="btn btn-success" style="width:50px"
 												data-container="body" data-toggle="popover" data-placement="left" 
 												data-content="f{{object.pk}}"
 												data-html=true>
@@ -75,12 +76,12 @@
 							<div class="btn-group" role="group" aria-label="...">
 								{% if perms.laboratory.change_laboratoryroom %}
 									<a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-info">
-										<span class="glyphicon glyphicon-update" aria-hidden="true"></span>{% trans 'Update' %}
+										<span class="glyphicon glyphicon-edit" aria-hidden="true"> </span>{% trans 'Update' %}
 									</a>
 								{% endif %}
 								{% if perms.laboratory.delete_laboratoryroom %}
 									<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
-										<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
+										<span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>{% trans 'Delete' %}
 									</a>
 								{% endif %}
 							</div>

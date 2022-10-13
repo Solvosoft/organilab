@@ -84,6 +84,7 @@ class LaboratoryEdit(GTForm,forms.ModelForm):
             'location': genwidgets.TextInput,
             'geolocation': genwidgets.TextInput,
             'organization': genwidgets.Select
+
         }
 
 class H_CodeForm(forms.Form):
