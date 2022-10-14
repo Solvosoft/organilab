@@ -71,6 +71,7 @@ class FurnitureCreateView(CreateView):
         return context
 
 
+
 class FurnitureCreateForm(GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
@@ -79,6 +80,7 @@ class FurnitureCreateForm(GTForm,forms.ModelForm):
             "name": genwidgets.TextInput,
             "type": genwidgets.Select
         }
+
 class RoomCreateForm(GTForm,forms.ModelForm):
     class Meta:
         model = LaboratoryRoom
@@ -86,6 +88,7 @@ class RoomCreateForm(GTForm,forms.ModelForm):
         widgets={
             'name': genwidgets.TextInput
         }
+
 class FurnitureForm(GTForm,forms.ModelForm):
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
