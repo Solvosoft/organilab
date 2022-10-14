@@ -1,5 +1,6 @@
+
 from djgentelella.models import ChunkedUpload
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -16,6 +17,10 @@ from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, Persona
     BuilderInformationForm, SGAComplementsForm, ProviderSGAForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
+
+from django.template.loader import get_template
+from weasyprint import HTML
+from datetime import datetime
 
 
 @login_required
@@ -478,7 +483,7 @@ def step_four(request,organilabcontext, substance):
         form = SecurityLeafForm(request.POST, instance=security_leaf)
         if form.is_valid():
             form.save()
-            return redirect(reverse('step_four',kwargs={'organilabcontext':organilabcontext,'substance':substance}))
+            return redirect(reverse('get_substance',kwargs={'organilabcontext':organilabcontext}))
     form = SecurityLeafForm(instance=security_leaf)
     context = {'step': 4,
                'organilabcontext': organilabcontext,
@@ -493,7 +498,20 @@ def add_sga_provider(request):
     form = ProviderSGAForm(request.POST)
 
     if form.is_valid():
-        form.save()
-        return JsonResponse({'result':True})
+        provider=form.save(commit=False)
+        provider.save()
+
+        return JsonResponse({'result':True,'provider_pk':provider.pk,'provider':provider.name})
     else:
         return JsonResponse({'result':False})
+
+def security_leaf_pdf(request, substance):
+    leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
+    component = SGAComplement.objects.filter(substance__pk=substance).first()
+    date_print =datetime.today().strftime('%Y-%m-%d')
+    if leaf:
+        template = get_template('academic/substance/security_leaf_pdf.html')
+        context = {'leaf':leaf,'substance':leaf.substance, 'provider':leaf.provider,'component':component,'date_print':date_print,'date_check':leaf.created_at.strftime('%Y-%m-%d')}
+        html_template=template.render(context)
+        pdf = HTML(string=html_template).write_pdf()
+        return HttpResponse(pdf, content_type='application/pdf')

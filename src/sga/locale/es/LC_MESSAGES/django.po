@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-07 15:34-0600\n"
+"PO-Revision-Date: 2022-10-13 17:14-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -994,6 +994,26 @@ msgstr "Numero de Telefono"
 #: sga/models.py:356
 msgid "Emergency number"
 msgstr "Numero de emergencia"
+
+#: sga/models.py:212
+msgid "Number Index"
+msgstr "Numero indice"
+
+#: sga/models.py:213
+msgid "Number CE"
+msgstr "Numero CE"
+
+#: sga/models.py:213
+msgid "Brand"
+msgstr "Marca"
+
+#: sga/models.py:214
+msgid "Molecular Weight"
+msgstr "Peso Molecular"
+
+#: sga/models.py:215
+msgid "Concentration"
+msgstr "Concentración"
 
 #~ msgid "Sustance"
 #~ msgstr "Sustancia"
