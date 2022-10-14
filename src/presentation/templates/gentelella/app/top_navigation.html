@@ -4,7 +4,7 @@
     <a id="menu_toggle"><i class="fa fa-bars"></i>
   </a>
 </div>
-  <div style="display: flex;">
+  <div class="container-fluid" style="display: flex;">
 {% if laboratory %}
   <ul class="nav navbar-nav navbar-left" style="width: 70%;">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
