@@ -1,0 +1,28 @@
+{% load static i18n %}
+    <label class="fw-bold">{% trans 'SECTION' %} 12: {% trans 'Ecological Information' %}</label>
+    <br>
+    <label class="fw-bold">12.1 {% trans 'Toxicity' %}</label>
+    <div class="container">
+        <label>{% if leaf.toxicity %} {{leaf.toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.2 {% trans 'Persistence and degradability' %}</label>
+    <div class="container">
+        <label>{% if leaf.Persistence_degradability %} {{leaf.Persistence_degradability }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.3 {% trans 'Bioaccumulative potential' %}</label>
+    <div class="container">
+        <label>{% if leaf.bioaccumulative_potential %} {{leaf.bioaccumulative_potential }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.4 {% trans 'Soil mobility' %}</label>
+    <div class="container">
+        <label>{% if leaf.soil_mobility %} {{leaf.soil_mobility }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.5 {% trans 'Results of PBT and vPvB assessment' %}</label>
+    <div class="container">
+        <label>{% if leaf.assessment_result %} {{leaf.assessment_result }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+    <label class="fw-bold">12.6 {% trans 'Other adverse effects' %}</label>
+    <div class="container">
+        <label>{% if leaf.other_adverse_effects %} {{leaf.other_adverse_effects }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    </div>
+<hr>

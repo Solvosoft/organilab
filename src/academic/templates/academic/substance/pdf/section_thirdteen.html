@@ -1,0 +1,14 @@
+{% load static i18n %}
+<label class="fw-bold">{% trans 'SECTION' %} 13: {% trans 'Relative Considerations Disposal' %}</label>
+<br>
+<label class="fw-bold">13.1 {% trans 'Waste treatment methods'%}</label>
+<div class="container">
+    <label class="fw-bold">{% trans 'Product' %}</label>
+    <br>
+    <label>{% if leaf.product %} {{leaf.product }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+    <br>
+    <label class="fw-bold">{% trans 'Contaminated packaging' %}</label>
+    <br>
+    <label>{% if leaf.contaminated_packaging %} {{leaf.contaminated_packaging }} {% else %} {% trans 'no data available' %} {% endif %}</label>
+</div>
+<hr>

@@ -179,10 +179,13 @@ class RecipientSizeForm(GTForm,forms.ModelForm):
 class SGAComplementsForm(GTForm,forms.ModelForm):
     class Meta:
         model = SGAComplement
-        fields = ('prudence_advice','danger_indication','other_dangers')
+        fields = ('prudence_advice','danger_indication','warningword','pictograms','other_dangers')
+        order_fields =('prudence_advice','danger_indication','warningword','pictograms','other_dangers')
         widgets = {
             'prudence_advice':AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
+            'pictograms': genwidgets.SelectMultiple,
+            'warningword': genwidgets.Select,
             'substance': genwidgets.HiddenInput,
             'other_dangers': genwidgets.Textarea
         }
