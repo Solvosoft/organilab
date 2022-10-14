@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load i18n %}
 <!-- Modal -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -59,7 +60,7 @@
                     <div id="content">
                     <div id="reserved">
                     <div class="form-group">
-                        <label>Amount Required</label>
+                        <label>{% trans 'Amount Required' %}</label>
                         <div class="input-group">
                         {{modal_form_reservation.amount_required}}
                             <span class="input-group-addon unit" ></span>
@@ -67,11 +68,11 @@
                         {{modal_form_reservation.amount_required.help_text}}
                     </div>
                              <div class="form-group">
-                        <label>Initial Date</label>
+                        <label>{% trans 'Initial Date' %}</label>
                         {{modal_form_reservation.initial_date}}
                     </div>
                       <div class="form-group">
-                        <label>Final Date</label>
+                        <label>{% trans 'Final Date' %}</label>
                         {{modal_form_reservation.final_date}}
 
                     </div>
