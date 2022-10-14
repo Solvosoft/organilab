@@ -4,8 +4,9 @@
     <a id="menu_toggle"><i class="fa fa-bars"></i>
   </a>
 </div>
+  <div style="display: flex;">
 {% if laboratory %}
-  <ul class="nav navbar-nav navbar-left">
+  <ul class="nav navbar-nav navbar-left" style="width: 70%;">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
   </ul>
 {% endif %}
@@ -125,4 +126,5 @@
     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
   {% endif %}
   </ul>
+    </div>
 </nav>

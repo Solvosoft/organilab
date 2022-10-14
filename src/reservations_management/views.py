@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import ListView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -32,7 +34,7 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         new_status = self.object.status
-        success_url = f'reservations/list/{new_status}'
+        success_url = reverse("reservations_list",kwargs={'status': new_status})
         return success_url
 
     def get_context_data(self, **kwargs):
