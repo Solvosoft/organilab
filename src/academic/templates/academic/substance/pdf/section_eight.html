@@ -1,63 +1,61 @@
 {% load static i18n %}
 <label class="fw-bold">{% trans 'SECTION 8: Exposure controls/personal protection'%}</label>
 <br>
+
 <label class="fw-bold">8.1 Parámetros de control</label>
 <br>
-  <table class="table border-dark border-2" style="font-size:11px;">
+  <table border="1" style="font-size:11px; width:100% !important;">
       <tr style="vertical-align:top; text-aling:center">
-          <th width="10%">{% trans 'Substance' %}</th>
-          <th width="10%">No CAS</th>
-          <th width="10%">Identificador</th>
-          <th width="8%">VLA-ED[ppm]</th>
-          <th width="8%">VLA-ED[mg/m³]</th>
-          <th width="8%">VLA-EC[ppm]</th>
-          <th width="8%">VLA-EC[mg/m³]</th>
-          <th width="8%">VLA-VM[ppm]</th>
-          <th width="8%">VLA-VM[mg/m³]</th>
-          <th width="9%">Anotacion</th>
-          <th width="9%">Fuente</th>
+          <th style="width:11%">{% trans 'Substance' %}</th>
+          <th style="width:11%">No CAS</th>
+          <th style="width:10%">Identificador</th>
+          <th style="width:8%">VLA-ED[ppm]</th>
+          <th style="width:8%">VLA-ED[mg/m³]</th>
+          <th style="width:8%">VLA-EC[ppm]</th>
+          <th style="width:8%">VLA-EC[mg/m³]</th>
+          <th style="width:8%">VLA-VM[ppm]</th>
+          <th style="width:8%">VLA-VM[mg/m³]</th>
+          <th style="width:10%">Anotacion</th>
+          <th style="width:10%">Fuente</th>
       </tr>
       <tbody>
       <tr>
-          <td width="10%">{{substance.comercial_name}}</td>
-          <td width="10%">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td width="10%">{% if substance.substancecharacteristics.uipa_name %}{{substance.substancecharacteristics.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_ed_pp %}{{leaf.vla_ed_pp}}{% else %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_ed_mg %}{{leaf.vla_ed_mg}}{% else %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_ec_pp %}{{leaf.vla_ec_pp}}{% else %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_ec_mg %}{{leaf.vla_ec_mg}}{% else %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_vm_mg %}{{leaf.vla_vm_mg}}{% else %}{%endif%}</td>
-          <td width="8%">{%if lead.vla_vm_mg %}{{leaf.vla_vm_mg}}{% else %}{%endif%}</td>
-          <td width="9%"></td>
-          <td width="9%"></td>
+          <td style="width:11%">{{substance.comercial_name}}</td>
+          <td style="width:11%">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:10%">{% if substance.uipa_name %}{{substance.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:8%">{{leaf.vla_ed_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{leaf.vla_ed_mg|default_if_none:""}}</td>
+          <td style="width:8%">{{leaf.vla_ec_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{leaf.vla_ec_mg|default_if_none:""}}</td>
+          <td style="width:8%">{{leaf.vla_vm_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{leaf.vla_vm_mg|default_if_none:""}}</td>
+          <td style="width:10%">{{leaf.annotation|default_if_none:""}}</td>
+          <td style="width:10%">{{leaf.font|default_if_none:""}}</td>
       </tr>
       {% for comp in substance.components_sga.all %}
       <tr>
-          <td>{{comp.comercial_name}}</td>
-          <td>{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td>{% if comp.substancecharacteristics.uipa_name %}{{comp.substancecharacteristics.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td>{%if comp.lead.vla_ed_pp %}{{comp.leaf.vla_ed_pp}}{% else %}{%endif%}</td>
-          <td>{%if comp.lead.vla_ed_mg %}{{comp.leaf.vla_ed_mg}}{% else %}{%endif%}</td>
-          <td>{%if comp.lead.vla_ec_pp %}{{comp.leaf.vla_ec_pp}}{% else %}{%endif%}</td>
-          <td>{%if comp.lead.vla_ec_mg %}{{comp.leaf.vla_ec_mg}}{% else %}{%endif%}</td>
-          <td>{%if comp.lead.vla_vm_mg %}{{comp.leaf.vla_vm_mg}}{% else %}{%endif%}</td>
-          <td>{%if comp.lead.vla_vm_mg %}{{comp.leaf.vla_vm_mg}}{% else %}{%endif%}</td>
-          <td></td>
-          <td></td>
+          <td style="width:11%">{{comp.comercial_name}}</td>
+          <td style="width:11%">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:10%">{% if comp.uipa_name %}{{comp.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:8%">{{comp.leaf.vla_ed_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{omp.leaf.vla_ed_mg|default_if_none:""}}</td>
+          <td style="width:8%">{{comp.leaf.vla_ec_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{comp.leaf.vla_ec_mg|default_if_none:""}}</td>
+          <td style="width:8%">{{comp.leaf.vla_vm_pp|default_if_none:""}}</td>
+          <td style="width:8%">{{comp.leaf.vla_vm_mg|default_if_none:""}}</td>
+          <td style="width:10%">{{comp.leaf.annotation|default_if_none:""}}</td>
+          <td style="width:10%">{{comp.leaf.font|default_if_none:""}}</td>
       </tr>
                 {%endfor%}
             </tbody>
         </table>
 <label class="fw-bold">8.2 {% trans 'Exposure controls'%}</label>
+
 <div class="container">
     <label class="fw-bold">{% trans 'Appropriate technical controls' %}</label>
     <br>
     <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} {% trans 'no data available' %} {% endif %} </label>
-</div>
-<div class="container">
-    <label class="fw-bold">{% trans 'Appropriate technical controls' %}</label>
-    <br>
-    <label>{% if leaf.approppiate_control%} {{leaf.approppiate_control}} {% else %} {% trans 'no data available' %} {% endif %} </label>
+    {% if lead.annotation %} {{leaf.annotation}} {% else %}{%endif%}
 </div>
 <div class="container">
     <label class="fw-bold">{% trans 'Eye/face protection' %}</label>
