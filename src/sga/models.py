@@ -402,7 +402,7 @@ class SecurityLeaf(models.Model):
     vla_ed_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-ED[mgm3]")
     vla_ec_pp = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-EC[ppm]")
     vla_ec_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-EC[mgm3]")
-    vla_vm_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[ppm]")
+    vla_vm_pp = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[ppm]")
     vla_vm_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[mgm]")
     approppiate_control = models.TextField(null=True, blank=True, verbose_name=_("Appropriate technical controls"))
     eye_face_protection = models.TextField(null=True, blank=True, verbose_name=_("Eye/face protection"))
@@ -410,6 +410,8 @@ class SecurityLeaf(models.Model):
     corporal_protection = models.TextField(null=True, blank=True, verbose_name=_("Corporal protection"))
     breath_protection = models.TextField(null=True,blank=True, verbose_name=_("Breath protection"))
     environmental_exposition = models.TextField(null=True, blank=True, verbose_name=_("Environmental exposure control"))
+    annotation = models.TextField(null=True, blank=True, verbose_name=_("Annotation"))
+    font = models.TextField(null=True, blank=True, verbose_name=_("Font"))
     """Propiedades físicas y químicas"""
     aspect = models.TextField(null=True, blank=True, verbose_name=_("Aspect"))
     smell = models.TextField(null=True, blank=True, verbose_name=_("Smell"))
@@ -479,3 +481,14 @@ class SecurityLeaf(models.Model):
     full_text_phrases = models.TextField(null=True, blank=True, verbose_name=_("The full text of the R-phrases referred to in points 2 and 3"))
     other_data_text = models.TextField(null=True, blank=True, verbose_name=_("Otro datos"))
     created_at = models.DateTimeField(auto_now_add=True)
+
+class ReviewSubstance(models.Model):
+    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
+    note = models.IntegerField(null=True, blank=True, verbose_name=_('Note'))
+    is_approved = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = _("Review Substance")
+        verbose_name_plural = _("Review Substance")
+
+    def __str__(self):
+        return f'{self.substance.creator}- ${self.note}'
