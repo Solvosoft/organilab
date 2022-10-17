@@ -193,7 +193,7 @@ urlpatterns += sustance_urls + organization_urls + [
     re_path(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)?/',include(provider_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)?/provider/',include(provider_urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
