@@ -21,7 +21,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets.core import DateRangeInput, YesNoInput
+from djgentelella.widgets.core import DateRangeInput, YesNoInput,Select
 # for xhtml2pdf
 from xhtml2pdf import pisa
 from laboratory.forms import H_CodeForm
@@ -663,17 +663,17 @@ class ReactivePrecursorObjectList(ListView):
 
 
 class FilterForm(GTForm, forms.Form):
-    period = forms.CharField(widget=DateRangeInput, required=False)
-    precursor = forms.BooleanField(widget=YesNoInput,  required=False)
-    all_laboratories = forms.BooleanField(widget=YesNoInput, required=False)
-    resume = forms.BooleanField(widget=YesNoInput, required=False)
-    format = forms.ChoiceField(choices=(
+    period = forms.CharField(widget=DateRangeInput, required=False,label=_('Period'))
+    precursor = forms.BooleanField(widget=YesNoInput,  required=False,label=_('Precursor'))
+    all_laboratories = forms.BooleanField(widget=YesNoInput, required=False,label=_('All labs'))
+    resume = forms.BooleanField(widget=YesNoInput, required=False,label=_('Resume'))
+    format = forms.ChoiceField(widget=Select,choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
         ('xls', 'XSL'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
-    ), required=False)
+    ), required=False,label=_('Format'))
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')

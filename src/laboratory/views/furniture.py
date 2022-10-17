@@ -72,7 +72,8 @@ class FurnitureCreateView(CreateView):
         return context
 
 
-class FurnitureCreateForm( GTForm,forms.ModelForm):
+
+class FurnitureCreateForm(GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
@@ -80,6 +81,7 @@ class FurnitureCreateForm( GTForm,forms.ModelForm):
             "name": genwidgets.TextInput,
             "type": genwidgets.Select
         }
+
 
 class FurnitureForm(GTForm,forms.ModelForm):
 

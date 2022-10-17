@@ -1,0 +1,16 @@
+{% load static i18n %}
+<label class="fw-bold">{% trans 'SECTION 7: Handling and storage' %}</label>
+<br>
+<label class="fw-bold">7.1 {% trans 'Precautions for safe handling' %}</label>
+<div class="container">
+    <label>{% if leaf.safe_handling%} {{leaf.safe_handling}} {% else %} {% trans 'no data available' %} {% endif %} </label>
+</div>
+<label class="fw-bold">7.2 {% trans 'Conditions for safe storage, including possible incompatibilities' %}</label>
+<div class="container">
+    <label>{% if leaf.storage_conditions%} {{leaf.storage_conditions}} {% else %} {% trans 'no data available' %} {% endif %} </label>
+</div>
+<label class="fw-bold">7.3 {% trans 'Specific end uses' %}</label>
+<div class="container">
+    <label>{% if leaf.specific_end_uses%} {{leaf.specific_end_uses}} {% else %} {% trans 'no data available' %} {% endif %} </label>
+</div>
+<hr>

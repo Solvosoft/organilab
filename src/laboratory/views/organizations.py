@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django import forms
+from djgentelella.forms.forms import GTForm
 from tree_queries.forms import TreeNodeChoiceField
 
 from laboratory.models import Laboratory, OrganizationStructure, Profile
@@ -15,7 +16,7 @@ from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 
 
-class OrganizationSelectableForm(forms.Form):
+class OrganizationSelectableForm(GTForm,forms.Form):
     organizations = OrganizationStructure.objects.none()
     filter_organization = TreeNodeChoiceField(queryset=organizations)
 
@@ -54,8 +55,8 @@ class OrganizationReportView(ListView):
                 else:
                     labs = Laboratory.objects.none()
             else:  # filter all of technician
-                organizations_child = OrganizationStructure.os_manager.filter_user(
-                    self.user)
+                organizations_child = list(OrganizationStructure.os_manager.filter_user(
+                    self.user).values_list('pk', flat=True))
                 if organizations_child:      # show organizations laboratories
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)

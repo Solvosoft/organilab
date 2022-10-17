@@ -17,7 +17,7 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from djgentelella.forms.forms import CustomForm
+from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidget
 from laboratory.models import Laboratory, BlockedListNotification
 from laboratory.models import Object, SustanceCharacteristics
@@ -149,7 +149,7 @@ class SustanceCharacteristicsForm(ModelForm):
         fields = '__all__'
 
 
-class ObjectForm(CustomForm,ModelForm):
+class ObjectForm( CustomForm,ModelForm):
     required_css_class = ''
 
     def __init__(self, *args, **kwargs):

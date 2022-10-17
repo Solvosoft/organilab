@@ -16,8 +16,10 @@
 		</div>
 		<div class="row ">
 			<div class="container-fluid">
+
 				{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-					<form class="form-horizontal" action="" method="post">{% csrf_token %}
+			<div class="col-md-offset-2 col-md-8" style="padding: 15px">
+			<form class="form-horizontal " action="" method="post">{% csrf_token %}
 						{{ form.as_horizontal }}
 						<div class="form-group">
 

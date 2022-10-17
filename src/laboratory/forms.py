@@ -19,8 +19,7 @@ class ObjectSearchForm(CustomForm, forms.Form):
     q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
                                        required=False, label=_("Search by name, code or CAS number"))
 
-    all_labs = forms.BooleanField(
-        widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
+    all_labs = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
 
 
 class UserCreate(UserCreationForm):
@@ -87,7 +86,7 @@ class LaboratoryEdit(GTForm,forms.ModelForm):
 
         }
 
-class H_CodeForm(forms.Form):
+class H_CodeForm( forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
                                            widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
                                            label=_('Filter substances by H Code'))
@@ -140,7 +139,7 @@ class TransferObjectForm(GTForm):
 
         self.fields['laboratory'].queryset = profile.laboratories.all().exclude(pk=lab)
 
-class AddObjectForm(forms.Form):
+class AddObjectForm(GTForm,forms.Form):
     amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
@@ -174,14 +173,13 @@ class AddTransferObjectForm(GTForm):
         self.fields['shelf'].queryset = shelf
 
 class ProviderForm(forms.ModelForm,GTForm):
-
     class Meta:
         model = Provider
         fields = ['name','phone_number','email','legal_identity']
         widgets = {'name': genwidgets.TextInput,
-                 'phone_number': genwidgets.TextInput,
+                 'phone_number': genwidgets.PhoneNumberMaskInput,
                  'email': genwidgets.EmailMaskInput,
-                 'legal_identity': genwidgets.TextInput,
+                 'legal_identity': genwidgets.NumberInput,
                    }
 
 class ObjectFeaturesForm(forms.ModelForm, GTForm):
@@ -199,4 +197,6 @@ class LaboratoryRoomForm(forms.ModelForm, GTForm):
         fields = '__all__'
         widgets = {
             'name': genwidgets.TextInput(),
-        }
+            'legal_identity': genwidgets.NumberInput,
+            }
+

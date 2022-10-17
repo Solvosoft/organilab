@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-13 11:46-0600\n"
+"PO-Revision-Date: 2022-10-17 10:11-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -153,7 +153,7 @@ msgstr ""
 
 #: presentation/templates/gentelella/app/top_navigation.html:101
 msgid "Object changes"
-msgstr "Movimiento de Objectos"
+msgstr "Movimiento de Objetos"
 
 #: presentation/templates/gentelella/app/top_navigation.html:106
 msgid "Limited shelf objects"

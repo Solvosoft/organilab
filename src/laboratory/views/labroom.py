@@ -9,17 +9,20 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from djgentelella.forms.forms import GTForm
+
 from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from laboratory.views.furniture import FurnitureCreateForm
 from laboratory.forms import ReservationModalForm,AddObjectForm,\
     TransferObjectForm,SubtractObjectForm, LaboratoryRoomForm
+from laboratory.views.furniture import FurnitureCreateForm
+
 from laboratory.decorators import has_lab_assigned
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
-class LaboratoryRoomsList(ListView):
+class LaboratoryRoomsList(GTForm,ListView):
     model = LaboratoryRoom
 
     def get_queryset(self):
@@ -44,6 +47,7 @@ class LaboratoryRoomsList(ListView):
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     form_class = LaboratoryRoomForm
+
     success_url = "/"
 
     def get_context_data(self, **kwargs):
@@ -54,7 +58,7 @@ class LabroomCreate(CreateView):
         context['furniture_form'] = FurnitureCreateForm
         return context
 
-    def form_valid(self, form):
+    def form_valid(self,form):
         room = form.save()
         lab = get_object_or_404(Laboratory, pk=self.lab)
         lab.rooms.add(room)

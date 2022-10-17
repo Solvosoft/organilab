@@ -145,6 +145,7 @@ class Substance(models.Model):
                                       verbose_name=_("Comercial name"))
     uipa_name= models.CharField(max_length=250, default="",
                                 verbose_name=_("UIPA name"))
+    brand = models.CharField(max_length=50, default="", verbose_name=_("Brand"))
     components_sga = models.ManyToManyField(
         "self", verbose_name=_("Components"))
     danger_indications = models.ManyToManyField(
@@ -340,6 +341,8 @@ class SGAComplement(models.Model):
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
     other_dangers = models.TextField(null=True,blank=True, verbose_name=_("Other Dangers"))
+    pictograms = models.ManyToManyField(Pictogram, verbose_name=_("Pictogram"))
+    warningword = models.ForeignKey(WarningWord, null=True,blank=True, on_delete=models.DO_NOTHING, verbose_name=_("WarningWord"))
 
 class Provider(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Name"))
@@ -354,8 +357,15 @@ class Provider(models.Model):
     def __str__(self):
         return self.name
 class SecurityLeaf(models.Model):
+    """Identificacion de sustancias"""
+    register_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("No. Registro"))
+    reach_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("REACH No."))
+    identified_uses = models.TextField(null=True, blank=True, verbose_name=_("Identified uses"))
+    reference = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Reference"))
     substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
-    provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True)
+    provider  = models.ForeignKey(Provider, on_delete=models.DO_NOTHING, null=True, verbose_name=_('Provider'))
+    regulation_classification= models.TextField(null=True,blank=True, verbose_name=_("Classification according to Regulation (CE) 1272/2008"))
+    directives_classification= models.TextField(null=True,blank=True, verbose_name=_("Classification according to EU Directives 67/548/CEE or 1999/45/CE"))
     """Primeros Auxilios"""
     general = models.TextField(null=True,blank=True, verbose_name=_("General recommendations"))
     inhalation = models.TextField(null=True,blank=True, verbose_name=_("If inhaled"))
@@ -388,7 +398,7 @@ class SecurityLeaf(models.Model):
     vla_ed_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-ED[mgm3]")
     vla_ec_pp = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-EC[ppm]")
     vla_ec_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-EC[mgm3]")
-    vla_vm_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[ppm]")
+    vla_vm_pp = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[ppm]")
     vla_vm_mg = models.CharField(max_length=20, null=True,blank=True,verbose_name="VLA-VM[mgm]")
     approppiate_control = models.TextField(null=True, blank=True, verbose_name=_("Appropriate technical controls"))
     eye_face_protection = models.TextField(null=True, blank=True, verbose_name=_("Eye/face protection"))
@@ -396,6 +406,8 @@ class SecurityLeaf(models.Model):
     corporal_protection = models.TextField(null=True, blank=True, verbose_name=_("Corporal protection"))
     breath_protection = models.TextField(null=True,blank=True, verbose_name=_("Breath protection"))
     environmental_exposition = models.TextField(null=True, blank=True, verbose_name=_("Environmental exposure control"))
+    annotation = models.TextField(null=True, blank=True, verbose_name=_("Annotation"))
+    font = models.TextField(null=True, blank=True, verbose_name=_("Font"))
     """Propiedades físicas y químicas"""
     aspect = models.TextField(null=True, blank=True, verbose_name=_("Aspect"))
     smell = models.TextField(null=True, blank=True, verbose_name=_("Smell"))
@@ -457,9 +469,22 @@ class SecurityLeaf(models.Model):
     environmental_hazards = models.TextField(null=True, blank=True, verbose_name=_("Environmental hazards"))
     special_precautions = models.TextField(null=True, blank=True, verbose_name=_("Special precautions for users"))
     """InformaciónReglamentaria"""
+    regulatory_information =models.TextField(null=True, blank=True, verbose_name=_("Regulatory information"))
     regulations_legislation = models.TextField(null=True, blank=True, verbose_name=_("Regulations and legislation on safety, health and the environment specific to the substance or mixture"))
     chemical_safety_assessment = models.TextField(null=True, blank=True, verbose_name=_("Chemical Safety Assessment"))
     """OtraInformacion"""
     full_text_statements = models.TextField(null=True, blank=True, verbose_name=_("Full text of the H-Statements referred to in sections 2 and 3."))
     full_text_phrases = models.TextField(null=True, blank=True, verbose_name=_("The full text of the R-phrases referred to in points 2 and 3"))
     other_data_text = models.TextField(null=True, blank=True, verbose_name=_("Otro datos"))
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ReviewSubstance(models.Model):
+    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
+    note = models.IntegerField(null=True, blank=True, verbose_name=_('Note'))
+    is_approved = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = _("Review Substance")
+        verbose_name_plural = _("Review Substance")
+
+    def __str__(self):
+        return f'{self.substance.creator}- ${self.note}'

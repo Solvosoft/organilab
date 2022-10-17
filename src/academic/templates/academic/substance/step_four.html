@@ -9,19 +9,18 @@
             <br>
         </div>
     </div>
-    <form action="{% url 'step_four' organilabcontext substance %}" method="POST">
+    <form id="leaf_form" action="{% url 'step_four' organilabcontext substance %}" method="POST">
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-sm-offset-2 col-md-8" >
-           <!--{{ form.as_inline }} -->
+        <div class="col-md-offset-2 col-md-8" >
             <div class = "container">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="heading">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
-                                    Proveedores
+                                    {% trans 'Product Identifiers' %}
                                 </a>
                             </h4>
                         </div>
@@ -29,6 +28,9 @@
                             <div class="panel-body">
                                <div class="row">
                                     <div class="col-sm-12">
+                                        <div class="form-group">{{ form.register_number.label_tag }} {{ form.register_number }}</div>
+                                        <div class="form-group">{{ form.reach_number.label_tag }} {{ form.reach_number }}</div>
+                                        <div class="form-group">{{ form.reference.label_tag }} {{ form.reference }}</div>
                                         <div class="form-group">
                                             {{ form.provider.label_tag }}
                                             <br>
@@ -37,6 +39,7 @@
                                                 {{ form.provider }}
                                             </div>
                                         </div>
+                                        <div class="form-group">{{ form.identified_uses.label_tag }} {{ form.identified_uses }}</div>
                                     </div>
                                </div>
                             </div>
@@ -46,7 +49,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Primeros Auxilios
+                                    {% trans 'First aid' %}
                                 </a>
                             </h4>
                         </div>
@@ -89,7 +92,7 @@
                         <div class="panel-heading" role="tab" id="headingTwo">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Medidas de lucha contra incendios
+                                    {% trans 'Fire-fighting measures' %}
                                 </a>
                             </h4>
                         </div>
@@ -115,7 +118,7 @@
                         <div class="panel-heading" role="tab" id="headingThree">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                                    Medidas en caso de vertido accidental
+                                    {% trans 'Measures in case of accidental spill' %}
                                 </a>
                             </h4>
                         </div>
@@ -138,7 +141,7 @@
                         <div class="panel-heading" role="tab" id="headingFour">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    Manipulación Almacenamiento
+                                    {% trans 'Handling Storage' %}
                                 </a>
                             </h4>
                         </div>
@@ -158,7 +161,7 @@
                         <div class="panel-heading" role="tab" id="headingFive">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                    Controles de exposición/protección individual
+                                    {% trans 'Exposure controls/personal protection' %}
                                 </a>
                             </h4>
                         </div>
@@ -170,8 +173,9 @@
                                          <div class="form-group">{{ form.vla_ed_mg.label_tag }} {{ form.vla_ed_mg }}</div>
                                          <div class="form-group">{{ form.vla_ec_pp.label_tag }} {{ form.vla_ec_pp }}</div>
                                          <div class="form-group">{{ form.vla_ec_mg.label_tag }} {{ form.vla_ec_mg }}</div>
+                                         <div class="form-group">{{ form.vla_vm_pp.label_tag }} {{ form.vla_vm_pp }}</div>
                                          <div class="form-group">{{ form.vla_vm_mg.label_tag }} {{ form.vla_vm_mg }}</div>
-                                         <div class="form-group">{{ form.vla_vm_mg.label_tag }} {{ form.vla_vm_mg }}</div>
+                                         <div class="form-group">{{ form.annotation.label_tag }} {{ form.annotation }}</div>
                                     </div>
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.approppiate_control.label_tag }} {{ form.approppiate_control }}</div>
@@ -180,6 +184,7 @@
                                          <div class="form-group">{{ form.corporal_protection.label_tag }} {{ form.corporal_protection }}</div>
                                          <div class="form-group">{{ form.breath_protection.label_tag }} {{ form.breath_protection }}</div>
                                          <div class="form-group">{{ form.environmental_exposition.label_tag }} {{ form.environmental_exposition }}</div>
+                                         <div class="form-group">{{ form.font.label_tag }} {{ form.font }}</div>
                                     </div>
 
                                </div>
@@ -190,7 +195,7 @@
                         <div class="panel-heading" role="tab" id="headingSix">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                    Propiedades físicas y química
+                                    {% trans 'Physical and chemical properties' %}
                                 </a>
                             </h4>
                         </div>
@@ -210,7 +215,7 @@
                                          <div class="form-group">{{ form.Inflammability_top_bottom.label_tag }} {{ form.Inflammability_top_bottom }}</div>
                                     </div>
                                     <div class="col-sm-6">
-                                         <div class="form-group">{{ form.vapor_density.label_tag }} {{ form.vapor_density }}</div>
+                                         <div class="form-group">{{ form.vapor_pressure.label_tag }} {{ form.vapor_pressure }}</div>
                                          <div class="form-group">{{ form.vapor_density.label_tag }} {{ form.vapor_density }}</div>
                                          <div class="form-group">{{ form.relative_density.label_tag }} {{ form.relative_density }}</div>
                                          <div class="form-group">{{ form.water_solubility.label_tag }} {{ form.water_solubility }}</div>
@@ -220,6 +225,7 @@
                                          <div class="form-group">{{ form.viscosity.label_tag }} {{ form.viscosity }}</div>
                                          <div class="form-group">{{ form.explosive_properties.label_tag }} {{ form.explosive_properties }}</div>
                                          <div class="form-group">{{ form.properties_oxidising.label_tag }} {{ form.properties_oxidising }}</div>
+                                         <div class="form-group">{{ form.other_security_information.label_tag }} {{ form.other_security_information }}</div>
                                     </div>
 
                                </div>
@@ -230,7 +236,7 @@
                         <div class="panel-heading" role="tab" id="headingSeven">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                    Estabilidad y Reactividad
+                                    {% trans 'Stability and Reactivity' %}
                                 </a>
                             </h4>
                         </div>
@@ -255,7 +261,7 @@
                         <div class="panel-heading" role="tab" id="headingEight">
                             <h4 class="panel-title">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                                    Información Toxicologica
+                                    {% trans 'Toxicological informacion' %}
                                 </a>
                             </h4>
                         </div>
@@ -285,7 +291,7 @@
                     <div class="panel-heading" role="tab" id="headingNine">
                         <h4 class="panel-title">
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-                                Información Ecológica
+                                {% trans 'Ecological Information' %}
                             </a>
                         </h4>
                     </div>
@@ -310,7 +316,7 @@
                     <div class="panel-heading" role="tab" id="headingTen">
                         <h4 class="panel-title">
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
-                                Consideraciones Relativas Eliminación
+                                {% trans 'Relative Considerations Disposal' %}
                             </a>
                         </h4>
                     </div>
@@ -329,7 +335,7 @@
                     <div class="panel-heading" role="tab" id="headingTwelve">
                         <h4 class="panel-title">
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
-                                Información Reglamentaria
+                                {% trans 'Regulatory information'%}
                             </a>
                         </h4>
                     </div>
@@ -337,8 +343,34 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-sm-12">
+                                    <div class="form-group">{{ form.regulatory_information.label_tag }} {{ form.regulatory_information }}</div>
                                     <div class="form-group">{{ form.regulations_legislation.label_tag }} {{ form.regulations_legislation }}</div>
                                     <div class="form-group">{{ form.chemical_safety_assessment.label_tag }} {{ form.chemical_safety_assessment }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingzz">
+                        <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapsezz" aria-expanded="false" aria-controls="collapseTwelve">
+                                {% trans 'Transport information' %}
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapsezz" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingzz">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">{{ form.onu_number.label_tag }} {{ form.onu_number }}</div>
+                                    <div class="form-group">{{ form.proper_shipping_name.label_tag }} {{ form.proper_shipping_name }}</div>
+                                    <div class="form-group">{{ form.transport_hazard_class.label_tag }} {{ form.transport_hazard_class }}</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">{{ form.packaging_group.label_tag }} {{ form.packaging_group }}</div>
+                                    <div class="form-group">{{ form.environmental_hazards.label_tag }} {{ form.environmental_hazards }}</div>
+                                    <div class="form-group">{{ form.special_precautions.label_tag }} {{ form.special_precautions }}</div>
                                 </div>
                             </div>
                         </div>
@@ -348,7 +380,7 @@
                     <div class="panel-heading" role="tab" id="headingThirteen">
                         <h4 class="panel-title">
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen">
-                                Otra Informacion
+                                {% trans 'Other information'%}
                             </a>
                         </h4>
                     </div>
@@ -369,7 +401,7 @@
     </div>
 </div>
         <div class="col-md-12 text-center" style="display:inline-block">
-            <button type="submit" class="btn btn-success">Continuar</button>
+            <button type="submit" class="btn btn-success">{% trans 'Continue' %}</button>
         </div>
     </form>
 </div>
@@ -410,6 +442,12 @@
       data: json
     }).done(function(data){
         if(data.result){
+            var opt = document.createElement('option');
+            opt.value=data.provider_pk;
+            opt.text= data.provider
+            let select_provider=document.querySelector("#leaf_form #id_provider")
+            select_provider.appendChild(opt)
+            select_provider.selectedIndex=select_provider.length-1;
             document.getElementById("provider_form").reset();
         }
 

@@ -1,6 +1,5 @@
 '''
 Created on 1/8/2016
-
 '''
 
 from django.conf.urls import include
