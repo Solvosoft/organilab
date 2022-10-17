@@ -69,7 +69,7 @@ def ShelfDelete(request, lab_pk, pk, row, col):
     },}
 
 
-class ShelfForm(GTForm,forms.ModelForm):
+class ShelfForm(forms.ModelForm,GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 

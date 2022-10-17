@@ -15,6 +15,7 @@ class ProviderCreate(CreateView):
 
     def form_valid(self, form):
         provider = form.save(commit=False)
+
         lab = get_object_or_404(Laboratory, pk=self.lab)
         provider.laboratory = lab
         provider.save()
