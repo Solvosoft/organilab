@@ -38,10 +38,9 @@
 			<div class="alert alert-info">
 				<strong>{% trans 'Laboratory room:' %}</strong> {{ laboratory_room.name }}
 			</div>
-
+			<table class="table table_reportLabRoom">
 				{% for furniture in laboratory_room.furniture_set.all %}
-				<div style="padding-bottom:50px;">
-				<table class="table table_reportLabRoom">
+
 					<thead>
 						<tr class="bg-success">
 						<th colspan="4">{% trans "Furniture:" %} {{ furniture.name }}</th>
@@ -61,10 +60,9 @@
 							<td>{{ obj.shelf.name }}</td>
 						</tr>
 					{% endfor %}
-				</table>
-				</div>
-				{% endfor %}
 
+				{% endfor %}
+			</table>
 <br/>
 		{% empty %}
 			{% trans "You have not Laboratories" %}
@@ -103,14 +101,3 @@
 	<br><br>
 {% endblock %}
 
-{%block javascripts %}
-{{ block.super }}
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
-<script>
-$(document).ready( function () {
-    $('.table_reportLabRoom').DataTable({
-    responsive: true});
-    });
-
-</script>
-{%endblock%}
