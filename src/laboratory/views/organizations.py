@@ -48,7 +48,7 @@ class OrganizationReportView(ListView):
                 organizations_child = OrganizationStructure.os_manager.filter_user(
                     self.user)
                 if self.organization in organizations_child:  # user have perm on that organization ?
-                    organizations_child = self.organization.get_descendants(
+                    organizations_child = self.organization.descendants(
                         include_self=True)
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)
@@ -67,7 +67,7 @@ class OrganizationReportView(ListView):
             # Show all to admin user
             if self.user.is_superuser:
                 if self.organization:
-                    organizations_child = self.organization.get_descendants(
+                    organizations_child = self.organization.descendants(
                         include_self=True)
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)
