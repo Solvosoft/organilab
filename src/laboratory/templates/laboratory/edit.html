@@ -9,7 +9,6 @@
 	      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' form.instance.pk %}{% else %}{% url 'laboratory:laboratory_create' %} {% endif %}"
 	            method="post">{% csrf_token %}
 	        {{ form.as_horizontal }}
-
 	        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
 	      </form>
 	    </div>

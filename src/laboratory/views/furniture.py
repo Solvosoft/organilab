@@ -72,7 +72,7 @@ class FurnitureCreateView(CreateView):
 
 
 
-class FurnitureCreateForm(GTForm,forms.ModelForm):
+class FurnitureCreateForm(forms.ModelForm,GTForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
@@ -81,7 +81,7 @@ class FurnitureCreateForm(GTForm,forms.ModelForm):
             "type": genwidgets.Select
         }
 
-class RoomCreateForm(GTForm,forms.ModelForm):
+class RoomCreateForm(forms.ModelForm,GTForm):
     class Meta:
         model = LaboratoryRoom
         fields = '__all__'
@@ -89,7 +89,7 @@ class RoomCreateForm(GTForm,forms.ModelForm):
             'name': genwidgets.TextInput
         }
 
-class FurnitureForm(GTForm,forms.ModelForm):
+class FurnitureForm(forms.ModelForm,GTForm):
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
         validators=[RegexValidator(

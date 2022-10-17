@@ -7,7 +7,7 @@ from risk_management.models import RiskZone, IncidentReport
 from djgentelella.widgets import core as djgentelella
 
 
-class RiskZoneCreateForm(GTForm,forms.ModelForm):
+class RiskZoneCreateForm(forms.ModelForm,GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
@@ -28,7 +28,7 @@ class RiskZoneCreateForm(GTForm,forms.ModelForm):
             'num_workers': djgentelella.NumberInput,
             'zone_type': djgentelella.Select,
         }
-class IncidentReportForm(GTForm,forms.ModelForm):
+class IncidentReportForm(forms.ModelForm,GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)

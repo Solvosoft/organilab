@@ -20,7 +20,7 @@ from laboratory.decorators import has_lab_assigned
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
-class LaboratoryRoomsList(GTForm,ListView):
+class LaboratoryRoomsList(ListView,GTForm):
     model = LaboratoryRoom
 
     def get_queryset(self):
