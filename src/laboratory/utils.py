@@ -77,14 +77,14 @@ check_lab_perms = check_lab_group_has_perm
 
 def get_users_form_organization(rootpk, userfilters={}):
     query=OrganizationUserManagement.objects.filter(
-        list(OrganizationStructure.objects.filter(pk=rootpk).get_descendants(include_self=True).value_list('pk', flat=True))
+        list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True).value_list('pk', flat=True))
     )
     return query.values('users')
 
 
 def get_laboratories_from_organization(rootpk):
     return Laboratory.objects.filter(organization__in=OrganizationStructure.objects.filter(
-        pk=rootpk).get_descendants(include_self=True)
+        pk=rootpk).descendants(include_self=True)
                               ).distinct()
 
 def get_cas(object, default=None):

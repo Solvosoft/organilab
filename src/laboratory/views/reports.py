@@ -112,7 +112,7 @@ def report_organization_building(request, *args, **kwargs):
         organizations_child = OrganizationStructure.os_manager.filter_user(
             request.user)
         if org in organizations_child:  # user have perm on that organization ?
-            organizations_child = org.get_descendants(include_self=True)
+            organizations_child = org.descendants(include_self=True)
             labs = Laboratory.objects.filter(
                 organization__in=organizations_child)
         else:
@@ -927,7 +927,7 @@ class OrganizationReactivePresenceList(ReportListView):
         return context
 
     def get_queryset(self):
-        query = self.model.objects.filter(pk = self.lab).get_descendants(include_self=True)
+        query = self.model.objects.filter(pk = self.lab) #.descendants(include_self=True)
         #users = get_users_form_organization(query.pk)
         #labs = get_laboratories_from_organization(query.pk)
         data = []

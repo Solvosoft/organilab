@@ -353,7 +353,7 @@ class OrganizationStructureManager(models.Manager):
             return OrganizationStructure.objects.filter(orgs)
 
     def get_children(self, org_id):
-        return OrganizationStructure.objects.filter(pk=org_id).get_descendants(include_self=True)
+        return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
