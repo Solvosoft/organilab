@@ -28,7 +28,7 @@
 	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
 	          </button>
 	        </div>
-              <div class="col-md-1 col-md-offset-2">
+              <div class="col-md-1"style="margin-left: -35px;">
                 {% if perms.laboratory.delete_furniture and object %}
                   <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}

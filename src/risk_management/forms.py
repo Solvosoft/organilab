@@ -1,4 +1,5 @@
 from django import forms
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from laboratory.utils import get_user_laboratories
@@ -6,7 +7,7 @@ from risk_management.models import RiskZone, IncidentReport
 from djgentelella.widgets import core as djgentelella
 
 
-class RiskZoneCreateForm(forms.ModelForm):
+class RiskZoneCreateForm(GTForm,forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
@@ -20,8 +21,14 @@ class RiskZoneCreateForm(forms.ModelForm):
     class Meta:
         model = RiskZone
         exclude = ['priority']
-
-class IncidentReportForm(forms.ModelForm):
+        fields = '__all__'
+        widgets = {
+            'name': djgentelella.TextInput,
+            "laboratories": djgentelella.SelectMultiple,
+            'num_workers': djgentelella.NumberInput,
+            'zone_type': djgentelella.Select,
+        }
+class IncidentReportForm(GTForm,forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
