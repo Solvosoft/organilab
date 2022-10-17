@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
+{% load static %}
 {% block title %}{% trans 'Laboratory report' %}{% endblock %}
 
 {% block content %}
@@ -37,9 +38,12 @@
 			<div class="alert alert-info">
 				<strong>{% trans 'Laboratory room:' %}</strong> {{ laboratory_room.name }}
 			</div>
-			<table class="table">
+
 				{% for furniture in laboratory_room.furniture_set.all %}
-					<tr class="bg-success">
+				<div style="padding-bottom:50px;">
+				<table class="table table_reportLabRoom">
+					<thead>
+						<tr class="bg-success">
 						<th colspan="4">{% trans "Furniture:" %} {{ furniture.name }}</th>
 						</tr>
 						<tr>
@@ -47,7 +51,8 @@
 						<th>{% trans "Furniture" %} </th>
 						<th>{% trans "Quantity" %} </th>
 						<th>{% trans "Shelf" %} </th>
-					</tr>
+						</tr>
+					</thead>
 					{% for obj in furniture.get_objects %}
 						<tr>
 							<td>{{ obj.object.code }}</td>
@@ -56,9 +61,11 @@
 							<td>{{ obj.shelf.name }}</td>
 						</tr>
 					{% endfor %}
+				</table>
+				</div>
 				{% endfor %}
-			</table>
-			<br/>
+
+<br/>
 		{% empty %}
 			{% trans "You have not Laboratories" %}
 		{% endfor %}
@@ -95,3 +102,15 @@
 	{% endif %}
 	<br><br>
 {% endblock %}
+
+{%block javascripts %}
+{{ block.super }}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+<script>
+$(document).ready( function () {
+    $('.table_reportLabRoom').DataTable({
+    responsive: true});
+    });
+
+</script>
+{%endblock%}

@@ -93,7 +93,7 @@ class FurnitureForm(GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("labroom", "name", "type", 'dataconfig')
-       
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')

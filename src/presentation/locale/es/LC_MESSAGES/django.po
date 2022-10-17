@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-09-05 11:05-0600\n"
+"PO-Revision-Date: 2022-10-13 11:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -17,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: presentation/templates/gentelella/app/footer.html:4
 #: presentation/templates/gentelella/registration/footer.html:7
@@ -87,20 +86,17 @@ msgstr ""
 
 #: presentation/templates/gentelella/app/top_navigation.html:21
 #: presentation/templates/gentelella/app/top_navigation.html:22
-msgid "My laboratories"
+#: presentation/templates/gentelella/app/top_navigation.html:35
+msgid "My Laboratories"
 msgstr "Mis Laboratorios"
 
 #: presentation/templates/gentelella/app/top_navigation.html:30
 msgid "Administration"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:35
-msgid "My Laboratories"
-msgstr ""
-
 #: presentation/templates/gentelella/app/top_navigation.html:40
 msgid "Laboratory management"
-msgstr ""
+msgstr "Adminstración de laboratorio"
 
 #: presentation/templates/gentelella/app/top_navigation.html:45
 msgid "Object management"
