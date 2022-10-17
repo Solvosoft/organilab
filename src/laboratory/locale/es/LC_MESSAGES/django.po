@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-13 15:41-0600\n"
+"PO-Revision-Date: 2022-10-17 13:37-0600\n"
 "Last-Translator: alfredoromero <alfredoromero85@gmail.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -2390,6 +2390,10 @@ msgstr "Resumen"
 #: laboratory/views/reports.py:676
 msgid "Format"
 msgstr "Formato"
+
+#: laboratory/models.py:676
+msgid "Labroom"
+msgstr "Sala de Laboratorio"
 
 #~ msgid "Transfer"
 #~ msgstr "Transferir"
