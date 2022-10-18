@@ -1,10 +1,12 @@
 {% load i18n shelf_position laboratory %}
+{% load urlname_tags %}
+
 <nav class="nav_menu">
   <div class="nav toggle">
     <a id="menu_toggle"><i class="fa fa-bars"></i>
   </a>
 </div>
-  <div class="container-fluid" style="display: flex;">
+  <li class="container-fluid" style="display: flex;">
 {% if laboratory %}
   <ul class="nav navbar-nav navbar-left" style="width: 70%;">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
@@ -17,6 +19,16 @@
     </li>
   {% endif %}
   {% if request.user.is_authenticated %}
+
+  {% if perms.laboratory.can_management_permissionscategory %}
+
+        {% get_urlname_action as urlnameactions %}
+        {% validate_context urlnameactions as context %}
+        {% if urlnameactions and context %}
+          <li><a class="btn" id="btn_perms" title="Add Permission" data-toggle="modal" data-target="#permission_modal" data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}" style="padding-top: 31%;"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a></li>
+        {% endif %}
+    {% endif %}
+
     {% get_user_labs as mylabs %}
     <li>
       <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
