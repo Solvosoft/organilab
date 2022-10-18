@@ -29,7 +29,7 @@ class ProviderCreate(CreateView):
 class ProviderUpdate(UpdateView):
     model = Provider
     form_class = ProviderForm
-    template_name = 'laboratory/provider_add.html'
+    template_name = 'laboratory/provider_update.html'
 
     def get_success_url(self):
         lab = self.object.laboratory.pk
