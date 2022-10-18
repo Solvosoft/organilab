@@ -1,0 +1,22 @@
+{% load i18n %}
+{% if perms.laboratory.view_organizationusermanagement and perms.laboratory.add_organizationusermanagement %}
+<li>
+        <a>
+            <i class="fa fa-university"></i>
+                {% trans 'Organizations and perms' %}
+            <span class="fa fa-chevron-down"></span>
+        </a>
+        <ul class="nav child_menu">
+            <li>
+                <a href="{% url 'auth_and_perms:organizationManager' %}" title="{% trans 'Manage Organizations' %}">
+                  <i class='fa fa-university'></i> {% trans 'Manage Organizations' %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
+                  <i class='fa fa-university'></i> {% trans 'Access list' %}
+                </a>
+            </li>
+        </ul>
+</li>
+{% endif %}

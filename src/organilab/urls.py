@@ -13,9 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  re_path(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import include
+
 from django.contrib import admin
-from django.urls import re_path, path
+from django.urls import re_path, path, include
 
 from laboratory import urls as laboratory_urls
 
@@ -41,12 +41,10 @@ from reservations_management.api.urls import urlpatterns as reservations_managem
 urlpatterns = urls_djgentelela + auth_urls + [
     path('derb/', include('derb.urls')),
     path('index/', include('presentation.urls')),
-
-
+    path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
     re_path(r'^$', index_organilab, name='index'),
     re_path(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     re_path(r'^', include((api_urls,'api'), namespace='api')),
-
     re_path(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
     re_path(r'^weblog/', include('djgentelella.blog.urls')),
     re_path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
