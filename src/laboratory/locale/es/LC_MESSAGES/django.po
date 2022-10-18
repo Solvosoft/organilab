@@ -2395,6 +2395,10 @@ msgstr "Resumen"
 msgid "Format"
 msgstr "Formato"
 
+#: laboratory/models.py:676
+msgid "Labroom"
+msgstr "Sala de Laboratorio"
+
 #~ msgid "Transfer"
 #~ msgstr "Transferir"
 
