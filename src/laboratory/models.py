@@ -391,9 +391,7 @@ class OrganizationStructure(TreeNode):
 
 
 class OrganizationUserManagement(models.Model):
-    group = models.ForeignKey(
-        Group, blank=True, null=True, verbose_name=_("Group"),
-        on_delete=models.SET_NULL)
+    group = models.ForeignKey(Group, blank=True, null=True, verbose_name=_("Group"), on_delete=models.SET_NULL)
     organization = models.ForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
     users = models.ManyToManyField(User, blank=True)
