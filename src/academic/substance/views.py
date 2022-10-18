@@ -64,8 +64,8 @@ def create_edit_sustance(request, organilabcontext, pk=None):
             personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
-            if isValidate_molecular_formula(molecular_formula):
-                suscharinst.valid_molecular_formula = True
+            #if isValidate_molecular_formula(molecular_formula):
+            # #suscharinst.valid_molecular_formula = True
 
             suscharinst.save()
             suschacform.save_m2m()
