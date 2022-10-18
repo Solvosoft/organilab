@@ -1,8 +1,8 @@
 from django.contrib.auth.models import Permission
 from django.core.management import BaseCommand
 
-from humanresources.management.commands.urlname_permissions import URLNAME_PERMISSIONS
-from humanresources.models import PermissionsCategoryManagement
+from auth_and_perms.management.commands.urlname_permissions import URLNAME_PERMISSIONS
+from djgentelella.models import PermissionsCategoryManagement
 
 
 class Command(BaseCommand):
