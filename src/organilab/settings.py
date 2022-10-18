@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'auth_and_perms',
     'presentation',
     'django_ajax',
     'laboratory',
