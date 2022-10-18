@@ -4,13 +4,15 @@
     <a id="menu_toggle"><i class="fa fa-bars"></i>
   </a>
 </div>
-  <div class="container-fluid" style="display: flex;">
+
 {% if laboratory %}
-  <ul class="nav navbar-nav navbar-left" style="width: 70%;">
+  <div class="container-fluid" style="display: flex; ">
+  <ul class="nav navbar-nav navbar-left" style="width: 80%;">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
   </ul>
+
 {% endif %}
-<ul class="nav navbar-nav navbar-right">
+<ul class="nav navbar-nav navbar-right" >
   {% if perms.laboratory.add_laboratory %}
     <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
       <span class="fa fa-plus"></span></a>
@@ -126,5 +128,7 @@
     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
   {% endif %}
   </ul>
-    </div>
+      {% if laboratory %}
+      </div>
+      {% endif %}
 </nav>

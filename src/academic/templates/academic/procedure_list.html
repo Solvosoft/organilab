@@ -58,7 +58,8 @@
                  </div>
                 <form id="reservation_form">
                     {% csrf_token %}
-                    {{ reservation_form.as_horizontal }}
+                    {{ reservation_form.as_inline }}
+
                     <input type="hidden" id="procedure" name="procedure" value="">
                     <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
                 </form>
