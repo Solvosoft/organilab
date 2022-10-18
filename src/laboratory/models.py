@@ -219,7 +219,7 @@ class Shelf(models.Model):
 
 
 class Furniture(models.Model):
-    labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE)
+    labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
     name = models.CharField(_('Name'), max_length=255)
     # old  'F' Cajón   'D' Estante
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),

@@ -49,7 +49,7 @@ class RiskZone(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Name'))
     laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_('Laboratories'))
     num_workers = models.SmallIntegerField(verbose_name=_('Number of workers (aprox)'))
-    zone_type = models.ForeignKey(ZoneType, on_delete=models.CASCADE)
+    zone_type = models.ForeignKey(ZoneType, on_delete=models.CASCADE, verbose_name=_('Zone Type'))
     priority = models.SmallIntegerField(verbose_name=_('Priority'))
 
     def __str__(self):

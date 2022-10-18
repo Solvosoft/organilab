@@ -3,19 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-30 18:35-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-10-18 10:16-0600\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: laboratory/admin.py:65
 msgid "Organilab Administration site"
@@ -998,7 +998,6 @@ msgstr ""
 #: laboratory/templates/laboratory/laboratory_list.html:53
 #: laboratory/templates/laboratory/objectfeatures_form.html:72
 #: laboratory/templates/laboratory/objectview_list.html:62
-#: laboratory/templates/tour/tourtemplate.html:1
 msgid "Next"
 msgstr ""
 
@@ -1634,18 +1633,6 @@ msgstr ""
 
 #: laboratory/templates/pdf/summaryfurniture_pdf.html:9
 msgid "Organilab Summary Furniture Report"
-msgstr ""
-
-#: laboratory/templates/tour/tourtemplate.html:1
-msgid "Prev"
-msgstr ""
-
-#: laboratory/templates/tour/tourtemplate.html:1
-msgid "Pause"
-msgstr ""
-
-#: laboratory/templates/tour/tourtemplate.html:1
-msgid "End tour"
 msgstr ""
 
 #: laboratory/validators.py:9
