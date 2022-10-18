@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-13 12:21-0600\n"
+"PO-Revision-Date: 2022-10-18 10:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -434,20 +434,4 @@ msgstr ""
 
 #: presentation/templates/partials/sga_menu.html:28
 msgid "MSDS: Security sheets"
-msgstr ""
-
-#: presentation/templates/tour/tourtemplate.html:8
-msgid "Prev"
-msgstr ""
-
-#: presentation/templates/tour/tourtemplate.html:9
-msgid "Next"
-msgstr ""
-
-#: presentation/templates/tour/tourtemplate.html:10
-msgid "Pause"
-msgstr ""
-
-#: presentation/templates/tour/tourtemplate.html:12
-msgid "End tour"
 msgstr ""
