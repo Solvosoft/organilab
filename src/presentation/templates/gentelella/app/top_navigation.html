@@ -4,9 +4,9 @@
     <a id="menu_toggle"><i class="fa fa-bars"></i>
   </a>
 </div>
-  <div class="container-fluid" style="display: flex;">
+  <div class="container-fluid">
 {% if laboratory %}
-  <ul class="nav navbar-nav navbar-left" style="width: 70%;">
+  <ul class="nav navbar-nav navbar-left">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
   </ul>
 {% endif %}
