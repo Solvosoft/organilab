@@ -73,6 +73,16 @@ URLNAME_PERMISSIONS = {
             'category': 'Laboratory',
             'permission': 'laboratory.view_laboratory'
         },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        },
+        {
+            'name': 'View Profile',
+            'category': 'Profile',
+            'permission': 'laboratory.view_profile'
+        },
     ],
     'list_provider': [
         {
@@ -116,6 +126,100 @@ URLNAME_PERMISSIONS = {
             'name': 'View Procedure',
             'category': 'Procedure',
             'permission': 'academic.view_procedure'
+        }
+    ],
+    'procedure_update': [
+        {
+            'name': 'Change Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.change_procedure'
+        },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
+    'delete_procedure': [
+        {
+            'name': 'Delete Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.delete_procedure'
+        },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
+    'generate_reservation': [
+        {
+            'name': 'Add ReservedProducts',
+            'category': 'ReservedProducts',
+            'permission': 'reservations_managements.add_reservedproducts'
+        },
+    ],
+    'procedure_detail': [
+        {
+            'name': 'Change Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'reservations_managements.change_procedurestep'
+        },
+{
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'reservations_managements.view_procedurestep'
+        },
+    ],
+    'update_step': [
+        {
+            'name': 'Add Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'reservations_managements.add_procedurestep'
+        },
+        {
+            'name': 'Change Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'reservations_managements.change_procedurestep'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'reservations_managements.view_procedurestep'
+        },
+    ],
+    'lab_profiles': [
+        {
+            'name': 'Add Profile',
+            'category': 'Profile',
+            'permission': 'laboratory.add_profile'
+        },
+        {
+            'name': 'View Profile',
+            'category': 'Profile',
+            'permission': 'laboratory.view_profile'
+        },
+    ],
+    'object_feature_create': [
+        {
+            'name': 'Add Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.add_objectfeatures'
+        },
+        {
+            'name': 'Change Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.change_objectfeatures'
+        },
+        {
+            'name': 'Delete Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.delete_objectfeatures'
+        },
+        {
+            'name': 'View Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.view_objectfeatures'
         }
     ]
 }
