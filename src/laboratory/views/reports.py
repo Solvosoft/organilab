@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput,Select
@@ -330,10 +331,10 @@ def report_limited_shelf_objects(request, *args, **kwargs):
     return response
 
 
-def make_book_objects(objects, summary=False, type_id=None):
+def make_book_objects(objects, summary=False, type_id=None, lab_pk=None):
 
     description = [
-        _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
+        _("Laboratory"), _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units')
     ]
 
     if type_id == '0':
@@ -350,8 +351,10 @@ def make_book_objects(objects, summary=False, type_id=None):
     }
     objects = objects.annotate(quantity_total=Sum('shelfobject__quantity'),
                                measurement_unit=Min('shelfobject__measurement_unit'))
+    lab = Laboratory.objects.filter(pk=lab_pk).first() if lab_pk else None
     for object in objects:
         obj_info = [
+            str(lab) if lab else '',
             object.code,
             object.name,
             object.get_type_display(),
@@ -366,7 +369,9 @@ def make_book_objects(objects, summary=False, type_id=None):
 
         content['objects'].append(obj_info)
         if not summary:
-            for shelfobj in object.shelfobject_set.all():
+            shelfquery = object.shelfobject_set.filter(
+                shelf__furniture__labroom__laboratory__pk=lab_pk) if lab_pk else object.shelfobject_set.all()
+            for shelfobj in shelfquery:
                 content['objects'].append(['', shelfobj.shelf.furniture.name,
                                            shelfobj.shelf.name,
                                            shelfobj.quantity,
@@ -378,15 +383,28 @@ def make_book_objects(objects, summary=False, type_id=None):
 @permission_required('laboratory.do_report')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
-    type_id = None
+    try:
+        detail = bool(int(request.GET.get('details', 0)))
+    except:
+        detail = False
+    lab_pk = None
+    namef = 'objects'
+    type_id = request.GET.get('type_id', '')
+    typename=dict(Object.TYPE_CHOICES)
+    type_name = typename[type_id] if type_id in typename else ''
+    if 'lab_pk' in kwargs:
+        lab = Laboratory.objects.filter(pk=kwargs.get('lab_pk')).first()
+        if lab:
+            namef = slugify(str(lab))+"_"+type_name+"_"+str('resume' if detail else "detail")
     if var is None:
 
         if 'lab_pk' in kwargs:
             filters = Q(
                 shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+            lab_pk = kwargs.get('lab_pk')
 
         if 'type_id' in request.GET:
-            type_id = request.GET.get('type_id', '')
+
             if type_id:
                 filters = filters & Q(type=type_id)
 
@@ -397,15 +415,13 @@ def report_objects(request, *args, **kwargs):
     else:
         objects = Object.objects.filter(pk=var)
 
-    try:
-        detail = bool(int(request.GET.get('details', 0)))
-    except:
-        detail = False
+
 
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
-            make_book_objects(objects, summary=detail, type_id=type_id), fileformat, file_name="objects.%s" % (fileformat,))
+            make_book_objects(objects, summary=detail, type_id=type_id, lab_pk=lab_pk), fileformat,
+            file_name="%s.%s" % (namef, fileformat,))
 
 
     for obj in objects:
