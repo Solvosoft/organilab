@@ -662,7 +662,7 @@ class ReactivePrecursorObjectList(ListView):
         return query
 
 
-class FilterForm(GTForm, forms.Form):
+class FilterForm(forms.Form):
     period = forms.CharField(widget=DateRangeInput, required=False,label=_('Period'))
     precursor = forms.BooleanField(widget=YesNoInput,  required=False,label=_('Precursor'))
     all_laboratories = forms.BooleanField(widget=YesNoInput, required=False,label=_('All labs'))

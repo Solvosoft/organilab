@@ -34,9 +34,6 @@ urlpatterns = [
     re_path(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     re_path(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     re_path(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
-    # Tour steps
-    re_path(r'^_ajax/get_tour_steps$', views.get_tour_steps, name='get_tour_steps'),
-    re_path(r'^_ajax/get_tour_steps_furniture$', views.get_tour_steps_furniture, name='get_tour_steps_furniture'),
     re_path(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
 
     re_path(r"validators", validate_duplicate_initial_date, name="date_validator"),
