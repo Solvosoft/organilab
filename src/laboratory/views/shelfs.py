@@ -12,6 +12,10 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as genwidgets
+from weasyprint.text.line_break import get_next_word_boundaries
+
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
@@ -65,7 +69,7 @@ def ShelfDelete(request, lab_pk, pk, row, col):
     },}
 
 
-class ShelfForm(forms.ModelForm):
+class ShelfForm(forms.ModelForm,GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
@@ -73,6 +77,8 @@ class ShelfForm(forms.ModelForm):
         model = Shelf
         fields = ['name', 'type', 'furniture']
         widgets = {
+            'name': genwidgets.TextInput,
+            'type':genwidgets.Select,
             'furniture': forms.HiddenInput()
         }
 

@@ -15,6 +15,7 @@ class ProviderCreate(CreateView):
 
     def form_valid(self, form):
         provider = form.save(commit=False)
+
         lab = get_object_or_404(Laboratory, pk=self.lab)
         provider.laboratory = lab
         provider.save()
@@ -29,7 +30,7 @@ class ProviderCreate(CreateView):
 class ProviderUpdate(UpdateView):
     model = Provider
     form_class = ProviderForm
-    template_name = 'laboratory/provider_add.html'
+    template_name = 'laboratory/provider_update.html'
 
     def get_success_url(self):
         lab = self.object.laboratory.pk
