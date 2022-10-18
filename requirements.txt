@@ -35,3 +35,4 @@ django-celery-results==2.2.0
 celery==5.2.3
 django-paypal==2.0
 weasyprint==56.1
+CairoSVG==2.5.2
