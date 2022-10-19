@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-14 18:04-0600\n"
+"PO-Revision-Date: 2022-10-18 11:21-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -1026,6 +1026,18 @@ msgstr "Fuente"
 #: sga/models.py:487
 msgid "Note"
 msgstr "Nota"
+
+#: sga/views.py:459
+msgid "Create pictogram"
+msgstr "Crear pictograma"
+
+#: sga/views.py:487
+msgid "Update pictogram"
+msgstr "Actualizar pictograma"
+
+#: sga/templates/list_pictograms.html:11
+msgid "List of Pictograms"
+msgstr "Listado de Pictogramas"
 
 #~ msgid "Sustance"
 #~ msgstr "Sustancia"
