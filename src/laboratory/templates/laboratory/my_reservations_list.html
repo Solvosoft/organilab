@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
+{% load timejs %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block extra_css %}
   <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 {% endblock %}
 {% block pre_head %}
-    {% define_true 'use_datatables' %}
+   {% define_true "use_datatables" as use_datatables %}
 {% endblock %}
 
 {% block content %}
@@ -28,44 +29,7 @@
 
     </div>
     <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>{% trans 'Object' %}</th>
-                <th>{% trans 'Amount required' %}</th>
-                <th>{% trans 'Initial date' %}</th>
-                <th>{% trans 'Final date' %}</th>
-                <th>{% trans 'Status' %}</th>
-                <th>{% trans 'Delete' %}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for obj in object_list%}
-            <tr id="table_data">
-                <td id="shelf_object">{{obj.shelf_object}}</td>
-                <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
-                <td id="initial_date">{{obj.initial_date}}</td>
-                <td id="final_date">{{obj.final_date}}</td>
-                <td id="status">{{obj.get_status_display}}</td>
-                <td>
-                    {% if obj.status == 3 %}
-                        <button data-toggle="modal"
-                                data-target="#delete_selected_obj_reservation_modal"
-                                aria-label="{% trans 'Remove' %}" class="btn btn-danger"
-                                type="button"  onclick="init_remove_reservation({{obj.id}})"
-                                style="margin-left:30%;">
 
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <input type="hidden" name="user_id" value="{{obj.user.id}}">
-                        <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
-                        <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
-                    {% endif %}
-                    <input type="hidden" name="status_num" value="{{obj.status}}">
-
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
     </table>
 {% endblock %}
 {% block js %}
@@ -76,5 +40,27 @@
         document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
         document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
     </script>
-    <script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
+    <!--<script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>-->
+
+<script>
+function filterFunction(dataTableParams,settings){
+  var data = formatDataTableParams(dataTableParams, settings);
+
+  data['subfiltrar']=1;
+  return data;
+}
+
+  datatableelement=createDataTable('#table_id', '{% url "api-reservedproduct-list" %}', {
+
+     columns: [
+            {data: "shelf_object", name: "shelf_object__object__name", title: "shelf object", type: "string", visible: true},
+            {data: "amount_required", name: "amount_required", title: "amount required", type: "string", visible: true},
+            {data: "initial_date", name: "initial_date", title: "initial date", type: "date", visible: true, "dateformat": "{% get_date_format %}"},
+            {data: "final_date", name: "final_date", title: "final date", type: "date", visible: true, "dateformat":  "{% get_date_format %}"},
+            {data: "status", name: "status", title: "status", type: "number", visible: true},
+            {data: "action", name: "action", title: "action", type: "readonly", visible: true},
+        ]
+    }, addfilter=true, formatDataTableParamsfnc=filterFunction);
+
+</script>
 {% endblock %}

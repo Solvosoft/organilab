@@ -1,7 +1,7 @@
 # Import functions of another modules
 import json
 
-import cairosvg
+#import cairosvg
 from djgentelella.models import ChunkedUpload
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
@@ -417,13 +417,14 @@ def get_svgexport(request, is_pdf, pk):
 
     try:
         if int(is_pdf):
-            file = cairosvg.svg2pdf(svg)
+            #file = cairosvg.svg2pdf(svg)
             type = "pdf"
         else:
-            file = cairosvg.svg2png(svg)
-        response = HttpResponse(file, content_type='application/'+type)
+            pass
+           # file = cairosvg.svg2png(svg)
+        #response = HttpResponse(file, content_type='application/'+type)
     except IOError:
         return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
+    #response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
 
-    return response
+    #return response
