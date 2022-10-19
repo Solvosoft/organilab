@@ -294,4 +294,4 @@ RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-GT_GROUP_MODEL='laboratory.Rol'
+GT_GROUP_MODEL='auth_and_perms.Rol'
