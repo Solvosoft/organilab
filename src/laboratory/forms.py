@@ -176,10 +176,10 @@ class ProviderForm(forms.ModelForm,GTForm):
     class Meta:
         model = Provider
         fields = ['name','phone_number','email','legal_identity']
-        widgets = {'name': genwidgets.TextInput,
-                 'phone_number': genwidgets.PhoneNumberMaskInput,
-                 'email': genwidgets.EmailMaskInput,
-                 'legal_identity': genwidgets.NumberInput,
+        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
+                   'phone_number': genwidgets.PhoneNumberMaskInput,
+                   'email': genwidgets.EmailMaskInput,
+                   'legal_identity': genwidgets.TextInput(attrs={'required': True}),
                    }
 
 class ObjectFeaturesForm(forms.ModelForm, GTForm):
@@ -197,6 +197,6 @@ class LaboratoryRoomForm(forms.ModelForm, GTForm):
         fields = '__all__'
         widgets = {
             'name': genwidgets.TextInput(),
-            'legal_identity': genwidgets.NumberInput,
+            'legal_identity': genwidgets.TextInput(attrs={'required': True}),
             }
 

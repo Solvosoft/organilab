@@ -38,5 +38,8 @@ urlpatterns = [
     re_path(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
     re_path(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
     re_path(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
+    re_path(r'get_pictograms', views.get_pictograms, name='pictograms_list'),
+    re_path(r'add_pictogram', views.add_pictogram, name='add_pictograms'),
+    re_path(r'update_pictogram/(?P<id_pictogram>\w+)', views.update_pictogram, name='update_pictogram'),
 
 ]

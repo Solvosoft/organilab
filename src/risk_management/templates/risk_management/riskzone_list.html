@@ -10,16 +10,17 @@
 <div class="col-md-offset-2 col-md-8">
         <div class="page-header col-xs-13" align="center">
           <h3 class="heading-1" center=""><span>{% trans 'Risk Zone Management'  %}
-                  {% if perm_add_riskzone %}
-          <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
-        {% endif %}</span></h3>
+                  </span></h3>
 
         </div>
+    {% if perm_add_riskzone %}
+          <a class="btn btn-success pull-right" href="{% url 'riskmanagement:riskzone_create' %}"> + {% trans 'Add' %} </a>
+        {% endif %}
 </div>
 </div>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-offset-2 col-md-8">
 <form metod="get" action="">
     <div class="input-group custom-search-form">
 

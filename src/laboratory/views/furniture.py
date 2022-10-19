@@ -73,7 +73,7 @@ class FurnitureCreateView(CreateView):
 
 
 
-class FurnitureCreateForm(GTForm,forms.ModelForm):
+class FurnitureCreateForm(forms.ModelForm,GTForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
@@ -82,8 +82,15 @@ class FurnitureCreateForm(GTForm,forms.ModelForm):
             "type": genwidgets.Select
         }
 
+class RoomCreateForm(forms.ModelForm,GTForm):
+    class Meta:
+        model = LaboratoryRoom
+        fields = '__all__'
+        widgets={
+            'name': genwidgets.TextInput
+        }
 
-class FurnitureForm(GTForm,forms.ModelForm):
+class FurnitureForm(forms.ModelForm,GTForm):
 
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
@@ -95,7 +102,10 @@ class FurnitureForm(GTForm,forms.ModelForm):
     class Meta:
         model = Furniture
         fields = ("labroom", "name", "type", 'dataconfig')
-
+        widgets = {'labroom': genwidgets.Select,
+                   'name': genwidgets.TextInput,
+                   'type': genwidgets.Select,
+                   }
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')

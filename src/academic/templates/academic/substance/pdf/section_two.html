@@ -17,7 +17,7 @@
     <label class="fw-bold">{% trans 'Labeling in accordance with Regulation (EC) 1272/2008' %}</label>
     <div class="row">
         <div class="col-3"><label>{% trans 'Pictograms'%}</label></div>
-        <div class="col-9">: {% for pictogram in component.pictograms.all %}{{pictogram.name}}{% endfor %}</div>
+        <div class="col-9">: {% for pictogram in component.pictograms.all %}<img style="max-width:30px" src="{% if pictogram.image %}{{pictogram.image.url}}{%endif%}" alt="">{% endfor %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Warning Word' %}</label></div>

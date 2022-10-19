@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from djgentelella.forms.forms import GTForm
 
 from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
@@ -22,7 +21,7 @@ from laboratory.decorators import has_lab_assigned
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
-class LaboratoryRoomsList(GTForm,ListView):
+class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
     def get_queryset(self):

@@ -22,12 +22,12 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label
+    LabelForm, PersonalTemplateForm, PictogramForm
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
-
+from django.db.models import Max
 register = Library()
 
 
@@ -213,7 +213,6 @@ def create_personal_template(request, organilabcontext):
             instance.save()
             return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
         else:
-            print(form.errors)
             messages.error(request, _("Invalid form"))
             context = {
                 'laboratory': None,
@@ -417,14 +416,77 @@ def get_svgexport(request, is_pdf, pk):
 
     try:
         if int(is_pdf):
-            #file = cairosvg.svg2pdf(svg)
+           # file = cairosvg.svg2pdf(svg)
             type = "pdf"
         else:
             pass
            # file = cairosvg.svg2png(svg)
-        #response = HttpResponse(file, content_type='application/'+type)
+      #  response = HttpResponse(file, content_type='application/'+type)
     except IOError:
         return HttpResponseNotFound()
     #response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
 
     #return response
+    #quitar el comentario de las lineas de codigo
+@login_required
+@permission_required('sga.view_pictogram')
+def get_pictograms(request):
+    pictograms = Pictogram.objects.all()
+    return render(request, 'list_pictograms.html', context={'pictograms':pictograms})
+
+@login_required
+@permission_required('sga.add_pictogram')
+def add_pictogram(request):
+
+    if request.method=='POST':
+        form = PictogramForm(request.POST)
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            upload_id = form.cleaned_data['image_upload']
+            last_id=Pictogram.objects.all().aggregate(largest=Max('id_pictogram'))['largest']
+            if last_id==None:
+                last_id=0
+            if upload_id:
+                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                instance.image = tmpupload.get_uploaded_file()
+            instance.id_pictogram=last_id+1
+            instance.save()
+
+            return redirect(reverse('sga:pictograms_list'))
+    context= {
+        'url': reverse('sga:add_pictograms'),
+        'form': PictogramForm(),
+        'title': _('Create pictogram'),
+        'button_text': _('Add')
+    }
+    return render(request, 'add_pictograms.html', context=context)
+@login_required
+@permission_required('sga.change_pictogram')
+def update_pictogram(request,id_pictogram):
+    instance = get_object_or_404(Pictogram,id_pictogram=id_pictogram)
+    form = None
+    if instance:
+        form = PictogramForm(instance=instance)
+
+        if request.method=='POST':
+            form = PictogramForm(request.POST, instance=instance)
+
+            if form.is_valid():
+                instance = form.save(commit=False)
+                upload_id = form.cleaned_data['image_upload']
+
+                if upload_id:
+                    tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
+                    instance.image = tmpupload.get_uploaded_file()
+
+                instance.save()
+                return redirect(reverse('sga:pictograms_list'))
+    context= {
+        'url': reverse('sga:update_pictogram',kwargs={'id_pictogram':id_pictogram}),
+        'form': form,
+        'title': _('Update pictogram'),
+        'button_text': _('Edit')
+    }
+    return render(request, 'add_pictograms.html', context=context)
+

@@ -30,7 +30,7 @@ class ProcedureStepForm(forms.ModelForm,GTForm):
         }
 
 
-class ObservationForm(GTForm, forms.Form):
+class ObservationForm(forms.Form):
     description = forms.CharField(widget=genwidgets.Textarea(), label= _("Description"))
 
 

@@ -10,13 +10,13 @@ from django.utils.decorators import method_decorator
 from django import forms
 from djgentelella.forms.forms import GTForm
 from tree_queries.forms import TreeNodeChoiceField
-
+from djgentelella.widgets import core as genwidget
 from laboratory.models import Laboratory, OrganizationStructure, Profile
 from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 from djgentelella.widgets import core as genwidgets
 
-class OrganizationSelectableForm(GTForm,forms.Form):
+class OrganizationSelectableForm(forms.Form):
     organizations = OrganizationStructure.objects.none()
     filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select)
 
