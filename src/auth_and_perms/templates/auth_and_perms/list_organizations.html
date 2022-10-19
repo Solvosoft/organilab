@@ -1,1 +1,35 @@
 {% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+
+{% for node in nodes %}
+    <div class="row">
+        <div class="{{node.1}}">
+            <div class="bs-callout bs-callout-{{node.2}}">
+                <h4>{{node.0.node}}</h4>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <h5>{% trans "Administrators users"%}</h5>
+                        <ul>
+                            {% for user in node.0.users %}
+                            <li>{{user}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                         <ul>
+                            {% for lab in node.0.labs %}
+                            <li>{{lab}}</li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

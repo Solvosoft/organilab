@@ -449,6 +449,8 @@ class Rol(models.Model):
         verbose_name=_('permissions'),
         blank=True,
     )
+
+
     class Meta:
         verbose_name = _('Rol')
         verbose_name_plural = _('Rols')
