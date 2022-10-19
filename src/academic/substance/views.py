@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from academic.models import SubstanceSGA, SubstanceObservation
 from django.contrib.auth.models import User
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
-    WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm
+    WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm, ReviewSubstanceForm
 from laboratory.validators import isValidate_molecular_formula
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -21,6 +21,7 @@ from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice,
 from django.template.loader import get_template
 from weasyprint import HTML
 from datetime import datetime
+from organilab.settings import MEDIA_ROOT as path
 
 
 @login_required
@@ -118,13 +119,15 @@ def get_substances(request, organilabcontext):
 @organilab_context_decorator
 def get_list_substances(request,organilabcontext):
     substances=None
+    form = ReviewSubstanceForm()
 
     if request.user:
         substances = Substance.objects.all().order_by('-id')
 
     context = {
         'substances':substances,
-        'organilabcontext': organilabcontext
+        'organilabcontext': organilabcontext,
+        'form':form
     }
 
     return render(request, 'academic/substance/check_substances.html', context=context)
@@ -132,24 +135,28 @@ def get_list_substances(request,organilabcontext):
 @login_required
 @permission_required('sga.view_substance')
 @organilab_context_decorator
-def check_list_substances(request,organilabcontext):
+def get_list_substances(request,organilabcontext):
     substances=None
+    form = ReviewSubstanceForm()
 
     if request.user:
-        substances = Substance.objects.filter(is_approved=False).order_by('--pk')
+        substances = Substance.objects.all().order_by('-id')
 
     context = {
         'substances':substances,
-        'organilabcontext': organilabcontext
+        'organilabcontext': organilabcontext,
+        'form':form
     }
 
     return render(request, 'academic/substance/check_substances.html', context=context)
+
 @login_required
 @permission_required('sga.change_substance')
 @organilab_context_decorator
 def approve_substances(request,organilabcontext,pk):
     substances=Substance.objects.filter(pk=pk).first()
     if substances:
+
         substances.is_approved=True
         substances.save()
         return redirect('approved_substance')
@@ -511,7 +518,12 @@ def security_leaf_pdf(request, substance):
     date_print =datetime.today().strftime('%Y-%m-%d')
     if leaf:
         template = get_template('academic/substance/security_leaf_pdf.html')
-        context = {'leaf':leaf,'substance':leaf.substance, 'provider':leaf.provider,'component':component,'date_print':date_print,'date_check':leaf.created_at.strftime('%Y-%m-%d')}
+        context = {'leaf':leaf,
+                   'substance':leaf.substance,
+                   'provider':leaf.provider,
+                   'component':component,
+                   'date_print':date_print,
+                   'date_check':leaf.created_at.strftime('%Y-%m-%d')}
         html_template=template.render(context)
-        pdf = HTML(string=html_template).write_pdf()
+        pdf = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
         return HttpResponse(pdf, content_type='application/pdf')

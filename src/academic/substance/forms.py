@@ -4,7 +4,8 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 
 from academic.models import SubstanceObservation
-from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice, SecurityLeaf
+from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice, SecurityLeaf, \
+    ReviewSubstance
 from djgentelella.widgets.tagging import TaggingInput
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
@@ -126,5 +127,16 @@ class SecurityLeafForm(GTForm, forms.ModelForm):
         fields = "__all__"
         widgets ={
             'provider':genwidgets.Select
+        }
+
+class ReviewSubstanceForm(forms.ModelForm, GTForm):
+
+    class Meta:
+        model = ReviewSubstance
+        fields = '__all__'
+        widgets = {
+        'substance' : genwidgets.HiddenInput,
+        'note' : genwidgets.NumberInput,
+        'is_approved' : genwidgets.HiddenInput
         }
 
