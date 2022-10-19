@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings label_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+        <div class="page-header col-xs-13" align="center">
+          <h3 class="heading-1" ><span> {% trans 'List of Pictograms' %}  </span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+    <div class="add-container pull-right">
+        <a class="btn btn-success" href="{% url 'sga:add_pictograms' %}"><i class="glyphicon glyphicon-plus white"
+                                                        title="{% trans 'Add Pictogram' %}"></i> {% trans 'Add' %}</a>
+    </div>
+    <br>
+  <table id="pictogramtable" class="table table-striped table-bordered text-center" style="width:100%">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Warning Word' %}</th>
+                <th>{% trans 'Image' %}</th>
+                <th>{% trans 'Actions' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pictogram in pictograms %}
+                <tr class="text-center">
+                    <td>{{pictogram.name}}</td>
+                    <td>{{pictogram.warning_word.name}}</td>
+                    <td><img width="60" height="60" src="{% if pictogram.image %}{{pictogram.image.url}}{%endif%}" alt=""></td>
+                    <td><a class="btn btn-xs btn-success" title="{% trans 'Edit' %}" href="{% url  'sga:update_pictogram' pictogram.id_pictogram %}">Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+{{block.super}}
+
+<script>
+
+(function(){
+    $("#pictogramtable").DataTable();
+})(jQuery);
+</script>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static i18n gtsettings %}
+
+{% block content %}
+
+<div class="box-body">
+    <a class="btn btn-primary" href="{% url 'sga:pictograms_list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+    <div class="page-header">
+        <h1 class="text-center">{{title}}</h1>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form action="{{url}}" method="post">
+                {% csrf_token %}
+                {{form.as_inline}}
+                {% if instance.logo %}
+                <span id="image_name"></span>
+                {% endif %}
+                <input class="btn btn-success pull-right" type="submit" value="{{button_text}}">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+$(window).ready(function(){
+{% if instance.logo %}
+    document.logo_url = "{{instance.logo.url}}";
+    var logo_name = "{{instance.logo.name}}";
+    const name = logo_name.split('/');
+    if(name.length == 3){
+        document.logo_name = name[2];
+    }else{
+        document.logo_name = name[1];
+    }
+{% endif %}
+    if(document.logo_name){
+        $("input[name='imafw_upload_id']").attr('data-url', document.logo_url);
+        $("#image_name").html(document.logo_name);
+    }
+});
+
+$(document).on( "fileuploaddone", function(e, data){
+    if(data.result){
+        $("#id_image_upload").val(data.result.upload_id);
+    }
+});
+</script>
+{% endblock %}

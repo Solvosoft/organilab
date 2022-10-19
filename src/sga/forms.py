@@ -7,7 +7,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.tagging import TaggingInput
 
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label, SGAComplement, Provider
+    BuilderInformation, Label, SGAComplement, Provider, Pictogram
 
 
 class PersonalTemplateForm(forms.Form):
@@ -207,4 +207,20 @@ class ProviderSGAForm(GTForm, forms.ModelForm):
             "email" : genwidgets.EmailInput(),
             "provider" : genwidgets.Select(),
             "emergency_phone" : genwidgets.TextInput(),
+        }
+
+class PictogramForm(forms.ModelForm,GTForm):
+
+    image_upload = forms.CharField(max_length=100, widget=forms.HiddenInput, required=False)
+    def __init__(self,*args, **kwargs):
+        super(PictogramForm, self).__init__(*args, **kwargs)
+        self.fields['warning_word'].required=False
+    class Meta:
+        model = Pictogram
+        fields = '__all__'
+        exclude = ['id_pictogram']
+        widgets = {
+            "name" : genwidgets.TextInput(),
+            "warning_word" : genwidgets.Select(),
+            "image" : genwidgets.FileInput(),
         }
