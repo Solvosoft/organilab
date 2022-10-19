@@ -63,7 +63,9 @@ class WarningWord(models.Model):
 class Pictogram(models.Model):
     name = models.CharField(max_length=150, primary_key=True,
                             verbose_name=_("Name"))
-    warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE)
+    warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE, null=True, verbose_name=_("Warning Word"))
+    image = models.ImageField(upload_to="sga/pictograms/", null=True, blank=True)
+    id_pictogram = models.IntegerField(default=1)
 
 
     def __str__(self):
