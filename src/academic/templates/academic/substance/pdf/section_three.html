@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Molecular formula' %}</label></div>
-        <div class="col-9">: {% if substance.substance.substancecharacteristics.molecular_formula%}{{substance.substance.substancecharacteristics.molecular_formula}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.molecular_formula%}{{substance.substance.substancecharacteristics.molecular_formula}}{% else %}{% trans 'data not available' %}{% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Molecular Weight' %}</label></div>
@@ -29,14 +29,12 @@
     </div>
     <br>
         <label><strong>{% trans 'Hazardous ingredients according to Regulation (EC) No. 1272/2008' %}</strong></label>
-        <table class="table table-bordered border-dark border-2">
-            <thead class="table-secondary border-dark">
+        <table border="1" style="width:100%">
             <tr>
                 <th>{% trans 'Component' %}</th>
                 <th>{% trans 'Classification'%}</th>
                 <th>{% trans 'Concentration'%}</th>
             </tr>
-            </thead>
             <tbody>
                 <tr>
                     <td colspan="3">{{substance.comercial_name}}</td>
@@ -90,14 +88,13 @@
         </table>
     <br>
     <label><strong>{% trans 'Hazardous ingredients according to Directive 1999/45/EC' %}</strong></label>
-            <table class="table table-bordered border-dark border-2">
-            <thead class="table-secondary border-dark">
+            <table  border="1" style="width:100%">
             <tr>
                 <th>{% trans 'Component' %}</th>
                 <th>{% trans 'Classification'%}</th>
                 <th>{% trans 'Concentration'%}</th>
             </tr>
-            </thead>
+
             <tbody>
                 <tr>
                     <td colspan="3">{{substance.comercial_name}}</td>
