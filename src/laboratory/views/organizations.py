@@ -14,11 +14,11 @@ from tree_queries.forms import TreeNodeChoiceField
 from laboratory.models import Laboratory, OrganizationStructure, Profile
 from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
-
+from djgentelella.widgets import core as genwidgets
 
 class OrganizationSelectableForm(GTForm,forms.Form):
     organizations = OrganizationStructure.objects.none()
-    filter_organization = TreeNodeChoiceField(queryset=organizations)
+    filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select)
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -29,6 +29,7 @@ class OrganizationSelectableForm(GTForm,forms.Form):
         elif self.user.is_superuser:
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all(
             )
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')

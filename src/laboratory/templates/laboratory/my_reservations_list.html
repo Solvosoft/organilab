@@ -1,18 +1,31 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
+{% block extra_css %}
+  <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
 {% endblock %}
+
 {% block content %}
     {% include 'laboratory/my_reservation_delete.html' %}
     {% include 'laboratory/my_reservation_delete_all.html' %}
     <div id="management_buttons">
+
+
+            <label> show all product reservations: </label>
+            <label class="switch">
+                <input id="showAllProducts" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+
         <input data-toggle="modal"
             data-target="#delete_all_obj_reservation_modal" type="button"
             disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="pull-right btn btn-danger"
             id="cancel_all_products_btn">
         <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
+
     </div>
     <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
         <thead>
@@ -22,7 +35,7 @@
                 <th>{% trans 'Initial date' %}</th>
                 <th>{% trans 'Final date' %}</th>
                 <th>{% trans 'Status' %}</th>
-                <th></th>
+                <th>{% trans 'Delete' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -37,7 +50,10 @@
                     {% if obj.status == 3 %}
                         <button data-toggle="modal"
                                 data-target="#delete_selected_obj_reservation_modal"
-                                aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
+                                aria-label="{% trans 'Remove' %}" class="btn btn-danger"
+                                type="button"  onclick="init_remove_reservation({{obj.id}})"
+                                style="margin-left:30%;">
+
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <input type="hidden" name="user_id" value="{{obj.user.id}}">
@@ -45,6 +61,7 @@
                         <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
                     {% endif %}
                     <input type="hidden" name="status_num" value="{{obj.status}}">
+
                 </td>
             </tr>
         {% endfor %}

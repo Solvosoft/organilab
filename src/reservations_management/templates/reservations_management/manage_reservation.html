@@ -44,15 +44,15 @@
 
         <form method="POST" id="form">
             {% csrf_token %}
-            {{reservation_form.as_p }}
+            {{reservation_form.as_inline }}
             <div class="box-footer">
                 <div class="form-group">
                     <div class="controls text-right">
 
                         <a href="{% url 'reservations_list' object.status%}" class="btn btn-danger"><i class='fa fa-times'></i>
-                            Volver</a>
+                            {% trans 'Back' %}</a>
 
-                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
+                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i>{% trans 'Send' %}</button>
                     </div>
                 </div>
             </div>

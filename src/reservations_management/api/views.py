@@ -1,12 +1,14 @@
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from django.http import Http404
 
 from reservations_management.models import ReservedProducts
 from reservations_management.api.serializers import ReservedProductSerializer
 from reservations_management.functions import add_decrease_stock_task
 
+from rest_framework.filters import SearchFilter, OrderingFilter
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.authentication import TokenAuthentication
 
@@ -52,3 +54,23 @@ class ApiListReservationReservedProduct(APIView):
         serializer = ReservedProductSerializer(reserved_products,many= True)
         return Response(serializer.data)
  
+
+
+class ReservedProductViewSet(viewsets.ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    serializer_class = serializer.PersonDataTableSerializer
+    queryset = ReservedProducts.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['shelf_object__object__name', 'shelf_object__object__code', ]  # for the global search
+    #filterset_class =
+    ordering_fields = ['shelf_object__object__name','shelf_object__object__code', ]
+    ordering = ('-shelf_object__object__name',)  # default order
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': ReservedProducts.objects.count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)

@@ -7,12 +7,12 @@
   <div class="page-header"><h1>{% trans 'Organization laboratory report' %}</h1></div>
 
   <div>
-  	 <form action="#" method="post" class="table-responsive">
+  	 <form action="#" method="post" >
 	        {% csrf_token %}
 	        <table class="table" >
 	        {{ form.as_horizontal }}
 	        </table>
-	        <input cd type="submit" value={% trans 'Submit' %} />
+	        <input type="submit" class="btn btn-success" value={% trans 'Submit' %} />
 	 </form>
 	  {% if perm_do_report and perm_laboratory  %}
 		<div class="btn-group dropup pull-right">

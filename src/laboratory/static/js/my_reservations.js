@@ -177,3 +177,80 @@ $(document).ready(function() {
    all_status = get_all_elements_with_name("status_num");
    status_of_reservation_buttons(all_status);
 });
+
+function formatDate(date){
+    var newDate;
+
+           let tmp=date.replace('.',',');
+           tmp=tmp.split(',');
+           let month=tmp[0].trim();
+           let day=tmp[1].trim();
+           let year=tmp[2].trim();
+           //let hour=tmp[3].trim();
+           newDate=year+"/"+month+"/"+day
+
+    return newDate;
+}
+/*
+function infoTable(...list){
+console.log(list.length,"argumentos")
+    var data=[];
+    for(let i=0;i<list.length-1;i++){
+
+        let element={
+        obj_user_id: list[0][i],
+        obj_product_id: list[1][i]
+        obj_product_shelf_object_id: list[2][0],
+        obj_shelf_object: list[3][i],
+        obj_amount_required: list[4][i],
+        obj_initial_date: list[][i],
+        obj_final_date: list[3][i],
+        obj_get_status_display: list[4][i],
+        obj_tmp_final_date: formatDate(list[3][i])
+
+        }
+
+        data.push(element);
+    }
+    console.log(data,"data")
+    return data;
+}
+
+function switchButton(){
+
+    var showAllProductsCheckBox = document.getElementById('showAllProducts').checked;
+
+    var reserved_products_obj_user_ids_list = get_all_elements_with_name("user_id")
+    var reserved_products_ids_list = get_all_elements_with_name("rp_id")
+    var reserved_products_obj_shelf_object_ids_list = get_all_elements_with_name("so_id")
+
+    var reserved_products_obj_shelf_object_list = get_all_elements_with_name("obj_shelf_object")
+    var reserved_products_obj_amount_required_list = get_all_elements_with_name("obj_amount_required")
+    var reserved_products_obj_initial_date_list = get_all_elements_with_name("obj_initial_date")
+    var reserved_products_obj_final_date_list = get_all_elements_with_name("obj_final_date")
+    var reserved_products_obj_get_status_display_list = get_all_elements_with_name("obj_get_status_display")
+
+    infoTable(reserved_products_obj_user_ids_list,
+              reserved_products_ids_list,
+              reserved_products_obj_shelf_object_ids_list,
+              reserved_products_obj_shelf_object_list,
+              reserved_products_obj_amount_required_list,
+              reserved_products_obj_initial_date_list,
+              reserved_products_obj_final_date_list,
+              reserved_products_obj_get_status_display_list);
+
+   /* var date_now = new Date();
+    date_now.setHours(0,0,0,0);
+
+    if(showAllProductsCheckBox){
+        //for
+        var date_product = new Date(formatDate(reserved_products_final_date_list)[0]);
+        if(date_product.getTime()>=date_now.getTime()){
+
+
+
+        }
+    }
+
+}
+*/
