@@ -10,7 +10,8 @@ def previewForm(request, form_id):
 
     form = CustomForm.objects.get(id=form_id)
     schema = form.schema
-    context = {"schema": json.dumps(schema)} 
+
+    context = {"schema": json.dumps(schema,indent=2)}
 
     return render(request, template_name, context)
     
