@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from laboratory.models import ProfilePermission
+from auth_and_perms.models import ProfilePermission
 from django.shortcuts import redirect
 from django.urls import reverse
 

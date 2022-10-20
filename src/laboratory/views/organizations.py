@@ -11,7 +11,8 @@ from django import forms
 from djgentelella.forms.forms import GTForm
 from tree_queries.forms import TreeNodeChoiceField
 from djgentelella.widgets import core as genwidget
-from laboratory.models import Laboratory, OrganizationStructure, Profile
+from laboratory.models import Laboratory, OrganizationStructure
+from auth_and_perms.models import Profile
 from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 

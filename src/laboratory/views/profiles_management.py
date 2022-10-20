@@ -2,9 +2,10 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from laboratory.models import Profile,Rol,ProfilePermission,Laboratory
+from laboratory.models import Laboratory
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
+from auth_and_perms.models import Profile,Rol,ProfilePermission
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_profile'), name='dispatch')

@@ -15,8 +15,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
 from authentication.forms import CreateUserForm, PasswordChangeForm,EditUserForm
 from laboratory.decorators import has_lab_assigned
-from laboratory.models import Profile, ProfilePermission, Laboratory
-
+from laboratory.models import Laboratory
+from auth_and_perms.models import Profile, ProfilePermission
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
 @method_decorator(permission_required("laboratory.add_organizationusermanagement"), name="dispatch")
