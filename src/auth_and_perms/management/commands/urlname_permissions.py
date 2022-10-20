@@ -96,17 +96,17 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.view_object'
+            'permission': 'laboratory.view_shelfobject'
         },
         {
             'name': 'Add Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.add_object'
+            'permission': 'laboratory.add_shelfobject'
         },
         {
             'name': 'Delete Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.delete_object'
+            'permission': 'laboratory.delete_shelfobject'
         },
     ],
     'list_provider': [
@@ -124,6 +124,30 @@ URLNAME_PERMISSIONS = {
             'name': 'Delete Provider',
             'category': 'Provider',
             'permission': 'laboratory.delete_provider'
+        },
+        {
+            'name': 'View Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.view_provider'
+        }
+    ],
+    'add_provider': [
+        {
+            'name': 'Add Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.add_provider'
+        },
+        {
+            'name': 'View Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.view_provider'
+        }
+    ],
+    'update_lab_provider': [
+        {
+            'name': 'Change Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.change_provider'
         },
         {
             'name': 'View Provider',
@@ -177,40 +201,40 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.view_procedure'
         }
     ],
-    'generate_reservation': [
-        {
-            'name': 'Add ReservedProducts',
-            'category': 'ReservedProducts',
-            'permission': 'reservations_managements.add_reservedproducts'
-        },
-    ],
     'procedure_detail': [
         {
             'name': 'Change Procedure Step',
             'category': 'Procedure Step',
-            'permission': 'reservations_managements.change_procedurestep'
+            'permission': 'academic.change_procedurestep'
         },
 {
             'name': 'View Procedure Step',
             'category': 'Procedure Step',
-            'permission': 'reservations_managements.view_procedurestep'
+            'permission': 'academic.view_procedurestep'
+        },
+    ],
+    'generate_reservation': [
+        {
+            'name': 'Add ReservedProducts',
+            'category': 'ReservedProducts',
+            'permission': 'reservations_management.add_reservedproducts'
         },
     ],
     'update_step': [
         {
             'name': 'Add Procedure Step',
             'category': 'Procedure Step',
-            'permission': 'reservations_managements.add_procedurestep'
+            'permission': 'academic.add_procedurestep'
         },
         {
             'name': 'Change Procedure Step',
             'category': 'Procedure Step',
-            'permission': 'reservations_managements.change_procedurestep'
+            'permission': 'academic.change_procedurestep'
         },
         {
             'name': 'View Procedure Step',
             'category': 'Procedure Step',
-            'permission': 'reservations_managements.view_procedurestep'
+            'permission': 'academic.view_procedurestep'
         },
     ],
     'lab_profiles': [
@@ -309,17 +333,17 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.view_object'
+            'permission': 'laboratory.view_shelfobject'
         },
         {
             'name': 'Add Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.add_object'
+            'permission': 'laboratory.add_shelfobject'
         },
         {
             'name': 'Delete Shelf Object',
             'category': 'Shelf Object',
-            'permission': 'laboratory.delete_object'
+            'permission': 'laboratory.delete_shelfobject'
         }
     ]
 }

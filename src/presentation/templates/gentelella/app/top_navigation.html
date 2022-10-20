@@ -14,6 +14,12 @@
 
 {% endif %}
 <ul class="nav navbar-nav navbar-right" >
+  {% get_urlname_action as urlnameactions %}
+      {% validate_context urlnameactions as context %}
+      {% if urlnameactions and context %}
+        <li><a class="btn" id="btn_perms" title="Add Permission" data-toggle="modal" data-target="#permission_modal" data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}" style="padding-top: 31%;"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a></li>
+  {% endif %}
+
   {% if perms.laboratory.add_laboratory %}
     <li><a id='add_lab' href="{% url 'laboratory:create_lab' %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
       <span class="fa fa-plus"></span></a>
@@ -21,21 +27,13 @@
   {% endif %}
   {% if request.user.is_authenticated %}
 
-  {% if perms.laboratory.can_management_permissionscategory %}
-
-        {% get_urlname_action as urlnameactions %}
-        {% validate_context urlnameactions as context %}
-        {% if urlnameactions and context %}
-          <li><a class="btn" id="btn_perms" title="Add Permission" data-toggle="modal" data-target="#permission_modal" data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}" style="padding-top: 31%;"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a></li>
-        {% endif %}
-    {% endif %}
-
     {% get_user_labs as mylabs %}
     <li>
       <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
         <strong>{% trans 'My laboratories' %}</strong>
       </a>
     </li>
+
     {% if laboratory %}
       {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
         <li class="dropdown">
