@@ -1,6 +1,7 @@
 # encoding: utf-8
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect
 from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm, ProfilePermissionForm
@@ -55,7 +56,11 @@ def users_management(request, pk):
                 profile = Profile(user=user)
                 profile.save()
             user.profile.laboratories.add(lab)
-            profile_permission = ProfilePermission.objects.create(profile=user.profile, laboratories=lab)
+            profile_permission = ProfilePermission.objects.create(profile=user.profile,
+                                                                  content_type=ContentType.objects.get(
+                                                                      app_label='laboratory',
+                                                                      model="laboratory"),
+                                                                  object_id=lab.pk)
             if roles is not None:
                 for rol in roles:
                     profile_permission.rol.add(rol)
@@ -83,7 +88,11 @@ def delete_user(request, pk, user_pk):
     user = Profile.objects.filter(pk=user_pk).first()
     if user and lab:
         user.laboratories.remove(pk)
-        pp = ProfilePermission.objects.filter(profile=user, laboratories=lab).first()
+        pp = ProfilePermission.objects.filter(profile=user,
+                                              content_type=ContentType.objects.get(
+                                                  app_label='laboratory',
+                                                  model="laboratory"),
+                                              object_id=pk).first()
         if pp is not None:
             pp.delete()
     return redirect('laboratory:users_management', pk=pk)

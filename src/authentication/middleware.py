@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
 from auth_and_perms.models import ProfilePermission
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -32,31 +34,43 @@ class ProfileMiddleware:
         user = request.user
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          laboratories_id=view_kwargs['lab_pk']).first()
+                                                          content_type= ContentType.objects.get(app_label='laboratory',
+                                                                                                model="laboratory"),
+                                                          object_id=view_kwargs['lab_pk']).first()
 
         elif 'lab_pk' in request.GET and request.GET['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          laboratories_id=request.GET.get('lab_pk')).first()
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                               model="laboratory"),
+                                                          object_id=request.GET.get('lab_pk')).first()
 
         elif 'lab_pk' in request.POST and request.POST['lab_pk'] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                      laboratories_id=request.POST.get('lab_pk')).first()
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                               model="laboratory"),
+                                                          object_id=request.POST.get('lab_pk')).first()
 
         elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
             view_func.view_class.lab_pk_field in view_kwargs  and  view_kwargs[view_func.view_class.lab_pk_field] is not None and \
             hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          laboratories_id=view_kwargs[view_func.view_class.lab_pk_field]).first()
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                               model="laboratory"),
+                                                          object_id=view_kwargs[view_func.view_class.lab_pk_field]).first()
 
         elif hasattr(view_func, 'lab_pk_field') and view_func.lab_pk_field in view_kwargs and \
                 view_kwargs[view_func.lab_pk_field] is not None and hasattr(user, 'profile'):
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          laboratories_id=view_kwargs[view_func.lab_pk_field]).first()
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                               model="laboratory"),
+                                                          object_id=view_kwargs[view_func.lab_pk_field]).first()
 
         elif 'lab' in request.GET and request.GET['lab'] is not None and hasattr(user,'profile') and \
                 int(request.GET['lab']) > 0:
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          laboratories_id=request.GET.get('lab')).first()
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                               model="laboratory"),
+                                                          object_id=request.GET.get('lab')).first()
         if profile_in:
             roles = profile_in.rol.all()
             user_permissions = []
