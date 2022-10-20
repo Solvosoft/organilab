@@ -1,19 +1,23 @@
 {% load static i18n %}
 <div class="clearfix">
-  <h1 class="float-start">Organilab.org</h1>
-  <label class="float-end text-danger">Organilab.org</label>
+    <div class="float-start">
+        <h1 class="float-start">Organilab.org</h1>
+    </div>
+    <div class="float-end">
+        <label class="text-danger">Organilab.org</label>
+    </div>
 </div>
 <hr>
 <div class="clearfix">
 
-<div class="container">
-    <div class="float-end text-left">
+<div class="text-left">
+    <div style="margin:0; padding:0;">
       <h1>{% trans 'SAFETY DATA SHEET' %}</h1>
       <p>{% trans 'according to Regulation (CE) No. 1907/2006' %}</p>
       <p>{% trans 'Version 1.0 Revision Date' %}</p>
       <p>{% trans 'Printing date' %} {{date_print}}</p>
       <p>GENERIC EU MSDS - NO COUNTRY SPECIFIC DATA - NO OEL DATA</p>
-</div>
     </div>
+</div>
 </div>
 <hr>

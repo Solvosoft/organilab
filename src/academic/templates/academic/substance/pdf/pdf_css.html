@@ -1,0 +1,98 @@
+{% load static i18n %}
+
+
+<style>
+.fw-bold{
+      font-weight: bold;
+}
+
+.clearfix{
+ display: table;
+  width:100%;
+}
+
+.float-start {
+ display: table-cell;
+ width: 50%;
+ text-align: left;
+}
+
+.float-end{
+ display: table-cell;
+ width: 50%;
+ text-align: right;
+}
+
+.text-danger{
+  color:red;
+}
+
+.container{
+  margin-left:4%;
+  width: 90%;
+}
+.row{
+  display: table;
+  width:100%;
+  padding:5px;
+}
+
+.col-3{
+  display: table-cell;
+  width: 36%;
+}
+
+.col-9{
+  display: table-cell;
+  width: 64%;
+}
+
+.text-left{
+    display: flex;
+    justify-content: flex-end;
+    text-align:right;
+    }
+
+section{
+    font-family: Arial !important;
+
+}
+
+ol{
+    list-style-type: lower-alpha;
+}
+@page {
+
+    @bottom-right{
+        content: "{% trans 'Page' %} " counter(page) " {% trans 'of' %} " counter(pages);
+        font-size: 12px;
+    }
+    @bottom-left{
+        content: "{% if substance.brand %}{{substance.brand}}{% else %}No disponible{%endif%} - {% if leaf.reference %}{{leaf.reference}}{%else%}No disponible{%endif%}";
+        font-size: 12px;
+    }
+
+}
+#header .container p{
+    font-size:12px;
+    margin:0;
+    padding:0;
+    text-align: right;
+}
+table {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 310px;
+}
+th{
+    background-color:lightgray;
+    text-align: center;
+}
+table, th, td {
+        border: solid 1px #666;
+        width: 110px;
+        word-wrap: break-word;
+        text-aling:center;
+}
+
+</style>
