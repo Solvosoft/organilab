@@ -4,12 +4,12 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
 from django.shortcuts import render
 from laboratory.forms import OrganizationUserManagementForm, SearchUserForm, ProfilePermissionForm
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from laboratory.decorators import has_lab_assigned
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from laboratory.models import Profile, ProfilePermission
-from django.http import JsonResponse
+from auth_and_perms.models import Profile, ProfilePermission
+
 
 
 # FIXME to manage add separately bootstrap, we need a workaround to to this.

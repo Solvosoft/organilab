@@ -26,7 +26,7 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput,Select
 from xhtml2pdf import pisa
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, Profile, SustanceCharacteristics,PrecursorReport
+    OrganizationStructure,  SustanceCharacteristics,PrecursorReport
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula
 from laboratory.utils import get_user_laboratories
@@ -34,7 +34,7 @@ from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElem
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
-
+from auth_and_perms.models import Profile
 #Convert html URI to absolute
 def link_callback(uri, rel):
     """

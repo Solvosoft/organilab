@@ -2,11 +2,11 @@ from django import forms
 from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
+from auth_and_perms.models import Profile, Rol
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
+from .models import Laboratory, Object, Provider, Shelf
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
-from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.forms.forms import GTForm
