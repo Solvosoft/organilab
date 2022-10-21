@@ -430,5 +430,119 @@ URLNAME_PERMISSIONS = {
             'category': 'Transfer Object',
             'permission': 'laboratory.view_tranferobject'
         }
+    ],
+    'riskzone_list': [
+        {
+            'name': 'Add Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_riskzone'
+        },
+        {
+            'name': 'Change Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_riskzone'
+        },
+        {
+            'name': 'Delete Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_riskzone'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        }
+    ],
+    'riskzone_create': [
+        {
+            'name': 'Add Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_riskzone'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        }
+    ],
+    'riskzone_delete': [
+        {
+            'name': 'Delete Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_riskzone'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        }
+    ],
+    'riskzone_detail': [
+        {
+            'name': 'Add Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.add_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        },
+        {
+            'name': 'Change Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_riskzone'
+        },
+        {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        }
+    ],
+    'incident_list': [
+        {
+            'name': 'Add Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.add_incidentreport'
+        },
+        {
+            'name': 'Change Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.change_incidentreport'
+        },
+        {
+            'name': 'Delete Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.delete_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_create': [
+        {
+            'name': 'Add Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.add_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_update': [
+        {
+            'name': 'Change Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.change_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
     ]
 }
