@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'riskzone_list' %}
+    {% define_urlname_action 'riskzone_create' %}
+    {% define_urlname_action 'riskzone_delete' %}
+    {% define_urlname_action 'riskzone_detail' %}
+{% endblock %}
 {% block content %}
   {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
