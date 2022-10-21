@@ -985,14 +985,16 @@ class OrganizationReactivePresenceList(ReportListView):
         return data
 
     def get_book(self, context):
-        book = [[str(_('Name')),
+        book = [[str(_('Laboratory name')),
                  str(_('First Name')),
                  str(_('Last Name')),
                  str(_('Code')),
                  str(_('Sustance')),
                  str(_('CAS')),
                  str(_('White Organ')),
-                 str(_('Carcinogenic'))
+                 str(_('Carcinogenic')),
+                 str(_('ID Card')),
+                 str(_('Job Position'))
                  ]]+context['object_list']
 
         return book
