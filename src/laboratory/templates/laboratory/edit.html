@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n  laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'laboratory_update' %}
+{% endblock %}
 {% block content %}
 	<h1 align="center">{% trans 'Laboratory Management' %}</h1>  
 	{% if perms.laboratory.change_laboratory %}

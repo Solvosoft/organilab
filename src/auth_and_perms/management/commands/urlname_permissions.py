@@ -345,5 +345,90 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.delete_shelfobject'
         }
+    ],
+    'furniture_delete': [
+        {
+            'name': 'Delete Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.delete_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        }
+    ],
+    'objectview_list': [
+        {
+            'name': 'Add Object',
+            'category': 'Object',
+            'permission': 'laboratory.add_object'
+        },
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'Delete Object',
+            'category': 'Object',
+            'permission': 'laboratory.delete_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        }
+    ],
+    'sustance_list': [
+        {
+            'name': 'Add Object',
+            'category': 'Object',
+            'permission': 'laboratory.add_object'
+        },
+        {
+            'name': 'Delete Object',
+            'category': 'Object',
+            'permission': 'laboratory.delete_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        }
+    ],
+    'transfer_objects': [
+        {
+            'name': 'Delete Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.delete_tranferobject'
+        },
+        {
+            'name': 'View Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.view_tranferobject'
+        }
+    ],
+    'update_transfer': [
+        {
+            'name': 'Add Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobject'
+        },
+        {
+            'name': 'Change Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.change_shelfobject'
+        },
+        {
+            'name': 'Change Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.change_tranferobject'
+        },
+        {
+            'name': 'View Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.view_tranferobject'
+        }
     ]
 }
