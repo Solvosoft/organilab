@@ -3,35 +3,37 @@
 {% load i18n lab_data_retriever %}
 
 <div class="col-sm-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-body">
+        <div class="card-title titles">
             <div class="text-center">
             <a href="{% url  'laboratory:labindex' lab.pk %}" title="{% trans 'Edit laboratory'%}">
                <h5>{{ lab.name }}</h5>  </a>
             </div>
                 <div style="position:absolute;display:inline-block;top:0;right:0;margin-right:6%;margin-top:2%">
              {% if perms.laboratory.change_laboratory %}
-                 <a class="btn btn-info btn-sm" title="{% trans 'Edit' %}" style="font-size:13px;text-align:left" href="{% url 'laboratory:laboratory_update' lab.pk %}">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                 <a class="btn btn-outline-info btn-sm" title="{% trans 'Edit' %}" style="font-size:13px;text-align:left" href="{% url 'laboratory:laboratory_update' lab.pk %}">
+                <span class="fa fa-edit" aria-hidden="true"></span>
                 </a>
             {% endif %}
             {% if perms.laboratory.delete_laboratory %}
-                    <a class="btn btn-danger btn-sm"  href="{% url 'laboratory:laboratory_delete' lab.pk %}"
+                    <a class="btn btn-outline-danger btn-sm"  href="{% url 'laboratory:laboratory_delete' lab.pk %}"
                        title="{% trans 'Delete laboratory'%}"  style="font-size:13px;text-align:left">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    <span class="fa fa-remove" aria-hidden="true"></span></a>
              {% endif %}
                 </div>
         </div>
-        <div class="panel-body">
+
             <h5>A disposicion de uso</h5>
             <p>Materiales: <span class="badge pull-right">{{lab|get_materiales_lab }}</span></p>
             <p>Equipo: <span class="badge pull-right">{{lab|get_equipo_lab}}</span></p>
             <p>Reactivos: <span class="badge pull-right">{{lab|get_reactivos_lab}}</span></p>
         </div>
         <a href="{% url  'laboratory:labindex' lab.pk %}" >
-            <div class="panel-footer text-center">
+            <div class="card-footer">
                 <h5>{{ lab.location }}</h5>
             </div>
         </a>
     </div>
+    <div class="mt-2"></div>
 </div>
