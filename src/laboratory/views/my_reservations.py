@@ -11,10 +11,13 @@ class MyReservationView(ListView):
     lab_pk_field='pk'
 
     def get_queryset(self):
-       # reseverd_product_list=ReservedProducts.objects.filter(user_id=self.request.user)
-        #reseverd_product_list.filter()
 
         return ReservedProducts.objects.filter(user_id=self.request.user)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(MyReservationView, self).get_context_data()
+        context['labpk'] = self.kwargs['pk']
+
+        return context
 
 MyReservationView.lab_pk_field='pk'

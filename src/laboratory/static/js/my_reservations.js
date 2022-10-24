@@ -177,7 +177,7 @@ $(document).ready(function() {
    all_status = get_all_elements_with_name("status_num");
    status_of_reservation_buttons(all_status);
 });
-
+/*
 function formatDate(date){
     var newDate;
 
@@ -191,7 +191,7 @@ function formatDate(date){
 
     return newDate;
 }
-/*
+
 function infoTable(...list){
 console.log(list.length,"argumentos")
     var data=[];

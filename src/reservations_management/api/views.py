@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -58,6 +59,7 @@ class ApiListReservationReservedProduct(APIView):
         return Response(serializer.data)
 
 
+
 class ReservedProductViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     # authentication_classes = (TokenAuthentication,)
@@ -70,12 +72,23 @@ class ReservedProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ['shelf_object__object__name', 'shelf_object__object__code', ]
     ordering = ('-shelf_object__object__name',)  # default order
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+    def filter_queryset(self, queryset, pk):
+
+        queryset = super().filter_queryset(queryset)
+
+        if pk:
+            queryset = queryset.filter(reservation__laboratory__pk=int(pk))
+            queryset = queryset.filter(user_id=self.request.user)
+        if self.request.GET['subfiltrar'] == 'false':
+            queryset = queryset.filter(final_date__gte=now())
+        return queryset
+    def retrieve(self, request, *args, **kwargs):
+        pk=kwargs['pk']
+        queryset = self.filter_queryset(self.get_queryset(), pk)
         data = self.paginate_queryset(queryset)
         response = {'data': data, 'recordsTotal': ReservedProducts.objects.count(), 'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
-    def filter_queryset(self,queryset):
-        return super().filter_queryset(queryset)
+
+
