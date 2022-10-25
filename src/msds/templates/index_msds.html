@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+	{% define_urlname_action 'index_msds' %}
 {% endblock %}
 {% block content %} 
 <h1 class="header text-center">  {% trans 'Search MSDS' %} 

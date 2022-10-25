@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'msds_msdsobject_upate' %}
+{% endblock %}
 {% block content %}
 <div class="row">
 <div class="col-md-offset-3 col-md-6" >
