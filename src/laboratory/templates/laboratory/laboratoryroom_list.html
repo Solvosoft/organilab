@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n shelf_position static laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'rooms_list' %}
+{% endblock %}
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 {% block extra_css %}
     <style>

@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'mylabs' %}
+    {% define_urlname_action 'laboratory_update' %}
+    {% define_urlname_action 'laboratory_delete' %}
+{% endblock %}
 
 {% block content %}
   <label for="searchbox">Buscar Laboratorio</label>

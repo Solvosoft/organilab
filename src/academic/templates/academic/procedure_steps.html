@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load i18n static%}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'procedure_step' %}
+    {% define_urlname_action 'save_object' %}
+{% endblock %}
 {% block title %}{% trans "Procedures" %}{% endblock %}
-
-
-
 {% block content %}
 <style>
 .select2 {
