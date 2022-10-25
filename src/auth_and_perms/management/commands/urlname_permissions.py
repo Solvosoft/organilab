@@ -59,6 +59,16 @@ URLNAME_PERMISSIONS = {
     ],
     'labindex': [
         {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
             'name': 'Delete Laboratory',
             'category': 'Laboratory',
             'permission': 'laboratory.delete_laboratory'
@@ -92,6 +102,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Furniture',
             'category': 'Furniture',
             'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
         },
         {
             'name': 'View Shelf Object',
@@ -175,7 +190,27 @@ URLNAME_PERMISSIONS = {
             'name': 'View Procedure',
             'category': 'Procedure',
             'permission': 'academic.view_procedure'
-        }
+        },
+        {
+            'name': 'Add Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.add_procedurestep'
+        },
+        {
+            'name': 'Change Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.change_procedurestep'
+        },
+        {
+            'name': 'Delete Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.delete_procedurestep'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.view_procedurestep'
+        },
     ],
     'procedure_update': [
         {
@@ -201,13 +236,42 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.view_procedure'
         }
     ],
+    'delete_step': [
+        {
+            'name': 'Delete Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.delete_procedurestep'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.view_procedurestep'
+        }
+    ],
+    'procedure_create': [
+        {
+            'name': 'Add Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.add_procedure'
+        },
+        {
+            'name': 'Change Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.change_procedure'
+        },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
     'procedure_detail': [
         {
             'name': 'Change Procedure Step',
             'category': 'Procedure Step',
             'permission': 'academic.change_procedurestep'
         },
-{
+        {
             'name': 'View Procedure Step',
             'category': 'Procedure Step',
             'permission': 'academic.view_procedurestep'
@@ -236,18 +300,74 @@ URLNAME_PERMISSIONS = {
             'category': 'Procedure Step',
             'permission': 'academic.view_procedurestep'
         },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
+    'procedure_step': [
+        {
+            'name': 'Add Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.add_procedurestep'
+        },
+        {
+            'name': 'Change Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.change_procedurestep'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.view_procedurestep'
+        },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
+    'save_object': [
+        {
+            'name': 'Add Procedure Required Object',
+            'category': 'Procedure Required Object',
+            'permission': 'academic.add_procedurerequiredobject'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
     ],
     'lab_profiles': [
         {
-            'name': 'Add Profile',
+            'name': 'Change Profile',
             'category': 'Profile',
-            'permission': 'laboratory.add_profile'
+            'permission': 'laboratory.change_profile'
         },
         {
             'name': 'View Profile',
             'category': 'Profile',
             'permission': 'laboratory.view_profile'
+        }
+    ],
+    'update_lab_profile': [
+        {
+            'name': 'Change Profile',
+            'category': 'Profile',
+            'permission': 'laboratory.change_profile'
         },
+        {
+            'name': 'View Profile',
+            'category': 'Profile',
+            'permission': 'laboratory.view_profile'
+        }
     ],
     'object_feature_create': [
         {
@@ -276,7 +396,17 @@ URLNAME_PERMISSIONS = {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
-        }
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        },
     ],
     'rooms_delete': [
         {
@@ -543,6 +673,302 @@ URLNAME_PERMISSIONS = {
             'name': 'View Incident Report',
             'category': 'Incident Report',
             'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'add_personal': [
+        {
+            'name': 'Add Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.add_personaltemplatesga'
+        },
+        {
+            'name': 'Change Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.change_personaltemplatesga'
+        },
+        {
+            'name': 'Delete Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.delete_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        },
+    ],
+    'edit_personal': [
+        {
+            'name': 'Change Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.change_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'template': [
+        {
+            'name': 'Add Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.add_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'editor': [
+        {
+            'name': 'Add Template SGA',
+            'category': 'Template SGA',
+            'permission': 'sga.add_templatesga'
+        },
+        {
+            'name': 'View Template SGA',
+            'category': 'Template SGA',
+            'permission': 'sga.view_templatesga'
+        }
+    ],
+    'index_msds': [
+        {
+            'name': 'Add MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.add_msdsobject'
+        },
+        {
+            'name': 'Change MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.change_msdsobject'
+        },
+        {
+            'name': 'Delete MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.delete_msdsobject'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'msds_msdsobject_create': [
+        {
+            'name': 'Add MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.add_msdsobject'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'msds_msdsobject_upate': [
+        {
+            'name': 'Change MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.change_msdsobject'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'msds_msdsobject_delete': [
+        {
+            'name': 'Delete MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.delete_msdsobject'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'msds_msdsobject_detail': [
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'warning_words': [
+        {
+            'name': 'Add Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.add_warningword'
+        },
+        {
+            'name': 'Change Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.change_warningword'
+        },
+        {
+            'name': 'View Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.view_warningword'
+        }
+    ],
+    'add_warning_words': [
+        {
+            'name': 'Add Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.add_warningword'
+        },
+        {
+            'name': 'View Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.view_warningword'
+        }
+    ],
+    'add_danger_indication': [
+        {
+            'name': 'Add Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.add_dangerindication'
+        },
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        }
+    ],
+    'add_prudence_advice': [
+        {
+            'name': 'Add Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.add_prudenceadvice'
+        },
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
+        }
+    ],
+    'danger_indications': [
+        {
+            'name': 'Add Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.add_dangerindication'
+        },
+        {
+            'name': 'Change Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.change_dangerindication'
+        },
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        }
+    ],
+    'prudence_advices': [
+        {
+            'name': 'Add Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.add_prudenceadvice'
+        },
+        {
+            'name': 'Change Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.change_prudenceadvice'
+        },
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
+        }
+    ],
+    'reservations_list': [
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'Change Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.change_reservations'
+        },
+        {
+            'name': 'View Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.view_reservations'
+        }
+    ],
+    'manage_reservation': [
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'Change Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.change_reservations'
+        },
+        {
+            'name': 'View Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.view_reservations'
+        }
+    ],
+    'rooms_list': [
+        {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        },
+        {
+            'name': 'View Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.view_laboratoryroom'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.view_shelf'
+        },
+        {
+            'name': 'Add Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobject'
+        },
+        {
+            'name': 'Delete Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.delete_shelfobject'
+        },
+        {
+            'name': 'Add Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
         }
     ]
 }

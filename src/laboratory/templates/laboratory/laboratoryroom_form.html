@@ -2,7 +2,12 @@
 {% load i18n laboratory %}
 {% load urlname_tags %}
 {% block pre_head %}
-	{% define_urlname_action 'rooms_create' %}
+	{% if object_list %}
+		{% define_urlname_action 'rooms_create' %}
+		{% define_urlname_action 'rooms_delete' %}
+	{% else %}
+		{% define_urlname_action 'rooms_update' %}
+	{% endif %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory room management' %}{% endblock %}
 
