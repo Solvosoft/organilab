@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from laboratory.models import OrganizationStructure
 
 
@@ -45,7 +44,8 @@ def organization_manage_view(request):
     parents=list(OrganizationStructure.objects.filter(parent=None))
     nodes = []
 
+
     for node in parents:
         getTree(node, nodes, level=0)
-
-    return render(request, 'auth_and_perms/list_organizations.html', {'nodes': nodes})
+    context={'nodes': nodes }
+    return render(request, 'auth_and_perms/list_organizations.html', context)

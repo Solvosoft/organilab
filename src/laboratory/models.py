@@ -359,6 +359,9 @@ class OrganizationStructureManager(models.Manager):
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
     position = models.IntegerField(default=0)
+    # No debe usarse para validar permisos, su intención es permitir relacionarlos en la
+    # vista de administración, para los permisos usar ProfilePermission
+    rol = models.ManyToManyField('auth_and_perms.Rol', blank=True)
 
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
