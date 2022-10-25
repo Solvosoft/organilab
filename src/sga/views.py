@@ -419,8 +419,8 @@ def get_svgexport(request, is_pdf, pk):
             file = cairosvg.svg2pdf(svg)
             type = "pdf"
         else:
-            file = cairosvg.svg2png(svg)
-        response = HttpResponse(file, content_type='application/'+type)
+           file = cairosvg.svg2png(svg)
+           response = HttpResponse(file, content_type='application/'+type)
     except IOError:
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
