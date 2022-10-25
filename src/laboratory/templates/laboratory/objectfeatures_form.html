@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'object_feature_create' %}
+{% endblock %}
 {% block title %}{% trans 'Object features management' %}{% endblock %}
 
 {% block content %}

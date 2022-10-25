@@ -45,7 +45,7 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
                                                      content_type=ContentType.objects.get(
                                                          app_label='laboratory',
                                                          model="laboratory"),
-                                                     object__id=self.kwargs['pk']).first()
+                                                     object_id=self.kwargs['pk']).first()
         roles=list
         if permissions is not None:
             roles=permissions.rol.all()

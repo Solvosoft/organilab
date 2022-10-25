@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% load static i18n gtsettings %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% if 'warning_words' in url %}
+        {% define_urlname_action 'add_warning_words' %}
+    {% elif 'danger_indication' in url %}
+        {% define_urlname_action 'add_danger_indication' %}
+    {% else %}
+        {% define_urlname_action 'add_prudence_advice' %}
+    {% endif %}
+{% endblock %}
 {% block content %}
 
 <div class="box-body">
