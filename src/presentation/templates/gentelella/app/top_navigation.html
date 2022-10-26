@@ -1,19 +1,19 @@
 {% load i18n shelf_position laboratory %}
 {% load urlname_tags %}
 
-<nav class="nav_menu">
-  <div class="nav toggle">
-    <a id="menu_toggle"><i class="fa fa-bars"></i>
-  </a>
-</div>
-{% if laboratory %}
-  <div class="container-fluid" style="display: flex; ">
-  <ul class="nav navbar-nav navbar-left" style="width: 80%;">
-      <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
-  </ul>
 
-{% endif %}
-<ul class="nav navbar-nav navbar-right" >
+<nav class="nav_menu clearfix">
+    <div class="nav toggle mt-2 ms-2">
+      <a id="menu_toggle"><i class="fa fa-bars"></i>
+      </a>
+    </div>
+  {% if laboratory %}
+  <div class="container-fluid " >
+    <ul class="nav navbar-nav float-start">
+      <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
+    </ul>
+  {% endif %}
+<ul class="nav navbar-nav float-end flex-row-reverse" >
   {% get_urlname_action as urlnameactions %}
       {% validate_context urlnameactions as context %}
       {% if urlnameactions and context %}
@@ -34,110 +34,127 @@
       </a>
     </li>
 
-    {% if laboratory %}
-      {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
-        <li class="dropdown">
-          <a id='management_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
-              role="button" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Administration' %}<span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            {% if  perms.laboratory.delete_laboratory %}
-              <li><a href="{% url 'laboratory:mylabs' %}">
-                  {% trans 'My Laboratories' %} </a>
-              </li>
-            {% endif %}
-            {% if perms.laboratory.add_laboratory %}
-              <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
-              {% trans 'Laboratory management' %} </a></li>
-            {% endif %} 
-
-            {% if perms.laboratory.add_object %} 
-              <li class="dropdown-submenu">
-                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' laboratory %}" >{% trans 'Reactive' %}</a></li>
-                  <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
-                  <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
-                </ul>
-              </li>
-            {% endif %} 
-            {% if perms.laboratory.add_features %} 
-              <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
-              {% trans 'Object features management' %}</a></li>
-            {% endif %}
-          </ul>
-        </li>
-      {% endif %} 
-      {% if perms.laboratory.view_report or perms.laboratory.do_report %} 
-        <li class="dropdown">
-          <a id='reports_id' href="#" class="dropdown-toggle" data-toggle="dropdown"
-              role="button" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Reports' %}<span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            {% if perms.laboratory.do_report %}
-              <li class="dropdown-submenu">
-                <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">{% trans 'Objects' %}</a></li>
-                    <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">{% trans 'Principal Technician' %}</a></li>
-                </ul>
-              </li>
-            {% endif %}
-            <li>
-              <a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
-                {% trans 'Furnitures' %}
-              </a>
-            </li>
-            <li class="dropdown-submenu">
-              <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">{% trans 'Reactive' %}</a></li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
-              </ul>
-            </li>
-
-            <li>
-              <a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
-                {% trans 'Reactive precursor objects' %}
-              </a>
-            </li>
-            <li>
-              <a href="{% url 'laboratory:object_change_logs' laboratory %}">
-                {% trans 'Object changes' %}
-              </a>
-            </li>
-            <li>
-              <a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
-                {% trans 'Limited shelf objects' %}
-              </a>
-            </li>
-            <li>
-            <a href="{% url 'laboratory:precursor_report' laboratory%}">{% trans 'Precursor Report' %}</a>
-            </li>
-          </ul>
-        </li>
-      {% endif %}
-
-		  {% if perms.djreservation.add_reservation %}
-        <li id="reservation_list_id"><a
-          href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %}  </a>
-        </li>
-      {% endif %}
-	  {% endif %}
-  {% endif %}
-
-  <li id="tutorials">
-    <a href="{% url 'tutorials' %}"><strong>{% trans 'Tutorials' %}</strong></a>
-  </li>
-
-  {% if not request.user.is_authenticated %}
-    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
-  {% endif %}
-  </ul>
       {% if laboratory %}
-      </div>
+      {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
+      <li class="dropdown ">
+        <a id='management_id' href="#" role="button" class="dropdown-toggle" data-bs-toggle="dropdown"
+           role="button" aria-haspopup="true" aria-expanded="false">
+          {% trans 'Administration' %}<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu " style="width:290px; font-size:12px;">
+          {% if  perms.laboratory.delete_laboratory %}
+          <li ><a href="{% url 'laboratory:mylabs' %}">
+            {% trans 'My laboratories' %} </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
+          {% if perms.laboratory.add_laboratory %}
+          <li ><a href="{% url 'laboratory:rooms_create' laboratory %}">
+            {% trans 'Laboratory Management' %} </a></li>
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
+
+          {% if perms.laboratory.add_object %}
+          <li class="dropdown-submenu pull-left " >
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu " style="margin-left:190px; font-size:12px;">
+              <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' laboratory %}" >{% trans 'Reactive' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
+            </ul>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
+          {% if perms.laboratory.add_features %}
+          <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
+            {% trans 'Object features management' %}</a></li>
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
+        </ul>
+      </li>
+      <li><hr class="dropdown-divider"></li>
       {% endif %}
+      {% if perms.laboratory.view_report or perms.laboratory.do_report %}
+      <li class="dropdown">
+        <a id='reports_id' href="#" class="dropdown-toggle" role="button" data-bs-toggle="dropdown"
+           role="button" aria-haspopup="true" aria-expanded="false">
+          {% trans 'Reports' %}<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" style="width:250px; font-size:12px; ">
+          {% if perms.laboratory.do_report %}
+          <li class="dropdown-submenu">
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu" style="font-size:12px; margin-left:5px; margin-top:-5px;">
+              <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">{% trans 'Objects' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">{% trans 'Principal Technician' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+            </ul>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          {% endif %}
+          <li>
+            <a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
+              {% trans 'Furnitures' %}
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li class="dropdown-submenu" >
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu" style="font-size:12px; margin-left:5px; margin-top:-5px;">
+              <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">{% trans 'Reactive' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">{% trans 'Material' %}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">{% trans 'Equipment' %}</a></li>
+            </ul>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
+              {% trans 'Reactive precursor objects' %}
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a href="{% url 'laboratory:object_change_logs' laboratory %}">
+              {% trans 'Object changes' %}
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
+              {% trans 'Limited shelf objects' %}
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a href="{% url 'laboratory:precursor_report' laboratory%}">{% trans 'Precursor Report' %}</a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+        </ul>
+      </li>
+      {% endif %}
+
+      {% if perms.djreservation.add_reservation %}
+      <li id="reservation_list_id"><a
+              href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %}  </a>
+      </li>
+      {% endif %}
+      {% endif %}
+      {% endif %}
+
+      <li id="tutorials">
+        <a href="{% url 'tutorials' %}"><strong>{% trans 'Tutorials' %}</strong></a>
+      </li>
+
+      {% if not request.user.is_authenticated %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
+      {% endif %}
+    </ul>
+    {% if laboratory %}
+  </div>
+  {% endif %}
 </nav>
