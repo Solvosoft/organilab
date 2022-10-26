@@ -1,9 +1,9 @@
 {% load i18n laboratory %}
 
 {% if perms.laboratory.view_shelfobject %}
-	<div class="panel panel-default">
-		<div class="panel-heading">{% trans 'Shelves' %}</div>
-		<div class="panel-body">
+	<div class="card" style="margin-top:3.3rem">
+		<div class="card-header">{% trans 'Shelves' %}</div>
+		<div class="card-body">
 			<div class="table-responsive">
 				<table class="table table-bordered">
 					{% for row in object_list %}
@@ -14,11 +14,11 @@
 										{% for data in col %} 
 											{% if perms.laboratory.add_shelfobject %}
 												<a data-ajax="true" data-success="processResponseshelfobjectCreate" href="{% url 'laboratory:shelfobject_create' laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}">
-													<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+													<i class="fa fa-plus" aria-hidden="true"></i>
 												</a>
 											{% endif %}
-											<a id="shelf_view_{{data.pk}}" role="button" data-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample">
-												<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> 
+											<a id="shelf_view_{{data.pk}}" role="button" data-bs-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample">
+												<i class="fa fa-eye" aria-hidden="true"></i>
 											</a>
 											<span> {{data.name}} </span>
 											<div class="collapse" id="body_{{data.pk}}">

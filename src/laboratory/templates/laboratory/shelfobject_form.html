@@ -15,7 +15,7 @@
 		  {{ form.as_horizontal }}
 
 			<div class="modal-footer">
-				{%if not form.instance.pk %}<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
+				{%if not form.instance.pk %}<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>{%endif%}
 				<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
 			</div>
 			{% if q %}
