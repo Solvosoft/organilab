@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import tagging.fields
-
+try:
+    import tagging.fields as fields
+except:
+    fields = None
 
 class Migration(migrations.Migration):
 
@@ -43,7 +45,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sustance',
             name='synonymous',
-            field=tagging.fields.TagField(blank=True, max_length=255, verbose_name='Synonymous'),
+            field=fields.TagField(blank=True, max_length=255, verbose_name='Synonymous') if fields else models.CharField(blank=True, max_length=255, verbose_name='Synonymous'),
         ),
         migrations.AddField(
             model_name='warningclass',

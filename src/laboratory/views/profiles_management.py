@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.views.generic import ListView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from laboratory.models import Profile,Rol,ProfilePermission,Laboratory
+from laboratory.models import Laboratory
 from laboratory.forms import ProfileForm
 from laboratory.decorators import has_lab_assigned
+from auth_and_perms.models import Profile,Rol,ProfilePermission
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_profile'), name='dispatch')
@@ -39,7 +41,11 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
                 'profile_id': profile.id
             }
         )
-        permissions=ProfilePermission.objects.filter(profile__id=profile.id,laboratories__id=self.kwargs['pk']).first()
+        permissions=ProfilePermission.objects.filter(profile__id=profile.id,
+                                                     content_type=ContentType.objects.get(
+                                                         app_label='laboratory',
+                                                         model="laboratory"),
+                                                     object_id=self.kwargs['pk']).first()
         roles=list
         if permissions is not None:
             roles=permissions.rol.all()
@@ -66,9 +72,11 @@ class ProfileUpdateView(FormView, LoginRequiredMixin):
         profile.user.last_name = form.cleaned_data.get('last_name')
         profile.user.save()
         profile.save()
-
-        lab = Laboratory.objects.filter(pk=int(self.kwargs['pk'])).first()
-        pp, created = ProfilePermission.objects.get_or_create(profile=profile, laboratories=lab)
+        pp, created = ProfilePermission.objects.get_or_create(profile=profile,
+                                                              content_type=ContentType.objects.get(
+                                                                  app_label='laboratory',
+                                                                  model="laboratory"),
+                                                              object_id=self.kwargs['pk'])
 
         if pp is not None:
             pp.rol.clear()

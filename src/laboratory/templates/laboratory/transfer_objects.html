@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% load i18n laboratory %}
-29
+{% load urlname_tags %}
 {% block title %}{% trans 'My Transfers' %}{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
+    {% define_urlname_action 'update_transfer' %}
+    {% define_urlname_action 'transfer_objects' %}
 {% endblock %}
 {% block content %}
 {% include 'laboratory/transfer_object_modal.html' %}

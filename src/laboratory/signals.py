@@ -1,7 +1,8 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from laboratory.models import ShelfObject, Profile
+from auth_and_perms.models import Profile
+from laboratory.models import ShelfObject
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification

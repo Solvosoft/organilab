@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n  %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'riskzone_create' %}
+{% endblock %}
 {% block title %}{% trans 'Risk Zone Management' %}{% endblock %}
 {% block content %}
 <div class="row">
