@@ -1,18 +1,19 @@
 from django import forms
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
-from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.tagging import TaggingInput
 
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
     BuilderInformation, Label, SGAComplement, Provider, Pictogram
 
 
-class PersonalTemplateForm(forms.Form):
+class PersonalTemplateForm(GTForm):
     name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput, label=_('Name'))
-    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=True, widget=genwidgets.Select, label=_('Template'))
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=True, widget=genwidgets.Select,
+                                      label=_('Template'))
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -21,47 +22,50 @@ class PersonalTemplateForm(forms.Form):
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
 
 
-class SGAEditorForm(GTForm,forms.ModelForm):
+class SGAEditorForm(forms.ModelForm, GTForm):
     class Meta:
         model = DangerPrudence
-        fields = ('prudence_advice','danger_indication')
+        fields = ('prudence_advice', 'danger_indication')
         exclude = ['']
         widgets = {
-            'prudence_advice':AutocompleteSelect('prudencesearch'),
+            'prudence_advice': AutocompleteSelect('prudencesearch'),
             'danger_indication': AutocompleteSelect('dangersearch')
         }
 
-class EditorForm(GTForm, forms.ModelForm):
+
+class EditorForm(forms.ModelForm, GTForm):
     preview = forms.CharField(widget=forms.HiddenInput())
     json_representation = forms.CharField(widget=forms.HiddenInput())
+
     class Meta:
         model = TemplateSGA
         fields = ('name', 'recipient_size', 'json_representation', 'community_share', 'preview')
-        widgets={
+        widgets = {
             'name': genwidgets.TextInput,
             'recipient_size': genwidgets.Select,
             'community_share': genwidgets.YesNoInput
         }
 
 
-class SearchDangerIndicationForm(GTForm, forms.Form):
+class SearchDangerIndicationForm(GTForm):
+    codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"),
+                                           widget=genwidgets.SelectMultiple, required=True)
 
-    codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"), widget=genwidgets.SelectMultiple, required=True)
 
-class PersonalForm(GTForm, forms.Form):
+class PersonalForm(GTForm):
     name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput)
     company_name = forms.CharField(max_length=150, required=True, widget=genwidgets.TextInput)
     address = forms.CharField(widget=genwidgets.Textarea)
     phone = forms.CharField(max_length=50, required=True, widget=genwidgets.TextInput)
     json_representation = forms.CharField(widget=forms.HiddenInput())
     preview = forms.CharField(widget=forms.HiddenInput())
-    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False, widget=genwidgets.HiddenInput)
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False,
+                                      widget=genwidgets.HiddenInput)
     substance = forms.ModelChoiceField(queryset=Substance.objects.all(), widget=genwidgets.Select)
     commercial_information = forms.CharField(widget=genwidgets.Textarea)
     barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
     logo = forms.FileField(widget=genwidgets.FileInput, required=False)
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
-
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -71,20 +75,21 @@ class PersonalForm(GTForm, forms.Form):
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
-class PersonalFormAcademic(GTForm, forms.Form):
+
+class PersonalFormAcademic(GTForm):
     name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput)
     company_name = forms.CharField(max_length=150, required=True, widget=genwidgets.TextInput)
     address = forms.CharField(widget=genwidgets.Textarea)
     phone = forms.CharField(max_length=50, required=True, widget=genwidgets.TextInput)
     json_representation = forms.CharField(widget=forms.HiddenInput())
     preview = forms.CharField(widget=forms.HiddenInput())
-    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False, widget=genwidgets.HiddenInput)
+    template = forms.ModelChoiceField(queryset=TemplateSGA.objects.none(), required=False,
+                                      widget=genwidgets.HiddenInput)
     substance = forms.CharField(widget=forms.HiddenInput())
     commercial_information = forms.CharField(widget=genwidgets.Textarea)
     barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
     logo = forms.FileField(widget=genwidgets.FileInput, required=False)
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
-
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -97,7 +102,7 @@ class PersonalFormAcademic(GTForm, forms.Form):
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
 
-class PersonalSGAForm(forms.ModelForm):
+class PersonalSGAForm(forms.ModelForm, GTForm):
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
@@ -110,14 +115,14 @@ class PersonalSGAForm(forms.ModelForm):
         }
 
 
-class BuilderInformationForm(forms.ModelForm):
+class BuilderInformationForm(forms.ModelForm, GTForm):
     class Meta:
         model = BuilderInformation
         fields = ['address', 'phone', 'name']
         exclude = ['user', 'community_share']
 
 
-class LabelForm(forms.ModelForm):
+class LabelForm(forms.ModelForm, GTForm):
     class Meta:
         model = Label
         fields = ['substance', 'commercial_information']
@@ -127,7 +132,7 @@ class LabelForm(forms.ModelForm):
         }
 
 
-class DonateForm(GTForm, forms.Form):
+class DonateForm(GTForm):
     name = forms.CharField(
         label=_('Name'), max_length=200, required=True,
         widget=genwidgets.TextInput)
@@ -141,20 +146,22 @@ class DonateForm(GTForm, forms.Form):
         initial=True)
 
 
-class PersonalTemplatesForm(GTForm, forms.Form):
+class PersonalTemplatesForm(GTForm):
     name = forms.CharField(max_length=100, required=True)
     json_data = forms.CharField(widget=forms.TextInput)
 
-class SubstanceForm(GTForm,forms.ModelForm):
+
+class SubstanceForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         super(SubstanceForm, self).__init__(*args, **kwargs)
-        self.fields['uipa_name'].label= _('UIPA name')
+        self.fields['uipa_name'].label = _('UIPA name')
+
     class Meta:
         model = Substance
-        fields= '__all__'
+        fields = '__all__'
         widgets = {
-            'comercial_name':genwidgets.TextInput,
+            'comercial_name': genwidgets.TextInput,
             'uipa_name': genwidgets.TextInput,
             'components': genwidgets.SelectMultiple(),
             'danger_indications': genwidgets.SelectMultiple(),
@@ -162,13 +169,13 @@ class SubstanceForm(GTForm,forms.ModelForm):
             'agrochemical': genwidgets.YesNoInput
         }
 
-class RecipientSizeForm(GTForm,forms.ModelForm):
 
+class RecipientSizeForm(forms.ModelForm, GTForm):
     class Meta:
         model = RecipientSize
-        fields= '__all__'
+        fields = '__all__'
         widgets = {
-            'name':genwidgets.TextInput,
+            'name': genwidgets.TextInput,
             'height': genwidgets.NumberInput,
             'height_unit': genwidgets.Select,
             'width': genwidgets.NumberInput,
@@ -176,13 +183,14 @@ class RecipientSizeForm(GTForm,forms.ModelForm):
 
         }
 
-class SGAComplementsForm(GTForm,forms.ModelForm):
+
+class SGAComplementsForm(forms.ModelForm, GTForm):
     class Meta:
         model = SGAComplement
-        fields = ('prudence_advice','danger_indication','warningword','pictograms','other_dangers')
-        order_fields =('prudence_advice','danger_indication','warningword','pictograms','other_dangers')
+        fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        order_fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
         widgets = {
-            'prudence_advice':AutocompleteSelectMultiple('prudencesearch'),
+            'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
             'pictograms': genwidgets.SelectMultiple,
             'warningword': genwidgets.Select,
@@ -190,37 +198,41 @@ class SGAComplementsForm(GTForm,forms.ModelForm):
             'other_dangers': genwidgets.Textarea
         }
 
-class ProviderSGAForm(GTForm, forms.ModelForm):
 
-    def __init__(self,*args, **kwargs):
+class ProviderSGAForm(forms.ModelForm, GTForm):
+
+    def __init__(self, *args, **kwargs):
         super(ProviderSGAForm, self).__init__(*args, **kwargs)
-        self.fields['provider'].required=False
+        self.fields['provider'].required = False
+
     class Meta:
         model = Provider
-        fields= '__all__'
+        fields = '__all__'
         widgets = {
-            "name" : genwidgets.TextInput(),
-            "country" : genwidgets.TextInput(),
-            "direction" : genwidgets.Textarea(),
-            "telephone_number" : genwidgets.TextInput(),
-            "fax" : genwidgets.TextInput(),
-            "email" : genwidgets.EmailInput(),
-            "provider" : genwidgets.Select(),
-            "emergency_phone" : genwidgets.TextInput(),
+            "name": genwidgets.TextInput(),
+            "country": genwidgets.TextInput(),
+            "direction": genwidgets.Textarea(),
+            "telephone_number": genwidgets.TextInput(),
+            "fax": genwidgets.TextInput(),
+            "email": genwidgets.EmailInput(),
+            "provider": genwidgets.Select(),
+            "emergency_phone": genwidgets.TextInput(),
         }
 
-class PictogramForm(forms.ModelForm,GTForm):
 
+class PictogramForm(forms.ModelForm, GTForm):
     image_upload = forms.CharField(max_length=100, widget=forms.HiddenInput, required=False)
-    def __init__(self,*args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         super(PictogramForm, self).__init__(*args, **kwargs)
-        self.fields['warning_word'].required=False
+        self.fields['warning_word'].required = False
+
     class Meta:
         model = Pictogram
         fields = '__all__'
         exclude = ['id_pictogram']
         widgets = {
-            "name" : genwidgets.TextInput(),
-            "warning_word" : genwidgets.Select(),
-            "image" : genwidgets.FileInput(),
+            "name": genwidgets.TextInput(),
+            "warning_word": genwidgets.Select(),
+            "image": genwidgets.FileInput(),
         }
