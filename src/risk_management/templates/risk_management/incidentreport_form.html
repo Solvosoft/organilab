@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n  %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'incident_create' %}
+    {% define_urlname_action 'incident_update' %}
+{% endblock %}
 {% block title %}{% trans 'Incident Management' %}{% endblock %}
 {% block content %}
 

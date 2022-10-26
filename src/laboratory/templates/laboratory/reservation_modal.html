@@ -50,7 +50,7 @@
                     <label class="float-end" id="obj"></label>
                     <div class="form-group">
                         <label>{% trans 'Action'%}</label>
-                        <select id="option" name="options" data-widget="Select" >
+                        <select id="option" name="options" data-widget="Select" onchange="choose_action()" >
                             {% for option in options %}
                             <option value="{{forloop.counter}}">{% trans option %}</option>
                             {% endfor %}

@@ -9,7 +9,10 @@
 {% extends 'label_index.html' %}
 {% load i18n %}
 {% load static %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'edit_personal' %}
+{% endblock %}
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">

@@ -9,6 +9,11 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
+try:
+    from laboratory.models import PrincipalTechnician, Solution
+except:
+    PrincipalTechnician=None
+    Solution=None
 from laboratory.models import (CLInventory,
                                ObjectFeatures,
                                Object,
@@ -17,9 +22,9 @@ from laboratory.models import (CLInventory,
                                Shelf,
                                Furniture,
                                OrganizationStructure,
-                               PrincipalTechnician,
+
                                Laboratory,
-                               Solution,
+
                                )
 from academic.models import (Procedure,
                              ProcedureStep,
@@ -39,15 +44,19 @@ def create_perms(codename):
         "shelf": Shelf,
         "furniture": Furniture,
         "organizationstructure": OrganizationStructure,
-        "principaltechnician": PrincipalTechnician,
         "laboratory": Laboratory,
         "laboratoryroom": LaboratoryRoom,
-        "solution": Solution,
         "procedure": Procedure,
         "procedurestep": ProcedureStep,
         "procedurerequiredobject": ProcedureRequiredObject,
         "procedureobservations": ProcedureObservations
     }
+
+    if PrincipalTechnician:
+        model_perms["principaltechnician"] = PrincipalTechnician
+    if Solution:
+        model_perms["solution"] = Solution
+
     action, name = (codename.split("_"))
     if name in model_perms:
         model = model_perms[name]

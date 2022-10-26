@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% load i18n static shelf_position laboratory %}
+{% load urlname_tags %}
 {% block title %}
 	{% if request.user.is_authenticated %}
 		{% get_laboratory_name %}
@@ -8,7 +8,9 @@
 		{% trans 'Select laboratory' %}
 	{% endif %}
 {% endblock %}
-
+{% block pre_head %}
+    {% define_urlname_action 'labindex' %}
+{% endblock %}
 
 {% load i18n static %}
 {% block content %}

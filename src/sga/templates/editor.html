@@ -6,6 +6,10 @@
 {% extends 'label_index.html' %}
 {% load i18n %}
 {% load static %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'editor' %}
+{% endblock %}
 {# CSS #}
 {% block css %}
     <link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
