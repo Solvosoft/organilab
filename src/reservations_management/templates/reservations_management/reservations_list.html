@@ -22,21 +22,22 @@
         padding-bottom: 2rem;
     }
 </style>
+<div class="col-md-12">
+    <div class="card gencrud">
+        <div class="card-body">
+            <div class="card-title titles">
+                <ul class="nav navbar-left panel_toolbox">
+                </ul>
 
-<div class="x_panel gencrud">
-    <div class="x_title">
-        <ul class="nav navbar-left panel_toolbox">
-        </ul>
+                <h2>{% trans 'Reservations List' %}</h2>
+                <ul class="nav navbar-right panel_toolbox">
 
-        <h2>{% trans 'Reservations List' %}</h2>
-        <ul class="nav navbar-right panel_toolbox">
-           
-        </ul>
-        <div class="clearfix"></div>
-    </div>
+                </ul>
 
-    
-        {% comment %} <div class="col-lg-12">
+            </div>
+
+
+            {% comment %} <div class="col-lg-12">
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="paginate_button">
@@ -57,48 +58,48 @@
                 </li>
                 {% endif %}
             </ul>
-        {% endcomment %}
-  
-    <table class="table table-bordered text-center" id="table_of_reservations"> 
-        <thead>
-            <tr>
-                <th class="text-center">{% trans 'User' %}</th>
-                <th class="text-center">{% trans 'Status' %}</th>
-                <th class="text-center">{% trans 'Massive Reservation' %}</th>
-                <th class="text-center">{% trans 'Manage Reservation' %}</th>
-            </tr>
-        </thead>
+            {% endcomment %}
 
-        <tbody>
+            <table class="table table-bordered text-center" id="table_of_reservations">
+                <thead>
+                <tr>
+                    <th class="text-center">{% trans 'User' %}</th>
+                    <th class="text-center">{% trans 'Status' %}</th>
+                    <th class="text-center">{% trans 'Massive Reservation' %}</th>
+                    <th class="text-center">{% trans 'Manage Reservation' %}</th>
+                </tr>
+                </thead>
 
-            {% for reservation in reservations %}
-            <tr>
-                <td>{{ reservation.user }}</td>
-                <td> 
-                    <strong class="{%if reservation.status == 0 %}text-warning {%endif%} 
+                <tbody>
+
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.user }}</td>
+                    <td>
+                        <strong class="{%if reservation.status == 0 %}text-warning {%endif%}
                     {%if reservation.status == 1 %}text-success {%endif%}
                     {%if reservation.status == 2 %}text-danger {%endif%}
                     {%if reservation.status == 3 %}text-info {%endif%}">
-                    {{ reservation.get_status_display}} </strong>
-                </td>
-                <td>{% if reservation.is_massive %} 
-                    {% trans 'Yes' %}
-                    {% else %} 
-                    {% trans 'No' %}
-                    {%endif%}
-                </td>
-                <td>
-                    <a class="btn btn-md btn-success"
-                        href="{% url 'manage_reservation' reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-                </td>
-            </tr>
+                            {{ reservation.get_status_display}} </strong>
+                    </td>
+                    <td>{% if reservation.is_massive %}
+                        {% trans 'Yes' %}
+                        {% else %}
+                        {% trans 'No' %}
+                        {%endif%}
+                    </td>
+                    <td>
+                        <a class="btn btn-md btn-success"
+                           href="{% url 'manage_reservation' reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
 
-            {% endfor %}
+                {% endfor %}
 
-        </tbody>
-    </table>
-    
-        {% comment %} <div class="col-lg-12">
+                </tbody>
+            </table>
+
+            {% comment %} <div class="col-lg-12">
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="paginate_button">
@@ -119,12 +120,13 @@
                 </li>
                 {% endif %}
             </ul>
-        {% endcomment %}
+            {% endcomment %}
 
+        </div>
+        </div>
+        </div>
     </div>
-</div> 
-</div> 
-
+</div>
 {% endblock %}
 
 {% block javascripts %}

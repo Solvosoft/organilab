@@ -6,27 +6,28 @@
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
   {%  has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
 
-<div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Risk Zone Management'  %}
+<div class="row justify-content-center">
+<div class="col-md-8">
+        <div class="page-header col-sm-12" align="center">
+          <h3 class="heading-1" ><span>{% trans 'Risk Zone Management'  %}
                   </span></h3>
 
         </div>
     {% if perm_add_riskzone %}
-          <a class="btn btn-success pull-right" href="{% url 'riskmanagement:riskzone_create' %}"> + {% trans 'Add' %} </a>
+          <a class="btn btn-success float-end" href="{% url 'riskmanagement:riskzone_create' %}">
+              <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %} </a>
         {% endif %}
 </div>
 </div>
 
-<div class="row">
-    <div class="col-md-offset-2 col-md-8">
+<div class="row justify-content-center">
+    <div class="col-md-8">
 <form metod="get" action="">
     <div class="input-group custom-search-form">
 
-        <input class="form-control" name="q" value="{{q}}" placeholder="Search..." type="text">
+        <input class="form-control input-group" name="q" value="{{q}}" placeholder="Search..." type="text">
         <span class="input-group-btn">
-            <button type="submit" class="btn btn-default">
+            <button type="submit"  class="btn btn-secondary">
                 <i class="fa fa-search"></i>
             </button>
         </span>
@@ -45,18 +46,18 @@
     {% for object in object_list %}
       <li class="row list-group-item">
         <div class="col-md-9">
-            <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
+            <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
             <a href="{% url 'riskmanagement:riskzone_detail' object.pk %}">{{ object }}</a></div>
         <div class="col-md-3">
          {% if perm_change_riskzone %}
-          <a class="btn btn-info"
+          <a class="btn btn-info text-white"
              href="{% url 'riskmanagement:riskzone_update' object.pk %}">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}</a>
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
          {% endif %}
          {% if perm_change_riskzone %}
-          <a class="btn btn-danger"
+          <a class="btn btn-danger text-white"
              href="{% url 'riskmanagement:riskzone_delete' object.pk %}">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+           <i class="fa fa-times" aria-hidden="true"></i> {% trans 'Delete' %}</a>
          {% endif %}
         </div>
       </li>
