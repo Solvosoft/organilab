@@ -24,7 +24,7 @@ def convert_hcodereport_table(data):
     for result in data:
         name = result.pop('name')
         reactive_id = result['reactive_id']
-        result['unit'] = ShelfObject.get_units(result['unit'])
+        result['units'] = ShelfObject.get_units(result['units'])
         result['h_codes'] = Object.objects.filter(pk=reactive_id).values_list('sustancecharacteristics__h_code__code', 'sustancecharacteristics__h_code__description')
         if name not in context:
             context[name] = len(reactive_list)
@@ -51,7 +51,7 @@ def filter_by_user_and_hcode(user, q, function='convert_hcodereport_table'):
         furniture=F('rooms__furniture__name'),
         reactive=F('rooms__furniture__shelf__shelfobject__object__name'),
         quantity=F('rooms__furniture__shelf__shelfobject__quantity'),
-        unit=F('rooms__furniture__shelf__shelfobject__measurement_unit'),
+        units=F('rooms__furniture__shelf__shelfobject__measurement_unit'),
         reactive_id=F('rooms__furniture__shelf__shelfobject__object__pk')
-    ).values('name', 'room', 'furniture', 'reactive', 'quantity', 'unit', 'reactive_id')
+    ).values('name', 'room', 'furniture', 'reactive', 'quantity', 'units', 'reactive_id')
     return functiont(result)
