@@ -18,6 +18,8 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CSRF_TRUSTED_ORIGINS = ["https://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+
 else:
     ALLOWED_HOSTS = []
 
