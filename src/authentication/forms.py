@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from laboratory.models import Rol
 
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as djgenwidgets
+
+from auth_and_perms.models import Rol
 from authentication.models import DemoRequest
 from captcha.fields import ReCaptchaField
 from django.utils.translation import gettext_lazy as _

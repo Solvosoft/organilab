@@ -18,6 +18,8 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CSRF_TRUSTED_ORIGINS = ["https://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+
 else:
     ALLOWED_HOSTS = []
 
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'auth_and_perms',
     'presentation',
     'django_ajax',
     'laboratory',
@@ -293,3 +296,4 @@ RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
+GT_GROUP_MODEL='auth_and_perms.Rol'

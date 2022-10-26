@@ -1,7 +1,9 @@
 {% extends 'label_index.html' %}
 {% load static i18n gtsettings %}
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'warning_words' %}
 {% endblock %}
 {% block content %}
 <div class="row">

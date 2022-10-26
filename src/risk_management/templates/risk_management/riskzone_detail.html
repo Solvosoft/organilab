@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'riskzone_detail' %}
+{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-md-offset-1 col-md-3">

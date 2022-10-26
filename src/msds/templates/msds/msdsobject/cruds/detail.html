@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'msds_msdsobject_detail' %}
+{% endblock %}
 {% block content %}
 
 <style>

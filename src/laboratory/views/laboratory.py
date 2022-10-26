@@ -15,11 +15,10 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from laboratory.forms import LaboratoryCreate, H_CodeForm,LaboratoryEdit
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, Profile
-from laboratory.utils import get_user_laboratories
+from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from laboratory.decorators import has_lab_assigned
-
+from auth_and_perms.models import Profile
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')

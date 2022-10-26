@@ -8,25 +8,25 @@
         {{ shelfobject.quantity }}
         {{ shelfobject.get_measurement_unit_display }}
         {% if perms.laboratory.delete_shelfobject %}
-        <a class="pull-right" data-ajax="true"
+        <a class="float-end" data-ajax="true"
            data-success="processResponseshelfobjectDelete"
            href="{% url 'laboratory:shelfobject_delete' laboratory shelfobject.pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
            style="margin-left: 10px; color:red">
-            <span aria-hidden="true" class="glyphicon glyphicon-trash"></span> </a>
+           <i class="fa fa-trash" aria-hidden="true"></i> </a>
         {% endif %}
 
         {% if perms.laboratory.do_report %}
-        <a class=" pull-right" href="{% url 'laboratory:reports_shelf_objects' laboratory %}?pk={{ shelfobject.pk }}"
+        <a class="float-end" href="{% url 'laboratory:reports_shelf_objects' laboratory %}?pk={{ shelfobject.pk }}"
            style="margin-right: 10px;">
-            <span aria-hidden="true" class="glyphicon glyphicon-download-alt"></span>
+           <i class="fa fa-download" aria-hidden="true"></i>
         </a>
         {% endif %}
         {% if perms.reservations_management.add_reservedproducts %}
-        <a class="pull-right"
-           data-toggle="modal"
-           data-target="#modal_reservation"
+        <a class="float-end"
+           data-bs-toggle="modal"
+           data-bs-target="#modal_reservation"
            style="margin-right: 10px;" onclick="initialize_reservation_modal({{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
-            <span aria-hidden="true" class="glyphicon glyphicon-book" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></span>
+            <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
         </a>
         {% endif %}
     </li>
