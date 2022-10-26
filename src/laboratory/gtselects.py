@@ -1,6 +1,7 @@
 from djgentelella.views.select2autocomplete import BaseSelect2View
 from djgentelella.groute import register_lookups
-from laboratory.models import Object,Rol
+from laboratory.models import Object
+from auth_and_perms.models import Rol
 from django.contrib.auth.models import User, Group
 
 @register_lookups(prefix="rol", basename="rolsearch")

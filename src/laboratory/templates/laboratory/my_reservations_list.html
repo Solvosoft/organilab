@@ -35,8 +35,8 @@
                 <td id="status">{{obj.get_status_display}}</td>
                 <td>
                     {% if obj.status == 3 %}
-                        <button data-toggle="modal"
-                                data-target="#delete_selected_obj_reservation_modal"
+                        <button data-bs-toggle="modal"
+                                data-bs-target="#delete_selected_obj_reservation_modal"
                                 aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
                             <span aria-hidden="true">&times;</span>
                         </button>

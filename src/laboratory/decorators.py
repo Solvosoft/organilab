@@ -1,9 +1,8 @@
-from django.db.models.query_utils import Q
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile_student
-from laboratory.models import Profile
+
 
 def check_perms(lab_pk, request, perm):
     user = request.user

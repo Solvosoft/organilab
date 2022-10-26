@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'procedure_create' %}
+{% endblock %}
 {% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
-
-
-
 {% block content %}
 
 <div class="box-body">

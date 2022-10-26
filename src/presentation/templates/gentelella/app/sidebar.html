@@ -28,16 +28,7 @@
                 {% include 'partials/reservations_menu.html'%}
                 {% include 'partials/riskmanagement_menu.html'%}
                 {% include 'partials/derb_menu.html'%}
-
-
-
-                {% if perms.laboratory.view_organizationusermanagement and perms.laboratory.add_organizationusermanagement %}
-                <li>
-              <a href="{% url 'laboratory:access_list' %}" title="{% trans 'Access list' %}">
-                  <i class='fa fa-university'></i> {% trans 'Access list' %}
-              </a>
-              </li>
-                 {% endif %}
+                {% include 'partials/auth_and_perms.html'%}
 
                 <li>
                     <a class="nav-link" href="{% url 'blog:entrylist' %}"

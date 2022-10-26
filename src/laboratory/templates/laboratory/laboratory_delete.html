@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
+{% load urlname_tags %}
 {% block title %}{% trans 'Delete laboratory' %}{% endblock %}
-
+{% block pre_head %}
+    {% define_urlname_action 'laboratory_delete' %}
+{% endblock %}
 {% block content %}
 	{% if perms.laboratory.delete_laboratory %}
 		<form action="" method="post">{% csrf_token %}

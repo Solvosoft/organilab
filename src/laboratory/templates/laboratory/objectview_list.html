@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'objectview_list' %}
+{% endblock %}
 {% block title %}
 {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
 {% endblock %}

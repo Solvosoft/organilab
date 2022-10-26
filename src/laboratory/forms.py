@@ -1,12 +1,13 @@
 from django import forms
 from django.contrib.auth.models import Group, User
+from django.core.validators import RegexValidator
 from djgentelella.forms.forms import CustomForm
 
+from auth_and_perms.models import Profile, Rol
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
+from .models import Laboratory, Object, Provider, Shelf, ObjectFeatures, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
-from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure
 from djgentelella.forms.forms import GTForm
@@ -41,7 +42,7 @@ class UserAccessForm(forms.Form):
     # For delete users. Add a delete button.
 
 
-class LaboratoryCreate(GTForm,forms.ModelForm):
+class LaboratoryCreate(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -60,7 +61,9 @@ class LaboratoryCreate(GTForm,forms.ModelForm):
             'geolocation': genwidgets.TextInput,
             'organization': genwidgets.Select
         }
-class LaboratoryEdit(GTForm,forms.ModelForm):
+
+
+class LaboratoryEdit(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -70,29 +73,33 @@ class LaboratoryEdit(GTForm,forms.ModelForm):
 
     class Meta:
         model = Laboratory
-        fields = ['name', 'coordinator', 'unit','phone_number', 'email', 'location',
+        fields = ['name', 'coordinator', 'unit', 'phone_number', 'email', 'location',
                   'geolocation', 'organization']
         widgets = {
             'name': genwidgets.TextInput,
-            'coordinator':genwidgets.TextInput,
-            'unit':genwidgets.TextInput,
-            'phone_number':genwidgets.TextInput,
-            'email':genwidgets.EmailInput,
-            'location':genwidgets.TextInput,
-            'geolocation':genwidgets.TextInput,
-            'organization':genwidgets.Select
+            'coordinator': genwidgets.TextInput,
+            'unit': genwidgets.TextInput,
+            'phone_number': genwidgets.TextInput,
+            'email': genwidgets.EmailInput,
+            'location': genwidgets.TextInput,
+            'geolocation': genwidgets.TextInput,
+            'organization': genwidgets.Select
         }
 
-class H_CodeForm( forms.Form):
+
+class H_CodeForm(GTForm, forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
                                            widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
                                            label=_('Filter substances by H Code'))
 
-class OrganizationUserManagementForm(CustomForm):
-    name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
-    group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True, label=_("Group"))
 
-class SearchUserForm(CustomForm):
+class OrganizationUserManagementForm(GTForm):
+    name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
+    group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True,
+                                   label=_("Group"))
+
+
+class SearchUserForm(GTForm):
     user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
 
     def __init__(self, *args, **kwargs):
@@ -113,10 +120,9 @@ class ProfilePermissionForm(GTForm):
 
 
 class ReservationModalForm(GTForm, ModelForm):
-
     class Meta:
         model = ReservedProducts
-        fields = ['amount_required','initial_date', 'final_date']
+        fields = ['amount_required', 'initial_date', 'final_date']
         widgets = {
             'initial_date': genwidgets.DateTimeInput,
             'final_date': genwidgets.DateTimeInput,
@@ -125,22 +131,26 @@ class ReservationModalForm(GTForm, ModelForm):
 
 
 class TransferObjectForm(GTForm):
-    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),help_text='Use dot like 0.344 on decimal', required=True)
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(), label=_("Laboratory"), required=True)
+    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),
+                                  help_text='Use dot like 0.344 on decimal', required=True)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
+                                        label=_("Laboratory"), required=True)
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
-        lab=kwargs.pop('lab_send')
+        lab = kwargs.pop('lab_send')
         super(TransferObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users).first()
 
         self.fields['laboratory'].queryset = profile.laboratories.all().exclude(pk=lab)
 
-class AddObjectForm(GTForm,forms.Form):
-    amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
-    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"),required=False)
+
+class AddObjectForm(GTForm, forms.Form):
+    amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal',
+                             label=_('Amount'), required=True)
+    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
-                                       label=_("Provider"),required=False)
+                                      label=_("Provider"), required=False)
 
     def __init__(self, *args, **kwargs):
         lab = kwargs.pop('lab')
@@ -150,18 +160,23 @@ class AddObjectForm(GTForm,forms.Form):
 
 
 class SubtractObjectForm(GTForm):
-    discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal', label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',label=_('Description'), required=False)
+    discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal',
+                               label=_('Amount'), required=True)
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
+                                  label=_('Description'), required=False)
 
-class ProfileForm(forms.Form):
+
+class ProfileForm(GTForm, forms.Form):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("Name"))
     last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last Name"))
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
     profile_id = forms.CharField(widget=forms.HiddenInput())
 
+
 class AddTransferObjectForm(GTForm):
-    shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"), required=True)
+    shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"),
+                                   required=True)
 
     def __init__(self, *args, **kwargs):
         lab = kwargs.pop('lab')
@@ -169,12 +184,66 @@ class AddTransferObjectForm(GTForm):
         shelf = Shelf.objects.filter(furniture__labroom__laboratory__id=int(lab))
         self.fields['shelf'].queryset = shelf
 
-class ProviderForm(forms.ModelForm,GTForm):
+
+class ProviderForm(forms.ModelForm, GTForm):
     class Meta:
         model = Provider
-        fields = ['name','phone_number','email','legal_identity']
+        fields = ['name', 'phone_number', 'email', 'legal_identity']
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                 'phone_number': genwidgets.PhoneNumberMaskInput,
-                 'email': genwidgets.EmailMaskInput,
-                 'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   'phone_number': genwidgets.PhoneNumberMaskInput,
+                   'email': genwidgets.EmailMaskInput,
+                   'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   }
+
+class ObjectFeaturesForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = ObjectFeatures
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput(),
+            'description': genwidgets.Textarea()
+        }
+
+class LaboratoryRoomForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = LaboratoryRoom
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput(),
+            'legal_identity': genwidgets.NumberInput,
+            }
+
+
+
+class FurnitureCreateForm(forms.ModelForm,GTForm):
+    class Meta:
+        model = Furniture
+        fields = ("name", "type")
+        widgets={
+            "name": genwidgets.TextInput,
+            "type": genwidgets.Select
+        }
+
+class RoomCreateForm(forms.ModelForm,GTForm):
+    class Meta:
+        model = LaboratoryRoom
+        fields = '__all__'
+        widgets={
+            'name': genwidgets.TextInput
+        }
+
+class FurnitureForm(forms.ModelForm, GTForm):
+    dataconfig = forms.CharField(
+        widget=forms.HiddenInput,
+        validators=[RegexValidator(
+            r'^[\[\],\s"\d]*$',
+            message=_("Invalid format in shelf dataconfig "),
+            code='invalid_format')])
+
+    class Meta:
+        model = Furniture
+        fields = ("labroom", "name", "type", 'dataconfig')
+        widgets = {'labroom': genwidgets.Select,
+                   'name': genwidgets.TextInput,
+                   'type': genwidgets.Select,
                    }
