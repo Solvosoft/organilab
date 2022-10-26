@@ -12,8 +12,8 @@ from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
 from . import catalog
-
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
     cas_id_number = models.TextField(_('CAS ID number'))
@@ -548,3 +548,18 @@ class PrecursorReport(models.Model):
     year = models.IntegerField()
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
+
+class Inform(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
+    custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True, on_delete=models.CASCADE,verbose_name=_('Template'))
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    context_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]

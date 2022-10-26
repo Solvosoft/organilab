@@ -6,8 +6,8 @@
 </div>
 
 {% if laboratory %}
-  <div class="container-fluid" style="display: flex; ">
-  <ul class="nav navbar-nav navbar-left" style="width: 80%;">
+  <div class="container-fluid">
+  <ul class="nav navbar-nav navbar-left">
       <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
   </ul>
 
@@ -117,6 +117,10 @@
           href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %}  </a>
         </li>
       {% endif %}
+      <li id="inform_id"><a
+          href="">{% trans 'Inform' %}  </a>
+        </li>
+
 	  {% endif %}
   {% endif %}
 
