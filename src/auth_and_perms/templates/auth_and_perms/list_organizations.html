@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
+{% load user_rol_tags %}
 {% block content %}
 
 {% for node in nodes %}
@@ -21,24 +22,34 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <h5>{% trans "Administrators users"%}</h5>
-                        <ul>
+                    <table class="table table-bordered table-hover table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Administrators users"%}</th>
+                                {% for rol in node.0.node.rol.all %}
+                                    <th>{{rol.name}}</th>
+                                {% endfor %}
+
+                            </tr>
+                        </thead>
+                        <tbody>
                             {% for user in node.0.users %}
-                            <li>{{user}}</li>
+                                <tr>
+                                    <td>
+                                        {{user}}
+                                    </td>
+                                    {% for rol in node.0.node.rol.all %}
+                                        <td>
+                                            {% check_user_rol user rol as checkrol %}
+                                                <input type="checkbox" autocomplete="off" data-widget="CheckboxInput"  class="flat {% if checkrol %}checkrol{% endif %}" style="position: absolute; opacity: 0;">
+                                                <ins class="iCheck-helper"></ins>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
                             {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="col-xs-12 col-md-6">
-                         <ul>
-                            {% for lab in node.0.labs %}
-                            <li>{{lab}}</li>
-                            {% endfor %}
-                        </ul>
 
-                    </div>
-
-
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

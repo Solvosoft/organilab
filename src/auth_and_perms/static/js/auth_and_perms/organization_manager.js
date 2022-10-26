@@ -90,3 +90,7 @@ document.addEventListener("DOMContentLoaded", function(){
      organization_rol(collection[i]);
     }
 });
+
+$(document).ready(function(){
+    $("input.checkrol").parent().addClass("checked");
+});
