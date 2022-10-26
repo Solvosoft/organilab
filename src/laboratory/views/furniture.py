@@ -1,5 +1,6 @@
 # encoding: utf-8
-from djgentelella.widgets import core as genwidgets
+
+from ..forms import FurnitureForm
 
 '''
 Created on 26/12/2016
@@ -7,16 +8,12 @@ Created on 26/12/2016
 @author: luisza
 '''
 
-from django import forms
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.validators import RegexValidator
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
 from django_ajax.decorators import ajax
-from djgentelella.forms.forms import GTForm
 
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
@@ -71,39 +68,6 @@ class FurnitureCreateView(CreateView):
         return context
 
 
-
-class FurnitureCreateForm(forms.ModelForm,GTForm):
-    class Meta:
-        model = Furniture
-        fields = ("name", "type")
-        widgets={
-            "name": genwidgets.TextInput,
-            "type": genwidgets.Select
-        }
-
-class RoomCreateForm(forms.ModelForm,GTForm):
-    class Meta:
-        model = LaboratoryRoom
-        fields = '__all__'
-        widgets={
-            'name': genwidgets.TextInput
-        }
-
-class FurnitureForm(forms.ModelForm,GTForm):
-    dataconfig = forms.CharField(
-        widget=forms.HiddenInput,
-        validators=[RegexValidator(
-            r'^[\[\],\s"\d]*$',
-            message=_("Invalid format in shelf dataconfig "),
-            code='invalid_format')])
-
-    class Meta:
-        model = Furniture
-        fields = ("labroom", "name", "type", 'dataconfig')
-        widgets = {'labroom': genwidgets.Select,
-                   'name': genwidgets.TextInput,
-                   'type': genwidgets.Select,
-                   }
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')

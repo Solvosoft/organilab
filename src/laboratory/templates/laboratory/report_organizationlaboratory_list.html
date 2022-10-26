@@ -12,7 +12,7 @@
 	        <table class="table" >
 	        {{ form.as_horizontal }}
 	        </table>
-	        <input cd type="submit" value={% trans 'Submit' %} />
+	        <input class="btn btn-success" type="submit" value={% trans 'Submit' %} />
 	 </form>
 	  {% if perm_do_report and perm_laboratory  %}
 		<div class="btn-group dropup pull-right">
@@ -67,19 +67,19 @@
 	                          <li> {{ user.first_name }}</li>
 	                         {% endfor %}
 	                           </ul>    
-	                 </dt>
+	                 </td>
 	                 <td>  <ul>                      
 	                         {% for assigned in laboratory.profile_set.all %}
 	                          <li> {{ assigned.phone_number }}</li>
 	                         {% endfor %}
 	                           </ul>    
-	                 </dt>
+	                 </td>
 	                 <td>  <ul>                      
 	                         {% for assigned in laboratory.principaltechnician_set.all %}
 	                          <li> {{ assigned.email }}</li>
 	                         {% endfor %}
 	                           </ul>    
-	                 </dt>
+	                 </td>
 	           </tr>
 	    </table>
 	    <br/>
