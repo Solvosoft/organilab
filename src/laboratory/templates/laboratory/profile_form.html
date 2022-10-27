@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'update_lab_profile' %}
+{% endblock %}
 {% block content %}
 	<div class="row">
-		<h1 align="center">{% trans 'Profile Management' %}</h1>
+		<h1 style="text-align:center;">{% trans 'Profile Management' %}</h1>
 		{% if perms.laboratory.change_profile  %}
 			<form method="POST">
 				{% csrf_token %}
@@ -20,7 +23,7 @@
 				{% endfor %}
 					</select>
 				</div>
-				<input type="submit" value="{% trans 'Save' %}">
+				<input type="submit"  class="btn btn-success" value="{% trans 'Save' %}">
 			</form>
 		{% else %}
 			{% include 'laboratory/action_denied.html' %}   

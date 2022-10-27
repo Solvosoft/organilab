@@ -1,7 +1,11 @@
 {% extends 'gentelella/base.html' %}
 {% load i18n %}
 {% load static %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'reservations_list' %}
+    {% define_urlname_action 'manage_reservation' %}
+{% endblock %}
 {% block title %}{% trans 'Reservations List' %}{% endblock %}
 
 {% block css %}
@@ -23,107 +27,108 @@
     }
 </style>
 
-<div class="x_panel gencrud">
-    <div class="x_title">
-        <ul class="nav navbar-left panel_toolbox">
-        </ul>
+<div class="card gencrud">
+    <div class="card-body">
+        <div class="card-title titles">
+            <ul class="nav navbar-left panel_toolbox">
+            </ul>
 
-        <h2>{% trans 'Reservations List' %}</h2>
-        <ul class="nav navbar-right panel_toolbox">
-           
-        </ul>
-        <div class="clearfix"></div>
-    </div>
+            <h2>{% trans 'Reservations List' %}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+            </ul>
 
-    
+        </div>
+
+
         {% comment %} <div class="col-lg-12">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li class="paginate_button">
-                    <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
-                </li>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+            </li>
 
-                {% endif %}
+            {% endif %}
 
-                <li class="paginate_button">
+            <li class="paginate_button">
                     <span class="current">
                         Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
                     </span>
-                </li>
+            </li>
 
-                {% if page_obj.has_next %}
-                <li class="paginate_button">
-                    <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
-                </li>
-                {% endif %}
-            </ul>
+            {% if page_obj.has_next %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+            </li>
+            {% endif %}
+        </ul>
         {% endcomment %}
-  
-    <table class="table table-bordered text-center" id="table_of_reservations"> 
-        <thead>
+
+        <table class="table table-bordered text-center" id="table_of_reservations">
+            <thead>
             <tr>
                 <th class="text-center">{% trans 'User' %}</th>
                 <th class="text-center">{% trans 'Status' %}</th>
                 <th class="text-center">{% trans 'Massive Reservation' %}</th>
                 <th class="text-center">{% trans 'Manage Reservation' %}</th>
             </tr>
-        </thead>
+            </thead>
 
-        <tbody>
+            <tbody>
 
             {% for reservation in reservations %}
             <tr>
                 <td>{{ reservation.user }}</td>
-                <td> 
-                    <strong class="{%if reservation.status == 0 %}text-warning {%endif%} 
+                <td>
+                    <strong class="{%if reservation.status == 0 %}text-warning {%endif%}
                     {%if reservation.status == 1 %}text-success {%endif%}
                     {%if reservation.status == 2 %}text-danger {%endif%}
                     {%if reservation.status == 3 %}text-info {%endif%}">
-                    {{ reservation.get_status_display}} </strong>
+                        {{ reservation.get_status_display}} </strong>
                 </td>
-                <td>{% if reservation.is_massive %} 
+                <td>{% if reservation.is_massive %}
                     {% trans 'Yes' %}
-                    {% else %} 
+                    {% else %}
                     {% trans 'No' %}
                     {%endif%}
                 </td>
                 <td>
                     <a class="btn btn-md btn-success"
-                        href="{% url 'manage_reservation' reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+                       href="{% url 'manage_reservation' reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
                 </td>
             </tr>
 
             {% endfor %}
 
-        </tbody>
-    </table>
-    
+            </tbody>
+        </table>
+
         {% comment %} <div class="col-lg-12">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li class="paginate_button">
-                    <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
-                </li>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+            </li>
 
-                {% endif %}
+            {% endif %}
 
-                <li class="paginate_button">
+            <li class="paginate_button">
                     <span class="current">
                         Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
                     </span>
-                </li>
+            </li>
 
-                {% if page_obj.has_next %}
-                <li class="paginate_button">
-                    <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
-                </li>
-                {% endif %}
-            </ul>
+            {% if page_obj.has_next %}
+            <li class="paginate_button">
+                <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+            </li>
+            {% endif %}
+        </ul>
         {% endcomment %}
 
     </div>
-</div> 
-</div> 
+    </div>
+    </div>
+</div>
 
 {% endblock %}
 

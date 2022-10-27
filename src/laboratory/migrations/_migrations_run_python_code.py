@@ -13,9 +13,13 @@ from laboratory.models import (CLInventory,
                                Furniture,
                                OrganizationStructure,
                                OrganizationUserManagement,
-                               Profile,
                                Laboratory
                                )
+
+try:
+    from laboratory.models import Profile
+except:
+    from auth_and_perms.models import Profile
 from academic.models import (Procedure,
                              ProcedureStep,
                              ProcedureRequiredObject,

@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n laboratory static %}
 {% load gtsettings %}
-
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'procedure_list' %}
+    {% define_urlname_action 'procedure_update' %}
+    {% define_urlname_action 'delete_procedure' %}
 {% endblock %}
-
 {% block title %}{% trans 'Procedure' %}{% endblock %}
 {% block content %}
 

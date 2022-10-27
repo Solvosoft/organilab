@@ -12,8 +12,8 @@ from django.utils.decorators import method_decorator
 
 from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from laboratory.views.furniture import FurnitureCreateForm, RoomCreateForm
-from laboratory.forms import ReservationModalForm,AddObjectForm,TransferObjectForm,SubtractObjectForm
+from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
+    LaboratoryRoomForm, FurnitureCreateForm
 from laboratory.decorators import has_lab_assigned
 
 
@@ -43,7 +43,7 @@ class LaboratoryRoomsList(ListView):
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
-    form_class = RoomCreateForm
+    form_class = LaboratoryRoomForm
     success_url = "/"
 
     def get_context_data(self, **kwargs):

@@ -5,6 +5,7 @@ cd /organilab
 mkdir -p /run/logs/
 chown -R organilab:organilab /organilab
 runuser -p  -c "python manage.py migrate" organilab
+runuser -p  -c "python manage.py load_urlname_permissions"  organilab
 runuser -p  -c "python manage.py createcachetable" organilab
 
 

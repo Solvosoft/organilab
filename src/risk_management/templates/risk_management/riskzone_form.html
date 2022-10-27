@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n  %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'riskzone_create' %}
+{% endblock %}
 {% block title %}{% trans 'Risk Zone Management' %}{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-md-offset-1 col-md-3">
-        <a href="{% url 'riskmanagement:riskzone_list' %}"> << {% trans 'Zone list' %}</a>
+        <a href="{% url 'riskmanagement:riskzone_list' %}">
+            <i class="fa fa-backward" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
     </div>
 
 </div>
 
 <div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Risk Zone Management' %}</span></h3>
+        <div class="page-header col-sm-13 text-center">
+          <h3 class="heading-1"><span>{% trans 'Risk Zone Management' %}</span></h3>
         </div>
 </div>
 
@@ -24,9 +28,9 @@
       {% csrf_token %}
 	      <div class="row">
 	          {{ form.as_horizontal }}
-	        <div id="save_button1" class="col-md-1">
-	          <button class="btn btn-success" type="submit">
-	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+	        <div id="save_button1" class="col-md-3">
+	          <button class="btn btn-md btn-success" type="submit">
+	            <i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}
 	          </button>
 	        </div>
 	      </div>

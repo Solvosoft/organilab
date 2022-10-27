@@ -359,6 +359,9 @@ class OrganizationStructureManager(models.Manager):
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
     position = models.IntegerField(default=0)
+    # No debe usarse para validar permisos, su intención es permitir relacionarlos en la
+    # vista de administración, para los permisos usar ProfilePermission
+    rol = models.ManyToManyField('auth_and_perms.Rol', blank=True)
 
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
@@ -391,9 +394,7 @@ class OrganizationStructure(TreeNode):
 
 
 class OrganizationUserManagement(models.Model):
-    group = models.ForeignKey(
-        Group, blank=True, null=True, verbose_name=_("Group"),
-        on_delete=models.SET_NULL)
+    group = models.ForeignKey(Group, blank=True, null=True, verbose_name=_("Group"), on_delete=models.SET_NULL)
     organization = models.ForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
     users = models.ManyToManyField(User, blank=True)
@@ -414,7 +415,7 @@ class Laboratory(models.Model):
     coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
     unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeNodeForeignKey(
-        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE, null=True)
 
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
@@ -434,47 +435,16 @@ class Laboratory(models.Model):
         return self.__str__()
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(_('Phone'), default='', max_length=25)
-    id_card = models.CharField(_('ID Card'), max_length=100)
-    laboratories = models.ManyToManyField(Laboratory, verbose_name=_("Laboratories"), blank=True)
-    job_position = models.CharField(_('Job Position'), max_length=100)
-
-    def __str__(self):
-        return '%s' % (self.user,)
-
-class Rol(models.Model):
-    name = models.CharField(blank=True,max_length=100)
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name=_('permissions'),
-        blank=True,
-    )
-    class Meta:
-        verbose_name = _('Rol')
-        verbose_name_plural = _('Rols')
-
-    def __str__(self):
-        return self.name
-
-class ProfilePermission(models.Model):
-    profile = models.ForeignKey(Profile, verbose_name=_("Profile"), blank=True, null=True, on_delete=models.CASCADE)
-    laboratories = models.ForeignKey(Laboratory, verbose_name=_("Laboratories"), blank=True, null=True, on_delete=models.CASCADE)
-    rol = models.ManyToManyField(Rol, blank=True, verbose_name=_("Rol"))
-
-    def __str__(self):
-        return '%s' % (self.profile,)
-
 class Provider(models.Model):
-    name= models.CharField(max_length=255, blank=True, default='',verbose_name=_('Name'))
-    phone_number= models.CharField(max_length=25, blank=True, default='',verbose_name=_('Phone'))
-    email= models.EmailField(blank=True,verbose_name=_('Email'))
-    legal_identity= models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
+    name = models.CharField(max_length=255, blank=True, default='',verbose_name=_('Name'))
+    phone_number = models.CharField(max_length=25, blank=True, default='',verbose_name=_('Phone'))
+    email = models.EmailField(blank=True,verbose_name=_('Email'))
+    legal_identity = models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,blank=True, null=True)
 
     def __str__(self):
         return self.name
+
 
 class ObjectLogChange(models.Model):
     object = models.ForeignKey(Object, db_constraint=False, on_delete=models.DO_NOTHING)
@@ -495,6 +465,7 @@ class ObjectLogChange(models.Model):
 
     def __str__(self):
         return self.object.name
+
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
@@ -543,6 +514,7 @@ MONTHS=(
     (11, _('November')),
     (12, _('December')),
 )
+
 class PrecursorReport(models.Model):
     month = models.IntegerField(choices=MONTHS)
     year = models.IntegerField()

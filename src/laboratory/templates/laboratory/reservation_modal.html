@@ -1,5 +1,5 @@
-{% load i18n %}
-{% load i18n %}
+{% load static i18n %}
+
 <!-- Modal -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -19,7 +19,9 @@
   cursor: pointer;
   transition: 0.3s;
 }
-
+.select2-container {
+  z-index: 1111;
+}
 .closebtn:hover {
   color: black;
 }
@@ -31,9 +33,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Reservations' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title" id="model_reservation_form_title">{% trans 'Reservations' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
                 </button>
             </div>
             <div class="modal-body">
@@ -48,10 +49,10 @@
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" value="{{laboratory}}" name="lab">
-                    <label class="pull-right" id="obj"></label>
+                    <label class="float-end" id="obj"></label>
                     <div class="form-group">
                         <label>{% trans 'Action'%}</label>
-                        <select id="option"  name="options" data-widget="Select" onchange="choose_action()">
+                        <select id="option" name="options" data-widget="Select" onchange="choose_action()" >
                             {% for option in options %}
                             <option value="{{forloop.counter}}">{% trans option %}</option>
                             {% endfor %}
@@ -63,7 +64,7 @@
                         <label>{% trans 'Amount Required' %}</label>
                         <div class="input-group">
                         {{modal_form_reservation.amount_required}}
-                            <span class="input-group-addon unit" ></span>
+                            <span class="input-group-text unit" ></span>
                     </div>
                         {{modal_form_reservation.amount_required.help_text}}
                     </div>
@@ -84,7 +85,7 @@
                                      {{field.label_tag}}
                                  <div class="input-group">
                                         {{ field }}
-                                <span class="input-group-addon unit"></span>
+                                <span class="input-group-text unit"></span>
                                  </div>
                                         {{field.help_text}}
                                 </div>
@@ -101,7 +102,7 @@
                                      {{field.label_tag}}
                                  <div class="input-group">
                                         {{ field }}
-                                <span class="input-group-addon unit"></span>
+                                <span class="input-group-text unit"></span>
                                  </div>
                                         {{ field.help_text }}
                                 </div>
@@ -118,7 +119,7 @@
                                      {{field.label_tag}}
                                  <div class="input-group">
                                         {{ field }}
-                                <span class="input-group-addon unit"></span>
+                                <span class="input-group-text unit"></span>
                                  </div>
                                         {{field.help_text}}
                                 </div>
@@ -132,7 +133,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
                 <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
             </div>
         </div>

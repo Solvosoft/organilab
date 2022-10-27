@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
@@ -15,8 +16,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, UpdateView
 from authentication.forms import CreateUserForm, PasswordChangeForm,EditUserForm
 from laboratory.decorators import has_lab_assigned
-from laboratory.models import Profile, ProfilePermission, Laboratory
-
+from auth_and_perms.models import Profile, ProfilePermission
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name="dispatch")
 @method_decorator(permission_required("laboratory.add_organizationusermanagement"), name="dispatch")
@@ -59,10 +59,13 @@ class AddUser(CreateView):
                                          job_position=form.cleaned_data['job_position'])
         self.send_email(user)
         profile.laboratories.add(self.kwargs['pk'])
-        laboratory = Laboratory.objects.filter(pk=self.kwargs['pk']).first()
         group, created = Group.objects.get_or_create(name="General")
         group.user_set.add(user)
-        profile_permission = ProfilePermission.objects.create(profile=profile, laboratories=laboratory)
+        profile_permission = ProfilePermission.objects.create(profile=profile,
+                                                              content_type=ContentType.objects.get(
+                                                                  app_label='laboratory',
+                                                                  model="laboratory"),
+                                                              object_id=self.kwargs['pk'])
         roles = form.cleaned_data['rol']
         if roles is not None:
             for rol in roles:

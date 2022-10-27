@@ -2,7 +2,10 @@
 {% load i18n %}
 
 {% load static %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'manage_reservation' %}
+{% endblock %}
 {% block title %}{% trans 'Manage Reservation' %}{% endblock %}
 
 {% block content %}
