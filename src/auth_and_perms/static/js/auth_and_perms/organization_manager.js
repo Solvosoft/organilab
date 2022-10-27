@@ -94,3 +94,19 @@ document.addEventListener("DOMContentLoaded", function(){
 $(document).ready(function(){
     $("input.checkrol").parent().addClass("checked");
 });
+
+$("input[type='checkbox']").on('ifChanged', function(){
+    $.ajax({
+        url: $(this).data('url'),
+        type:'POST',
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (message) {
+            if(message.result == 'ok'){
+                Swal.fire({
+                        icon: 'success',
+                        text: "Element saved successfully."
+                });
+            }
+        }
+    });
+});

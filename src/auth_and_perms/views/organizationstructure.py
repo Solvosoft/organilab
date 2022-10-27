@@ -1,5 +1,10 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+
+from auth_and_perms.models import ProfilePermission, Rol, Profile
 from laboratory.models import OrganizationStructure
+from django.conf import settings
 
 
 def getLevelClass(level):
@@ -49,3 +54,19 @@ def organization_manage_view(request):
         getTree(node, nodes, level=0)
     context={'nodes': nodes }
     return render(request, 'auth_and_perms/list_organizations.html', context)
+
+
+@login_required
+def update_user_rol(request, user_pk, rol_pk):
+    response = {'result': 'error'}
+    rol = get_object_or_404(Rol, pk=rol_pk)
+    pp = ProfilePermission.objects.filter(profile__user__pk=user_pk)
+
+    if pp.exists():
+        pp = pp.first()
+        if rol in pp.rol.all():
+            pp.rol.remove(rol)
+        else:
+            pp.rol.add(rol)
+        response['result'] = 'ok'
+    return JsonResponse(response)
