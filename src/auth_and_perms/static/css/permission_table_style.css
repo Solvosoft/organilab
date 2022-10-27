@@ -1,0 +1,46 @@
+.wrapper {
+  overflow: auto;
+  /*height: 600px;*/
+  width: auto;
+  margin-bottom: 5%;
+}
+
+#permissionTable {
+  position: relative;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#permissionTable th,
+#permissionTable td {
+  width: 50px;
+  padding: 5px;
+  background-color: white;
+}
+
+#permissionTable tbody {
+  height: 90px;
+}
+
+#permissionTable th {
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#permissionTable th:nth-child(1){
+  left: 0;
+  z-index: 3;
+}
+
+#permissionTable td {
+  text-align: center;
+  /*white-space: pre;*/
+}
+
+#permissionTable tbody tr td:nth-child(1), .freeze{
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
