@@ -1,6 +1,5 @@
 {% load i18n shelf_position laboratory %}
 {% load urlname_tags %}
-
 <nav class="nav_menu clearfix">
     <div class="nav toggle mt-2 ms-2">
       <a id="menu_toggle"><i class="fa fa-bars"></i>
@@ -9,7 +8,7 @@
   {% if laboratory %}
   <div class="container-fluid " >
     <ul class="nav navbar-nav float-start">
-      <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
+     
     </ul>
 
     {% endif %}
@@ -26,6 +25,7 @@
           <strong>{% trans 'My laboratories' %}</strong>
         </a>
       </li>
+
 
       {% if laboratory %}
       {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
