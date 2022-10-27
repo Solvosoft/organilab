@@ -15,12 +15,12 @@
     <br>
     <form class="form-horizontal" action="{% url 'step_two' organilabcontext complement %}" method="POST">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-sm-offset-2 col-md-8" >
+    <div class="row justify-content-center">
+        <div class=" col-md-8" >
            {{ form }}
         </div>
     </div>
-    <div class="col-md-12 text-center" style="display:inline-block">
+    <div class="col-md-12 text-center mt-2" style="display:inline-block">
         <button type="submit" class="btn btn-success">Continuar</button>
     </div>
     </form>
