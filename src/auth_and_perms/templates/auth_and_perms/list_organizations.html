@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 {% load user_rol_tags %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'css/permission_table_style.css' %}" rel="stylesheet" media="all">
+{% endblock css %}
+
 {% block content %}
 
 {% for node in nodes %}
@@ -11,10 +17,6 @@
                 <div class="row" id="rols">
                     <div class="col-xs-12 col-md-6">
                         <ul>
-                        {% for rol in node.0.node.rol.all %}
-                            <li id="rol_{{rol.pk}}" class="rolcontainer" >
-                                <span style="background-color: {{rol.color}}">{{rol.name}}</span></li>
-                        {% endfor %}
                             <li class="rolcontainer"  rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
                             </ul>
                     </div>
@@ -22,7 +24,8 @@
                 </div>
 
                 <div class="row">
-                    <table class="table table-bordered table-hover table-striped w-100">
+                    <div class="wrapper" style="overflow: auto;">
+                        <table id="permissionTable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
                             <tr>
                                 <th>{% trans "Administrators users"%}</th>
@@ -36,7 +39,7 @@
                             {% for user in node.0.users %}
                                 <tr>
                                     <td>
-                                        {{user}}
+                                        {% if user.get_full_name %}{{user.get_full_name}}{% else %}{{user}}{% endif %}
                                     </td>
                                     {% for rol in node.0.node.rol.all %}
                                         <td>
@@ -50,6 +53,7 @@
 
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
