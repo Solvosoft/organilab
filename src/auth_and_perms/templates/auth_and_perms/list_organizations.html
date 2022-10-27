@@ -41,7 +41,7 @@
                                     {% for rol in node.0.node.rol.all %}
                                         <td>
                                             {% check_user_rol user rol as checkrol %}
-                                                <input type="checkbox" autocomplete="off" data-widget="CheckboxInput"  class="flat {% if checkrol %}checkrol{% endif %}" style="position: absolute; opacity: 0;">
+                                                <input type="checkbox" autocomplete="off" data-widget="CheckboxInput"  class="flat {% if checkrol %}checkrol{% endif %}" data-url="{% url 'auth_and_perms:updateuserrol' user.pk rol.pk %}" style="position: absolute; opacity: 0;">
                                                 <ins class="iCheck-helper"></ins>
                                         </td>
                                     {% endfor %}
@@ -66,6 +66,7 @@
 
 {% block js %}
 {{block.super}}
+
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}"></script>
 
 {% endblock%}
