@@ -55,18 +55,26 @@ def organization_manage_view(request):
     context={'nodes': nodes }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 
+def manage_user_rolpermission(profilepermission, rol):
+    old_user_permission = set(map(lambda x: x["id"], profilepermission.profile.user.user_permissions.all()))
+    set_permission_list = set(rol.permissions.all().values_list('pk', flat=True))
+    add_permission = set_permission_list - old_user_permission
+    remove_permission = old_user_permission - set_permission_list
+    profilepermission.profile.user.user_permissions.add(*add_permission)
+    profilepermission.profile.user.user_permissions.remove(*remove_permission)
 
 @login_required
 def update_user_rol(request, user_pk, rol_pk):
     response = {'result': 'error'}
     rol = get_object_or_404(Rol, pk=rol_pk)
-    pp = ProfilePermission.objects.filter(profile__user__pk=user_pk)
+    profilepermission = ProfilePermission.objects.filter(profile__user__pk=user_pk)
 
-    if pp.exists():
-        pp = pp.first()
-        if rol in pp.rol.all():
-            pp.rol.remove(rol)
+    if profilepermission.exists():
+        profilepermission = profilepermission.first()
+        if rol in profilepermission.rol.all():
+            profilepermission.rol.remove(rol)
         else:
-            pp.rol.add(rol)
+            profilepermission.rol.add(rol)
+        manage_user_rolpermission(profilepermission, rol)
         response['result'] = 'ok'
     return JsonResponse(response)

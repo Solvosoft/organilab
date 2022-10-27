@@ -1,3 +1,15 @@
+const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+             })
+
 function organization_rol(element){
     const obj=  {
     'is_manager': element.getAttributeNames().find(e => e=="data-addbtn") != undefined,
@@ -95,6 +107,8 @@ $(document).ready(function(){
     $("input.checkrol").parent().addClass("checked");
 });
 
+
+
 $("input[type='checkbox']").on('ifChanged', function(){
     $.ajax({
         url: $(this).data('url'),
@@ -102,9 +116,9 @@ $("input[type='checkbox']").on('ifChanged', function(){
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function (message) {
             if(message.result == 'ok'){
-                Swal.fire({
-                        icon: 'success',
-                        text: "Element saved successfully."
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Element saved successfully.'
                 });
             }
         }
