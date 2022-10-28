@@ -1,14 +1,15 @@
 .wrapper {
   overflow: auto;
-  /*height: 600px;*/
   width: auto;
   margin-bottom: 5%;
+  max-height: 400px;
 }
 
 #permissionTable {
   position: relative;
   border-collapse: separate;
   border-spacing: 0;
+
 }
 
 #permissionTable th,
@@ -36,7 +37,6 @@
 
 #permissionTable td {
   text-align: center;
-  /*white-space: pre;*/
 }
 
 #permissionTable tbody tr td:nth-child(1), .freeze{
