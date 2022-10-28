@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <h1 id="form_name"> </h1>
+    </div>
+
+    <div class="page-content">
+        <div class="container">
+            <form action="{% url 'laboratory:complete_inform' 2 %}" method="POST">
+                            {% csrf_token %}
+
+          <div id="formio">
+          </div>
+                <button type="submit">{% trans 'Save' %}</button>
+                </form>
+        </div>
+      </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script type="text/javascript">
+        var schema = {{ schema | safe }};
+
+        document.getElementById("form_name").textContent = schema.name;
+        var components = { components: schema["components"] };
+
+        window.onload = function(schema) {
+            Formio.createForm(document.getElementById('formio'), components);
+        }
+
+    </script>
+{% endblock %}
+
+</html>
