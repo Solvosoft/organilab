@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-17 15:09-0600\n"
+"PO-Revision-Date: 2022-10-20 16:09-0600\n"
 "Last-Translator: alfredoromero <alfredoromero85@gmail.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: laboratory/admin.py:62
@@ -366,9 +366,9 @@ msgstr "Puede borrar la gestión de usuarios de la organización"
 msgid "Can view organization user management"
 msgstr "Puede observar la gestión de usuarios de la organización"
 
-#: laboratory/models.py:411
+#: laboratory/models.py:411 laboratory/views/reports.py:988
 msgid "Laboratory name"
-msgstr "Nombre del laboratorio"
+msgstr "Nombre del Laboratorio"
 
 #: laboratory/models.py:412 laboratory/models.py:446
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
@@ -1421,8 +1421,6 @@ msgid "User exposition"
 msgstr "Exposición del usuario"
 
 #: laboratory/templates/laboratory/organization_reactive_presence.html:52
-#, fuzzy
-#| msgid "Laboratory :"
 msgid "Laboratory:"
 msgstr "Laboratorio:"
 
@@ -2201,9 +2199,7 @@ msgstr ""
 msgid "Asunto"
 msgstr ""
 
-#: laboratory/views/reports.py:973
-#, fuzzy
-#| msgid "First name"
+#: laboratory/views/reports.py:989
 msgid "First Name"
 msgstr "Nombre"
 
