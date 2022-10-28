@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, User
 from djgentelella.forms.forms import CustomForm
 
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Profile,Rol,ProfilePermission,Provider,Shelf
+from .models import Laboratory, Object, Profile, Rol, ProfilePermission, Provider, Shelf, Inform
 from reservations_management.models import ReservedProducts
 from django.contrib.auth.forms import UserCreationForm
 from djgentelella.widgets.selects import AutocompleteSelectMultipleBase,AutocompleteSelectBase
@@ -177,4 +177,12 @@ class ProviderForm(forms.ModelForm,GTForm):
                  'phone_number': genwidgets.PhoneNumberMaskInput,
                  'email': genwidgets.EmailMaskInput,
                  'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   }
+
+class InformForm(forms.ModelForm,GTForm):
+    class Meta:
+        model = Inform
+        fields = ['name','custom_form']
+        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
+                 'custom_form': genwidgets.Select(),
                    }

@@ -549,13 +549,22 @@ class PrecursorReport(models.Model):
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
 
+
+STATUS_CHOICES = (
+    (_('Eraser'), _('Eraser')),
+    (_('In Review'), _('In Review')),
+    (_('Finalized'), _('Finalized')),
+)
+
+
 class Inform(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
     custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True, on_delete=models.CASCADE,verbose_name=_('Template'))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     context_object = GenericForeignKey('content_type', 'object_id')
-
+    status = models.CharField(max_length=6, choices=STATUS_CHOICES, default='Eraser')
+    schema = models.JSONField(default=dict)
     def __str__(self):
         return self.name
 
