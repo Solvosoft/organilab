@@ -56,7 +56,7 @@ def organization_manage_view(request):
     return render(request, 'auth_and_perms/list_organizations.html', context)
 
 def manage_user_rolpermission(profilepermission, rol):
-    old_user_permission = set(map(lambda x: x["id"], profilepermission.profile.user.user_permissions.all()))
+    old_user_permission = set(profilepermission.profile.user.user_permissions.all().values_list('pk', flat=True))
     set_permission_list = set(rol.permissions.all().values_list('pk', flat=True))
     add_permission = set_permission_list - old_user_permission
     remove_permission = old_user_permission - set_permission_list
@@ -73,6 +73,7 @@ def update_user_rol(request, user_pk, rol_pk):
         profilepermission = profilepermission.first()
         if rol in profilepermission.rol.all():
             profilepermission.rol.remove(rol)
+            response['removecheck'] = True
         else:
             profilepermission.rol.add(rol)
         manage_user_rolpermission(profilepermission, rol)
