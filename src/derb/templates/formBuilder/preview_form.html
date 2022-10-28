@@ -12,20 +12,21 @@
     
     <div class="page-content">
         <div class="container">
-          <div id="formio"></div>
+          <div id="formio">
+          </div>
           <button class="btn btn-default" title="Return to Form List" onclick="window.location='{% url 'derb:form_list' %}';" style="float: right;">Return to Form List</button>
         </div>
       </div>  
                                 
 {% endblock %}
 
-{% block javascript %}
+{% block js %}
     <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
     <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
     <script type="text/javascript">
-        var schema = {{ schema | safe }};    
-        document.getElementById("form_name").textContent = schema.name;
+        var schema = {{ schema | safe }};
 
+        document.getElementById("form_name").textContent = schema.name;
         var components = { components: schema["components"] };
         
         window.onload = function(schema) {
