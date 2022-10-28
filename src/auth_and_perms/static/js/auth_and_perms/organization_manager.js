@@ -110,6 +110,7 @@ $(document).ready(function(){
 
 
 $("input[type='checkbox']").on('ifChanged', function(){
+    var parent = $(this).parent();
     $.ajax({
         url: $(this).data('url'),
         type:'POST',
@@ -119,6 +120,16 @@ $("input[type='checkbox']").on('ifChanged', function(){
                 Toast.fire({
                     icon: 'success',
                     title: 'Element saved successfully.'
+                });
+                if(message.removecheck){
+                    parent.removeClass("checked");
+                }else{
+                    parent.addClass("checked");
+                }
+            }else{
+                 Toast.fire({
+                    icon: 'error',
+                    title: 'Something went wrong while saving this permission rol.'
                 });
             }
         }
