@@ -65,13 +65,13 @@
 											</ul>
 										</div>
 										<button type="button" class="btn btn-success" style="width:50px"
-												data-container="body" data-toggle="popover" data-placement="left" 
+												data-container="body" data-bs-toggle="popover" data-placement="left"
 												data-content="f{{object.pk}}"
 												data-html=true>
 											{{ object.furniture_set.count }}
 										</button>
 										<button type="button" class="btn btn-default" title="{% trans 'Create Furniture' %}" 
-												data-toggle="modal" data-target="#furnitureModal" 
+												data-bs-toggle="modal" data-target="#furnitureModal"
 												data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
 											+ <span  class="glyphicon glyphicon-bed" aria-hidden="true"></span>
 										</button>
@@ -129,13 +129,13 @@
 {% block js %}
 	<script>
 		$(function () {
-			$('[data-toggle="popover"]').each( function(i){
+			$('[data-bs-toggle="popover"]').each( function(i){
 				var idelem="#"+$(this).data('content');
 				var content=$(idelem).html();
 				$(this).attr('data-content', content);
 				$(idelem).remove();
 			});
-			$('[data-toggle="popover"]').popover();
+			$('[data-bs-toggle="popover"]').popover();
 			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
 				$('#furnitureModal').on('show.bs.modal', function (event) {
 					var button = $(event.relatedTarget) // Button that triggered the modal

@@ -17,7 +17,7 @@
 		 <a target='_blank' href="{% url 'laboratory:rooms_list' object.shelf.furniture.labroom.laboratory_set.first.pk %}#labroom={{object.shelf.furniture.labroom.pk}}&furniture={{object.shelf.furniture.pk}}&shelf={{object.shelf.pk}}"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </a>
 		</div>
 		<div class="col-md-11">
-		        <a class="collapsed" role="button" data-toggle="collapse" 
+		        <a class="collapsed" role="button" data-bs-toggle="collapse"
 		        data-parent="#accordion" href="#collapse{{object.pk}}" 
 		        aria-expanded="false" aria-controls="collapse{{object.pk}}">
 		        
@@ -43,7 +43,7 @@
 		 <div class="row">
 			 <div class="col-md-4">
 				 {% if perms.reservations_management.add_reservedproducts %}
-				 <a data-toggle="modal"
+				 <a data-bs-toggle="modal"
 					data-target="#modal_reservation"
 					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
 					class="btn btn-danger"> {% trans "Reserve object" %}</a>
@@ -64,7 +64,7 @@
 		
 	<ul class="list-group">
 		{% for feature in object.object.features.all %}
-		<a href="#" class="list-group-item" data-toggle="tooltip" data-placement="right" title="{{feature.description}}">{{feature.get_name_display}}</a>
+		<a href="#" class="list-group-item" data-bs-toggle="tooltip" data-placement="right" title="{{feature.description}}">{{feature.get_name_display}}</a>
 		{% endfor %}
 	</ul>
 	  </div>
