@@ -24,18 +24,18 @@ $('select[name="hcode"]').select2();
             <div class="form-group">
                 {{ form.as_p }}
             </div>
-            <button class="btn btn-primary pull-right" type="submit">{% trans 'Search' %}</button>
+            <button class="btn btn-primary float-end" type="submit">{% trans 'Search' %}</button>
         </form>
     </div>
 </div>
 {% if page_obj %}
 <div class="row">
     <div class="col-md-12">
-        <div class="btn-group dropup pull-right">
+        <div class="btn-group dropup float-end">
 	  <button type="button" class="btn btn-danger">
 	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
 	   {% trans 'Download'%}</button>
-	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	    <span class="caret"></span>
 	    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 	  </button>
@@ -79,7 +79,7 @@ $('select[name="hcode"]').select2();
                 <td>{{react.room}}</td>
                 <td>{{react.furniture}}</td>
             <td>{% for h_code in react.h_codes %}
-                <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="{{h_code.1}}">{{h_code.0}}</button>
+                <button type="button" class="btn btn-default btn-sm" data-bs-toggle="tooltip" data-placement="top" title="{{h_code.1}}">{{h_code.0}}</button>
                 {% endfor %}
             </td>
                 <td>{{react.quantity}} {{react.unit}}</td>
