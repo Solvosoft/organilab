@@ -243,7 +243,7 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     const is_returnable = (reserved_product.is_returnable) ? 'Si' : 'No';
     const table_row_template = `<tr>
     <td id="product_name">
-    <a href='#' data-toggle="modal" data-target="#exampleModal"
+    <a href='#' data-bs-toggle="modal" data-bs-target="#exampleModal"
              id='product-${reserved_product.id}'
              onclick="retrieve_object(${reserved_product.id})">
              ${product_name}

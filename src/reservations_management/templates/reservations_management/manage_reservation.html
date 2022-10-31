@@ -16,7 +16,7 @@
     <input type="hidden" id="reservation_id" value="{{object.id}}">
     <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
     <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
-    
+
     <input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity" value="{%url 'get_product_name_and_quantity'%}">
     <input type="hidden" name="validate_reservation" id="validate_reservation" value="{%url 'validate_reservation'%}">
     <input type="hidden" name="increase_stock" id="increase_stock" value="{%url 'increase_stock'%}">
@@ -24,33 +24,34 @@
 </div>
 
 
-<div class="x_panel gencrud">
-    <div class="x_title">
-        <ul class="nav navbar-left panel_toolbox">
-            <li>
-                <a href="{% url 'reservations_list' object.status%}" title="{% trans 'Back to the reservations list'%}">
-                    <i class="fa fa-angle-double-left red"></i>
-                </a>
-            </li>
-        </ul>
+<div class="card gencrud">
+    <div class="card-body">
+        <div class="card-title titles">
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a  href="{% url 'reservations_list' object.status%}" title="{% trans 'Back to the reservations list'%}">
+                        <i class="fs-5 fa fa-angle-double-left red"></i>
+                    </a>
+                </li>
+            </ul>
 
-        <h2>{% trans 'Reservation from' %} <strong>{{object.user.username}}</strong> {% trans 'for laboratory' %} <strong>
+            <h2>{% trans 'Reservation from' %} <strong>{{object.user.username}}</strong> {% trans 'for laboratory' %} <strong>
                 {{object.laboratory.name}}</strong></h2>
 
-        <ul class="nav navbar-right panel_toolbox">
+            <ul class="nav navbar-right panel_toolbox">
 
-        </ul>
-        <div class="clearfix"></div>
-    </div>
+            </ul>
 
-    <div class="x_content">
+        </div>
+
+
 
         <form method="POST" id="form">
             {% csrf_token %}
-            {{reservation_form.as_p }}
-            <div class="box-footer">
-                <div class="form-group">
-                    <div class="controls text-right">
+            {{reservation_form.as_plain }}
+
+                <div class="form-group mt-2">
+                    <div class="controls text-end">
 
                         <a href="{% url 'reservations_list' object.status%}" class="btn btn-danger"><i class='fa fa-times'></i>
                             Volver</a>
@@ -58,44 +59,37 @@
                         <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
                     </div>
                 </div>
-            </div>
+
         </form>
 
     </div>
 
-    <div class="box-body row mr-tp">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans 'Products List' %}</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="x_content">
-                        <div class="table-responsive">
+    <div class="card-body">
 
-                            <table class="table table-bordered text-center" id="reserved_products_table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">{% trans 'Product name' %}</th>
-                                        <th class="text-center">{% trans 'Available quantity' %}</th>
-                                        <th class="text-center">{% trans 'Amount Required' %}</th>
-                                        <th class="text-center">{% trans 'Amount Returned' %}</th>
-                                        <th class="text-center">{% trans 'Start Date' %}</th>
-                                        <th class="text-center">{% trans 'End Date' %}</th>
-                                        <th class="text-center">{% trans 'Is Returnable' %}</th>
-                                        <th class="text-center">{% trans 'Status' %}</th>
-                                    </tr>
-                                </thead>
+        <h3 class="card-title">{% trans 'Products List' %}</h3>
 
-                                <tbody id="reserved_products_table_body">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="table-responsive">
+
+            <table class="table table-sm table-bordered text-center" id="reserved_products_table">
+                <thead>
+                <tr class="text-center align-middle">
+                    <th>{% trans 'Product name' %}</th>
+                    <th>{% trans 'Available quantity' %}</th>
+                    <th>{% trans 'Amount Required' %}</th>
+                    <th>{% trans 'Amount Returned' %}</th>
+                    <th>{% trans 'Start Date' %}</th>
+                    <th>{% trans 'End Date' %}</th>
+                    <th>{% trans 'Is Returnable' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                </tr>
+                </thead>
+
+                <tbody id="reserved_products_table_body" class="align-middle">
+
+                </tbody>
+            </table>
         </div>
+
     </div>
 
 </div>
