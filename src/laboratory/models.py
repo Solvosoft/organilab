@@ -563,7 +563,7 @@ class Inform(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     context_object = GenericForeignKey('content_type', 'object_id')
-    status = models.CharField(max_length=6, choices=STATUS_CHOICES, default='Eraser')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Eraser')
     schema = models.JSONField(default=dict)
     def __str__(self):
         return self.name
@@ -572,3 +572,10 @@ class Inform(models.Model):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+
+class CommentInform(models.Model):
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
+    create_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True, verbose_name=_("Comment"))
+    def __str__(self):
+        return f'{self.creator} - {self.create_at}'
