@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-18 10:18-0600\n"
+"PO-Revision-Date: 2022-11-01 17:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: presentation/templates/gentelella/app/footer.html:4
 #: presentation/templates/gentelella/registration/footer.html:7
@@ -145,6 +145,10 @@ msgstr ""
 #: presentation/templates/gentelella/app/top_navigation.html:76
 msgid "Principal Technician"
 msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation.html:121
+msgid "Informs"
+msgstr "Informes"
 
 #: presentation/templates/gentelella/app/top_navigation.html:82
 msgid "Furnitures"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-20 16:09-0600\n"
+"PO-Revision-Date: 2022-11-01 17:39-0600\n"
 "Last-Translator: alfredoromero <alfredoromero85@gmail.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: laboratory/admin.py:62
@@ -2394,6 +2394,50 @@ msgstr "Formato"
 #: laboratory/models.py:676
 msgid "Labroom"
 msgstr "Sala de Laboratorio"
+
+#: laboratory/models.py:555
+msgid "In Review"
+msgstr "En revisión"
+
+#: laboratory/models.py:554
+msgid "Eraser"
+msgstr "Borrador"
+
+#: laboratory/models.py:556
+msgid "Finalized"
+msgstr "Finalizado"
+
+#: laboratory/templates/laboratory/complete_inform.html:47
+msgid "Send to review or discard your changes to proceed"
+msgstr "Enviar para revisar o descartar los cambios para continuar"
+
+#: laboratory/templates/laboratory/complete_inform.html:47
+msgid "Do you want to send the report for review?"
+msgstr "¿Deseas enviar el reporte a Revision?"
+
+#: laboratory/templates/laboratory/complete_inform.html:47
+msgid "Do you want to finish the report?"
+msgstr "¿Deseas finalizar el reporte?"
+
+#: laboratory/templates/laboratory/complete_inform.html:48
+msgid "Discarding cannot be undone."
+msgstr "El descarte no se puede deshacer."
+
+#: laboratory/templates/laboratory/complete_inform.html:22
+msgid "Send for review"
+msgstr "Enviar a Revisión."
+
+#: laboratory/templates/laboratory/complete_inform.html:25
+msgid "Finalize"
+msgstr "Finalizar"
+
+#: laboratory/templates/laboratory/inform.html:25
+msgid "Create Inform"
+msgstr "Crear Informe"
+
+#: laboratory/templates/laboratory/inform.html:17
+msgid "Templates of inform"
+msgstr "Plantillas para informes"
 
 #~ msgid "Transfer"
 #~ msgstr "Transferir"
