@@ -1,60 +1,55 @@
 {% extends 'gentelella/base.html' %}
-{% load i18n %}
+{% load static i18n %}
 {% block content %}
 
 
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+     aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
       <div class="modal-body">
 
-        <div class="x_panel gencrud">
-          <div class="x_title">
-            <ul class="nav navbar-left panel_toolbox">
-            </ul>
+        <div class="gencrud">
+          <div class="card-body">
+            <div class="card-title titles">
+              <ul class="nav navbar-left panel_toolbox">
+              </ul>
 
-            <h2 id='product_name'>{% trans 'Manage Product' %} </h2>
+              <h2 id='product_name' >{% trans 'Manage Product' %} </h2>
 
-            <ul class="nav navbar-right panel_toolbox">
+              <ul class="nav navbar-right panel_toolbox">
 
-            </ul>
-            <div class="clearfix">
+              </ul>
             </div>
-          </div>
 
-          <div class="x_content">
-            <form method="POST" id="modal_form">
+
+            <form method="POST" class="mt-2" id="modal_form">
               {% csrf_token %}
-              {{product_form.as_p }}
+              {{product_form.as_plain }}
 
-              <div class="box-footer mt-4">
-                <div class="container" style="padding-bottom: 0.8rem;">
+              <div class="card-footer mt-4">
+                <div class="container" >
                   <small id="error_message" class="text-danger"></small>
                 </div>
                 <div class="form-group">
-                  <div class="controls text-right">
-                    <a data-dismiss="modal" class="btn btn-danger" id="cancel-button"><i
-                        class='fa fa-times'></i>
+                  <div class="controls text-end">
+                    <a data-bs-dismiss="modal" class="btn btn-danger" id="cancel-button"><i
+                            class='fa fa-times'></i>
                       {% trans 'Cancel' %}</a>
 
                     <a onclick="validate_reservation()"
-                      class="btn btn-success"><i class='fa fa-check'></i> {% trans 'Accept' %}</a>
+                       class="btn btn-success"><i class='fa fa-check'></i> {% trans 'Accept' %}</a>
 
                   </div>
                 </div>
               </div>
             </form>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   </div>
 </div>
