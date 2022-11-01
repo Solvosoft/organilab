@@ -109,7 +109,7 @@ class ObservacionForm(GTForm, forms.ModelForm):
 
         }
 
-class SecurityLeafForm(GTForm, forms.ModelForm):
+class SecurityLeafForm(forms.ModelForm,GTForm):
 
     def __init__(self, *arg, **kwargs):
         super(SecurityLeafForm, self).__init__(*arg,**kwargs)
