@@ -19,7 +19,7 @@ from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.provider import ProviderCreate,ProviderList,ProviderUpdate
-from laboratory.views.informs import get_informs, create_informs, complete_inform
+from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.functions import return_laboratory_of_shelf_id
 objviews = ObjectView()
@@ -176,9 +176,10 @@ provider_urls=[
     re_path(r"list$", ProviderList.as_view(), name="list_provider"),
 ]
 informs_urls = [
-    re_path('informs$', get_informs, name="get_informs"),
-    re_path('add_informs/(?P<lab>\d+)/(?P<content_type>\w+)/(?P<model>\w+)$', create_informs, name="add_informs"),
-    re_path('complete_inform/(?P<pk>\d+)$', complete_inform, name="complete_inform"),
+    re_path(r'get_list$', get_informs, name="get_informs"),
+    re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)$', create_informs, name="add_informs"),
+    re_path(r'complete_inform/(?P<pk>\d+)$', complete_inform, name="complete_inform"),
+    re_path(r'remove_inform/(?P<pk>\d+)$', remove_inform, name="remove_inform"),
 ]
 
 '''MULTILAB'''
@@ -198,7 +199,8 @@ urlpatterns += sustance_urls + organization_urls + [
         include(lab_reports_organization_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)?/provider/',include(provider_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/informs/',include(informs_urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
-] +reports_all_lab+edit_objects+informs_urls
+] +reports_all_lab+edit_objects
