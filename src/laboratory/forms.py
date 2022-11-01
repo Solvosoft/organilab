@@ -14,7 +14,6 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from django.forms import ModelForm
 
-
 class ObjectSearchForm(CustomForm, forms.Form):
     q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
                                        required=False, label=_("Search by name, code or CAS number"))
@@ -219,9 +218,10 @@ class FurnitureCreateForm(forms.ModelForm,GTForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
-        widgets={
+        widgets = {
             "name": genwidgets.TextInput,
-            "type": genwidgets.Select
+            "type": genwidgets.Select(attrs={'data-dropdownparent': '#furnitureModal',
+                                             'data-placeholder': _('Select Furniture')})
         }
 
 class RoomCreateForm(forms.ModelForm,GTForm):

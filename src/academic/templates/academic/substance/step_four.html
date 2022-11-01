@@ -34,7 +34,11 @@
                                             {{ form.provider.label_tag }}
                                             <br>
                                             <div class="input-group">
-                                                <span class="input-group-addon btn btn-success text-white" title="{% trans 'Add' %}" data-bs-toggle="modal" data-bs-target="#provider_modal" style="color: white !important;">+</span>
+                                                <span class="input-group-btn " >
+                                                    <button class="btn btn-success text-white" type="button" title="{% trans 'Add' %}" data-bs-toggle="modal" data-bs-target="#provider_modal">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </button>
+                                                </span>
                                                 {{ form.provider }}
                                             </div>
                                         </div>
@@ -384,9 +388,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Add Provider' %}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="provider_form">
@@ -394,7 +396,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="provider_add" type="button" class="btn btn-success" -bs-dismiss="modal">{% trans 'Add' %}</button>
+                <button id="provider_add" type="button" class="btn btn-success" data-bs-dismiss="modal">{% trans 'Add' %}</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
