@@ -6,8 +6,8 @@
 	{% define_urlname_action 'index_msds' %}
 {% endblock %}
 {% block content %} 
-<h1 class="header text-center">  {% trans 'Search MSDS' %} 
-<a class="btn btn-success pull-right" href="{% url 'msds:msds_msdsobject_create' %}">
+<h1 class="text-center">  {% trans 'Search MSDS' %}
+<a class="btn btn-success float-end" href="{% url 'msds:msds_msdsobject_create' %}">
 {% trans 'Upload your MSDS' %}
 </a>
 
