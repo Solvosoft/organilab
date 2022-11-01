@@ -28,6 +28,7 @@ def get_organization_button(pk_orga):
                           " id='" + str(pk_orga) + "' data-bs-toggle='modal'" \
                           " data-bs-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
 
+
     return organization_button
 
 

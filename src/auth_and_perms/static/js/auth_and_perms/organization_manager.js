@@ -1,3 +1,15 @@
+const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+             })
+
 function organization_rol(element){
     const obj=  {
     'is_manager': element.getAttributeNames().find(e => e=="data-addbtn") != undefined,
@@ -89,4 +101,37 @@ document.addEventListener("DOMContentLoaded", function(){
     for (let i = 0; i < collection.length; i++) {
      organization_rol(collection[i]);
     }
+});
+
+$(document).ready(function(){
+    $("input.checkrol").parent().addClass("checked");
+});
+
+
+
+$("input[type='checkbox']").on('ifChanged', function(){
+    var parent = $(this).parent();
+    $.ajax({
+        url: $(this).data('url'),
+        type:'POST',
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
+        success: function (message) {
+            if(message.result == 'ok'){
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Element saved successfully.'
+                });
+                if(message.removecheck){
+                    parent.removeClass("checked");
+                }else{
+                    parent.addClass("checked");
+                }
+            }else{
+                 Toast.fire({
+                    icon: 'error',
+                    title: 'Something went wrong while saving this permission rol.'
+                });
+            }
+        }
+    });
 });

@@ -36,7 +36,7 @@
                     <td>{{ procedure.description | safe }}</td>
                     <td><a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=lab %}">{{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
                         <a class="btn btn-success btn-block" href="{% url 'add_steps_wrapper' pk=procedure.id lab_pk=lab %}">Nuevo paso</a>
-                        <a class="btn btn-dark btn-block" data-target="#reservation_modal" data-toggle="modal" onclick="get_procedure({{procedure.pk}})">Reservar</a>
+                        <a class="btn btn-dark btn-block" data-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">Reservar</a>
                         <a href="{% url 'procedure_update' pk=procedure.id lab_pk=lab %}" class="btn btn-primary btn-block">Editar</a>
                         <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">Eliminar</a></td>
                 </tr>
