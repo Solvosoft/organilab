@@ -12,12 +12,18 @@
 
     <div class="page-content">
         <div class="container">
-            <form action="{% url 'laboratory:complete_inform' 2 %}" method="POST">
+
+            <form id="inform_form">
                             {% csrf_token %}
 
           <div id="formio">
           </div>
-                <button type="submit">{% trans 'Save' %}</button>
+                {% if inform.status == 'Eraser' %}
+                <button type="button"  class="btn btn-success" onclick="saveForm('In Review')">{% trans 'Send for review' %}</button>
+                {% endif %}
+                {% if inform.status == 'In Review' %}
+                <button type="button"  class="btn btn-danger" onclick="saveForm('Finalized')">{% trans 'Finalize' %}</button>
+                {% endif %}
                 </form>
         </div>
       </div>
@@ -27,16 +33,36 @@
 {% block js %}
     <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
     <script type="text/javascript">
+        const urls ={
+            edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
+            list: "{% url 'laboratory:get_informs' laboratory %}"
+        };
         var schema = {{ schema | safe }};
+        document.getElementById("form_name").textContent = "{{inform.name}}";
 
-        document.getElementById("form_name").textContent = schema.name;
         var components = { components: schema["components"] };
 
         window.onload = function(schema) {
             Formio.createForm(document.getElementById('formio'), components);
+            }
+        let status = "{{inform.status}}"
+        let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
+        var message ={
+        title:title,
+        text: "{% trans 'Discarding cannot be undone.' %}",
+        icon: "warning",
+        deny: "{% trans 'Cancel' %}",
+        confirm: "{% trans 'Save' %}",
+
+        }
+        const result ={
+        title:"{% trans 'Saved' %}",
+        text: "{% trans 'Discarding cannot be undone.' %}",
+        icon: "success",
         }
 
     </script>
+<script src="{% static 'js/formio.js'%}"></script>
 {% endblock %}
 
 </html>
