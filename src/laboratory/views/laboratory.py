@@ -141,7 +141,7 @@ class SelectLaboratoryView(FormView):
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create.html'
     form_class = LaboratoryCreate
-    success_url = '/'
+    success_url = ''
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.has_perm('laboratory.add_laboratory'):
@@ -173,7 +173,7 @@ class CreateLaboratoryFormView(FormView):
         return response
 
     def get_success_url(self):
-        return reverse('laboratory:rooms_create', kwargs={'lab_pk': self.object.pk})
+        return reverse('auth_and_perms:organizationManager')
 
 
 @method_decorator(permission_required('laboratory.add_laboratory'), name='dispatch')
