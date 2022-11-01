@@ -8,36 +8,34 @@
 
 
 {% block content %}
-<div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" ><span> {% trans 'Precursor Report' %}  </span></h3>
-        </div>
-</div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h3 class="text-center">{% trans 'Precursor Report' %}</h3>
+    </div>
 </div>
 
 <div class="row">
-<div class="col-md-12 col-xs-12">
-           <div class="table-responsive">
-  <table id="logtable" class="table table-striped table-bordered text-center" style="width:100%">
-        <thead class="text-center">
-            <tr>
-                <th>{% trans 'Consecutive' %}</th>
-                <th>{% trans 'Month' %}</th>
-                <th>{% trans 'Export' %}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for report in datalist %}
-        <tr>
-                <td>{{report.consecutive}}</td>
-                <td>{{report.get_month_display}} {{report.year}}</td>
-                <td><a class="btn btn-success" href="{% url 'laboratory:precursor_report' laboratory %}?format=ods&month={{report.month}}&year={{report.year}}&consecutive={{report.consecutive}}">{% trans 'Download'%}</a></td>
-        </tr>
-        {% endfor %}
-        </tbody>
-  </table>
-    </div>
+    <div class="col-md-12 col-sm-12">
+        <div class="table-responsive">
+            <table id="logtable" class="table table-sm table-striped table-bordered text-center">
+                <thead >
+                <tr>
+                    <th class="text-center">{% trans 'Consecutive' %}</th>
+                    <th class="text-center">{% trans 'Month' %}</th>
+                    <th class="text-center">{% trans 'Export' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for report in datalist %}
+                <tr>
+                    <td class="text-center">{{report.consecutive}}</td>
+                    <td class="text-center">{{report.get_month_display}} {{report.year}}</td>
+                    <td class="text-center"><a class="btn btn-success" href="{% url 'laboratory:precursor_report' laboratory %}?format=ods&month={{report.month}}&year={{report.year}}&consecutive={{report.consecutive}}">{% trans 'Download'%}</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

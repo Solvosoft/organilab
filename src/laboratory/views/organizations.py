@@ -17,7 +17,8 @@ from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 from djgentelella.widgets import core as genwidgets
 
-class OrganizationSelectableForm(forms.Form):
+
+class OrganizationSelectableForm(GTForm, forms.Form):
     organizations = OrganizationStructure.objects.none()
     filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select)
 
@@ -30,6 +31,7 @@ class OrganizationSelectableForm(forms.Form):
         elif self.user.is_superuser:
             self.fields['filter_organization'].queryset = OrganizationStructure.objects.all(
             )
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
@@ -58,10 +60,10 @@ class OrganizationReportView(ListView):
             else:  # filter all of technician
                 organizations_child = list(OrganizationStructure.os_manager.filter_user(
                     self.user).values_list('pk', flat=True))
-                if organizations_child:      # show organizations laboratories
+                if organizations_child:  # show organizations laboratories
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)
-                else:    # show only assign laboratory
+                else:  # show only assign laboratory
                     labs = Profile.objects.filter(user=self.user).first().laboratories.all()
         #  when have nothing assign
         else:
