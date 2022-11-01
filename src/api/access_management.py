@@ -25,8 +25,8 @@ def get_report_button(pk_orga):
 
 def get_organization_button(pk_orga):
     organization_button = "<button type='button' class='btn btn-success btn-sm' onclick='update_pK_parent(this)'" \
-                          " id='" + str(pk_orga) + "' data-toggle='modal'" \
-                          " data-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
+                          " id='" + str(pk_orga) + "' data-bs-toggle='modal'" \
+                          " data-bs-target='#organizationsavemodal'> <i class='fa fa-university'></i></button>"
 
     return organization_button
 
@@ -37,7 +37,7 @@ def get_child(element, query):
 
     for x in query.filter(organization__parent=element):
         pk = x.organization.pk
-        buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
+        buttons = "<div class='float-end' style='margin-bottom:10px;'>" + get_organization_button(
             pk) + get_users_button(pk) + get_report_button(pk)+ "</div>"
 
         info_orga = {
@@ -67,7 +67,7 @@ def get_data_parent(queryset, user):
 
         if organization:
             pk = x.organization.pk
-            buttons = "<div class='pull-right' style='margin-bottom:10px;'>" + get_organization_button(
+            buttons = "<div class='float-end' style='margin-bottom:10px;'>" + get_organization_button(
                 pk) + get_users_button(pk) + get_report_button(pk)+ "</div>"
             text = text + buttons
 

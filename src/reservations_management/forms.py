@@ -15,7 +15,7 @@ class ReservationsForm(GTForm, ModelForm):
         }
 
 
-class ProductForm(GTForm, ModelForm):
+class ProductForm(ModelForm, GTForm):
 
     class Meta:
         model = ReservedProducts
@@ -26,7 +26,7 @@ class ProductForm(GTForm, ModelForm):
             'amount_required': genwidgets.NumberInput(attrs={'readonly': 'True'}),
             'amount_returned': genwidgets.NumberInput(),
             'is_returnable': genwidgets.CheckboxInput(),
-            'status': genwidgets.Select(),
+            'status': genwidgets.Select(attrs={'data-dropdownparent': '#exampleModal','id': 'reserveStatus'}),
             'initial_date': genwidgets.TextInput(attrs={'readonly': 'True'}),
             'final_date': genwidgets.TextInput(attrs={'readonly': 'True'}),
         }
