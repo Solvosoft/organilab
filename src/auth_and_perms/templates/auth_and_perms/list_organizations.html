@@ -20,12 +20,13 @@
         <div class="bs-callout bs-callout-{{node.2}}">
 
             <div class="row" id="rols">
-                <div class="col-sm-1" style="padding-right: 0px;">
+                <div class="col-sm-2" style="padding-right: 0px;">
                     <ul style="padding: 0px;">
-                        <li class="rolcontainer"  rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
+                        <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
+                        <li class="rolcontainer" title="{% trans 'Add new user' %}"><a class="btn btn-primary userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-user-plus" ></i></a></li>
                     </ul>
                 </div>
-                <div class="col-sm-11" style="padding-left: 0px; padding-top: 10px;">
+                <div class="col-sm-10" style="padding-left: 0px; padding-top: 10px;">
                     <h4>{{node.0.node}}</h4>
                 </div>
             </div>
@@ -49,7 +50,7 @@
 
             <div class="row">
                 <div class="wrapper" style="overflow: auto;">
-                    <table id="permissionTable" class="table table-bordered table-hover table-striped w-100">
+                    <table id="permissionTable{{node.0.node.pk}}" class="table table-bordered table-hover table-striped w-100 permissionTable">
                     <thead>
                         <tr>
                             <th>{% trans "Administrators users"%}</th>
@@ -61,7 +62,7 @@
                     </thead>
                     <tbody>
                         {% for user in node.0.users %}
-                            <tr>
+                            <tr data-id="{{user.pk}}">
                                 <td>
                                     {% if user.get_full_name %}{{user.get_full_name}}{% else %}{{user}}{% endif %}
                                 </td>
@@ -88,6 +89,28 @@
      class="hidden" style="display:none">
     <input type="text" id="rolname" class="swal2-input" placeholder="{% trans 'Rol name' %}" />
 </div>
+
+<div id="addusermodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="adduserform" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="pk" name="pk" value=0>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{% trans 'Add User' %}</h4>
+          </div>
+          <div class="modal-body">
+              {{adduserform.as_horizontal}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endfor %}
 
 {% endblock %}
