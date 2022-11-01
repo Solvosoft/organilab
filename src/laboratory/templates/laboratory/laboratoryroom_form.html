@@ -62,13 +62,14 @@
 											</ul>
 										</div>
 										<button type="button" class="btn btn-outline-success" style="width:60px"
-												data-bs-container="body" data-bs-toggle="popover"
+												data-bs-container="body" data-bs-toggle="popover" 5
 												data-content="f{{object.pk}}"
 												data-bs-html=true>
 											{{ object.furniture_set.count }}
 										</button>
 										<button type="button" class="btn btn-outline-dark" title="{% trans 'Create Furniture' %}"
 												data-bs-toggle="modal" data-bs-target="#furnitureModal"
+
 												data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
 											+ <span  class="fa fa-bed" aria-hidden="true"></span>
 										</button>

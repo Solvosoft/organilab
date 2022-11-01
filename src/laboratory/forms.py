@@ -48,6 +48,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = \
             OrganizationStructure.os_manager.filter_user(user)
+        self.fields['geolocation'].widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = Laboratory
@@ -69,6 +70,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         super(LaboratoryEdit, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = \
             OrganizationStructure.os_manager.filter_user(user)
+        self.fields['geolocation'].widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = Laboratory

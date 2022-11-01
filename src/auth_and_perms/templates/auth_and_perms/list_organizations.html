@@ -1,48 +1,85 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static laboratory %}
+{% load user_rol_tags %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'css/permission_table_style.css' %}" rel="stylesheet" media="all">
+{% endblock css %}
+
 {% block content %}
 
+{% if perms.laboratory.add_laboratory %}
+    <a id='add_lab' class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
+      <i class="fa fa-plus"></i> {% trans 'Add Laboratory' %}</a>
+  {% endif %}
+
 {% for node in nodes %}
-    <div class="row">
-        <div class="{{node.1}}">
-            <div class="bs-callout bs-callout-{{node.2}}">
-                <h4>{{node.0.node}}</h4>
-                <div class="row" id="rols">
-                    <div class="col-xs-12 col-md-6">
-                        <ul>
-                        {% for rol in node.0.node.rol.all %}
-                            <li id="rol_{{rol.pk}}" class="rolcontainer" >
-                                <span style="background-color: {{rol.color}}">{{rol.name}}</span></li>
-                        {% endfor %}
-                            <li class="rolcontainer"  rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
-                            </ul>
-                    </div>
-
+<div class="row">
+    <div class="{{node.1}}">
+        <div class="bs-callout bs-callout-{{node.2}}">
+            <div class="row" id="rols">
+                <div class="col-sm-1" style="padding-right: 0px;">
+                    <ul style="padding: 0px;">
+                        <li class="rolcontainer"  rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
+                    </ul>
                 </div>
-
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <h5>{% trans "Administrators users"%}</h5>
-                        <ul>
-                            {% for user in node.0.users %}
-                            <li>{{user}}</li>
+                <div class="col-sm-11" style="padding-left: 0px; padding-top: 10px;">
+                    <h4>{{node.0.node}}</h4>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-top: 3%;">
+                {% if node.0.labs %}
+                <a class="btn" data-bs-toggle="collapse" href="#collapse{{node.0.node.pk}}" role="button" aria-expanded="false" aria-controls="collapseExample"><h4>{% trans 'Laboratories' %} <i class="fa fa-angle-down"></i></h4></a>
+                {% else %}
+                    <h4 style="margin-left: 1%;">{% trans 'Laboratories' %}</h4>
+                {% endif %}
+                <div id="collapse{{node.0.node.pk}}">
+                    <ul>
+                    {% for lab in node.0.labs %}
+                    <li><a class="btn btn-sm" type="button" href="{% url  'laboratory:labindex' lab.pk %}"><i class="fa fa-eye fa-2x"></i> {{lab}}</a></li>
+                    {% empty %}
+                        <li><a class="btn btn-sm" type="button">{% trans "Organization doesn't have laboratories" %}</a></li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="wrapper" style="overflow: auto;">
+                    <table id="permissionTable" class="table table-bordered table-hover table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Administrators users"%}</th>
+                            {% for rol in node.0.node.rol.all %}
+                                <th>{{rol.name}}</th>
                             {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="col-xs-12 col-md-6">
-                         <ul>
-                            {% for lab in node.0.labs %}
-                            <li>{{lab}}</li>
-                            {% endfor %}
-                        </ul>
 
-                    </div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in node.0.users %}
+                            <tr>
+                                <td>
+                                    {% if user.get_full_name %}{{user.get_full_name}}{% else %}{{user}}{% endif %}
+                                </td>
+                                {% for rol in node.0.node.rol.all %}
+                                    <td>
+                                        {% check_user_rol user rol as checkrol %}
+                                            <input type="checkbox" autocomplete="off" data-widget="CheckboxInput"  class="flat {% if checkrol %}checkrol{% endif %}" data-url="{% url 'auth_and_perms:updateuserrol' user.pk rol.pk %}" style="position: absolute; opacity: 0;">
+                                            <ins class="iCheck-helper"></ins>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
 
-
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <div id="addrolform" title="{% trans 'Please enter a valid name' %}"
      url="{% url 'auth_and_perms:api-rol-list' %}"
@@ -55,6 +92,7 @@
 
 {% block js %}
 {{block.super}}
+
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}"></script>
 
 {% endblock%}

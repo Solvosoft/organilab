@@ -92,15 +92,15 @@ $(document).ready(function () {
         readURL(this);
     });
 
-    $('[data-toggle="wizard-radio"]').click(function () {
+    $('[data-bs-toggle="wizard-radio"]').click(function () {
         wizard = $(this).closest('.wizard-card');
-        wizard.find('[data-toggle="wizard-radio"]').removeClass('active');
+        wizard.find('[data-bs-toggle="wizard-radio"]').removeClass('active');
         $(this).addClass('active');
         $(wizard).find('[type="radio"]').removeAttr('checked');
         $(this).find('[type="radio"]').attr('checked', 'true');
     });
 
-    $('[data-toggle="wizard-checkbox"]').click(function () {
+    $('[data-bs-toggle="wizard-checkbox"]').click(function () {
         if ($(this).hasClass('active')) {
             $(this).removeClass('active');
             $(this).find('[type="checkbox"]').removeAttr('checked');

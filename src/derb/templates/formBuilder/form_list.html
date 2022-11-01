@@ -9,62 +9,70 @@
 
 {% block content %}
 
-        <h1>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            My Forms &nbsp; 
-            <a title="Create form" class="btn btn-sm btn-primary create_btn" >Create Form</a> 
-                                
-        </h1>
-        <br>
-        
-        <div align="center">
-            <div id="forms" style="width: 90%;">
-                {% csrf_token %}
-                <script>
+<div class="card-title titles">
+    <div  class="row" >
+        <div  class="col-md-9" >
+            <h1 >
+                My Forms
+            </h1>
+        </div>
+        <div class="col-md-3 align-self-center">
+            <button title="Create form"
+                    type="button"
+                    class="btn btn-sm btn-primary create_btn" >Create Form</button>
+        </div>
+    </div>
+</div>
+<br>
+
+<div align="center">
+    <div id="forms" style="width: 90%;">
+        {% csrf_token %}
+        <script>
                     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
                 </script>
-                <table class="table table-hover table" id="form_table">
-                    <thead>
-                        <tr>
-                            <th>
-                                Form Name
-                            </th>
-    
-                            <th>
-                                Status
-                            </th>
-    
-                            <th>
-                                &nbsp;
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    
-                        {% for form in forms %}
-                        
-                            <tr id="tr_{{ form.id }}">
+        <table class="table table-hover table" id="form_table">
+            <thead>
+            <tr>
+                <th>
+                    Form Name
+                </th>
 
-                                <td>
-                                    {{form.name}}
-                                </td>
-    
-                                <td id="n">
-                                    {{ form.status}}
-                                </td>
-    
-                                <td style="width: 120px">
-                                    <a title="Preview form" class="btn btn-sm btn-default preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                    <a title="Edit form" class="btn btn-sm btn-default edit_btn" form_id="{{ form.id }}"><span class="glyphicon glyphicon-pencil"></span> </a>
-                                    <a title="Delete form" class="btn btn-sm btn-default delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><span class="glyphicon glyphicon-trash"></span> </a> 
-                                
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>    
-        </div>
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    &nbsp;
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for form in forms %}
+
+            <tr id="tr_{{ form.id }}">
+
+                <td>
+                    {{form.name}}
+                </td>
+
+                <td id="n">
+                    {{ form.status}}
+                </td>
+
+                <td style="width: 120px">
+                    <a title="Preview form" class="btn btn-sm btn-default preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
+                    <a title="Edit form" class="btn btn-sm btn-default edit_btn" form_id="{{ form.id }}"><span class="glyphicon glyphicon-pencil"></span> </a>
+                    <a title="Delete form" class="btn btn-sm btn-default delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><span class="glyphicon glyphicon-trash"></span> </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
 
