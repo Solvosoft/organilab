@@ -135,3 +135,18 @@ $("input[type='checkbox']").on('ifChanged', function(){
         }
     });
 });
+
+
+$(".userbtnadd").on('click', function(){
+    var id = $(this).data('id');
+    var user_list = $("#permissionTable"+id+" tbody tr");
+    var url = $(this).data('url');
+    $("#id_users option").removeAttr('selected');
+
+    Array.from(user_list).forEach((item)=>{
+        var user_id = $(item).data('id');
+        $("#id_users option[value='"+user_id+"']").attr('selected', 'selected');
+    });
+    $("#adduserform").attr('action', url);
+    $("#addusermodal").modal('show');
+});
