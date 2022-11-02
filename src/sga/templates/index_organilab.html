@@ -3,28 +3,33 @@
 {% load static %}
 {% block title %}{% trans 'SGA Search' %}{% endblock title %}
 {% block content %}
-<div class="container">
-    <div class="row">
-    <div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-            <h3 class="heading-1" ><span> {% trans 'SGA Information Searcher' %}</span></h3>
-            <p class="text-center">{% trans 'Enter in the following searcher the danger indication codes (H-Codes).' %}</p>
-        </div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-sm-8">
+        <h3 class="text-center">{% trans 'SGA Information Searcher' %}</h3>
+        <p class="text-center">{% trans 'Enter in the following searcher the danger indication codes (H-Codes).' %}</p>
     </div>
 </div>
-    <div class="row">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="row">
-                  <div class="col-md-offset-2 col-md-7">
-                    {{ form.as_horizontal }}
-                  </div>
-                  <div class="col-md-2">
-                      <button type="submit" class="btn btn-success">{% trans 'Search' %}</button>
-                  </div>
+<div class="row justify-content-center">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                {{ form.as_horizontal }}
             </div>
-        </form>
-        <a type="button" class="btn btn-primary" href="{% url 'donate' %}">{% trans 'Donate' %}</a>
+            <div class="col-md-2">
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success">
+                        {% trans 'Search' %}
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="d-flex justify-content-center">
+        <a type="button" class="btn btn-lg btn-primary" href="{% url 'donate' %}">{% trans 'Donate' %}</a>
     </div>
 </div>
+
 {% endblock content %}
