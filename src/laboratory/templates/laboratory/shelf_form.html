@@ -14,7 +14,7 @@
 	</div>
 	
 	<div class="modal-footer">
-        <button type="button" class="btn btn-default cdismiss" data-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-default cdismiss" data-bs-dismiss="modal">{% trans 'Close' %}</button>
         {% if perms.laboratory.change_shelf or perms.laboratory.add_shelf %}
           	<button type="submit" class="btn btn-primary" > {% trans 'Save' %} </button>
         {% endif  %}

@@ -353,7 +353,7 @@ class Provider(models.Model):
     telephone_number = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Telephone number"))
     fax = models.CharField(max_length=30, null=True, blank=True)
     email = models.CharField(max_length=100, verbose_name=_("Email"), null=True, blank=True)
-    provider = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, verbose_name=_("Provider"), related_name="providersga")
+    provider = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name=_("Provider"), related_name="providersga")
     emergency_phone =  models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Emergency number"))
 
     def __str__(self):

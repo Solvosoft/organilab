@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"POT-Creation-Date: 2022-10-31 14:30-0600\n"
 "PO-Revision-Date: 2020-01-07 14:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,71 +18,71 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: msds/models.py:10 msds/templates/index_msds.html:16
-#: msds/templates/index_msds.html:24
+#: msds/models.py:8 msds/templates/index_msds.html:18
+#: msds/templates/index_msds.html:26
 msgid "Provider"
 msgstr "Proveedor"
 
-#: msds/models.py:11
+#: msds/models.py:9
 msgid "MSDS File"
 msgstr "Archivo MSDS"
 
-#: msds/models.py:14 msds/templates/index_msds.html:17
-#: msds/templates/index_msds.html:25
+#: msds/models.py:12 msds/templates/index_msds.html:19
+#: msds/templates/index_msds.html:27
 msgid "Product"
 msgstr "Producto"
 
-#: msds/models.py:18 msds/models.py:19
+#: msds/models.py:16 msds/models.py:17
 msgid "MSDS Object"
 msgstr "Objeto MSDS"
 
-#: msds/models.py:39
+#: msds/models.py:47
 msgid "Regulation File"
 msgstr "Archivo de regulación"
 
-#: msds/models.py:48
+#: msds/models.py:56
 msgid "Regulation document"
 msgstr "Documento regulatorio"
 
-#: msds/models.py:49 msds/templates/regulation/regulations_document.html:5
+#: msds/models.py:57 msds/templates/regulation/regulations_document.html:5
 msgid "Regulation documents"
 msgstr "Documentos y reglamentos"
 
-#: msds/templates/index_msds.html:7
+#: msds/templates/index_msds.html:9
 msgid "Search MSDS"
 msgstr "Buscar MSDS"
 
-#: msds/templates/index_msds.html:9
+#: msds/templates/index_msds.html:11
 msgid "Upload your MSDS"
 msgstr "Subir sus MSDS"
 
-#: msds/templates/index_msds.html:18 msds/templates/index_msds.html:26
-#: msds/templates/msds/msdsobject/cruds/detail.html:17
+#: msds/templates/index_msds.html:20 msds/templates/index_msds.html:28
+#: msds/templates/msds/msdsobject/cruds/detail.html:19
 #: msds/templates/regulation/regulations_document.html:13
 #: msds/templates/regulation/regulations_document.html:23
 #: msds/templates/regulation/regulations_document.html:32 msds/views.py:27
 msgid "Download"
 msgstr "Descargar"
 
-#: msds/templates/msds/msdsobject/cruds/create.html:9
-#: msds/templates/msds/msdsobject/cruds/update.html:10
+#: msds/templates/msds/msdsobject/cruds/create.html:11
+#: msds/templates/msds/msdsobject/cruds/update.html:12
 msgid "Add new MSDS"
 msgstr "Añadir nuevo MSDS"
 
-#: msds/templates/msds/msdsobject/cruds/create.html:13
-#: msds/templates/msds/msdsobject/cruds/update.html:14
+#: msds/templates/msds/msdsobject/cruds/create.html:15
+#: msds/templates/msds/msdsobject/cruds/update.html:16
 msgid "Submit"
 msgstr "Enviar"
 
-#: msds/templates/msds/msdsobject/cruds/delete.html:7
+#: msds/templates/msds/msdsobject/cruds/delete.html:10
 msgid "Remove"
 msgstr "Eliminar"
 
-#: msds/templates/msds/msdsobject/cruds/delete.html:13
+#: msds/templates/msds/msdsobject/cruds/delete.html:16
 msgid "Confirm remove"
 msgstr "Confirme eliminación"
 
-#: msds/templates/msds/msdsobject/cruds/detail.html:14
+#: msds/templates/msds/msdsobject/cruds/detail.html:16
 msgid "by "
 msgstr "por "
 

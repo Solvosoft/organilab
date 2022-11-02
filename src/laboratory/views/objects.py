@@ -192,8 +192,8 @@ class ObjectForm( CustomForm,ModelForm):
         model = Object
         fields = '__all__'
         widgets = {
-            'features': genwidget.SelectMultiple,
-            'laboratory': genwidget.SelectMultiple,
+            'features': genwidget.SelectMultiple(),
+            'laboratory': genwidget.SelectMultiple(),
             'code': genwidget.TextInput,
             'name': genwidget.TextInput,
             'synonym':  genwidget.TextInput,

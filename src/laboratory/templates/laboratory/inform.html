@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load i18n static laboratory gtsettings %}
+
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+{% block title %}{% trans 'Informs' %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <div align="center">
+      <h3 class="heading-1" ><span> {% trans 'Templates of inform' %}</span></h3>
+      <div class="x_panel">
+        <a class="btn btn-success pull-right create_btn"  data-toggle="modal"
+            data-target="#add_inform" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        <div class="x_title">
+          <h2>{% trans 'Templates of inform' %}</h2>
+          <ul class="nav navbar-right panel_toolbox"></ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <table id="inform" class="table table-striped table-bordered text-center" style="width:100%">
+            <thead>
+            <tr>
+              <th>{% trans 'Name' %}</th>
+              <th>{% trans 'Template' %}</th>
+              <th>{% trans 'State' %}</th>
+              <th>{% trans 'Actions' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for inform in informs %}
+              <tr>
+                <td>{{inform.name}}</td>
+                <td>{{inform.custom_form.name}}</td>
+                <td>{% trans inform.status %}</td>
+                <td><a class="btn btn-success" href="{% url 'laboratory:complete_inform' laboratory inform.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                <a class="btn btn-danger" href="{% url 'laboratory:remove_inform' laboratory inform.pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+              </tr>
+            {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add_inform" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left" >{% trans 'Create Inform' %}</h5>
+        <button type="button pull-rigth" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'laboratory:add_informs' lab_pk=laboratory content_type='laboratory' model='laboratory' %}" method="POST">
+            {% csrf_token %}
+            {{form.as_horizontal}}
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
+      </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+  <script>
+    $(document).ready(function() {
+      $('#inform').DataTable();
+      });
+  </script>
+{% endblock %}
