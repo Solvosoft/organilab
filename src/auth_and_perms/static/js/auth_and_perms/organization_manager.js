@@ -75,7 +75,7 @@ function organization_rol(element){
               return results.json();
             })
             .then(json => {
-                 windows.location.ref.reload();
+                 window.location.reload();
             })
             .catch(err => {
               if (err) {
