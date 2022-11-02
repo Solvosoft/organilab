@@ -22,7 +22,7 @@
                 <div class="col-sm-2" style="padding-right: 0px;">
                     <ul style="padding: 0px;">
                         <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"   confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-success rolbtnadd" >+</span></li>
-                        <li class="rolcontainer" title="{% trans 'Add new user' %}"><a class="btn btn-primary userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-user-plus" ></i></a></li>
+                        <li class="rolcontainer" title="{% trans 'Manage Users' %}"><a class="btn btn-primary userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i></a></li>
                     </ul>
                 </div>
                 <div class="col-sm-10" style="padding-left: 0px; padding-top: 10px;">
@@ -60,7 +60,7 @@
                     </thead>
                     <tbody>
                         {% for user in node.0.users %}
-                            <tr data-id="{{user.pk}}">
+                            <tr data-id="{{user.pk}}" data-name="{% if user.get_full_name %}{{user.get_full_name}}{% else %}{{user}}{% endif %}">
                                 <td>
                                     {% if user.get_full_name %}{{user.get_full_name}}{% else %}{{user}}{% endif %}
                                 </td>
@@ -81,6 +81,8 @@
         </div>
     </div>
 </div>
+
+{% endfor %}
 
 <div id="addrolform" title="{% trans 'Please enter a valid name' %}"
      url="{% url 'auth_and_perms:api-rol-list' %}"
@@ -109,7 +111,7 @@
       </div>
     </div>
   </div>
-{% endfor %}
+
 
 {% endblock %}
 
