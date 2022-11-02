@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"POT-Creation-Date: 2022-10-31 14:30-0600\n"
 "PO-Revision-Date: 2022-10-17 13:55-0600\n"
 "Last-Translator: \n"
 "Language-Team: es\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.2\n"
-
-#: risk_management/forms.py:52
-msgid "Zone Type"
-msgstr "Tipo de Zona"
 
 #: risk_management/incidents.py:96
 msgid "Identificador"
@@ -111,6 +107,10 @@ msgstr "Prioridad de operaciones"
 #: risk_management/models.py:51
 msgid "Number of workers (aprox)"
 msgstr "Número de trabajadores (aprox)"
+
+#: risk_management/models.py:52
+msgid "Zone Type"
+msgstr "Tipo de Zona"
 
 #: risk_management/models.py:53
 msgid "Priority"
@@ -204,12 +204,12 @@ msgid "Delete Incident report"
 msgstr "Eliminar reporte de incidente"
 
 #: risk_management/templates/risk_management/incidentreport_confirm_delete.html:13
-#: risk_management/templates/risk_management/riskzone_confirm_delete.html:13
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:15
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro de que desea eliminar?"
 
 #: risk_management/templates/risk_management/incidentreport_confirm_delete.html:14
-#: risk_management/templates/risk_management/riskzone_confirm_delete.html:14
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:16
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -218,9 +218,9 @@ msgid "Laboratory incidents list"
 msgstr "Lista de incidentes del laboratorio"
 
 #: risk_management/templates/risk_management/incidentreport_detail.html:12
-#: risk_management/templates/risk_management/incidentreport_list.html:53
-#: risk_management/templates/risk_management/riskzone_detail.html:10
-#: risk_management/templates/risk_management/riskzone_list.html:53
+#: risk_management/templates/risk_management/incidentreport_list.html:56
+#: risk_management/templates/risk_management/riskzone_detail.html:13
+#: risk_management/templates/risk_management/riskzone_list.html:61
 msgid "Edit"
 msgstr "Editar"
 
@@ -254,66 +254,70 @@ msgstr "Xls"
 msgid "Xlsx"
 msgstr "Xlsx"
 
-#: risk_management/templates/risk_management/incidentreport_form.html:4
-#: risk_management/templates/risk_management/incidentreport_form.html:18
+#: risk_management/templates/risk_management/incidentreport_form.html:8
+#: risk_management/templates/risk_management/incidentreport_form.html:22
 msgid "Incident Management"
 msgstr "Administración de incidentes"
 
-#: risk_management/templates/risk_management/incidentreport_form.html:11
+#: risk_management/templates/risk_management/incidentreport_form.html:15
 msgid "Laboratory incidents"
 msgstr "Incidentes del laborarorio"
 
-#: risk_management/templates/risk_management/incidentreport_form.html:32
-#: risk_management/templates/risk_management/riskzone_form.html:29
+#: risk_management/templates/risk_management/incidentreport_form.html:36
+#: risk_management/templates/risk_management/riskzone_form.html:33
 msgid "Save"
 msgstr "Guardar"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:12
+#: risk_management/templates/risk_management/incidentreport_list.html:15
 msgid "Incidents Management"
 msgstr "Administración de incidentes"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:58
-#: risk_management/templates/risk_management/riskzone_list.html:58
+#: risk_management/templates/risk_management/incidentreport_list.html:61
+#: risk_management/templates/risk_management/riskzone_list.html:66
 msgid "Delete"
 msgstr "Eliminar"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:70
-#: risk_management/templates/risk_management/riskzone_list.html:70
+#: risk_management/templates/risk_management/incidentreport_list.html:73
+#: risk_management/templates/risk_management/riskzone_list.html:78
 msgid "Previous"
 msgstr "Anterior"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:75
-#: risk_management/templates/risk_management/riskzone_list.html:75
+#: risk_management/templates/risk_management/incidentreport_list.html:78
+#: risk_management/templates/risk_management/riskzone_list.html:83
 msgid "Page"
 msgstr "Página"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:80
-#: risk_management/templates/risk_management/riskzone_list.html:80
+#: risk_management/templates/risk_management/incidentreport_list.html:83
+#: risk_management/templates/risk_management/riskzone_list.html:88
 msgid "Next"
 msgstr "Siguiente"
 
-#: risk_management/templates/risk_management/riskzone_confirm_delete.html:6
+#: risk_management/templates/risk_management/riskzone_confirm_delete.html:8
 msgid "Delete risk zone"
 msgstr "Eliminar zona de riesgo"
 
-#: risk_management/templates/risk_management/riskzone_detail.html:7
-#: risk_management/templates/risk_management/riskzone_form.html:8
+#: risk_management/templates/risk_management/riskzone_detail.html:10
+#: risk_management/templates/risk_management/riskzone_form.html:12
 msgid "Zone list"
 msgstr "Lista de zonas"
 
-#: risk_management/templates/risk_management/riskzone_detail.html:37
+#: risk_management/templates/risk_management/riskzone_detail.html:40
 msgid "Incident Reports"
 msgstr "Reportes de incidentes"
 
-#: risk_management/templates/risk_management/riskzone_detail.html:40
+#: risk_management/templates/risk_management/riskzone_detail.html:43
 msgid "Incident Reports Create"
 msgstr "Crear Reporte de incidentes"
 
-#: risk_management/templates/risk_management/riskzone_form.html:4
-#: risk_management/templates/risk_management/riskzone_form.html:15
-#: risk_management/templates/risk_management/riskzone_list.html:12
+#: risk_management/templates/risk_management/riskzone_form.html:7
+#: risk_management/templates/risk_management/riskzone_form.html:19
+#: risk_management/templates/risk_management/riskzone_list.html:18
 msgid "Risk Zone Management"
 msgstr "Administración de zonas de riesgo"
+
+#: risk_management/templates/risk_management/riskzone_list.html:24
+msgid "Add"
+msgstr ""
 
 #~ msgid "Incident report"
 #~ msgstr "Reporte de incidentes"

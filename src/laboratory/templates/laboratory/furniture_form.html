@@ -7,12 +7,11 @@
 
 {% block content %}
 
-  <div id="intro_title">
-  <div class="col-md-offset-2 col-md-8">
+  <div id="intro_title" class="container-fluid">
           <div class="page-header col-xs-13" align="center">
             <h3 class="heading-1" center=""><span>{% trans 'Furniture management' %}</span></h3>
           </div>
-  </div>
+
   {% if perms.laboratory.view_furniture or perms.laboratory.add_furniture or perms.laboratory.change_furniture or perms.laboratory.delete_furniture %}
     <br>
     {{ form.errors }}
@@ -43,21 +42,21 @@
             <table class="table table-bordered" id="mytab">
               {{ dataconfig|safe }}
             </table>
-            <div class="btn-toolbar" role="toolbar" aria-label="...">
+            <div class="btn-toolbar p-2" role="toolbar" aria-label="...">
               <div class="btn-group" role="group" aria-label="...">
-                <button id="btnAddRow" class="btn btn-success" type="button" onclick="addRow()">
-                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Row' %}
+                <button id="btnAddRow" class="btn btn-success"  type="button" onclick="addRow()">
+                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Row' %}
                 </button>
-                <button class="btn btn-info" type="button" onclick="addColumn()">
-                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Column' %}
+                <button class="btn btn-info me-2" type="button" onclick="addColumn()">
+                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Column' %}
                 </button>
               </div>
               <div class="btn-group" role="group" aria-label="...">
                 <button class="btn btn-warning" type="button" onclick="deleteRows()">
-                  <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Row' %}
+                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Row' %}
                 </button>
-                <button class="btn btn-danger" type="button" onclick="deleteColumns()">
-                  <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>{% trans 'Column' %}
+                <button class="btn btn-danger me-2" type="button" onclick="deleteColumns()">
+                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Column' %}
                 </button>
               </div>
 
@@ -77,9 +76,9 @@
   </div>
 
   <div class="hidden" id="addshelfproto">
-    <a style="margin: 5px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
+    <a style="margin-left: 19px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
        href="{% url 'laboratory:shelf_create' laboratory %}?row=ROW&col=COL&furniture={{ form.instance.pk }}">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+      <span class="fa fa-plus" aria-hidden="true"></span>
       {% trans 'Add Shelf' %}
     </a>
     <div class="" id="row_ROW_col_COL">
@@ -91,16 +90,15 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">{% trans 'Create shelf' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div id="shelfmodalbody">
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div>
   </div>
-  <div id="modalclose"></div>	
+  <div id="modalclose"></div>
 {% endblock%}
 
 {% block css %}

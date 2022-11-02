@@ -1,7 +1,8 @@
 # encoding: utf-8
 
 from ..forms import FurnitureForm
-
+from djgentelella.widgets import core as genwidgets
+from django.utils.translation import gettext_lazy as _
 '''
 Created on 26/12/2016
 
@@ -67,7 +68,13 @@ class FurnitureCreateView(CreateView):
             labroom__in=lab.rooms.all()).order_by('labroom')
         return context
 
-
+    class Meta:
+        model = Furniture
+        fields = '__all__'
+        widgets = {
+            "name": genwidgets.TextInput(),
+            "type": genwidgets.Select(),
+        }
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')

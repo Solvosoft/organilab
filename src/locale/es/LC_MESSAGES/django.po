@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"POT-Creation-Date: 2022-10-31 14:30-0600\n"
 "PO-Revision-Date: 2021-03-09 23:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,19 +18,118 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: authentication/forms.py:24
+#: auth_and_perms/models.py:13 authentication/forms.py:22
 msgid "Phone"
 msgstr "Teléfono"
 
-#: authentication/forms.py:25
+#: auth_and_perms/models.py:14 authentication/forms.py:23
 msgid "ID Card"
 msgstr "Num de Identificación"
 
-#: authentication/forms.py:26
+#: auth_and_perms/models.py:15
+#, fuzzy
+#| msgid "Laboratory id"
+msgid "Laboratories"
+msgstr "Id de laboratorio"
+
+#: auth_and_perms/models.py:16 authentication/forms.py:24
 msgid "Job Position"
 msgstr "Posición actual"
 
-#: authentication/forms.py:28
+#: auth_and_perms/models.py:30
+msgid "permissions"
+msgstr ""
+
+#: auth_and_perms/models.py:36 auth_and_perms/models.py:51
+msgid "Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:37
+msgid "Rols"
+msgstr ""
+
+#: auth_and_perms/models.py:44
+msgid "Profile"
+msgstr ""
+
+#: auth_and_perms/models.py:57
+msgid "Profile Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:58
+msgid "Profile Rols"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:17
+msgid "Add new rol"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:17
+msgid "Add"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:25
+msgid "Administrators users"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:47
+msgid "Please enter a valid name"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:50
+#, fuzzy
+#| msgid "Product name"
+msgid "Rol name"
+msgstr "Nombre del producto"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:10
+msgid "Lab profiles management"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:13
+#, fuzzy
+#| msgid "Laboratory id"
+msgid " Laboratory Profiles"
+msgstr "Id de laboratorio"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
+msgid "Name:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:20
+#, fuzzy
+#| msgid "First Name"
+msgid "Last Name:"
+msgstr "Nombre"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:21
+#, fuzzy
+#| msgid "ID Card"
+msgid "Id Card:"
+msgstr "Num de Identificación"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:22
+#, fuzzy
+#| msgid "Job Position"
+msgid "Job Position:"
+msgstr "Posición actual"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:23
+#, fuzzy
+#| msgid "Manage Product"
+msgid "Manage Profile"
+msgstr "Administración de producto"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
+#: reservations_management/templates/reservations_management/reservations_list.html:97
+msgid "Manage"
+msgstr "Administrar"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:38
+msgid "No objects"
+msgstr ""
+
+#: authentication/forms.py:26
 msgid "Roles"
 msgstr ""
 
@@ -51,7 +150,7 @@ msgid "Laboratory id"
 msgstr "Id de laboratorio"
 
 #: authentication/models.py:14
-#: reservations_management/templates/reservations_management/reservations_list.html:66
+#: reservations_management/templates/reservations_management/reservations_list.html:70
 msgid "User"
 msgstr "Usuario"
 
@@ -184,6 +283,10 @@ msgstr ""
 msgid "We will contact you soon"
 msgstr "Nosotros lo contactaremos pronto"
 
+#: derb/templates/formBuilder/form_list.html:8
+msgid "Report Template List"
+msgstr ""
+
 #: reservations_management/models.py:17 reservations_management/models.py:24
 msgid "Requested"
 msgstr "Solicitado"
@@ -240,57 +343,57 @@ msgstr "Sábado"
 msgid "Sunday"
 msgstr "Domingo"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:6
-#: reservations_management/templates/reservations_management/reservations_list.html:69
+#: reservations_management/templates/reservations_management/manage_reservation.html:9
+#: reservations_management/templates/reservations_management/reservations_list.html:73
 msgid "Manage Reservation"
 msgstr "Administrar reservaciones"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:28
+#: reservations_management/templates/reservations_management/manage_reservation.html:31
 msgid "Back to the reservations list"
 msgstr "Regresar a la lista de reservaciones"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:34
+#: reservations_management/templates/reservations_management/manage_reservation.html:37
 msgid "Reservation from"
 msgstr ""
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:34
+#: reservations_management/templates/reservations_management/manage_reservation.html:37
 msgid "for laboratory"
 msgstr ""
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:67
+#: reservations_management/templates/reservations_management/manage_reservation.html:70
 msgid "Products List"
 msgstr "Lista de productos"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:76
+#: reservations_management/templates/reservations_management/manage_reservation.html:79
 msgid "Product name"
 msgstr "Nombre del producto"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:77
+#: reservations_management/templates/reservations_management/manage_reservation.html:80
 msgid "Available quantity"
 msgstr "Cantidad disponible"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:78
+#: reservations_management/templates/reservations_management/manage_reservation.html:81
 msgid "Amount Required"
 msgstr "Cantidad requerida"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:79
+#: reservations_management/templates/reservations_management/manage_reservation.html:82
 msgid "Amount Returned"
 msgstr "Cantidad devuelta"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:80
+#: reservations_management/templates/reservations_management/manage_reservation.html:83
 msgid "Start Date"
 msgstr "Fecha de inicio"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:81
+#: reservations_management/templates/reservations_management/manage_reservation.html:84
 msgid "End Date"
 msgstr "Fecha de devolución"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:82
+#: reservations_management/templates/reservations_management/manage_reservation.html:85
 msgid "Is Returnable"
 msgstr "Se devuelve ?"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:83
-#: reservations_management/templates/reservations_management/reservations_list.html:67
+#: reservations_management/templates/reservations_management/manage_reservation.html:86
+#: reservations_management/templates/reservations_management/reservations_list.html:71
 msgid "Status"
 msgstr "Estado"
 
@@ -302,23 +405,19 @@ msgstr "Administración de producto"
 msgid "Accept"
 msgstr "Aceptar"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:5
-#: reservations_management/templates/reservations_management/reservations_list.html:31
+#: reservations_management/templates/reservations_management/reservations_list.html:9
+#: reservations_management/templates/reservations_management/reservations_list.html:36
 msgid "Reservations List"
 msgstr "Lista de reservaciones"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:68
+#: reservations_management/templates/reservations_management/reservations_list.html:72
 msgid "Massive Reservation"
 msgstr "Reservación masiva"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:86
+#: reservations_management/templates/reservations_management/reservations_list.html:90
 msgid "Yes"
 msgstr "Sí"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:88
+#: reservations_management/templates/reservations_management/reservations_list.html:92
 msgid "No"
 msgstr "No"
-
-#: reservations_management/templates/reservations_management/reservations_list.html:93
-msgid "Manage"
-msgstr "Administrar"
