@@ -498,6 +498,7 @@ def step_four(request,organilabcontext, substance):
                'template': personaltemplateSGA.pk,
                'form':form,
                'provider_form': ProviderSGAForm(),
+
                'substance': substance}
     return render(request,'academic/substance/step_four.html',context=context)
 

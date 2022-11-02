@@ -78,7 +78,7 @@ class ShelfForm(forms.ModelForm,GTForm):
         fields = ['name', 'type', 'furniture']
         widgets = {
             'name': genwidgets.TextInput,
-            'type':genwidgets.Select,
+            'type':genwidgets.Select(),
             'furniture': forms.HiddenInput()
         }
 

@@ -8,23 +8,24 @@
 
 {% block content %}
   {% if perms.laboratory.view_objectfeatures or perms.laboratory.add_objectfeatures or perms.laboratory.change_objectfeatures or perms.laboratory.delete_objectfeatures %}
-    <div class="col-md-offset-2 col-md-8">
+    <div class="container-fluid">
       <div class="page-header col-xs-13" align="center">
         <h3 class="heading-1" ><span>{% trans 'Object features management' %}</span></h3>
+<br><br>
       </div>
-    </div>
-    <div class="row">
+
+    <div class="row" style="justify-content: center">
       {% if perms.laboratory.add_objectfeatures and perms.laboratory.change_objectfeatures or not create and perms.laboratory.change_objectfeatures or create and  perms.laboratory.add_objectfeatures%}
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-8 col-md-offset-2" >
           <form class="form-horizontal" action="" method="post">{% csrf_token %}
             {{ form.as_horizontal }}
             <div class="form-group">
               <div class="col-sm-10 col-sm-offset-2">
                 <button class="btn btn-success" type="submit">
                   {% if create %}
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Save' %}
+                    <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Save' %}
                   {% else %}
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {% trans 'Edit' %}
+                    <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
                   {% endif %}
                 </button>
               </div>
@@ -33,23 +34,24 @@
         </div>
       {% endif %}
     </div>
+    <br><br>
 
     {% if create  %}
-      <div class="row">
+      <div class="row" >
         <div class="list-group boxmargin">
           {% for object in object_list %}
             <li class="row list-group-item">
               <div class="col-md-3">{{ object }}</div>
               <div class="col-md-6">{{ object.description }}</div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="btn-group" role="group" aria-label="...">
                   {% if perms.laboratory.change_objectfeatures %}
-                  <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-info">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
+                  <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-warning">
+                    <span class="fa fa-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
                   {% endif %} 
                   {% if perms.laboratory.delete_objectfeatures %}                 
                   <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk %}" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
+                    <span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
                   {% endif %}  
                 </div>
               </div>
@@ -75,6 +77,7 @@
           </span>
           </div>
         </div>
+      </div>
       </div>
     {% endif %}
   {% else %} 
