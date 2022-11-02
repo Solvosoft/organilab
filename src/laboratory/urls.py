@@ -34,7 +34,7 @@ urlpatterns = [
     re_path(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
     re_path(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     re_path(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    re_path(r'^create_lab$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
+    re_path(r'^create_lab/(?P<orgpk>\d+)?$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     re_path(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
 
     re_path(r"validators", validate_duplicate_initial_date, name="date_validator"),
