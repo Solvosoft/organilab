@@ -1,18 +1,18 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User
 from django.core.validators import RegexValidator
-from djgentelella.forms.forms import CustomForm
-
-from auth_and_perms.models import Profile, Rol
-from sga.models import DangerIndication
-from .models import Laboratory, Object, Provider, Shelf, ObjectFeatures, LaboratoryRoom, Furniture
-from reservations_management.models import ReservedProducts
-from django.contrib.auth.forms import UserCreationForm
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
-from laboratory.models import OrganizationStructure
+from djgentelella.forms.forms import CustomForm
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from django.forms import ModelForm
+
+from auth_and_perms.models import Profile, Rol
+from laboratory.models import OrganizationStructure
+from reservations_management.models import ReservedProducts
+from sga.models import DangerIndication
+from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
 
 
 class ObjectSearchForm(CustomForm, forms.Form):
@@ -197,6 +197,7 @@ class ProviderForm(forms.ModelForm, GTForm):
                    'legal_identity': genwidgets.TextInput(attrs={'required': True}),
                    }
 
+
 class ObjectFeaturesForm(forms.ModelForm, GTForm):
     class Meta:
         model = ObjectFeatures
@@ -206,6 +207,7 @@ class ObjectFeaturesForm(forms.ModelForm, GTForm):
             'description': genwidgets.Textarea()
         }
 
+
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
@@ -213,26 +215,27 @@ class LaboratoryRoomForm(forms.ModelForm, GTForm):
         widgets = {
             'name': genwidgets.TextInput(),
             'legal_identity': genwidgets.NumberInput,
-            }
+        }
 
 
-
-class FurnitureCreateForm(forms.ModelForm,GTForm):
+class FurnitureCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Furniture
         fields = ("name", "type")
-        widgets={
+        widgets = {
             "name": genwidgets.TextInput,
             "type": genwidgets.Select
         }
 
-class RoomCreateForm(forms.ModelForm,GTForm):
+
+class RoomCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
         fields = '__all__'
-        widgets={
+        widgets = {
             'name': genwidgets.TextInput
         }
+
 
 class FurnitureForm(forms.ModelForm, GTForm):
     dataconfig = forms.CharField(
@@ -248,4 +251,16 @@ class FurnitureForm(forms.ModelForm, GTForm):
         widgets = {'labroom': genwidgets.Select,
                    'name': genwidgets.TextInput,
                    'type': genwidgets.Select,
+                   'phone_number': genwidgets.PhoneNumberMaskInput,
+                   'email': genwidgets.EmailMaskInput,
+                   'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   }
+
+
+class InformForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = Inform
+        fields = ['name', 'custom_form']
+        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
+                   'custom_form': genwidgets.Select(),
                    }

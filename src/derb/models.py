@@ -11,6 +11,8 @@ class CustomForm(models.Model):
     status = models.CharField(max_length=6, choices=STATUS_CHOICES)
     schema = models.JSONField(default=dict)
 
+    def __str__(self):
+        return self.name
 
 class Section(models.Model):
     form = models.ForeignKey(CustomForm, related_name='sections', on_delete=models.CASCADE)
