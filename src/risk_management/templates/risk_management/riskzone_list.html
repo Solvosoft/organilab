@@ -51,10 +51,10 @@
   <ul class="list-group">
     {% for object in object_list %}
       <li class="row list-group-item">
-        <div class="col-md-9">
+        <div class="col-md-9 mb-2 ">
             <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
             <a href="{% url 'riskmanagement:riskzone_detail' object.pk %}">{{ object }}</a></div>
-        <div class="col-md-3">
+        <div class="col-md-3 d-flex justify-content-center">
          {% if perm_change_riskzone %}
           <a class="btn btn-warning text-white"
              href="{% url 'riskmanagement:riskzone_update' object.pk %}">
