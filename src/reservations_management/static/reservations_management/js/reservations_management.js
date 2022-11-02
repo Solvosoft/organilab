@@ -21,7 +21,7 @@ const get_modal_product_elements = () => {
 
     if (modal_form) {
         const modal_title = get_html_element('#product_name');
-        const status_select = modal_form.querySelector('#id_status');
+        const status_select = modal_form.querySelector('#reserveStatus');
         const is_returnable_checkbox = modal_form.querySelector('#id_is_returnable');
         const amount_required = modal_form.querySelector('#id_amount_required');
         const amount_returned = modal_form.querySelector('#id_amount_returned');

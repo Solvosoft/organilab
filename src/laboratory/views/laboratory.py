@@ -173,6 +173,7 @@ class CreateLaboratoryFormView(FormView):
         return response
 
     def get_success_url(self):
+        messages.success(self.request, _('Laboratory was created successfully'))
         return reverse('auth_and_perms:organizationManager')
 
 

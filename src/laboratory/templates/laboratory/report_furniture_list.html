@@ -7,14 +7,16 @@
   
    	{% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
   
-		<div class="pull-right">
+		<div class="float-end">
 		  
 		  	<div class="btn-group dropup">
 				<button type="button" class="btn btn-danger">
-					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans 'Download' %}
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 					<span class="caret"></span>
 					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
 				</button>
@@ -44,29 +46,31 @@
   	{% if perms.laboratory.view_furniture %}
 	  	{% for furniture in object_list %}
 			<h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
-				<a class="btn btn-sm btn-danger pull-right"
+				<a class="btn btn-sm btn-danger float-end"
 					href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
-					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans "PDF" %}
 				</a>
 			</h3>
 		
 			<div class="row text-center">
-				<strong>{% trans "Laboratory room:" %}</strong> {{ furniture.labroom }}<br>
+				<strong>{% trans "Laboratory room:" %}</strong>
+				<p class="m-0 ms-2 text-start">{{ furniture.labroom }}</p>
+				<br>
 				<strong>{% trans "Type:" %}</strong> {{ furniture.get_type_display }}
 				<hr>
 			</div>
 	
 			{% for shelf in furniture.shelf_set.all %}
-				<div class="panel panel-default">
-					<div class="panel-heading">
+				<div class="card">
+					<div class="card-header">
 					<strong>{% trans "Shelf:" %}</strong> {{ shelf.name }} <span
-					class="badge pull-right"> {% trans 'Total' %}: {{ shelf.count_objects }} {% trans 'objects' %}</span>
+					class="badge float-end"> {% trans 'Total' %}: {{ shelf.count_objects }} {% trans 'objects' %}</span>
 					</div>
-					<div class="panel-body"><p>
+					<div class="card-body"><p>
 					{% trans "Type:" %} {{ shelf.get_type_display }}
 					</p></div>
-			
+
 					<ul class="list-group">
 					{% for obj in shelf.shelfobject_set.all %}
 						<li class="list-group-item active">
@@ -98,13 +102,15 @@
       	{% include 'laboratory/action_denied.html' %}
   	{% endif %}
   	{% if perms.laboratory.do_report and perms.laboratory.view_furniture  %}
-	  	<div class="pull-right">
+	  	<div class="float-end">
 	 		<div class="btn-group dropup">
 				<button type="button" class="btn btn-danger">
-					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans 'Download'%}
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 					<span class="caret"></span>
 					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
 				</button>

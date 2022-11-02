@@ -5,13 +5,15 @@
 {% block content %}
 	<div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
 	{% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
-	  <div class="pull-right">
+	  <div class="float-end">
 	  
 	    <div class="btn-group dropup">
 	  <button type="button" class="btn btn-danger">
-	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	  <i class="fa fa-download" aria-hidden="true"></i>
 	   {% trans 'Download'%}</button>
-	  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+	  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 	    <span class="caret"></span>
 	    <span class="sr-only"> {% trans 'Toggle Dropdown'%} </span>
 	  </button>
@@ -45,10 +47,10 @@
 		  {% for obj in object_list %}
 		    <h3 class="alert alert-info">
 		      {{ obj }}
-		      <a class="btn btn-sm btn-danger pull-right"
+		      <a class="btn btn-sm btn-danger float-end"
 		         title="{{ obj }}"
 		         href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?pk={{ obj.pk }}">
-		        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+		   		<i class="fa fa-download" aria-hidden="true"></i>
 		        {% trans "PDF" %}</a>
 		    </h3>
 		    <ul>
@@ -74,9 +76,9 @@
   <br>
   <div>
     {% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
-    <a class="btn btn-primary pull-right" title="{% trans 'All objects' %}"
+    <a class="btn btn-primary float-end" title="{% trans 'All objects' %}"
          href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
-        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+        <i class="fa fa-download" aria-hidden="true"></i>
         {% trans "All objects in PDF" %}
     </a>
     <br> <br>

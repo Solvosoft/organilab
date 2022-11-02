@@ -1,0 +1,150 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-01 11:01-0600\n"
+"PO-Revision-Date: 2022-11-01 11:03-0600\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3\n"
+
+#: auth_and_perms/forms.py:10
+msgid "Select an user"
+msgstr ""
+
+#: auth_and_perms/forms.py:12
+msgid "User"
+msgstr ""
+
+#: auth_and_perms/models.py:13
+msgid "Phone"
+msgstr ""
+
+#: auth_and_perms/models.py:14
+msgid "ID Card"
+msgstr ""
+
+#: auth_and_perms/models.py:15
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:36
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:38
+msgid "Laboratories"
+msgstr ""
+
+#: auth_and_perms/models.py:16
+msgid "Job Position"
+msgstr ""
+
+#: auth_and_perms/models.py:30
+msgid "permissions"
+msgstr ""
+
+#: auth_and_perms/models.py:36 auth_and_perms/models.py:51
+msgid "Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:37
+msgid "Rols"
+msgstr ""
+
+#: auth_and_perms/models.py:44
+msgid "Profile"
+msgstr ""
+
+#: auth_and_perms/models.py:57
+msgid "Profile Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:58
+msgid "Profile Rols"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:13
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:14
+msgid "Add Laboratory"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:25
+msgid "Add new rol"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:25
+msgid "Add"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:26
+msgid "Add new user"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:45
+msgid "Organization doesn't have laboratories"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:56
+msgid "Administrators users"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:87
+msgid "Please enter a valid name"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:90
+msgid "Rol name"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:101
+msgid "Add User"
+msgstr "Agregar Usuario"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:107
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:108
+msgid "Save"
+msgstr "Guardar"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:10
+msgid "Lab profiles management"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:13
+msgid " Laboratory Profiles"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
+msgid "Name:"
+msgstr "Nombre:"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:20
+msgid "Last Name:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:21
+msgid "Id Card:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:22
+msgid "Job Position:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:23
+msgid "Manage Profile"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
+msgid "Manage"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:38
+msgid "No objects"
+msgstr ""

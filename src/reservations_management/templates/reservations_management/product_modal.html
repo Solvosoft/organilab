@@ -1,4 +1,5 @@
 {% extends 'gentelella/base.html' %}
+{% load laboratory static i18n  %}
 {% load static i18n %}
 {% block content %}
 
@@ -26,7 +27,7 @@
             </div>
 
 
-            <form method="POST" class="mt-2" id="modal_form">
+            <form method="POST" class="mt-2 form-plain" id="modal_form">
               {% csrf_token %}
               {{product_form.as_plain }}
 

@@ -7,19 +7,20 @@
   <div class="page-header"><h1>{% trans 'Organization laboratory report' %}</h1></div>
 
   <div>
-  	 <form action="#" method="post" class="table-responsive">
+  	 <form action="#" id="formTable" method="post">
 	        {% csrf_token %}
-	        <table class="table" >
-	        {{ form.as_horizontal }}
-	        </table>
-	        <input class="btn btn-success" type="submit" value={% trans 'Submit' %} />
+	        {{ form.as_inline }}
+	        <input class="btn btn-success" type="submit" value="{% trans 'Submit' %}" />
 	 </form>
 	  {% if perm_do_report and perm_laboratory  %}
-		<div class="btn-group dropup pull-right">
+		<div class="btn-group dropup float-end">
 		  <button type="button" onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"' 
-		   class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+		   class="btn btn-danger">
+			<i class="fa fa-download" aria-hidden="true"></i>
 		  {% trans 'Download'%}</button>
-		  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+		  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 		    <span class="caret"></span>
 		    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 		  </button>
@@ -52,29 +53,29 @@
 	      <strong>{% trans 'Laboratory :' %}</strong> {{ laboratory.name }}
 	    </div>
 	    <table class="table">
-	                <tr  >
+	                <tr class="text-center" >
 	                <th >{% trans "Phone" %} </th>
 	                <th >{% trans "Location" %} </th>
 	                <th >{% trans "Profiles" %} </th>
 	                <th >{% trans "Phones" %} </th>
 	                <th >{% trans "Emails" %} </th>
 	            </tr>
-	            <tr>
-	                 <td>{{laboratory.phone_number }}</td>
-	                 <td>{{laboratory.location }}</td>
-	                 <td>  <ul>                      
+	            <tr class="text-center">
+	                 <td class="align-middle">{{laboratory.phone_number }}</td>
+	                 <td class="align-middle">{{laboratory.location }}</td>
+	                 <td class="align-middle"> <ul class="m-0 p-0 ">
 	                         {% for assigned in laboratory.profile_set.all %}
 	                          <li> {{ user.first_name }}</li>
 	                         {% endfor %}
 	                           </ul>    
 	                 </td>
-	                 <td>  <ul>                      
+	                 <td class="align-middle"> <ul class="m-0 p-0">
 	                         {% for assigned in laboratory.profile_set.all %}
 	                          <li> {{ assigned.phone_number }}</li>
 	                         {% endfor %}
 	                           </ul>    
 	                 </td>
-	                 <td>  <ul>                      
+	                 <td class="align-middle">  <ul class="m-0 p-0">
 	                         {% for assigned in laboratory.principaltechnician_set.all %}
 	                          <li> {{ assigned.email }}</li>
 	                         {% endfor %}
@@ -91,11 +92,14 @@
   {% endif %}
   <div>
   {% if perms.laboratory.do_report and perms.laboratory.view_laboratory  %}
-	<div class="btn-group dropup pull-right">
+	<div class="btn-group dropup float-end">
 	  <button  onclick='location.href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}"'   
-	   type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	   type="button" class="btn btn-danger">
+		<i class="fa fa-download" aria-hidden="true"></i>
 	  {% trans 'Download'%}</button>
-	  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+	  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 	    <span class="caret"></span>
 	    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 	  </button>
