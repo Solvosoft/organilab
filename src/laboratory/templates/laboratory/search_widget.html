@@ -2,8 +2,7 @@
 {% get_search_form as search_form %}
 {% if perms.laboratory.view_laboratory %}
 <div class="row">
-  <div class="col-md-10">
-    <div class="col-md-12" style="padding-top: 3%; padding-bottom: 5%">
+  <div class="col-md-10 pt-4">
       {% if laboratory %}
       <form method="get" action="{% url 'laboratory:search' laboratory %}">
         {% else %}
@@ -16,12 +15,11 @@
 
           <div class="col-md-2">
             <button type="submit" class="btn btn-secondary">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               {% trans 'Search' %}
+              <i class="fa fa-search" aria-hidden="true"></i>
             </button>
           </div>
         </form>
-    </div>
   </div>
 </div>
 {% endif %}

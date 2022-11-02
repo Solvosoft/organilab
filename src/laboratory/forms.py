@@ -90,7 +90,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
 
 class H_CodeForm(GTForm, forms.Form):
     hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
-                                           widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+                                           widget=genwidgets.SelectMultiple,
                                            label=_('Filter substances by H Code'))
 
 
