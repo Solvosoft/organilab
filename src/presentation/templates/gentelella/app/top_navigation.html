@@ -14,10 +14,13 @@
 
 {% endif %}
 <ul class="nav navbar-nav navbar-right" >
-  {% get_urlname_action as urlnameactions %}
+  {% if perms.auth_and_perms.change_rol %}
+      {% get_urlname_action as urlnameactions %}
       {% validate_context urlnameactions as context %}
       {% if urlnameactions and context %}
         <li><a class="btn" id="btn_perms" title="Add Permission" data-toggle="modal" data-target="#permission_modal" data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}" style="padding-top: 31%;"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a></li>
+      {% endif %}
+
   {% endif %}
 
   {% if request.user.is_authenticated %}
