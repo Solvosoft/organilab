@@ -47,7 +47,8 @@ def getTree(node, structure, level=0):
 
 
 def organization_manage_view(request):
-    parents=list(OrganizationStructure.objects.filter(parent=None))
+    query_list = OrganizationStructure.os_manager.filter_user(request.user)
+    parents=list(query_list.filter(parent=None))
     nodes = []
 
 
