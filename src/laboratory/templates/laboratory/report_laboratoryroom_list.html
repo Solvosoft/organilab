@@ -9,12 +9,15 @@
 {% block content %}
   	<div class="page-header"><h1>{% trans 'Laboratory report' %}</h1></div>
    	{% if perms.laboratory.do_report and perms.laboratory.view_laboratoryroom  %}
-		<div>
-			<div class="btn-group dropup pull-right">
-				<button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+		<div class="mb-4">
+			<div class="btn-group dropup float-end">
+				<button type="button" class="btn btn-danger">
+					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans 'Download'%}
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 					<span class="caret"></span>
 					<span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 				</button>
@@ -44,7 +47,7 @@
 			<table class="table">
 				{% for furniture in laboratory_room.furniture_set.all %}
 					<tr class="bg-success">
-						<th colspan="4">{% trans "Furniture:" %} {{ furniture.name }}</th>
+						<th colspan="4" class="text-white">{% trans "Furniture:" %} {{ furniture.name }}</th>
 						</tr>
 						<tr>
 						<th>{% trans "Code" %} </th>
@@ -72,11 +75,14 @@
 
 	{% if perms.laboratory.do_report and perms.laboratory.view_laboratoryroom %}
 		<div>
-			<div class="btn-group dropup pull-right">
-				<button type="button" class="btn btn-danger">  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+			<div class="btn-group dropup float-end">
+				<button type="button" class="btn btn-danger">
+					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans 'Download'%}
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
 					<span class="caret"></span>
 					<span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 				</button>

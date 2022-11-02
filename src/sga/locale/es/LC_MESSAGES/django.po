@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-31 14:30-0600\n"
-"PO-Revision-Date: 2022-10-31 14:32-0600\n"
+"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"PO-Revision-Date: 2022-11-01 17:28-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -93,8 +93,13 @@ msgstr "Peso"
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
+<<<<<<< HEAD
 #: sga/models.py:57 sga/templates/danger_indication_info.html:40
 #: sga/templates/editor/live.html:3
+=======
+#: sga/models.py:61 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3
+#: academic/templates/academic/substance/warning_words.html:12
+>>>>>>> baseORG/development_bootstrap5
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
@@ -119,7 +124,11 @@ msgstr "Ayuda en los consejos de prudencia"
 msgid "Prudence Advice"
 msgstr "Consejo de prudencia"
 
+<<<<<<< HEAD
 #: sga/models.py:96 sga/templates/danger_indication_info.html:57
+=======
+#: sga/models.py:100 sga/templates/danger_indication_info.html:57 academic/templates/academic/substance/prudence_advice.html:12
+>>>>>>> baseORG/development_bootstrap5
 msgid "Prudence Advices"
 msgstr "Consejos de prudencia"
 
@@ -143,7 +152,12 @@ msgstr "Categorías de peligro"
 msgid "Prudence advice"
 msgstr "Consejos de prudencia"
 
+<<<<<<< HEAD
 #: sga/models.py:122 sga/models.py:202 sga/templates/editor/generic.html:9
+=======
+#: sga/models.py:127 sga/models.py:209 sga/templates/editor/generic.html:9
+#: academic/templates/academic/substance/danger_indication.html:12
+>>>>>>> baseORG/development_bootstrap5
 msgid "Danger Indication"
 msgstr "Indicación de peligro"
 

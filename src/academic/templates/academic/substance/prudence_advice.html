@@ -9,14 +9,17 @@
 <div class="row">
 
     <div class="col-sm-12">
-        <a href="{% url 'add_prudence_advice' %}" class="btn btn-success pull-right">{% trans 'Add' %}</a>
+        <h1>{% trans 'Prudence Advices' %}</h1>
+        <a href="{% url 'add_prudence_advice' %}" class="btn btn-success float-end">
+            {% trans 'Add' %}
+            <i class="fa fa-plus" aria-hidden="true"></i></a>
         <table id="prudence_table" class="table table-bordered text-center">
             <thead>
                 <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Mensaje de Ayuda</th>
-                    <th>Acciones</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Mensaje de Ayuda</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
