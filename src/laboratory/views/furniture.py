@@ -2,6 +2,7 @@
 
 from ..forms import FurnitureForm
 from djgentelella.widgets import core as genwidgets
+from django.utils.translation import gettext_lazy as _
 '''
 Created on 26/12/2016
 
