@@ -12,8 +12,8 @@ from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
 from . import catalog
-
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
     cas_id_number = models.TextField(_('CAS ID number'))
@@ -520,3 +520,34 @@ class PrecursorReport(models.Model):
     year = models.IntegerField()
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
+
+
+STATUS_CHOICES = (
+    (_('Eraser'), _('Eraser')),
+    (_('In Review'), _('In Review')),
+    (_('Finalized'), _('Finalized')),
+)
+
+
+class Inform(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
+    custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True, on_delete=models.CASCADE,verbose_name=_('Template'))
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    context_object = GenericForeignKey('content_type', 'object_id')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Eraser')
+    schema = models.JSONField(default=dict)
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
+
+class CommentInform(models.Model):
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
+    create_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True, verbose_name=_("Comment"))
+    def __str__(self):
+        return f'{self.creator} - {self.create_at}'
