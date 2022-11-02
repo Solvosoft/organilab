@@ -1,6 +1,6 @@
 from django import forms
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 from laboratory.models import OrganizationUserManagement
 
@@ -10,5 +10,5 @@ class AddUserForm(forms.ModelForm, GTForm):
         model = OrganizationUserManagement
         fields = ['users']
         widgets = {
-            'users': genwidgets.SelectMultiple(attrs={'data-dropdownparent': '#addusermodal'})
+            'users': AutocompleteSelectMultiple('userbase', attrs={'data-dropdownparent': '#addusermodal'})
         }
