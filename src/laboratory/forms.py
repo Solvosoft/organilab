@@ -247,5 +247,5 @@ class FurnitureForm(forms.ModelForm, GTForm):
         fields = ("labroom", "name", "type", 'dataconfig')
         widgets = {'labroom': genwidgets.Select,
                    'name': genwidgets.TextInput,
-                   'type': genwidgets.Select,
+                   'type': genwidgets.Select(attrs={'id':'select_furniture'}),
                    }
