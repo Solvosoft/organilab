@@ -12,20 +12,19 @@
     <form id="leaf_form" action="{% url 'step_four' organilabcontext substance %}" method="POST">
     {% csrf_token %}
 
-    <div class="row">
+    <div class="row " style="justify-content: center">
         <div class="col-md-offset-2 col-md-8" >
             <div class = "container">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="heading">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
+                <div class="accordion " id="accordionExample" >
+                    <div class="accordion-item">
+                            <h4 class="accordion-header" id="heading">
+                                <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
                                     {% trans 'Product Identifiers' %}
-                                </a>
+                                </button>
                             </h4>
-                        </div>
-                        <div id="collapseZero" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingZero">
-                            <div class="panel-body">
+
+                        <div id="collapseZero" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingZero" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">{{ form.register_number.label_tag }} {{ form.register_number }}</div>
@@ -35,7 +34,11 @@
                                             {{ form.provider.label_tag }}
                                             <br>
                                             <div class="input-group">
-                                                <span class="input-group-addon btn btn-success text-white" title="{% trans 'Add' %}" data-bs-toggle="modal" data-target="#provider_modal" style="color: white !important;">+</span>
+                                                <span class="input-group-btn " >
+                                                    <button class="btn btn-success text-white" type="button" title="{% trans 'Add' %}" data-bs-toggle="modal" data-bs-target="#provider_modal">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </button>
+                                                </span>
                                                 {{ form.provider }}
                                             </div>
                                         </div>
@@ -45,16 +48,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a data-bs-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    {% trans 'First aid' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingOne">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                {% trans 'First aid' %}
+                            </button>
+                        </h4>
+                        <div id="collapseOne" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingOne" >
+                            <div class="accordion-body">
                                 <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">
@@ -88,16 +89,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingTwo">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    {% trans 'Fire-fighting measures' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                {% trans 'Fire-fighting measures' %}
+                            </button>
+                        </h4>
+                        <div id="collapseTwo" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingTwo" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.appropriate.label_tag }} {{ form.appropriate }}</div>
@@ -114,16 +113,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingThree">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                                    {% trans 'Measures in case of accidental spill' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingThree">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                {% trans 'Measures in case of accidental spill' %}
+                            </button>
+                        </h4>
+                        <div id="collapseThree" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingThree" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.personal_caution.label_tag }} {{ form.personal_caution }}</div>
@@ -137,16 +134,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingFour">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    {% trans 'Handling Storage' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingFour">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                {% trans 'Handling Storage' %}
+                            </button>
+                        </h4>
+                        <div id="collapseFour" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingFour" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-12">
                                          <div class="form-group">{{ form.safe_handling.label_tag }} {{ form.safe_handling }}</div>
@@ -157,16 +152,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingFive">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                    {% trans 'Exposure controls/personal protection' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingFive">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                {% trans 'Exposure controls/personal protection' %}
+                            </button>
+                        </h4>
+                        <div id="collapseFive" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingFive" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.vla_ed_pp.label_tag }} {{ form.vla_ed_pp }}</div>
@@ -191,16 +184,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingSix">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                    {% trans 'Physical and chemical properties' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+
+                         <h4 class="accordion-header" id="headingSix">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                {% trans 'Physical and chemical properties' %}
+                            </button>
+                        </h4>
+                        <div id="collapseSix" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingSix"  >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.aspect.label_tag }} {{ form.aspect }}</div>
@@ -232,16 +224,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingSeven">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                                    {% trans 'Stability and Reactivity' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingSeven">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                               {% trans 'Stability and Reactivity' %}
+                            </button>
+                        </h4>
+                        <div id="collapseSeven" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingSeven" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.reactivity.label_tag }} {{ form.reactivity }}</div>
@@ -257,16 +247,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingEight">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                                    {% trans 'Toxicological informacion' %}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
-                            <div class="panel-body">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingEight">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                               {% trans 'Toxicological informacion' %}
+                            </button>
+                        </h4>
+                        <div id="collapseEight" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingEight" >
+                            <div class="accordion-body">
                                <div class="row">
                                     <div class="col-sm-6">
                                          <div class="form-group">{{ form.acute_toxicity.label_tag }} {{ form.acute_toxicity }}</div>
@@ -287,16 +275,14 @@
                             </div>
                         </div>
                     </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingNine">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                <div class="accordion-item">
+                      <h4 class="accordion-header" id="headingNine">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
                                 {% trans 'Ecological Information' %}
-                            </a>
+                            </button>
                         </h4>
-                    </div>
-                    <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
-                        <div class="panel-body">
+                    <div id="collapseNine" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingNine" >
+                        <div class="accordion-body">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">{{ form.toxicity.label_tag }} {{ form.toxicity }}</div>
@@ -312,16 +298,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTen">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
-                                {% trans 'Relative Considerations Disposal' %}
-                            </a>
+                <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingTen">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                               {% trans 'Relative Considerations Disposal' %}
+                            </button>
                         </h4>
-                    </div>
-                    <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
-                        <div class="panel-body">
+                    <div id="collapseTen" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingTen" >
+                        <div class="accordion-body">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">{{ form.product.label_tag }} {{ form.product }}</div>
@@ -331,16 +315,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTwelve">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
-                                {% trans 'Regulatory information'%}
-                            </a>
+                <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingTwelve">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                              {% trans 'Regulatory information'%}
+                            </button>
                         </h4>
-                    </div>
-                    <div id="collapseTwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEleven">
-                        <div class="panel-body">
+                    <div id="collapseTwelve" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingEleven">
+                        <div class="accordion-body">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">{{ form.regulatory_information.label_tag }} {{ form.regulatory_information }}</div>
@@ -351,16 +333,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingzz">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapsezz" aria-expanded="false" aria-controls="collapseTwelve">
-                                {% trans 'Transport information' %}
-                            </a>
+                <div class="accordion-item">
+                     <h4 class="accordion-header" id="headingzz">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapsezz" aria-expanded="false" aria-controls="collapsezz">
+                              {% trans 'Transport information' %}
+                            </button>
                         </h4>
-                    </div>
-                    <div id="collapsezz" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingzz">
-                        <div class="panel-body">
+                    <div id="collapsezz" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingzz" >
+                        <div class="accordion-body">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">{{ form.onu_number.label_tag }} {{ form.onu_number }}</div>
@@ -376,16 +356,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingThirteen">
-                        <h4 class="panel-title">
-                            <a class="collapsed" data-bs-toggle="collapse" data-parent="#accordion" href="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen">
-                                {% trans 'Other information'%}
-                            </a>
+                <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingThirteen">
+                            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen">
+                              {% trans 'Other information'%}
+                            </button>
                         </h4>
-                    </div>
-                    <div id="collapseThirteen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThirteen">
-                        <div class="panel-body">
+                    <div id="collapseThirteen" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="headingThirteen" >
+                        <div class="accordion-body">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">{{ form.full_text_statements.label_tag }} {{ form.full_text_statements }}</div>
@@ -400,8 +378,8 @@
         </div>
     </div>
 </div>
-        <div class="col-md-12 text-center" style="display:inline-block">
-            <button type="submit" class="btn btn-success">{% trans 'Continue' %}</button>
+        <div class="col-md-12 text-center mt-2 " style="display:inline-block">
+            <button type="submit" class="btn btn-outline-success">{% trans 'Continue' %}</button>
         </div>
     </form>
 </div>
@@ -410,9 +388,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Add Provider' %}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="provider_form">
@@ -420,8 +396,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="provider_add" type="button" class="btn btn-success" data-dismiss="modal">{% trans 'Add' %}</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                <button id="provider_add" type="button" class="btn btn-success" data-bs-dismiss="modal">{% trans 'Add' %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
     </div>
@@ -431,6 +407,7 @@
 {% block js %}
 {{block.super}}
 <script>
+
     $("#provider_add").click(()=>{
     const formEntries = new FormData(document.querySelector('#provider_form')).entries();
     const json = Object.assign(...Array.from(formEntries, ([x,y]) => ({[x]:y})));

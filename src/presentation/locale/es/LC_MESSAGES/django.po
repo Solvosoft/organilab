@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-10-18 10:18-0600\n"
+"PO-Revision-Date: 2022-11-01 17:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: presentation/templates/gentelella/app/footer.html:4
 #: presentation/templates/gentelella/registration/footer.html:7
@@ -31,152 +31,122 @@ msgstr ""
 msgid "Welcome,"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:34
-msgid "Manage Reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:40
-msgid "Requested reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:42
-msgid "Requested Reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:48
-#: presentation/templates/gentelella/app/sidebar.html:49
-msgid "Accepted Reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:54
-#: presentation/templates/gentelella/app/sidebar.html:55
-msgid "Denied Reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:60
-#: presentation/templates/gentelella/app/sidebar.html:61
-msgid "Closed Reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:70
-#: presentation/templates/gentelella/app/sidebar.html:71
-msgid "Access list"
-msgstr ""
-
-#: presentation/templates/gentelella/app/sidebar.html:78
+#: presentation/templates/gentelella/app/sidebar.html:35
 msgid "blog entries"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:79
+#: presentation/templates/gentelella/app/sidebar.html:36
 msgid "Blog"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:85
-#: presentation/templates/gentelella/app/sidebar.html:86
+#: presentation/templates/gentelella/app/sidebar.html:42
+#: presentation/templates/gentelella/app/sidebar.html:43
+#: presentation/templates/tutorial.html:8
 msgid "Regulation documents"
 msgstr ""
 
-#: presentation/templates/gentelella/app/sidebar.html:92
+#: presentation/templates/gentelella/app/sidebar.html:49
 msgid "Feedback"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:14
+#: presentation/templates/gentelella/app/top_navigation.html:17
 msgid "Add Laboratory"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:21
-#: presentation/templates/gentelella/app/top_navigation.html:22
+#: presentation/templates/gentelella/app/top_navigation.html:24
+#: presentation/templates/gentelella/app/top_navigation.html:25
+#: presentation/templates/gentelella/app/top_navigation.html:40
 msgid "My laboratories"
 msgstr "Mis Laboratorios"
 
-#: presentation/templates/gentelella/app/top_navigation.html:30
+#: presentation/templates/gentelella/app/top_navigation.html:35
 msgid "Administration"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:35
-msgid "My Laboratories"
+#: presentation/templates/gentelella/app/top_navigation.html:46
+msgid "Laboratory Management"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:40
-msgid "Laboratory management"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:45
+#: presentation/templates/gentelella/app/top_navigation.html:52
 msgid "Object management"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:47
-#: presentation/templates/gentelella/app/top_navigation.html:88
+#: presentation/templates/gentelella/app/top_navigation.html:54
+#: presentation/templates/gentelella/app/top_navigation.html:100
 msgid "Reactive"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:48
-#: presentation/templates/gentelella/app/top_navigation.html:89
+#: presentation/templates/gentelella/app/top_navigation.html:56
+#: presentation/templates/gentelella/app/top_navigation.html:102
 msgid "Material"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:49
-#: presentation/templates/gentelella/app/top_navigation.html:90
+#: presentation/templates/gentelella/app/top_navigation.html:58
+#: presentation/templates/gentelella/app/top_navigation.html:104
 msgid "Equipment"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:55
+#: presentation/templates/gentelella/app/top_navigation.html:65
 msgid "Object features management"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:59
-msgid "Dissolution management"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:68
+#: presentation/templates/gentelella/app/top_navigation.html:76
 msgid "Reports"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:73
+#: presentation/templates/gentelella/app/top_navigation.html:81
 #: presentation/templates/partials/laboratories_menu.html:5
 msgid "Laboratory"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:75
-#: presentation/templates/gentelella/app/top_navigation.html:86
+#: presentation/templates/gentelella/app/top_navigation.html:83
+#: presentation/templates/gentelella/app/top_navigation.html:98
 msgid "Objects"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:76
+#: presentation/templates/gentelella/app/top_navigation.html:85
 msgid "Principal Technician"
 msgstr ""
 
+<<<<<<< HEAD
+#: presentation/templates/gentelella/app/top_navigation.html:93
+=======
+#: presentation/templates/gentelella/app/top_navigation.html:121
+msgid "Informs"
+msgstr "Informes"
+
 #: presentation/templates/gentelella/app/top_navigation.html:82
+>>>>>>> baseORG/development_bootstrap5
 msgid "Furnitures"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:96
+#: presentation/templates/gentelella/app/top_navigation.html:110
 msgid "Reactive precursor objects"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:101
+#: presentation/templates/gentelella/app/top_navigation.html:116
 msgid "Object changes"
 msgstr "Movimiento de Objetos"
 
-#: presentation/templates/gentelella/app/top_navigation.html:106
+#: presentation/templates/gentelella/app/top_navigation.html:122
 msgid "Limited shelf objects"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:110
+#: presentation/templates/gentelella/app/top_navigation.html:127
 #, fuzzy
 #| msgid "Precursor report"
 msgid "Precursor Report"
 msgstr "Reporte sobre precursores"
 
-#: presentation/templates/gentelella/app/top_navigation.html:118
+#: presentation/templates/gentelella/app/top_navigation.html:136
 msgid "My reservations"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:125
+#: presentation/templates/gentelella/app/top_navigation.html:143
 msgid "Tutorials"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:129
+#: presentation/templates/gentelella/app/top_navigation.html:147
 #: presentation/templates/gentelella/registration/login.html:43
 #: presentation/templates/gentelella/registration/password_reset_complete.html:15
 msgid "Log in"
@@ -360,6 +330,29 @@ msgstr ""
 msgid "You are now registered. Activation email sent."
 msgstr ""
 
+#: presentation/templates/partials/auth_and_perms.html:6
+msgid "Organizations and perms"
+msgstr ""
+
+#: presentation/templates/partials/auth_and_perms.html:11
+#: presentation/templates/partials/auth_and_perms.html:12
+msgid "Manage Organizations"
+msgstr ""
+
+#: presentation/templates/partials/auth_and_perms.html:16
+#: presentation/templates/partials/auth_and_perms.html:17
+msgid "Access list"
+msgstr ""
+
+#: presentation/templates/partials/derb_menu.html:7
+msgid "Report Management"
+msgstr ""
+
+#: presentation/templates/partials/derb_menu.html:13
+#: presentation/templates/partials/derb_menu.html:15
+msgid "Report List"
+msgstr ""
+
 #: presentation/templates/partials/laboratories_menu.html:10
 msgid "Laboratory view"
 msgstr ""
@@ -369,11 +362,34 @@ msgid "Procedures"
 msgstr ""
 
 #: presentation/templates/partials/laboratories_menu.html:21
-msgid "Dissolution calculator (experimental)"
+msgid "Edit laboratory"
 msgstr ""
 
-#: presentation/templates/partials/laboratories_menu.html:28
-msgid "Edit laboratory"
+#: presentation/templates/partials/reservations_menu.html:6
+msgid "Manage Reservations"
+msgstr ""
+
+#: presentation/templates/partials/reservations_menu.html:12
+msgid "Requested reservations"
+msgstr ""
+
+#: presentation/templates/partials/reservations_menu.html:14
+msgid "Requested Reservations"
+msgstr ""
+
+#: presentation/templates/partials/reservations_menu.html:20
+#: presentation/templates/partials/reservations_menu.html:21
+msgid "Accepted Reservations"
+msgstr ""
+
+#: presentation/templates/partials/reservations_menu.html:26
+#: presentation/templates/partials/reservations_menu.html:27
+msgid "Denied Reservations"
+msgstr ""
+
+#: presentation/templates/partials/reservations_menu.html:32
+#: presentation/templates/partials/reservations_menu.html:33
+msgid "Closed Reservations"
 msgstr ""
 
 #: presentation/templates/partials/riskmanagement_menu.html:7
@@ -404,20 +420,28 @@ msgstr "Crear Sustancias"
 msgid "My Substances"
 msgstr "Mis Sustancias"
 
-#: presentation/templates/partials/sga_academic.html:23
+#: presentation/templates/partials/sga_academic.html:24
 msgid "Check of Substances"
 msgstr "Revision de Sustancias"
 
-#: presentation/templates/partials/sga_academic.html:29
+#: presentation/templates/partials/sga_complements.html:6
+msgid "SGA Components"
+msgstr ""
+
+#: presentation/templates/partials/sga_complements.html:13
 msgid "Warning Words"
 msgstr ""
 
-#: presentation/templates/partials/sga_academic.html:34
+#: presentation/templates/partials/sga_complements.html:18
 msgid "Danger Indication"
 msgstr ""
 
-#: presentation/templates/partials/sga_academic.html:39
+#: presentation/templates/partials/sga_complements.html:23
 msgid "Prudence Advice"
+msgstr ""
+
+#: presentation/templates/partials/sga_complements.html:29
+msgid "Pictograms"
 msgstr ""
 
 #: presentation/templates/partials/sga_menu.html:6
@@ -434,4 +458,8 @@ msgstr ""
 
 #: presentation/templates/partials/sga_menu.html:28
 msgid "MSDS: Security sheets"
+msgstr ""
+
+#: presentation/templates/tutorial.html:7
+msgid "MSDS Files"
 msgstr ""

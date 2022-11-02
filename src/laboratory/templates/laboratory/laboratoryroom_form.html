@@ -14,9 +14,9 @@
 {% block content %}
 	{% if perms.laboratory.view_laboratoryroom or perms.laboratory.add_laboratoryroom or  perms.laboratory.change_laboratoryroom or perms.laboratory.delete_laboratoryroom %}
 		<div class="row">
-			<div class="col-md-offset-2 col-md-8">
+			<div class="">
 				<div class="page-header col-xs-13" align="center">
-				<h3 class="heading-1" center=""><span>{% trans 'Laboratory room management' %}</span></h3>
+				<h3 class="heading-1"><span>{% trans 'Laboratory room management' %}</span></h3>
 				</div>
 			</div>
 		</div>
@@ -24,22 +24,19 @@
 			<div class="container-fluid">
 
 				{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-			<div class="col-md-offset-2 col-md-8" style="padding: 15px">
+			<div class="" style="padding: 15px;">
 			<form class="form-horizontal " action="" method="post">{% csrf_token %}
-						{{ form.as_horizontal }}
-						<div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
+								{{ form.as_horizontal }}
 
-							<button class="btn btn-success" type="submit" style="width:90px; float: right; margin-right:15px;">
+							<button class="btn btn-outline-success" type="submit" style="width:90px; float: right; ">
 
 							{% if form.instance.pk %}
-								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'Update' %}
+								<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Update' %}
 							{% else %}
-								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{% trans 'New' %}
+								<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'New' %}
 							{% endif %}
 							</button>
-						</div>
-						</div>
+
 					</form>
 				{% endif %}
 				</div>
@@ -64,16 +61,17 @@
 												{% endfor %}
 											</ul>
 										</div>
-										<button type="button" class="btn btn-success" style="width:50px"
-												data-container="body" data-bs-toggle="popover" data-placement="left"
+										<button type="button" class="btn btn-outline-success" style="width:60px"
+												data-bs-container="body" data-bs-toggle="popover" 5
 												data-content="f{{object.pk}}"
-												data-html=true>
+												data-bs-html=true>
 											{{ object.furniture_set.count }}
 										</button>
-										<button type="button" class="btn btn-default" title="{% trans 'Create Furniture' %}" 
-												data-bs-toggle="modal" data-target="#furnitureModal"
+										<button type="button" class="btn btn-outline-dark" title="{% trans 'Create Furniture' %}"
+												data-bs-toggle="modal" data-bs-target="#furnitureModal"
+
 												data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
-											+ <span  class="glyphicon glyphicon-bed" aria-hidden="true"></span>
+											+ <span  class="fa fa-bed" aria-hidden="true"></span>
 										</button>
 									</div>	            	
 								</div>
@@ -83,13 +81,13 @@
 						<div class="col-md-2">
 							<div class="btn-group" role="group" aria-label="...">
 								{% if perms.laboratory.change_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-info">
-										<span class="glyphicon glyphicon-edit" aria-hidden="true"> </span>{% trans 'Update' %}
+									<a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-outline-warning">
+										<span class="fa fa-edit" aria-hidden="true"> </span>{% trans 'Update' %}
 									</a>
 								{% endif %}
 								{% if perms.laboratory.delete_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-danger">
-										<span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>{% trans 'Delete' %}
+									<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-outline-danger">
+										<span class="fa fa-trash" aria-hidden="true"> </span>{% trans 'Delete' %}
 									</a>
 								{% endif %}
 							</div>
@@ -102,20 +100,20 @@
 		{% include 'laboratory/action_denied.html' %} 
 	{% endif %}
 	{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-		<div class="modal fade" id="furnitureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal " id="furnitureModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<form method="post" action="">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h4 class="modal-title" id="exampleModalLabel">{% trans 'Create furniture' %}</h4>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							{% csrf_token %}
 							{{furniture_form.as_horizontal}}
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">
+							<button type="button" class="btn btn-default" data-bs-dismiss="modal">
 							{% trans 'Close' %}</button>
 							<button type="submit" class="btn btn-primary">{% trans 'Create furniture' %}</button>
 						</div>
@@ -132,17 +130,17 @@
 			$('[data-bs-toggle="popover"]').each( function(i){
 				var idelem="#"+$(this).data('content');
 				var content=$(idelem).html();
-				$(this).attr('data-content', content);
+				$(this).attr('data-bs-content', content);
 				$(idelem).remove();
 			});
 			$('[data-bs-toggle="popover"]').popover();
 			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-				$('#furnitureModal').on('show.bs.modal', function (event) {
+				$('#furnitureModal').on('show.modal', function (event) {
 					var button = $(event.relatedTarget) // Button that triggered the modal
 					var url = button.data('href');
 					var modal = $(this);
-					modal.find('.modal-content form').attr('action', url); 
-					modal.find('.modal-content form').attr('method', 'post');   
+					modal.find('.modal-content form').attr('action', url);
+					modal.find('.modal-content form').attr('method', 'post');
 				});
 			{% endif %}
 		});

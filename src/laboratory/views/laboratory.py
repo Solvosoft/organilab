@@ -150,13 +150,21 @@ class CreateLaboratoryFormView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        user = self.request.user
+        kwargs['user'] = user
+
+        if 'orgpk' in self.kwargs:
+            query_list = OrganizationStructure.os_manager.filter_user(user)
+            organization = query_list.filter(pk=self.kwargs['orgpk'])
+
+            if organization.exists():
+                kwargs['initial'] = {
+                    'organization': organization.first()
+                }
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(CreateLaboratoryFormView,
-                        self).get_context_data(**kwargs)
-
+        context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
         return context
 
     def form_valid(self, form):
@@ -173,6 +181,7 @@ class CreateLaboratoryFormView(FormView):
         return response
 
     def get_success_url(self):
+        messages.success(self.request, _('Laboratory was created successfully'))
         return reverse('auth_and_perms:organizationManager')
 
 

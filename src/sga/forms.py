@@ -198,7 +198,6 @@ class SGAComplementsForm(forms.ModelForm, GTForm):
             'other_dangers': genwidgets.Textarea
         }
 
-
 class ProviderSGAForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
@@ -215,7 +214,8 @@ class ProviderSGAForm(forms.ModelForm, GTForm):
             "telephone_number": genwidgets.TextInput(),
             "fax": genwidgets.TextInput(),
             "email": genwidgets.EmailInput(),
-            "provider": genwidgets.Select(),
+            "provider": genwidgets.Select(attrs={'data-dropdownparent': '#provider_modal',
+                                             'data-placeholder': _('Select Provider')}),
             "emergency_phone": genwidgets.TextInput(),
         }
 
