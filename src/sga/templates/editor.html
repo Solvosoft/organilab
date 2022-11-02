@@ -47,18 +47,15 @@
     <div class="col-sm-12">
 
         <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
                   aria-expanded="false">
               {% trans 'Available templates' %} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-
               {% for tem in templates %}
-                <li><a href="{% url 'sga:editor' organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li class="dropdown-item"><a href="{% url 'sga:editor' organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
-
             </ul>
-
         </div>
         <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
         <div class="btn-group" style="width:100%">
@@ -70,20 +67,20 @@
     <div class="col-sm-2 col-md-3">
 
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active">
-            <a href="#general" aria-controls="general" role="tab" data-bs-toggle="tab">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link active" href="#general" aria-controls="general" role="tab" data-bs-toggle="tab">
             {% trans 'General' %}</a>
         </li>
-        <li role="presentation">
-            <a href="#live" aria-controls="live" role="tab" data-bs-toggle="tab">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#live" aria-controls="live" role="tab" data-bs-toggle="tab">
             {% trans 'Live' %}</a>
         </li>
-        <li role="presentation">
-            <a href="#generic" aria-controls="generic" role="tab" data-bs-toggle="tab">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#generic" aria-controls="generic" role="tab" data-bs-toggle="tab">
             {% trans 'Generic' %} </a>
         </li>
-        <li role="presentation">
-            <a href="#custom" aria-controls="custom" role="tab" data-bs-toggle="tab">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#custom" aria-controls="custom" role="tab" data-bs-toggle="tab">
             {% trans 'Custom' %}</a>
         </li>
       </ul>

@@ -3,24 +3,21 @@
 
 {% block content %}
 
-<div class="box-body">
     <a class="btn btn-primary" href="{% url 'sga:pictograms_list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-    <div class="page-header">
-        <h1 class="text-center">{{title}}</h1>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="card-body">
+              <h1 class="text-center">{{title}}</h1>
             <form action="{{url}}" method="post">
                 {% csrf_token %}
                 {{form.as_inline}}
                 {% if instance.logo %}
                 <span id="image_name"></span>
                 {% endif %}
-                <input class="btn btn-success pull-right" type="submit" value="{{button_text}}">
+                <button class="btn btn-success float-end" type="submit">
+                     {{button_text}}
+                    <i class="fa fa-plus" aria-hidden="true"></i></button>
             </form>
         </div>
-    </div>
-</div>
+
 {% endblock %}
 {% block js %}
 {{block.super}}
