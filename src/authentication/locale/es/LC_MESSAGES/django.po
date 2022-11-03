@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-02 16:55-0600\n"
+"PO-Revision-Date: 2022-11-02 16:55-0600\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3\n"
+
+#: authentication/forms.py:22
+msgid "Phone"
+msgstr ""
+
+#: authentication/forms.py:23
+msgid "ID Card"
+msgstr ""
+
+#: authentication/forms.py:24
+msgid "Job Position"
+msgstr ""
+
+#: authentication/models.py:7
+msgid "Title"
+msgstr ""
+
+#: authentication/models.py:8
+msgid "Explanation"
+msgstr ""
+
+#: authentication/models.py:10
+msgid "Related file"
+msgstr ""
+
+#: authentication/models.py:12
+msgid "Laboratory id"
+msgstr ""
+
+#: authentication/models.py:14
+msgid "User"
+msgstr ""
+
+#: authentication/models.py:17
+msgid "Feedback entry"
+msgstr ""
+
+#: authentication/models.py:18
+msgid "Feedback entries"
+msgstr ""
+
+#: authentication/models.py:25
+msgid "First Name"
+msgstr ""
+
+#: authentication/models.py:26
+msgid "Business Email Address"
+msgstr ""
+
+#: authentication/models.py:27
+msgid "Company Name"
+msgstr ""
+
+#: authentication/models.py:28
+msgid "Country Name"
+msgstr ""
+
+#: authentication/models.py:29
+msgid "Phone Number"
+msgstr ""
+
+#: authentication/models.py:35
+msgid "Demo Request"
+msgstr ""
+
+#: authentication/models.py:36
+msgid "Demo Requests"
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:16
+msgid "Update"
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:18
+#: authentication/templates/auth/change_user.html:32
+msgid "Change password"
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:38
+msgid "Your password may not closely resemble your other personal information."
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:39
+msgid "Your password must contain at least 8 characters."
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:40
+msgid "Your password cannot be a commonly used password."
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:41
+msgid "Your password cannot be completely numeric."
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:48
+msgid "Cancel"
+msgstr ""
+
+#: authentication/templates/auth/change_user.html:49
+msgid "Save"
+msgstr ""
+
+#: authentication/templates/auth/user_form.html:8
+msgid "New User"
+msgstr "Nuevo Usuario"
+
+#: authentication/templates/auth/user_form.html:12
+msgid "Create"
+msgstr ""
+
+#: authentication/templates/feedback/feedbackentry_form.html:4
+#: authentication/templates/feedback/feedbackentry_form.html:10
+msgid "Feedback"
+msgstr ""
+
+#: authentication/templates/feedback/feedbackentry_form.html:11
+msgid "If you had some problem using Organilab, please let us know about it"
+msgstr ""
+
+#: authentication/templates/feedback/feedbackentry_form.html:17
+#: authentication/templates/registration/request_a_demo.html:19
+msgid "Send"
+msgstr ""
+
+#: authentication/templates/registration/request_a_demo.html:5
+msgid "Request a demostration"
+msgstr ""
+
+#: authentication/templates/registration/request_a_demo.html:13
+msgid "Requesting a demonstration"
+msgstr ""
+
+#: authentication/templates/registration/request_a_demo.html:14
+msgid ""
+"Hey, thanks for you interest in Organilab, we work hard to have a great "
+"software."
+msgstr ""
+
+#: authentication/templates/registration/request_demo_done.html:4
+msgid "Thank you"
+msgstr ""
+
+#: authentication/templates/registration/request_demo_done.html:15
+msgid "Demonstration Requested Successfully"
+msgstr ""
+
+#: authentication/templates/registration/request_demo_done.html:26
+msgid "Home"
+msgstr ""
+
+#: authentication/views.py:28
+msgid "Thank you for your help. We will check your problem as soon as we can"
+msgstr ""
+
+#: authentication/views.py:91
+msgid "We will contact you soon"
+msgstr ""

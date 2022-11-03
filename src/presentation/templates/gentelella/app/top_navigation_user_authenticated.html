@@ -1,0 +1,46 @@
+{% load i18n shelf_position laboratory %}
+{% load urlname_tags %}
+{% get_user_labs as mylabs %}
+
+{% if perms.auth_and_perms.change_rol %}
+    {% get_urlname_action as urlnameactions %}
+    {% validate_context urlnameactions as context %}
+    {% if urlnameactions and context %}
+    <li><a id="btn_perms" title="Add Permission" data-bs-toggle="modal" data-bs-target="#permission_modal"
+           data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a>
+    </li>
+    {% endif %}
+    {% endif %}
+
+<li>
+    <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
+        <strong>{% trans 'My laboratories' %}</strong>
+    </a>
+</li>
+
+
+{% if laboratory %}
+
+
+        {% if perms.djreservation.add_reservation %}
+        <li id="reservation_list_id"><a
+                href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %} </a>
+        </li>
+        {% endif %}
+        {% if perms.laboratory.view_inform %}
+        <li id="inform_id"><a
+                href="{% url 'laboratory:get_informs' laboratory %}">{% trans 'Informs' %} </a>
+        </li>
+        {% endif %}
+
+
+    {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
+    {% include 'gentelella/app/administration_menu.html' %}
+    {% endif %}
+
+    {% if perms.laboratory.view_report or perms.laboratory.do_report %}
+    {% include 'gentelella/app/report_menu.html' %}
+    {% endif %}
+
+{% endif %}
+
