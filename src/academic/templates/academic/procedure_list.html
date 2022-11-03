@@ -17,7 +17,8 @@
 }
 </style>
 
-    <h2><a href="{% url 'procedure_create' lab_pk=lab%}" class="btn btn-primary">Crear Nuevo Procedimiento</a></h2>
+    <h2><a href="{% url 'procedure_create' lab_pk=lab%}" class="btn btn-primary">
+        <i class="fa fa-plus"></i> Crear Nuevo Procedimiento</a></h2>
 
     <table  id="datatable" class="table table-bordered table-hover">
         <thead>
@@ -34,11 +35,20 @@
                     <td style="display:none">{{procedure.pk}}</td>
                     <td>{{procedure.title}}</td>
                     <td>{{ procedure.description | safe }}</td>
-                    <td><a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=lab %}">{{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
-                        <a class="btn btn-success btn-block" href="{% url 'add_steps_wrapper' pk=procedure.id lab_pk=lab %}">Nuevo paso</a>
-                        <a class="btn btn-dark btn-block" data-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">Reservar</a>
-                        <a href="{% url 'procedure_update' pk=procedure.id lab_pk=lab %}" class="btn btn-primary btn-block">Editar</a>
-                        <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">Eliminar</a></td>
+                    <td>
+                        <div class="d-flex justify-content-center flex-column p-2">
+                        <a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=lab %}">
+                            <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
+                        <a class="btn btn-success btn-block" href="{% url 'add_steps_wrapper' pk=procedure.id lab_pk=lab %}">
+                            <i class="fa fa-plus"></i> Nuevo paso</a>
+                        <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">
+                           <i class="fa fa-book"></i> Reservar</a>
+                        <a href="{% url 'procedure_update' pk=procedure.id lab_pk=lab %}" class="btn btn-primary btn-block">
+                           <i class="fa fa-edit"></i> Editar</a>
+                        <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">
+                            <i class="fa fa-trash"></i> Eliminar</a>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -49,14 +59,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Reservation' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title " id="model_reservation_form_title">{% trans 'Reservation' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
+
                 </button>
             </div>
             <div class="modal-body">
-                <div class="p-4">
-                <label class="pull-right" id="procedure_title"></label>
+                <div class="text-center">
+                <label class="mb-2 " style="font-size: 20px; font-weight: bold;" id="procedure_title"></label>
                  </div>
                 <form id="reservation_form">
                     {% csrf_token %}
@@ -67,8 +77,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>
