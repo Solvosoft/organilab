@@ -9,7 +9,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 
 from auth_and_perms.models import Profile, Rol
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, CommentInform
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -261,5 +261,12 @@ class InformForm(forms.ModelForm, GTForm):
         fields = ['name', 'custom_form']
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
                    'custom_form': genwidgets.Select(),
+                   }
+class CommentForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = CommentInform
+        fields = ['creator', 'comment']
+        widgets = {'creator': genwidgets.HiddenInput,
+                   'comment': genwidgets.Textarea,
                    }
 
