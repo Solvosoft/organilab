@@ -22,8 +22,6 @@ class CreateUserForm(CustomForm, forms.ModelForm):
     phone_number = forms.CharField(max_length=25, label=_('Phone'), widget=djgenwidgets.PhoneNumberMaskInput)
     id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
     job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
-    rol = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), required=False, widget=djgenwidgets.SelectMultiple,
-                                         label=_('Roles'))
 
     class Meta:
         model = User

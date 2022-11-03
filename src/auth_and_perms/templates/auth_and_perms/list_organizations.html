@@ -10,9 +10,8 @@
 {% block content %}
 
 {% if perms.laboratory.add_laboratory %}
-    <a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
-      <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a>
-  {% endif %}
+    <a class="btn btn-sm btn-primary" type="button" href="{% url 'auth_and_perms:add_user' %}" title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i> {% trans 'User' %}</a>
+{% endif %}
 
 {% for node in nodes %}
 <div class="row">
@@ -25,7 +24,7 @@
                 <div class="row">
                     <ul style="padding: 0px; margin-left: 3%;">
                         <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}" confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-sm btn-success rolbtnadd" ><i class="fa fa-plus"></i> {% trans 'Rol' %}</span></li>
-                        <li class="rolcontainer" title="{% trans 'Manage Users' %}"><a class="btn btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i> {% trans 'Users' %}</a></li>
+                        <li class="rolcontainer" title="{% trans 'Manage Users' %}"><a class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i> {% trans 'Users' %}</a></li>
                         {% if perms.laboratory.add_laboratory %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
@@ -102,7 +101,7 @@
           <input type="hidden" id="pk" name="pk" value=0>
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">{% trans 'Add User' %}</h4>
+            <h4 class="modal-title">{% trans 'Manage Users' %}</h4>
           </div>
           <div class="modal-body">
               {{adduserform.as_horizontal}}

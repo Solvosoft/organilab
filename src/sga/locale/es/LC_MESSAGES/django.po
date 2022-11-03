@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-11-02 11:56-0600\n"
+"POT-Creation-Date: 2022-11-02 16:55-0600\n"
+"PO-Revision-Date: 2022-11-02 18:01-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -34,23 +34,23 @@ msgstr "Plantilla"
 
 #: sga/forms.py:140 sga/models.py:326 sga/templates/donate_organilab.html:45
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 #: sga/forms.py:141
 msgid "*Type the amount in dollars"
-msgstr ""
+msgstr "*Tipo de cantidad en dolares"
 
 #: sga/forms.py:143 sga/models.py:325 sga/models.py:355 sga/templates/donate_organilab.html:41
 msgid "Email"
-msgstr ""
+msgstr "Correo"
 
 #: sga/forms.py:145 sga/models.py:328
 msgid "Add me to the donators list"
-msgstr ""
+msgstr "Agregarme a la lista de donantes"
 
 #: sga/forms.py:158 sga/models.py:149
 msgid "UIPA name"
-msgstr "nombre UIPA"
+msgstr "Nombre UIPA"
 
 #: sga/forms.py:219
 msgid "Select Provider"
@@ -88,8 +88,7 @@ msgstr "Peso"
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
-#: sga/models.py:57 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3 sga/models.py:61
-#: academic/templates/academic/substance/warning_words.html:12
+#: sga/models.py:57 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
@@ -197,7 +196,7 @@ msgstr "Sustancias"
 
 #: sga/models.py:193
 msgid "Molecular formula"
-msgstr ""
+msgstr "Formula Molecular"
 
 #: sga/models.py:195
 msgid "Cas ID Number"
@@ -205,19 +204,19 @@ msgstr "Número ID CAS"
 
 #: sga/models.py:197
 msgid "Security sheet"
-msgstr ""
+msgstr "Hojas de seguridad"
 
 #: sga/models.py:198
 msgid "Is precursor"
-msgstr ""
+msgstr "Es precursor"
 
 #: sga/models.py:205
 msgid "UE codes"
-msgstr ""
+msgstr "Códigos UE"
 
 #: sga/models.py:207
 msgid "NFPA codes"
-msgstr ""
+msgstr "Códigos NFPA"
 
 #: sga/models.py:209
 #, fuzzy
@@ -355,7 +354,7 @@ msgstr "Detalles"
 
 #: sga/models.py:329
 msgid "Is paid?"
-msgstr ""
+msgstr "¿Es pago?"
 
 #: sga/models.py:330
 msgid "Donation date"
@@ -383,7 +382,7 @@ msgstr "Palabra de advertencia"
 
 #: sga/models.py:351
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 #: sga/models.py:352
 msgid "Direction"
@@ -445,7 +444,7 @@ msgstr "En caso de contacto con los ojos"
 
 #: sga/models.py:376
 msgid "if it is swallowed"
-msgstr "Si es tragado"
+msgstr "si es tragado"
 
 #: sga/models.py:377
 msgid "Most important symptoms and effects, both acute and delayed"
@@ -750,14 +749,13 @@ msgid "Special precautions for users"
 msgstr "Precauciones particulares para los usuarios"
 
 #: sga/models.py:474
-#, fuzzy
-#| msgid "Builder Information"
 msgid "Regulatory information"
-msgstr "Información del fabricante"
+msgstr "Información regulatoria"
 
 #: sga/models.py:475
 msgid "Regulations and legislation on safety, health and the environment specific to the substance or mixture"
-msgstr "Reglamentación y legislación en materia de seguridad, salud y medio ambiente específicas para la sustancia o la mezcla"
+msgstr ""
+"Reglamentación y legislación en materia de seguridad, salud y medio ambiente específicas para la sustancia o la mezcla"
 
 #: sga/models.py:476
 msgid "Chemical Safety Assessment"
@@ -780,10 +778,8 @@ msgid "Note"
 msgstr "Nota"
 
 #: sga/models.py:488 sga/models.py:489
-#, fuzzy
-#| msgid "Create New Substance"
 msgid "Review Substance"
-msgstr "Crear Nueva Sustancia"
+msgstr "Crear  Sustancia"
 
 #: sga/templates/add_recipient_size.html:9
 msgid "Create New Recipient"
@@ -1010,20 +1006,16 @@ msgid "List of Pictograms"
 msgstr "Listado de Pictogramas"
 
 #: sga/templates/list_pictograms.html:20
-#, fuzzy
-#| msgid "Pictogram"
 msgid "Add Pictogram"
-msgstr "Pictograma"
+msgstr "Crear Pictograma"
 
 #: sga/templates/list_pictograms.html:20 sga/views.py:460
-#, fuzzy
-#| msgid "Address"
 msgid "Add"
-msgstr "Dirección"
+msgstr "Agregar"
 
 #: sga/templates/list_pictograms.html:28
 msgid "Image"
-msgstr ""
+msgstr "Imágen"
 
 #: sga/templates/list_pictograms.html:29 sga/templates/personal_template.html:42
 msgid "Actions"
@@ -1072,7 +1064,7 @@ msgstr "Sólo puede haber una Indicación de Peligro o Atención"
 
 #: sga/templates/template.html:59 sga/templates/template_edit.html:85
 msgid "En vivo"
-msgstr ""
+msgstr "En vivo"
 
 #: sga/templates/template_edit.html:59
 msgid "Edit your label"
@@ -1100,7 +1092,7 @@ msgstr "Formulario Inválido"
 
 #: sga/views.py:323
 msgid "Your donation was completed successfully, thank you for support this project!"
-msgstr ""
+msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
 
 #: sga/views.py:346
 msgid "SGA label was deleted successfully"

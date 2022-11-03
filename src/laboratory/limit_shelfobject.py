@@ -1,4 +1,4 @@
-from laboratory.models import Profile
+from auth_and_perms.models import Profile
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification

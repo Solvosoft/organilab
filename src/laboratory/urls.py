@@ -158,7 +158,6 @@ organization_urls = [
     re_path('access_list$', access_management, name="access_list"),
     re_path('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
     re_path('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
-    re_path('access_list/(?P<pk>\d+)/users/add$', users.AddUser.as_view(), name="add_user"),
     re_path('profile/(?P<pk>\d+)/info$', ChangeUser.as_view(), name='profile'),
     re_path('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
     re_path('access_list/edit$', edit_management, name="edit_organization"),
