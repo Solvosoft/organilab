@@ -4,9 +4,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title pull-left" id="modal_reservation_delete_title">{% trans 'Delete Selected Item' %}</h5>
-        <button type="button pull-rigth" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <h5 class="modal-title float-start" id="modal_reservation_delete_title">{% trans 'Delete Selected Item' %}</h5>
+        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
@@ -16,8 +15,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="remove_reservation()">{% trans 'Accept' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="remove_reservation()">{% trans 'Accept' %}</button>
       </div>
     </div>
   </div>

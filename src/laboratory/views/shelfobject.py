@@ -77,7 +77,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     row = forms.IntegerField(widget=forms.HiddenInput)
     object = forms.ModelChoiceField(
         queryset=Object.objects.all(),
-        widget=AutocompleteSelect('objectsearch'),
+        widget=AutocompleteSelect('objectsearch', attrs={'data-dropdownparent': '#object_create'}),
         label=_("Reactive/Material/Equipment"),
         help_text=_("Search by name, code or CAS number")
     )
@@ -89,7 +89,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
-            'measurement_unit': core.Select
+            'measurement_unit': core.Select(attrs={'data-dropdownparent': '#object_create'})
         }
 
 
