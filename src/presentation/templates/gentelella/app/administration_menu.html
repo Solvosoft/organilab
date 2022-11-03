@@ -1,0 +1,58 @@
+{% load i18n shelf_position laboratory %}
+{% load urlname_tags %}
+<li class="dropdown ">
+    <a id='management_id' href="#" role="button" class="dropdown-toggle" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {% trans 'Administration' %}<span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {% if perms.laboratory.delete_laboratory %}
+        <li><a href="{% url 'laboratory:mylabs' %}">
+            {% trans 'My laboratories' %} </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% endif %}
+        {% if perms.laboratory.add_laboratory %}
+        <li><a href="{% url 'laboratory:rooms_create' laboratory %}">
+            {% trans 'Laboratory Management' %} </a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% endif %}
+
+        {% if perms.laboratory.add_object %}
+        <li class="dropdown-submenu pull-left ">
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' laboratory %}">{% trans 'Reactive' %}</a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1">
+                    {% trans 'Material' %}</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2">
+                    {% trans 'Equipment' %}</a></li>
+            </ul>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% endif %}
+        {% if perms.laboratory.add_features %}
+        <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
+            {% trans 'Object features management' %}</a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% endif %}
+    </ul>
+</li>
+<li>
+    <hr class="dropdown-divider">
+</li>

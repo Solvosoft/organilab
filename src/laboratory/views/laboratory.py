@@ -3,7 +3,6 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-from django.db.models import query
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, path
@@ -14,11 +13,13 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from laboratory.forms import LaboratoryCreate, H_CodeForm,LaboratoryEdit
+
+from auth_and_perms.models import Profile
+from laboratory.decorators import has_lab_assigned
+from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from laboratory.decorators import has_lab_assigned
-from auth_and_perms.models import Profile
+
 
 @method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
@@ -150,13 +151,22 @@ class CreateLaboratoryFormView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        user = self.request.user
+        kwargs['user'] = user
+
+        if 'orgpk' in self.kwargs:
+            query_list = OrganizationStructure.os_manager.filter_user(user)
+            organization = query_list.filter(pk=self.kwargs['orgpk'])
+
+            if organization.exists():
+                kwargs['initial'] = {
+                    'organization': organization.first()
+                }
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(CreateLaboratoryFormView,
-                        self).get_context_data(**kwargs)
-
+        context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
+        context['addorgform'] = OrganizationUserManagementForm(prefix='addorg')
         return context
 
     def form_valid(self, form):
