@@ -1,8 +1,33 @@
 {% load i18n shelf_position laboratory %}
 {% load urlname_tags %}
-<nav class="nav_menu clearfix">
-    <div class="nav toggle mt-2 ms-2">
-      <a id="menu_toggle"><i class="fa fa-bars"></i>
+<nav class="nav_menu">
+  <div class="nav toggle">
+    <a id="menu_toggle"><i class="fa fa-bars"></i>
+  </a>
+</div>
+{% if laboratory %}
+  <div class="container-fluid" style="display: flex; ">
+  <ul class="nav navbar-nav navbar-left" style="width: 80%;">
+      <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
+  </ul>
+
+{% endif %}
+<ul class="nav navbar-nav navbar-right" >
+  {% if perms.auth_and_perms.change_rol %}
+      {% get_urlname_action as urlnameactions %}
+      {% validate_context urlnameactions as context %}
+      {% if urlnameactions and context %}
+        <li><a class="btn" id="btn_perms" title="Add Permission" data-toggle="modal" data-target="#permission_modal" data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{urlnameactions}}" style="padding-top: 31%;"><i class="fa fa-key fa-2x" aria-hidden="true"></i></a></li>
+      {% endif %}
+
+  {% endif %}
+
+  {% if request.user.is_authenticated %}
+
+    {% get_user_labs as mylabs %}
+    <li>
+      <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
+        <strong>{% trans 'My laboratories' %}</strong>
       </a>
     </div>
   {% if laboratory %}
