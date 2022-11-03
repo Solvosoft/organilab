@@ -5,9 +5,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title pull-left" id="model_reservation_form_title">{% trans 'Objects' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title float-start" id="model_reservation_form_title">{% trans 'Objects' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
+
                 </button>
             </div>
             <div class="modal-body">
@@ -17,8 +17,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_object()">{% trans 'Save changes' %}</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_object()">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>
@@ -29,9 +29,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title pull-left">{% trans 'Observations' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title float-start">{% trans 'Observations' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
+
                 </button>
             </div>
             <div class="modal-body">
@@ -41,8 +41,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="add_observation()">{% trans 'Save' %}</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_observation()">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
@@ -54,21 +54,21 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title pull-left">{% trans 'Eliminar Objecto' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="close pull-right" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title float-start">{% trans 'Eliminar Objecto' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
+
                 </button>
             </div>
             <div class="modal-body">
                 <form>
                     <label>Deseas eliminar el objecto</label>
-            </div>
+
             <div class="modal-footer">
-                <span class="btn btn-danger" data-dismiss="modal" type="button">{% trans 'Close' %}</span>
+                <span class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</span>
                 <button class="btn btn-success" type="button" onclick="add_observation">{% trans 'Remove' %}</button>
             </div>
             </form>
-
+            </div>
         </div>
     </div>
 </div>

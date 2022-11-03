@@ -13,34 +13,32 @@
     width: 100%!important;
 }
 </style>
-<a href="{% url 'procedure_update' pk=procedure lab_pk=lab_pk%}" class="btn btn-primary">{% trans 'Edit' %}</a>
-<div class="box-body">
+<a href="{% url 'procedure_update' pk=procedure lab_pk=lab_pk%}" class="btn btn-primary">
+    <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
+<div class="card-body">
 
-    <div class="page-header">
+
+    <div class="card-title">
       <h1 class="text-center">{{object.title}}</h1>
     </div>
-    <div class="panel panel-default">
-      <div class="panel-body">
             {{object.description|safe}}
-      </div>
-    </div>
 
     <h2>{% trans 'Steps' %} </h2>
 
 {% for step in object.procedurestep_set.all %}
-<div class="panel panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %}">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{forloop.counter}} -- {{step.title}}
+<div class="card panel-{% cycle  'primary' 'success' 'info' 'warning' 'danger' 'default' %} mb-2">
+  <div class="card-header">
+    <h3 class="card-title">{{forloop.counter}} -- {{step.title}}
 
-    <a class="btn pull-right" title="{% trans 'remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
-    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
+    <a class="btn float-end" title="{% trans 'remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
+    <span class="fa fa-trash" aria-hidden="true"></span> </a>
 
-    <a class="btn pull-right" title="{% trans 'Edit' %}" href="{% url 'update_step' pk=step.pk lab_pk=lab_pk %}">
-    <span class="glyphicon glyphicon-edit" title="{% trans 'Edit' %}"aria-hidden="true"></span> </a>
+    <a class="btn float-end" title="{% trans 'Edit' %}" href="{% url 'update_step' pk=step.pk lab_pk=lab_pk %}">
+    <span class="fa fa-edit" title="{% trans 'Edit' %}"aria-hidden="true"></span> </a>
     </h3>
 
   </div>
-  <div class="panel-body">
+  <div class="card-body">
 
   	{{step.description|safe}}
      {% if step.procedurerequiredobject_set.all.count %}
@@ -57,7 +55,7 @@
     </ul>
   </div>
     {% if step.procedureobservations_set.all.count %}
-        <div class="panel-footer ">
+        <div class="card-footer ">
         <h2>{% trans 'Observations' %}</h2>
         <ol>
         {% for observation in step.procedureobservations_set.all %}
@@ -69,12 +67,14 @@
 	{% endif %}
 </div>
 {% endfor %}
-    <div class="box-footer">
-      <a href="{% url 'procedure_list' pk=lab_pk %}" class="btn btn-primary">{% trans "Back to list" %}</a>
-    </div>
+
+
 
 </div>
-
+<div class="d-flex justify-content-center">
+      <a href="{% url 'procedure_list' pk=lab_pk %}" class="btn btn-primary">
+          <i class="fa fa-undo"></i> {% trans "Back to list" %}</a>
+    </div>
 
 {% endblock %}
 

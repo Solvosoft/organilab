@@ -108,15 +108,12 @@ msgstr ""
 msgid "Principal Technician"
 msgstr ""
 
-<<<<<<< HEAD
 #: presentation/templates/gentelella/app/top_navigation.html:93
-=======
 #: presentation/templates/gentelella/app/top_navigation.html:121
 msgid "Informs"
 msgstr "Informes"
 
 #: presentation/templates/gentelella/app/top_navigation.html:82
->>>>>>> baseORG/development_bootstrap5
 msgid "Furnitures"
 msgstr ""
 
