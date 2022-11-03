@@ -12,7 +12,7 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-md-12 pt-5 text-center">
+            <div class="col-md-12 d-grid pt-5 text-center">
                 <button class="btn btn-primary btn-block" id="save_btn" name="" onclick="save_form_schema()">Save Form</button>
             </div>
         </div>
@@ -45,10 +45,14 @@
             saved.name = document.getElementById("form_name").textContent;
             redirectSave();
         }
-        
+
     </script>
     <script src="{% static 'js/edit_view.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formio/FormioController.js' %}"></script> 
+    <script src="{% static 'formio/FormioController.js' %}"></script>
+    <script>
+$( window ).on( "load", function() {
+});
+    </script>
     {% endblock %}
 
 </html>

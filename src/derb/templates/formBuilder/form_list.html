@@ -10,8 +10,8 @@
 {% block content %}
 
 <div class="card-title titles">
-    <div  class="row" >
-        <div  class="col-md-9" >
+    <div class="row" >
+        <div class="col-md-9" >
             <h1 >
                 My Forms
             </h1>
@@ -62,9 +62,9 @@
                 </td>
 
                 <td style="width: 120px">
-                    <a title="Preview form" class="btn btn-sm btn-default preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
-                    <a title="Edit form" class="btn btn-sm btn-default edit_btn" form_id="{{ form.id }}"><span class="glyphicon glyphicon-pencil"></span> </a>
-                    <a title="Delete form" class="btn btn-sm btn-default delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><span class="glyphicon glyphicon-trash"></span> </a>
+                    <a title="Preview form" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    <a title="Edit form" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a title="Delete form" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                 </td>
             </tr>
