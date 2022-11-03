@@ -1,0 +1,88 @@
+{% load i18n shelf_position laboratory %}
+{% load urlname_tags %}
+<li class="dropdown">
+    <a id='reports_id' href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
+       role="button" aria-haspopup="true" aria-expanded="false">
+        {% trans 'Reports' %}<span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {% if perms.laboratory.do_report %}
+        <li class="dropdown-submenu">
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">
+                    {% trans 'Objects' %}</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">
+                    {% trans 'Principal Technician' %}</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+            </ul>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% endif %}
+        <li>
+            <a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
+                {% trans 'Furnitures' %}
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li class="dropdown-submenu">
+            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">
+                    {% trans 'Reactive' %}</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">
+                    {% trans 'Material' %}</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">
+                    {% trans 'Equipment' %}</a></li>
+            </ul>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
+                {% trans 'Reactive precursor objects' %}
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a href="{% url 'laboratory:object_change_logs' laboratory %}">
+                {% trans 'Object changes' %}
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
+                {% trans 'Limited shelf objects' %}
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a href="{% url 'laboratory:precursor_report' laboratory%}">{% trans 'Precursor Report' %}</a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+    </ul>
+</li>
