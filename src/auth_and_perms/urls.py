@@ -16,4 +16,5 @@ urlpatterns = [
     path('organization/manage/updateuserrol/<int:user_pk>/<int:rol_pk>/',  orgstruct.update_user_rol, name='updateuserrol'),
     path('organization/manage/addusersorganization/<int:pk>/',  orgstruct.add_users_organization, name='addusersorganization'),
     path('organization/manage/users/add/', orgstruct.AddUser.as_view(), name="add_user"),
+    path('organization/manage/rols/add/', orgstruct.add_rol_by_laboratory, name="add_rol_by_laboratory"),
 ]

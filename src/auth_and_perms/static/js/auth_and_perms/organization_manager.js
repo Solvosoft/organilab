@@ -139,18 +139,76 @@ $("input[type='checkbox']").on('ifChanged', function(){
 
 $(".userbtnadd").on('click', function(){
     var id = $(this).data('id');
-    var user_list = $("#permissionTable"+id+" tbody tr");
+    var user_list = $(".table"+id+" tbody tr");
     var url = $(this).data('url');
+    var user_values = [];
 
     if(user_list){
         Array.from(user_list).forEach((item)=>{
             var user_id = $(item).data('id');
-            var newOption = new Option($(item).data('name'), user_id, true, false);
-            $("#id_users").append(newOption);
-            $("#id_users option[value='" + user_id + "']").prop("selected", true);
+            user_values.push(user_id);
         });
     }
-    $("#id_users").trigger('change');
+
+    var selected_values = user_values.join(',');
+
+    $("#id_users").select2({
+      theme: 'bootstrap-5',
+      dropdownParent: $(this),
+      placeholder: 'Select an element',
+      ajax: {
+        url: '/gtapis/userbase/',
+        type: 'GET',
+        dataType: 'json',
+        data: function (params) {
+              var dev= {
+                selected: selected_values,
+                term: params.term,
+                page: params.page || 1
+              };
+              $("#id_users").trigger('relautocompletedata', dev);
+              return dev;
+        },
+      }
+
+    });
+
+    $("#id_users").trigger('change.select2');
+
     $("#adduserform").attr('action', url);
     $("#addusermodal").modal('show');
+});
+
+
+
+$(".addprofilerol").on('show.bs.modal', function (e) {
+
+    var target = e.relatedTarget;
+    $(this).attr('action', $(target).data('url'));
+    var rols = document.getElementById("id_rols");
+    var id = $(this).data('id');
+    var url = $(rols).data('url');
+
+    $(rols).select2({
+      theme: 'bootstrap-5',
+      dropdownParent: $(this),
+      placeholder: 'Select an element',
+      ajax: {
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        data: function (params) {
+              var dev= {
+                term: params.term,
+                page: params.page || 1
+              };
+              dev['pk'] = id;
+              $(rols).trigger('relautocompletedata', dev);
+              return dev;
+        },
+      }
+
+    });
+
+    $(rols).trigger('change.select2');
 });
