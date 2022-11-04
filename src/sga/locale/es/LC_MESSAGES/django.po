@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: sga/admin.py:18
 msgid "Download Label"
@@ -85,10 +85,13 @@ msgid "Weigth"
 msgstr "Peso"
 
 #: sga/models.py:56 sga/models.py:66 sga/templates/editor/generic.html:6 sga/templates/list_pictograms.html:27
+#, fuzzy
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
-#: sga/models.py:57 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3
+#: sga/models.py:57 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3 sga/models.py:61
+#: academic/templates/academic/substance/warning_words.html:12
+
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
@@ -755,7 +758,6 @@ msgstr "Información regulatoria"
 #: sga/models.py:475
 msgid "Regulations and legislation on safety, health and the environment specific to the substance or mixture"
 msgstr "Reglamentación y legislación en materia de seguridad, salud y medio ambiente específicas para la sustancia o la mezcla"
-
 
 #: sga/models.py:476
 msgid "Chemical Safety Assessment"
