@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from laboratory.models import CommentInform
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS
 
@@ -21,4 +23,9 @@ class ReservedProductsSerializerUpdate(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservations
+        fields = '__all__'
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentInform
         fields = '__all__'
