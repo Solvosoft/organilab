@@ -69,3 +69,5 @@ function Delete_Inform(id) {
         }
         })
 }
+
+

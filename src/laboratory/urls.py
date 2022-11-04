@@ -4,6 +4,8 @@ Created on 1/8/2016
 
 from django.conf.urls import include
 from django.urls import path, re_path
+from rest_framework.routers import DefaultRouter
+
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from authentication import users
@@ -16,7 +18,7 @@ from laboratory.views.access import access_management, users_management, delete_
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
-from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.provider import ProviderCreate,ProviderList,ProviderUpdate
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
@@ -179,7 +181,13 @@ informs_urls = [
     re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)$', create_informs, name="add_informs"),
     re_path(r'complete_inform/(?P<pk>\d+)$', complete_inform, name="complete_inform"),
     re_path(r'remove_inform/(?P<pk>\d+)$', remove_inform, name="remove_inform"),
+
 ]
+
+"""APIS"""
+router = DefaultRouter()
+
+router.register('api_inform', CommentAPI, basename='api-inform')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
@@ -199,7 +207,11 @@ urlpatterns += sustance_urls + organization_urls + [
     re_path(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)?/provider/',include(provider_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/informs/',include(informs_urls)),
+    re_path(r'^inform/api/',include(router.urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
 ] +reports_all_lab+edit_objects
+
+for r in router.urls:
+    print(r)
