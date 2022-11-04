@@ -1,5 +1,6 @@
 from django import template
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from auth_and_perms.models import ProfilePermission, Profile
@@ -17,7 +18,8 @@ def check_user_rol(user, rol):
             result = True
     return result
 
-def get_roles(user, lab):
+def get_roles(user, lab, org):
+    org_rols = list(org.rol.all().values_list('pk', flat=True))
     profile = ProfilePermission.objects.filter(profile_id=user,
                                                content_type=ContentType.objects.filter(
                                                 app_label=lab._meta.app_label,
@@ -27,12 +29,14 @@ def get_roles(user, lab):
                                                object_id=lab.pk).first()
     if profile:
         roles=[]
-        for rol in profile.rol.all():
+        profile_rol_list = profile.rol.all().filter(pk__in=org_rols)
+        for rol in profile_rol_list:
             roles.append(
-                """<span data-profile="%d" data-roleid="%d" style="border-radius: 50px; background: %s; padding: 10px;">%s</span>"""%(
+                """<span data-profile="%d" data-roleid="%d" style="border-radius: 50px; background: %s; padding: 10px;" title="%s">%s</span>"""%(
                     profile.pk,
                     rol.pk,
                     rol.color.replace('[', '').replace(']', '').replace("'", '').strip(),
+                    rol.name,
                     rol.name[0]
                 )
             )
@@ -41,9 +45,7 @@ def get_roles(user, lab):
 @register.simple_tag()
 def get_organization_table(org):
 
-    users = set(ProfilePermission.objects.filter(
-        object_id__in=list(org.laboratory_set.all().values_list('pk', flat=True))
-    ).values_list('profile_id', flat=True))
+    users = set(ProfilePermission.objects.filter(object_id=org.pk).values_list('profile_id', flat=True))
     header = "<thead><tr><th>User</th>"
     header2 = "<tr><th></th>"
     body = "<tbody>"
@@ -51,7 +53,7 @@ def get_organization_table(org):
     labs = []
     for lab in org.laboratory_set.all():
         header+='<th>%s</th>'%str(lab)
-        header2 += '<th><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s">+</button></th>'%(org.pk)
+        header2 += '<th><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
         labs.append(lab)
 
     header+="<th>Apply All</th></tr>"
@@ -59,15 +61,16 @@ def get_organization_table(org):
     header+=header2
     header+="</thead>"
     for user in users:
-        body +="<tr><td>%s</td>"%str(Profile.objects.get(pk=user))
+        profile = Profile.objects.get(pk=user)
+        body +='<tr data-id="%d"><td>%s</td>'%(profile.user.pk, str(profile))
         for lab in labs:
-            role = get_roles(user, lab)
+            role = get_roles(user, lab, org)
             if role:
                 body+="<td>%s</td>"%str(role)
             else:
                 body+='<td><span data-user="%d" data-appname="%s" data-model="%s" data-pk="%s">+</span></td>'%(user, lab._meta.app_label,
                                                                                                 lab._meta.model_name,
                                                                                                                lab.pk)
-        body+='<td><input type="checkbox"></td></tr>'
+        body+='<td><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s">+</button></td></tr>'%(org.pk)
     body +="</tbody>"
     return mark_safe(header+body)

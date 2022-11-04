@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from django.conf import settings
-from auth_and_perms.forms import AddUserForm
+from auth_and_perms.forms import AddUserForm, AddProfileRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from authentication.forms import CreateUserForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
@@ -64,7 +64,8 @@ def organization_manage_view(request):
     for node in parents:
         getTree(node, nodes, level=0)
     context={'nodes': nodes,
-             'adduserform': AddUserForm()
+             'adduserform': AddUserForm(),
+             'addrolform': AddProfileRolForm()
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 
@@ -94,17 +95,14 @@ def update_user_rol(request, user_pk, rol_pk):
     return JsonResponse(response)
 
 
-def create_profile_permission(users, object_id):
+def create_profile_permission(users, org_id, cc):
     for user in users:
-        profile = Profile.objects.filter(user=user)
-        if profile.exists():
-            profile = profile.first()
-            if not profile.profilepermission_set.all():
-                ProfilePermission.objects.create(profile=profile,
-                                                 content_type=ContentType.objects.get(
-                                                 app_label='laboratory',
-                                                 model="organizationstructure"),
-                                                 object_id=object_id)
+        user = User.objects.get(pk=user)
+        ProfilePermission.objects.create(profile=user.profile, content_type=cc, object_id=org_id)
+
+def delete_profile_permission(users, org_id, cc):
+    ProfilePermission.objects.filter(content_type=cc, object_id=org_id, profile__user__pk__in=users).delete()
+
 
 def remove_user_permissions(user, rols):
     for rol in rols:
@@ -144,28 +142,69 @@ def remove_org_rol(remove_users, oum):
 def add_users_organization(request, pk):
 
     organizationstructure = get_object_or_404(OrganizationStructure, pk=pk)
-    orgusersmanagement = OrganizationUserManagement.objects.filter(organization=organizationstructure)
+    cc = ContentType.objects.get(app_label='laboratory', model="organizationstructure")
+    pp = ProfilePermission.objects.filter(content_type=cc)
 
     if request.method == 'POST':
-        if orgusersmanagement.exists():
-            instance = orgusersmanagement.first()
 
-            form = AddUserForm(request.POST, instance=instance)
-            if form.is_valid():
-                old_users = instance.users.all()
-                new_users = form.cleaned_data['users']
-                set_old_users = set(old_users.values_list('pk', flat=True))
-                set_new_users = set(new_users.values_list('pk', flat=True))
-                remove_users = set_old_users - set_new_users
-                form.save(commit=False)
-                form.save_m2m()
-                create_profile_permission(instance.users.all(), pk)
-                #remove_org_rol(remove_users, orgusersmanagement) REQUIRED REVISION
-                messages.success(request, _("Element saved successfully"))
-                return redirect('auth_and_perms:organizationManager')
-        messages.error(request, _("Organization doesn't exists"))
+        form = AddUserForm(request.POST)
+
+        if form.is_valid():
+            set_old_users = set(pp.filter(object_id=pk).values_list('profile__user__pk', flat=True))
+            set_new_users = set(form.cleaned_data['users'].values_list('pk', flat=True))
+            remove_users = set_old_users - set_new_users
+            add_users = set_new_users - set_old_users
+
+            if add_users:
+                create_profile_permission(add_users, pk, cc)
+
+            if remove_users:
+                #delete profile permission in labs org by rol
+                rols = organizationstructure.rol.all()
+                labs = organizationstructure.laboratory_set.all()
+                for user in remove_users:
+                    org_profile = pp.filter(profile__user__pk=user)
+
+                    if org_profile.all().count() > 1:
+                        pass
+                    else:
+                        permissions = list(org_profile.values_list('rol__permissions', flat=True))
+
+                        org_profile.delete()
+                # Verifico si solo existe en una org si es asi entonces elimino todos los PP de ese perfil y permisos de los roles de esos PP
+                # Si existe en más de una org checo primeramente si tienen laboratorios en común, sino entonces checo si se encuentra en otros lab con roles similares y descarto reviso permisos
+                delete_profile_permission(remove_users, pk, cc)
+
+            messages.success(request, _("Element saved successfully"))
+            return redirect('auth_and_perms:organizationManager')
+    messages.error(request, _("Organization doesn't exists"))
     return redirect('auth_and_perms:organizationManager')
 
+
+def add_rol_by_laboratory(request):
+    cc_lab = ContentType.objects.get(app_label='laboratory', model="laboratory")
+    cc_org = ContentType.objects.get(app_label='laboratory', model="organizationstructure")
+
+    if request.method == "POST":
+        form = AddProfileRolForm(request.POST)
+
+        if form.is_valid():
+            org = OrganizationStructure.objects.get(form.cleaned_data['org_pk'])
+            lab = OrganizationStructure.objects.get(form.cleaned_data['lab_pk'])
+            profile_list = ProfilePermission.objects.filter(content_type=cc_org, object_id =org.pk)
+
+            for profile in profile_list:
+                pp_lab = ProfilePermission.objects.filter(content_type=cc_lab, object_id =lab.pk, profile=profile.profile)
+
+                if pp_lab.exists():
+                    pp_lab.first().rol.add(*form.cleaned_data['rols'])
+                else:
+                    pp_lab = ProfilePermission.objects.create(content_type=cc_lab, object_id=lab.pk, profile=profile.profile)
+                    pp_lab.rol.add(*form.cleaned_data['rols'])
+
+            messages.success(request, _("Element saved successfully"))
+        messages.error(request, _("Error, form is invalid"))
+    return redirect('organizationManager')
 
 
 @method_decorator(permission_required("auth.add_user"), name="dispatch")

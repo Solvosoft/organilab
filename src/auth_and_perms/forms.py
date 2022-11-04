@@ -1,17 +1,19 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
-from django.utils.translation import gettext_lazy as _
-from laboratory.models import OrganizationUserManagement
+
+from auth_and_perms.models import Rol
 
 
-class AddUserForm(forms.ModelForm, GTForm):
-    class Meta:
-        model = OrganizationUserManagement
-        fields = ['users']
-        widgets = {
-            'users': AutocompleteSelectMultiple('userbase', attrs={'data-dropdownparent': '#addusermodal'})
-        }
-        labels = {
-            'users': _("Users")
-        }
+class AddUserForm(GTForm, forms.Form):
+    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), label=_("Users"),
+        widget=AutocompleteSelectMultiple('userbase', attrs={'data-dropdownparent': '#addusermodal'}))
+
+
+class AddProfileRolForm(GTForm, forms.Form):
+    rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), label=_("Rols"),
+                                          widget=AutocompleteSelectMultiple('rolbase'), required=True)
+    lab_pk = forms.CharField(widget=forms.HiddenInput(), required=True)
+    org_pk = forms.CharField(widget=forms.HiddenInput(), required=True)
