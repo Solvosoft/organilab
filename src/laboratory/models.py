@@ -549,5 +549,6 @@ class CommentInform(models.Model):
     creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
     create_at = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
+    inform = models.ForeignKey(Inform, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Inform'))
     def __str__(self):
         return f'{self.creator} - {self.create_at}'

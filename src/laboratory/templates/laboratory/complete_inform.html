@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <h1 id="form_name" class="text-center"> </h1>
     <button id="observation" class="btn btn-success float-end" type="button" ><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
     <div class="clearfix"></div>
@@ -23,7 +23,7 @@
                 {% endif %}
             </form>
         </div>
-        <div id="right-col" class="d-none">
+        <div id="right-col" class="d-none" style="margin-top:-15px;">
             {% include 'laboratory/comments.html' %}
         </div>
     </div>
@@ -31,18 +31,36 @@
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<script src="{% static 'formio/formio.full.min.js' %}"></script>
 <script type="text/javascript">
 const urls ={
     edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
-    list: "{% url 'laboratory:get_informs' laboratory %}"
+    list: "{% url 'laboratory:get_informs' laboratory %}",
+    add_comment:"{% url 'laboratory:api-inform-list' %}",
 };
+
+
+$.ajax({
+            url: urls['add_comment'],
+                type: "GET",
+                dataType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+                document.querySelector('#listado').innerHTML=success.data;
+
+                },
+            });
+
 var schema = {{ schema | safe }};
 document.getElementById("form_name").textContent = "{{inform.name}}";
 
 var components = { components: schema["components"] };
 
 window.onload = function(schema) {
+
     Formio.createForm(document.getElementById('formio'), components);
     }
    let status = "{{inform.status}}"
@@ -65,21 +83,120 @@ window.onload = function(schema) {
         document.querySelector('#left-col').classList="col-sm-12"
         document.querySelector('#right-col').classList="d-none"
     }else{
-        document.querySelector('#left-col').classList="offset-md-1 col-sm-5"
+        document.querySelector('#left-col').classList="col-sm-6"
         document.querySelector('#right-col').classList="col-sm-6"
      }
     })
-    function save_comment(){
+
+function save_comment(){
      Swal.fire({
-      title: 'Add New Comment',
+      title: 'Agregar nuevo comentario',
       input: 'textarea'
       }).then(function(result) {
       if (result.value) {
-        Swal.fire(result.value)
+        $.ajax({
+                url: urls['add_comment'],
+                type: "POST",
+                dataType: "json",
+                data: {'comment':result.value,'inform':8},
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+                    Swal.fire(
+                        result['title'],
+                        result['text'],
+                        result['icon']
+                        )
+                                                        document.querySelector('#listado').innerHTML=success.data;
+
+                },
+            });
       }
       })
     }
- </script>
+
+
+           function edit_comment(pk){
+           localStorage.setItem('comment', pk);
+            $.ajax({
+            url: "{% url 'laboratory:api-inform-list' %}"+pk,
+                type: "GET",
+                dataType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+            Swal.fire({
+            title: 'Editar comentario',
+            input: 'textarea',
+            inputValue:success.comment
+            }).then(function(result) {
+                update_comment(result.value)
+                })
+                            }
+                                });
+            }
+    function update_comment(comment){
+
+            let url ="{% url 'laboratory:api-inform-detail' 0 %}".replace('0',localStorage.getItem('comment'));
+            localStorage.removeItem('comment');
+            $.ajax({
+                url: url,
+                type: "PUT",
+                dataType: "json",
+                data: {'comment':comment},
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+                    Swal.fire(
+                        result['title'],
+                        result['text'],
+                        result['icon']
+                        )
+                                                        document.querySelector('#listado').innerHTML=success.data;
+
+                },
+            });
+      }
+    function delete_comment(comment){
+
+            let url ="{% url 'laboratory:api-inform-detail' 0 %}".replace('0',comment);
+
+    Swal.fire({
+        title: "Eliminar el comentario",
+        text: "¿Deseas eliminar el comentario?",
+        icon: "error",
+        confirmButtonText: "Si",
+        denyButtonText: "No",
+        showDenyButton: true,
+        showCloseButton: true
+        }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+                                document.querySelector('#listado').innerHTML=success.data;
+
+                    Swal.fire(
+                       "Se elimino correctamente",
+                        )
+                },
+            });
+      }
+      });
+      }
+</script>
 <script src="{% static 'js/formio.js'%}"></script>
 
 {% endblock %}
