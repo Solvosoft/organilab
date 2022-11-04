@@ -21,6 +21,10 @@
                 <div class="row">
                     <h4 style="margin-left: 3%;">{{node.0.node}}</h4>
                 </div>
+                <div class="role">
+                    {% include 'auth_and_perms/tabla.html' with object=node.0.node %}
+                </div>
+
                 <div class="row">
                     <ul style="padding: 0px; margin-left: 3%;">
                         <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}" confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-sm btn-success rolbtnadd" ><i class="fa fa-plus"></i> {% trans 'Rol' %}</span></li>
