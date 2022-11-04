@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class='row'>
-  <div class='col-md-6'>
+  <div class='col-md-12'>
     <h1>{% trans 'Feedback' %}</h1>
     <p>{% trans 'If you had some problem using Organilab, please let us know about it' %}</p>
     <form action="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{% endif %}"

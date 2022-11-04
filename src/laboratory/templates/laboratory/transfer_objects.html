@@ -47,7 +47,7 @@ span.select2-container {
                 <td>
                    {% if laboratory|to_int == obj.laboratory_received.pk and obj.status == 0%}
                     <button data-bs-toggle="modal" class="btn btn-success"
-                                data-target="#add_tranfer_object"
+                                data-bs-target="#add_tranfer_object"
                                 aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}})">
                             <span aria-hidden="true">+</span>
                         </button>

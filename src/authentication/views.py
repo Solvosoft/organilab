@@ -7,7 +7,7 @@ from django.urls.base import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
-from authentication.forms import DemoRequestForm
+from authentication.forms import DemoRequestForm, FeedbackEntryForm
 from authentication.models import FeedbackEntry, DemoRequest
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -21,7 +21,7 @@ class PermissionDeniedView(TemplateView):
 class FeedbackView(CreateView):
     template_name = 'feedback/feedbackentry_form.html'
     model = FeedbackEntry
-    fields = ['title', 'explanation', 'related_file']
+    form_class = FeedbackEntryForm
 
     def get_success_url(self):
         text_message = _(
