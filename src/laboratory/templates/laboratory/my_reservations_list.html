@@ -9,7 +9,7 @@
     {% include 'laboratory/my_reservation_delete_all.html' %}
     <div id="management_buttons">
         <input data-bs-toggle="modal"
-            data-target="#delete_all_obj_reservation_modal" type="button"
+            data-bs-target="#delete_all_obj_reservation_modal" type="button"
             disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="pull-right btn btn-danger"
             id="cancel_all_products_btn">
         <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>

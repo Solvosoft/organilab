@@ -44,7 +44,7 @@
 			 <div class="col-md-4">
 				 {% if perms.reservations_management.add_reservedproducts %}
 				 <a data-bs-toggle="modal"
-					data-target="#modal_reservation"
+					data-bs-target="#modal_reservation"
 					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
 					class="btn btn-danger"> {% trans "Reserve object" %}</a>
 				 {% endif %}
