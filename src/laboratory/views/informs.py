@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect, reverse
 from django.shortcuts import render
 
-from laboratory.forms import InformForm
+from laboratory.forms import InformForm, CommentForm
 from laboratory.models import Inform
 from laboratory.decorators import has_lab_assigned
 from django.contrib import messages
@@ -63,7 +63,8 @@ def complete_inform(request, *args, **kwargs):
 
     context = {"schema": form,
                'inform': inform,
-               'laboratory': laboratory}
+               'laboratory': laboratory,
+               'form':CommentForm}
 
     if request.method=='POST':
 

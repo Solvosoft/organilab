@@ -15,7 +15,10 @@ window.onload = function () {
         new_form.on('change', function () {
             form = new_form.form;
         });
+        collapse_show();
+        sizesing_buttons();
     });
+
 };
 
 function getCookie(name) {
@@ -65,4 +68,36 @@ function save_form_schema() {
             })
         }
     });
+}
+function collapse_show(){
+   let collapses = document.querySelectorAll('.builder-group-button');
+   let target =document.querySelectorAll('.collapse.show')[0]
+   collapses.forEach(e =>
+   e.addEventListener('click',()=>{
+      close_collapse(collapses,e.getAttribute('data-target'));
+    }));
+}
+
+function close_collapse(collapses,target){
+   let new_target=""
+   for (var i = 0; i < collapses.length; i++) {
+        new_target=collapses[i].getAttribute('data-target')
+        if(new_target != target){
+            document.querySelector(collapses[i].getAttribute('data-target')).classList='collapse'
+        }else if(new_target==target && document.querySelector(target).className=="collapse show" ){
+            document.querySelector(target).classList='collapse';
+        }else{
+            document.querySelector(target).classList='collapse show';
+
+        }
+
+    }
+}
+function sizesing_buttons(){
+    document.querySelectorAll('.no-drop').forEach(e=>{
+      e.classList.add('d-grid');
+    })
+   document.querySelectorAll('.builder-group-button').forEach(e=>{
+      e.parentNode.classList.add('d-grid');
+    })
 }

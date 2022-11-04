@@ -6,63 +6,82 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <h1 id="form_name"> </h1>
-    </div>
-
-    <div class="page-content">
-        <div class="container">
-
+<div class="container">
+    <h1 id="form_name" class="text-center"> </h1>
+    <button id="observation" class="btn btn-success float-end" type="button" ><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div id="left-col" class="col-md-12">
             <form id="inform_form">
-                            {% csrf_token %}
-
-          <div id="formio">
-          </div>
+                {% csrf_token %}
+                <div id="formio"></div>
                 {% if inform.status == 'Eraser' %}
-                <button type="button"  class="btn btn-success" onclick="saveForm('In Review')">{% trans 'Send for review' %}</button>
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')">{% trans 'Send for review' %}</button>
                 {% endif %}
                 {% if inform.status == 'In Review' %}
-                <button type="button"  class="btn btn-danger" onclick="saveForm('Finalized')">{% trans 'Finalize' %}</button>
+                    <button type="button"  class="btn btn-danger" onclick="saveForm('Finalized')">{% trans 'Finalize' %}</button>
                 {% endif %}
-                </form>
+            </form>
         </div>
-      </div>
-
+        <div id="right-col" class="d-none">
+            {% include 'laboratory/comments.html' %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
-    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-    <script type="text/javascript">
-        const urls ={
-            edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
-            list: "{% url 'laboratory:get_informs' laboratory %}"
-        };
-        var schema = {{ schema | safe }};
-        document.getElementById("form_name").textContent = "{{inform.name}}";
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<script type="text/javascript">
+const urls ={
+    edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
+    list: "{% url 'laboratory:get_informs' laboratory %}"
+};
+var schema = {{ schema | safe }};
+document.getElementById("form_name").textContent = "{{inform.name}}";
 
-        var components = { components: schema["components"] };
+var components = { components: schema["components"] };
 
-        window.onload = function(schema) {
-            Formio.createForm(document.getElementById('formio'), components);
-            }
-        let status = "{{inform.status}}"
-        let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
-        var message ={
-        title:title,
-        text: "{% trans 'Discarding cannot be undone.' %}",
-        icon: "warning",
-        deny: "{% trans 'Cancel' %}",
-        confirm: "{% trans 'Save' %}",
-
-        }
-        const result ={
-        title:"{% trans 'Saved' %}",
-        text: "{% trans 'Discarding cannot be undone.' %}",
-        icon: "success",
-        }
-
-    </script>
+window.onload = function(schema) {
+    Formio.createForm(document.getElementById('formio'), components);
+    }
+   let status = "{{inform.status}}"
+   let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
+   var message ={
+    title:title,
+    text: "{% trans 'Discarding cannot be undone.' %}",
+    icon: "warning",
+    deny: "{% trans 'Cancel' %}",
+    confirm: "{% trans 'Save' %}",
+    }
+   const result ={
+    title:"{% trans 'Saved' %}",
+    text: "{% trans 'Discarding cannot be undone.' %}",
+    icon: "success",
+    }
+    $('#observation').click(()=>{
+     let right= document.querySelector('#right-col')
+     if(right.className=="col-sm-6"){
+        document.querySelector('#left-col').classList="col-sm-12"
+        document.querySelector('#right-col').classList="d-none"
+    }else{
+        document.querySelector('#left-col').classList="offset-md-1 col-sm-5"
+        document.querySelector('#right-col').classList="col-sm-6"
+     }
+    })
+    function save_comment(){
+     Swal.fire({
+      title: 'Add New Comment',
+      input: 'textarea'
+      }).then(function(result) {
+      if (result.value) {
+        Swal.fire(result.value)
+      }
+      })
+    }
+ </script>
 <script src="{% static 'js/formio.js'%}"></script>
+
 {% endblock %}
 
 </html>
