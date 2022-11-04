@@ -1,6 +1,7 @@
 djreservation
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.mo
 *.py[cod]
 *$py.class
 /entorno
