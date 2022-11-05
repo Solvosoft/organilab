@@ -65,7 +65,6 @@ def get_organization_table(org):
         header+='<th>%s</th>'%obj['str']
         header2 += '<th><button class="btn btn-sm btn-success applybycontenttype" data-org="%d" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
         objects.append(obj['obj'])
-
     header+="<th>Apply All</th></tr>"
     header2+="<th></th></tr>"
     header+=header2

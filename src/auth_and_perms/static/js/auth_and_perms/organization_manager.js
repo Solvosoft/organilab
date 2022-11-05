@@ -146,6 +146,7 @@ $(".userbtnadd").on('click', function(){
     var id = $(this).data('id');
     var user_list = $(".table"+id+" tbody tr");
     var url = $(this).data('url');
+    $("#adduserform").attr('action', url);
     var user_values = [];
 
     if(user_list){
@@ -159,28 +160,26 @@ $(".userbtnadd").on('click', function(){
 
     $("#id_users").select2({
       theme: 'bootstrap-5',
-      dropdownParent: $(this),
+      dropdownParent: $("#addusermodal"),
       placeholder: 'Select an element',
       ajax: {
         url: '/gtapis/userbase/',
         type: 'GET',
         dataType: 'json',
         data: function (params) {
-              var dev= {
-                selected: selected_values,
-                term: params.term,
-                page: params.page || 1
-              };
-              $("#id_users").trigger('relautocompletedata', dev);
-              return dev;
+          var dev= {
+            selected: selected_values,
+            term: params.term,
+            page: params.page || 1
+          };
+          $("#id_users").trigger('relautocompletedata', dev);
+          return dev;
         },
       }
 
     });
 
     $("#id_users").trigger('change.select2');
-
-    $("#adduserform").attr('action', url);
     $("#addusermodal").modal('show');
 });
 
@@ -257,4 +256,11 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
     });
 
     $(rols).trigger('change.select2');
+});
+
+
+$(".addprofilerol").on('hide.bs.modal', function (e) {
+    $("#id_org_pk").val('');
+    $("#id_lab_pk").val('');
+    $("#id_rols").val('').trigger('change');
 });
