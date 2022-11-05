@@ -53,7 +53,7 @@ def get_organization_table(org):
     labs = []
     for lab in org.laboratory_set.all():
         header+='<th>%s</th>'%str(lab)
-        header2 += '<th><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
+        header2 += '<th><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s" data-id="%d" data-url=%s>+</button></th>'%(org.pk, lab.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
         labs.append(lab)
 
     header+="<th>Apply All</th></tr>"
