@@ -1,5 +1,4 @@
 from django import template
-from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
@@ -19,42 +18,53 @@ def check_user_rol(user, rol):
     return result
 
 def get_roles(user, lab, org):
-    org_rols = list(org.rol.all().values_list('pk', flat=True))
     profile = ProfilePermission.objects.filter(profile_id=user,
-                                               content_type=ContentType.objects.filter(
-                                                app_label=lab._meta.app_label,
-                                                model = lab._meta.model_name
-                                               ).first(),
-
+                                               content_type__app_label=lab._meta.app_label,
+                                               content_type__model = lab._meta.model_name,
                                                object_id=lab.pk).first()
+    roles = []
     if profile:
-        roles=[]
-        profile_rol_list = profile.rol.all().filter(pk__in=org_rols)
-        for rol in profile_rol_list:
+        for rol in profile.rol.filter(organizationstructure=org):
+            datatext="""data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """%(
+                org.pk, user, lab._meta.app_label,  lab._meta.model_name, lab.pk
+            )
             roles.append(
-                """<span data-profile="%d" data-roleid="%d" style="border-radius: 50px; background: %s; padding: 10px;" title="%s">%s</span>"""%(
-                    profile.pk,
+                """<span class="applyasrole" data-roleid="%d" style="border-radius: 50px; background: %s; padding: 10px;" title="%s" %s>%s</span>"""%(
                     rol.pk,
                     rol.color.replace('[', '').replace(']', '').replace("'", '').strip(),
                     rol.name,
+                    datatext,
                     rol.name[0]
                 )
             )
         return " ".join(roles)
 
+def get_related_contenttype_objects(org):
+    yield {
+        'str': 'General',
+        'obj': None
+    }
+    for lab in org.laboratory_set.all():
+        yield {
+            'str': str(lab),
+            'obj': lab
+        }
 @register.simple_tag()
 def get_organization_table(org):
 
-    users = set(ProfilePermission.objects.filter(object_id=org.pk).values_list('profile_id', flat=True))
+    users = set(ProfilePermission.objects.filter(
+        content_type__app_label=org._meta.app_label,
+        content_type__model=org._meta.model_name,
+        object_id=org.pk).values_list('profile_id', flat=True))
     header = "<thead><tr><th>User</th>"
     header2 = "<tr><th></th>"
     body = "<tbody>"
 
-    labs = []
-    for lab in org.laboratory_set.all():
-        header+='<th>%s</th>'%str(lab)
-        header2 += '<th><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
-        labs.append(lab)
+    objects = []
+    for obj in get_related_contenttype_objects(org):
+        header+='<th>%s</th>'%obj['str']
+        header2 += '<th><button class="btn btn-sm btn-success applybycontenttype" data-org="%d" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
+        objects.append(obj['obj'])
 
     header+="<th>Apply All</th></tr>"
     header2+="<th></th></tr>"
@@ -63,14 +73,14 @@ def get_organization_table(org):
     for user in users:
         profile = Profile.objects.get(pk=user)
         body +='<tr data-id="%d"><td>%s</td>'%(profile.user.pk, str(profile))
-        for lab in labs:
-            role = get_roles(user, lab, org)
+        for object in objects:
+            object = object or profile # in general we use
+            role = get_roles(user, object, org)
             if role:
                 body+="<td>%s</td>"%str(role)
             else:
-                body+='<td><span data-user="%d" data-appname="%s" data-model="%s" data-pk="%s">+</span></td>'%(user, lab._meta.app_label,
-                                                                                                lab._meta.model_name,
-                                                                                                               lab.pk)
-        body+='<td><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal%s">+</button></td></tr>'%(org.pk)
+                body+='<td><span class="applyasrole" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" data-org="%d">+</span></td>'%(user, object._meta.app_label,
+                                                                                                object._meta.model_name, object.pk, org.pk)
+        body+='<td><button class="btn btn-sm btn-success applybyuser" data-org="%d">+</button></td></tr>'%(org.pk)
     body +="</tbody>"
     return mark_safe(header+body)
