@@ -141,6 +141,7 @@ $(".userbtnadd").on('click', function(){
     var id = $(this).data('id');
     var user_list = $(".table"+id+" tbody tr");
     var url = $(this).data('url');
+    $("#adduserform").attr('action', url);
     var user_values = [];
 
     if(user_list){
@@ -154,28 +155,26 @@ $(".userbtnadd").on('click', function(){
 
     $("#id_users").select2({
       theme: 'bootstrap-5',
-      dropdownParent: $(this),
+      dropdownParent: $("#addusermodal"),
       placeholder: 'Select an element',
       ajax: {
         url: '/gtapis/userbase/',
         type: 'GET',
         dataType: 'json',
         data: function (params) {
-              var dev= {
-                selected: selected_values,
-                term: params.term,
-                page: params.page || 1
-              };
-              $("#id_users").trigger('relautocompletedata', dev);
-              return dev;
+          var dev= {
+            selected: selected_values,
+            term: params.term,
+            page: params.page || 1
+          };
+          $("#id_users").trigger('relautocompletedata', dev);
+          return dev;
         },
       }
 
     });
 
     $("#id_users").trigger('change.select2');
-
-    $("#adduserform").attr('action', url);
     $("#addusermodal").modal('show');
 });
 
@@ -184,9 +183,12 @@ $(".userbtnadd").on('click', function(){
 $(".addprofilerol").on('show.bs.modal', function (e) {
 
     var target = e.relatedTarget;
-    $(this).attr('action', $(target).data('url'));
-    var rols = document.getElementById("id_rols");
+    var form = $(this).find('form');
     var id = $(this).data('id');
+    $(form).attr('action', $(target).data('url'));
+    $("#id_org_pk").val(id);
+    $("#id_lab_pk").val($(target).data('id'));
+    var rols = document.getElementById("id_rols");
     var url = $(rols).data('url');
 
     $(rols).select2({
@@ -211,4 +213,11 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
     });
 
     $(rols).trigger('change.select2');
+});
+
+
+$(".addprofilerol").on('hide.bs.modal', function (e) {
+    $("#id_org_pk").val('');
+    $("#id_lab_pk").val('');
+    $("#id_rols").val('').trigger('change');
 });
