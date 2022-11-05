@@ -13,7 +13,8 @@ class AddUserForm(GTForm, forms.Form):
 
 
 class AddProfileRolForm(GTForm, forms.Form):
-    rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), label=_("Rols"),
+    rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.none(), label=_("Rols"),
                                           widget=AutocompleteSelectMultiple('rolbase'), required=True)
-    lab_pk = forms.CharField(widget=forms.HiddenInput(), required=True)
+    contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
+    contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
     org_pk = forms.CharField(widget=forms.HiddenInput(), required=True)

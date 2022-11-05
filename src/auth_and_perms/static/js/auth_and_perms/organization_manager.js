@@ -96,6 +96,11 @@ function organization_rol(element){
 }
 
 
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function(){
     const collection = document.getElementsByClassName("rolcontainer");
     for (let i = 0; i < collection.length; i++) {
@@ -179,6 +184,45 @@ $(".userbtnadd").on('click', function(){
     $("#addusermodal").modal('show');
 });
 
+document.contextroletable={
+    as_conttentype: false,
+    as_user: false,
+    as_role: true,
+    profile: null
+}
+
+
+
+$(".applyasrole").on('click', function(e){
+    document.contextroletable.as_conttentype=false;
+    document.contextroletable.as_user=false;
+    document.contextroletable.as_role=true;
+    document.contextroletable.profile={
+        appname: e.target.dataset.appname,
+        model: e.target.dataset.model,
+        object_id: e.target.dataset.objectid,
+        profile: e.target.dataset.profile,
+        roleid: e.target.dataset.roleid,
+        organization: e.target.dataset.org
+
+    };
+    $("#modal"+e.target.dataset.org).modal('show');
+});
+$(".applybycontenttype").on('click', function(e){
+    document.contextroletable.as_conttentype=true;
+    document.contextroletable.as_user=false;
+    document.contextroletable.as_role=false;
+    document.contextroletable.profile=null;
+    $("#modal"+e.target.dataset.org).modal('show');
+});
+$(".applybyuser").on('click', function(e){
+    document.contextroletable.as_role=false;
+    document.contextroletable.as_conttentype=false;
+    document.contextroletable.as_user=true;
+    document.contextroletable.profile=null;
+    $("#modal"+e.target.dataset.org).modal('show');
+});
+
 
 
 $(".addprofilerol").on('show.bs.modal', function (e) {
@@ -186,8 +230,9 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
     var target = e.relatedTarget;
     $(this).attr('action', $(target).data('url'));
     var rols = document.getElementById("id_rols");
-    var id = $(this).data('id');
+    var organization = $(this).data('id');
     var url = $(rols).data('url');
+    $(this).find("#id_org_pk").val(organization);
 
     $(rols).select2({
       theme: 'bootstrap-5',
@@ -202,7 +247,8 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
                 term: params.term,
                 page: params.page || 1
               };
-              dev['pk'] = id;
+              dev['organization'] = organization;
+              dev['context']=document.contextroletable;
               $(rols).trigger('relautocompletedata', dev);
               return dev;
         },
