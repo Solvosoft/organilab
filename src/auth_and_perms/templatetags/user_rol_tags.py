@@ -63,7 +63,13 @@ def get_organization_table(org):
     objects = []
     for obj in get_related_contenttype_objects(org):
         header+='<th>%s</th>'%obj['str']
-        header2 += '<th><button class="btn btn-sm btn-success applybycontenttype" data-org="%d" data-url=%s>+</button></th>'%(org.pk, reverse('auth_and_perms:add_rol_by_laboratory'))
+        dataobj = ''
+        if obj['obj']:
+            dataobj='data-appname="%s" data-model="%s" data-objectid="%s" '%(obj['obj']._meta.app_label, obj['obj']._meta.model_name, obj['obj'].pk)
+        else:
+            dataobj = 'data-appname="%s" data-model="%s" ' % ('auth_and_perms', 'profile')
+
+        header2 += '<th><button class="btn btn-sm btn-success applybycontenttype" data-org="%d" %s>+</button></th>'%(org.pk, dataobj)
         objects.append(obj['obj'])
     header+="<th>Apply All</th></tr>"
     header2+="<th></th></tr>"
@@ -80,6 +86,6 @@ def get_organization_table(org):
             else:
                 body+='<td><span class="applyasrole" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" data-org="%d">+</span></td>'%(user, object._meta.app_label,
                                                                                                 object._meta.model_name, object.pk, org.pk)
-        body+='<td><button class="btn btn-sm btn-success applybyuser" data-org="%d">+</button></td></tr>'%(org.pk)
+        body+='<td><button class="btn btn-sm btn-success applybyuser" data-org="%d" data-user="%s">+</button></td></tr>'%(org.pk, user)
     body +="</tbody>"
     return mark_safe(header+body)
