@@ -1,5 +1,5 @@
 from djgentelella.groute import register_lookups
-from djgentelella.views.select2autocomplete import BaseSelect2View
+from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
 
 from auth_and_perms.models import Rol, ProfilePermission
@@ -10,11 +10,16 @@ def str2bool(v):
     v = v or ''
     return v.lower() in ("yes", "true", "t", "1")
 
+
+class GPaginatorMoreElements(GPaginator):
+    page_size = 20
 @register_lookups(prefix="rolbase", basename="rolbase")
 class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     model = Rol
     fields = ['name']
     organization = None
+    pagination_class = GPaginatorMoreElements
+
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = pk

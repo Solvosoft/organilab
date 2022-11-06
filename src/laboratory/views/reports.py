@@ -944,8 +944,7 @@ class OrganizationReactivePresenceList(ReportListView):
 
     def get_queryset(self):
         query = self.model.objects.filter(pk = self.lab) #.descendants(include_self=True)
-        #users = get_users_form_organization(query.pk)
-        #labs = get_laboratories_from_organization(query.pk)
+
         data = []
         add_profile_info = True
         for item in query:

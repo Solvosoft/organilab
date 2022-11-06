@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from auth_and_perms.models import ProfilePermission, Profile
+from laboratory.utils import get_profile_by_organization
 
 register = template.Library()
 
@@ -51,11 +52,12 @@ def get_related_contenttype_objects(org):
         }
 @register.simple_tag()
 def get_organization_table(org):
+    profiles = get_profile_by_organization(org.pk)
 
-    users = set(ProfilePermission.objects.filter(
-        content_type__app_label=org._meta.app_label,
-        content_type__model=org._meta.model_name,
-        object_id=org.pk).values_list('profile_id', flat=True))
+    # users = set(ProfilePermission.objects.filter(
+    #     content_type__app_label=org._meta.app_label,
+    #     content_type__model=org._meta.model_name,
+    #     object_id=org.pk).values_list('profile_id', flat=True))
     header = "<thead><tr><th>User</th>"
     header2 = "<tr><th></th>"
     body = "<tbody>"
@@ -75,17 +77,16 @@ def get_organization_table(org):
     header2+="<th></th></tr>"
     header+=header2
     header+="</thead>"
-    for user in users:
-        profile = Profile.objects.get(pk=user)
+    for profile in profiles:
         body +='<tr data-id="%d"><td>%s</td>'%(profile.user.pk, str(profile))
         for object in objects:
             object = object or profile # in general we use
-            role = get_roles(user, object, org)
+            role = get_roles(profile.pk, object, org)
             if role:
                 body+="<td>%s</td>"%str(role)
             else:
-                body+='<td><span class="applyasrole" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" data-org="%d">+</span></td>'%(user, object._meta.app_label,
-                                                                                                object._meta.model_name, object.pk, org.pk)
-        body+='<td><button class="btn btn-sm btn-success applybyuser" data-org="%d" data-user="%s">+</button></td></tr>'%(org.pk, user)
+                body+='<td><span class="applyasrole" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" data-org="%d">+</span></td>'%(
+                    profile.pk, object._meta.app_label, object._meta.model_name, object.pk, org.pk)
+        body+='<td><button class="btn btn-sm btn-success applybyuser" data-org="%d" data-user="%s">+</button></td></tr>'%(org.pk, profile.pk)
     body +="</tbody>"
     return mark_safe(header+body)
