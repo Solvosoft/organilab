@@ -1,5 +1,7 @@
 
 from django.db.models.query_utils import Q
+
+from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 
 
@@ -35,6 +37,7 @@ def filter_laboratorist_profile_student(user,user_org, q=None):
     if q is not None:
         queryset = queryset.filter(name__icontains=q)
     return queryset
+
 
 
 
@@ -77,12 +80,21 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_p
 check_lab_perms = check_lab_group_has_perm
 
 
-def get_users_form_organization(rootpk, userfilters={}):
-    query=OrganizationUserManagement.objects.filter(
-        list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True).value_list('pk', flat=True))
-    )
-    return query.values('users')
+def get_users_from_organization(rootpk, userfilters={}):
 
+    org = OrganizationStructure.objects.filter(pk=rootpk).first()
+    orgs = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(of=org, include_self=True).values_list('pk', flat=True))
+   # orgs = org.descendants(include_self=True) .value_list('pk', flat=True)
+
+    query=OrganizationUserManagement.objects.filter(
+        organization__in=orgs
+    )
+    return query.values_list('users', flat=True)
+
+
+def get_profile_by_organization(organization):
+    users = get_users_from_organization(organization)
+    return Profile.objects.filter(user__in=users)
 
 def get_laboratories_from_organization(rootpk):
     return Laboratory.objects.filter(organization__in=OrganizationStructure.objects.filter(
