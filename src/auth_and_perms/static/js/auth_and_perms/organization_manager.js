@@ -25,7 +25,7 @@ function organization_rol(element){
 
     },
     'display_rols': function(){
-        console.log('load roles');
+        //console.log('load roles');
     },
     'initialize_buttons': function(){
          this.instance.find('.rolbtnadd').on('click', this.call_add_btn_click(this));
@@ -219,29 +219,97 @@ $(".applybyuser").on('click', function(e){
     document.contextroletable.contenttypeobj=null;
     document.contextroletable.as_user=true;
     document.contextroletable.profile=e.target.dataset.user;
+
+
+
+
     $("#modal"+e.target.dataset.org).modal('show');
 });
 
+document.profileroleselects={
 
+}
+function add_selected_elements_to_select2(rols, data){
+    return ()=>{
+        for(let x=0; x<data.length; x++){
+         if ($(rols).find("option[value='" + data[x].id + "']").length) {
+            $(rols).val(data[x].id).trigger('change');
+         }else{
+            var newOption = new Option(data[x].text, data[x].id, true, true);
+            $(rols).append(newOption).trigger('change');
+         }
+        }
+    };
+
+}
+
+function add_data_to_select(rols){
+    $(rols).val(null).trigger('change');
+    return (data)=>{
+        for(let x=0; x<data.results.length; x++){
+
+            if ($(rols).find("option[value='" + data.results[x].id + "']").length) {
+                $(rols).val(data.results[x].id).trigger('change');
+            }else{
+            var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
+                        data.results[x].selected);
+            $(rols).append(newOption)
+            }
+        }
+        $(rols).trigger('change');
+    }
+}
 
 $(".addprofilerol").on('show.bs.modal', function (e) {
 
-    var target = e.relatedTarget;
-    $(this).attr('action', $(target).data('url'));
-    var rols = document.getElementById("id_rols");
-    var organization = $(this).data('id');
-    var url = $(rols).data('url');
-    $(this).find("#id_org_pk").val(organization);
 
-    $(rols).select2({
-      theme: 'bootstrap-5',
-      dropdownParent: $(this),
-      placeholder: 'Select an element',
-      ajax: {
+    let modalid=e.target.id;
+    var selecttarget = $("#"+modalid+' select');
+    var rols = selecttarget;
+    var organization = this.dataset.id;
+    var url = $(rols).data('url');
+    var selecteditems = [];
+
+    if(Object.hasOwnProperty(document.profileroleselects, modalid) ){
+        $(rols).select2('destroy');
+
+    }
+
+    $.ajax();
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: document.contextroletable,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(rols),
+      dataType: 'json'
+    });
+    $(rols).select2({theme: 'bootstrap-5',  dropdownParent: $(this)});
+/**
+    document.profileroleselects[modalid]=$(rols).select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $(this),
+        placeholder: 'Select an element',
+        ajax: {
         url: url,
         type: 'GET',
         headers: {'X-CSRFToken': getCookie('csrftoken')},
         dataType: 'json',
+        processResults: function (data) {
+          // Transforms the top-level key of the response object from 'items' to 'results'
+          let results = [];
+          var selected = []
+          for(let x=0; x<data.results.length; x++){
+            if(data.results[x].selected){
+                selected.push(data.results[x])
+            }
+          }
+          setTimeout(add_selected_elements_to_select2(rols, selected), 1000)
+          return {
+            results: data.results
+          };
+        },
         data: function (params) {
               var dev= {
                 term: params.term,
@@ -252,19 +320,14 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
               $(rols).trigger('relautocompletedata', dev);
               return dev;
         },
-      }
+        }
 
     });
 
-    $(rols).trigger('change.select2');
+    $(rols).trigger('change');
+**/
 });
 
-
-$(".addprofilerol").on('hide.bs.modal', function (e) {
-    $("#id_org_pk").val('');
-    $("#id_lab_pk").val('');
-    $("#id_rols").val('').trigger('change');
-});
 
 $(".btnsaverole").on('click', function(e){
     let form = $(e.target).closest('form')[0]

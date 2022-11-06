@@ -4,7 +4,7 @@
     {% get_organization_table object %}
 </table>
 
-<div class="modal fade addprofilerol" id="modal{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
+<div class="modal fade addprofilerol"   id="modal{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
      aria-labelledby="rolModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{% url 'auth_and_perms:api-rolbyorg-detail' object.pk %}">
@@ -15,7 +15,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{addrolform.as_horizontal}}
+                    <select name="rols" multiple data-url="{% url 'rolbase-detail' object.pk %}" ></select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
