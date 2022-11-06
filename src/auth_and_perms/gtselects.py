@@ -1,7 +1,9 @@
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
 from rest_framework import generics
+
 from auth_and_perms.models import Rol, ProfilePermission
+from auth_and_perms.utils import get_roles_by_user
 
 
 def str2bool(v):
@@ -9,7 +11,7 @@ def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
 
 @register_lookups(prefix="rolbase", basename="rolbase")
-class Rol(generics.RetrieveAPIView, BaseSelect2View):
+class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     model = Rol
     fields = ['name']
     organization = None
@@ -39,3 +41,13 @@ class Rol(generics.RetrieveAPIView, BaseSelect2View):
             if profilepermission:
                 self.selected = [str(idpp) for idpp in profilepermission.rol.all().values_list('id', flat=True)]
         return queryset
+
+
+@register_lookups(prefix="groupbase", basename="groupbase")
+class GroupS2(BaseSelect2View):
+    model = Rol
+    fields = ['name']
+
+    def get_queryset(self):
+        user = self.request.user
+        return get_roles_by_user(user)
