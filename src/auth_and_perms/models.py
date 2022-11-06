@@ -22,6 +22,7 @@ def get_random_color():
     hexadecimal = "#" + ''.join([random.choice('ABCDEF0123456789') for i in range(6)])
     return hexadecimal
 
+
 class Rol(models.Model):
     name = models.CharField(blank=True,max_length=100)
     color = models.CharField(max_length=20, default=get_random_color)
@@ -31,13 +32,13 @@ class Rol(models.Model):
         blank=True,
     )
 
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = _('Rol')
         verbose_name_plural = _('Rols')
 
-    def __str__(self):
-        return self.name
 
 
 class ProfilePermission(models.Model):

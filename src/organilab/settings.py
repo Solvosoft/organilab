@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'auth_and_perms',
+    'auth_and_perms',  # needs to start after gentelella
     'presentation',
     'django_ajax',
     'laboratory',
@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'djgentelella',
     'djgentelella.blog',
     'djgentelella.chunked_upload',
+
+
     'api.apps.ApiConfig',
     'reservations_management',
     'django_celery_beat',
@@ -296,4 +298,4 @@ RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-GT_GROUP_MODEL='auth_and_perms.Rol'
+GT_GROUP_MODEL='auth_and_perms.models.Rol'

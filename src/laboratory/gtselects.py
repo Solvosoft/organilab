@@ -2,7 +2,7 @@ from djgentelella.views.select2autocomplete import BaseSelect2View
 from djgentelella.groute import register_lookups
 from laboratory.models import Object
 from auth_and_perms.models import Rol
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 @register_lookups(prefix="rol", basename="rolsearch")
 class RolGModelLookup(BaseSelect2View):
@@ -20,7 +20,4 @@ class User(BaseSelect2View):
     fields = ['username']
 
 
-@register_lookups(prefix="groupbase", basename="groupbase")
-class Group(BaseSelect2View):
-    model = Group
-    fields = ['name']
+
