@@ -166,6 +166,7 @@ $(".userbtnadd").on('click', function(){
         url: '/gtapis/userbase/',
         type: 'GET',
         dataType: 'json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
         data: function (params) {
           var dev= {
             selected: selected_values,
@@ -187,7 +188,9 @@ document.contextroletable={
     as_conttentype: false,
     as_user: false,
     as_role: true,
-    profile: null
+    profile: null,
+    contenttypeobj: null,
+    user: null
 }
 
 
@@ -195,30 +198,27 @@ document.contextroletable={
 $(".applyasrole").on('click', function(e){
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
+    document.contextroletable.user=null;
     document.contextroletable.as_role=true;
-    document.contextroletable.profile={
-        appname: e.target.dataset.appname,
-        model: e.target.dataset.model,
-        object_id: e.target.dataset.objectid,
-        profile: e.target.dataset.profile,
-        roleid: e.target.dataset.roleid,
-        organization: e.target.dataset.org
-
-    };
+    document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
+    document.contextroletable.profile= e.target.dataset.profile
     $("#modal"+e.target.dataset.org).modal('show');
 });
 $(".applybycontenttype").on('click', function(e){
     document.contextroletable.as_conttentype=true;
     document.contextroletable.as_user=false;
+    document.contextroletable.user=null;
     document.contextroletable.as_role=false;
     document.contextroletable.profile=null;
+    document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
     $("#modal"+e.target.dataset.org).modal('show');
 });
 $(".applybyuser").on('click', function(e){
     document.contextroletable.as_role=false;
     document.contextroletable.as_conttentype=false;
+    document.contextroletable.contenttypeobj=null;
     document.contextroletable.as_user=true;
-    document.contextroletable.profile=null;
+    document.contextroletable.profile=e.target.dataset.user;
     $("#modal"+e.target.dataset.org).modal('show');
 });
 
@@ -240,6 +240,7 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
       ajax: {
         url: url,
         type: 'GET',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
         dataType: 'json',
         data: function (params) {
               var dev= {
@@ -263,4 +264,29 @@ $(".addprofilerol").on('hide.bs.modal', function (e) {
     $("#id_org_pk").val('');
     $("#id_lab_pk").val('');
     $("#id_rols").val('').trigger('change');
+});
+
+$(".btnsaverole").on('click', function(e){
+    let form = $(e.target).closest('form')[0]
+    let url = form.action;
+    let dataform = {
+        'rols': $(form).find('select[name="rols"]').val(),
+        'csrfmiddlewaretoken': $(form).find('input[name="csrfmiddlewaretoken"]').val(),
+    }
+    let data=Object.assign(dataform, document.contextroletable);
+
+
+    $.ajax({
+      type: "PUT",
+      url: url,
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: function( data ) {
+           window.location.reload();
+      },
+      dataType: 'json'
+    });
+
+
 });

@@ -7,7 +7,7 @@
 <div class="modal fade addprofilerol" id="modal{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
      aria-labelledby="rolModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form method="POST">
+        <form method="POST" action="{% url 'auth_and_perms:api-rolbyorg-detail' object.pk %}">
             {% csrf_token %}
             <div class="modal-content">
                 <div class="modal-header">
@@ -19,7 +19,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary">{% trans 'Save changes' %}</button>
+                    <button type="button"  class="btn btn-primary btnsaverole" >{% trans 'Save changes' %}</button>
                 </div>
             </div>
         </form>

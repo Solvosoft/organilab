@@ -1,8 +1,11 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from auth_and_perms.api.serializers import RolSerializer
-from auth_and_perms.models import Rol
+from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer
+from auth_and_perms.models import Rol, ProfilePermission, Profile
+from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
 from laboratory.models import OrganizationStructure
 
 
@@ -33,3 +36,123 @@ class RolAPI(mixins.ListModelMixin,
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+
+class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = ProfilePermission.objects.all()
+    serializer_class = ProfilePermissionRolOrganizationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, pk):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=False):
+            org = OrganizationStructure.objects.get(pk=pk)
+            rols = org.rol.filter(pk__in=serializer.data['rols'])
+            if serializer.data['as_conttentype']:
+                users = set(ProfilePermission.objects.filter(
+                    content_type__app_label=org._meta.app_label,
+                    content_type__model=org._meta.model_name,
+                    object_id=serializer.data['contenttypeobj']['org']).values_list('profile_id', flat=True))
+
+                for user in users:
+                    ppdata={
+                        'profile_id': user,
+                        'content_type': ContentType.objects.filter(
+                            app_label=serializer.data['contenttypeobj']['appname'],
+                            model= serializer.data['contenttypeobj']['model']
+                        ).first()
+                    }
+
+                    if 'objectid' in serializer.data['contenttypeobj'] and serializer.data['contenttypeobj']['objectid']:
+                        ppdata['object_id']=serializer.data['contenttypeobj']['objectid']
+                    else:
+                        ppdata['content_type']: ContentType.objects.filter(
+                            app_label='auth_and_perms',
+                            model='profile'
+                        ).first()
+                        ppdata['object_id'] = user
+                    profilepermission = ProfilePermission.objects.filter(**ppdata).first()
+                    if not profilepermission:
+                        profilepermission = ProfilePermission.objects.create(**ppdata)
+                    profilepermission.rol.clear()
+                    profilepermission.rol.add(*rols)
+
+            if serializer.data['as_user']:
+                profile = Profile.objects.get(pk=serializer.data['profile'])
+
+                for relobj in get_related_contenttype_objects(org):
+                    """
+                    {
+                        'str': str(lab),
+                        'obj': lab
+                    }
+                    """
+                    if relobj['obj']:
+                        query = ProfilePermission.objects.filter(
+                            profile=profile,
+                            content_type__app_label=relobj['obj']._meta.app_label,
+                            content_type__model=relobj['obj']._meta.model_name,
+                            object_id=relobj['obj'].pk)
+                        if query.exists():
+                            for profilepermission in query:
+                                profilepermission.rol.clear()
+                                profilepermission.rol.add(*rols)
+                        else:
+                            ppdata = {
+                                'profile_id': serializer.data['profile'],
+                                'content_type': ContentType.objects.filter(
+                                    app_label=relobj['obj']._meta.app_label,
+                                    model=relobj['obj']._meta.model_name,
+
+                                ).first(),
+                                'object_id': relobj['obj'].pk,
+                            }
+                            profilepermission = ProfilePermission.objects.create(**ppdata)
+                            profilepermission.rol.add(*rols)
+                    else:
+
+                        ppdata = {
+                            'profile_id': serializer.data['profile'],
+                            'content_type': ContentType.objects.filter(
+                                app_label=profile._meta.app_label,
+                                model=profile._meta.model_name,
+
+                            ).first(),
+                            'object_id': profile.pk,
+                        }
+                        profilepermission, created = ProfilePermission.objects.get_or_create(**ppdata)
+                        profilepermission.rol.add(*rols)
+            if serializer.data['as_role']:
+                profile = Profile.objects.get(pk=serializer.data['profile'])
+                ppdata = {
+                    'profile_id': serializer.data['profile'],
+                    'content_type': ContentType.objects.filter(
+                        app_label=serializer.data['contenttypeobj']['appname'],
+                        model=serializer.data['contenttypeobj']['model'],
+                    ).first()
+                }
+
+                if 'objectid' in serializer.data['contenttypeobj'] and serializer.data['contenttypeobj']['objectid']:
+                    ppdata['object_id']=serializer.data['contenttypeobj']['objectid']
+                else:
+                    ppdata = {
+                        'profile_id': serializer.data['profile'],
+                        'content_type': ContentType.objects.filter(
+                            app_label=profile._meta.app_label,
+                            model=profile._meta.model_name,
+
+                        ).first(),
+                        'object_id': profile.pk,
+                    }
+
+                profilepermission = ProfilePermission.objects.filter(**ppdata).first()
+                if not profilepermission:
+                    profilepermission = ProfilePermission.objects.create(**ppdata)
+                profilepermission.rol.clear()
+                profilepermission.rol.add(*rols)
+
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+
+

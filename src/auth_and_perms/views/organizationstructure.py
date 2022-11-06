@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
@@ -198,3 +199,15 @@ class AddUser(CreateView):
         group, created = Group.objects.get_or_create(name="General")
         group.user_set.add(user)
         return response
+
+class SaveRolPermissionOrganization(forms.Form):
+    rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.none())
+    as_conttentype = forms.BooleanField(required=True)
+    as_user = forms.BooleanField(required=True)
+    as_role = forms.BooleanField(required=True)
+    profile = forms.CharField(required=False)
+
+def save_rol_permission_organization(request, org):
+    data = {}
+    return JsonResponse(data)
+
