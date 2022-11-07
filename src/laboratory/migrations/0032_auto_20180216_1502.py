@@ -5,7 +5,11 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import location_field.models.plain
-import mptt.fields
+try:
+    import mptt.fields
+    TreeForeignKey = mptt.fields.TreeForeignKey
+except:
+    TreeForeignKey = models.ForeignKey
 
 
 class Migration(migrations.Migration):
@@ -27,7 +31,7 @@ class Migration(migrations.Migration):
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='auth.Group')),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure')),
+                ('parent', TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure')),
             ],
             options={
                 'verbose_name': 'Organization',
@@ -82,11 +86,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='principaltechnician',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
+            field=TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
         ),
         migrations.AddField(
             model_name='laboratory',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
+            field=TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure'),
         ),
     ]

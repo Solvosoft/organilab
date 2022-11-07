@@ -5,7 +5,12 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import mptt.fields
+try:
+    import mptt.fields
+    TreeForeignKey = mptt.fields.TreeForeignKey
+except:
+    TreeForeignKey = models.ForeignKey
+
 
 
 class Migration(migrations.Migration):
@@ -27,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='laboratory',
             name='organization',
-            field=mptt.fields.TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
+            field=TreeForeignKey(on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
         ),
         migrations.AlterField(
             model_name='laboratory',
@@ -52,7 +57,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organizationstructure',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure', verbose_name='Parent'),
+            field=TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='laboratory.OrganizationStructure', verbose_name='Parent'),
         ),
         migrations.AlterField(
             model_name='principaltechnician',
@@ -62,7 +67,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='principaltechnician',
             name='organization',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization'),
+            field=TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.OrganizationStructure', verbose_name='Organization')
+
         ),
         migrations.AlterField(
             model_name='shelf',
