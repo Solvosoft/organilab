@@ -15,7 +15,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <select name="rols" multiple data-url="{% url 'rolbase-detail' object.pk %}" ></select>
+                    <select autocomplete="off" name="rols" multiple data-url="{% url 'rolbase-detail' object.pk %}" ></select>
+                    <div class="mt-2">
+                        <label class="mt-2 mb-2">{% trans 'How to deal with permission merge' %}</label><br>
+                        <input type="radio" class="iCheck"  name="mergeaction" value="append"> {% trans 'Append' %} &nbsp;</input>
+                        <input type="radio" class="iCheck"  name="mergeaction" value="sustract"> {% trans 'Sustract' %} &nbsp;</input>
+                        <input type="radio" class="iCheck"  name="mergeaction" value="full"> {% trans 'Only roles selected' %}</input>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>

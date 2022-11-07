@@ -329,6 +329,7 @@ $(".btnsaverole").on('click', function(e){
     let url = form.action;
     let dataform = {
         'rols': $(form).find('select[name="rols"]').val(),
+        'mergeaction': $(form).find('input[name="mergeaction"]:checked').val(),
         'csrfmiddlewaretoken': $(form).find('input[name="csrfmiddlewaretoken"]').val(),
     }
     let data=Object.assign(dataform, document.contextroletable);
