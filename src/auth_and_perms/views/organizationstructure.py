@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
@@ -32,7 +32,7 @@ def getLevelClass(level):
     level = level % 6
     cl="col-md-12"
     if level:
-        cl="col-md-offset-%d col-md-%d"%(level, 12-level)
+        cl="col-md-%d offset-md-%d"%(12-level, level)
     return cl, color[level]
 
 def getNodeInformation(node):
@@ -163,9 +163,17 @@ class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
 
+    def get(self, request, *args, **kwargs):
+        self.organization = OrganizationUserManagement.objects.get(organization=kwargs.pop('pk'))
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.organization = OrganizationUserManagement.objects.get(organization=kwargs.pop('pk'))
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         messages.success(self.request, _("Element saved successfully"))
-        return reverse_lazy('auth_and_perms:organizationManager')
+        return reverse('auth_and_perms:organizationManager')
 
     def send_email(self, user):
         schema = self.request.scheme + "://"
@@ -192,12 +200,13 @@ class AddUser(CreateView):
         ).first()
         user.password = password
         user.save()
+        self.organization.users.add(user)
         Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
+
+
         self.send_email(user)
-        group, created = Group.objects.get_or_create(name="General")
-        group.user_set.add(user)
         return response
 
 class SaveRolPermissionOrganization(forms.Form):
