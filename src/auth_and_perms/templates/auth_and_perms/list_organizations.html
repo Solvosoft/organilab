@@ -9,9 +9,7 @@
 
 {% block content %}
 
-{% if perms.laboratory.add_laboratory %}
-    <a class="btn btn-sm btn-primary" type="button" href="{% url 'auth_and_perms:add_user' %}" title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i> {% trans 'User' %}</a>
-{% endif %}
+
 
 {% for node in nodes %}
 <div class="row">
@@ -19,22 +17,35 @@
         <div class="bs-callout bs-callout-{{node.2}}">
             <div class="row" id="rols">
                 <div class="row">
-                    <h4 style="margin-left: 3%;">{{node.0.node}}</h4>
+                    <h4 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.node.pk}}" class="w-100"
+                    role="button" aria-expanded="false" aria-controls="collapse{{node.0.node.pk}}"
+                    >{{node.0.node}}</h4>
                 </div>
-                <div class="role">
-                    {% include 'auth_and_perms/tabla.html' with object=node.0.node %}
+                <div id="collapse{{node.0.node.pk}}" class="collapse">
+                    <div class="role">
+                    {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
                 </div>
-
-                <div class="row">
+                    <div class="row">
                     <ul style="padding: 0px; margin-left: 3%;">
-                        <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}" confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-sm btn-success rolbtnadd" ><i class="fa fa-plus"></i> {% trans 'Rol' %}</span></li>
-                        <li class="rolcontainer" title="{% trans 'Relate Users' %}"><a class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i> {% trans 'Relate Users' %}</a></li>
-                        {% if perms.laboratory.add_laboratory %}
+                    {% if perms.auth_and_perms.add_rol %}
+                    <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}" confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-sm btn-success rolbtnadd" ><i class="fa fa-plus"></i> {% trans 'Rol' %}</span></li>
+                    {% endif %}
+                   {% if perms.auth_and_perms.add_profile %}
+                        <li class="rolcontainer"> <a class="btn btn-sm btn-primary" type="button" href="{% url 'auth_and_perms:add_user' node.0.node.pk %}" title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i> {% trans 'User' %}</a>
+                       </li>
+                      <li class="rolcontainer" title="{% trans 'Relate Users' %}"><a class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i> {% trans 'Related Users' %}</a></li>
+
+                    {% endif %}
+                    {% if perms.laboratory.add_laboratory %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
-                        {% endif %}
+                    {% endif %}
                     </ul>
                 </div>
+                </div>
+
+
+
             </div>
         </div>
     </div>
