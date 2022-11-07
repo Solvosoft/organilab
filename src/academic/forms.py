@@ -35,9 +35,9 @@ class ObservationForm(forms.Form):
 
 
 class ObjectForm(GTForm, forms.Form):
-    object = forms.ModelChoiceField(widget=genwidgets.Select(), queryset=Object.objects.all(), label= _('Object'), required=True)
+    object = forms.ModelChoiceField(widget=genwidgets.Select(attrs={'data-dropdownparent': '#object_modal'}), queryset=Object.objects.all(), label= _('Object'), required=True)
     quantity = forms.CharField(widget=genwidgets.TextInput(), max_length=20, label= _('Amount'), required=True)
-    unit = forms.ModelChoiceField(widget=genwidgets.Select(), queryset=Catalog.objects.filter(key='units'), label=_('Unit'), required=True)
+    unit = forms.ModelChoiceField(widget=genwidgets.Select(attrs={'data-dropdownparent': '#object_modal'}), queryset=Catalog.objects.filter(key='units'), label=_('Unit'), required=True)
 
 
 class StepForm(GTForm, forms.Form):
