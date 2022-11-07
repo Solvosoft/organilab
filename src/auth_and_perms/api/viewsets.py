@@ -7,6 +7,7 @@ from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOr
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
 from laboratory.models import OrganizationStructure
+from laboratory.utils import get_profile_by_organization
 
 
 class RolAPI(mixins.ListModelMixin,
@@ -49,14 +50,11 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
             org = OrganizationStructure.objects.get(pk=pk)
             rols = org.rol.filter(pk__in=serializer.data['rols'])
             if serializer.data['as_conttentype']:
-                users = set(ProfilePermission.objects.filter(
-                    content_type__app_label=org._meta.app_label,
-                    content_type__model=org._meta.model_name,
-                    object_id=serializer.data['contenttypeobj']['org']).values_list('profile_id', flat=True))
+                profiles =  get_profile_by_organization(pk)
 
-                for user in users:
+                for profile in profiles:
                     ppdata={
-                        'profile_id': user,
+                        'profile': profile,
                         'content_type': ContentType.objects.filter(
                             app_label=serializer.data['contenttypeobj']['appname'],
                             model= serializer.data['contenttypeobj']['model']
@@ -70,7 +68,7 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                             app_label='auth_and_perms',
                             model='profile'
                         ).first()
-                        ppdata['object_id'] = user
+                        ppdata['object_id'] = profile.pk
                     profilepermission = ProfilePermission.objects.filter(**ppdata).first()
                     if not profilepermission:
                         profilepermission = ProfilePermission.objects.create(**ppdata)
