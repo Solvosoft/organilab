@@ -13,13 +13,13 @@ def str2bool(v):
 
 class GPaginatorMoreElements(GPaginator):
     page_size = 20
+
 @register_lookups(prefix="rolbase", basename="rolbase")
 class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     model = Rol
     fields = ['name']
     organization = None
     pagination_class = GPaginatorMoreElements
-
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = pk

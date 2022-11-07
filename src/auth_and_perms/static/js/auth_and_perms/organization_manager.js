@@ -219,10 +219,6 @@ $(".applybyuser").on('click', function(e){
     document.contextroletable.contenttypeobj=null;
     document.contextroletable.as_user=true;
     document.contextroletable.profile=e.target.dataset.user;
-
-
-
-
     $("#modal"+e.target.dataset.org).modal('show');
 });
 
@@ -245,15 +241,15 @@ function add_selected_elements_to_select2(rols, data){
 
 function add_data_to_select(rols){
     $(rols).val(null).trigger('change');
+
     return (data)=>{
         for(let x=0; x<data.results.length; x++){
-
             if ($(rols).find("option[value='" + data.results[x].id + "']").length) {
                 $(rols).val(data.results[x].id).trigger('change');
             }else{
-            var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
+                var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
                         data.results[x].selected);
-            $(rols).append(newOption)
+                $(rols).append(newOption)
             }
         }
         $(rols).trigger('change');
@@ -275,7 +271,6 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
 
     }
 
-    $.ajax();
     $.ajax({
       type: "GET",
       url: url,
