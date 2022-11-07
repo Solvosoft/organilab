@@ -2128,6 +2128,42 @@ msgstr "Crear Informe"
 msgid "Templates of inform"
 msgstr "Plantillas para informes"
 
+#: laboratory/templates/laboratory/comments.html:17
+msgid "List of comments"
+msgstr "Listado de Observaciones"
+
+#: laboratory/templates/laboratory/complete_inform.html:69
+msgid "Delete the observation"
+msgstr "Eliminar Observación"
+
+#: laboratory/templates/laboratory/complete_inform.html:70
+msgid "Do you want to remove the observation?"
+msgstr "¿Deseas eliminar la observación?"
+
+#: laboratory/templates/laboratory/complete_inform.html:74
+msgid "Successfully deleted"
+msgstr "Se elimino correctamente"
+
+#: laboratory/templates/laboratory/complete_inform.html:83
+msgid "Successfully updated"
+msgstr "Se actualizo correctamente"
+
+#: laboratory/templates/laboratory/complete_inform.html:77
+msgid "Update the observation"
+msgstr "Actualizar Observación"
+
+#: laboratory/templates/laboratory/complete_inform.html:78
+msgid "Do you want to update the observation?"
+msgstr "¿Deseas actualizar la observación?"
+
+#: laboratory/templates/laboratory/complete_inform.html:65
+msgid "Saved successfully"
+msgstr "Guardado satisfactoriamente"
+
+#: laboratory/templates/laboratory/complete_inform.html:77
+msgid "Add observation"
+msgstr "Agregar Observación"
+
 #, fuzzy
 #~| msgid "Furniture report"
 #~ msgid "Furniture Select"
