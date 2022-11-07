@@ -56,6 +56,8 @@ def getTree(node, structure, level=0):
             getTree(child, structure, level=level+1)
 
 
+@login_required
+@permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
     query_list = OrganizationStructure.os_manager.filter_user(request.user)
     parents=list(query_list.filter(parent=None))
