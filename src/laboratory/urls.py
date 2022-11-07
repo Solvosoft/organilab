@@ -212,6 +212,3 @@ urlpatterns += sustance_urls + organization_urls + [
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
         block_notifications, name="block_notification") 
 ] +reports_all_lab+edit_objects
-
-for r in router.urls:
-    print(r)
