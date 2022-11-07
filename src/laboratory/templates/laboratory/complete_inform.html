@@ -37,23 +37,9 @@ const urls ={
     edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
     list: "{% url 'laboratory:get_informs' laboratory %}",
     add_comment:"{% url 'laboratory:api-inform-list' %}",
+    get_comment:"{% url 'laboratory:api-inform-list' %}",
+    delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
 };
-
-
-$.ajax({
-            url: urls['add_comment'],
-                type: "GET",
-                dataType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                document.querySelector('#listado').innerHTML=success.data;
-
-                },
-            });
-
 var schema = {{ schema | safe }};
 document.getElementById("form_name").textContent = "{{inform.name}}";
 
@@ -62,140 +48,59 @@ var components = { components: schema["components"] };
 window.onload = function(schema) {
 
     Formio.createForm(document.getElementById('formio'), components);
-    }
-   let status = "{{inform.status}}"
-   let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
-   var message ={
+    get_comments();
+
+}
+let status = "{{inform.status}}"
+let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
+var message ={
     title:title,
     text: "{% trans 'Discarding cannot be undone.' %}",
     icon: "warning",
     deny: "{% trans 'Cancel' %}",
     confirm: "{% trans 'Save' %}",
     }
-   const result ={
-    title:"{% trans 'Saved' %}",
-    text: "{% trans 'Discarding cannot be undone.' %}",
+const result ={
+    title:"",
+    text: "{% trans 'Saved successfully' %}",
     icon: "success",
-    }
-    $('#observation').click(()=>{
-     let right= document.querySelector('#right-col')
-     if(right.className=="col-sm-6"){
+}
+const remove_translation ={
+    title:"{% trans 'Delete the observation' %}",
+    text: "{% trans 'Do you want to remove the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully deleted' %}"
+}
+const add_translation ={
+    title:"{% trans 'Add observation' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Saved successfully' %}"
+}
+
+const update_translation ={
+    title:"{% trans 'Update the observation' %}",
+    text: "{% trans 'Do you want to update the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully updated' %}"
+}
+
+$('#observation').click(()=>{
+    let right= document.querySelector('#right-col')
+    if(right.className=="col-sm-6"){
         document.querySelector('#left-col').classList="col-sm-12"
         document.querySelector('#right-col').classList="d-none"
     }else{
         document.querySelector('#left-col').classList="col-sm-6"
         document.querySelector('#right-col').classList="col-sm-6"
-     }
-    })
-
-function save_comment(){
-     Swal.fire({
-      title: 'Agregar nuevo comentario',
-      input: 'textarea'
-      }).then(function(result) {
-      if (result.value) {
-        $.ajax({
-                url: urls['add_comment'],
-                type: "POST",
-                dataType: "json",
-                data: {'comment':result.value,'inform':8},
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                    Swal.fire(
-                        result['title'],
-                        result['text'],
-                        result['icon']
-                        )
-                                                        document.querySelector('#listado').innerHTML=success.data;
-
-                },
-            });
-      }
-      })
     }
+})
 
-
-           function edit_comment(pk){
-           localStorage.setItem('comment', pk);
-            $.ajax({
-            url: "{% url 'laboratory:api-inform-list' %}"+pk,
-                type: "GET",
-                dataType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-            Swal.fire({
-            title: 'Editar comentario',
-            input: 'textarea',
-            inputValue:success.comment
-            }).then(function(result) {
-                update_comment(result.value)
-                })
-                            }
-                                });
-            }
-    function update_comment(comment){
-
-            let url ="{% url 'laboratory:api-inform-detail' 0 %}".replace('0',localStorage.getItem('comment'));
-            localStorage.removeItem('comment');
-            $.ajax({
-                url: url,
-                type: "PUT",
-                dataType: "json",
-                data: {'comment':comment},
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                    Swal.fire(
-                        result['title'],
-                        result['text'],
-                        result['icon']
-                        )
-                                                        document.querySelector('#listado').innerHTML=success.data;
-
-                },
-            });
-      }
-    function delete_comment(comment){
-
-            let url ="{% url 'laboratory:api-inform-detail' 0 %}".replace('0',comment);
-
-    Swal.fire({
-        title: "Eliminar el comentario",
-        text: "¿Deseas eliminar el comentario?",
-        icon: "error",
-        confirmButtonText: "Si",
-        denyButtonText: "No",
-        showDenyButton: true,
-        showCloseButton: true
-        }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                dataType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                                document.querySelector('#listado').innerHTML=success.data;
-
-                    Swal.fire(
-                       "Se elimino correctamente",
-                        )
-                },
-            });
-      }
-      });
-      }
 </script>
 <script src="{% static 'js/formio.js'%}"></script>
 
