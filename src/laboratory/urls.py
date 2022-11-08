@@ -16,6 +16,7 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.access import access_management, users_management, delete_user, edit_management
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
+from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView
 from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
@@ -157,6 +158,9 @@ sustance_urls = [
 ]
 
 organization_urls = [
+    path('organization/<int:pk>/delete', OrganizationDeleteView.as_view(), name="delete_organization"),
+    path('organization/create', OrganizationCreateView.as_view(), name="create_organization"),
+
     re_path('access_list$', access_management, name="access_list"),
     re_path('access_list/(?P<pk>\d+)/users$', users_management, name="users_management"),
     re_path('access_list/(?P<pk>\d+)/users/(?P<user_pk>\d+)?$', delete_user, name="delete_user"),
@@ -168,7 +172,7 @@ organization_urls = [
 
 lab_profiles_urls = [
     re_path(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
-    re_path(r"DEBUG_TOOLBARlist/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
+    re_path(r"profile/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
 ] 
 
 provider_urls=[

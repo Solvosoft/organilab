@@ -18,3 +18,5 @@ class AddProfileRolForm(GTForm, forms.Form):
     contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
     contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
     org_pk = forms.CharField(widget=forms.HiddenInput(), required=True)
+
+

@@ -250,3 +250,12 @@ class CommentForm(forms.ModelForm, GTForm):
                    'comment': genwidgets.Textarea,
                    }
 
+
+class AddOrganizationForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = OrganizationStructure
+        fields = ['name', 'parent']
+        widgets={
+            'name': genwidgets.TextInput,
+            'parent': genwidgets.HiddenInput
+        }

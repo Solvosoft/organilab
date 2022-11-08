@@ -346,6 +346,15 @@ $(".btnsaverole").on('click', function(e){
       },
       dataType: 'json'
     });
+});
 
+$(".addOrgStructure").on('click', function(e){
+    let parent=this.dataset.parent;
+    $('#id_parent').val(parent);
+    $("#addOrganizationmodal").modal('show');
+});
 
+$(".addOrgStructureEmpty").on('click', function(e){
+    $('#id_parent').val('');
+    $("#addOrganizationmodal").modal('show');
 });
