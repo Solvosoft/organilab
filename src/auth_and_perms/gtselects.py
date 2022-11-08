@@ -1,9 +1,11 @@
+from django.contrib.auth.models import User
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
 
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
+from laboratory.utils import get_profile_by_organization
 
 
 def str2bool(v):
@@ -12,7 +14,7 @@ def str2bool(v):
 
 
 class GPaginatorMoreElements(GPaginator):
-    page_size = 20
+    page_size = 50
 
 @register_lookups(prefix="rolbase", basename="rolbase")
 class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
@@ -45,6 +47,33 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
             ).first()
             if profilepermission:
                 self.selected = [str(idpp) for idpp in profilepermission.rol.all().values_list('id', flat=True)]
+        return queryset
+
+
+@register_lookups(prefix="orguserbase", basename="orguserbase")
+class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
+    model = User
+    fields = ['username']
+    organization = None
+    pagination_class = GPaginatorMoreElements
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = pk
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if not args:
+            raise
+        if self.organization is None:
+            raise
+        return super().list(request, *args, **kwargs)
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        profiles = get_profile_by_organization(self.request.GET.get('contenttypeobj[objectid]'))
+
+        if profiles:
+            self.selected = [str(idpp) for idpp in profiles.values_list('user__id', flat=True)]
         return queryset
 
 

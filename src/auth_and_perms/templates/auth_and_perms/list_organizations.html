@@ -35,7 +35,7 @@
                    {% if perms.auth_and_perms.add_profile %}
                         <li class="rolcontainer"> <a class="btn btn-sm btn-primary" type="button" href="{% url 'auth_and_perms:add_user' node.0.node.pk %}" title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i> {% trans 'User' %}</a>
                        </li>
-                      <li class="rolcontainer" title="{% trans 'Relate Users' %}"><a class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"><i class="fa fa-users" ></i> {% trans 'Related Users' %}</a></li>
+                      <li class="rolcontainer" title="{% trans 'Related Users' %}"><a class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}" data-appname="laboratory" data-model="organizationstructure" data-objectid="{{node.0.node.pk}}"><i class="fa fa-users" ></i> {% trans 'Related Users' %}</a></li>
 
                     {% endif %}
                     {% if perms.laboratory.add_laboratory %}
@@ -72,28 +72,6 @@
      class="hidden" style="display:none">
     <input type="text" id="rolname" class="swal2-input" placeholder="{% trans 'Rol name' %}" />
 </div>
-
-<div id="addusermodal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="adduserform" method="post">
-          {% csrf_token %}
-          <div class="modal-header">
-              <h4 class="modal-title" id="exampleModalLabel">{% trans 'Manage Users' %}</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              {{adduserform.as_horizontal}}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
 
 <div id="addOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="OrganizationmodalLabel" aria-hidden="true">
     <div class="modal-dialog">

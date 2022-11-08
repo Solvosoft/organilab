@@ -9,7 +9,7 @@ from auth_and_perms.models import Rol
 
 class AddUserForm(GTForm, forms.Form):
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), label=_("Users"),
-        widget=AutocompleteSelectMultiple('userbase', attrs={'data-dropdownparent': '#addusermodal'}))
+        widget=AutocompleteSelectMultiple('orguserbase'))
 
 
 class AddProfileRolForm(GTForm, forms.Form):
