@@ -17,6 +17,7 @@ from django.conf import settings
 from django.contrib.staticfiles import finders
 import os
 import django_excel
+from weasyprint import HTML
 
 #Convert html URI to absolute
 def link_callback(uri, rel):
@@ -147,16 +148,14 @@ class ReportListView(djListView):
     def get_pdf(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         context = self.get_context_data()
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="%s.pdf"'%self.get_file_name(request)
         template = get_template(self.get_pdf_template())
         # added explicit context
         html = template.render(context=context)
 
-        pisaStatus = pisa.CreatePDF(
-            html, dest=response, link_callback=link_callback, encoding='utf-8')
-        if pisaStatus.err:
-            return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+        page = HTML(string=html, encoding='utf-8').write_pdf()
+
+        response = HttpResponse(page, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="%s.pdf"'%self.get_file_name(request)
         return response
 
     def get_file_name(self, request):
