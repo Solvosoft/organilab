@@ -79,7 +79,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 
         users = []
         for org in set(orgs):
-            users += list(get_users_from_organization(org.pk, org=org))
+            users += list(get_users_from_organization(org.pk, org=org, userfilters={'users__isnull': False}))
         return self.model.objects.filter(pk__in=set(users))
 
     def filter_queryset(self, queryset):
@@ -91,7 +91,9 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return queryset
 
     def get_text_display(self, obj):
-        return str(obj.profile)
+        if hasattr(obj, 'profile') and obj.profile:
+            return str(obj.profile)
+        return str(obj.pk)
 
 @register_lookups(prefix="groupbase", basename="groupbase")
 class GroupS2(BaseSelect2View):

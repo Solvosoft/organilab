@@ -211,6 +211,8 @@ function add_selected_elements_to_select2(rols, data){
 }
 
 function add_data_to_select(rols){
+
+    $(rols).find('option').remove();
     $(rols).val(null).trigger('change');
 
     return (data)=>{
@@ -252,46 +254,7 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
       dataType: 'json'
     });
     $(rols).select2({theme: 'bootstrap-5',  dropdownParent: $(this)});
-/**
-    document.profileroleselects[modalid]=$(rols).select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $(this),
-        placeholder: 'Select an element',
-        ajax: {
-        url: url,
-        type: 'GET',
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        dataType: 'json',
-        processResults: function (data) {
-          // Transforms the top-level key of the response object from 'items' to 'results'
-          let results = [];
-          var selected = []
-          for(let x=0; x<data.results.length; x++){
-            if(data.results[x].selected){
-                selected.push(data.results[x])
-            }
-          }
-          setTimeout(add_selected_elements_to_select2(rols, selected), 1000)
-          return {
-            results: data.results
-          };
-        },
-        data: function (params) {
-              var dev= {
-                term: params.term,
-                page: params.page || 1
-              };
-              dev['organization'] = organization;
-              dev['context']=document.contextroletable;
-              $(rols).trigger('relautocompletedata', dev);
-              return dev;
-        },
-        }
 
-    });
-
-    $(rols).trigger('change');
-**/
 });
 
 
