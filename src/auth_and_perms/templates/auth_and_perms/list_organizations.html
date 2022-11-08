@@ -42,14 +42,9 @@
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
                     {% endif %}
-
-                      <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.0.node.pk %}" target="_blank"><i class="fa fa-medkit"></i>{% trans 'Exposition report' %}</a>
                     </ul>
                 </div>
                 </div>
-
-
-
             </div>
 
             <div class="float-end">

@@ -997,3 +997,35 @@ class OrganizationReactivePresenceList(ReportListView):
                  ]]+context['object_list']
 
         return book
+
+
+def getLevelClass(level):
+    color = {
+        0: 'default',
+        1: 'danger',
+        2: 'info',
+        3: 'warning',
+        4: 'default',
+        5: 'danger',
+        6: 'info'
+
+    }
+    level = level % 6
+    cl="col-md-12"
+    if level:
+        cl="col-md-%d offset-md-%d"%(12-level, level)
+    return cl, color[level]
+
+@permission_required('laboratory.view_report')
+def get_exposition_report_links(request):
+    query_list = OrganizationStructure.os_manager.filter_user(request.user)
+    parents=list(query_list.filter(parent=None))
+    nodes = []
+    for parent in parents:
+        nodes+=[(x, getLevelClass(x.level)) for x in parent.descendants(include_self=True)]
+
+    context = {
+        'nodes': nodes
+    }
+
+    return render(request, 'laboratory/reports/toxicity_exposition.html', context=context)

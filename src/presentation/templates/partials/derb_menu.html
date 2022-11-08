@@ -15,6 +15,16 @@
             {% trans 'Report List' %}
                 </a>
             </li>
+            {% if perms.laboratory.view_report %}
+            <li>
+                <a class="nav-link" href="{% url 'laboratory:report_reactive_presence' %}"
+        title="{% trans 'Report Reactive presence' %}">
+            <i class="fa fa-child"></i>
+            {% trans 'Report Reactive presence' %}
+                </a>
+            </li>
+            {% endif %}
+
         </ul>
     </li>
 {% endif %}

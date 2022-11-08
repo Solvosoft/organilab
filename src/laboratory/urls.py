@@ -119,10 +119,11 @@ lab_reports_urls = [
 ]
 
 lab_reports_organization_urls = [
-    re_path(r'^organization$', reports.report_organization_building,
+    path('organization', reports.report_organization_building,
         name='reports_organization_building'),
-    re_path(r'^list$', organizations.OrganizationReportView.as_view(),
+    path('list', organizations.OrganizationReportView.as_view(),
         name='reports_organization'),
+
 ]
 
 lab_features_urls = [
@@ -145,8 +146,9 @@ edit_objects=[
 
 ]
 reports_all_lab=[
-    re_path(r'^reports/hcode$', laboratory.HCodeReports.as_view(), name='h_code_reports'),
-    re_path(r'^reports/download/hcode$', reports.report_h_code, name='download_h_code_reports'),
+    path('reports/hcode', laboratory.HCodeReports.as_view(), name='h_code_reports'),
+    path('reports/download/hcode', reports.report_h_code, name='download_h_code_reports'),
+    path('reportreactivepresence', reports.get_exposition_report_links, name='report_reactive_presence'),
 ]
 
 sustance_urls = [

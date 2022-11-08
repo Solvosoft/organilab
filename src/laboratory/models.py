@@ -362,7 +362,7 @@ class OrganizationStructure(TreeNode):
     # No debe usarse para validar permisos, su intención es permitir relacionarlos en la
     # vista de administración, para los permisos usar ProfilePermission
     rol = models.ManyToManyField('auth_and_perms.Rol', blank=True)
-
+    level = models.SmallIntegerField(default=0)
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
 
