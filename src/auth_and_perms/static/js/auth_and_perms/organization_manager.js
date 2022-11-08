@@ -305,8 +305,8 @@ $(".relatedusermodal").on('show.bs.modal', function (e) {
     var url = $(users).data('url');
     var selecteditems = [];
 
-
-    $(users).val('').trigger('change');
+   $(users).find('option').remove();
+    $(users).val(null).trigger('change');
 
     $.ajax({
       type: "GET",
