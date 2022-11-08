@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from auth_and_perms.models import ProfilePermission, Profile
+from laboratory.models import OrganizationStructureRelations
 from laboratory.utils import get_profile_by_organization
 
 register = template.Library()
@@ -50,6 +51,12 @@ def get_related_contenttype_objects(org):
             'str': str(lab),
             'obj': lab
         }
+    for obj in OrganizationStructureRelations.objects.filter(organization=org):
+        yield {
+            'str': str(obj.content_object),
+            'obj': obj.content_object
+        }
+
 @register.simple_tag()
 def get_organization_table(org):
     profiles = get_profile_by_organization(org.pk)
