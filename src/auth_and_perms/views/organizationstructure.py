@@ -16,7 +16,8 @@ from auth_and_perms.forms import AddUserForm, AddProfileRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm
-from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory
+from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
+    OrganizationStructureRelations
 
 
 def getLevelClass(level):
@@ -203,6 +204,8 @@ def add_rol_by_laboratory(request):
     return redirect('auth_and_perms:organizationManager')
 
 
+
+
 @method_decorator(permission_required("auth.add_user"), name="dispatch")
 class AddUser(CreateView):
     model = User
@@ -254,14 +257,20 @@ class AddUser(CreateView):
         self.send_email(user)
         return response
 
-class SaveRolPermissionOrganization(forms.Form):
-    rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.none())
-    as_conttentype = forms.BooleanField(required=True)
-    as_user = forms.BooleanField(required=True)
-    as_role = forms.BooleanField(required=True)
-    profile = forms.CharField(required=False)
 
-def save_rol_permission_organization(request, org):
-    data = {}
-    return JsonResponse(data)
-
+@permission_required("laboratory.change_organizationusermanagement")
+def add_contenttype_to_org(request):
+    "contentyperelobj organization"
+    contentyperelobj = request.POST.getlist('contentyperelobj', [])
+    organization = get_object_or_404(OrganizationStructure, pk=request.POST.get('organization', '0'))
+    if organization and contentyperelobj:
+        for obj in contentyperelobj:
+            OrganizationStructureRelations.objects.create(
+                organization=organization,
+                content_type=ContentType.objects.filter(
+                    app_label='laboratory',
+                    model='laboratory'
+                ).first(),
+                object_id=obj
+            )
+    return redirect('auth_and_perms:organizationManager')

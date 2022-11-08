@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import get_profile_by_organization
 
 
@@ -50,7 +50,7 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
             org = OrganizationStructure.objects.get(pk=pk)
             rols = org.rol.filter(pk__in=serializer.data['rols'])
             if serializer.data['as_conttentype']:
-                profiles =  get_profile_by_organization(pk)
+                profiles = get_profile_by_organization(pk)
 
                 for profile in profiles:
                     ppdata={
@@ -151,6 +151,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
 
             return Response(serializer.data)
         return Response(serializer.errors)
+
+
 
 
 
