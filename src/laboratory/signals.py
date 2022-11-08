@@ -1,8 +1,8 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 
 from auth_and_perms.models import Profile
-from laboratory.models import ShelfObject
+from laboratory.models import ShelfObject, OrganizationStructure
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
@@ -16,6 +16,12 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
         # send email notification
         send_email_to_ptech_limitobjs(instance)
 
+
+@receiver(pre_save, sender=OrganizationStructure)
+def add_level_organization_structure(sender, **kwargs):
+    instance = kwargs.get('instance')
+    if instance.parent is not None:
+        instance.level=instance.parent.level+1
 
 
 def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
