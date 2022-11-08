@@ -87,7 +87,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
    # orgs = org.descendants(include_self=True) .value_list('pk', flat=True)
 
     query=OrganizationUserManagement.objects.filter(
-        organization__in=orgs
+        organization__in=orgs, **userfilters
     )
     return query.values_list('users', flat=True)
 
