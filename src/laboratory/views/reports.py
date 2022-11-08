@@ -92,7 +92,7 @@ def make_book_organization_laboratory(objects):
                 emails += " \n"
             profile += pr.user.get_full_name()
             phones += pr.phone_number
-            emails += pr.user__email
+            emails += pr.user.email
         dev.append([
             object.name,
             object.phone_number,
