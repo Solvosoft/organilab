@@ -8,9 +8,11 @@
 {% endblock css %}
 
 {% block content %}
-
-
-
+<div class="row">
+<div class="card w-25 p-2 bg-purple text-center">
+     <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
+ </div>
+</div>
 {% for node in nodes %}
 <div class="row">
     <div class="{{node.1}}">
@@ -26,7 +28,7 @@
                     {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
                     </div>
                     <div class="row">
-                    <ul style="padding: 0px; margin-left: 3%;">
+                    <ul >
                     {% if perms.auth_and_perms.add_rol %}
                     <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}" confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span class="btn btn-sm btn-success rolbtnadd" ><i class="fa fa-plus"></i> {% trans 'Rol' %}</span></li>
                     {% endif %}
@@ -40,12 +42,29 @@
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
                     {% endif %}
+
+                      <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.0.node.pk %}" target="_blank"><i class="fa fa-medkit"></i>{% trans 'Exposition report' %}</a>
                     </ul>
                 </div>
                 </div>
 
 
 
+            </div>
+
+            <div class="float-end">
+                 <ul class="list-group list-group-horizontal">
+                     {% if perms.laboratory.add_organizationstructure %}
+                     <li class="list-group-item">
+                         <span class="addOrgStructure" data-parent="{{node.0.node.pk}}"><i class="fa fa-plus  text-secondary"></i></span>
+                     </li>
+                     {% endif %}
+                     {% if perms.laboratory.delete_organizationstructure %}
+                     <li class="list-group-item">
+                         <a href="{% url 'laboratory:delete_organization' node.0.node.pk %}"><i class="fa fa-minus text-danger"></i></a>
+                     </li>
+                     {% endif %}
+                 </ul>
             </div>
         </div>
     </div>
@@ -72,14 +91,35 @@
               {{adduserform.as_horizontal}}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
         </div>
         </form>
       </div>
     </div>
   </div>
 
+
+<div id="addOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="OrganizationmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'laboratory:create_organization'  %}">
+          {% csrf_token %}
+          <div class="modal-header">
+              <h4 class="modal-title" id="OrganizationmodalLabel">{% trans 'Create Organization' %}</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              {{addorgform.as_horizontal}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
 

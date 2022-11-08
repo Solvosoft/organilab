@@ -15,6 +15,7 @@ from django.conf import settings
 from auth_and_perms.forms import AddUserForm, AddProfileRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from authentication.forms import CreateUserForm
+from laboratory.forms import AddOrganizationForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory
 
 
@@ -68,7 +69,8 @@ def organization_manage_view(request):
         getTree(node, nodes, level=0)
     context={'nodes': nodes,
              'adduserform': AddUserForm(),
-             'addrolform': AddProfileRolForm()
+             'addrolform': AddProfileRolForm(),
+             'addorgform': AddOrganizationForm(),
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 

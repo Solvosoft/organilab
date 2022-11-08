@@ -6,16 +6,20 @@ Created on 26/12/2016
 '''
 from __future__ import unicode_literals
 from django.contrib.auth.decorators import permission_required
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django import forms
+from django.views.generic import DeleteView, CreateView
 from djgentelella.forms.forms import GTForm
 from tree_queries.forms import TreeNodeChoiceField
 from djgentelella.widgets import core as genwidget
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
 from auth_and_perms.models import Profile
 from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 from djgentelella.widgets import core as genwidgets
+
+from ..forms import AddOrganizationForm
 
 
 class OrganizationSelectableForm(GTForm, forms.Form):
@@ -104,3 +108,23 @@ class OrganizationReportView(ListView):
             self.organization = self.form.cleaned_data['filter_organization']
 
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('laboratory.delete_organizationstructure'), name='dispatch')
+class OrganizationDeleteView(DeleteView):
+    model = OrganizationStructure
+    success_url = reverse_lazy('auth_and_perms:organizationManager')
+
+@method_decorator(permission_required('laboratory.add_organizationstructure'), name='dispatch')
+class OrganizationCreateView(CreateView):
+    model = OrganizationStructure
+    success_url = reverse_lazy('auth_and_perms:organizationManager')
+    form_class = AddOrganizationForm
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        orguserman=OrganizationUserManagement.objects.create(
+            organization=self.object
+        )
+        orguserman.users.add(self.request.user)
+        return response
