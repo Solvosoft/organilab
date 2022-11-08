@@ -18,25 +18,25 @@
 			</button>
 			<ul class="dropdown-menu">
 				<li>  
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
 				</li>	
 			</ul>
 		</div>
