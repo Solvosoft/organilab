@@ -75,6 +75,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user)
         for org in orgByuser:
             orgs += list(org.descendants())
+            orgs += list(org.ancestors())
 
         users = []
         for org in set(orgs):
@@ -83,7 +84,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        profiles = get_profile_by_organization(self.request.GET.get('contenttypeobj[objectid]'))
+        profiles = get_profile_by_organization(self.organization.pk)
         #queryset = list(get_users_from_organization(org))
         if profiles:
             self.selected = [str(idpp) for idpp in profiles.values_list('user__id', flat=True)]
