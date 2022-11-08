@@ -7,7 +7,7 @@ from rest_framework.generics import get_object_or_404
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
 from laboratory.models import Laboratory, OrganizationStructure
-from laboratory.utils import get_profile_by_organization
+from laboratory.utils import get_profile_by_organization, get_users_from_organization
 
 
 def str2bool(v):
@@ -60,7 +60,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = pk
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -70,14 +70,27 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
             raise
         return super().list(request, *args, **kwargs)
 
+    def get_queryset(self):
+        orgs = []
+        orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user)
+        for org in orgByuser:
+            orgs += list(org.descendants())
+
+        users = []
+        for org in set(orgs):
+            users += list(get_users_from_organization(org.pk, org=org))
+        return self.model.objects.filter(pk__in=set(users))
+
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
         profiles = get_profile_by_organization(self.request.GET.get('contenttypeobj[objectid]'))
-
+        #queryset = list(get_users_from_organization(org))
         if profiles:
             self.selected = [str(idpp) for idpp in profiles.values_list('user__id', flat=True)]
         return queryset
 
+    def get_text_display(self, obj):
+        return str(obj.profile)
 
 @register_lookups(prefix="groupbase", basename="groupbase")
 class GroupS2(BaseSelect2View):
