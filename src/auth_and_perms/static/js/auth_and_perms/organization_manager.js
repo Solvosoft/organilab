@@ -355,3 +355,22 @@ $(".addOrgStructureEmpty").on('click', function(e){
     $('#id_parent').val('');
     $("#addOrganizationmodal").modal('show');
 });
+
+$(".contenttyperelobjbtnadd").on('click', function(e){
+    var url = this.dataset.href;
+    var select = $("#relOrganizationmodal select");
+    var organizationinput = $('#relOrganizationmodal input[name="organization"]');
+    organizationinput.val(this.dataset.org)
+
+        $.ajax({
+      type: "GET",
+      url: url,
+      data: document.contextroletable,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(select),
+      dataType: 'json'
+    });
+    $(select).select2({theme: 'bootstrap-5',  dropdownParent: $("#relOrganizationmodal")});
+    $("#relOrganizationmodal").modal('show');
+});

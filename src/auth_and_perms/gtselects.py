@@ -2,9 +2,11 @@ from django.contrib.auth.models import User
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
+from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_profile_by_organization
 
 
@@ -85,3 +87,30 @@ class GroupS2(BaseSelect2View):
     def get_queryset(self):
         user = self.request.user
         return get_roles_by_user(user)
+
+
+@register_lookups(prefix="relorgbase", basename="relorgbase")
+class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
+    model = Laboratory
+    fields = ['name']
+
+    def get_queryset(self):
+        super().get_queryset()
+        ancestors = self.organization.ancestors()
+        descendants = self.organization.descendants()
+        orgs = [self.organization] + list(ancestors) + list(descendants)
+        labs_pk = []
+        for organization in orgs:
+            labs_pk += list(organization.laboratory_set.all().values_list('pk', flat=True))
+        return Laboratory.objects.filter(pk__in=set(labs_pk))
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if not args:
+            raise
+        if self.organization is None:
+            raise
+        return super().list(request, *args, **kwargs)

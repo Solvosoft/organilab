@@ -41,6 +41,7 @@
                     {% if perms.laboratory.add_laboratory %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button" href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}" title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
+                            <li class="rolcontainer" title="{% trans 'Related Users' %}"><a data-href="{% url 'relorgbase-detail' node.0.node.pk %}" data-org="{{node.0.node.pk}}" class="btn btn-sm btn-warning contenttyperelobjbtnadd" type="button" data-id="{{node.0.node.pk}}"><i class="fa fa-university" ></i> {% trans 'Related Laboratory' %}</a></li>
                     {% endif %}
                     </ul>
                 </div>
@@ -93,6 +94,29 @@
       </div>
     </div>
   </div>
+
+<div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'auth_and_perms:add_contenttype_to_org' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+              <h4 class="modal-title" id="relOrganizationmodalLabel">{% trans 'Relate Organization with Permission objects' %}</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <select autocomplete="off" name="contentyperelobj" multiple></select>
+                <input type="hidden" name="organization" value="" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
 {% endblock %}
 
