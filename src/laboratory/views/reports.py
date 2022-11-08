@@ -36,6 +36,7 @@ from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
 from auth_and_perms.models import Profile
+from weasyprint import HTML
 #Convert html URI to absolute
 def link_callback(uri, rel):
     """
@@ -697,7 +698,7 @@ class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
     form_class=FilterForm
-    pdf_template = 'logobject_pdf.html'
+    pdf_template = 'laboratory/reports/logobject_pdf.html'
 
     DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
 
