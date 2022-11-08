@@ -18,14 +18,37 @@
                     <select autocomplete="off" name="rols" multiple data-url="{% url 'rolbase-detail' object.pk %}" ></select>
                     <div class="mt-2">
                         <label class="mt-2 mb-2">{% trans 'How to deal with permission merge' %}</label><br>
-                        <input type="radio" class="iCheck"  name="mergeaction" value="append"> {% trans 'Append' %} &nbsp;</input>
+                        <input type="radio" class="iCheck"  name="mergeaction" value="append" checked> {% trans 'Append' %} &nbsp;</input>
                         <input type="radio" class="iCheck"  name="mergeaction" value="sustract"> {% trans 'Sustract' %} &nbsp;</input>
-                        <input type="radio" class="iCheck"  name="mergeaction" value="full"> {% trans 'Only roles selected' %}</input>
+                        <input type="radio" class="iCheck"  name="mergeaction" value="full" > {% trans 'Only roles selected' %}</input>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="button"  class="btn btn-primary btnsaverole" >{% trans 'Save changes' %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade relatedusermodal"   id="modaluser{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
+     aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{% url 'auth_and_perms:addusersorganization' object.pk %}">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">{% trans 'Manage Users' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select autocomplete="off" name="users" multiple data-url="{% url 'orguserbase-detail' object.pk %}" ></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" >{% trans 'Save changes' %}</button>
                 </div>
             </div>
         </form>
