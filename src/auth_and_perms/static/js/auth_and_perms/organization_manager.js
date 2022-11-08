@@ -142,48 +142,6 @@ $("input[type='checkbox']").on('ifChanged', function(){
 });
 
 
-$(".userbtnadd").on('click', function(){
-    var id = $(this).data('id');
-    var user_list = $(".table"+id+" tbody tr");
-    var url = $(this).data('url');
-    $("#adduserform").attr('action', url);
-    var user_values = [];
-
-    if(user_list){
-        Array.from(user_list).forEach((item)=>{
-            var user_id = $(item).data('id');
-            user_values.push(user_id);
-        });
-    }
-
-    var selected_values = user_values.join(',');
-
-    $("#id_users").select2({
-      theme: 'bootstrap-5',
-      dropdownParent: $("#addusermodal"),
-      placeholder: 'Select an element',
-      ajax: {
-        url: '/gtapis/userbase/',
-        type: 'GET',
-        dataType: 'json',
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        data: function (params) {
-          var dev= {
-            selected: selected_values,
-            term: params.term,
-            page: params.page || 1
-          };
-          $("#id_users").trigger('relautocompletedata', dev);
-          return dev;
-        },
-      }
-
-    });
-
-    $("#id_users").trigger('change.select2');
-    $("#addusermodal").modal('show');
-});
-
 document.contextroletable={
     as_conttentype: false,
     as_user: false,
@@ -222,9 +180,22 @@ $(".applybyuser").on('click', function(e){
     $("#modal"+e.target.dataset.org).modal('show');
 });
 
+
+$(".userbtnadd").on('click', function(e){
+    document.contextroletable.as_conttentype=true;
+    document.contextroletable.as_user=false;
+    document.contextroletable.user=null;
+    document.contextroletable.as_role=false;
+    document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
+    document.contextroletable.profile=null;
+    $("#modaluser"+e.target.dataset.id).modal('show');
+});
+
 document.profileroleselects={
 
 }
+
+
 function add_selected_elements_to_select2(rols, data){
     return ()=>{
         for(let x=0; x<data.length; x++){
@@ -321,6 +292,32 @@ $(".addprofilerol").on('show.bs.modal', function (e) {
 
     $(rols).trigger('change');
 **/
+});
+
+
+$(".relatedusermodal").on('show.bs.modal', function (e) {
+
+
+    let modalid=e.target.id;
+    var selecttarget = $("#"+modalid+' select');
+    var users = selecttarget;
+    var organization = this.dataset.id;
+    var url = $(users).data('url');
+    var selecteditems = [];
+
+
+    $(users).val('').trigger('change');
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: document.contextroletable,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(users),
+      dataType: 'json'
+    });
+    $(users).select2({theme: 'bootstrap-5',  dropdownParent: $(this)});
 });
 
 

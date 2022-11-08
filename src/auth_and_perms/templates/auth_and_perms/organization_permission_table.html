@@ -31,3 +31,26 @@
         </form>
     </div>
 </div>
+
+
+<div class="modal fade relatedusermodal"   id="modaluser{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
+     aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{% url 'auth_and_perms:addusersorganization' object.pk %}">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">{% trans 'Manage Users' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select autocomplete="off" name="users" multiple data-url="{% url 'orguserbase-detail' object.pk %}" ></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" >{% trans 'Save changes' %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
