@@ -402,6 +402,20 @@ class OrganizationUserManagement(models.Model):
         return "%s" % self.organization.name
 
 
+class OrganizationStructureRelations(models.Model):
+    organization = models.ForeignKey(
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
+
+
 class Laboratory(models.Model):
     name = models.CharField(_('Laboratory name'), default='', max_length=255)
     phone_number = models.CharField(_('Phone'), default='', max_length=25)
