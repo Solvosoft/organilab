@@ -10,54 +10,47 @@
 
 {% block content %}
 
-  <div class="page-header"><h1>{% trans 'User exposition' %}</h1>
-
-  </div>
-  	{% if perms.laboratory.do_report %}
-	  <div class=" pull-right">
-	  <div class="btn-group dropup">
-	  <button type="button" class="btn btn-danger">
-	   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-	   {% trans 'Download'%}</button>
-	  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	    <span class="caret"></span>
-	    <span class="sr-only">{% trans 'Toggle Dropdown'%} </span>
-	  </button>
-	  <ul class="dropdown-menu">
-		  <li>
-	     <a 
-	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=ods">{% trans "Ods" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xls">{% trans "Xls" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
-	   </li>
-	    
-	  </ul>
+<div class="page-header"><h1>{% trans 'User exposition' %}</h1></div>
+{% if perms.laboratory.do_report %}
+	<div class="float-end">
+		<div class="btn-group dropup">
+			<button type="button" class="btn btn-danger">
+				<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+				{% trans 'Download'%}
+			</button>
+			<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="caret"></span>
+				<span class="sr-only">{% trans 'Toggle Dropdown'%} </span>
+			</button>
+			<ul class="dropdown-menu">
+				<li>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=ods">{% trans "Ods" %} </a>
+				</li>
+				<li>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xls">{% trans "Xls" %} </a>
+				</li>
+				<li>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+				</li>
+			</ul>
+		</div>
 	</div>
-	
-	 </div>
- 	{% endif %}
+	<div class="clearfix"></div>
+{% endif %}
 <br><br>
  {% if perms.laboratory.view_object %}
 <table id="reporttable" class="table">
 	<thead>
 	<tr>
-		<th>{% trans "Laboratory:" %}</th>
-		<th>{% trans "Name:" %}</th>
-		<th>{% trans "Id Card:" %}</th>
-		<th>{% trans "Job Position:" %}</th>
-		<th>{% trans "Code:" %}</th>
-		<th>{% trans "Sustance:" %}</th>
-		<th>{% trans 'CAS ID Number:' %}</th>
-		<th>{% trans 'White Organ:' %}</th>
-		<th>{% trans 'Carcinogenic:' %}</th>
+		<th>{% trans "Laboratory" %}</th>
+		<th>{% trans "Name" %}</th>
+		<th>{% trans "Id Card" %}</th>
+		<th>{% trans "Job Position" %}</th>
+		<th>{% trans "Code" %}</th>
+		<th>{% trans "Sustance" %}</th>
+		<th>{% trans 'CAS ID Number' %}</th>
+		<th>{% trans 'White Organ' %}</th>
+		<th>{% trans 'Carcinogenic' %}</th>
 	</tr></thead><tbody>
 	  {% for obj in object_list %}
 		    <tr>
