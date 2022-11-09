@@ -25,23 +25,18 @@
 		    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 		  </button>
 		  <ul class="dropdown-menu">
-		  <li>  <a  
-		       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
-		  </li><li>
-		     <a 
-		       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
-		   </li>
-		   
-		   <li>
-		     <a 
-		       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
-		   </li>
-		   
-		   <li>
-		     <a 
-		       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
-		   </li>
-		    
+			  <li>
+				  <a href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %}</a>
+			  </li>
+			  <li>
+				  <a href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+			  </li>
+			  <li>
+				  <a href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+			  </li>
+			  <li>
+				  <a href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+			  </li>
 		  </ul>
 	   </div>
 	 {% endif %}
@@ -104,23 +99,18 @@
 	    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 	  </button>
 	  <ul class="dropdown-menu">
-	  <li>  <a  
-	       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
-	  </li><li>
-	     <a 
-	       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
-	   </li>
-	   
-	   <li>
-	     <a 
-	       href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
-	   </li>
-	    
+		  <li>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
+		  </li>
+		  <li>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+		  </li>
+		  <li>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+		  </li>
+		  <li>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+		  </li>
 	  </ul>
 	</div>
   {% endif %}

@@ -23,8 +23,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput,Select
-# for xhtml2pdf
-from xhtml2pdf import pisa
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure,  SustanceCharacteristics,PrecursorReport
@@ -36,6 +34,7 @@ from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from organilab import settings
 from laboratory.decorators import has_lab_assigned
 from auth_and_perms.models import Profile
+from weasyprint import HTML
 #Convert html URI to absolute
 def link_callback(uri, rel):
     """
@@ -92,7 +91,7 @@ def make_book_organization_laboratory(objects):
                 emails += " \n"
             profile += pr.user.get_full_name()
             phones += pr.phone_number
-            emails += pr.user__email
+            emails += pr.user.email
         dev.append([
             object.name,
             object.phone_number,
@@ -150,15 +149,14 @@ def report_organization_building(request, *args, **kwargs):
         'request': request,
         'laboratory': kwargs.get('lab_pk'),
     }
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
+
     template = get_template('pdf/organizationlaboratory_pdf.html')
     html = template.render(context=context)
+    page = HTML(string=html, encoding='utf-8').write_pdf()
 
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="report_organization_libraries.pdf"'
     return response
 
 
@@ -220,16 +218,16 @@ def report_labroom_building(request, *args, **kwargs):
         'request': request,
         'laboratory': kwargs.get('lab_pk'),
     }
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
     template = get_template('pdf/laboratoryroom_pdf.html')
     #added explicit context
     html = template.render(context=context)
 
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
+
     return response
 
 
@@ -257,16 +255,11 @@ def report_shelf_objects(request, *args, **kwargs):
     template = get_template('pdf/shelf_object_pdf.html')
 
     html = template.render(context=context)
+    page = HTML(string=html, encoding='utf-8').write_pdf()
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition']='attachment; filename="report_shelf_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8'
-    )
-    if pisaStatus.err:
-        return HttpResponse(
-            'We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html)
-        )
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="report_shelf_objects.pdf"'
     return response
 
 
@@ -321,13 +314,12 @@ def report_limited_shelf_objects(request, *args, **kwargs):
         'laboratory': kwargs.get('lab_pk')
     }
     html = template.render(context=context)
-    response = HttpResponse(content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_limited_shelf_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="report_limited_shelf_objects.pdf"'
     return response
 
 
@@ -440,12 +432,12 @@ def report_objects(request, *args, **kwargs):
         'request': request,
         'laboratory': kwargs.get('lab_pk')
     }
-    response = HttpResponse(content_type='application/pdf')
     html = template.render(context=context)
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
     response['Content-Disposition'] = 'attachment; filename="report_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
 
     return response
 
@@ -486,13 +478,12 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     }
 
     html = template.render(context=context)
-    response = HttpResponse(content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
+
     return response
 
 
@@ -548,14 +539,15 @@ def report_furniture(request, *args, **kwargs):
         'request': request,
         'laboratory': lab
     }
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+
     template = get_template('pdf/summaryfurniture_pdf.html')
     html = template.render(context=context)
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
+
     return response
 
 
@@ -583,14 +575,12 @@ def report_h_code(request, *args, **kwargs):
     }
 
     html = template.render(context=context)
+    page = HTML(string=html, encoding='utf-8').write_pdf()
 
-    response = HttpResponse(content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
-    pisaStatus = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="hcode_report.pdf"'
+
     return response
 
 
@@ -697,7 +687,7 @@ class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
     form_class=FilterForm
-    pdf_template = 'logobject_pdf.html'
+    pdf_template = 'laboratory/reports/logobject_pdf.html'
 
     DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
 
