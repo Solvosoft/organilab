@@ -262,7 +262,7 @@ def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     action = int(request.POST.get('options'))
     form = AddObjectForm(request.POST, lab=request.POST.get('lab'))
-    print(action)
+
     if action == 2:
         if form.is_valid():
             try:
@@ -387,6 +387,11 @@ def objects_transfer(request,pk):
                                            limit_quantity=0,
                                            measurement_unit=lab_send_obj.measurement_unit)
             new_object.save()
+            log_object_change(request.user, data.laboratory_received.pk, lab_send_obj, 0,
+                              data.quantity,
+                              'Transferencia de %s por parte del laboratorio %s' % (
+                              data.get_object_detail(), data.laboratory_send.name),
+                              1, "Transfer", create=False)
 
         old = lab_send_obj.quantity
         lab_send_obj.quantity -= data.quantity

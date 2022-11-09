@@ -1,22 +1,20 @@
 {% load i18n %}
 <!-- Modal -->
-<div class="modal fade" id="add_tranfer_object" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="add_tranfer_object" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal_tranfer_object">{% trans 'Select the Shelf' %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-danger" id="alert_message" style="display: none;">
-                    <strong id="error_message"></strong>
-                    <span class="closebtn pull-right" onclick="this.parentElement.style.display='none';">&times;</span>
-                </div>
+          <strong id="error_message"></strong>
+          <span class="closebtn float-end" onclick="this.parentElement.style.display='none';">&times;</span>
+        </div>
         <form id="transfer_form" method="POST">
             {% csrf_token %}
-          <label class="pull-right" id="obj"></label>
+          <label class="float-end" id="obj"></label>
             <div class="form-group">
             <label>{% trans 'Shelf' %}</label>
               <select data-widget="Select" name="shelf" id="shelf_list"></select>
@@ -26,8 +24,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
-        <button type="button" class="btn btn-primary" onclick="send_form()">{% trans 'Accept' %}</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Cancel' %}</button>
+        <button type="button" class="btn btn-success" onclick="send_form()"><i class="fa fa-check-circle" aria-hidden="true"></i> {% trans 'Accept' %}</button>
       </div>
     </div>
   </div>

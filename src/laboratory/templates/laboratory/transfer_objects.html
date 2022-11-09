@@ -9,7 +9,6 @@
     {% define_urlname_action 'transfer_objects' %}
 {% endblock %}
 {% block content %}
-{% include 'laboratory/transfer_object_modal.html' %}
 <style>
     .select2 {
     width: 100%!important;
@@ -18,8 +17,8 @@ span.select2-container {
     z-index:10050;
 }
 </style>
-    <div class="col-md-offset-2 col-md-8">
-            <div class="page-header col-xs-13" align="center">
+    <div class="offset-md-2 col-md-8">
+            <div class="page-header" align="center">
               <h3 class="heading-1" ><span> {% trans 'Transfer of objects' %}  </span></h3>
             </div>
     </div>
@@ -44,25 +43,26 @@ span.select2-container {
                 <td>{{obj.laboratory_received}}</td>
                 <td>{{obj.update_time}}</td>
                 <td>{{obj.get_status_display}}</td>
-                <td>
-                   {% if laboratory|to_int == obj.laboratory_received.pk and obj.status == 0%}
-                    <button data-bs-toggle="modal" class="btn btn-success"
+                <td>{% if laboratory|to_int == obj.laboratory_received.pk and obj.status == 0 %}
+                        <button data-bs-toggle="modal" class="btn btn-success"
                                 data-bs-target="#add_tranfer_object"
                                 aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}})">
-                            <span aria-hidden="true">+</span>
+                            <i class="fa fa-check-circle" aria-hidden="true"></i>
                         </button>
                     {% endif %}
                     {% if obj.status == 0  and perms.laboratory.delete_tranferobject %}
-                   <button class="btn btn-danger"  onclick="delete_transfer({{obj.id}})">
-                            <span aria-hidden="true">&times;</span>
+                        <button class="btn btn-danger"  onclick="delete_transfer({{obj.id}})">
+                           <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
                     {% endif %}
-                     </td>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% include 'laboratory/transfer_object_modal.html' %}
 {% endblock %}
+
 {% block js %}
 <script>
      document.update_shelf = '{% url "laboratory:update_transfer" laboratory %}';
