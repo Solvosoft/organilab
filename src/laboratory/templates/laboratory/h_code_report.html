@@ -40,19 +40,16 @@
 	    <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
 	  </button>
 	  <ul class="dropdown-menu">
-	  <li>  <a
-	       href="{% url 'laboratory:download_h_code_reports' %}?format=pdf{{params}}">{% trans "PDF" %} </a>
+	  <li>
+          <a class="dropdown-item" href="{% url 'laboratory:download_h_code_reports' %}?format=pdf{{params}}">{% trans "PDF" %} </a>
 	  </li><li>
-	     <a
-	       href="{% url 'laboratory:download_h_code_reports' %}?format=ods{{params}}">{% trans "Ods" %} </a>
+	     <a class="dropdown-item" href="{% url 'laboratory:download_h_code_reports' %}?format=ods{{params}}">{% trans "Ods" %} </a>
 	   </li>
 	   <li>
-	     <a
-	       href="{% url 'laboratory:download_h_code_reports' %}?format=xls{{params}}">{% trans "Xls" %} </a>
+	     <a class="dropdown-item" href="{% url 'laboratory:download_h_code_reports' %}?format=xls{{params}}">{% trans "Xls" %} </a>
 	   </li>
 	   <li>
-	     <a
-	       href="{% url 'laboratory:download_h_code_reports' %}?format=xlsx{{params}}">{% trans "Xlsx" %} </a>
+	     <a class="dropdown-item" href="{% url 'laboratory:download_h_code_reports' %}?format=xlsx{{params}}">{% trans "Xlsx" %} </a>
 	   </li>
 	  </ul>
 	</div>
