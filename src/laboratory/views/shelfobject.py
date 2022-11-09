@@ -262,7 +262,7 @@ def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     action = int(request.POST.get('options'))
     form = AddObjectForm(request.POST, lab=request.POST.get('lab'))
-
+    print(action)
     if action == 2:
         if form.is_valid():
             try:

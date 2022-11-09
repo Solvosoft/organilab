@@ -35,10 +35,10 @@
                 <td id="status">{{obj.get_status_display}}</td>
                 <td>
                     {% if obj.status == 3 %}
-                        <button data-bs-toggle="modal"
+                        <button class="btn btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#delete_selected_obj_reservation_modal"
                                 aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
                         <input type="hidden" name="user_id" value="{{obj.user.id}}">
                         <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
