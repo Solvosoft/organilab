@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from django.conf import settings
-from auth_and_perms.forms import AddUserForm, AddProfileRolForm
+from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm
@@ -273,4 +273,20 @@ def add_contenttype_to_org(request):
                 ).first(),
                 object_id=obj
             )
+    return redirect('auth_and_perms:organizationManager')
+
+
+
+@permission_required("laboratory.change_organizationstructure")
+def copy_rols(request, pk):
+    org = get_object_or_404(OrganizationStructure, pk=pk)
+
+    if request.method == "POST":
+        form = AddRolForm(request.POST)
+
+        if form.is_valid():
+            org.rol.add(*form.cleaned_data['rols'])
+            messages.success(request, _("Element saved successfully"))
+        else:
+            messages.error(request, _("Error, form is invalid"))
     return redirect('auth_and_perms:organizationManager')

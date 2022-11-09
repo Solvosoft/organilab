@@ -7,7 +7,7 @@ from rest_framework.generics import get_object_or_404
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
 from laboratory.models import Laboratory, OrganizationStructure
-from laboratory.utils import get_profile_by_organization, get_users_from_organization
+from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
 def str2bool(v):
@@ -130,3 +130,22 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         if self.organization is None:
             raise
         return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="roluserorgbase", basename="roluserorgbase")
+class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
+    model = Rol
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+
+    def get_queryset(self):
+        orgs = []
+        orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user)
+        for org in orgByuser:
+            orgs += list(org.descendants())
+            orgs += list(org.ancestors())
+
+        rols = []
+        for org in set(orgs):
+            rols += list(get_rols_from_organization(org.pk, org=org, rolfilters={'rol__isnull': False}))
+        return self.model.objects.filter(pk__in=set(rols))
