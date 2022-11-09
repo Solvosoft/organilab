@@ -1,0 +1,62 @@
+{% load static i18n %}
+<div class="clearfix">
+    <div class="float-start">
+    </div>
+    <div class="float-end">
+        <p>{{datetime|date:"SHORT_DATETIME_FORMAT"}}</p>
+    </div>
+</div>
+
+<div>
+    <h2 style="text-align: center;">{% trans 'Changes on Objects' %}</h2>
+</div>
+<br>
+
+  <table border="1" style="font-size:11px; width:100% !important;">
+      <tr style="vertical-align:top; text-aling:center">
+          <th style="width:13%">{% trans 'User' %}</th>
+          <th style="width:13%">{% trans 'Laboratory' %}</th>
+          <th style="width:13%">{% trans 'Object' %}</th>
+          <th style="width:13%">{% trans 'Day' %}</th>
+          <th style="width:8%">{% trans 'Old' %}</th>
+          <th style="width:8%">{% trans 'New' %}</th>
+          <th style="width:8%">{% trans 'Difference' %}</th>
+          <th style="width:8%">{% trans 'Unit' %}</th>
+          <th class="width:8%">{% trans 'Precursor' %}</th>
+
+      </tr>
+      <tbody>
+      {% for obj in object_list %}
+      <tr style="vertical-align:middle; text-aling:center;">
+          <td style="width:13%">{{obj.user|default_if_none:""}}</td>
+          <td style="width:13%">{{obj.laboratory|default_if_none:""}}</td>
+          <td style="width:13%">{{obj.object|default_if_none:""}}</td>
+          <td style="width:13%">{{obj.update_time|date:"SHORT_DATETIME_FORMAT"}}</td>
+          <td style="width:8%">{{obj.old_value|default_if_none:"0.0"}}</td>
+          <td style="width:8%">{{obj.new_value|default_if_none:"0.0"}}</td>
+          <td style="width:8%">{{obj.diff_value|default_if_none:"0.0"}}</td>
+          <td style="width:8%">{{obj.measurement_unit|default_if_none:""}}</td>
+          {% if obj.precursor %}
+          <td style="width:8%">{% trans 'Precursor'%}</td>
+          {% else %}
+          <td style="width:8%"></td>
+          {% endif %}
+      </tr>
+      {% endfor %}
+      </tbody>
+  </table>
+{% include 'academic/substance/pdf/pdf_css.html' %}
+<style>
+    @page {
+
+    @bottom-right{
+        content: "{% trans 'Page' %} " counter(page) " {% trans 'of' %} " counter(pages);
+        font-size: 12px;
+    }
+    @bottom-left{
+        content: "";
+        font-size: 12px;
+    }
+
+}
+</style>
