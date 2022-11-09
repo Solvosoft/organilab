@@ -8,11 +8,6 @@
 {% endblock %}
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
-<style>
-    .select2 {
-    width: 100%!important;
-}
-</style>
 <a href="{% url 'procedure_update' pk=procedure lab_pk=lab_pk%}" class="btn btn-primary">
     <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
 <div class="card-body">

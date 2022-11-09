@@ -10,12 +10,7 @@
 #table_template_list tbody tr td{
     vertical-align: middle;
 }
-.select2 {
-    width: 100%!important;
-}
-span.select2-container {
-    z-index:10050;
-}
+
 .icons{
     font-weight:bold;
 }
