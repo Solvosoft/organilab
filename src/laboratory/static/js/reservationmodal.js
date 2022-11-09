@@ -79,10 +79,11 @@ function add_reservation() {
                     type: 'POST',
                     data: data,
                     success: function({status,msg}) {
+                        console.log(msg)
                       if(status){
                          $("#modal_reservation").modal('hide');
                             clear_inputs();
-                            location.reload();
+//                            location.reload();
                         }else{
                         error_message('#alert_message_objects',msg)
                         }
