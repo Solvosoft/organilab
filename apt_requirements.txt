@@ -1,1 +1,0 @@
-build-essential python3-dev libxslt-dev libxml2-dev python3-setuptools postgresql postgresql-client python3-pip python3-cffi libcairo2 git libffi-dev libpq-dev python3-gdal 
