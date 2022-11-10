@@ -2,87 +2,105 @@
 {% load laboratory static i18n %}
 {% block content %}
 {% include 'laboratory/search_widget.html' %}
-{% include 'laboratory/reservation_modal.html' %}
-
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
+<div class="accordion border-0" id="accordionExample">
 {% for object in object_list%}
-  <div class="panel panel-default">
-	<div class="panel-heading" role="tab" id="heading{{object.pk}}">
-	  <h4 class="panel-title">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading{{object.pk}}">
+      <button class="accordion-button"  data-bs-toggle="collapse" data-bs-target="#collapse{{object.pk}}" aria-expanded="true" aria-controls="collapseOne">
+		<div class="row w-100">
+			<div class="col-md-1">
+				<a target='_blank' href="{% url 'laboratory:rooms_list' object.shelf.furniture.labroom.laboratory_set.first.pk %}#labroom={{object.shelf.furniture.labroom.pk}}&furniture={{object.shelf.furniture.pk}}&shelf={{object.shelf.pk}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+			</div>
+			<div class="col-md-11">
+                <div class="row">
+                    <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
+                    <div class="col-md-3"><p class="text-info">{{object.shelf.furniture.name}} -- {{object.shelf.name}}</p></div>
+                    <div class="col-md-4">{{object.object.name}} </div>
+                </div>
+			</div>
+        </div>
+	  </button>
+    </h2>
+    <div id="collapse{{object.pk}}" class="accordion-collapse collapse {% if forloop.counter == 1 %} show {% endif %}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body card-body">
+          <div class="row">
+              <div class="col-md-4">
+                  {% if perms.reservations_management.add_reservedproducts %}
+                    <a data-bs-toggle="modal"
+                       data-bs-target="#modal_reservation"
+                       style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
+                       class="btn btn-danger"><i class="fa fa-book" aria-hidden="true"></i> {% trans "Reserve object" %}
+                    </a>
+                  {% endif %}
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-4">
+                  <h3> {% trans 'Information' %} </h3>
+                  <strong>{% trans 'Code' %}: </strong>{{object.object.code}} <br>
+                  <strong>{% trans 'Type' %}: </strong>{{object.object.get_type_display}} <br>
+                  <div id="o{{object.pk}}">
+                      {% include 'laboratory/shelfObject.html' %}
+                  </div>
+                  <h3>{% trans 'Characteristic' %}</h3>
+                  <ul class="list-group">
+                      {% for feature in object.object.features.all %}
+                        <li class="list-group-item" title="{{feature.description}}">{{feature.name}}</li>
+                      {% endfor %}
+                  </ul>
+              </div>
+              <div class="col-md-8">
+                  <h3>{% trans "Description" %}</h3>{{object.object.description}}
+              </div>
+          </div>
+      </div>
+    </div>
+      {% empty %}
+      <div class="alert alert-danger"> {% trans 'Not found' %} </div>
+	{% endfor %}
+  </div>
 
-	<div class="row">
-		<div class="col-md-1">
-		
-		 <a target='_blank' href="{% url 'laboratory:rooms_list' object.shelf.furniture.labroom.laboratory_set.first.pk %}#labroom={{object.shelf.furniture.labroom.pk}}&furniture={{object.shelf.furniture.pk}}&shelf={{object.shelf.pk}}"> <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </a>
-		</div>
-		<div class="col-md-11">
-		        <a class="collapsed" role="button" data-bs-toggle="collapse"
-		        data-parent="#accordion" href="#collapse{{object.pk}}" 
-		        aria-expanded="false" aria-controls="collapse{{object.pk}}">
-		        
-				<div class="row">
-				
-				  <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
-				  <div class="col-md-3"><p class="text-info">{{object.shelf.furniture.name}}
-				  -- {{object.shelf.name}}
-
-				  </p></div>
-				  <div class="col-md-4">{{object.object.name}} </div>
-				</div>
-		
-		        </a>   
-		</div>    
-	</div> 
-	      </h4>
-	   
-	    </div>
-	    <div id="collapse{{object.pk}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{object.pk}}">
-	      <div class="panel-body">
-
-		 <div class="row">
-			 <div class="col-md-4">
-				 {% if perms.reservations_management.add_reservedproducts %}
-				 <a data-bs-toggle="modal"
-					data-bs-target="#modal_reservation"
-					style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
-					class="btn btn-danger"> {% trans "Reserve object" %}</a>
-				 {% endif %}
-		 	</div>
-		 </div>
-
-	 <div class="row">
-	  <div class="col-md-4">
-	  	<h3> {% trans 'Information' %} </h3>
-		<strong>{% trans 'Code' %}: </strong>{{object.object.code}} <br>
-		<strong>{% trans 'Type' %}: </strong>{{object.object.get_type_display}} <br>
-		
-		<div id="o{{object.pk}}"> 
-		{% include 'laboratory/shelfObject.html' %}		
-		</div>
-		<h3>{% trans 'Characteristic' %}</h3>
-		
-	<ul class="list-group">
-		{% for feature in object.object.features.all %}
-		<a href="#" class="list-group-item" data-bs-toggle="tooltip" data-placement="right" title="{{feature.description}}">{{feature.get_name_display}}</a>
-		{% endfor %}
-	</ul>
-	  </div>
-	  <div class="col-md-8">
-	  	<h3>{% trans "Description" %}</h3>
-	  	{{object.object.description}}</div>
-	</div>     	
-	      	
-	      </div>
-	    </div>
-	  </div>
-	  {% empty %}
-	  <div class="alert alert-danger"> {% trans 'Not found' %} </div>
-{% endfor %}
+<div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="model_reservation_form_title">{% trans 'Reservations' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modal_reservation_form" method="POST">
+                    {% csrf_token %}
+                    <label class="float-end" id="obj"></label>
+                    {{modal_form_reservation.options}}
+                    {% for form in modal_form_reservation.visible_fields %}
+                        {% if form.label == 'Amount required' %}
+                            <div class="form-group">
+                                <label>{% trans form.label %}</label>
+                                <div class="input-group">
+                                    {{form}}
+                                    <span class="input-group-text unit"></span>
+                                </div>
+                                {{form.help_text}}
+                            </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label>{% trans form.label %}</label>
+                            {{form}}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button" onclick="create_reservation()">{% trans 'Add' %}</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-
 {% endblock %}
+
 {% block js %}
 {{block.super}}
 <script>
@@ -91,10 +109,10 @@
 </script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
-jq162 = jQuery.noConflict( true );
+	jq162 = jQuery.noConflict( true );
 </script>
-{{ search_form.media }}
+	{{ search_form.media }}
 <script>
-$ = jq162;
+	$ = jq162;
 </script>
 {% endblock %}
