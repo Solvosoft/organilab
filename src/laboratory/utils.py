@@ -80,6 +80,13 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_p
 check_lab_perms = check_lab_group_has_perm
 
 
+def get_rols_from_organization(rootpk, rolfilters={}, org=None):
+    if org is None:
+        org = OrganizationStructure.objects.filter(pk=rootpk).first()
+    query = OrganizationStructure.objects.filter(pk=rootpk, **rolfilters).descendants(of=org, include_self=True)
+    return query.values_list('rol', flat=True)
+
+
 def get_users_from_organization(rootpk, userfilters={}, org=None):
     if org is None:
         org = OrganizationStructure.objects.filter(pk=rootpk).first()
