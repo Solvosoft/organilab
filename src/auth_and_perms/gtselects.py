@@ -76,6 +76,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         for org in orgByuser:
             orgs += list(org.descendants())
             orgs += list(org.ancestors())
+            orgs.append(org)
 
         users = []
         for org in set(orgs):
@@ -144,6 +145,7 @@ class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
         for org in orgByuser:
             orgs += list(org.descendants())
             orgs += list(org.ancestors())
+            orgs.append(org)
 
         rols = []
         for org in set(orgs):
