@@ -3,12 +3,12 @@
 <nav class="nav_menu">
 
 <div class="container-fluid">
-    <div class="nav toggle">
+    <div class="nav toggle" style="margin-top:9px;">
         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
     </div>
     {% if laboratory %}
 
-        <ul class="nav navbar-nav float-start" style="width: 40%;">
+        <ul class="nav navbar-nav float-start">
             <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
         </ul>
     {% endif %}

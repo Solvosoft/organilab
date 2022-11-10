@@ -387,6 +387,11 @@ def objects_transfer(request,pk):
                                            limit_quantity=0,
                                            measurement_unit=lab_send_obj.measurement_unit)
             new_object.save()
+            log_object_change(request.user, data.laboratory_received.pk, lab_send_obj, 0,
+                              data.quantity,
+                              'Transferencia de %s por parte del laboratorio %s' % (
+                              data.get_object_detail(), data.laboratory_send.name),
+                              1, "Transfer", create=False)
 
         old = lab_send_obj.quantity
         lab_send_obj.quantity -= data.quantity
