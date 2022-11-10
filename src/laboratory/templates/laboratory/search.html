@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
 {% block content %}
+<input type="hidden" id="edit_url" value="{% url 'laboratory:edit_object' pk=laboratory %}">
+<input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">
 {% include 'laboratory/search_widget.html' %}
 <div class="accordion border-0" id="accordionExample">
 {% for object in object_list%}
@@ -13,9 +15,9 @@
 			</div>
 			<div class="col-md-11">
                 <div class="row">
-                    <div class="col-md-4"><p class="text-success">{{object.shelf.furniture.labroom.name}}</p></div>
-                    <div class="col-md-3"><p class="text-info">{{object.shelf.furniture.name}} -- {{object.shelf.name}}</p></div>
-                    <div class="col-md-4">{{object.object.name}} </div>
+                    <div class="col-md-4"><p class="text-success">{% trans 'Laboratory Room' %}: {{object.shelf.furniture.labroom.name}}</p></div>
+                    <div class="col-md-3"><p class="text-info">{% trans 'Furniture' %}:{{object.shelf.furniture.name}} -- {% trans 'Shelf' %}:{{object.shelf.name}}</p></div>
+                    <div class="col-md-4">{% trans 'Object' %}: {{object.object.name}} </div>
                 </div>
 			</div>
         </div>
@@ -92,8 +94,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary" type="button" onclick="create_reservation()">{% trans 'Add' %}</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" onclick="create_reservation()">{% trans 'Add' %}</button>
             </div>
         </div>
     </div>
