@@ -2,6 +2,7 @@ var shelf_object_id
 var user_id
 var object_id
 const reservation_url=document.api_modal;
+
 /* Function called when the reservation button is clicked.
 It gets the shelfObject.pk and user id and saves it as a js variables.
 */
@@ -67,10 +68,12 @@ function add_reservation() {
                     data: data,
                     success: function(data) {}
                 });
-                $("#modal_reservation").modal('hide');
+                const reservation_modal = document.querySelector('#modal_reservation');
+                const modal = bootstrap.Modal.getInstance(reservation_modal);
+                modal.hide();
                 clear_inputs();
             } else {
-                    error_message('#alert_message')
+                error_message('#alert_message')
             }
         });
         }else{
@@ -79,19 +82,46 @@ function add_reservation() {
                     type: 'POST',
                     data: data,
                     success: function({status,msg}) {
-                        console.log(msg)
                       if(status){
-                         $("#modal_reservation").modal('hide');
-                            clear_inputs();
-//                            location.reload();
-                        }else{
-                        error_message('#alert_message_objects',msg)
+                      const reservation_modal = document.querySelector('#modal_reservation');
+                           const modal = bootstrap.Modal.getInstance(reservation_modal);
+                           modal.hide();
+                           clear_inputs();
+                       }else{
+                            error_message('#alert_message_objects',msg)
                         }
                     }
                 });
-
         }
     }
+
+function create_reservation() {
+    form_modal = $('#modal_reservation_form');
+    data = get_form_data(form_modal);
+    input = {
+        "obj": data.shelf_object,
+        "initial_date": data.initial_date,
+        "user": data.user,
+        "status": 3
+    }
+    $.get(document.date_validation_script_url, input,
+        function({ is_valid }) {
+            if (is_valid) {
+                $.ajax({
+                    url: document.api_modal,
+                    type: 'POST',
+                    data: data,
+                    success: function(data) {}
+                });
+                const reservation_modal = document.querySelector('#modal_reservation');
+                const modal = bootstrap.Modal.getInstance(reservation_modal);
+                modal.hide();
+                clear_inputs();
+            } else {
+                error_message('#alert_message')
+            }
+        });
+}
 function error_message(id,msg){
   if ($(`${id}`).css('display') != 'block')
       $("#error_message_object").text(msg);
