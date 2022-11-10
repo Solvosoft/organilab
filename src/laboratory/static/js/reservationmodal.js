@@ -1,6 +1,7 @@
 var shelf_object_id
 var user_id
 var object_id
+var object_element
 const reservation_url=document.api_modal;
 
 /* Function called when the reservation button is clicked.
@@ -11,12 +12,13 @@ function initialize_modal(shelf_obj_pk, user_pk) {
     shelf_object_id = shelf_obj_pk;
     user_id = user_pk;
 }
-function initialize_reservation_modal(shelf_obj_pk,object_pk, user_pk,units) {
+function initialize_reservation_modal(element,shelf_obj_pk,object_pk, user_pk,units) {
     $('#alert_message').css('display', 'none');
     shelf_object_id = shelf_obj_pk;
     object_id= object_pk;
     user_id = user_pk;
     $('.unit').text(units);
+    object_element=element
     get_detail()
     }
 
@@ -58,7 +60,8 @@ function add_reservation() {
         "user": data.user,
         "status": 3
     }
-    if($('#option').find('option:selected').val()==1){
+    let option=$('#option').find('option:selected').val()
+    if(option==1){
     $.get(document.date_validation_script_url, input,
         function({ is_valid }) {
             if (is_valid) {
@@ -66,12 +69,14 @@ function add_reservation() {
                     url: document.api_modal,
                     type: 'POST',
                     data: data,
-                    success: function(data) {}
+                    success: function(data) {
+                        const reservation_modal = document.querySelector('#modal_reservation');
+                        const modal = bootstrap.Modal.getInstance(reservation_modal);
+                        modal.hide();
+                        document.querySelector('#option').selectedIndex=0;
+                        clear_inputs();
+                    }
                 });
-                const reservation_modal = document.querySelector('#modal_reservation');
-                const modal = bootstrap.Modal.getInstance(reservation_modal);
-                modal.hide();
-                clear_inputs();
             } else {
                 error_message('#alert_message')
             }
@@ -81,20 +86,31 @@ function add_reservation() {
                     url: document.api_modal,
                     type: 'POST',
                     data: data,
-                    success: function({status,msg}) {
+                    success: function({status,msg,object}) {
                       if(status){
-                      const reservation_modal = document.querySelector('#modal_reservation');
-                           const modal = bootstrap.Modal.getInstance(reservation_modal);
-                           modal.hide();
-                           clear_inputs();
+                          message(msg,'success', object);
                        }else{
-                            error_message('#alert_message_objects',msg)
-                        }
+                          message(msg,'error');
+                       }
                     }
                 });
         }
     }
-
+function message(msg,icon,object=undefined){
+    const reservation_modal = document.querySelector('#modal_reservation');
+    const modal = bootstrap.Modal.getInstance(reservation_modal);
+    modal.hide();
+    clear_inputs();
+    document.querySelector('#option').selectedIndex=0;
+    Swal.fire(
+    '',
+    msg,
+    icon
+    )
+    if(option!=3 && object!=undefined){
+        object_element.parentElement.children[0].textContent=object
+   }
+}
 function create_reservation() {
     form_modal = $('#modal_reservation_form');
     data = get_form_data(form_modal);
@@ -111,12 +127,10 @@ function create_reservation() {
                     url: document.api_modal,
                     type: 'POST',
                     data: data,
-                    success: function(data) {}
+                    success: function(data) {
+                        message('Reservado','success')
+                    }
                 });
-                const reservation_modal = document.querySelector('#modal_reservation');
-                const modal = bootstrap.Modal.getInstance(reservation_modal);
-                modal.hide();
-                clear_inputs();
             } else {
                 error_message('#alert_message')
             }
@@ -129,9 +143,11 @@ function error_message(id,msg){
  }
 
 function clear_inputs(){
-    input_fields = $('#content').find(':input');
+    input_fields = $('#modal_reservation_form').find(':input');
     for (const input of input_fields) {
-        input.value='';
+        if(input.type!='hidden'){
+            input.value='';
+        }
     }
 }
 function select_action(reserved_state, tranfer_state, add_state, subtract_state){
@@ -156,7 +172,6 @@ function choose_action(){
      document.api_modal=$('#edit_url').val();  }
  }
 $( document ).ready(()=>{
-
     choose_action()
 });
 

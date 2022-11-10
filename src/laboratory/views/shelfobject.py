@@ -212,7 +212,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
                     '#o%d' % self.object.pk: render_to_string(
                         'laboratory/shelfObject.html',
                         {'object': self.object,
-                         'laboratory': self.lab})
+                         'laboratory': self.lab},request)
                 },
             }
         response.render()
@@ -276,14 +276,20 @@ def add_object(request, pk):
             object.save()
             log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
                                   request.POST.get('bill'), create=False)
-            return JsonResponse({'status': True, 'msg': _('Add done successfully')})
+
+            response = {
+                'status': True,
+                'msg': _('Added successfully'),
+                'object': object.__str__()
+            }
+            return JsonResponse(response)
         else:
             return JsonResponse({'status': False,'msg':_('Complete the fields')})
     elif action == 4:
         return subtract_object(request, pk)
     else:
         return transfer_object(request, pk)
-    return JsonResponse({'status': True, 'msg': _('Add done successfully')})
+    return JsonResponse({'status': True, 'msg': _('Added successfully')})
 
 add_object.lab_pk_field= 'pk'
 
@@ -303,10 +309,10 @@ def subtract_object(request, pk):
             object.save()
             log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
         else:
-            return JsonResponse({'status': False, 'msg': _('The amount of subtract is more that shelf have')})
+            return JsonResponse({'status': False, 'msg': _('The amount to be subtracted is more than the shelf has'),'object': object.__str__()})
     else:
         return JsonResponse({'status': False, 'msg': _('Complete the fields')})
-    return JsonResponse({'status': True, 'msg': _('Accion done successfully')})
+    return JsonResponse({'status': True, 'msg': _('Sustracted successfully'), 'object': object.__str__()})
 
 
 @permission_required('laboratory.add_tranfer_object')
