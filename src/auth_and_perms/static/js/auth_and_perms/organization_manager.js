@@ -241,6 +241,7 @@ $(".rolbtnadd").on('click', function(){
 
 $("#addrolmodal").on('hidden.bs.modal', function () {
     $("#btn_copy_rol").removeAttr('data-url');
+    $("#addrolmodal div#add_rol_container input#rolname").val('');
     $("#addrolmodal div#add_rol_container input[name='orgpk']").val('');
 })
 
@@ -270,6 +271,7 @@ $(this).find('.btn').toggleClass('active');
 
 $(document).ready(function(){
     $("#copy_rol_container").hide();
+    $("#addrolmodal div#add_rol_container input#rolname").val('');
  });
 
 
