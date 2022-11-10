@@ -13,35 +13,30 @@
 
 {% block content %}
 	{% if perms.laboratory.view_laboratoryroom or perms.laboratory.add_laboratoryroom or  perms.laboratory.change_laboratoryroom or perms.laboratory.delete_laboratoryroom %}
-		<div class="row">
-			<div class="">
-				<div class="page-header col-xs-13" align="center">
+	<div class="row">
+		<div class="">
+			<div class="page-header col-xs-13" align="center">
 				<h3 class="heading-1"><span>{% trans 'Laboratory room management' %}</span></h3>
-				</div>
 			</div>
 		</div>
-		<div class="row ">
-			<div class="container-fluid">
-
-				{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
+	</div>
+	<div class="row ">
+		<div class="container-fluid">
+			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
 			<div class="" style="padding: 15px;">
-			<form class="form-horizontal " action="" method="post">{% csrf_token %}
-								{{ form.as_horizontal }}
-
-							<button class="btn btn-outline-success" type="submit" style="width:90px; float: right; ">
-
-							{% if form.instance.pk %}
-								<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Update' %}
-							{% else %}
-								<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'New' %}
-							{% endif %}
-							</button>
-
-					</form>
+				<form class="form-horizontal " action="" method="post">{% csrf_token %}
+					{{ form.as_horizontal }}
+					<button class="btn btn-outline-success" type="submit" style="width:90px; float: right; ">
+						{% if form.instance.pk %}
+							<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Update' %}
+						{% else %}
+							<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'New' %}
+						{% endif %}
+					</button>
+				</form>
 				{% endif %}
-				</div>
 			</div>
-		
+		</div>
 		<div class="row">
 			<ul class="list-group" style="margin: 0px 10px;">
 				{% for object in object_list %}
@@ -69,14 +64,12 @@
 										</button>
 										<button type="button" class="btn btn-outline-dark" title="{% trans 'Create Furniture' %}"
 												data-bs-toggle="modal" data-bs-target="#furnitureModal"
-
 												data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
 											+ <span  class="fa fa-bed" aria-hidden="true"></span>
 										</button>
-									</div>	            	
+									</div>
 								</div>
 							</div>
-							
 						</div>
 						<div class="col-md-2">
 							<div class="btn-group" role="group" aria-label="...">
@@ -113,8 +106,7 @@
 							{{furniture_form.as_horizontal}}
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-bs-dismiss="modal">
-							{% trans 'Close' %}</button>
+							<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
 							<button type="submit" class="btn btn-primary">{% trans 'Create furniture' %}</button>
 						</div>
 					</form>
@@ -125,7 +117,7 @@
 {% endblock %}
 
 {% block js %}
-	<script>
+		<script>
 		$(function () {
 			$('[data-bs-toggle="popover"]').each( function(i){
 				var idelem="#"+$(this).data('content');
@@ -133,9 +125,12 @@
 				$(this).attr('data-bs-content', content);
 				$(idelem).remove();
 			});
+
 			$('[data-bs-toggle="popover"]').popover();
+
 			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-				$('#furnitureModal').on('show.modal', function (event) {
+
+				$('#furnitureModal').on('show.bs.modal', function (event) {
 					var button = $(event.relatedTarget) // Button that triggered the modal
 					var url = button.data('href');
 					var modal = $(this);

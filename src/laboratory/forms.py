@@ -109,6 +109,16 @@ class ReservationModalForm(GTForm, ModelForm):
             'final_date': genwidgets.DateTimeInput,
             'amount_required': genwidgets.TextInput
         }
+class ReservedModalForm(GTForm, ModelForm):
+    options = forms.IntegerField(initial=1, widget=genwidgets.HiddenInput)
+    class Meta:
+        model = ReservedProducts
+        fields = ['amount_required', 'initial_date', 'final_date']
+        widgets = {
+            'initial_date': genwidgets.DateTimeInput,
+            'final_date': genwidgets.DateTimeInput,
+            'amount_required': genwidgets.TextInput,
+        }
 
 
 class TransferObjectForm(GTForm):

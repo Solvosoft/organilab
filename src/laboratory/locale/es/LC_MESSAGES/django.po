@@ -1162,7 +1162,7 @@ msgstr "Fecha final"
 #: laboratory/templates/laboratory/my_reservations_list.html:24
 #: laboratory/templates/laboratory/transfer_objects.html:34
 msgid "Status"
-msgstr "Status"
+msgstr "Estado"
 
 #: laboratory/templates/laboratory/my_reservations_list.html:40
 msgid "Remove"
@@ -1754,10 +1754,6 @@ msgstr "La fórmula debe contener los números correspondientes de '(' y ')'."
 msgid "Open parentheses must precede closed parentheses"
 msgstr "Los paréntesis abiertos deben preceder a los paréntesis cerrados"
 
-#: laboratory/templates/laboratory/transfer_object_modal.html:7
-msgid "Select the Shelf"
-msgstr ""
-
 #: laboratory/templates/laboratory/transfer_objects.html:5
 msgid "My Transfers"
 msgstr "Mis Transferencias"
@@ -1774,15 +1770,9 @@ msgstr "Laboratorio que envía"
 msgid "Laboratory received"
 msgstr "Laboratorio que recibe"
 
-#: laboratory/templates/laboratory/transfer_objects.html:33
-#, fuzzy
-#| msgid "Date:"
-msgid "Date"
-msgstr "Fecha:"
 
 #: laboratory/templates/laboratory/transfer_objects.html:51
 #, fuzzy
-#| msgid "Add"
 msgid "add"
 msgstr "Agregar"
 
@@ -2163,6 +2153,15 @@ msgstr "Guardado satisfactoriamente"
 #: laboratory/templates/laboratory/complete_inform.html:77
 msgid "Add observation"
 msgstr "Agregar Observación"
+
+#: laboratory/templates/laboratory/transfer_object_modal.html:7
+msgid "Select the Shelf"
+msgstr "Seleccione el Estante"
+
+#: laboratory/templates/laboratory/transfer_object_modal.html:32
+msgid "Date"
+msgstr "Fecha"
+
 
 #, fuzzy
 #~| msgid "Furniture report"
