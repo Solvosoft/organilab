@@ -2038,41 +2038,9 @@ msgstr "Reactivo/Material/Equipo"
 msgid "Add done successfully"
 msgstr "Usuarios eliminados correctamente"
 
-#: laboratory/views/shelfobject.py:306
-msgid "The amount of subtract is more that shelf have"
-msgstr ""
-
-#: laboratory/views/shelfobject.py:309
-#, fuzzy
-#| msgid "Organization added sucessfully"
-msgid "Accion done successfully"
-msgstr "Organización añadida con éxito"
-
-#: laboratory/views/shelfobject.py:317
-msgid "Only can accept whole numbers or decimal numbers with ."
-msgstr "Solo se aceptan numeros enteros o decimales con ."
-
-#: laboratory/views/shelfobject.py:328
-msgid "The amount sending is less that the amount we have in the Shelf"
-msgstr ""
-"La cantidad que envía es menos que la cantidad que tenemos en el estante"
-
-#: laboratory/views/shelfobject.py:329 laboratory/views/shelfobject.py:401
-#, fuzzy
-#| msgid "Users removed successfully"
-msgid "Transfer done successfully"
-msgstr "Usuarios eliminados correctamente"
-
 #: laboratory/views/shelfobject.py:367
 msgid "Need to create a Shelf"
 msgstr ""
-
-#: laboratory/views/shelfobject.py:400
-#, fuzzy
-#| msgid "The amount sending is less that the amount we have in the Shelf"
-msgid "The amount sends is more than the laboratory have"
-msgstr ""
-"La cantidad que envía es menos que la cantidad que tenemos en el estante"
 
 #: laboratory/models.py:555
 msgid "In Review"
@@ -2162,6 +2130,41 @@ msgstr "Seleccione el Estante"
 msgid "Date"
 msgstr "Fecha"
 
+#: laboratory/views/shelfobject.py:282
+msgid "Added successfully"
+msgstr "Agregado exitosamente"
+
+#: laboratory/views/shelfobject.py:315
+msgid "Sustracted successfully"
+msgstr "Substraído exitosamente"
+
+#: laboratory/views/shelfobject.py:312
+msgid "The amount to be subtracted is more than the shelf has"
+msgstr "La cantidad a sustraer es más que el estante tiene"
+
+#: laboratory/views/shelfobject.py:323
+msgid "Only can accept whole numbers or decimal numbers with ."
+msgstr "Solo se pueden aceptar números enteros o números decimales con ."
+
+#:laboratory/views/shelfobject.py:334
+msgid "The amount sending is less that the amount we have in the Shelf"
+msgstr "La cantidad de envío es inferior a la cantidad que existe en la estantería"
+
+#: laboratory/views/shelfobject.py:335
+msgid "Transfer done successfully"
+msgstr "Transferencia realizada con éxito"
+
+#: laboratory/templates/laboratory/reservation_modal.html:56
+msgid "Transfer"
+msgstr "Transferir"
+
+#: laboratory/templates/laboratory/reservation_modal.html:56
+msgid "Reservation"
+msgstr "Reservación"
+
+#:laboratory/templates/laboratory/reservation_modal.html:56
+msgid "Substract"
+msgstr "Sustraer"
 
 #, fuzzy
 #~| msgid "Furniture report"
@@ -2492,9 +2495,6 @@ msgstr "Fecha"
 
 #~ msgid "All laboratories"
 #~ msgstr "Todos los Laboratorios"
-
-#~ msgid "Transfer"
-#~ msgstr "Transferir"
 
 #~ msgid "Subtract"
 #~ msgstr "Substraer"
