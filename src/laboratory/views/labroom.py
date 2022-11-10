@@ -34,7 +34,7 @@ class LaboratoryRoomsList(ListView):
         context['tranfer_object_form'] = TransferObjectForm(users=self.request.user.profile.pk,lab_send=self.lab)
         context['add_object_form'] = AddObjectForm(lab=self.lab)
         context['subtract_object_form'] = SubtractObjectForm()
-        context['options'] = ['Reservation','Add','Transfer','Subtract']
+        context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context
 
