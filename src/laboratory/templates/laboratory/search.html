@@ -62,46 +62,7 @@
     <div class="alert alert-danger"> {% trans 'Not found' %} </div>
     {% endfor %}
   </div>
-
-<div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="model_reservation_form_title">{% trans 'Reservations' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-            </div>
-            <div class="modal-body">
-                <form id="modal_reservation_form" method="POST">
-                    {% csrf_token %}
-                    <label class="float-end" id="obj"></label>
-                    {{modal_form_reservation.options}}
-                    {% for form in modal_form_reservation.visible_fields %}
-                        {% if form.label == 'Amount required' %}
-                            <div class="form-group">
-                                <label>{% trans form.label %}</label>
-                                <div class="input-group">
-                                    {{form}}
-                                    <span class="input-group-text unit"></span>
-                                </div>
-                                {{form.help_text}}
-                            </div>
-                        {% else %}
-                        <div class="form-group">
-                            <label>{% trans form.label %}</label>
-                            {{form}}
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" onclick="create_reservation()">{% trans 'Add' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% include 'laboratory/reservation_modal.html'%}
 {% endblock %}
 
 {% block js %}
