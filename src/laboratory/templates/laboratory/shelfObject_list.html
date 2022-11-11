@@ -3,10 +3,10 @@
     {% if perms.laboratory.view_shelfobject %}
     {% for shelfobject in data.shelfobject_set.all %}
     <li class="list-group-item">
-        {{ shelfobject.object.code }}
+        <label>{{ shelfobject.object.code }}
         {{ shelfobject.object.name }}
         {{ shelfobject.quantity }}
-        {{ shelfobject.get_measurement_unit_display }}
+            {{ shelfobject.get_measurement_unit_display }}</label>
         {% if perms.laboratory.delete_shelfobject %}
         <a class="float-end" data-ajax="true"
            data-success="processResponseshelfobjectDelete"
@@ -25,7 +25,7 @@
         <a class="float-end"
            data-bs-toggle="modal"
            data-bs-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="initialize_reservation_modal({{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
+           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
             <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
         </a>
         {% endif %}
