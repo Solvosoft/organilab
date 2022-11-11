@@ -5,7 +5,7 @@
 <input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">
 {% include 'laboratory/search_widget.html' %}
 <div class="accordion border-0" id="accordionExample">
-{% for object in object_list%}
+{% for object in object_list %}
   <div class="accordion-item">
     <h2 class="accordion-header" id="heading{{object.pk}}">
       <button class="accordion-button"  data-bs-toggle="collapse" data-bs-target="#collapse{{object.pk}}" aria-expanded="true" aria-controls="collapseOne">
@@ -57,9 +57,10 @@
           </div>
       </div>
     </div>
-      {% empty %}
-      <div class="alert alert-danger"> {% trans 'Not found' %} </div>
-	{% endfor %}
+  </div>
+    {% empty %}
+    <div class="alert alert-danger"> {% trans 'Not found' %} </div>
+    {% endfor %}
   </div>
 
 <div aria-hidden="true" aria-labelledby="model-reservation-form-title" class="modal fade" id="modal_reservation" role="dialog" tabindex="-1">
