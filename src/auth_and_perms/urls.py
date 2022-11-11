@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission
+from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, OrganizationAPI
 from auth_and_perms.views import organizationstructure as orgstruct
 
 from rest_framework.routers import SimpleRouter
@@ -9,6 +9,7 @@ routes = SimpleRouter()
 
 routes.register('rol', RolAPI, 'api-rol' )
 routes.register('profilepermissionrol', UpdateRolOrganizationProfilePermission, 'api-rolbyorg' )
+
 app_name='auth_and_perms'
 
 urlpatterns = [

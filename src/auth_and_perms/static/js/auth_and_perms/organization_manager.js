@@ -117,16 +117,25 @@ function add_data_to_select(rols){
     $(rols).val(null).trigger('change');
 
     return (data)=>{
+        let has_selected=false;
         for(let x=0; x<data.results.length; x++){
+            if(data.results[x].selected){
+                has_selected=true;
+            }
             if ($(rols).find("option[value='" + data.results[x].id + "']").length) {
                 $(rols).val(data.results[x].id).trigger('change');
             }else{
                 var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
                         data.results[x].selected);
                 $(rols).append(newOption)
+
             }
         }
-        $(rols).trigger('change');
+        if(!has_selected) {
+            $(rols).val(null).trigger('change');
+        }else{
+            $(rols).trigger('change');
+        }
     }
 }
 
@@ -320,4 +329,29 @@ $("input[name='relate_rols']").on('change', function(event){
       dataType: 'json'
     });
     $(selectusers).select2({theme: 'bootstrap-5',  dropdownParent: $(this)});
+});
+
+ $(".orgbyuser").on('click', function (e) {
+    $('#orgbyusermodal input[name="name"]').val(this.dataset.display);
+    $('#orgbyusermodal form').attr('action', this.dataset.formaction);
+
+    var selectorgbyusers = $("#orgbyusermodal select");
+    let placeholder = selectorgbyusers.attr('placeholder');
+    $("#orgbyusermodal option").remove();
+
+
+    var url = $(selectorgbyusers).data('url');
+        $.ajax({
+          type: "GET",
+          url: url,
+          data: {'org': this.dataset.org},
+          contentType: 'application/json',
+          headers: {'X-CSRFToken': getCookie('csrftoken')},
+          success: add_data_to_select(selectorgbyusers),
+          dataType: 'json'
+        });
+    $(selectorgbyusers).select2({theme: 'bootstrap-5', placeholder: placeholder,
+    allowClear: true,  dropdownParent: $(this)});
+
+    $("#orgbyusermodal").modal('show');
 });

@@ -4,11 +4,12 @@ from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer
+from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
+    OrganizationSerializer
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
 from laboratory.models import OrganizationStructure, Laboratory
-from laboratory.utils import get_profile_by_organization
+from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
 class RolAPI(mixins.ListModelMixin,
@@ -162,5 +163,13 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
 
 
 
+class OrganizationAPI(mixins.ListModelMixin,
+                      mixins.UpdateModelMixin,
+                      viewsets.GenericViewSet):
 
+    queryset = OrganizationStructure.objects.all()
+    serializer_class = OrganizationSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return get_organizations_by_user(self.request.user)

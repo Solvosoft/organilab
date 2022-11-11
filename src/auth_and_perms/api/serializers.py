@@ -34,4 +34,9 @@ class ProfilePermissionRolOrganizationSerializer(serializers.Serializer):
 
 
 
+class OrganizationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrganizationStructure
+        fields = ['name', 'parent']
 

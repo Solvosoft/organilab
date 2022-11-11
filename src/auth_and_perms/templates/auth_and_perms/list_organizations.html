@@ -65,6 +65,12 @@
 
             <div class="float-end">
                 <ul class="list-group list-group-horizontal">
+                    {% if perms.laboratory.change_organizationstructure %}
+                    <li class="list-group-item">
+                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.node.pk %}" data-org="{{node.0.node.pk}}" data-display="{{node.0.node}}">
+                            <i class="fa fa-sort-amount-desc text-secondary"></i></span>
+                    </li>
+                    {% endif %}
                     {% if perms.laboratory.add_organizationstructure %}
                     <li class="list-group-item">
                         <span class="addOrgStructure" data-parent="{{node.0.node.pk}}"><i
@@ -176,6 +182,37 @@
     </div>
 </div>
 
+
+<div id="orgbyusermodal" class="modal fade" tabindex="-1" aria-labelledby="orgbyusermodalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="orgbyusermodalLabel">{% trans 'Change parent of organization' %}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" method="post">
+            <div class="modal-body">
+
+                <div class="mb-3">
+                <label for="id_name" class="form-label">{% trans 'Name:' %}</label>
+                <input class="form-control"  id="id_name" type="text" name="name" value="" />
+                </div>
+
+                <div class="mb-3">
+                <label for="id_parent" class="form-label">{% trans 'Organization parent:' %}</label>
+                <select autocomplete="off"  placeholder="{% trans 'Select an organization to be parent of' %}" id="id_parent" name="parent" data-url="{% url 'orgbyuser-list' %}"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+            </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
