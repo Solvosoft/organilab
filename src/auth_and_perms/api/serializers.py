@@ -8,7 +8,7 @@ from laboratory.models import OrganizationStructure
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
-        fields = ["name"]
+        fields = ["name", "permissions"]
 
 
 

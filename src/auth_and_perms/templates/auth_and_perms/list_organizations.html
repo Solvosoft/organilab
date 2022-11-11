@@ -104,11 +104,20 @@
                     </div>
                     <div class="form-group row">
                         <div id="add_rol_container">
-                            <input type="text" id="rolname" class="form-control" placeholder="{% trans 'Rol name' %}"/>
-                            <input type="hidden" name="orgpk" />
+                            <div class="form-group">
+                                <input type="text" id="rolname" class="form-control" placeholder="{% trans 'Rol name' %}"/>
+                                <input type="hidden" name="orgpk" />
+                            </div>
+                            <div id="selectroldiv">
+                                <div class="form-group">
+                                    No <input type="checkbox" name="relate_rols" data-widget="YesNoInput" /> Sí
+                                </div>
+                                <div id="rolS2container">
+                                    <select autocomplete="off" name="rols" multiple data-url="{% url 'roluserorgbase-list' %}"></select>
+                                </div>
+                            </div>
                         </div>
                         <div id="copy_rol_container">
-                            <select autocomplete="off" name="rols" multiple data-url="{% url 'roluserorgbase-list' %}"></select>
                         </div>
                     </div>
                 </div>
