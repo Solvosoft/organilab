@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import re_path, path, include
 
+from auth_and_perms.views import media_access
 from laboratory import urls as laboratory_urls
 
 from djreservation import urls as djreservation_urls
@@ -39,16 +40,17 @@ from reservations_management.urls import urlpatterns as reservation_management_u
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 
 urlpatterns = urls_djgentelela + auth_urls + [
+    re_path('^media/(?P<path>.*)', media_access, name='media'),
     path('derb/', include('derb.urls')),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
-    re_path(r'^$', index_organilab, name='index'),
-    re_path(r'^', include((laboratory_urls,'laboratory'), namespace='laboratory')),
-    re_path(r'^', include((api_urls,'api'), namespace='api')),
-    re_path(r'msds/', include((msds_urls, 'msds'), namespace='msds')),
-    re_path(r'^weblog/', include('djgentelella.blog.urls')),
-    re_path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
-    re_path(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
+    path('', index_organilab, name='index'),
+    path('', include((laboratory_urls,'laboratory'), namespace='laboratory')),
+    path('', include((api_urls,'api'), namespace='api')),
+    path('msds/', include((msds_urls, 'msds'), namespace='msds')),
+    path('weblog/', include('djgentelella.blog.urls')),
+    path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
+    path(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     re_path(r'^admin/', admin.site.urls),
