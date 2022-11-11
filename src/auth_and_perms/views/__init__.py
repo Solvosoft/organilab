@@ -12,7 +12,7 @@ def media_access(request, path):
     This special URL will be handle by nginx we the help of X-Accel
     """
     user = request.user
-    if user.is_authenticated():
+    if user.is_authenticated:
         response = HttpResponse()
         # Content-type will be detected by nginx
         del response['Content-Type']
