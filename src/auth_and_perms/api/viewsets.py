@@ -53,11 +53,31 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
     serializer_class = ProfilePermissionRolOrganizationSerializer
     permission_classes = [IsAuthenticated]
 
+    def append_rols(self, profilepermission, rols):
+        profilepermission.rol.add(*rols)
+
+    def sustract_rols(self, profilepermission, rols):
+        profilepermission.rol.remove(*rols)
+
+    def full_rols(self, profilepermission, rols):
+        profilepermission.rol.clear()
+        self.append_rols(profilepermission, rols)
+
+    def manage_rols(self, action, profilepermission, rols):
+        if action == 'append':
+            self.append_rols(profilepermission, rols)
+        if action == 'sustract':
+            self.sustract_rols(profilepermission, rols)
+        if action == 'full':
+            self.full_rols(profilepermission, rols)
+
     def update(self, request, pk):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=False):
             org = OrganizationStructure.objects.get(pk=pk)
+            action = serializer.data['mergeaction']
             rols = org.rol.filter(pk__in=serializer.data['rols'])
+
             if serializer.data['as_conttentype']:
                 profiles = get_profile_by_organization(pk)
 
@@ -81,8 +101,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                     profilepermission = ProfilePermission.objects.filter(**ppdata).first()
                     if not profilepermission:
                         profilepermission = ProfilePermission.objects.create(**ppdata)
-                    profilepermission.rol.clear()
-                    profilepermission.rol.add(*rols)
+
+                    self.manage_rols(action, profilepermission, rols)
 
             if serializer.data['as_user']:
                 profile = Profile.objects.get(pk=serializer.data['profile'])
@@ -94,16 +114,17 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                         'obj': lab
                     }
                     """
+
                     if relobj['obj']:
                         query = ProfilePermission.objects.filter(
                             profile=profile,
                             content_type__app_label=relobj['obj']._meta.app_label,
                             content_type__model=relobj['obj']._meta.model_name,
                             object_id=relobj['obj'].pk)
+
                         if query.exists():
                             for profilepermission in query:
-                                profilepermission.rol.clear()
-                                profilepermission.rol.add(*rols)
+                                self.manage_rols(action, profilepermission, rols)
                         else:
                             ppdata = {
                                 'profile_id': serializer.data['profile'],
@@ -115,7 +136,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                                 'object_id': relobj['obj'].pk,
                             }
                             profilepermission = ProfilePermission.objects.create(**ppdata)
-                            profilepermission.rol.add(*rols)
+                            self.manage_rols(action, profilepermission, rols)
+
                     else:
 
                         ppdata = {
@@ -128,7 +150,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                             'object_id': profile.pk,
                         }
                         profilepermission, created = ProfilePermission.objects.get_or_create(**ppdata)
-                        profilepermission.rol.add(*rols)
+                        self.manage_rols(action, profilepermission, rols)
+
             if serializer.data['as_role']:
                 profile = Profile.objects.get(pk=serializer.data['profile'])
                 ppdata = {
@@ -155,8 +178,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                 profilepermission = ProfilePermission.objects.filter(**ppdata).first()
                 if not profilepermission:
                     profilepermission = ProfilePermission.objects.create(**ppdata)
-                profilepermission.rol.clear()
-                profilepermission.rol.add(*rols)
+
+                self.manage_rols(action, profilepermission, rols)
 
             return Response(serializer.data)
         return Response(serializer.errors)
