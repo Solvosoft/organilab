@@ -1,4 +1,5 @@
 from django.template.loader import render_to_string
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
@@ -52,7 +53,7 @@ class ApiReservationCRUD(APIView):
 class CommentAPI(viewsets.ModelViewSet):
     queryset= CommentInform.objects.all()
     serializer_class = CommentsSerializer
-
+    permission_classes = [IsAuthenticated]
     def get_comment(self, pk):
         try:
             return self.get_queryset().get(pk=pk)
@@ -68,19 +69,18 @@ class CommentAPI(viewsets.ModelViewSet):
                 comment = serializer.data['comment'],
                 inform = inform
             )
-            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().order_by('pk'), 'user':request.user})
-
+            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
             return Response({'data':template}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
         pk = None
         if 'pk' in kwargs:
-            pk = int(kwargs.get('pk'))
             comments= self.get_queryset().filter(pk=pk)
             return Response(self.get_serializer(comments).data)
         else:
-            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().order_by('pk'), 'user':request.user})
+
+            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform__pk=int(request.GET.get('inform'))).order_by('pk'), 'user':request.user},request)
             return Response({'data':template})
     def update(self, request, pk=None):
         comment=None
@@ -95,7 +95,7 @@ class CommentAPI(viewsets.ModelViewSet):
                 comment.save()
                 template = render_to_string('laboratory/comment.html',
                                             {'comments': self.get_queryset().filter(inform=comment.inform).order_by('pk'),
-                                             'user': request.user})
+                                             'user': request.user},request)
 
                 return Response({'data':template}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -105,7 +105,7 @@ class CommentAPI(viewsets.ModelViewSet):
             comment = self.get_comment(pk)
             inform=comment.inform
             comment.delete()
-            template= render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user})
+            template= render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
 
             return Response({'data':template},status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
