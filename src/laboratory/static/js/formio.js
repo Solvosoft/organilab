@@ -1,5 +1,5 @@
 function saveForm(state) {
-    Swal.fire({
+   Swal.fire({
         title: message['title'],
         text: message['text'],
         icon: message['icon'],
@@ -9,6 +9,7 @@ function saveForm(state) {
         showCloseButton: true
 
         }).then((result) => {
+
         if (result.isConfirmed) {
             $.ajax({
                 url: urls['edit'],
@@ -21,9 +22,9 @@ function saveForm(state) {
                 },
                 success: (success) => {
                     Swal.fire(
-                        result['title'],
-                        result['text'],
-                        result['icon']
+                        "",
+                        saved,
+                        "success"
                         )
                     location.href =urls['list'];
                 },
@@ -57,9 +58,9 @@ function Delete_Inform(id) {
                 },
                 success: (success) => {
                     Swal.fire(
-                        result['title'],
-                        result['text'],
-                        result['icon']
+                        '',
+                        saved,
+                        'success'
                         )
                     location.href =urls['list'];
                 },
