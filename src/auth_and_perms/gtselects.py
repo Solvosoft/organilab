@@ -151,3 +151,27 @@ class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
         for org in set(orgs):
             rols += list(get_rols_from_organization(org.pk, org=org, rolfilters={'rol__isnull': False}))
         return self.model.objects.filter(pk__in=set(rols))
+
+
+@register_lookups(prefix="orgbyuser", basename="orgbyuser")
+class OrgbyUserOrgS2(BaseSelect2View):
+    model = OrganizationStructure
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+
+    def get_queryset(self):
+        self.org = None
+        org = self.request.GET.get('org')
+        orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user, ancestors=True)
+        if org:
+            orgByuser = orgByuser.exclude(pk=org)
+            self.org = OrganizationStructure.objects.get(pk=org)
+
+        return self.model.objects.filter(pk__in=tuple(orgByuser.values_list('pk', flat=True)))
+
+    def filter_queryset(self, queryset):
+        dev = super().filter_queryset(queryset)
+        if self.org:
+            if self.org.parent:
+                self.selected=[str(self.org.parent.pk)]
+        return dev

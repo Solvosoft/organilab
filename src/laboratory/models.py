@@ -336,21 +336,17 @@ class Furniture(models.Model):
 
 class OrganizationStructureManager(models.Manager):
 
-    def filter_user(self, user):
-        organizations = OrganizationStructure.objects.filter(
-            organizationusermanagement__users=user)
-
-        orgs = None
+    def filter_user(self, user, descendants=True, include_self=True, ancestors=False):
+        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+        pks = []
         for org in organizations:
-            if orgs is None:
-                orgs = Q(pk__in=org.descendants(include_self=True))
-            else:
-                orgs |= Q(pk__in=org.descendants(include_self=True))
-
-        if orgs is None:
-            return OrganizationStructure.objects.none()
-        else:
-            return OrganizationStructure.objects.filter(orgs)
+            if descendants:
+                pks += list(org.descendants(include_self=include_self).values_list('pk', flat=True))
+            if ancestors:
+                pks += list(org.ancestors(include_self=include_self).values_list('pk', flat=True))
+        if pks:
+            return OrganizationStructure.objects.filter(pk__in=pks)
+        return OrganizationStructure.objects.none()
 
     def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)

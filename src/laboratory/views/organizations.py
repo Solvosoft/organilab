@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django import forms
-from django.views.generic import DeleteView, CreateView
+from django.views.generic import DeleteView, CreateView, UpdateView
 from djgentelella.forms.forms import GTForm
 from tree_queries.forms import TreeNodeChoiceField
 from djgentelella.widgets import core as genwidget
@@ -128,3 +128,11 @@ class OrganizationCreateView(CreateView):
         )
         orguserman.users.add(self.request.user)
         return response
+
+
+@method_decorator(permission_required('laboratory.change_organizationstructure'), name='dispatch')
+class OrganizationUpdateView(UpdateView):
+    model = OrganizationStructure
+    success_url = reverse_lazy('auth_and_perms:organizationManager')
+    form_class = AddOrganizationForm
+

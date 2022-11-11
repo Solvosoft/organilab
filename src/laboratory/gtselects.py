@@ -14,6 +14,7 @@ class ObjectGModelLookup(BaseSelect2View):
     model = Object
     fields = ['code', 'name']
 
+
 @register_lookups(prefix="userbase", basename="userbase")
 class User(BaseSelect2View):
     model = User

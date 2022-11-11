@@ -26,6 +26,10 @@ def check_user_has_perm(user, perm):
     return bool(user.has_perm(perm))
 
 
+def get_organizations_by_user(user):
+    user_org = OrganizationStructure.os_manager.filter_user(user, ancestors=True)
+    return user_org
+
 def get_user_laboratories(user, q=None):
     user_org = OrganizationStructure.os_manager.filter_user(user) 
     return filter_laboratorist_profile_student(user, user_org, q)
