@@ -351,7 +351,7 @@ $("input[name='relate_rols']").on('change', function(event){
           dataType: 'json'
         });
     $(selectorgbyusers).select2({theme: 'bootstrap-5', placeholder: placeholder,
-    allowClear: true,  dropdownParent: $(this)});
+    allowClear: true,  dropdownParent: $("#orgbyusermodal")});
 
     $("#orgbyusermodal").modal('show');
 });
