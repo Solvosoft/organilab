@@ -7,6 +7,10 @@ function add_rol_org(url, data){
         'rol': $(data[1]).val()
     }
 
+    if($("input[name='relate_rols']")[0].checked){
+        data['relate_rols'] = $("#addrolmodal select").val();
+    }
+
     $.ajax({
       type: "POST",
       url: url,
@@ -237,26 +241,43 @@ $(".rolbtnadd").on('click', function(){
     $("#addrolmodal div#add_rol_container input[name='orgpk']").val(orgpk);
     $("#btn_copy_rol").attr('data-url', $(this).data('url'));
     $("#addrolmodal").modal('show');
+    $("#addrolmodal select").val(null).trigger('change');
 });
 
 $("#addrolmodal").on('hidden.bs.modal', function () {
     $("#btn_copy_rol").removeAttr('data-url');
     $("#addrolmodal div#add_rol_container input#rolname").val('');
     $("#addrolmodal div#add_rol_container input[name='orgpk']").val('');
+    $("#addrolmodal input[name='relate_rols']").prop('checked', true).trigger("click");
+    $("#addrolmodal select").val(null).trigger('change');
 })
 
 
 $("#btn_add_rol").on('click', function(){
+    $("#addrolmodal select").val(null).trigger('change');
     $("#add_rol_container").show();
     $("#copy_rol_container").hide();
+    var rolsS2 = $("#addrolmodal #selectroldiv");
+    $("#add_rol_container").append(rolsS2);
     $("#addrolmodal form").attr('action', $(this).data('url'));
+    $("#addrolmodal input[name='relate_rols']").parent().show();
+    if($("input[name='relate_rols']")[0].checked){
+        $("#addrolmodal div#rolS2container").show();
+    }else{
+        $("#addrolmodal div#rolS2container").hide();
+    }
 });
 
 
 $("#btn_copy_rol").on('click', function(){
+    $("#addrolmodal select").val(null).trigger('change');
     $("#add_rol_container").hide();
     $("#copy_rol_container").show();
+    var rolsS2 = $("#addrolmodal #selectroldiv");
+    $("#copy_rol_container").append(rolsS2);
     $("#addrolmodal form").attr('action', $(this).data('url'));
+    $("#addrolmodal input[name='relate_rols']").parent().hide();
+    $("#addrolmodal div#rolS2container").show();
 });
 
 
@@ -272,7 +293,17 @@ $(this).find('.btn').toggleClass('active');
 $(document).ready(function(){
     $("#copy_rol_container").hide();
     $("#addrolmodal div#add_rol_container input#rolname").val('');
+    $("#addrolmodal input[name='relate_rols']").prop('checked', true).trigger("click");
  });
+
+
+$("input[name='relate_rols']").on('change', function(event){
+    if($(this)[0].checked){
+        $("#addrolmodal div#rolS2container").show();
+    }else{
+        $("#addrolmodal div#rolS2container").hide();
+    }
+});
 
 
  $("#addrolmodal").on('show.bs.modal', function (e) {
