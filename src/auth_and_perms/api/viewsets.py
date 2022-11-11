@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -32,6 +33,13 @@ class RolAPI(mixins.ListModelMixin,
         organizationstructure = OrganizationStructure.objects.filter(pk=self.request.data['rol']).first()
         if organizationstructure:
             serializer.instance.organizationstructure_set.add(organizationstructure)
+
+        if 'relate_rols' in self.request.data:
+            relate_rols = self.request.data['relate_rols']
+            perms_rols = list(Rol.objects.filter(pk__in=relate_rols).values_list('permissions__pk', flat=True))
+            permissions = list(Permission.objects.filter(pk__in=perms_rols))
+            serializer.instance.permissions.add(*permissions)
+
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
