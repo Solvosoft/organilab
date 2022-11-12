@@ -30,8 +30,8 @@
                   {% if perms.reservations_management.add_reservedproducts %}
                     <a data-bs-toggle="modal"
                        data-bs-target="#modal_reservation"
-                       style="margin-right: 10px;" onclick="initialize_reservation_modal({{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
-                       class="btn btn-danger"><i class="fa fa-book" aria-hidden="true"></i> {% trans "Reserve object" %}
+                       style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
+                       class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i> {% trans "Edit" %}
                     </a>
                   {% endif %}
               </div>
@@ -62,21 +62,24 @@
     <div class="alert alert-danger"> {% trans 'Not found' %} </div>
     {% endfor %}
   </div>
+                    {% csrf_token %}
+
 {% include 'laboratory/reservation_modal.html'%}
 {% endblock %}
 
 {% block js %}
 {{block.super}}
 <script>
-    document.api_modal = '{% url "laboratory:api_reservation_create"%}';
+    document.api_modal = '{% url "laboratory:api_reservation_create" %}';
+    document.object_limit = '{% url "laboratory:get_shelfobject_limit" laboratory 0%}';
     document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 </script>
+<script src="{% static 'js/shelfobjectedit.js' %}"></script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>
 <script>
-	jq162 = jQuery.noConflict( true );
+
 </script>
 	{{ search_form.media }}
 <script>
-	$ = jq162;
 </script>
 {% endblock %}

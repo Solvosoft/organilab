@@ -425,3 +425,25 @@ def delete_transfer(request,pk):
 
 
 delete_transfer.lab_pk_field = 'pk'
+
+@login_required()
+@permission_required('laboratory.change_shelfobject')
+def edit_limit_object(request, *args, **kwargs):
+    shelf_object = ShelfObject.objects.filter(pk=kwargs['pk']).first()
+    context ={
+        'name':shelf_object.object.name,
+        'msg':'zzz',
+        'amount': shelf_object.limit_quantity
+    }
+    if request.method=='POST':
+        shelf_object.limit_quantity=float(request.POST.get('amount'))
+        shelf_object.save()
+        context['msg'] ='Se guardo correctamente'
+        context['amount'] ='Se guardo correctamente'
+        return JsonResponse(context)
+    context ={
+        'name':shelf_object.object.name,
+        'msg':'zzz',
+        'amount': shelf_object.limit_quantity
+    }
+    return JsonResponse(context)

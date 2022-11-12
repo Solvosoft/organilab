@@ -109,7 +109,7 @@ function wait_shelf(){
  }
 }
 
-function  load_self_from_uls(){
+function load_self_from_uls(){
 	obj = get_url_parameters();
 	if (obj !== undefined){
        $('#room_'+obj.labroom).click();
@@ -121,4 +121,56 @@ function  load_self_from_uls(){
 
 
 	}
+}
+
+function edit_object_limit(element,data){
+
+   let url = document.object_limit.replace('0',data);
+   $.ajax({
+    url: url,
+        type: "GET",
+        dataType: "json",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+        },
+        success: ({name, amount, msg}) => {
+            Swal.fire({
+                title: 'Deseas actualizar la cantidad limite de '+name,
+                input: 'text',
+                confirmButtonText: 'Si',
+                denyButtonText: 'No',
+                showDenyButton: true,
+                showCloseButton: true,
+                inputValue: amount
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    update_limit(element,data,result.value)
+                }
+            })
+        }
+    });
+ }
+
+function update_limit(element,pk,amount){
+   let url = document.object_limit.replace('0',pk);
+     $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: {'amount':amount},
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            success: (success) => {
+                Swal.fire(
+                    '',
+                    success.msg,
+                    'success'
+                    )
+
+                element.parentElement.children[2].innerHTML=`<p><strong>Cantidad límite de material: </strong>${amount}</p>`
+            },
+        });
 }

@@ -2,11 +2,12 @@
 
 <strong>{% trans 'Quantity' %}: </strong> 
 {{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}
-
+<br>
+<p><strong>{% trans 'Limit material quantity' %}: </strong>{{object.limit_quantity}}</p>
 {% if perms.laboratory.change_shelfobject %}
 <br>
-	<a class="btn btn-success" data-ajax=true
-			href="{% url 'laboratory:shelfobject_searchupdate' laboratory object.pk %}">
-		<i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}
-	</a>
+		<button class="btn btn-primary object_limit" onclick="edit_object_limit(this,{{object.pk}})">
+		<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+		{% trans 'Edit' %} {% trans 'Limit material quantity' %}
+	</button>
 {% endif %}
