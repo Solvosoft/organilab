@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n static laboratory %}
 {% load user_rol_tags %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'organizationManager' %}
+    {% define_urlname_action 'addusersorganization' %}
+    {% define_urlname_action 'add_user' %}
+    {% define_urlname_action 'copy_rols' %}
+    {% define_urlname_action 'add_contenttype_to_org' %}
+{% endblock %}
 {# CSS #}
 {% block css %}
 <link href="{% static 'css/permission_table_style.css' %}" rel="stylesheet" media="all">

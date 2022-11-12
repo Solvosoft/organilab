@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'regulation_docs' %}
+{% endblock %}
 {% block content %}
 <h1 class="header text-center">  {% trans 'Regulation documents' %} </h1>
 
