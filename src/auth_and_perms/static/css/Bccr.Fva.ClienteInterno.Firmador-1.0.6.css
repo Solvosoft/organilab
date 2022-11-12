@@ -1,0 +1,537 @@
+.fvaVentanaModal,
+.fvaVentanaModal * {
+    box-sizing: initial;
+}
+.fvaVentanaModal *,
+.fvaMensajeDeCopiado,
+.fvaVentanaModal a {
+    font-family: sans-serif;
+    color: black;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+}
+.fvaVentanaModal a {
+    display: inline-block;
+}
+.fvaVentanaModal a,
+.fvaVentanaModal a:visited,
+.fvaVentanaModal a:hover {
+    color: #0361b8;
+    text-decoration: underline;
+}
+.fvaTituloDelResumen {
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 21px;
+}
+.fvaAdvertencia {
+    font-family: sans-serif;
+    color: black;
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.1;
+    text-align: justify;
+    padding: 10px 40px;
+}
+.fvaResumen {
+    font-family: sans-serif;
+    color: black;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: justify;
+    padding: 10px 40px;
+}
+.fvaVentanaModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1050;
+    width: 665px;
+    padding: 20px;
+    margin: 30px auto;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    background: white;
+    border: 6px solid #3c5272;
+    border-radius: 23px;
+}
+.fvaVentanaModal input[type="text"] {
+    padding: 6px 12px;
+    width: 300px;
+    line-height: 1.428571429;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    background-image: none;
+}
+.fvaVentanaModal input[type="text"]:focus {
+    outline: 0;
+    border-color: rgba(39, 64, 99, 0.7);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(39, 64, 99, 0.6);
+}
+.fvaContenidoVentanaModal {
+    padding: 5px;
+    border: 3px solid #3c5272;
+    border-radius: 18px;
+}
+.fvaElementoOculto {
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.fvaContenidoDeCopieCodigo {
+    position: relative;
+}
+.fvaAcordeon {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.fvaAcordeon.active,
+.fvaAcordeon:hover {
+    cursor: help;
+}
+.fvaAcordeon:before {
+    content: "\25BC";
+}
+.fvaAcordeon.active:before {
+    content: "\25B2";
+}
+.fvaAcordeon img {
+    margin-top: 1px;
+}
+.fvaAcordeon img,
+.fvaAcordeon.active:before,
+.fvaAcordeon:before {
+    vertical-align: top;
+}
+.fvaPanelAcordeon {
+    padding: 0 30px;
+    padding-top: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+.fvaToolTipText {
+    visibility: hidden;
+    position: absolute;
+    top: -45px;
+    left: 0;
+    z-index: 1;
+    padding: 5px;
+    font-size: 19px;
+    white-space: nowrap;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 2px 2px 5px #999;
+}
+.fvaAcordeon:hover .fvaToolTipText {
+    visibility: visible;
+}
+.fvaDescripcionDelFormato span {
+    font-size: 16px;
+    font-weight: bold;
+}
+.fvaDescripcionDelFormatoSeparador {
+    color: gray;
+}
+.fvaCodLetra {
+    color: #3498db;
+}
+.fvaBordeDeError {
+    border: 3px solid rgba(254, 0, 0, 0.9);
+}
+.fvaMargenDeContenido {
+    margin: 0.83em 0;
+}
+.fvaColorMensajeSecundario {
+    color: gray;
+}
+.fvaContenidoDeTextoCopieElCodigo {
+    margin-right: 42px;
+}
+.fvaFondoOscuro {
+    display: none;
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1030;
+    background-color: #000;
+}
+.fvaBoton {
+    display: inline-block;
+    width: 140px;
+    padding: 10px 15px;
+    margin: 10px;
+    cursor: pointer;
+    background: #dcdcdc;
+    color: #333;
+    border: 1px solid #c8c8c8;
+    border-radius: 2px;
+}
+.fvaBoton:hover {
+    background: #c8c8c8;
+}
+.fvaRadioBoton {
+    display: inline-block;
+    width: 140px;
+    padding: 10px 15px;
+    margin: 4px;
+    cursor: pointer;
+}
+.fvaLoader {
+    position: relative;
+    top: -30px;
+    margin: 30px auto;
+}
+.fvaLoader div {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin: 0 5px;
+    border-radius: 50%;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: fvaAnimacionLoader 2.8s infinite ease-in-out;
+    animation: fvaAnimacionLoader 2.8s infinite ease-in-out;
+}
+.fvaLoader div:nth-child(2) {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+.fvaLoader div:nth-child(1) {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+@-webkit-keyframes fvaAnimacionLoader {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 25px 0 -1.3em #3498db;
+    }
+    40% {
+        box-shadow: 0 25px 0 0 #3498db;
+    }
+}
+@keyframes fvaAnimacionLoader {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 25px 0 -1.3em #3498db;
+    }
+    40% {
+        box-shadow: 0 25px 0 0 #3498db;
+    }
+}
+.fvaContenidoParaIdentificacion {
+    display: inline-block;
+}
+.fvaContenidoParaTipoIdentificacion {
+    display: inline-block;
+}
+.fvaPosicionParaTipoIdentificacion:hover .fvaToolTipIdentificacion {
+    display: block;
+}
+.fvaPosici onDelToolTipIdentificacion:hover {
+    cursor: help;
+}
+.fvaPosicionDelToolTipIdentificacion:hover .fvaToolTipIdentificacion {
+    display: block;
+}
+.fvaPosicionDelToolTipIdentificacion {
+    display: inline-block;
+    position: relative;
+    width: 35px;
+    height: 35px;
+    margin: 5px 0 0 10px;
+    vertical-align: top;
+    background: url(../Imagenes/Informacion.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.fvaToolTipIdentificacion {
+    display: none;
+    position: absolute;
+    top: -35px;
+    left: 40px;
+    padding: 12px;
+    text-align: left;
+    background: white;
+    border: 1px solid #bbb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.fvaToolTipIdentificacion ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.fvaToolTipIdentificacion ul li {
+    text-align: left;
+}
+.fvaToolTipIdentificacion ul li span {
+    display: inline-block;
+    padding: 2px;
+    font-size: 14px;
+}
+.fvaToolTipIdentificacion ul li span:nth-child(1) {
+    width: 75px;
+    text-align: right;
+    font-weight: bold;
+}
+.fvaToolTipIdentificacion:after,
+.fvaToolTipIdentificacion:before {
+    visibility: visible;
+    position: absolute;
+    content: " ";
+    height: 0;
+    width: 0;
+    pointer-events: none;
+    border: solid transparent;
+}
+.fvaToolTipIdentificacion:before {
+    left: -36px;
+    top: 35px;
+    border-width: 18px;
+    border-right-color: #bbb;
+}
+.fvaToolTipIdentificacion:after {
+    left: -35px;
+    top: 35px;
+    border-width: 18px;
+    border-right-color: white;
+}
+.fvaToolTipIdentificacionTitulo {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.fvaMensajeErrorIdentificacion {
+    color: red;
+    font-size: 18px;
+}
+@media only screen and(max-width:900px) {
+    .fvaToolTipIdentificacionTitulo {
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+    .fvaToolTipIdentificacion ul li span {
+        font-size: 12px;
+    }
+    .fvaToolTipIdentificacion ul li span:nth-child(1) {
+        width: 65px;
+    }
+}
+@media only screen and(max-width:790px) {
+    .fvaToolTipIdentificacionTitulo {
+        white-space: normal;
+        text-align: left;
+    }
+    .fvaToolTipIdentificacion ul li span:nth-child(1) {
+        width: 100%;
+        text-align: left;
+    }
+}
+@media only screen and (max-width: 720px) {
+    .fvaVentanaModal {
+        width: 600px;
+    }
+    .fvaVentanaModal input[type="text"]{
+        font-size: 16px;
+        width: 360px;
+    }
+    .fvaContenidoParaTipoIdentificacion{
+        font-size: 16px;
+    }
+    .fvaVentanaModal *, .fvaMensajeDeCopiado, .fvaVentanaModal a {
+          font-size: 14px;
+    }
+    .fvaRadioBoton {
+        display: inline-block;
+        width: 134px;
+        padding: 12px 2px;
+        margin: 1px;
+        cursor: pointer;
+    }
+    .fvaToolTipIdentificacion{
+        left: -120px;
+    }
+}
+@media only screen and (max-width: 640px) {
+    .fvaVentanaModal {
+        width: 300px;
+    }
+    .fvaVentanaModal input[type="text"]{
+        font-size: 16px;
+        width: 260px;
+    }
+    .fvaContenidoParaTipoIdentificacion{
+        font-size: 12px;
+    }
+    .fvaVentanaModal *, .fvaMensajeDeCopiado, .fvaVentanaModal a {
+          font-size: 12px;
+    }
+    .fvaRadioBoton {
+        display: inline-block;
+        width: 134px;
+        padding: 12px 2px;
+        margin: 1px;
+        cursor: pointer;
+    }
+    .fvaToolTipIdentificacion{
+        left: -100px;
+        top: -76px;
+    }
+    .fvaToolTipIdentificacion ul li span {
+        display: inline-block;
+        padding: 2px;
+        font-size: 12px;
+    }
+}
+@media only screen and (max-width: 740px) and (orientation: landscape) {
+   .fvaVentanaModal {
+        width: 600px;
+        margin: 1px auto;
+    }
+    .fvaVentanaModal input[type="text"]{
+        font-size: 16px;
+        width: 260px;
+    }
+    .fvaContenidoParaTipoIdentificacion{
+        font-size: 12px;
+    }
+    .fvaVentanaModal *, .fvaMensajeDeCopiado, .fvaVentanaModal a {
+          font-size: 12px;
+    }
+    .fvaRadioBoton {
+        display: inline-block;
+        width: 134px;
+        padding: 12px 2px;
+        margin: 1px;
+        cursor: pointer;
+    }
+}
+@media only screen and (max-width: 812px) and (orientation: landscape) {
+  .fvaVentanaModal {
+        width: 600px;
+        margin: 1px auto;
+    }
+    .fvaVentanaModal input[type="text"]{
+        font-size: 16px;
+        width: 260px;
+    }
+    .fvaContenidoParaTipoIdentificacion{
+        font-size: 12px;
+    }
+    .fvaVentanaModal *, .fvaMensajeDeCopiado, .fvaVentanaModal a {
+          font-size: 12px;
+    }
+    .fvaRadioBoton {
+        display: inline-block;
+        width: 134px;
+        padding: 12px 2px;
+        margin: 1px;
+        cursor: pointer;
+    }
+}
+
+.fvaCodigoConBotonCopiar {
+    margin: 2px 0;
+}
+.fvaCodigoConBotonCopiar div {
+    display: inline-block;
+}
+.fvaElBotonDeCopiar {
+    display: inline-block;
+    vertical-align: top;
+    padding: 3px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #d2d2d2;
+    border: 1px solid #bebebe;
+    border-radius: 3px;
+    outline: none;
+}
+.fvaElBotonDeCopiar:hover {
+    border: 1px solid #b4b4b4;
+    background: #c8c8c8;
+}
+.fvaMensajeDeCopiado {
+    display: none;
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    z-index: 1050;
+    padding: 10px;
+    font-size: 14px;
+    background: white;
+    border-radius: 1px;
+}
+.fvaContenidoParaInformacionDeConectado {
+    margin: 0 15px;
+}
+.fvaContenidoParaInformacionDeConectado div:nth-child(1) {
+    font-weight: bold;
+}
+.fvaContenidoParaInformacionDeConectado a {
+    margin-top: 0;
+}
+.fvaContenidoParaInformacionDeConectado ul {
+    margin-top: 15px;
+    padding-left: 40px;
+}
+.fvaContenidoParaInformacionDeConectado ul li {
+    text-align: justify;
+}
+.fvaContenidoParaInformacionDeConectado ul li:nth-child(1) {
+    text-align-last: justify;
+}
+.fvaContenidoParaInformacionDeConectado ul li:nth-child(2) {
+    margin-top: 10px;
+}
+.fvaIconoFirmadorConectado {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    vertical-align: middle;
+    background: url(../Imagenes/firma_digital_conectado.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.fvaContenidoParaErrorGeneral {
+    margin: 0 15px;
+}
+.fvaContenidoParaErrorGeneral div:nth-child(1) {
+    font-weight: bold;
+}
+.fvaContenidoParaErrorGeneral a {
+    margin-top: 0;
+}
+.fvaContenidoParaErrorGeneral ol {
+    margin-top: 15px;
+    padding-left: 40px;
+}
+.fvaContenidoParaErrorGeneral ol li {
+    text-align: justify;
+    color: gray;
+}
+.fvaContenidoParaErrorGeneral ol li:nth-child(1) {
+    text-align-last: justify;
+}
+.fvaContenidoParaErrorGeneral ol li:nth-child(2) {
+    margin-top: 10px;
+}
+.fvaContenidoParaErrorGeneralMensajeFinal {
+    padding-top: 15px;
+}
+

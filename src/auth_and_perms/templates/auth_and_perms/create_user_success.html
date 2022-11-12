@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Register with new organization' %}{% endblock %}
+
+{% block content_block_wrap %}{% endblock %}
+{% block body_class %}login{% endblock body_class %}
+{% block body %}
+<div class="center-container">
+  <div class="row vertical-center hp-75">
+      <div class="col-xs-12 col-md-12">
+          <h4 class="text-danger text-center">{% trans 'Profile create successfully' %}</h4>
+      </div>
+     <div class="col-xs-12 col-md-6 offset-2">
+        <div class="alert alert-success" role="alert">
+            {% trans 'Your organization was created successfully, please login with your credentials' %}
+        </div>
+         <div>
+             <a href="{% url 'login' %}" type="button" class="btn btn-outline-primary">{% trans 'Login' %}</a>
+         </div>
+     </div>
+  </div>
+</div>
+{% endblock %}
