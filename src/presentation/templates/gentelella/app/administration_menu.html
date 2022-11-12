@@ -44,7 +44,7 @@
             <hr class="dropdown-divider">
         </li>
         {% endif %}
-        {% if perms.laboratory.add_features %}
+        {% if perms.laboratory.add_objectfeatures %}
         <li><a href="{% url 'laboratory:object_feature_create' laboratory %}">
             {% trans 'Object features management' %}</a></li>
         <li>

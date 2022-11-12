@@ -191,6 +191,7 @@ informs_urls = [
 
 ]
 
+
 """APIS"""
 router = DefaultRouter()
 
@@ -198,7 +199,7 @@ router.register('api_inform', CommentAPI, basename='api-inform')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
-    re_path(r'mylabs$', LaboratoryListView.as_view(), name="mylabs"),
+    path('mylabs', LaboratoryListView.as_view(), name="mylabs"),
     re_path(r'^lab/(?P<pk>\d+)/edit', LaboratoryEdit.as_view(), name="laboratory_edit"),
     re_path(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     re_path(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
