@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 {% load gtsettings %}
-
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+	{% define_urlname_action 'organizationreactivepresence' %}
 {% endblock %}
 
 {% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}

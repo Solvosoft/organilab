@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
+{% load urlname_tags %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
+    {% define_urlname_action 'my_reservations' %}
+    {% define_urlname_action 'api_individual_reservation_create' %}
 {% endblock %}
 {% block content %}
     {% include 'laboratory/my_reservation_delete.html' %}

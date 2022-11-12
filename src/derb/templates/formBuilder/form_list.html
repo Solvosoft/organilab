@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load gtsettings %}
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true "use_datatables" as use_datatables %}
+    {% define_urlname_action 'form_list' %}
 {% endblock %}
 
 {% block title %}{% trans 'Report Template List' %}{% endblock %}
