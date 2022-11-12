@@ -2,7 +2,7 @@ from datetime import timedelta
 from functools import partial
 
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -12,9 +12,10 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 import qrcode.image.svg
 from auth_and_perms.forms import CreationUserOrganization, AddProfileForm
-from auth_and_perms.models import RegistrationUser, UserTOTPDevice, Profile, ProfilePermission
+from auth_and_perms.models import RegistrationUser, UserTOTPDevice, Profile, ProfilePermission, Rol
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
 from django.utils.translation import gettext_lazy as _
+
 
 def register_user_to_platform(request):
     form = CreationUserOrganization()
@@ -47,6 +48,25 @@ def register_user_to_platform(request):
     return render(request, 'auth_and_perms/create_user_organization.html', context=context)
 
 
+def create_user_organization(user, organization, form):
+    group, _ = Group.objects.get_or_create(name='RegisterOrganization')
+    rol = Rol.objects.create(name=_('Organization Management'))
+    profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
+                                     id_card=form.cleaned_data['id_card'],
+                                     job_position=form.cleaned_data['job_position'])
+    pp = ProfilePermission.objects.create(profile=profile, object_id=profile.pk,
+                                          content_type=ContentType.objects.filter(
+                                              app_label=profile._meta.app_label,
+                                              model=profile._meta.model_name).first())
+    rol.permissions.add(*[x for x in group.permission.all()])
+    pp.rol.add(rol)
+    org = OrganizationStructure.objects.create(name=organization)
+    orguserman = OrganizationUserManagement.objects.create(organization=org)
+    orguserman.users.add(user)
+    user.active = True
+    user.save()
+
+
 def create_profile_otp(request, pk):
     user = get_object_or_404(User, pk=pk)
     device = TOTPDevice.objects.get(user__pk=pk)
@@ -60,30 +80,8 @@ def create_profile_otp(request, pk):
                 expired_date__gte=now(),
             ).first()
             if reguser:
-                profile = Profile.objects.create(
-                    user=user,
-                    phone_number = form.cleaned_data['phone_number'],
-                    id_card = form.cleaned_data['id_card'],
-                    job_position = form.cleaned_data['job_position'],
-
-                )
-                ProfilePermission.objects.create(
-                    profile=profile,
-                    content_type=ContentType.objects.filter(
-                        app_label=profile._meta.app_label,
-                        model=profile._meta.model_name).first(),
-                    object_id=profile.pk
-                )
-                org = OrganizationStructure.objects.create(
-                    name=reguser.organization_name
-                )
-                orguserman=OrganizationUserManagement.objects.create(
-                    organization=org
-                )
-                orguserman.users.add(user)
+                create_user_organization(user, reguser.organization_name, form)
                 reguser.delete()
-                user.active=True
-                user.save()
                 return render(request, 'auth_and_perms/create_user_success.html', )
             else:
                 messages.error(request, _("You have no creation process, maybe it was expired, please try to register again"))
@@ -96,6 +94,7 @@ def create_profile_otp(request, pk):
         'user': user.pk
     }
     return render(request, 'auth_and_perms/create_user_organization_totp.html', context=context)
+
 
 def show_QR_img(request, pk):
     device = TOTPDevice.objects.get(user__pk=pk)

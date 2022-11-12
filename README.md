@@ -36,6 +36,9 @@ Check your database configuration and sync your models
 
 	$ python manage.py migrate
 	$ python manage.py createcachetable
+    $ python manage.py loadgroup
+    
+Could be required to call python manage.py initial_data
 
 Create a superuser for admin views
 
