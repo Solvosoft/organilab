@@ -122,3 +122,9 @@ img {
  color:#337ab7;
 }
 
+.center_block_content{
+    width: 60%;
+    margin-left: 20%;
+    height: 60%;
+    margin-top: 5%;
+}

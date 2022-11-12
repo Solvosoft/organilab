@@ -23,19 +23,19 @@ Clone this repository
 Create a virtualenv
 
 	$ mkdir -p ~/entornos/
-	$ virtualenv -p python3 ~/entornos/organilab
+	$ python -m venv ~/entornos/organilab
 	$ source ~/entornos/organilab/bin/activate
 
 Install requirements 
 
 	$ pip install -r requirements.txt
-	$ cat apt_requirements.txt | xargs sudo apt install -y
-	
+		
 # Run in development
 
 Check your database configuration and sync your models
 
 	$ python manage.py migrate
+	$ python manage.py createcachetable
 
 Create a superuser for admin views
 

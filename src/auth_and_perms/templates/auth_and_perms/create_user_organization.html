@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Register with new organization' %}{% endblock %}
+
+{% block content_block_wrap %}{% endblock %}
+{% block body_class %}login{% endblock body_class %}
+{% block body %}
+<div class="center-container">
+  <div class="row vertical-center hp-75">
+      <div class="col-xs-12 col-md-12">
+          <h4 class="text-danger text-center">{% trans 'Register you as organization administrator' %}</h4>
+      </div>
+     <div class="col-xs-12 col-md-6 offset-2">
+
+             <form action="" method="post">
+              {{form.as_horizontal}}
+               {% csrf_token %}
+                 <button class="btn btn-sx btn-success float-end"><i class="fa fa-user-plus"></i> {% trans 'Create user' %}</button>
+             </form>
+     </div>
+      <div class="col-xs-12 col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4>{% trans 'Validation method' %}</h4>
+
+                    <div class="text">
+                       {% trans 'We need to validate that you are not a robot or spamer, so you need to configure a Two-Factor Authentication' %}
+                        <ul>
+                            <li><h3 class="text-success">OTPT</h3>
+                                <p> {% trans 'You need an OTP generator to login on the platform, you can use a free app called FreeOTP:' %}</p>
+
+        <a class="store" alt="iOS App" href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395?mt=8">
+          <img src="{% static 'img/appstore.svg' %}" alt="Apple App Store" style="width: 120px">
+        </a>
+        <a class="store" alt="Android App" href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">
+          <img src="{% static 'img/playstore.svg' %}" alt="Google Play Store" style="width: 120px">
+        </a>
+        <a class="store" alt="Android App (F-Droid)" href="https://f-droid.org/packages/org.fedorahosted.freeotp">
+          <img src="{% static 'img/fdroid.svg' %}" alt="F-Droid" style="width: 120px">
+        </a>
+                            </li>
+                            <li><h3 class="text-success">{% trans 'Digital signature'%}</h3>
+                                <p>{% trans 'For Costa Rica citicen, use your digital signature to login on organilab' %}</p>
+                                        <a class="store" alt="Digital signature" href="https://soportefirmadigital.com">
+                                            <img src="{% static 'Imagenes/Firma.png' %}" alt="Digital signature logo" style="width: 120px">
+                                        </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %}

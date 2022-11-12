@@ -56,13 +56,13 @@ INSTALLED_APPS = [
     'djgentelella',
     'djgentelella.blog',
     'djgentelella.chunked_upload',
-
-
     'api.apps.ApiConfig',
     'reservations_management',
     'django_celery_beat',
     'paypal.standard.ipn',
-    'derb'
+    'derb',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 ]
 
 
@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djreservation.middleware.ReservationMiddleware',
@@ -119,6 +120,7 @@ DATABASES = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
+    'auth_and_perms.authBackend.BCCRBackend',  # Digital signature
 )
 
 # END TEST

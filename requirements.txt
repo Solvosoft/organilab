@@ -36,3 +36,5 @@ celery==5.2.3
 django-paypal==2.0
 weasyprint==56.1
 CairoSVG==2.5.2
+pyfva==0.0.43
+django-otp==1.1.4

@@ -1,11 +1,13 @@
 import random
 
-from django.contrib.auth.models import Permission
+from django.conf import settings
+from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
 class Profile(models.Model):
@@ -18,13 +20,14 @@ class Profile(models.Model):
     def __str__(self):
         return '%s' % (self.user,)
 
+
 def get_random_color():
     hexadecimal = "#" + ''.join([random.choice('ABCDEF0123456789') for i in range(6)])
     return hexadecimal
 
 
 class Rol(models.Model):
-    name = models.CharField(blank=True,max_length=100)
+    name = models.CharField(blank=True, max_length=100)
     color = models.CharField(max_length=20, default=get_random_color)
     permissions = models.ManyToManyField(
         Permission,
@@ -40,15 +43,12 @@ class Rol(models.Model):
         verbose_name_plural = _('Rols')
 
 
-
 class ProfilePermission(models.Model):
     profile = models.ForeignKey(Profile, verbose_name=_("Profile"), blank=True, null=True, on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-
-#    laboratories = models.ForeignKey('laboratory.Laboratory', verbose_name=_("Laboratories"), blank=True, null=True, on_delete=models.CASCADE)
     rol = models.ManyToManyField(Rol, blank=True, verbose_name=_("Rol"))
 
     def __str__(self):
@@ -60,3 +60,56 @@ class ProfilePermission(models.Model):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+
+
+identification_validator = RegexValidator(
+    r'"(^[1|5]\d{11}$)|(^\d{2}-\d{4}-\d{4}$)"',
+    message="Debe tener el formato 08-8888-8888 para nacionales o 500000000000 o 100000000000")
+
+
+class AuthenticateDataRequest(models.Model):
+    identification = models.CharField(
+        max_length=15, validators=[identification_validator],
+        help_text="""'%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'""")
+    # '%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'
+    request_datetime = models.DateTimeField()
+    code = models.CharField(max_length=20, default='N/D')
+
+    STATUS = ((1, 'Solicitud recibida correctamente'),
+              (2, 'Ha ocurrido algún problema al solicitar la firma'),
+              (3, 'Solicitud con campos incompletos'),
+              (4, 'Diferencia de hora no permitida entre cliente y servidor'),
+              (5, 'La entidad no se encuentra registrada'),
+              (6, 'La entidad se encuentra en estado inactiva'),
+              (7, 'La URL no pertenece a la entidad solicitante'),
+              (8, 'El tamaño de hash debe ser entre 1 y 130 caracteres'),
+              (9, 'Algoritmo desconocido'),
+              (10, 'Certificado incorrecto'))
+    status = models.IntegerField(choices=STATUS, default=1)
+    sign_document = models.TextField(null=True, blank=True)
+    response_datetime = models.DateTimeField(auto_now=True)
+    # expiration_datetime = models.DateTimeField()
+    id_transaction = models.IntegerField(default=0, db_index=True)
+    duration = models.SmallIntegerField(default=3)
+    received_notification = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('request_datetime',)
+
+
+class RegistrationUser(models.Model):
+    expired_date = models.DateTimeField()
+    creation_date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    registration_method = models.IntegerField(choices=((1, 'OTPT' ),(2, 'Digital Signature')), default=1)
+    organization_name = models.CharField(max_length=250)
+
+
+class UserTOTPDevice(models.Model):
+    """
+        This code will ve a string create with ID_USER and ID_TOTPDevice
+        Este código va ser una cadena representada por el ID_USER y el ID_TOTPDevice
+    """
+    code = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    totp_device = models.ForeignKey(TOTPDevice, on_delete=models.DO_NOTHING)
