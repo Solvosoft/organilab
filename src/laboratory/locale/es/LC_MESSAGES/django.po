@@ -2166,6 +2166,10 @@ msgstr "Reservación"
 msgid "Substract"
 msgstr "Sustraer"
 
+#:laboratory/templates/laboratory/complete_inform.html.html:23
+msgid "Send to draft"
+msgstr "Enviar a borrador"
+
 #, fuzzy
 #~| msgid "Furniture report"
 #~ msgid "Furniture Select"

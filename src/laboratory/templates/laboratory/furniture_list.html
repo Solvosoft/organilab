@@ -11,11 +11,11 @@
   <ul class="list-group" style="margin: 0px 10px;">
     {% for furniture in object_list %}
       <li class="list-group-item">
-        <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" href="#">
+        <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" style="cursor: pointer;">
           {{ furniture.name }}
         </a>
         {% if perms.laboratory.do_report %} 
-        <a class=" pull-right"
+        <a class="float-end"
            href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
           {% trans "PDF" %}
