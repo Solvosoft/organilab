@@ -86,6 +86,7 @@ shelf_object_urls = [
     re_path(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
     re_path(r"transfer_objects$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
+    re_path(r"get_shelfobject_limit/(?P<pk>\d+)$", shelfobject.edit_limit_object, name="get_shelfobject_limit"),
 ]
 
 lab_reports_urls = [

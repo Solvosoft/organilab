@@ -16,10 +16,14 @@
                 {% csrf_token %}
                 <div id="formio"></div>
                 {% if inform.status == 'Eraser' %}
-                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')">{% trans 'Send for review' %}</button>
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
                 {% if inform.status == 'In Review' %}
-                    <button type="button"  class="btn btn-danger" onclick="saveForm('Finalized')">{% trans 'Finalize' %}</button>
+                    <button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
+                    <button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
+                {% endif %}
+                {% if inform.status == 'Finalized' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
             </form>
         </div>
@@ -40,15 +44,17 @@ const urls ={
     get_comment:"{% url 'laboratory:api-inform-list' %}",
     delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
 };
+const inform="{{inform.pk}}"
+
 var schema = {{ schema | safe }};
 document.getElementById("form_name").textContent = "{{inform.name}}";
 
 var components = { components: schema["components"] };
+const saved="{% trans 'Saved successfully' %}";
 
 window.onload = function(schema) {
-
     Formio.createForm(document.getElementById('formio'), components);
-    get_comments();
+    get_comments("{{inform.pk}}");
 
 }
 let status = "{{inform.status}}"
@@ -92,7 +98,7 @@ const update_translation ={
 
 $('#observation').click(()=>{
     let right= document.querySelector('#right-col')
-    if(right.className=="col-sm-6"){
+    if(right.classList.contains("col-sm-6")){
         document.querySelector('#left-col').classList="col-sm-12"
         document.querySelector('#right-col').classList="d-none"
     }else{

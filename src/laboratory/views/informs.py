@@ -60,7 +60,6 @@ def complete_inform(request, *args, **kwargs):
     schema = inform.schema
     laboratory= kwargs.get('lab_pk')
     form = json.dumps(schema,indent=2)
-
     context = {"schema": form,
                'inform': inform,
                'laboratory': laboratory,

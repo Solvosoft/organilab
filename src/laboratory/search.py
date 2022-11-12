@@ -59,6 +59,8 @@ class SearchObject(ListView):
         if 'lab_pk' in self.kwargs:
             context['laboratory'] = self.kwargs.get('lab_pk')
         context['q'] = self.request.GET.get('q', '')
-        context['modal_form_reservation'] = ReservedModalForm()
+        context['options'] = ['Reservation','Add','Transfer','Substract']
+
+        context['modal_form_reservation'] = ReservationModalForm()
 
         return context
