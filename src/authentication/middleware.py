@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.http import Http404
 
 from auth_and_perms.models import ProfilePermission
 from django.shortcuts import redirect
@@ -32,45 +33,40 @@ class ProfileMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         profile_in = None
         user = request.user
-        if 'lab_pk' in view_kwargs and view_kwargs['lab_pk'] is not None and hasattr(user, 'profile'):
+        lab_pk=None
+
+        if hasattr(user, 'profile'):
+            profile = user.profile
+        else:
+            raise Http404()
+
+        if 'lab_pk' in view_kwargs and view_kwargs['lab_pk']:
+            lab_pk = view_kwargs['lab_pk']
+        elif 'lab_pk' in request.GET and request.GET['lab_pk']:
+            lab_pk = request.GET['lab_pk']
+        elif 'lab_pk' in request.POST and request.POST['lab_pk']:
+            lab_pk = request.POST['lab_pk']
+        elif 'lab' in request.GET and request.GET['lab']:
+            lab_pk = request.POST['lab']
+        elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
+                view_func.view_class.lab_pk_field in view_kwargs and view_kwargs[view_func.view_class.lab_pk_field
+                ] is not None:
+            lab_pk = view_kwargs[view_func.view_class.lab_pk_field]
+        elif hasattr(view_func, 'lab_pk_field') and view_func.lab_pk_field in view_kwargs and \
+                view_kwargs[view_func.lab_pk_field] is not None:
+            lab_pk = view_kwargs[view_func.lab_pk_field]
+
+        if lab_pk:
             profile_in = ProfilePermission.objects.filter(profile=user.profile,
                                                           content_type= ContentType.objects.get(app_label='laboratory',
                                                                                                 model="laboratory"),
-                                                          object_id=view_kwargs['lab_pk']).first()
+                                                          object_id=lab_pk).first()
+        else:
+            profile_in = ProfilePermission.objects.filter(profile=profile, object_id=profile.pk,
+                                                         content_type=ContentType.objects.filter(
+                                                         app_label=profile._meta.app_label,
+                                                          model=profile._meta.model_name).first()).first()
 
-        elif 'lab_pk' in request.GET and request.GET['lab_pk'] is not None and hasattr(user, 'profile'):
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                               model="laboratory"),
-                                                          object_id=request.GET.get('lab_pk')).first()
-
-        elif 'lab_pk' in request.POST and request.POST['lab_pk'] is not None and hasattr(user, 'profile'):
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                               model="laboratory"),
-                                                          object_id=request.POST.get('lab_pk')).first()
-
-        elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
-            view_func.view_class.lab_pk_field in view_kwargs  and  view_kwargs[view_func.view_class.lab_pk_field] is not None and \
-            hasattr(user, 'profile'):
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                               model="laboratory"),
-                                                          object_id=view_kwargs[view_func.view_class.lab_pk_field]).first()
-
-        elif hasattr(view_func, 'lab_pk_field') and view_func.lab_pk_field in view_kwargs and \
-                view_kwargs[view_func.lab_pk_field] is not None and hasattr(user, 'profile'):
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                               model="laboratory"),
-                                                          object_id=view_kwargs[view_func.lab_pk_field]).first()
-
-        elif 'lab' in request.GET and request.GET['lab'] is not None and hasattr(user,'profile') and \
-                int(request.GET['lab']) > 0:
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                               model="laboratory"),
-                                                          object_id=request.GET.get('lab')).first()
         if profile_in:
             roles = profile_in.rol.all()
             user_permissions = []

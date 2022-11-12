@@ -1,6 +1,6 @@
 from datetime import timedelta
 from functools import partial
-
+from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
@@ -49,7 +49,7 @@ def register_user_to_platform(request):
 
 
 def create_user_organization(user, organization, form):
-    group, _ = Group.objects.get_or_create(name='RegisterOrganization')
+    group, _x = Group.objects.get_or_create(name='RegisterOrganization')
     rol = Rol.objects.create(name=_('Organization Management'))
     profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                      id_card=form.cleaned_data['id_card'],
@@ -58,15 +58,21 @@ def create_user_organization(user, organization, form):
                                           content_type=ContentType.objects.filter(
                                               app_label=profile._meta.app_label,
                                               model=profile._meta.model_name).first())
-    rol.permissions.add(*[x for x in group.permission.all()])
+    rol.permissions.add(*[x for x in group.permissions.all()])
     pp.rol.add(rol)
     org = OrganizationStructure.objects.create(name=organization)
+    org.rol.add(rol)
+
     orguserman = OrganizationUserManagement.objects.create(organization=org)
     orguserman.users.add(user)
+
+    #rol.save()
+    #org.save()
+    #pp.save()
     user.active = True
     user.save()
 
-
+@transaction.atomic
 def create_profile_otp(request, pk):
     user = get_object_or_404(User, pk=pk)
     device = TOTPDevice.objects.get(user__pk=pk)
