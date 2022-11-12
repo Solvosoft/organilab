@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'index' %}
+{% endblock %}
 {% block title %}{% trans 'SGA Search' %}{% endblock title %}
 {% block content %}
 

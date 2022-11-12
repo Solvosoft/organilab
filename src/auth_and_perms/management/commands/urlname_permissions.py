@@ -970,5 +970,348 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
         }
+    ],
+    'organizationManager': [
+        {
+            'name': 'Add Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.add_laboratory'
+        },
+        {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        },
+        {
+            'name': 'Add Rol',
+            'category': 'Rol',
+            'permission': 'auth_and_perms.add_rol'
+        },
+        {
+            'name': 'View Rol',
+            'category': 'Rol',
+            'permission': 'auth_and_perms.view_rol'
+        },
+        {
+            'name': 'Add Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.add_profilepermission'
+        },
+        {
+            'name': 'Change Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.change_profilepermission'
+        },
+        {
+            'name': 'Delete Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.delete_profilepermission'
+        },
+        {
+            'name': 'View Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.view_profilepermission'
+        },
+        {
+            'name': 'Add Profile',
+            'category': 'Profile',
+            'permission': 'auth_and_perms.view_profile'
+        },
+        {
+            'name': 'View Profile',
+            'category': 'Profile',
+            'permission': 'auth_and_perms.view_profile'
+        },
+        {
+            'name': 'Add User',
+            'category': 'User',
+            'permission': 'auth.add_user'
+        },
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        },
+        {
+            'name': 'Add Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.add_organizationstructure'
+        },
+        {
+            'name': 'Change Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.change_organizationstructure'
+        },
+        {
+            'name': 'Delete Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.delete_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        },
+        {
+            'name': 'Add Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.add_organizationusermanagement'
+        },
+        {
+            'name': 'Change Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.change_organizationusermanagement'
+        },
+        {
+            'name': 'Delete Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.delete_organizationusermanagement'
+        },
+        {
+            'name': 'View Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.view_organizationusermanagement'
+        },
+        {
+            'name': 'Add Organization Structure Relations',
+            'category': 'Organization Structure Relations',
+            'permission': 'laboratory.add_organizationstructurerelations'
+        },
+        {
+            'name': 'View Organization Structure Relations',
+            'category': 'Organization Structure Relations',
+            'permission': 'laboratory.view_organizationstructurerelations'
+        }
+    ],
+    'addusersorganization': [
+        {
+            'name': 'Change Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.change_organizationusermanagement'
+        },
+        {
+            'name': 'Change Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.change_profilepermission'
+        },
+        {
+            'name': 'Delete Profile Permission',
+            'category': 'Profile Permission',
+            'permission': 'auth_and_perms.delete_profilepermission'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        },
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        },
+
+    ],
+    'add_user': [
+        {
+            'name': 'Add User',
+            'category': 'User',
+            'permission': 'auth.add_user'
+        },
+        {
+            'name': 'Add Profile',
+            'category': 'Profile',
+            'permission': 'auth_and_perms.add_profile'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        }
+    ],
+    'copy_rols': [
+        {
+            'name': 'Change Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.change_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        }
+    ],
+    'add_contenttype_to_org': [
+        {
+            'name': 'Change Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.change_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        }
+    ],
+    'index': [
+        {
+            'name': 'Add Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.add_organizationusermanagement'
+        },
+        {
+            'name': 'View Organization User Management',
+            'category': 'Organization User Management',
+            'permission': 'laboratory.view_organizationusermanagement'
+        },
+        {
+            'name': 'View Label',
+            'category': 'Label',
+            'permission': 'sga.view_label'
+        },
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        },
+        {
+            'name': 'Change Template SGA',
+            'category': 'Template SGA',
+            'permission': 'sga.change_templatesga'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        },
+        {
+            'name': 'Add Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.add_objectfeatures'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        },
+        {
+            'name': 'Add Custom Form',
+            'category': 'Custom Form',
+            'permission': 'derb.add_customform'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
+            'name': 'View Regulation Document',
+            'category': 'Regulation Document',
+            'permission': 'msds.view_regulationdocument'
+        }
+    ],
+    'regulation_docs': [
+        {
+            'name': 'View Regulation Document',
+            'category': 'Regulation Document',
+            'permission': 'msds.view_regulationdocument'
+        }
+    ],
+    'form_list': [
+        {
+            'name': 'Add Custom Form',
+            'category': 'Custom Form',
+            'permission': 'derb.add_customform'
+        },
+        {
+            'name': 'Change Custom Form',
+            'category': 'Custom Form',
+            'permission': 'derb.change_customform'
+        },
+        {
+            'name': 'Delete Custom Form',
+            'category': 'Custom Form',
+            'permission': 'derb.delete_customform'
+        },
+        {
+            'name': 'View Custom Form',
+            'category': 'Custom Form',
+            'permission': 'derb.view_customform'
+        }
+    ],
+    'report_reactive_presence': [
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'organizationreactivepresence': [
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'my_reservations': [
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'Delete Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.delete_reservedproducts'
+        },
+        {
+            'name': 'Add Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.add_reservations'
+        },
+        {
+            'name': 'View Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.view_reservations'
+        }
+
+    ],
+    'api_individual_reservation_create': [
+        {
+            'name': 'Add Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.add_reservations'
+        },
+        {
+            'name': 'View Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.view_reservations'
+        }
+    ],
+    'h_code_reports': [
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        },
     ]
 }
