@@ -65,3 +65,18 @@ class AddProfileForm(OTPTokenForm, GTForm):
         self.fields['otp_device'].widget=forms.HiddenInput()
         self.fields['otp_challenge'].widget=forms.HiddenInput()
         self.fields['otp_token'].widget=genwidgets.TextInput()
+
+
+class AddProfileDigitalSignatureForm(GTForm):
+    first_name = forms.CharField(label=_("First name"), max_length=150, widget=genwidgets.TextInput)
+    last_name = forms.CharField(label=_("Last name"), max_length=150, widget=genwidgets.TextInput)
+    email = forms.EmailField(label=_("Email address"), widget=genwidgets.EmailInput)
+    phone_number = forms.CharField(label=_('Phone'), max_length=25, widget=genwidgets.TextInput)
+    id_card = forms.CharField(label=_('Identification'), max_length=100, widget=genwidgets.TextInput,
+                              help_text=_('It will used to login when you want to login with digital signature'))
+    job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=genwidgets.TextInput)
+    ds_transaction = forms.CharField(widget=genwidgets.HiddenInput, max_length=20)
+
+    field_order = [
+        'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'ds_transaction'
+    ]

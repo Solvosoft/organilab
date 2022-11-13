@@ -99,7 +99,7 @@ def login_with_bccr(request):
     return Http404()
 
 
-def consute_firma(request):
+def check_signature_window_status_register(request):
     '''
     Verifica si un proceso de firma ya se realizó con éxito, esta vista es llamada por dfva_html para saber cuando el usuario
     ya está autenticado o para saber si existe algún error que deba mostrarse al usuario.
