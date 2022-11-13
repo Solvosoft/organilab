@@ -11,7 +11,7 @@ from django.utils.timezone import now
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 import qrcode.image.svg
-from auth_and_perms.forms import CreationUserOrganization, AddProfileForm
+from auth_and_perms.forms import CreationUserOrganization, AddProfileForm, AddProfileDigitalSignatureForm
 from auth_and_perms.models import RegistrationUser, UserTOTPDevice, Profile, ProfilePermission, Rol
 from laboratory.models import OrganizationStructure, OrganizationUserManagement
 from django.utils.translation import gettext_lazy as _
@@ -40,6 +40,8 @@ def register_user_to_platform(request):
                                       )
                 code.save()
                 return redirect(reverse('auth_and_perms:user_org_creation_totp', args=(instance.pk,)))
+            else:
+                return redirect(reverse('auth_and_perms:create_profile_by_digital_signature', args=(instance.pk,)))
 
             return redirect(form.cleaned_data['next'] or '/')
     context={
@@ -66,9 +68,6 @@ def create_user_organization(user, organization, form):
     orguserman = OrganizationUserManagement.objects.create(organization=org)
     orguserman.users.add(user)
 
-    #rol.save()
-    #org.save()
-    #pp.save()
     user.active = True
     user.save()
 
@@ -92,7 +91,6 @@ def create_profile_otp(request, pk):
             else:
                 messages.error(request, _("You have no creation process, maybe it was expired, please try to register again"))
                 return redirect(reverse('auth_and_perms:register_user_to_platform'))
-            #TODO: Add System rol for manage organization
     else:
         form = form(initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk})
     context={
@@ -100,6 +98,36 @@ def create_profile_otp(request, pk):
         'user': user.pk
     }
     return render(request, 'auth_and_perms/create_user_organization_totp.html', context=context)
+
+
+@transaction.atomic
+def create_profile_by_digital_signature(request, pk):
+
+    user = get_object_or_404(User, pk=pk)
+
+    form = AddProfileDigitalSignatureForm
+    if request.method == 'POST':
+        form = form(data=request.POST)
+        if form.is_valid():
+            reguser = RegistrationUser.objects.filter(
+                user=user,
+                registration_method=2,
+                expired_date__gte=now(),
+            ).first()
+            if reguser:
+                create_user_organization(user, reguser.organization_name, form)
+                reguser.delete()
+                return render(request, 'auth_and_perms/create_user_success.html', )
+            else:
+                messages.error(request, _("You have no creation process, maybe it was expired, please try to register again"))
+                return redirect(reverse('auth_and_perms:register_user_to_platform'))
+    else:
+        form = form()
+    context={
+        'form': form,
+        'user': user.pk
+    }
+    return render(request, 'auth_and_perms/create_user_organization_digital_signature.html', context=context)
 
 
 def show_QR_img(request, pk):

@@ -301,3 +301,4 @@ RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKe
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 GT_GROUP_MODEL='auth_and_perms.models.Rol'
+DEFAULT_BUSSINESS=0
