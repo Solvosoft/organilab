@@ -2170,6 +2170,14 @@ msgstr "Sustraer"
 msgid "Send to draft"
 msgstr "Enviar a borrador"
 
+#:laboratory/templates/laboratory/search.html:109
+msgid "Do you want to update the quantity limit?"
+msgstr "¿Deseas actualizar la cantidad limite?"
+
+#:laboratory/templates/laboratory/search.html:111
+msgid "Enter whole numbers or with decimals"
+msgstr "Ingresar numeros enteros o con decimales"
+
 #, fuzzy
 #~| msgid "Furniture report"
 #~ msgid "Furniture Select"
