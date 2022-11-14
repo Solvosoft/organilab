@@ -7,18 +7,11 @@
         <div class="col-md-12">
                 {% include 'academic/substance/steps.html' %}
             <br>
-
-            <a role="button" class="btn btn-primary float-end" data-bs-toggle="modal" href="#helpModal"
-               aria-expanded="false">
-                <i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i>
-                {% trans 'Help' %}
-            </a>
-                    </div>
-
+         </div>
     </div>
-            <div class="row text-center">
-                <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
-            </div>
+    <div class="row text-center">
+        <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
+    </div>
     <br>
     <form class="form-horizontal" action="{% url 'step_one' organilabcontext pk %}" method="POST">
     {% csrf_token %}
