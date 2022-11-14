@@ -2,6 +2,7 @@ from django.template.loader import render_to_string
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework import status, viewsets
 from django.http import Http404
 
@@ -51,9 +52,12 @@ class ApiReservationCRUD(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentAPI(viewsets.ModelViewSet):
+
+    authentication_classes =[SessionAuthentication,BaseAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset= CommentInform.objects.all()
     serializer_class = CommentsSerializer
-    permission_classes = [IsAuthenticated]
+
     def get_comment(self, pk):
         try:
             return self.get_queryset().get(pk=pk)
@@ -64,12 +68,14 @@ class CommentAPI(viewsets.ModelViewSet):
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid():
             inform=Inform.objects.filter(pk=request.data['inform']).first()
+
             CommentInform.objects.create(
                 creator=request.user,
                 comment = serializer.data['comment'],
                 inform = inform
             )
-            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
+            comments=self.get_queryset().filter(inform=inform).order_by('pk')
+            template = render_to_string('laboratory/comment.html', {'comments':comments, 'user':request.user},request)
             return Response({'data':template}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
