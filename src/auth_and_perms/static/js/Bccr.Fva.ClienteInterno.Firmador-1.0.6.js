@@ -93,6 +93,7 @@ var FvaClienteInterno = function (laConfiguracion) {
             var elTiempoDeEsperaParaConsultarLaFirmaEnMiliSegundos = ObtengaElValorEnMiliSegundos(laRespuesta.TiempoDeEsperaParaConsultarLaFirmaEnSegundos);
             var elCodigoDeVerificacion = laRespuesta.CodigoDeVerificacion;
             var elIdDeLaSolicitud = laRespuesta.IdDeLaSolicitud;
+            document.IdDeLaSolicitud = laRespuesta.IdDeLaSolicitud;
             var elResumenDocumento = laRespuesta.ResumenDelDocumento;
             var seTerminoElTiempoDeFirma = false;
             if (fueExitosaLaSolicitud) {

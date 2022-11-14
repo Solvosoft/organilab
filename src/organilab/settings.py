@@ -120,7 +120,7 @@ DATABASES = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
-    'auth_and_perms.authBackend.BCCRBackend',  # Digital signature
+   # 'auth_and_perms.authBackend.BCCRBackend',  # Digital signature
 )
 
 # END TEST
@@ -301,4 +301,14 @@ RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKe
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 GT_GROUP_MODEL='auth_and_perms.models.Rol'
-DEFAULT_BUSSINESS=0
+DEFAULT_BUSSINESS=1
+DEFAULT_ENTITY=1
+DEFAULT_SUCCESS_BCCR=0
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ]
+}

@@ -17,24 +17,25 @@
                {% csrf_token %}
                  <button id="formsubmitbtn" type="submit" class="d-none">{% trans 'Validate user' %}</button>
              </form>
-            <button class="btn btn-sx btn-success float-end" id="BotonDeAutenticar"
+            <button id="launchfdbtn" type="submit" class="btn btn-sx btn-success float-end">
+                   <i class="fa fa-user-plus"></i>{% trans 'Validate user' %}</button>
+            <button id="BotonDeAutenticar"
 						data-fva="true" data-url="{% url 'auth_and_perms:login_with_bccr' %}"
 						data-urlconsultafirma="{% url 'auth_and_perms:check_signature_window_status_register' %}"
 						data-dominio="{{ request.scheme }}://{{ request.get_host }}"
 						data-parautenticarse="al Sitio de Verificaci&oacute;n"
 						data-mensajedeerror="No se pudo realizar la autenticaci&oacute;n en el sitio de verificaci&oacute;n."
-						type="button" class="botonVerificacion botonVerificacion-Inicio">
-                         <i class="fa fa-user-plus"></i>
-						{% trans 'Validate user' %}</button>
+						type="button" class="d-none botonVerificacion botonVerificacion-Inicio"> </button>
      </div>
 
 
   </div>
 </div>
 
-{% block js %}
-    <script src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
-    <script src="{% static 'js/Bccr.Fva.ClienteInterno.Firmador-1.0.6-min.js' %}" type="text/javascript"></script>
-	<script src="{% static 'js/register_autenticador.js' %}"></script>
 {% endblock %}
+{% block js %}
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
+    <script src="{% static 'js/Bccr.Fva.ClienteInterno.Firmador-1.0.6.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/register_autenticador.js' %}"></script>
 {% endblock %}
