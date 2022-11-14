@@ -16,7 +16,9 @@ from derb.models import CustomForm
 
 @permission_required('laboratory.view_inform')
 def get_informs(request, *args, **kwargs):
-    informs= Inform.objects.all().order_by('-pk')
+    lab = int(kwargs.get('lab_pk'))
+    content = ContentType.objects.get(app_label="laboratory", model="laboratory")
+    informs= Inform.objects.filter(object_id=lab, content_type=content).order_by('-pk')
     context = {
         'informs':informs,
         'form': InformForm,
@@ -44,7 +46,7 @@ def create_informs(request, *args, **kwargs):
         inform= form.save(commit=False)
         content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
         inform.content_type=content
-        inform.object_id=1
+        inform.object_id=int(laboratory)
         inform.schema=inform.custom_form.schema
 
 
