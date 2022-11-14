@@ -68,23 +68,23 @@ identification_validator = RegexValidator(
 
 
 class AuthenticateDataRequest(models.Model):
-    identification = models.CharField(
+    identification = models.CharField(null=True,
         max_length=15, validators=[identification_validator],
         help_text="""'%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'""")
     # '%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'
-    request_datetime = models.DateTimeField()
+    request_datetime = models.DateTimeField(auto_now_add=True)
     code = models.CharField(max_length=20, default='N/D')
 
-    STATUS = ((1, 'Solicitud recibida correctamente'),
-              (2, 'Ha ocurrido algún problema al solicitar la firma'),
-              (3, 'Solicitud con campos incompletos'),
-              (4, 'Diferencia de hora no permitida entre cliente y servidor'),
-              (5, 'La entidad no se encuentra registrada'),
-              (6, 'La entidad se encuentra en estado inactiva'),
-              (7, 'La URL no pertenece a la entidad solicitante'),
-              (8, 'El tamaño de hash debe ser entre 1 y 130 caracteres'),
-              (9, 'Algoritmo desconocido'),
-              (10, 'Certificado incorrecto'))
+    STATUS = ((0, 'Solicitud recibida correctamente'),
+              (1, 'Ha ocurrido algún problema al solicitar la firma'),
+              (2, 'Solicitud con campos incompletos'),
+              (3, 'Diferencia de hora no permitida entre cliente y servidor'),
+              (4, 'La entidad no se encuentra registrada'),
+              (5, 'La entidad se encuentra en estado inactiva'),
+              (6, 'La URL no pertenece a la entidad solicitante'),
+              (7, 'El tamaño de hash debe ser entre 1 y 130 caracteres'),
+              (8, 'Algoritmo desconocido'),
+              (9, 'Certificado incorrecto'))
     status = models.IntegerField(choices=STATUS, default=1)
     sign_document = models.TextField(null=True, blank=True)
     response_datetime = models.DateTimeField(auto_now=True)
@@ -113,3 +113,10 @@ class UserTOTPDevice(models.Model):
     code = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     totp_device = models.ForeignKey(TOTPDevice, on_delete=models.DO_NOTHING)
+
+
+class AuthorizedApplication(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    notification_url = models.URLField()
+    token = models.TextField()

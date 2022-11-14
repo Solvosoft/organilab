@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
 
-from auth_and_perms.models import Rol, Profile
+from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
 from laboratory.models import OrganizationStructure
 
 
@@ -11,7 +11,14 @@ class RolSerializer(serializers.ModelSerializer):
         fields = ["name", "permissions"]
 
 
+class AuthenticateDataRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuthenticateDataRequest
+        fields = '__all__'
 
+class AuthenticateDataRequestNotifySerializer(serializers.Serializer):
+    id_transaction = serializers.IntegerField()
+    data = AuthenticateDataRequestSerializer()
 
 class ContentTypeObjectToPermissionManager(serializers.Serializer):
     org=serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.all())

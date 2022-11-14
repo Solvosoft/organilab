@@ -18,7 +18,7 @@
 @contact: luis.zarate@solvosoft.com
 @license: GPLv3
 '''
-
+import requests
 from django.http.response import JsonResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from pyfva.clientes.autenticador import ClienteAutenticador
@@ -30,7 +30,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login
 
 #from corebase import logger
-from ..models import AuthenticateDataRequest
+from ..models import AuthenticateDataRequest, AuthorizedApplication
 
 
 @csrf_exempt
@@ -62,8 +62,17 @@ def login_with_bccr(request):
         authclient = ClienteAutenticador(settings.DEFAULT_BUSSINESS,
                                          settings.DEFAULT_ENTITY)
         if authclient.validar_servicio():
-            data = authclient.solicitar_autenticacion(
-                identification)
+            data = authclient.solicitar_autenticacion(identification)
+            try:
+                if int(data['id_solicitud']) > 0:
+                    app = AuthorizedApplication.objects.all().first()
+                    headers = {"Authorization": "Token %s" % (app.token),
+                               'Content-type': 'application/json', "charset": "utf-8",
+                               'Accept': 'application/json'}
+                    response = requests.post(app.notification_url+str(data['id_solicitud']), headers=headers)
+                    response.raise_for_status()
+            except Exception as e:
+                pass
 
         else:
             #logger.warning({'message':"Auth BCCR not available", 'location': __file__})
@@ -145,9 +154,6 @@ def check_signature_window_status_register(request):
     realizada = authdata.received_notification
     if status and realizada:
         request.session.pop('authenticatedata')
-        user = authenticate(token=pk)
-        if user is not None:
-            login(request, user)
     return HttpResponse(
         "%s(%s)" % (
             callback,

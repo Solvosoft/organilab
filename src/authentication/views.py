@@ -7,6 +7,12 @@ from django.urls.base import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from auth_and_perms.api.serializers import AuthenticateDataRequestNotifySerializer, AuthenticateDataRequestSerializer
+from auth_and_perms.models import AuthenticateDataRequest
 from authentication.forms import DemoRequestForm, FeedbackEntryForm
 from authentication.models import FeedbackEntry, DemoRequest
 from django.utils.decorators import method_decorator
@@ -90,3 +96,20 @@ class RequestDemoView(CreateView):
                                  upfile=None)
         messages.success(self.request, _('We will contact you soon'))
         return response
+
+
+class SignDataRequestViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        instance = AuthenticateDataRequest.objects.filter(id_transaction=request.data['data']['id_transaction']).first()
+        if instance:
+            data = request.data.get('data')
+            if data:
+                serializer = AuthenticateDataRequestSerializer(instance, data=data)
+                if serializer.is_valid():
+                    serializer.save()
+            return Response({'data': True})
+        return Response({'data': None})
+
+#

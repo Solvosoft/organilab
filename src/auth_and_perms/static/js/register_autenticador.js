@@ -1,4 +1,16 @@
 (function ($) {
+     $("#launchfdbtn").on('click', function(e){
+
+        if($("input:invalid").length == 0) {
+             $('#BotonDeAutenticar').trigger('click');
+          }else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Form needs all fields complete',
+              text: 'You need to fill all form fields before sign your validation'
+            })
+         }
+     });
 	 $(document).ready(function(){
 		 var btns=$(document).find('[data-fva="true"]');
 		 $.each(btns, function(index, btn){
@@ -8,7 +20,7 @@
 			 if(dominio==undefined){
 				 dominio=location.protocol+"//"+location.host;
 			 }
-			 
+
 			 var ayuda=btn.data('img_ayuda');
 			 if (ayuda == undefined){
 				 ayuda=dominio + "/static/Imagenes/Ayuda.png";
@@ -29,7 +41,7 @@
 			 if(url_css==undefined){
 				 url_css=dominio + "/static/css/Bccr.Fva.ClienteInterno.Firmador-1.0.6.css";
 			 }
-			 
+
 			 var laConfiguracion = {
 		             UrlParaSolicitarLaAutenticacion: btn.data('url'),
 		             UrlParaSolicitar: btn.data('url'),
@@ -46,19 +58,19 @@
 					 UrlCSS: url_css,
 		             AutenticacionRealizada: function(){
 		            	 btn.fadeOut();
-		            	 id_ds_transaction=this.elIdDeLaSolicitud;
+		            	 $("#id_ds_transaction").val(document.IdDeLaSolicitud);
 		            	 $("#formsubmitbtn").click();
 		             },
 		             ObtengaLosDatosParaSolicitarLaAutenticacion: function(){},
 		             AutenticacionNoRealizada: function(){}
-		         };     
-			 
-			 
+		         };
+
+
 		     FvaAutenticador(laConfiguracion);
-		
+
 		     if (seDebeAutenticar=="True") {
 		    	 btn.trigger("click");
-		     }     
+		     }
 		 });
 	 });
 })($);

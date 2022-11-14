@@ -36,6 +36,8 @@ class ProfileMiddleware:
         lab_pk=None
         if not user.is_authenticated or not user.is_active:
             return
+        if user.is_superuser:
+            return
 
         if hasattr(user, 'profile'):
             profile = user.profile
