@@ -280,7 +280,9 @@ def add_object(request, pk):
             response = {
                 'status': True,
                 'msg': _('Added successfully'),
-                'object': object.__str__()
+                'object': {'object':object.__str__(),
+                           'amount': object.quantity,
+                           'unit':object.measurement_unit.description}
             }
             return JsonResponse(response)
         else:
@@ -309,10 +311,26 @@ def subtract_object(request, pk):
             object.save()
             log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
         else:
-            return JsonResponse({'status': False, 'msg': _('The amount to be subtracted is more than the shelf has'),'object': object.__str__()})
+            response = {
+                'status': False,
+                'msg': _('The amount to be subtracted is more than the shelf has'),
+                'object': {'object': object.__str__(),
+                           'amount': object.quantity,
+                           'unit': object.measurement_unit.description}
+
+            }
+
+            return JsonResponse(response)
     else:
         return JsonResponse({'status': False, 'msg': _('Complete the fields')})
-    return JsonResponse({'status': True, 'msg': _('Sustracted successfully'), 'object': object.__str__()})
+    response = {
+        'status': True,
+        'msg': _('Sustracted successfully'),
+        'object': {'object': object.__str__(),
+                   'amount': object.quantity,
+                   'unit': object.measurement_unit.description}
+    }
+    return JsonResponse(response)
 
 
 @permission_required('laboratory.add_tranfer_object')

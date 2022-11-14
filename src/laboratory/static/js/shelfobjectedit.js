@@ -123,9 +123,9 @@ function load_self_from_uls(){
 	}
 }
 
-function edit_object_limit(element,data){
-
-   let url = document.object_limit.replace('0',data);
+function edit_object_limit(element){
+   let pk = element.getAttribute('data-pk')
+   let url = document.object_limit.replace('0',pk);
    $.ajax({
     url: url,
         type: "GET",
@@ -135,23 +135,40 @@ function edit_object_limit(element,data){
             "X-CSRFToken": getCookie("csrftoken"),
         },
         success: ({name, amount, msg}) => {
-            Swal.fire({
-                title: 'Deseas actualizar la cantidad limite de '+name,
+            send_limit_message(element,pk,amount)
+        }
+    });
+ }
+function send_limit_message(element,pk,amount){
+   const float_regex= /^[+-]?\d+(\.\d+)?$/;
+
+    Swal.fire({
+                title: msgs['limit'],
                 input: 'text',
-                confirmButtonText: 'Si',
+                confirmButtonText: msgs['confirm'],
                 denyButtonText: 'No',
                 showDenyButton: true,
                 showCloseButton: true,
                 inputValue: amount
             }).then(function(result) {
                 if (result.isConfirmed) {
-                    update_limit(element,data,result.value)
-                }
-            })
-        }
-    });
- }
+                    if(float_regex.test(result.value)){
+                        update_limit(element,pk,result.value)
+                    }else{
+                        Swal.fire(
+                                    '',
+                                    msgs['error'],
+                                    'error'
+                                    )
+                    setTimeout(()=>{
+                                                                            send_limit_message(element,pk,amount);
 
+                    },3000);
+                    }
+                    }
+                    })
+
+}
 function update_limit(element,pk,amount){
    let url = document.object_limit.replace('0',pk);
      $.ajax({

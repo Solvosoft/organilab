@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
-from laboratory.forms import ObjectSearchForm, ReservedModalForm
+from laboratory.forms import ObjectSearchForm, ReservedModalForm, TransferObjectForm, AddObjectForm, SubtractObjectForm
 from laboratory.forms import ReservationModalForm
 
 
@@ -57,7 +57,12 @@ class SearchObject(ListView):
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         if 'lab_pk' in self.kwargs:
+            lab_pk=int(self.kwargs.get('lab_pk'))
             context['laboratory'] = self.kwargs.get('lab_pk')
+            context['tranfer_object_form'] = TransferObjectForm(users=self.request.user.profile.pk, lab_send=lab_pk)
+            context['add_object_form'] = AddObjectForm(lab=lab_pk)
+            context['subtract_object_form'] = SubtractObjectForm()
+
         context['q'] = self.request.GET.get('q', '')
         context['options'] = ['Reservation','Add','Transfer','Substract']
 
