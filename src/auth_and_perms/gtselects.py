@@ -125,11 +125,12 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         super().get_queryset()
         ancestors = self.organization.ancestors()
         descendants = self.organization.descendants()
-        orgs = [self.organization] + list(ancestors) + list(descendants)
+        orgs = [] + list(ancestors) + list(descendants)
+        labs_organization = list(self.organization.laboratory_set.all().values_list('pk', flat=True))
         labs_pk = []
         for organization in orgs:
             labs_pk += list(organization.laboratory_set.all().values_list('pk', flat=True))
-        return Laboratory.objects.filter(pk__in=set(labs_pk))
+        return Laboratory.objects.filter(pk__in=set(labs_pk)).exclude(pk__in=labs_organization)
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
