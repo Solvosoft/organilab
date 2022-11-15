@@ -1,12 +1,12 @@
 {% load static i18n gtsettings %}
 <div id="panelobservaciones" class="row p-5">
     <div class="col-sm-7 col-xs-12">
-        <div class="x_panel">
-            <div class="x_title">
-                <p class="pull-right" style="color:red"><strong>{% trans 'If you want to edit or delete the observations that you have created, you must double click on it'%}</strong></p>
+        <div class="card">
+            <div class="card-title">
+                <p class="float-right" style="color:red"><strong>{% trans 'If you want to edit or delete the observations that you have created, you must double click on it'%}</strong></p>
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content">
+            <div class="card-body">
                 <div class="row" id="listado" style="overflow-y: scroll; max-height:600px;">
                     <ul class="list-unstyled msg_list">
                         {% for observation in observations %}
@@ -17,6 +17,7 @@
 
                                             <div class="row" style="font-weight: bold;">
                                                 {% if observation.creator %}
+                                                {{observation.creator}}
                                                 {% else %} Desconocido {% endif %}
                                             </div>
                                         </div>
@@ -46,34 +47,32 @@
         </div>
     </div>
     <div id="pobservacion" class="col-sm-5  observaunpin">
-        <div class="x_panel">
-            <div class="x_title">
+        <div class="card">
+            <div class="card-title">
                 <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
                 </ul>
                 <h2 class="text-center" style="font-size: 20px; color: #1abb9c;">{% trans 'New observation' %}</h2>
-
-
-
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content">
+            <div class="card-body">
                 <form method="post" action="{{url}}" id="form_observacion">
                     {% csrf_token %}
-
                     <div class="form-group row">
-                      <div class="col-sm-4 dlabel">
-                        {{ observationForm.description.label_tag }}
-                      </div>
-                      <div class="col-sm-8 col-xs-12 dfield">
-                        {{observationForm.description}}
-                        {{ observationForm.description.errors }}
-                      </div>
-                  </div>
+                        <div class="col-sm-4 dlabel">
+                            {{ observationForm.description.label_tag }}
+                        </div>
+                        <div class="col-sm-8 dfield">
+                            {{observationForm.description}}
+                            {{ observationForm.description.errors }}
+                        </div>
+                    </div>
                     <br>
                     <div class="form-group text-center">
-                    <button class="btn btn-success" id="obs" type="submit">{% trans 'Add' %}</button>
-                </div>
+                        <button class="btn btn-success" id="obs" type="submit">{% trans 'Add' %}</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -85,15 +84,15 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{% trans 'Edit observation' %}</h4>
+          <h4 class="modal-title">{% trans 'Edit observation' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
           <textarea id="descriptionarea" rows="3" class="form-control" name="descripcion"></textarea>
           <input type="hidden" name="pk" id="observation_id" value="" />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
         <button id="delete_observation"  type="button" class="btn btn-danger" data-url="{% url 'delete_observation' %}">{% trans 'Remove' %}</button>
         <button id="obeditbtn"  type="button" class="btn btn-primary" data-url="{% url 'update_observation' %}">{% trans 'Edit' %}</button>
       </div>
