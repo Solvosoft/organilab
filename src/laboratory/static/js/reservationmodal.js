@@ -75,6 +75,11 @@ function add_reservation() {
                         modal.hide();
                         document.querySelector('#option').selectedIndex=0;
                         clear_inputs();
+                        Swal.fire(
+                                '',
+                                'Reservado',
+                                'success'
+                        )
                     }
                 });
             } else {
@@ -97,18 +102,23 @@ function add_reservation() {
         }
     }
 function message(msg,icon,object=undefined){
+    clear_inputs();
     const reservation_modal = document.querySelector('#modal_reservation');
     const modal = bootstrap.Modal.getInstance(reservation_modal);
     modal.hide();
-    clear_inputs();
     document.querySelector('#option').selectedIndex=0;
     Swal.fire(
     '',
     msg,
     icon
     )
-    if(option!=3 && object!=undefined){
-        object_element.parentElement.children[0].textContent=object
+    if(option!=3 && object!=undefined && view_search==false){
+        object_element.parentElement.children[0].textContent=object.object
+   }
+    if(option!=3 && object!=undefined && view_search){
+        const amount_div = document.querySelector('#o'+shelf_object_id)
+        let text = amount_div.children[0].textContent.split(':');
+        amount_div.children[0].innerHTML=`<p class="m-0 p-0"><strong>${text[0]}: </strong> ${parseFloat(object.amount).toFixed(3)} ${object.unit} </p>`;
    }
 }
 function create_reservation() {
@@ -144,8 +154,9 @@ function error_message(id,msg){
 
 function clear_inputs(){
     input_fields = $('#modal_reservation_form').find(':input');
+    document.querySelector('option').selectedIndex=0;
     for (const input of input_fields) {
-        if(input.type!='hidden'){
+        if(input.type!='hidden' && input.name!='options'){
             input.value='';
         }
     }
@@ -159,8 +170,8 @@ function select_action(reserved_state, tranfer_state, add_state, subtract_state)
 
 function choose_action(){
    let option=$('#option').find('option:selected').val();
-    select_action('block','none','none','none');
-    document.api_modal=reservation_url;
+   select_action('block','none','none','none');
+   document.api_modal=reservation_url;
    if(option==3){
     select_action('none','block','none','none');
     document.api_modal=$('#edit_url').val();

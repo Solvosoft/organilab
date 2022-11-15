@@ -1,12 +1,10 @@
 {% load i18n laboratory %}
 
-<strong>{% trans 'Quantity' %}: </strong> 
-{{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}
-<br>
-<p><strong>{% trans 'Limit material quantity' %}: </strong>{{object.limit_quantity}}</p>
+<p class="m-0 p-0"><strong>{% trans 'Quantity' %}: </strong>{{object.quantity|floatformat:3}} {{object.get_measurement_unit_display}}</p>
+<p class="m-0 p-0"><strong>{% trans 'Limit material quantity' %}: </strong>{{object.limit_quantity}}</p>
 {% if perms.laboratory.change_shelfobject %}
-<br>
-		<button class="btn btn-primary object_limit" onclick="edit_object_limit(this,{{object.pk}})">
+
+		<button class="btn btn-primary object_limit" onclick="edit_object_limit(this)" data-pk="{{object.pk}}">
 		<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 		{% trans 'Edit' %} {% trans 'Limit material quantity' %}
 	</button>
