@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
@@ -26,7 +26,7 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     fields = ['name']
     organization = None
     pagination_class = GPaginatorMoreElements
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk, **kwargs):
@@ -62,7 +62,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     fields = ['username']
     organization = None
     pagination_class = GPaginatorMoreElements
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk, **kwargs):
@@ -106,7 +106,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 class GroupS2(BaseSelect2View):
     model = Rol
     fields = ['name']
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -118,7 +118,7 @@ class GroupS2(BaseSelect2View):
 class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     model = Laboratory
     fields = ['name']
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -149,7 +149,7 @@ class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
     model = Rol
     fields = ['name']
     pagination_class = GPaginatorMoreElements
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -171,7 +171,7 @@ class OrgbyUserOrgS2(BaseSelect2View):
     model = OrganizationStructure
     fields = ['name']
     pagination_class = GPaginatorMoreElements
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

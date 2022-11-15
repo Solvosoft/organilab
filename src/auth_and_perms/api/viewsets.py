@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import mixins, viewsets
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -20,7 +20,7 @@ class RolAPI(mixins.ListModelMixin,
 
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -53,7 +53,7 @@ class RolAPI(mixins.ListModelMixin,
 class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = ProfilePermission.objects.all()
     serializer_class = ProfilePermissionRolOrganizationSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def append_rols(self, profilepermission, rols):
@@ -195,7 +195,7 @@ class OrganizationAPI(mixins.ListModelMixin,
 
     queryset = OrganizationStructure.objects.all()
     serializer_class = OrganizationSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
