@@ -460,3 +460,7 @@ msgstr ""
 #: presentation/templates/tutorial.html:7
 msgid "MSDS Files"
 msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:7
+msgid "View laboratory"
+msgstr "Ver laboratorio"
