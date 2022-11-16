@@ -4,7 +4,8 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.generic import TemplateView
 
 from derb.models import CustomForm
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required,permission_required
 
 def get_form_schema(**kwargs):
     """
@@ -20,7 +21,7 @@ def getId(request):
     url = url.split("/")
     form_id = url[len(url)-1]
     return form_id
-
+@method_decorator(permission_required('derb.change_customform'), name='dispatch')
 class EditView(TemplateView):
     template_name = 'formBuilder/edit_view.html'
 
@@ -45,6 +46,7 @@ class EditView(TemplateView):
         else:
             return HttpResponseBadRequest('Invalid request')
 
+@method_decorator(permission_required('derb.change_customform'), name='dispatch')
 def UpdateForm(request):
     form_id = getId(request)
     if request.method == 'POST':
