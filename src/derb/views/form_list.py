@@ -1,11 +1,13 @@
+from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 
 from derb.models import CustomForm
 
-
+@method_decorator(permission_required('derb.view_customform'), name='dispatch')
 class FormList(ListView):
     model = CustomForm
     context_object_name = "forms"
@@ -16,11 +18,12 @@ class FormList(ListView):
         context['forms'] = CustomForm.objects.all()
         return context
 
+@method_decorator(permission_required('derb.delete_customform'), name='dispatch')
 class DeleteForm(DeleteView):
     model = CustomForm
     success_url = reverse_lazy('derb:form_list')
     # decir este formulario tiene x respuestas en el warning
-
+@method_decorator(permission_required('derb.add_customform'), name='dispatch')
 def CreateForm(request):
 
     if request.method == 'POST':
