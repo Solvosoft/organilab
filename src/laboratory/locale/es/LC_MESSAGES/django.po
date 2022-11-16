@@ -720,14 +720,11 @@ msgstr "Permiso denegado"
 msgid "You don't have the permissions required to access this action"
 msgstr "No tienes los permisos necesarios para acceder a esta acción"
 
-#: laboratory/templates/laboratory/admin_shelf_list.html:6
-#: laboratory/templates/laboratory/admin_shelf_list.html:15
 #: laboratory/templates/laboratory/dataconfig.html:9
 #: laboratory/templates/laboratory/furniture_form.html:83
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
-#: laboratory/templates/laboratory/admin_shelf_list.html:28
 #: laboratory/templates/laboratory/laboratoryroom_form.html:116
 #: laboratory/templates/laboratory/reservation_modal.html:37
 #: laboratory/templates/laboratory/reservation_modal.html:136

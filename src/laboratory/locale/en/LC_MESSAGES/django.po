@@ -813,7 +813,6 @@ msgid "Create users"
 msgstr ""
 
 #: laboratory/templates/laboratory/access_list.html:51
-#: laboratory/templates/laboratory/admin_shelf_list.html:28
 #: laboratory/templates/laboratory/laboratory_notperm.html:15
 #: laboratory/templates/laboratory/laboratoryroom_form.html:114
 #: laboratory/templates/laboratory/shelf_form.html:22
@@ -864,8 +863,6 @@ msgstr ""
 msgid "You don't have the permissions required to access this action"
 msgstr ""
 
-#: laboratory/templates/laboratory/admin_shelf_list.html:7
-#: laboratory/templates/laboratory/admin_shelf_list.html:15
 #: laboratory/templates/laboratory/dataconfig.html:9
 #: laboratory/templates/laboratory/furniture_form.html:100
 msgid "Add Shelf"
