@@ -244,19 +244,23 @@ def add_sga_complements(request, element):
 
 
 @login_required
+@permission_required('sga.view_dangerindication')
 def view_danger_indications(request):
     listado = list(DangerIndication.objects.all())
     return render(request, 'academic/substance/danger_indication.html', context={'listado': listado})
 @login_required
+@permission_required('sga.view_warningword')
 def view_warning_words(request):
     listado = list(WarningWord.objects.all())
     return render(request, 'academic/substance/warning_words.html', context={'listado': listado})
 @login_required
+@permission_required('sga.view_prudenceadvice')
 def view_prudence_advices(request):
     listado = list(PrudenceAdvice.objects.all())
     return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado})
 
 @login_required
+@permission_required('academic.view_substanceobservation')
 @organilab_context_decorator
 def add_observation(request, organilabcontext, substance):
 
@@ -285,6 +289,7 @@ def add_observation(request, organilabcontext, substance):
     return redirect(reverse('detail_substance', kwargs={'organilabcontext': organilabcontext, 'pk': substance}))
 
 @login_required
+@permission_required('academic.change_substanceobservation')
 def update_observation(request):
 
     if request.method == 'POST':
@@ -301,6 +306,7 @@ def update_observation(request):
     return JsonResponse({'status': False})
 
 @login_required
+@permission_required('academic.delete_substanceobservation')
 def delete_observation(request):
 
     if request.method == 'POST':
@@ -315,6 +321,7 @@ def delete_observation(request):
     return JsonResponse({'status': False})
 
 @login_required
+@permission_required('sga.change_warningword')
 def change_warning_word(request,pk):
     instance = get_object_or_404(WarningWord, pk=pk)
     form = None
@@ -335,6 +342,7 @@ def change_warning_word(request,pk):
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 @login_required
+@permission_required('sga.change_prudenceadvice')
 def change_prudence_advice(request, pk):
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
     form = None
@@ -355,6 +363,7 @@ def change_prudence_advice(request, pk):
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 @login_required
+@permission_required('sga.change_dangerindication')
 def change_danger_indication(request, pk):
     instance = get_object_or_404(DangerIndication, pk=pk)
     form = None
@@ -449,7 +458,8 @@ def step_three(request, organilabcontext, template, substance):
     }
     return render(request, 'academic/substance/step_three.html', context)
 
-
+@login_required
+@permission_required('sga.change_sgacomplement')
 def step_two(request, organilabcontext, pk):
     complement = get_object_or_404(SGAComplement, pk=pk)
     form= None
@@ -481,6 +491,8 @@ def step_two(request, organilabcontext, pk):
     }
     return render(request, 'academic/substance/step_two.html', context)
 
+@login_required
+@permission_required('sga.change_securityleaf')
 def step_four(request,organilabcontext, substance):
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=substance).first()
@@ -501,7 +513,8 @@ def step_four(request,organilabcontext, substance):
 
                'substance': substance}
     return render(request,'academic/substance/step_four.html',context=context)
-
+@login_required
+@permission_required('sga.add_provider')
 def add_sga_provider(request):
     form = ProviderSGAForm(request.POST)
 
@@ -512,7 +525,7 @@ def add_sga_provider(request):
         return JsonResponse({'result':True,'provider_pk':provider.pk,'provider':provider.name})
     else:
         return JsonResponse({'result':False})
-
+@login_required
 def security_leaf_pdf(request, substance):
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     component = SGAComplement.objects.filter(substance__pk=substance).first()
