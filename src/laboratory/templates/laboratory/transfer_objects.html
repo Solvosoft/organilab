@@ -11,8 +11,8 @@
 {% block content %}
 
 {% include 'laboratory/transfer_object_modal.html' %}
-    <div class="col-md-offset-2 col-md-8">
-            <div class="page-header col-xs-13" align="center">
+    <div class="offset-md-2 col-md-8">
+            <div class="page-header" align="center">
               <h3 class="heading-1" ><span> {% trans 'Transfer of objects' %}  </span></h3>
             </div>
     </div>
@@ -58,6 +58,7 @@
 {% endblock %}
 
 {% block js %}
+{{block.super}}
 <script>
      document.update_shelf = '{% url "laboratory:update_transfer" laboratory %}';
      document.get_shelfs = '{% url "laboratory:get_shelfs" %}';
@@ -65,6 +66,9 @@
      (function(){
     $("#table_id").DataTable({responsive: true });
     })(jQuery);
+    $('#shelf_list').select2({
+        dropdownParent: $('#add_tranfer_object')
+    })
 </script>
 <script src="{% static 'js/transfer_objects.js' %}"></script>
 {% endblock %}
