@@ -3,56 +3,59 @@
 {% block content %}
 
 <div class="container">
-        <form action="" method="POST">
-                {% csrf_token %}
+    <form action="" method="POST">
+        {% csrf_token %}
         <div class="row">
-        <div class='col-md-6 col-md-offset-1 '>
+            <div class='col-md-6 col-md-offset-1 '>
 
-            <h2 class="text-center"> Actualizar usuario </h2>
+                <h2 class="text-center"> Actualizar usuario </h2>
 
                 {{ form.as_horizontal }}
 
                 <div class="form-group">
-            <input type="submit" id="change_user" class="btn btn-success text-center" value="{% trans 'Update' %}" />
-            <input type="button" class="btn btn-primary text-center"
-                   data-bs-toggle="modal" data-bs-target="#changepasswordmodal" value="{% trans 'Change password' %}" />
-        </div>
+                    <input type="submit" id="change_user" class="btn btn-success text-center"
+                           value="{% trans 'Update' %}"/>
+                    <input type="button" class="btn btn-primary text-center"
+                           data-bs-toggle="modal" data-bs-target="#changepasswordmodal"
+                           value="{% trans 'Change password' %}"/>
+                </div>
 
 
             </div>
         </div>
-            </form>
+    </form>
     <form action="{% url 'laboratory:password_change' user.pk %}" method="POST">
-         {% csrf_token %}
+        {% csrf_token %}
         <div id="changepasswordmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{% trans 'Change password' %}</h4>
-      </div>
-      <div class="modal-body">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">{% trans 'Change password' %}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
 
-          {{ password_form.as_horizontal }}
-          <div class="form-group row">
-              <div class="col-sm-12">{% trans 'Your password may not closely resemble your other personal information.' %}<br>
-                                     {% trans 'Your password must contain at least 8 characters.' %}<br>
-                                     {% trans 'Your password cannot be a commonly used password.' %}<br>
-                                     {% trans 'Your password cannot be completely numeric.' %}<br>
+                        {{ password_form.as_horizontal }}
+                        <div class="form-group row">
+                            <div class="col-sm-12">{% trans 'Your password may not closely resemble your other personal
+                                information.' %}<br>
+                                {% trans 'Your password must contain at least 8 characters.' %}<br>
+                                {% trans 'Your password cannot be a commonly used password.' %}<br>
+                                {% trans 'Your password cannot be completely numeric.' %}<br>
 
-              </div>
-          </div>
+                            </div>
+                        </div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
-        <button type="submit" class="btn btn-primary" id="save_password">{% trans 'Save' %}</button>
-      </div>
-    </div>
-  </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                        <button type="submit" class="btn btn-primary" id="save_password">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
 
-</div>
-        </form>
+        </div>
+    </form>
 
 </div>
 {% endblock %}
