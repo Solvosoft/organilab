@@ -86,11 +86,13 @@ def html2pdf(json_data):
 
 
 # SGA Home Page
+@login_required
 def index_sga(request):
     return render(request, 'index_sga.html', {})
 
 
 # SGA template visualize
+@login_required
 @organilab_context_decorator
 def template(request, organilabcontext):
     context = {
@@ -105,6 +107,7 @@ def template(request, organilabcontext):
 
 
 # SGA editor
+@login_required
 @organilab_context_decorator
 def editor(request, organilabcontext):
     finstance = None
@@ -141,7 +144,9 @@ def editor(request, organilabcontext):
     return render(request, 'editor.html', context)
 
 
-# SGA Label Creator Page
+# SGA Label Creator
+# Page
+@login_required
 def get_step(step):
     if step is None:
         step = 0
@@ -158,7 +163,7 @@ def get_step(step):
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
-
+@login_required
 def index_organilab(request):
     if request.method == "POST":
         form = SearchDangerIndicationForm(request.POST)
@@ -226,7 +231,7 @@ def create_personal_template(request, organilabcontext):
 
     return render(request, 'personal_template.html', context)
 
-
+@login_required
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
 def edit_personal_template(request, organilabcontext, pk):
@@ -286,7 +291,7 @@ def edit_personal_template(request, organilabcontext, pk):
     }
     return render(request, 'template_edit.html', context)
 
-
+@login_required
 def donate(request):
     pay = False
 
@@ -323,12 +328,14 @@ def donate_success(request):
     messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
     return HttpResponseRedirect(reverse('donate'))
 
+@login_required
 @organilab_context_decorator
 def get_prudence_advice(request,organilabcontext):
     pk = request.POST.get('pk', '')
     data = PrudenceAdvice.objects.get(pk=pk)
     return HttpResponse(data.name)
 
+@login_required
 @organilab_context_decorator
 def get_danger_indication(request,organilabcontext):
     pk = request.POST.get('pk', '')
