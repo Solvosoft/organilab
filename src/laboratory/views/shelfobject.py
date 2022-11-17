@@ -39,16 +39,16 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
         shelfobject = ShelfObject.objects.filter(object=var)
     else:
         shelfobject = ShelfObject.objects.all()
+
+    context = {
+        'object_list': shelfobject,
+        'data': Shelf.objects.get(pk=shelf),
+        'row': row,
+        'col': col,
+        'laboratory': lab_pk,
+    }
     return render_to_string(
-        'laboratory/shelfObject_list.html',
-        context={
-            'object_list': shelfobject,
-            'data': Shelf.objects.get(pk=shelf),
-            'row': row,
-            'col': col,
-            'laboratory': lab_pk,
-            'request': request
-        })
+        'laboratory/shelfObject_list.html',context,request)
 
 
 @method_decorator(permission_required('reservations.add_reservation'), name='dispatch')
