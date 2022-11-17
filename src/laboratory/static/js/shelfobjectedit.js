@@ -187,7 +187,7 @@ function update_limit(element,pk,amount){
                     'success'
                     )
 
-                element.parentElement.children[2].innerHTML=`<p><strong>Cantidad límite de material: </strong>${amount}</p>`
+                element.parentElement.children[1].innerHTML=`<strong>Cantidad límite de material: </strong>${amount}`
             },
         });
 }
