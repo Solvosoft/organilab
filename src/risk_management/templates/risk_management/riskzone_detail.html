@@ -5,22 +5,23 @@
     {% define_urlname_action 'riskzone_detail' %}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-offset-1 col-md-3">
-        <a href="{% url 'riskmanagement:riskzone_list' %}"> << {% trans 'Zone list' %}</a>
+<div class="container">
+    <div class="float-start">
+        <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-primary"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
     </div>
-    <div class="col-md-offset-4 col-md-3">
-        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}">   {% trans 'Edit' %}</a>
+    <div class="float-end">
+        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
     </div>
 </div>
 <div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
+<div class="offset-md-2 col-md-8">
+        <div class="page-header" align="center">
           <h3 class="heading-1" center=""><span>
              {{object}}
                   {% if perm_add_riskzone %}
           <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
-        {% endif %}</span></h3>
+        {% endif %}
+          </span></h3>
 
         </div>
 </div>
@@ -30,20 +31,23 @@
 <div class="col-md-12">
   <ul class="list-group">
     {% for lab in object.laboratories.all %}
-      <li class="row list-group-item">
+      <li class="list-group-item">
 
+<div class="float-start p-0 m-0">
          <a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
-            <span class="glyphicon {% cycle " glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span>
+            <span class='glyphicon {% cycle  "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}'></span>
             {{ lab.name }}
          </a>
-<div class="pull-right">
+</div>
+<div class="float-end p-0 m-0">
          <a href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
-             {{lab.incidentreport_set.all.count }}
+             <span class="badge text-bg-secondary">{{lab.incidentreport_set.all.count }}</span>
          </a>
          <a href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
-            <span class="glyphicon glyphicon-plus">  </span>
+             <span class="badge text-bg-success"><i class="fa fa-plus" aria-hidden="true"></i></span>
          </a>
 </div>
+          <div class="clearfix"></div>
       </li>
     {% endfor %}
   </ul>

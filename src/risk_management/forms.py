@@ -1,7 +1,6 @@
 from django import forms
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
-
 from laboratory.utils import get_user_laboratories
 from risk_management.models import RiskZone, IncidentReport
 from djgentelella.widgets import core as djgentelella
@@ -28,7 +27,7 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
             'num_workers': djgentelella.NumberInput,
             'zone_type': djgentelella.Select,
         }
-class IncidentReportForm(forms.ModelForm,GTForm):
+class IncidentReportForm(GTForm,forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
@@ -38,10 +37,12 @@ class IncidentReportForm(forms.ModelForm,GTForm):
         model = IncidentReport
         fields = '__all__'
         widgets = {
+            'short_description':djgentelella.TextInput,
             'causes': TextareaWysiwyg,
             "incident_date": djgentelella.DateInput,
             'infraestructure_impact': TextareaWysiwyg,
             'people_impact': TextareaWysiwyg,
+            'laboratories': djgentelella.SelectMultiple(),
             'environment_impact': TextareaWysiwyg,
             'result_of_plans': TextareaWysiwyg,
             'mitigation_actions': TextareaWysiwyg,
