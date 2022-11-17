@@ -345,30 +345,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.view_procedure'
         }
     ],
-    'lab_profiles': [
-        {
-            'name': 'Change Profile',
-            'category': 'Profile',
-            'permission': 'laboratory.change_profile'
-        },
-        {
-            'name': 'View Profile',
-            'category': 'Profile',
-            'permission': 'laboratory.view_profile'
-        }
-    ],
-    'update_lab_profile': [
-        {
-            'name': 'Change Profile',
-            'category': 'Profile',
-            'permission': 'laboratory.change_profile'
-        },
-        {
-            'name': 'View Profile',
-            'category': 'Profile',
-            'permission': 'laboratory.view_profile'
-        }
-    ],
     'object_feature_create': [
         {
             'name': 'Add Object Features',
@@ -1509,6 +1485,66 @@ URLNAME_PERMISSIONS = {
             'name': 'View Entry',
             'category': 'Entry',
             'permission': 'blog.view_entry'
+        }
+    ],
+    'profile': [
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        }
+    ],
+    'password_change': [
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        }
+    ],
+    'update_organization': [
+        {
+            'name': 'Change Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.change_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        }
+    ],
+    'create_organization': [
+        {
+            'name': 'Add Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.add_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
+        }
+    ],
+    'delete_organization': [
+        {
+            'name': 'Delete Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.delete_organizationstructure'
+        },
+        {
+            'name': 'View Organization Structure',
+            'category': 'Organization Structure',
+            'permission': 'laboratory.view_organizationstructure'
         }
     ]
 }
