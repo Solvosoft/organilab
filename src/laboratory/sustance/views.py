@@ -123,7 +123,7 @@ class SustanceListJson(BaseDatatableView):
             name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
                 reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['pk']}),
                 item.synonym or item.name, item.name)
-            delete = """<a href="{0}" title="{1}" class="pull-right"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
+            delete = """<a href="{0}" title="{1}" class="float-end"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
                                 kwargs={'pk': item.id, 'lab_pk':self.kwargs['pk']}), _('Delete sustance'))
             if hasattr(item, 'sustancecharacteristics') and item.sustancecharacteristics and \
