@@ -2078,6 +2078,14 @@ msgstr "¿Deseas actualizar la cantidad limite?"
 msgid "Enter whole numbers or with decimals"
 msgstr "Ingresar numeros enteros o con decimales"
 
+#:academic/templates/academic/procedure_list.html:88
+msgid "The requested quantity of the material is not found in the inventory of the following materials:"
+msgstr "No se encuentra la cantidad solicitada del material en el inventario de los siguientes materiales:"
+
+#:academic/templates/academic/procedure_list.html:110
+msgid "Reserved"
+msgstr "Reservado"
+
 #, fuzzy
 #~| msgid "Furniture report"
 #~ msgid "Furniture Select"

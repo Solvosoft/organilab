@@ -405,7 +405,6 @@ msgstr "Administración de producto"
 msgid "Accept"
 msgstr "Aceptar"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:9
 #: reservations_management/templates/reservations_management/reservations_list.html:36
 msgid "Reservations List"
 msgstr "Lista de reservaciones"
