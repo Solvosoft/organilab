@@ -1204,8 +1204,8 @@ URLNAME_PERMISSIONS = {
             'permission': 'risk_management.view_riskzone'
         },
         {
-            'name': 'Add Custom Form',
-            'category': 'Custom Form',
+            'name': 'Add Report Template',
+            'category': 'Report Template',
             'permission': 'derb.add_customform'
         },
         {
@@ -1228,23 +1228,23 @@ URLNAME_PERMISSIONS = {
     ],
     'form_list': [
         {
-            'name': 'Add Custom Form',
-            'category': 'Custom Form',
+            'name': 'Add Report Template',
+            'category': 'Report Template',
             'permission': 'derb.add_customform'
         },
         {
-            'name': 'Change Custom Form',
-            'category': 'Custom Form',
+            'name': 'Change Report Template',
+            'category': 'Report Template',
             'permission': 'derb.change_customform'
         },
         {
-            'name': 'Delete Custom Form',
-            'category': 'Custom Form',
+            'name': 'Delete Report Template',
+            'category': 'Report Template',
             'permission': 'derb.delete_customform'
         },
         {
-            'name': 'View Custom Form',
-            'category': 'Custom Form',
+            'name': 'View Report Template',
+            'category': 'Report Template',
             'permission': 'derb.view_customform'
         }
     ],
@@ -1296,7 +1296,7 @@ URLNAME_PERMISSIONS = {
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
         }
-    ],
+    ], #REVISAR DESDE AQUÍ HACIA ARRIBA
     'h_code_reports': [
         {
             'name': 'View Furniture',
@@ -1313,5 +1313,202 @@ URLNAME_PERMISSIONS = {
             'category': 'Danger Indication',
             'permission': 'sga.view_dangerindication'
         },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        }
+    ],
+    'reports_organization': [
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'reports_organization_building': [
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        }
+    ],
+    'reports_furniture_detail': [
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'View Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.view_laboratoryroom'
+        },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        }
+    ],
+    'reports_objects_list': [
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'reactive_precursor_object_list': [
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'object_change_logs': [
+        {
+            'name': 'View Object Log Change',
+            'category': 'Object Log Change',
+            'permission': 'laboratory.view_objectlogchange'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'reports_limited_shelf_objects_list': [
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ],
+    'precursor_report': [
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
+            'name': 'View Precursor Report',
+            'category': 'Precursor Report',
+            'permission': 'laboratory.view_precursorreport'
+        }
+    ],
+    'get_informs': [
+        {
+            'name': 'View Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.view_inform'
+        }
+    ],
+    'remove_inform': [
+        {
+            'name': 'Delete Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.delete_inform'
+        },
+        {
+            'name': 'View Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.view_inform'
+        }
+    ],
+    'complete_inform': [
+        {
+            'name': 'Change Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.change_inform'
+        },
+        {
+            'name': 'View Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.view_inform'
+        }
+    ],
+    'add_informs': [
+        {
+            'name': 'Add Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.add_inform'
+        },
+        {
+            'name': 'View Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.view_inform'
+        }
+    ],
+    'entrylist': [
+        {
+            'name': 'View Entry',
+            'category': 'Entry',
+            'permission': 'blog.view_entry'
+        },
+        {
+            'name': 'Delete Entry',
+            'category': 'Entry',
+            'permission': 'blog.delete_entry'
+        }
+    ],
+    'entrycreate': [
+        {
+            'name': 'Add Entry',
+            'category': 'Entry',
+            'permission': 'blog.add_entry'
+        },
+        {
+            'name': 'View Entry',
+            'category': 'Entry',
+            'permission': 'blog.view_entry'
+        }
+    ],
+    'entry_update': [
+        {
+            'name': 'Change Entry',
+            'category': 'Entry',
+            'permission': 'blog.change_entry'
+        },
+        {
+            'name': 'View Entry',
+            'category': 'Entry',
+            'permission': 'blog.view_entry'
+        }
+    ],
+    'entry_delete': [
+        {
+            'name': 'Delete Entry',
+            'category': 'Entry',
+            'permission': 'blog.delete_entry'
+        },
+        {
+            'name': 'View Entry',
+            'category': 'Entry',
+            'permission': 'blog.view_entry'
+        }
     ]
 }

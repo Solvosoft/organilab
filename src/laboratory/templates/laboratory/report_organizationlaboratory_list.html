@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'reports_organization' %}
+	{% define_urlname_action 'reports_organization_building' %}
+{% endblock %}
 {% block title %}{% trans 'Organization laboratory report' %}{% endblock %}
 
 {% block content %}
