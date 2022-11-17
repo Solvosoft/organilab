@@ -40,7 +40,7 @@ class ChangeUser(UpdateView):
         return super(ChangeUser, self).form_valid(form)
 
 
-@method_decorator(permission_required("auth.change_user"), name="dispatch")
+@permission_required("auth.change_user")
 @sensitive_post_parameters('password', 'password_confirm')
 @require_http_methods(["POST"])
 def password_change(request, pk):
