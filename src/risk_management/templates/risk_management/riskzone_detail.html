@@ -7,10 +7,10 @@
 {% block content %}
 <div class="container">
     <div class="float-start">
-        <a href="{% url 'riskmanagement:riskzone_list' %}"> << {% trans 'Zone list' %}</a>
+        <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-primary"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
     </div>
     <div class="float-end">
-        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"> {% trans 'Edit' %}</a>
+        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
     </div>
 </div>
 <div class="row">
@@ -41,10 +41,10 @@
 </div>
 <div class="float-end p-0 m-0">
          <a href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
-             {{lab.incidentreport_set.all.count }}
+             <span class="badge text-bg-secondary">{{lab.incidentreport_set.all.count }}</span>
          </a>
          <a href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
-            <span class="glyphicon glyphicon-plus">  </span>
+             <span class="badge text-bg-success"><i class="fa fa-plus" aria-hidden="true"></i></span>
          </a>
 </div>
           <div class="clearfix"></div>
