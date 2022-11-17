@@ -23,7 +23,7 @@ class DeleteForm(DeleteView):
     model = CustomForm
     success_url = reverse_lazy('derb:form_list')
     # decir este formulario tiene x respuestas en el warning
-@method_decorator(permission_required('derb.add_customform'), name='dispatch')
+@permission_required('derb.add_customform')
 def CreateForm(request):
 
     if request.method == 'POST':
