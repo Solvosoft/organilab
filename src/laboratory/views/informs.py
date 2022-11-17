@@ -80,9 +80,11 @@ def complete_inform(request, *args, **kwargs):
             result[d[d.find("[")+1:d.find("]")]]=data[d]
 
         i = 0
-
+        j=0
         for f in schema['components']:
+
             if f['key'] in result:
+
                 if schema['components'][i]['type'] not in ["selectboxes"]:
                     schema['components'][i]['defaultValue'] = result[f['key']][0]
                 else:
@@ -91,8 +93,23 @@ def complete_inform(request, *args, **kwargs):
                         z[s]=True
                     schema['components'][i]['defaultValue'] = z
 
-            i += 1
+            if 'components' in schema['components'][i]:
 
+                for tab in schema['components'][i]['components']:
+                    c=0
+                    for t in tab['components']:
+                        if t['key'] in result:
+                            if schema['components'][i]['components'][j]['components'][c]['type'] not in ["selectboxes"]:
+                                schema['components'][i]['components'][j]['components'][c]['defaultValue'] = result[t['key']][0]
+                            else:
+                                z = {}
+                                for a in result[t['key']]:
+                                    z[a] = True
+                                schema['components'][i]['components'][j]['components'][c]['defaultValue'] = z
+                        c+=1
+                    j+=1
+                j=0
+            i += 1
         inform.schema = schema
         inform.save()
 
