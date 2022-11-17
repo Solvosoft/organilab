@@ -8,79 +8,79 @@
 
 {% block content %}
   {% if perms.laboratory.view_objectfeatures or perms.laboratory.add_objectfeatures or perms.laboratory.change_objectfeatures or perms.laboratory.delete_objectfeatures %}
-    <div class="container-fluid">
-      <div class="page-header col-xs-13" align="center">
-        <h3 class="heading-1" ><span>{% trans 'Object features management' %}</span></h3>
-<br><br>
-      </div>
-
-    <div class="row" style="justify-content: center">
-      {% if perms.laboratory.add_objectfeatures and perms.laboratory.change_objectfeatures or not create and perms.laboratory.change_objectfeatures or create and  perms.laboratory.add_objectfeatures%}
-        <div class="col-md-8 col-md-offset-2" >
-          <form class="form-horizontal" action="" method="post">{% csrf_token %}
-            {{ form.as_horizontal }}
-            <div class="form-group">
-              <div class="col-sm-10 col-sm-offset-2">
-                <button class="btn btn-success" type="submit">
-                  {% if create %}
-                    <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Save' %}
-                  {% else %}
-                    <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
-                  {% endif %}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      {% endif %}
-    </div>
-    <br><br>
-
-    {% if create  %}
-      <div class="row" >
-        <div class="list-group boxmargin">
-          {% for object in object_list %}
-            <li class="row list-group-item">
-              <div class="col-md-3">{{ object }}</div>
-              <div class="col-md-6">{{ object.description }}</div>
-              <div class="col-md-2">
-                <div class="btn-group" role="group" aria-label="...">
-                  {% if perms.laboratory.change_objectfeatures %}
-                  <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-warning">
-                    <span class="fa fa-edit" aria-hidden="true"></span>{% trans 'Edit' %}</a>
-                  {% endif %} 
-                  {% if perms.laboratory.delete_objectfeatures %}                 
-                  <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk %}" class="btn btn-danger">
-                    <span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}</a>
-                  {% endif %}  
-                </div>
-              </div>
-            </li>
-          {% empty %}
-            <div class="row text-center"><i>{% trans 'No object features' %}</i></div>
-          {% endfor %}
-        </div>
-        <div class="row text-center">
-          <div class="pagination">
-          <span>
-              {% if object_list.has_previous %}
-                <a href="?page={{ object_list.previous_page_number }}"> {% trans 'Previous' %}</a>
+<div class="container-fluid">
+  <div class="page-header" align="center">
+    <h3 class="heading-1" ><span>{% trans 'Object features management' %}</span></h3>
+    <br>
+    <br>
+  </div>
+  <div class="row" style="justify-content: center">
+    {% if perms.laboratory.add_objectfeatures and perms.laboratory.change_objectfeatures or not create and perms.laboratory.change_objectfeatures or create and  perms.laboratory.add_objectfeatures%}
+    <div class="col-md-8 col-md-offset-2" >
+      <form class="form-horizontal" action="" method="post">{% csrf_token %}
+        {{ form.as_horizontal }}
+        <div class="form-group">
+          <div class="col-sm-10 col-sm-offset-2">
+            <button class="btn btn-success" type="submit">
+              {% if create %}
+                <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Save' %}
+              {% else %}
+                <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
               {% endif %}
-
-            <span class="current">
-                {% trans 'Page' %} {{ object_list.number }} {% trans 'of' %} {{ object_list.paginator.num_pages }}.
-              </span>
-
-            {% if object_list.has_next %}
-              <a href="?page={{ object_list.next_page_number }}">{% trans 'Next' %}</a>
-            {% endif %}
-          </span>
+            </button>
           </div>
         </div>
-      </div>
-      </div>
+      </form>
+    </div>
     {% endif %}
-  {% else %} 
-    {% include 'laboratory/action_denied.html' %} 
-  {% endif %}  
+  </div>
+  <br>
+  <br>
+  {% if create  %}
+  <div class="row" >
+    <div class="list-group boxmargin">
+      {% for object in object_list %}
+        <li class="row list-group-item">
+          <div class="col-md-3">{{ object }}</div>
+          <div class="col-md-6">{{ object.description }}</div>
+          <div class="col-md-2 float-end">
+            <div class="btn-group" role="group" aria-label="...">
+              {% if perms.laboratory.change_objectfeatures %}
+                <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-warning">
+                  <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
+                </a>
+              {% endif %}
+              {% if perms.laboratory.delete_objectfeatures %}
+                <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk %}" class="btn btn-danger">
+                  <span class="fa fa-trash" aria-hidden="true"></span> {% trans 'Delete' %}</a>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% empty %}
+      <div class="row text-center"><i>{% trans 'No object features' %}</i></div>
+      {% endfor %}
+    </div>
+    <div class="row text-center">
+      <div class="pagination">
+        <span>
+          {% if object_list.has_previous %}
+            <a href="?page={{ object_list.previous_page_number }}"> {% trans 'Previous' %}</a>
+          {% endif %}
+          <span class="current">
+            {% trans 'Page' %} {{ object_list.number }} {% trans 'of' %} {{ object_list.paginator.num_pages }}.
+          </span>
+          {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}">{% trans 'Next' %}</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</div>
+{% else %}
+
+{% include 'laboratory/action_denied.html' %}
+{% endif %}
 {% endblock %}
