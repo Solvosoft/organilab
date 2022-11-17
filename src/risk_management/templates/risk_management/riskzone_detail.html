@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
     <div class="float-start">
-        <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-primary"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
+        <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
     </div>
     <div class="float-end">
         <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
