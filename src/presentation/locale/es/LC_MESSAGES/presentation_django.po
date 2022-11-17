@@ -56,9 +56,6 @@ msgstr ""
 msgid "Dissolution calculator (experimental)"
 msgstr ""
 
-#: templates/partials/laboratories_menu.html:34
-msgid "Access list"
-msgstr ""
 
 #: templates/partials/laboratories_menu.html:40
 msgid "Edit laboratory"

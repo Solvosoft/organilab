@@ -80,26 +80,6 @@ class OrganizationUserManagementForm(GTForm):
                                    label=_("Group"))
 
 
-class SearchUserForm(GTForm):
-    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-
-    def __init__(self, *args, **kwargs):
-        users_list = kwargs.pop('users_list')
-        super(SearchUserForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
-
-
-class ProfilePermissionForm(GTForm):
-    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.all(), required=True, label=_("User"))
-    rol = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Rol.objects.all(), required=False,
-                                         label=_("Roles"))
-
-    def __init__(self, *args, **kwargs):
-        users_list = kwargs.pop('users_list')
-        super(ProfilePermissionForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.all().exclude(pk__in=users_list)
-
-
 class ReservationModalForm(GTForm, ModelForm):
     class Meta:
         model = ReservedProducts

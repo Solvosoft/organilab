@@ -336,11 +336,6 @@ msgstr ""
 msgid "Manage Organizations"
 msgstr ""
 
-#: presentation/templates/partials/auth_and_perms.html:16
-#: presentation/templates/partials/auth_and_perms.html:17
-msgid "Access list"
-msgstr ""
-
 #: presentation/templates/partials/derb_menu.html:7
 msgid "Report Management"
 msgstr ""
