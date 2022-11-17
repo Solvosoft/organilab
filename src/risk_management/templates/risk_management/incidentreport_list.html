@@ -10,8 +10,8 @@
   {%  has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
 
 <div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
+<div class="offset-md-2 col-md-8">
+        <div class="page-header" align="center">
           <h3 class="heading-1" center=""><span>{% trans 'Incidents Management'  %}
                   {% if perm_add_riskzone %}
           <a class="btn btn-success" href="{% url 'riskmanagement:incident_create' laboratory %}"> + </a>

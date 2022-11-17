@@ -4,118 +4,105 @@
 
 {% block content %}
  {%  has_perms "laboratory.do_report" as perm_do_report %}
-<div class="row">
-    <div class="col-md-offset-1 col-md-3">
-        <a href="{% url 'riskmanagement:incident_list' laboratory %}"> << {% trans 'Laboratory incidents list' %}</a>
+<div class="clearfix">
+	<div class="float-start">
+		<a href="{% url 'riskmanagement:incident_list' laboratory %}"> << {% trans 'Laboratory incidents list' %}</a>
     </div>
-    <div class="col-md-offset-4 col-md-3">
-        <a href="{% url 'riskmanagement:incident_update' laboratory object.pk %}">   {% trans 'Edit' %}</a>
+    <div class="float-end">
+        <a class="btn btn-warning" href="{% url 'riskmanagement:incident_update' laboratory object.pk %}">   {% trans 'Edit' %}</a>
     </div>
 </div>
 <div class="row">
-<div class="col-md-offset-2 col-md-8">
-        <div class="page-header col-xs-13" align="center">
-          <h3 class="heading-1" center=""><span>
-             {{object}}
-                  {% if perm_add_riskzone %}
-          <a class="btn btn-success" href="{% url 'riskmanagement:incident_create' laboratory %}"> + </a>
-        {% endif %}</span></h3>
-
-        </div>
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-4 col-md-offset-8">
-   {% if perm_do_report   %}
-
-		  <div class="pull-right">
-
-		  <div class="btn-group dropup">
-		  <button type="button" class="btn btn-danger">
-		   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-		   {% trans 'Download' %}</button>
-		  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    <span class="caret"></span>
-		    <span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
-		  </button>
-		  <ul class="dropdown-menu">
-		  <li>  <a
-		       href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=pdf">{% trans "PDF" %} </a>
-		  </li><li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=ods">{% trans "Ods" %} </a>
-		   </li>
-
-		   <li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=xls">{% trans "Xls" %} </a>
-		   </li>
-
-		   <li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
-		   </li>
-
-		  </ul>
+	<div class="offset-md-2 col-md-8">
+		<div class="page-header text-center">
+			<h3 class="heading-1">
+				<span>
+					{{object}}
+					{% if perm_add_riskzone %}
+					<a class="btn btn-success" href="{% url 'riskmanagement:incident_create' laboratory %}"> + </a>
+					{% endif %}
+				</span>
+			</h3>
 		</div>
-
-     </div>
-   {% endif  %}
-<br><br>
-    </div>
+	</div>
 </div>
-
+<div class="row">
+	<div class="col-md-4 offset-md-8">
+		{% if perm_do_report   %}
+		<div class="float-end">
+			<div class="btn-group dropup">
+				<button type="button" class="btn btn-danger">
+					<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+					{% trans 'Download' %}
+				</button>
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span>
+					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=pdf">{% trans "PDF" %} </a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=ods">{% trans "Ods" %} </a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=xls">{% trans "Xls" %} </a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		{% endif  %}
+	</div>
+</div>
+<br>
+<br>
 
 <div class="row">
-<div class="col-md-12">
-  <ul class="list-group">
-    {% for lab in object.laboratories.all %}
-      <li class="row list-group-item">
-
-         <a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
-            <span class="glyphicon {% cycle " glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}"></span>
-            {{ lab.name }}
-         </a>
-
-   {% if perm_do_report   %}
-
-		  <div class="pull-right">
-
-		  <div class="btn-group dropup">
-		  <button type="button" class="btn btn-danger">
-		   <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-		   {% trans 'Download' %}</button>
-		  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    <span class="caret"></span>
-		    <span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
-		  </button>
-		  <ul class="dropdown-menu">
-		  <li>  <a
-		       href="{% url 'riskmanagement:incident_report' lab.pk %}?format=pdf">{% trans "PDF" %} </a>
-		  </li><li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' lab.pk %}?format=ods">{% trans "Ods" %} </a>
-		   </li>
-
-		   <li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xls">{% trans "Xls" %} </a>
-		   </li>
-
-		   <li>
-		     <a
-		       href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
-		   </li>
-
-		  </ul>
-		</div>
-
-     </div>
-   {% endif  %}
-      </li>
-    {% endfor %}
-  </ul>
-</div>
+	<div class="col-md-12">
+		<ul class="list-group">
+			{% for lab in object.laboratories.all %}
+			<li class="list-group-item">
+				<div class="float-start">
+					<a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
+						<span class='glyphicon {% cycle "glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}'></span>
+						{{ lab.name }}
+					</a>
+				</div>
+				{% if perm_do_report   %}
+				<div class="float-end">
+					<div class="btn-group dropup">
+						<button type="button" class="btn btn-danger">
+							<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+							{% trans 'Download' %}
+						</button>
+						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="caret"></span>
+							<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+						</button>
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=pdf">{% trans "PDF" %} </a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=ods">{% trans "Ods" %} </a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xls">{% trans "Xls" %} </a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				{% endif  %}
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
 {% endblock %}

@@ -14,7 +14,7 @@ from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
 from django.utils.translation import gettext as _
 from laboratory.decorators import has_lab_assigned
-
+from weasyprint import HTML
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
@@ -153,11 +153,9 @@ def report_incidentreport(request, *args, **kwargs):
     }
 
     html = template.render(context=context)
-    response = HttpResponse(content_type='application/pdf')
-    response[
-        'Content-Disposition'] = 'attachment; filename="incident_report.pdf"'
-    pisaStatus = pisa.CreatePDF(
-    html, dest=response, link_callback=link_callback, encoding='utf-8')
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
+    page = HTML(string=html, encoding='utf-8').write_pdf()
+
+    response = HttpResponse(page, content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename="incident_report.pdf"'
     return response
