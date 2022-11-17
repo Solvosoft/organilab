@@ -42,27 +42,3 @@
 <div class="clearfix">  </div>
 {% endblock %}
 
-{% block js %}
-
-
-<script>
-$(function () {
-    CKEDITOR.replace('id_causes', {language: 'es',  });
-    CKEDITOR.replace('id_infraestructure_impact', {language: 'es', });
-    CKEDITOR.replace('id_people_impact', {language: 'es', });
-    CKEDITOR.replace('id_environment_impact', {language: 'es', });
-    CKEDITOR.replace('id_result_of_plans', {language: 'es', });
-    CKEDITOR.replace('id_mitigation_actions', {language: 'es', });
-    CKEDITOR.replace('id_recomendations', {language: 'es', });
-
-    CKEDITOR.config.toolbar = [
-       ['Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-',
-        'Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-',
-        'Outdent','Indent','-','Print', '-','NumberedList','BulletedList','-',
-        'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-',
-        'Image','Table','-','Link','Smiley'], ['Source']
-    ] ;
-
-});
-</script>
-{% endblock %}
