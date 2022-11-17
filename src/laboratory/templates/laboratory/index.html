@@ -103,11 +103,6 @@
                   <a href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
                 </li>
               {% endif %}
-              {% if perms.laboratory.change_profile %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:lab_profiles' laboratory %}"><strong>{% trans 'Profiles' %}</strong></a>
-                </li>
-              {% endif %}
 
               {% if perms.laboratory.view_tranferobject %}
              <li class="list-group-item">
