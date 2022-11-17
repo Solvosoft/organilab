@@ -76,6 +76,27 @@
         </div>
     </div>
 </div>
+<div aria-hidden="true"  class="modal fade" id="error_reserved" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title ">{% trans 'Error' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <label>{% trans 'The requested quantity of the material is not found in the inventory of the following materials:' %}</label>
+                <ul id="list_errors" class="list-group">
+                        <li class="list-group-item" title="{{feature.description}}">{{feature.name}}</li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button"><i class="fa fa-times-circle-o" aria-hidden="true"></i> {% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
@@ -86,6 +107,7 @@
 	    document.remove_procedure="{% url 'delete_procedure' %}"
 		var table=$("#datatable").DataTable();
 		table.order( [ 0, 'desc' ] ).draw();
+		const reserved ="{% trans 'Reserved' %}";
 	</script>
     <script src="{% static 'js/procedures.js'%}"></script>
 {% endblock %}
