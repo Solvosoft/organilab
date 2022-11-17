@@ -5,52 +5,54 @@
     {% define_urlname_action 'riskzone_detail' %}
 {% endblock %}
 {% block content %}
-<div class="container">
-    <div class="float-start">
-        <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
-    </div>
-    <div class="float-end">
-        <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
-    </div>
+<div class="float-start">
+    <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
 </div>
+
 <div class="row">
-<div class="offset-md-2 col-md-8">
+    <div class="offset-md-2 col-md-8">
         <div class="page-header" align="center">
-          <h3 class="heading-1" center=""><span>
-             {{object}}
-                  {% if perm_add_riskzone %}
-          <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"> + </a>
-        {% endif %}
-          </span></h3>
-
+            <h3 class="heading-1" center="">
+                <span>
+                    {{object}}
+                </span>
+            </h3>
         </div>
+    </div>
 </div>
-</div>
-
 <div class="row">
-<div class="col-md-12">
-  <ul class="list-group">
-    {% for lab in object.laboratories.all %}
-      <li class="list-group-item">
-
-<div class="float-start p-0 m-0">
-         <a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
-            <span class='glyphicon {% cycle  "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}'></span>
-            {{ lab.name }}
-         </a>
+    <div class="offset-md-1 col-md-10">
+        <div class="float-end">
+            {% if perms.add_riskzone %}
+                <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
+            {% endif %}
+            <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
 </div>
-<div class="float-end p-0 m-0">
-         <a href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
-             <span class="badge text-bg-secondary">{{lab.incidentreport_set.all.count }}</span>
-         </a>
-         <a href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
-             <span class="badge text-bg-success"><i class="fa fa-plus" aria-hidden="true"></i></span>
-         </a>
-</div>
-          <div class="clearfix"></div>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
+<div class="row">
+    <div class="offset-md-1 col-md-10">
+        <ul class="list-group">
+            {% for lab in object.laboratories.all %}
+                <li class="list-group-item">
+                    <div class="float-start p-2 m-0">
+                        <a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
+                            {{ lab.name }}
+                        </a>
+                    </div>
+                    <div class="float-end p-2 m-0">
+                        <a class="btn btn-secondary btn-md" href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
+                            <span class="badge">{{lab.incidentreport_set.all.count }}</span>
+                        </a>
+                        <a class="btn btn-success btn-md btn-rounded" href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
