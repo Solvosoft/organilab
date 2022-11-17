@@ -72,10 +72,6 @@ msgstr "Grupo"
 msgid "User"
 msgstr "Usuario"
 
-#: laboratory/forms.py:113 laboratory/templates/laboratory/profile_form.html:15
-msgid "Roles"
-msgstr ""
-
 #: laboratory/forms.py:133 laboratory/forms.py:149 laboratory/forms.py:163
 #: laboratory/templates/laboratory/transfer_objects.html:30
 msgid "Amount"
@@ -633,7 +629,6 @@ msgstr "Cancelar"
 #: laboratory/templates/laboratory/object_form.html:10
 #: laboratory/templates/laboratory/objectfeatures_form.html:25
 #: laboratory/templates/laboratory/objectview_form.html:26
-#: laboratory/templates/laboratory/profile_form.html:26
 #: laboratory/templates/laboratory/shelf_form.html:19
 msgid "Save"
 msgstr "Guardar"
@@ -1274,9 +1269,6 @@ msgstr "Mes"
 msgid "Export"
 msgstr "Exportar"
 
-#: laboratory/templates/laboratory/profile_form.html:9
-msgid "Profile Management"
-msgstr "Gestión de perfiles"
 
 #: laboratory/templates/laboratory/provider_add.html:11
 msgid "Create Provider"

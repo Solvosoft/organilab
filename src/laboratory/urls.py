@@ -16,7 +16,6 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
-from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
 from laboratory.views.objects import ObjectView, block_notifications 
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
 from laboratory.views.my_reservations import MyReservationView
@@ -169,11 +168,6 @@ organization_urls = [
 
 ]
 
-lab_profiles_urls = [
-    re_path(r"list$", ProfilesListView.as_view(), name="lab_profiles"),
-    re_path(r"profile/(?P<pk>\d+)/(?P<profile_pk>\d+)$", ProfileUpdateView.as_view(), name="update_lab_profile"),
-] 
-
 provider_urls=[
     re_path(r"provider$", ProviderCreate.as_view(), name="add_provider"),
     re_path(r"update_provider/(?P<pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
@@ -208,7 +202,6 @@ urlpatterns += sustance_urls + organization_urls + [
     re_path(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
         include(lab_reports_organization_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)?/profiles/',include(lab_profiles_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)?/provider/',include(provider_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/informs/',include(informs_urls)),
     re_path(r'^inform/api/',include(router.urls)),

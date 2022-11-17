@@ -82,52 +82,9 @@ msgstr ""
 msgid "Rol name"
 msgstr "Nombre del producto"
 
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:10
-msgid "Lab profiles management"
-msgstr ""
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:13
-#, fuzzy
-#| msgid "Laboratory id"
-msgid " Laboratory Profiles"
-msgstr "Id de laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
-msgid "Name:"
-msgstr ""
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:20
-#, fuzzy
-#| msgid "First Name"
-msgid "Last Name:"
-msgstr "Nombre"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:21
-#, fuzzy
-#| msgid "ID Card"
-msgid "Id Card:"
-msgstr "Num de Identificación"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:22
-#, fuzzy
-#| msgid "Job Position"
-msgid "Job Position:"
-msgstr "Posición actual"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:23
-#, fuzzy
-#| msgid "Manage Product"
-msgid "Manage Profile"
-msgstr "Administración de producto"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
 #: reservations_management/templates/reservations_management/reservations_list.html:97
 msgid "Manage"
 msgstr "Administrar"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:38
-msgid "No objects"
-msgstr ""
 
 #: authentication/forms.py:26
 msgid "Roles"

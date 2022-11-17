@@ -119,42 +119,6 @@ msgstr "Cancelar"
 msgid "Save"
 msgstr "Guardar"
 
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:10
-msgid "Lab profiles management"
-msgstr "Gestión de perfiles de laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:13
-msgid " Laboratory Profiles"
-msgstr " Perfiles de laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
-msgid "Name:"
-msgstr "Nombre:"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:20
-msgid "Last Name:"
-msgstr "Apellido:"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:21
-msgid "Id Card:"
-msgstr "Tarjeta de identificación:"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:22
-msgid "Job Position:"
-msgstr "Puesto de trabajo:"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:23
-msgid "Manage Profile"
-msgstr "Administrar perfil"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
-msgid "Manage"
-msgstr "Administrar"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:38
-msgid "No objects"
-msgstr "Sin objetos"
-
 #: auth_and_perms/views/organizationstructure.py:125
 #: auth_and_perms/views/organizationstructure.py:138
 msgid "Element saved successfully"
