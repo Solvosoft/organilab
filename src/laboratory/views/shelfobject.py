@@ -358,7 +358,7 @@ def send_detail(request):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
-
+@method_decorator(permission_required('laboratory.view_tranferobject'), name='dispatch')
 class ListTransferObjects(ListView):
     model = TranferObject
     template_name = 'laboratory/transfer_objects.html'
@@ -368,7 +368,7 @@ class ListTransferObjects(ListView):
                                             Q(laboratory_received__id=self.request.GET.get('lab'))).order_by(
             'pk').reverse()
 
-
+@login_required()
 def get_shelf_list(request):
     shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
     transfer_detail = TranferObject.objects.filter(pk=int(request.POST.get('id'))).first()
@@ -450,7 +450,7 @@ def edit_limit_object(request, *args, **kwargs):
     shelf_object = ShelfObject.objects.filter(pk=kwargs['pk']).first()
     context ={
         'name':shelf_object.object.name,
-        'msg':'zzz',
+        'msg':'',
         'amount': shelf_object.limit_quantity
     }
     if request.method=='POST':
@@ -461,7 +461,7 @@ def edit_limit_object(request, *args, **kwargs):
         return JsonResponse(context)
     context ={
         'name':shelf_object.object.name,
-        'msg':'zzz',
+        'msg':'',
         'amount': shelf_object.limit_quantity
     }
     return JsonResponse(context)

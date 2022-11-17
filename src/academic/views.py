@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.dateparse import parse_datetime
+
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations
 from django.urls.base import reverse_lazy
 from django.urls import reverse
 from laboratory.decorators import has_lab_assigned
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from django.shortcuts import redirect, render
@@ -15,7 +17,7 @@ from . import convertions
 import json
 from django.utils.translation import gettext_lazy as _
 
-
+@login_required
 @permission_required('academic.add_procedurestep')
 def add_steps_wrapper(request, pk, lab_pk=None):
     procedure = get_object_or_404(Procedure, pk=pk)
@@ -23,6 +25,7 @@ def add_steps_wrapper(request, pk, lab_pk=None):
     return redirect(reverse('update_step', kwargs={'pk': procstep.pk, 'lab_pk': lab_pk}))
 
 
+@method_decorator(permission_required('academic.view_procedure'), name='dispatch')
 class ProcedureListView(ListView):
     model = Procedure
     queryset = Procedure.objects.all()
@@ -34,7 +37,7 @@ class ProcedureListView(ListView):
         context['reservation_form'] = ReservationForm
         return context
 
-
+@method_decorator(permission_required('academic.add_procedure'), name='dispatch')
 class ProcedureCreateView(CreateView):
     model = Procedure
     form_class = ProcedureForm
@@ -50,7 +53,7 @@ class ProcedureCreateView(CreateView):
         success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
         return success_url
 
-
+@method_decorator(permission_required('academic.change_procedure'), name='dispatch')
 class ProcedureUpdateView(UpdateView):
     model = Procedure
     form_class = ProcedureForm
@@ -66,13 +69,15 @@ class ProcedureUpdateView(UpdateView):
         success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
         return success_url
 
-
+@login_required
+@permission_required('academic.view_procedure')
 def procedureStepDetail(request, pk, lab_pk):
     steps = Procedure.objects.filter(pk=pk).first()
     return render(request, 'academic/detail.html',
                   {'object': steps, 'procedure': pk, 'lab_pk': lab_pk, 'reservation_form': ReservationForm})
 
 
+@method_decorator(permission_required('academic.add_procedurestep'), name='dispatch')
 class ProcedureStepCreateView(FormView):
     form_class = StepForm
     template_name = 'academic/procedure_steps.html'
@@ -98,7 +103,7 @@ class ProcedureStepCreateView(FormView):
         success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
         return success_url
 
-
+@method_decorator(permission_required('academic.change_procedurestep'), name='dispatch')
 class ProcedureStepUpdateView(UpdateView):
     model = ProcedureStep
     form_class = ProcedureStepForm
@@ -117,7 +122,8 @@ class ProcedureStepUpdateView(UpdateView):
         success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
         return success_url
 
-
+@login_required
+@permission_required('academic.add_procedurerequiredobject')
 def save_object(request, pk, lab_pk):
     """ Add a Required object """
 
@@ -145,13 +151,14 @@ def validate_unit(lab, obj):
 
     return set(units)
 
-
+@login_required
+@permission_required('academic.delete_procedurestep')
 def delete_step(request):
     step = ProcedureStep.objects.get(pk=int(request.POST['pk']))
     step.delete()
     return JsonResponse({'data': True})
 
-
+@method_decorator(permission_required('academic.delete_procedurerequiredobject'), name='dispatch')
 def remove_object(request, pk):
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
@@ -169,6 +176,8 @@ def get_objects(pk):
     return result
 
 
+@login_required
+@permission_required('academic.add_procedureobservations')
 def save_observation(request, pk):
     step = get_object_or_404(ProcedureStep, pk=pk)
 
@@ -176,8 +185,6 @@ def save_observation(request, pk):
     objects.save()
 
     return JsonResponse({'data': get_observations(pk)})
-
-
 def get_observations(pk):
     obsevations = ProcedureObservations.objects.filter(step__id=pk)
     aux = []
@@ -186,19 +193,21 @@ def get_observations(pk):
     result = json.dumps(aux)
     return result
 
-
+@login_required
+@permission_required('academic.delete_procedureobservations')
 def remove_observation(request, pk):
     obj = ProcedureObservations.objects.get(pk=int(request.POST['pk']))
     obj.delete()
 
     return JsonResponse({'data': get_observations(pk)})
 
-
+@login_required
+@permission_required('academic.view_procedure')
 def get_procedure(request):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     return JsonResponse({'data': {'title': procedure.title, 'pk': procedure.pk}})
 
-
+@method_decorator(permission_required('academic.delete_procedure'), name='dispatch')
 def delete_procedure(request):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
@@ -267,13 +276,14 @@ def convert_to_general_unit(data):
 
     return result
 
-
+@method_decorator(permission_required('reservations_management.add_reservedproducts'), name='dispatch')
 def generate_reservation(request):
     lab = request.POST['lab_pk']
     procedure = request.POST['procedure']
     objects_pk = list_step_objects(procedure)
     obj_find = 0
     state = False
+
     for obj in objects_pk:
 
         objs = convert_to_general_unit(get_objects_list(lab, obj))
@@ -292,6 +302,7 @@ def generate_reservation(request):
 
 
 def add_reservation(request, data, data_step):
+    import datetime
     """Generate the reservation and add the respective quantity of the object"""
     result = 0
     for obj in data:
@@ -314,12 +325,14 @@ def add_reservation(request, data, data_step):
                                                                    obj.measurement_unit.description)
 
             if result > 0:
-                reserved = ReservedProducts.objects.create(shelf_object=obj,
-                                                           user=request.user,
-                                                           initial_date=request.POST['initial_date'],
-                                                           final_date=request.POST['final_date'],
-                                                           amount_required=result)
-                reserved.save()
+                form = ReservationForm(request.POST)
+                if form.is_valid():
+                    reserved = ReservedProducts.objects.create(shelf_object=obj,
+                                                               user=request.user,
+                                                               initial_date=form.cleaned_data['initial_date'],
+                                                               final_date=form.cleaned_data['final_date'],
+                                                               amount_required=result)
+                    reserved.save()
 
             if result == 0 or obj.quantity == 0:
                 index+=1
