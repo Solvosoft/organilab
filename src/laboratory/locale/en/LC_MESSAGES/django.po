@@ -431,7 +431,7 @@ msgstr ""
 msgid "Laboratorists"
 msgstr ""
 
-#: laboratory/models.py:486 laboratory/templates/laboratory/access_list.html:12
+#: laboratory/models.py:486
 msgid "Students"
 msgstr ""
 
@@ -654,7 +654,6 @@ msgid "Products that reached the limit quantity today"
 msgstr ""
 
 #: laboratory/templates/ajax/lab_admins_create.html:4
-#: laboratory/templates/laboratory/access_list.html:25
 #: laboratory/templates/laboratory/objectview_list.html:19
 #: laboratory/templates/laboratory/search_widget.html:28
 msgid "Search"
@@ -662,7 +661,6 @@ msgstr ""
 
 #: laboratory/templates/ajax/lab_admins_create.html:9
 #: laboratory/templates/ajax/lab_admins_list.html:9
-#: laboratory/templates/laboratory/access_list.html:50
 #: laboratory/templates/laboratory/laboratory_create.html:23
 msgid "Create"
 msgstr ""
@@ -790,29 +788,14 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:4
-msgid "Access List"
-msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:11
-msgid "Laboratorits"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:26
 #: laboratory/templates/laboratory/laboratory_list.html:15
 #: laboratory/templates/laboratory/objectview_list.html:24
 msgid "Add"
 msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:31
-msgid "Create user"
-msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:41
-msgid "Create users"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:51
+#: laboratory/templates/laboratory/admin_shelf_list.html:28
 #: laboratory/templates/laboratory/laboratory_notperm.html:15
 #: laboratory/templates/laboratory/laboratoryroom_form.html:114
 #: laboratory/templates/laboratory/shelf_form.html:22
@@ -821,38 +804,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:80
-msgid "Not user found"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:83
-msgid "Delete users"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:126
-msgid "You need to select!"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:127
-msgid "You have not selected an user. Please try again."
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:129
-msgid "ok"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:134
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:35
 msgid "Are you sure?"
 msgstr ""
 
-#: laboratory/templates/laboratory/access_list.html:135
-msgid "You will not be able to revert this!"
-msgstr ""
-
-#: laboratory/templates/laboratory/access_list.html:140
-msgid "Yes, delete it!"
-msgstr ""
 
 #: laboratory/templates/laboratory/action_denied.html:4
 #: laboratory/templates/laboratory/permission_denied.html:6
@@ -863,6 +818,8 @@ msgstr ""
 msgid "You don't have the permissions required to access this action"
 msgstr ""
 
+#: laboratory/templates/laboratory/admin_shelf_list.html:7
+#: laboratory/templates/laboratory/admin_shelf_list.html:15
 #: laboratory/templates/laboratory/dataconfig.html:9
 #: laboratory/templates/laboratory/furniture_form.html:100
 msgid "Add Shelf"
@@ -949,10 +906,6 @@ msgstr ""
 
 #: laboratory/templates/laboratory/index.html:90
 msgid "Dissolution calculator"
-msgstr ""
-
-#: laboratory/templates/laboratory/index.html:96
-msgid "Access list"
 msgstr ""
 
 #: laboratory/templates/laboratory/index.html:151
@@ -1637,13 +1590,10 @@ msgstr ""
 msgid "%(value)s is not a valid molecular formula"
 msgstr ""
 
-#: laboratory/views/access.py:80 laboratory/views/laboratory.py:60
+#: laboratory/views/laboratory.py:60
 msgid "User added successfully"
 msgstr ""
 
-#: laboratory/views/access.py:96
-msgid "Users removed successfully"
-msgstr ""
 
 #: laboratory/views/furniture.py:87
 msgid "Invalid format in shelf dataconfig "
