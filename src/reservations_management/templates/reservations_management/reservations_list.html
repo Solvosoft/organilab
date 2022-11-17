@@ -1,18 +1,15 @@
-{% extends 'gentelella/base.html' %}
-{% load i18n %}
-{% load static %}
-{% load urlname_tags %}
+{% extends 'base.html' %}
+
+{% load i18n static urlname_tags gtsettings label_tags %}
+
 {% block pre_head %}
+    {% define_true  "use_datatables" %}
     {% define_urlname_action 'reservations_list' %}
     {% define_urlname_action 'manage_reservation' %}
 {% endblock %}
+
 {% block title %}{% trans 'Reservations List' %}{% endblock %}
 
-{% block css %}
-{{block.super}}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
-
-{% endblock %}
 
 {% block content %}
 
@@ -27,7 +24,7 @@
     }
 </style>
 
-<div class="card gencrud">
+<div class="card">
     <div class="card-body">
         <div class="card-title titles">
             <ul class="nav navbar-left panel_toolbox">
@@ -40,7 +37,8 @@
         </div>
 
 
-        {% comment %} <div class="col-lg-12">
+        {% comment %}
+        <div class="col-lg-12">
         <ul class="pagination">
             {% if page_obj.has_previous %}
             <li class="paginate_button">
@@ -134,8 +132,11 @@
 
 {% block javascripts %}
 {{ block.super }}
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
-
+<script>
+(function(){
+    $("#table_of_reservations").DataTable();
+ })(jQuery);
+</script>
 <script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
 
 
