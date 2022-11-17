@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 {% block title %}{% trans 'Limited shelf objects' %}{% endblock %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'reports_limited_shelf_objects_list' %}
+{% endblock %}
 {% block content %}
 	<div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
 	{% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
