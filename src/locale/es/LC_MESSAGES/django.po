@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-17 15:53-0600\n"
-"PO-Revision-Date: 2022-11-17 15:42-0600\n"
+"POT-Creation-Date: 2022-10-31 14:30-0600\n"
+"PO-Revision-Date: 2021-03-09 23:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,235 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: auth_and_perms/models.py:13 authentication/forms.py:22
+msgid "Phone"
+msgstr "Teléfono"
+
+#: auth_and_perms/models.py:14 authentication/forms.py:23
+msgid "ID Card"
+msgstr "Num de Identificación"
+
+#: auth_and_perms/models.py:15
+#, fuzzy
+#| msgid "Laboratory id"
+msgid "Laboratories"
+msgstr "Id de laboratorio"
+
+#: auth_and_perms/models.py:16 authentication/forms.py:24
+msgid "Job Position"
+msgstr "Posición actual"
+
+#: auth_and_perms/models.py:30
+msgid "permissions"
+msgstr ""
+
+#: auth_and_perms/models.py:36 auth_and_perms/models.py:51
+msgid "Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:37
+msgid "Rols"
+msgstr ""
+
+#: auth_and_perms/models.py:44
+msgid "Profile"
+msgstr ""
+
+#: auth_and_perms/models.py:57
+msgid "Profile Rol"
+msgstr ""
+
+#: auth_and_perms/models.py:58
+msgid "Profile Rols"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:17
+msgid "Add new rol"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:17
+msgid "Add"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:25
+msgid "Administrators users"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:47
+msgid "Please enter a valid name"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:50
+#, fuzzy
+#| msgid "Product name"
+msgid "Rol name"
+msgstr "Nombre del producto"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:10
+msgid "Lab profiles management"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:13
+#, fuzzy
+#| msgid "Laboratory id"
+msgid " Laboratory Profiles"
+msgstr "Id de laboratorio"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
+msgid "Name:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:20
+#, fuzzy
+#| msgid "First Name"
+msgid "Last Name:"
+msgstr "Nombre"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:21
+#, fuzzy
+#| msgid "ID Card"
+msgid "Id Card:"
+msgstr "Num de Identificación"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:22
+#, fuzzy
+#| msgid "Job Position"
+msgid "Job Position:"
+msgstr "Posición actual"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:23
+#, fuzzy
+#| msgid "Manage Product"
+msgid "Manage Profile"
+msgstr "Administración de producto"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
+#: reservations_management/templates/reservations_management/reservations_list.html:97
+msgid "Manage"
+msgstr "Administrar"
+
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:38
+msgid "No objects"
+msgstr ""
+
+#: authentication/forms.py:26
+msgid "Roles"
+msgstr ""
+
+#: authentication/models.py:7
+msgid "Title"
+msgstr "Título académico"
+
+#: authentication/models.py:8
+msgid "Explanation"
+msgstr "Explicación"
+
+#: authentication/models.py:10
+msgid "Related file"
+msgstr "Archivo relacionado"
+
+#: authentication/models.py:12
+msgid "Laboratory id"
+msgstr "Id de laboratorio"
+
+#: authentication/models.py:14
+#: reservations_management/templates/reservations_management/reservations_list.html:70
+msgid "User"
+msgstr "Usuario"
+
+#: authentication/models.py:17
+msgid "Feedback entry"
+msgstr "Entrada de retroalimentación"
+
+#: authentication/models.py:18
+msgid "Feedback entries"
+msgstr "Entradas de retroalimentación"
+
+#: authentication/models.py:25
+msgid "First Name"
+msgstr "Nombre"
+
+#: authentication/models.py:26
+msgid "Business Email Address"
+msgstr "Correo de negocio"
+
+#: authentication/models.py:27
+msgid "Company Name"
+msgstr "Nombre de la empresa"
+
+#: authentication/models.py:28
+msgid "Country Name"
+msgstr "Ciudad"
+
+#: authentication/models.py:29
+msgid "Phone Number"
+msgstr "Teléfono"
+
+#: authentication/models.py:35
+msgid "Demo Request"
+msgstr "Solicitar una demostración"
+
+#: authentication/models.py:36
+msgid "Demo Requests"
+msgstr "Peticiones de demostración"
+
+#: authentication/templates/auth/change_user.html:16
+msgid "Update"
+msgstr "Actualizar"
+
+#: authentication/templates/auth/change_user.html:18
+#: authentication/templates/auth/change_user.html:32
+msgid "Change password"
+msgstr "Cambiar contraseña"
+
+#: authentication/templates/auth/change_user.html:38
+msgid "Your password may not closely resemble your other personal information."
+msgstr "Su contraseña no debe ser información personal o derivada de esta"
+
+#: authentication/templates/auth/change_user.html:39
+msgid "Your password must contain at least 8 characters."
+msgstr "Su contraseña debe contener al menos 8 caractéres"
+
+#: authentication/templates/auth/change_user.html:40
+msgid "Your password cannot be a commonly used password."
+msgstr "Su contraseña no debe ser muy común."
+
+#: authentication/templates/auth/change_user.html:41
+msgid "Your password cannot be completely numeric."
+msgstr "Su contraseña no puede contener solo números."
+
+#: authentication/templates/auth/change_user.html:48
+#: reservations_management/templates/reservations_management/product_modal.html:42
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: authentication/templates/auth/change_user.html:49
+msgid "Save"
+msgstr "Guardar"
+
+#: authentication/templates/auth/user_form.html:8
+msgid "New User"
+msgstr "Nuevo Usuario"
+
+#: authentication/templates/auth/user_form.html:12
+msgid "Create"
+msgstr "Crear"
+
+#: authentication/templates/feedback/feedbackentry_form.html:4
+#: authentication/templates/feedback/feedbackentry_form.html:10
+msgid "Feedback"
+msgstr "Retroalimentación"
+
+#: authentication/templates/feedback/feedbackentry_form.html:11
+msgid "If you had some problem using Organilab, please let us know about it"
+msgstr "Si tiene algún problema usando Organilab, por favor comunícanoslo."
+
+#: authentication/templates/feedback/feedbackentry_form.html:17
+#: authentication/templates/registration/request_a_demo.html:19
+msgid "Send"
+msgstr "Enviar"
 
 #: derb/templates/formBuilder/form_list.html:10
 msgid "Report Template List"
@@ -83,11 +311,11 @@ msgstr "Domingo"
 msgid "Manage Reservation"
 msgstr "Administrar reservaciones"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:32
+#: reservations_management/templates/reservations_management/manage_reservation.html:31
 msgid "Back to the reservations list"
 msgstr "Regresar a la lista de reservaciones"
 
-#: reservations_management/templates/reservations_management/manage_reservation.html:38
+#: reservations_management/templates/reservations_management/manage_reservation.html:37
 msgid "Reservation from"
 msgstr "Formulario de Reservación"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-17 15:53-0600\n"
+"POT-Creation-Date: 2022-09-16 16:05-0600\n"
 "PO-Revision-Date: 2022-11-02 12:01-0600\n"
 "Last-Translator: alfredoromero <alfredoromero85@gmail.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -301,10 +301,9 @@ msgstr "Salas de laboratorio"
 
 #: laboratory/models.py:180 laboratory/models.py:324
 #: laboratory/templates/laboratory/furniture_list.html:6
-#: laboratory/templates/laboratory/h_code_report.html:73
-#: laboratory/templates/laboratory/report_laboratoryroom_list.html:54
-#: laboratory/templates/laboratory/search.html:19
-#: laboratory/templates/pdf/hcode_pdf.html:12 laboratory/views/reports.py:168
+#: laboratory/templates/laboratory/h_code_report.html:72
+#: laboratory/templates/laboratory/report_laboratoryroom_list.html:51
+#: laboratory/templates/pdf/hcode_pdf.html:12 laboratory/views/reports.py:170
 msgid "Furniture"
 msgstr "Mueble"
 
@@ -502,7 +501,7 @@ msgstr "Número de teléfono"
 
 #: laboratory/models.py:523
 msgid "December"
-msgstr ""
+msgstr "Diciembre"
 
 #: laboratory/models.py:534
 msgid "Eraser"
@@ -718,10 +717,8 @@ msgstr "Cancelar"
 #: laboratory/templates/laboratory/furniture_form.html:64
 #: laboratory/templates/laboratory/laboratory_form.html:12
 #: laboratory/templates/laboratory/object_form.html:10
-#: laboratory/templates/laboratory/objectfeatures_form.html:26
-#: laboratory/templates/laboratory/objectview_form.html:27
-#: laboratory/templates/laboratory/profile_form.html:26
-#: laboratory/templates/laboratory/search.html:85
+#: laboratory/templates/laboratory/objectfeatures_form.html:25
+#: laboratory/templates/laboratory/objectview_form.html:26
 #: laboratory/templates/laboratory/shelf_form.html:19
 msgid "Save"
 msgstr "Guardar"
@@ -1099,7 +1096,7 @@ msgstr "Editar"
 msgid "New"
 msgstr "Nuevo"
 
-#: laboratory/templates/laboratory/laboratoryroom_form.html:65
+#: laboratory/templates/laboratory/laboratoryroom_form.html:70
 msgid "Create Furniture"
 msgstr "Crear Muebles"
 
@@ -1329,7 +1326,7 @@ msgstr "Administración de Reactivos"
 msgid "Reactive precursor objects"
 msgstr "Objetos reactivos precursores"
 
-#: laboratory/templates/laboratory/organization_reactive_presence.html:14
+#: laboratory/templates/laboratory/organization_reactive_presence.html:13
 msgid "User exposition"
 msgstr "Exposición del usuario"
 
@@ -1383,7 +1380,7 @@ msgstr "Consecutivo"
 msgid "Month"
 msgstr "Mes"
 
-#: laboratory/templates/laboratory/precursor_report.html:25
+#: laboratory/templates/laboratory/precursor_report.html:27
 msgid "Export"
 msgstr "Exportar"
 
@@ -1732,17 +1729,14 @@ msgid "Representing Chemical Substances in pyEQL"
 msgstr "Representar las sustancias químicas en el pyEQL"
 
 #: laboratory/templates/laboratory/sustance/sustance_form.html:51
-#, fuzzy
-#| msgid ""
-#| "pyEQL interprets the chemical formula of a substance to calculate its molecular\n"
-#| "            weight and formal charge. The formula is also used as a key to search the\n"
-#| "            database for parameters (e.g. diffusion coefficient) that are used in subsequent\n"
-#| "            calculations."
 msgid ""
-"pyEQL interprets the chemical formula of a substance to calculate its molecular\n"
-"                        weight and formal charge. The formula is also used as a key to search the\n"
-"                        database for parameters (e.g. diffusion coefficient) that are used in subsequent\n"
-"                        calculations."
+"pyEQL interprets the chemical formula of a substance to calculate its "
+"molecular\n"
+"            weight and formal charge. The formula is also used as a key to "
+"search the\n"
+"            database for parameters (e.g. diffusion coefficient) that are "
+"used in subsequent\n"
+"            calculations."
 msgstr ""
 "El pyEQL interpreta la fórmula química de una sustancia para calcular su peso molecular\n"
 " y su carga formal. La fórmula también se utiliza como clave para buscar \n"
@@ -2093,8 +2087,477 @@ msgstr "Transferencia realizada con éxito"
 msgid "Need to create a Shelf"
 msgstr ""
 
-#: laboratory/views/shelfobject.py:429
+#~ msgid "Can see available objectfeatures"
+#~ msgstr "Puede ver las características de los objetos disponibles"
+
+#~ msgid "Explosives"
+#~ msgstr "Explosivos"
+
+#~ msgid "Gases"
+#~ msgstr "Gases"
+
+#~ msgid "Flammable liquids"
+#~ msgstr "Líquidos inflamables"
+
+#~ msgid "Flammable solids"
+#~ msgstr "Solidos inflamables"
+
+#~ msgid "Oxidizing substances and organic peroxides"
+#~ msgstr "Sustancias oxidantes y peróxidos orgánicos"
+
+#~ msgid "Toxic and infectious substances"
+#~ msgstr "Sustancias tóxicas e infecciosas"
+
+#~ msgid "Radioactive material"
+#~ msgstr "Material radioactivo"
+
+#~ msgid "Corrosive substances"
+#~ msgstr "Sustancias corrosivas"
+
+#~ msgid "Miscellaneous dangerous substances and articles"
+#~ msgstr "Sustancias y artículos peligrosos diversos"
+
+#~ msgid "Can see available object"
+#~ msgstr "Puede ver el objeto disponible"
+
+#~ msgid "Meters"
+#~ msgstr "Metros"
+
+#~ msgid "Milimeters"
+#~ msgstr "Milímetros"
+
+#~ msgid "Centimeters"
+#~ msgstr "Centímetros"
+
+#~ msgid "Liters"
+#~ msgstr "Litros"
+
+#~ msgid "Mililiters"
+#~ msgstr "Mililitros"
+
+#~ msgid "Gram"
+#~ msgstr "Gramos"
+
+#~ msgid "Kilogram"
+#~ msgstr "Kilogramo"
+
+#~ msgid "Miligram"
+#~ msgstr "Miligramo"
+
+#~ msgid "Cubic Meter"
+#~ msgstr "Medidor cúbico"
+
+#~ msgid "Can see available shelf objects"
+#~ msgstr "Puede ver los objetos disponibles en la estantería"
+
+#~ msgid "Can see available laboratory Room"
+#~ msgstr "Puede ver la sala de laboratorio disponible"
+
+#~ msgid "Space"
+#~ msgstr "Espacio"
+
+#~ msgid "Drawer"
+#~ msgstr "Cajón"
+
+#~ msgid "Can see available shelf"
+#~ msgstr "Puede ver el estante disponible"
+
+#~ msgid "Can see available Furniture"
+#~ msgstr "Puede ver los muebles disponibles"
+
+#~ msgid "Can see available OrganizationStructure"
+#~ msgstr "Puede ver la estructura organizativa disponible"
+
+#~ msgid "Email address"
+#~ msgstr "Dirección de correo electrónico"
+
+#~ msgid "Assigned to"
+#~ msgstr "Asignado a"
+
+#~ msgid "Principal Technician"
+#~ msgstr "Técnico principal"
+
+#~ msgid "Principal Technicians"
+#~ msgstr "Técnicos principales"
+
+#~ msgid "Can see available PrincipalTechnician"
+#~ msgstr "Puede ver el técnico principal disponible"
+
+#~ msgid "Laboratorists"
+#~ msgstr "Laboratoristas"
+
+#~ msgid "Students"
+#~ msgstr "Estudiantes"
+
+#~ msgid "Can see available laboratory"
+#~ msgstr "Puede ver el laboratorio disponible"
+
+#~ msgid "Can see available Solution"
+#~ msgstr "Puede ver la solución disponible"
+
+#~ msgid "Laboratorits"
+#~ msgstr "Laboratoristas"
+
+#~ msgid "Create user"
+#~ msgstr "Crear usuario"
+
+#~ msgid "Create users"
+#~ msgstr "Crear usuarios"
+
+#~ msgid "Not user found"
+#~ msgstr "Usuario no encontrado"
+
+#~ msgid "You need to select!"
+#~ msgstr "¡Tiene que seleccionar!"
+
+#~ msgid "You have not selected an user. Please try again."
+#~ msgstr "No ha seleccionado un usuario. Por favor, inténtelo de nuevo."
+
+#~ msgid "ok"
+#~ msgstr "Ok"
+
+#~ msgid "You will not be able to revert this!"
+#~ msgstr "¡No podrá revertir esto!"
+
+#~ msgid "Yes, delete it!"
+#~ msgstr "Sí, ¡bórrelo!"
+
+#~ msgid "Technicians"
+#~ msgstr "Técnicos"
+
+#~ msgid "In all laboratories"
+#~ msgstr "En todos los laboratorios"
+
+#~ msgid "H code report"
+#~ msgstr "Reporte de códigos H"
+
+#~ msgid "Organilab Laboratory Report"
+#~ msgstr "Organilab: Reporte de Laboratorio"
+
+#~ msgid "Organilab Objects Report"
+#~ msgstr "Organilab: Reporte de Objetos"
+
+#~ msgid "Organilab Organization Laboratory Report"
+#~ msgstr "Informe del laboratorio de la Organización Organilab"
+
+#~ msgid "Report Organization Laboratory"
+#~ msgstr "Reporte de laboratorio Organización"
+
+#~ msgid "Organilab Shelf Objects Report"
+#~ msgstr "Organilab: Reporte de objetos de estante"
+
+#~ msgid "Organilab Summary Furniture Report"
+#~ msgstr "Organilab: Reporte de Muebles"
+
+#~ msgid "Something went wrong"
+#~ msgstr "Algo salió mal"
+
+#~ msgid "Sorry, wrong method"
+#~ msgstr "Lo siento, método equivocado"
+
+#~ msgid "Log out"
+#~ msgstr "Cerrar Sesión"
+
 #, fuzzy
-#| msgid "The amount to be subtracted is more than the shelf has"
-msgid "The amount sends is more than the laboratory have"
-msgstr "La cantidad a sustraer es más que el estante tiene"
+#~| msgid "Prev"
+#~ msgid "Preview"
+#~ msgstr "Anterior"
+
+#, fuzzy
+#~| msgid "Laboratories"
+#~ msgid "My laboratories"
+#~ msgstr "Laboratorios"
+
+#~ msgid "Administration"
+#~ msgstr "Administración"
+
+#~ msgid "Dissolution management"
+#~ msgstr "Administración de disoluciones"
+
+#~ msgid "Finish reservation"
+#~ msgstr "Finalizar reservación"
+
+#~ msgid "Create a reservation"
+#~ msgstr "Crear reservación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "blog entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#~ msgid "Feedback"
+#~ msgstr "Retroalimentación"
+
+#~ msgid "Log in"
+#~ msgstr "Iniciar Sesión"
+
+#~ msgid "Prev"
+#~ msgstr "Anterior"
+
+#~ msgid "Pause"
+#~ msgstr "Pausa"
+
+#~ msgid "End tour"
+#~ msgstr "Finalizar"
+
+#, fuzzy
+#~| msgid "Last name"
+#~ msgid "Last update on"
+#~ msgstr "Apellidos"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No comments yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No authors yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "RSS feed of last entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "Recent entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Laboratories"
+#~ msgid "Categories"
+#~ msgstr "Laboratorios"
+
+#, fuzzy
+#~| msgid "Related file"
+#~ msgid "Related entries"
+#~ msgstr "Archivo relacionado"
+
+#, fuzzy
+#~| msgid "Not found"
+#~ msgid "Nothing found."
+#~ msgstr "No encontrado"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No entries yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No tags yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "No solutions yet"
+#~ msgid "No linkbacks yet."
+#~ msgstr "Todavía no hay soluciones"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "More recent entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#, fuzzy
+#~| msgid "Feedback entries"
+#~ msgid "More old entries"
+#~ msgstr "Entradas de retroalimentación"
+
+#~ msgid "General use"
+#~ msgstr "Uso general"
+
+#~ msgid "Security equipment"
+#~ msgstr "Equipo de seguridad"
+
+#~ msgid "Analytic Chemistry"
+#~ msgstr "Química analítica"
+
+#~ msgid "Organic Chemistry"
+#~ msgstr "Química orgánica"
+
+#~ msgid "Physical Chemistry"
+#~ msgstr "Química física"
+
+#~ msgid "Chemical and Biological process"
+#~ msgstr "Proceso biológico y químico"
+
+#~ msgid "Industrial Biotechnology"
+#~ msgstr "Biotecnología industrial"
+
+#~ msgid "Biochemistry"
+#~ msgstr "Bioquímica"
+
+#~ msgid "Water Chemistry"
+#~ msgstr "Química del agua"
+
+#~ msgid "Other"
+#~ msgstr "Otro"
+
+#, fuzzy
+#~| msgid "No shelf objects have reached their limit."
+#~ msgid "The shelf object called %s reached its limit quantity"
+#~ msgstr "No hay  objetos en mínimos límites."
+
+#~ msgid "Please use an email client with HTML support"
+#~ msgstr "Por favor use un cliente con soporte a HTML"
+
+#~ msgid ""
+#~ "This message is to notify you that one or more of the shelf objects of "
+#~ "your laboratory has reached its limit"
+#~ msgstr ""
+#~ "Este mensaje es para notificarle que uno o más estantes en el laboratorio "
+#~ "han llegado a su cuota mínima"
+
+#~ msgid "This are the details of the products:"
+#~ msgstr "Detalle de los productos"
+
+#~ msgid "No shelf objects have reached their limit."
+#~ msgstr "No hay  objetos en mínimos límites."
+
+#, fuzzy
+#~| msgid "Search"
+#~ msgid "Search MSDS"
+#~ msgstr "Buscar"
+
+#~ msgid "Title"
+#~ msgstr "Título"
+
+#~ msgid "Feedback entry"
+#~ msgstr "Entrada de retroalimentación"
+
+#~ msgid "If you had some problem using Organilab, please let us know about it"
+#~ msgstr ""
+#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+
+#~ msgid "Send"
+#~ msgstr "Enviar"
+
+#~ msgid "Sign in"
+#~ msgstr "Registrarse"
+
+#~ msgid "Forgot password?"
+#~ msgstr "¿Olvidó su contraseña?"
+
+#~ msgid "Reset password"
+#~ msgstr "Recuperar contraseña"
+
+#~ msgid "Your password has been set.  You may go ahead and log in now."
+#~ msgstr "Su contraseña ha sido cambiada, Usted puede ir a ingreso ahora."
+
+#~ msgid "Change password"
+#~ msgstr "Cambiar contraseña"
+
+#~ msgid "Password"
+#~ msgstr "Contraseña"
+
+#~ msgid "Password confirm"
+#~ msgstr "Confirmar contraseña"
+
+#~ msgid ""
+#~ "We've emailed you instructions for setting your password, if an account "
+#~ "exists with the email you entered. You should receive them shortly."
+#~ msgstr ""
+#~ "Hemos enviado instrucciones para editar su contraseña, si alguna cuenta "
+#~ "existe con el correo ingresado.  Usted recibirá un correo pronto."
+
+#~ msgid ""
+#~ "If you don't receive an email, please make sure you've entered the "
+#~ "address you registered with, and check your spam folder."
+#~ msgstr ""
+#~ "Si usted no recibe un correo, por favor asegúrese que ha ingresado la "
+#~ "dirección de correo correcta y revise su bandeja de SPAM"
+
+#~ msgid ""
+#~ "\n"
+#~ "You're receiving this email because you requested a password reset for "
+#~ "your user account at Organilab.\n"
+#~ "\n"
+#~ "Please go to the following page and choose a new password:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Usted está recibiendo este correo, porque usted solicitó un cambio de "
+#~ "contraseña para su cuenta en Organilab. \n"
+#~ "\n"
+#~ "Por favor vaya a la siguiente página y elija una nueva contraseña:\n"
+
+#~ msgid "Your username, in case you've forgotten:"
+#~ msgstr "Su nombre de usuario, en caso de que lo olvidara es:"
+
+#~ msgid ""
+#~ "\n"
+#~ "If clicking the link above doesn't work, please copy and paste the URL in "
+#~ "a new browser\n"
+#~ "window instead.\n"
+#~ "\n"
+#~ "Thanks for using Organilab!\n"
+#~ "\n"
+#~ "Sincerely,"
+#~ msgstr ""
+#~ "\n"
+#~ "Si al hacer clic en el enlace de arriba no funciona, por favor copie y "
+#~ "pegue esta URL en una pestaña de su navegador\n"
+#~ "\n"
+#~ "¡Gracias por usar Organilab!\n"
+#~ "\n"
+#~ "Atentamente,"
+
+#~ msgid "Forgot password"
+#~ msgstr "Olvidó su contraseña"
+
+#~ msgid "Organilab Password Reset"
+#~ msgstr "Recuperar contraseña en organilab"
+
+#~ msgid ""
+#~ "Thank you for your help. We are gonna check your problem as soon as we can"
+#~ msgstr ""
+#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
+
+#~ msgid "Keyword, for instance Beaker"
+#~ msgstr "Palabra clave, por ejemplo Beaker"
+
+#~ msgid "Organilab Build Report"
+#~ msgstr "Organilab: Reporte de Edificios"
+
+#~ msgid "OBJECTS INFORMATION"
+#~ msgstr "Información de objetos"
+
+#~ msgid "Furniture information"
+#~ msgstr "Información del mueble"
+
+#~ msgid "LABORATORYROOM INFORMATION"
+#~ msgstr "Información del Laboratorio:"
+
+#~ msgid "user:"
+#~ msgstr "usuario:"
+
+#~ msgid "Download Object PDF"
+#~ msgstr "Descargar Objecto en PDF"
+
+#~ msgid "Object Features"
+#~ msgstr "Características del objeto"
+
+#~ msgid "Summary Furniture PDF"
+#~ msgstr "Resumen de Mueble PDF"
+
+#~ msgid "Furniture PDF"
+#~ msgstr "Mueble PDF"
+
+#~ msgid "Download Summary PDF"
+#~ msgstr "Descargar PDF Resumido"
+
+#~ msgid "Crate"
+#~ msgstr "Caja"
+
+#~ msgid "General Use"
+#~ msgstr "Uso General"
+
+#~ msgid "Security Equipment"
+#~ msgstr "Equipo de Seguridad"
+
+#~ msgid "Chemical and Biological Process"
+#~ msgstr "Proceso Biológico y Químico"
+
+#~ msgid "FURNITURE INFORMATION"
+#~ msgstr "INFORMACIÓN DE MUEBLE"
