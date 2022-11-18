@@ -3,6 +3,8 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_urlname_action 'object_feature_create' %}
+    {% define_urlname_action 'object_feature_update' %}
+    {% define_urlname_action 'object_feature_delete' %}
 {% endblock %}
 {% block title %}{% trans 'Object features management' %}{% endblock %}
 

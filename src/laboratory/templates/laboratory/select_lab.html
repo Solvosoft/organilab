@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'select_lab' %}
+{% endblock %}
 {% block title %}{% trans 'Select laboratory' %}{% endblock %}
 
 {% block content %}
