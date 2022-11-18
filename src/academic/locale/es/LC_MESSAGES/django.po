@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: organilab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
 "PO-Revision-Date: 2022-11-01 16:31-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: es_CR <info@solvosoft.com>\n"
@@ -21,9 +21,9 @@ msgstr ""
 
 #: academic/forms.py:34 academic/forms.py:46 academic/models.py:12
 #: academic/models.py:26 academic/models.py:64 academic/models.py:101
-#: academic/models.py:147 academic/templates/academic/procedure_list.html:27
-#: academic/templates/academic/procedure_steps.html:67
-#: academic/templates/academic/substance/danger_indication.html:17
+#: academic/models.py:147 academic/templates/academic/procedure_list.html:21
+#: academic/templates/academic/procedure_steps.html:56
+#: academic/templates/academic/substance/danger_indication.html:19
 #: academic/templates/academic/substance/detail_substance.html:45
 msgid "Description"
 msgstr "Descripción"
@@ -32,7 +32,7 @@ msgstr "Descripción"
 msgid "Object"
 msgstr "Objeto"
 
-#: academic/forms.py:39 academic/templates/academic/procedure_steps.html:41
+#: academic/forms.py:39 academic/templates/academic/procedure_steps.html:32
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -47,7 +47,7 @@ msgid "title"
 msgstr "Título"
 
 #: academic/models.py:11 academic/models.py:25
-#: academic/templates/academic/procedure_list.html:26
+#: academic/templates/academic/procedure_list.html:20
 msgid "Title"
 msgstr "Título"
 
@@ -97,9 +97,9 @@ msgstr "Observaciones del procedimiento"
 msgid "Procedure Observations"
 msgstr "Observaciones del procedimiento"
 
-#: academic/models.py:76 academic/templates/academic/procedure_steps.html:40
+#: academic/models.py:76 academic/templates/academic/procedure_steps.html:31
 #: academic/templates/academic/substance/detail_substance.html:10
-#: academic/templates/academic/substance/list_substance.html:26
+#: academic/templates/academic/substance/list_substance.html:25
 msgid "Name"
 msgstr "Nombre"
 
@@ -173,6 +173,7 @@ msgid "Is precursor"
 msgstr "¿Es precursor"
 
 #: academic/models.py:130
+#: academic/templates/academic/substance/danger_indication.html:12
 #: academic/templates/academic/substance/sga_complements.html:9
 msgid "Danger Indication"
 msgstr ""
@@ -223,16 +224,16 @@ msgstr "Fecha:"
 msgid "Observation"
 msgstr "Observaciones"
 
-#: academic/models.py:153 academic/templates/academic/detail.html:61
-#: academic/templates/academic/procedure_steps.html:61
+#: academic/models.py:153 academic/templates/academic/detail.html:54
+#: academic/templates/academic/procedure_steps.html:52
 #: academic/templates/academic/step_modal.html:32
-#: academic/templates/academic/substance/detail.html:25
+#: academic/templates/academic/substance/detail.html:28
 msgid "Observations"
 msgstr "Observaciones"
 
 #: academic/substance/views.py:171
 msgid "The substance is removed successfully"
-msgstr ""
+msgstr "La sustancia fue eliminada con éxito"
 
 #: academic/substance/views.py:213
 msgid "Create Warning Word"
@@ -246,46 +247,46 @@ msgstr "Crear indicación de peligro"
 msgid "Create Prudence Advice"
 msgstr "Crear consejo de prudencia"
 
-#: academic/substance/views.py:333
+#: academic/substance/views.py:340
 msgid "Update the Warning Word"
 msgstr "Actualizar palabra de advertencia"
 
-#: academic/substance/views.py:353
+#: academic/substance/views.py:361
 msgid "Update the Prudence Advice"
 msgstr "Actualizar consejo de prudencia"
 
-#: academic/substance/views.py:373
+#: academic/substance/views.py:382
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
 
-#: academic/substance/views.py:409 academic/substance/views.py:464
+#: academic/substance/views.py:418 academic/substance/views.py:474
 msgid "Invalid form"
-msgstr ""
+msgstr "Formularion inválido"
 
-#: academic/templates/academic/detail.html:16
-#: academic/templates/academic/detail.html:38
-#: academic/templates/academic/detail.html:39
-#: academic/templates/academic/substance/danger_indication.html:29
-#: academic/templates/academic/substance/list_substance.html:39
-#: academic/templates/academic/substance/observations.html:98
-#: academic/templates/academic/substance/prudence_advice.html:29
-#: academic/templates/academic/substance/warning_words.html:27
+#: academic/templates/academic/detail.html:12
+#: academic/templates/academic/detail.html:31
+#: academic/templates/academic/detail.html:32
+#: academic/templates/academic/substance/danger_indication.html:31
+#: academic/templates/academic/substance/list_substance.html:38
+#: academic/templates/academic/substance/observations.html:97
+#: academic/templates/academic/substance/prudence_advice.html:32
+#: academic/templates/academic/substance/warning_words.html:30
 msgid "Edit"
 msgstr "Editar"
 
-#: academic/templates/academic/detail.html:28
+#: academic/templates/academic/detail.html:21
 msgid "Steps"
 msgstr "Pasos"
 
-#: academic/templates/academic/detail.html:35
+#: academic/templates/academic/detail.html:28
 msgid "remove"
-msgstr ""
+msgstr "Eliminar"
 
-#: academic/templates/academic/detail.html:48
+#: academic/templates/academic/detail.html:41
 msgid "Required objects"
 msgstr "Objetos requeridos"
 
-#: academic/templates/academic/detail.html:73
+#: academic/templates/academic/detail.html:71
 msgid "Back to list"
 msgstr "Volver a la lista"
 
@@ -293,66 +294,65 @@ msgstr "Volver a la lista"
 msgid "Detail of"
 msgstr "Detalle de"
 
-#: academic/templates/academic/procedure_create.html:27
-#: academic/templates/academic/procedure_steps.html:26
+#: academic/templates/academic/procedure_create.html:26
+#: academic/templates/academic/procedure_steps.html:19
 #: academic/templates/academic/step_modal.html:45
-#: academic/templates/academic/substance/sga_components.html:28
+#: academic/templates/academic/substance/sga_components.html:26
 #: academic/templates/academic/substance/step_three.html:66
 msgid "Save"
 msgstr "Guardar"
 
-#: academic/templates/academic/procedure_list.html:28
-#: academic/templates/academic/procedure_steps.html:42
-#: academic/templates/academic/procedure_steps.html:68
+#: academic/templates/academic/procedure_list.html:22
+#: academic/templates/academic/procedure_steps.html:33
+#: academic/templates/academic/procedure_steps.html:57
 #: academic/templates/academic/substance/check_substances.html:24
-#: academic/templates/academic/substance/danger_indication.html:19
-#: academic/templates/academic/substance/list_substance.html:29
+#: academic/templates/academic/substance/danger_indication.html:21
+#: academic/templates/academic/substance/list_substance.html:28
 msgid "Actions"
 msgstr "Acciones"
 
-#: academic/templates/academic/procedure_list.html:52
+#: academic/templates/academic/procedure_list.html:55
 #, fuzzy
 #| msgid "Observations"
 msgid "Reservation"
 msgstr "Observaciones"
 
-#: academic/templates/academic/procedure_list.html:53
-#: academic/templates/academic/procedure_list.html:70
+#: academic/templates/academic/procedure_list.html:56
+#: academic/templates/academic/procedure_list.html:73
 #: academic/templates/academic/step_modal.html:9
 #: academic/templates/academic/step_modal.html:20
 #: academic/templates/academic/step_modal.html:33
 #: academic/templates/academic/step_modal.html:44
 #: academic/templates/academic/step_modal.html:58
 #: academic/templates/academic/step_modal.html:67
-#: academic/templates/academic/substance/create_sustance.html:101
-#: academic/templates/academic/substance/list_substance.html:64
-#: academic/templates/academic/substance/list_substance.html:72
-#: academic/templates/academic/substance/observations.html:96
+#: academic/templates/academic/substance/create_sustance.html:94
+#: academic/templates/academic/substance/list_substance.html:69
+#: academic/templates/academic/substance/observations.html:95
 #: academic/templates/academic/substance/step_four.html:400
 msgid "Close"
 msgstr "Cerrar"
 
-#: academic/templates/academic/procedure_list.html:71
+#: academic/templates/academic/procedure_list.html:74
 #: academic/templates/academic/step_modal.html:21
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: academic/templates/academic/procedure_steps.html:34
+#: academic/templates/academic/procedure_steps.html:27
 #, fuzzy
 #| msgid "Objects"
 msgid "Object List"
 msgstr "Objetos"
 
-#: academic/templates/academic/procedure_steps.html:50
-#: academic/templates/academic/procedure_steps.html:75
-#: academic/templates/academic/substance/list_substance.html:73
+#: academic/templates/academic/procedure_steps.html:41
+#: academic/templates/academic/procedure_steps.html:64
+#: academic/templates/academic/substance/list_substance.html:70
 msgid "Delete"
 msgstr "Eliminar"
 
-#: academic/templates/academic/procedure_steps.html:55
-#: academic/templates/academic/procedure_steps.html:80
+#: academic/templates/academic/procedure_steps.html:46
+#: academic/templates/academic/procedure_steps.html:69
 msgid "Crear"
-msgstr ""
+msgstr "Crear"
 
 #: academic/templates/academic/step_modal.html:8
 msgid "Objects"
@@ -360,13 +360,13 @@ msgstr "Objetos"
 
 #: academic/templates/academic/step_modal.html:57
 msgid "Eliminar Objecto"
-msgstr ""
+msgstr "Eliminar Objeto"
 
 #: academic/templates/academic/step_modal.html:68
-#: academic/templates/academic/substance/list_substance.html:41
-#: academic/templates/academic/substance/observations.html:97
+#: academic/templates/academic/substance/list_substance.html:40
+#: academic/templates/academic/substance/observations.html:96
 msgid "Remove"
-msgstr ""
+msgstr "Eliminar"
 
 #: academic/templates/academic/substance/check_substances.html:12
 #: academic/templates/academic/substance/list_substance.html:11
@@ -375,28 +375,28 @@ msgstr "Listado de Sustancias"
 
 #: academic/templates/academic/substance/check_substances.html:23
 msgid "Substances"
-msgstr ""
+msgstr "Sustancias"
 
 #: academic/templates/academic/substance/check_substances.html:34
 #: academic/templates/academic/substance/check_substances.html:76
 msgid "Approve"
-msgstr ""
+msgstr "Aprobar"
 
 #: academic/templates/academic/substance/check_substances.html:35
 msgid "Detail"
 msgstr "Detalle"
 
 #: academic/templates/academic/substance/check_substances.html:37
-#: academic/templates/academic/substance/check_substances.html:56
-#: academic/templates/academic/substance/list_substance.html:43
-#: academic/templates/academic/substance/list_substance.html:85
+#: academic/templates/academic/substance/check_substances.html:55
+#: academic/templates/academic/substance/list_substance.html:42
+#: academic/templates/academic/substance/list_substance.html:81
 #, fuzzy
 #| msgid "Review"
 msgid "Preview"
 msgstr "Revisión"
 
 #: academic/templates/academic/substance/check_substances.html:38
-#: academic/templates/academic/substance/list_substance.html:44
+#: academic/templates/academic/substance/list_substance.html:43
 #, fuzzy
 #| msgid "General use"
 msgid "Generate PNG"
@@ -404,14 +404,14 @@ msgstr "Uso general"
 
 #: academic/templates/academic/substance/check_substances.html:39
 #: academic/templates/academic/substance/check_substances.html:41
-#: academic/templates/academic/substance/list_substance.html:45
-#: academic/templates/academic/substance/list_substance.html:47
+#: academic/templates/academic/substance/list_substance.html:44
+#: academic/templates/academic/substance/list_substance.html:46
 #, fuzzy
 #| msgid "General use"
 msgid "Generate PDF"
 msgstr "Uso general"
 
-#: academic/templates/academic/substance/check_substances.html:71
+#: academic/templates/academic/substance/check_substances.html:70
 #: academic/templates/academic/substance/pdf/section_eight.html:9
 #: academic/templates/academic/substance/pdf/section_three.html:4
 #, fuzzy
@@ -419,110 +419,99 @@ msgid "Substance"
 msgstr "Eliminar sustancia"
 
 #: academic/templates/academic/substance/create_sustance.html:13
-#: academic/templates/academic/substance/create_sustance.html:14
-#, fuzzy
-#| msgid "Help us!"
-msgid "Help"
-msgstr "¡Colabora!"
-
-#: academic/templates/academic/substance/create_sustance.html:20
 #, fuzzy
 #| msgid "Solution management"
 msgid "Substance Management"
 msgstr "Administración de soluciones"
 
-#: academic/templates/academic/substance/create_sustance.html:63
+#: academic/templates/academic/substance/create_sustance.html:56
 msgid "Representing Chemical Substances in pyEQL"
-msgstr ""
+msgstr "Representación Química de las sustancia en pyEQL"
 
-#: academic/templates/academic/substance/create_sustance.html:70
+#: academic/templates/academic/substance/create_sustance.html:63
 msgid ""
-"pyEQL interprets the chemical formula of a substance to calculate its "
-"molecular\n"
-"            weight and formal charge. The formula is also used as a key to "
-"search the\n"
-"            database for parameters (e.g. diffusion coefficient) that are "
-"used in subsequent\n"
+"pyEQL interprets the chemical formula of a substance to calculate its molecular\n"
+"            weight and formal charge. The formula is also used as a key to search the\n"
+"            database for parameters (e.g. diffusion coefficient) that are used in subsequent\n"
 "            calculations."
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:75
+#: academic/templates/academic/substance/create_sustance.html:68
 msgid "How to Enter Valid Chemical Formulas"
-msgstr ""
+msgstr "Cómo escribir una fórmula válida"
 
-#: academic/templates/academic/substance/create_sustance.html:76
+#: academic/templates/academic/substance/create_sustance.html:69
 msgid ""
-"Generally speaking, type the chemical formula of your solute the “normal” "
-"way\n"
+"Generally speaking, type the chemical formula of your solute the “normal” way\n"
 "            and pyEQL should be able to interpret it. Here are some examples:"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:79
+#: academic/templates/academic/substance/create_sustance.html:72
 msgid "Sodium Chloride - NaCl"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:80
+#: academic/templates/academic/substance/create_sustance.html:73
 msgid "Sodium Sulfate - Na(SO4)2"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:81
+#: academic/templates/academic/substance/create_sustance.html:74
 msgid "Methanol - CH4OH or CH5O"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:82
+#: academic/templates/academic/substance/create_sustance.html:75
 msgid "Magnesium Ion - Mg+2"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:83
+#: academic/templates/academic/substance/create_sustance.html:76
 msgid "Chloride Ion - Cl-"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:85
+#: academic/templates/academic/substance/create_sustance.html:78
 #, fuzzy
 #| msgid "Formula"
 msgid "Formula Rules:"
 msgstr "Fórmula"
 
-#: academic/templates/academic/substance/create_sustance.html:87
+#: academic/templates/academic/substance/create_sustance.html:80
 msgid "Are composed of valid atomic symbols that start with capital letters"
-msgstr ""
+msgstr "Están compuestas por symbolos atómicos válidos que inician con letra capital"
 
-#: academic/templates/academic/substance/create_sustance.html:88
+#: academic/templates/academic/substance/create_sustance.html:81
 msgid "Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:89
+#: academic/templates/academic/substance/create_sustance.html:82
 msgid ""
 "If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘\n"
-"            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a "
-"series of\n"
+"            (e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of\n"
 "            charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’)"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:92
+#: academic/templates/academic/substance/create_sustance.html:85
 msgid "Formula must contain matching numbers of ‘(‘ and ‘)’"
 msgstr ""
 
-#: academic/templates/academic/substance/create_sustance.html:93
+#: academic/templates/academic/substance/create_sustance.html:86
 msgid "Open parentheses must precede closed parentheses"
 msgstr ""
 
-#: academic/templates/academic/substance/danger_indication.html:12
-#: academic/templates/academic/substance/list_substance.html:20
-#: academic/templates/academic/substance/observations.html:75
-#: academic/templates/academic/substance/prudence_advice.html:12
+#: academic/templates/academic/substance/danger_indication.html:14
+#: academic/templates/academic/substance/list_substance.html:19
+#: academic/templates/academic/substance/observations.html:74
+#: academic/templates/academic/substance/prudence_advice.html:14
 #: academic/templates/academic/substance/step_four.html:38
 #: academic/templates/academic/substance/step_four.html:399
-#: academic/templates/academic/substance/warning_words.html:12
+#: academic/templates/academic/substance/warning_words.html:14
 msgid "Add"
 msgstr "Agregar"
 
-#: academic/templates/academic/substance/danger_indication.html:16
+#: academic/templates/academic/substance/danger_indication.html:18
 msgid "Code"
 msgstr "Código"
 
-#: academic/templates/academic/substance/danger_indication.html:18
+#: academic/templates/academic/substance/danger_indication.html:20
 #: academic/templates/academic/substance/sga_complements.html:3
+#: academic/templates/academic/substance/warning_words.html:12
 #, fuzzy
 #| msgid "Create Warning Word"
 msgid "Warning Words"
@@ -534,54 +523,52 @@ msgstr "Informacion sobre la sustancia"
 
 #: academic/templates/academic/substance/detail_substance.html:41
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: academic/templates/academic/substance/detail_substance.html:74
 msgid "White Organ"
-msgstr ""
+msgstr "Organo blanco"
 
 #: academic/templates/academic/substance/detail_substance.html:89
 msgid "Bioaccomulable"
-msgstr ""
+msgstr "Bioacumulable"
 
-#: academic/templates/academic/substance/list_substance.html:20
+#: academic/templates/academic/substance/list_substance.html:19
 msgid "Add new Substance"
-msgstr ""
+msgstr "Nueva sustancia"
+
+#: academic/templates/academic/substance/list_substance.html:26
+msgid "Cas code"
+msgstr "Código CAS"
 
 #: academic/templates/academic/substance/list_substance.html:27
-msgid "Cas code"
-msgstr ""
-
-#: academic/templates/academic/substance/list_substance.html:28
-msgid "Status"
+#, fuzzy
+#| msgid "Status"
+msgid "State"
 msgstr "Estado"
 
-#: academic/templates/academic/substance/list_substance.html:40
+#: academic/templates/academic/substance/list_substance.html:39
 msgid "Review"
 msgstr "Revisión"
 
-#: academic/templates/academic/substance/list_substance.html:63
+#: academic/templates/academic/substance/list_substance.html:62
 #, fuzzy
 msgid "Delete Substance"
 msgstr "Eliminar sustancia"
 
-#: academic/templates/academic/substance/list_substance.html:69
+#: academic/templates/academic/substance/list_substance.html:66
 msgid "¿You want to remove the substance?"
-msgstr ""
+msgstr "¿Quieres eliminar la sustancia?"
 
 #: academic/templates/academic/substance/observations.html:6
-msgid ""
-"If you want to edit or delete the observations that you have created, you "
-"must double click on it"
-msgstr ""
-"Si desea editar o eliminar los observaciones que usted ha creado debe dar "
-"doble click sobre el mismo"
+msgid "If you want to edit or delete the observations that you have created, you must double click on it"
+msgstr "Si desea editar o eliminar los observaciones que usted ha creado debe dar doble click sobre el mismo"
 
-#: academic/templates/academic/substance/observations.html:54
+#: academic/templates/academic/substance/observations.html:57
 msgid "New observation"
 msgstr "Nueva observación"
 
-#: academic/templates/academic/substance/observations.html:89
+#: academic/templates/academic/substance/observations.html:87
 msgid "Edit observation"
 msgstr "Editar observación"
 
@@ -669,7 +656,7 @@ msgstr "Controles de la exposición"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:55
 msgid "Appropriate technical controls"
-msgstr ""
+msgstr "Controles técnicos apropiados"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:57
 #: academic/templates/academic/substance/pdf/section_eight.html:63
@@ -762,11 +749,11 @@ msgstr "Sin datos disponibles"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:61
 msgid "Eye/face protection"
-msgstr ""
+msgstr "Protección Ojos/Cara"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:66
 msgid "Skin protection"
-msgstr ""
+msgstr "Proteción de piel"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:71
 #, fuzzy
@@ -776,7 +763,7 @@ msgstr "Controles de exposición/protección individual"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:76
 msgid "Breath protection"
-msgstr ""
+msgstr "Protección pulmonar"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:81
 #, fuzzy
@@ -806,7 +793,7 @@ msgstr "Información sobre los efectos toxicológicos"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:6
 msgid "Acute toxicity"
-msgstr ""
+msgstr "Toxicidad aguda"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:10
 msgid "Skin corrosion or irritation"
@@ -820,15 +807,15 @@ msgstr "Corrosión o irritación cutáneas"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:18
 msgid "Respiratory or skin sensitization"
-msgstr ""
+msgstr "Sanitización de respiratoria o de piel"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:22
 msgid "Germ cell mutagenicity"
-msgstr ""
+msgstr "Mutagenicidad en células germinales"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:26
 msgid "Carcinogenicity"
-msgstr ""
+msgstr "Carcinogenicidad"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:30
 #, fuzzy
@@ -858,9 +845,7 @@ msgid "Regulatory information"
 msgstr "Información reglamentaria"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:4
-msgid ""
-"Regulations and legislation on safety, health and the environment specific "
-"to the substance or mixture"
+msgid "Regulations and legislation on safety, health and the environment specific to the substance or mixture"
 msgstr ""
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:8
@@ -946,9 +931,7 @@ msgid "Other Causes"
 msgstr "Otros Peligros"
 
 #: academic/templates/academic/substance/pdf/section_four.html:43
-msgid ""
-"Indication of any medical attention and special treatment that should be "
-"provided immediately"
+msgid "Indication of any medical attention and special treatment that should be provided immediately"
 msgstr ""
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:2
@@ -1092,12 +1075,8 @@ msgid "Other security information"
 msgstr "Otra información"
 
 #: academic/templates/academic/substance/pdf/section_one.html:3
-msgid ""
-"SECTION 1: Identification of the substance or mixture and of the company or "
-"undertaking"
-msgstr ""
-"SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la "
-"empresa"
+msgid "SECTION 1: Identification of the substance or mixture and of the company or undertaking"
+msgstr "SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la empresa"
 
 #: academic/templates/academic/substance/pdf/section_one.html:5
 #: academic/templates/academic/substance/step_four.html:22
@@ -1126,11 +1105,8 @@ msgid "Number Index"
 msgstr ""
 
 #: academic/templates/academic/substance/pdf/section_one.html:33
-msgid ""
-"Relevant identified uses of the substance or mixture and uses advised against"
-msgstr ""
-"Usos pertinentes identificados de la sustancia o de la mezcla y usos "
-"desaconsejados"
+msgid "Relevant identified uses of the substance or mixture and uses advised against"
+msgstr "Usos pertinentes identificados de la sustancia o de la mezcla y usos desaconsejados"
 
 #: academic/templates/academic/substance/pdf/section_one.html:37
 msgid "Details of the supplier of the safety data sheet"
@@ -1352,8 +1328,7 @@ msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
 
 #: academic/templates/academic/substance/pdf/section_two.html:11
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
-msgstr ""
-"Clasificación de acuerdo con las Directivas de la UE 67/548/CEE ó 1999/45/CE"
+msgstr "Clasificación de acuerdo con las Directivas de la UE 67/548/CEE ó 1999/45/CE"
 
 #: academic/templates/academic/substance/pdf/section_two.html:15
 msgid "Label elements"
@@ -1389,7 +1364,13 @@ msgstr "Crear consejo de prudencia"
 msgid "Other dangers"
 msgstr "Otros Peligros"
 
-#: academic/templates/academic/substance/prudence_advice.html:27
+#: academic/templates/academic/substance/prudence_advice.html:12
+#, fuzzy
+#| msgid "Create Prudence Advice"
+msgid "Prudence Advices"
+msgstr "Crear consejo de prudencia"
+
+#: academic/templates/academic/substance/prudence_advice.html:30
 msgid "Unknown"
 msgstr ""
 
@@ -1462,789 +1443,6 @@ msgstr "Información Comercial"
 msgid "Security Leafs"
 msgstr "Hojas de Seguridad"
 
-#: academic/views.py:128
+#: academic/views.py:134
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
-
-#, fuzzy
-#~| msgid "Descriptive name of the solution"
-#~ msgid "Description of the Substance"
-#~ msgstr "Nombre descriptivo para la solución"
-
-#, fuzzy
-#~ msgid "Delete furniture"
-#~ msgstr "Eliminar pieza de mueble"
-
-#~ msgid "¿Do you want to remove the substance?"
-#~ msgstr "¿Deseas eliminar la sustancia?"
-
-#~ msgid "Provider"
-#~ msgstr "Proveedores"
-
-#~ msgid "Don't exist this object in the inventory"
-#~ msgstr "No existe ese objeto en el inventario"
-
-#~ msgid "List of"
-#~ msgstr "Lista de"
-
-#~ msgid "Create new "
-#~ msgstr "Crear nuevo"
-
-#~ msgid "Steps Details"
-#~ msgstr "Detalle de pasos"
-
-#~ msgid "New Steps"
-#~ msgstr "Nuevo paso"
-
-#~ msgid "No items yet."
-#~ msgstr "Todavía no hay elementos"
-
-#~ msgid "Can see available Procedure"
-#~ msgstr "Puede ver Procedure disponibles"
-
-#~ msgid "Can see available ProcedureStep"
-#~ msgstr "Puede ver ProcedureStep disponibles"
-
-#~ msgid "Can see available ProcedureRequiredObject"
-#~ msgstr "Puede ver ProcedureRequiredObject disponibles"
-
-#~ msgid "Can see available ProcedureObservations"
-#~ msgstr "Puede ver ProcedureObservations disponibles"
-
-#~ msgid "Organilab Administration site"
-#~ msgstr "Sitio administrativo de Organilab"
-
-#~ msgid "Search by name, code or CAS number"
-#~ msgstr "Buscar por nombre, código o número de CAS"
-
-#~ msgid "Security equipment"
-#~ msgstr "Equipo de seguridad"
-
-#~ msgid "Analytic Chemistry"
-#~ msgstr "Química analítica"
-
-#~ msgid "Organic Chemistry"
-#~ msgstr "Química orgánica"
-
-#~ msgid "Physical Chemistry"
-#~ msgstr "Química física"
-
-#~ msgid "Chemical and Biological process"
-#~ msgstr "Proceso biológico y químico"
-
-#~ msgid "Industrial Biotechnology"
-#~ msgstr "Biotecnología industrial"
-
-#~ msgid "Biochemistry"
-#~ msgstr "Bioquímica"
-
-#~ msgid "Water Chemistry"
-#~ msgstr "Química del agua"
-
-#~ msgid "Other"
-#~ msgstr "Otro"
-
-#~ msgid "Object feature"
-#~ msgstr "Característica del objeto"
-
-#~ msgid "Object features"
-#~ msgstr "Características del objeto"
-
-#~ msgid "Material"
-#~ msgstr "Material"
-
-#~ msgid "Equipment"
-#~ msgstr "Equipo"
-
-#~ msgid "Type"
-#~ msgstr "Tipo"
-
-#~ msgid "IMDG code"
-#~ msgstr "Código IMDG"
-
-#~ msgid "Meters"
-#~ msgstr "Metros"
-
-#~ msgid "Milimeters"
-#~ msgstr "Milímetros"
-
-#~ msgid "Centimeters"
-#~ msgstr "Centímetros"
-
-#~ msgid "Liters"
-#~ msgstr "Litros"
-
-#~ msgid "Mililiters"
-#~ msgstr "Mililitros"
-
-#~ msgid "Limit material quantity"
-#~ msgstr "Cantidad límite de material"
-
-#~ msgid "Shelf object"
-#~ msgstr "Estante del objeto"
-
-#~ msgid "Shelf objects"
-#~ msgstr "Estante de los objetos"
-
-#~ msgid "Laboratory Room"
-#~ msgstr "Sala de laboratorio"
-
-#~ msgid "Laboratory Rooms"
-#~ msgstr "Salas de laboratorio"
-
-#~ msgid "Space"
-#~ msgstr "Espacio"
-
-#~ msgid "Drawer"
-#~ msgstr "Cajón"
-
-#~ msgid "Shelf"
-#~ msgstr "Estante"
-
-#~ msgid "Shelves"
-#~ msgstr "Estantería"
-
-#~ msgid "Furniture"
-#~ msgstr "Mueble"
-
-#~ msgid "Data configuration"
-#~ msgstr "Configuración de datos"
-
-#~ msgid "Piece of furniture"
-#~ msgstr "Pieza de mueble"
-
-#~ msgid "Laboratory name"
-#~ msgstr "Nombre del laboratorio"
-
-#~ msgid "Laboratory"
-#~ msgstr "Laboratorio"
-
-#~ msgid "Laboratories"
-#~ msgstr "Laboratorios"
-
-#~ msgid "Explanation"
-#~ msgstr "Explicación"
-
-#~ msgid "Related file"
-#~ msgstr "Archivo relacionado"
-
-#~ msgid "Feedback entry"
-#~ msgstr "Entrada de retroalimentación"
-
-#~ msgid "Feedback entries"
-#~ msgstr "Entradas de retroalimentación"
-
-#~ msgid "Solutes"
-#~ msgstr "Solutos"
-
-#~ msgid "Volumen"
-#~ msgstr "Volumen"
-
-#~ msgid "Temperature"
-#~ msgstr "Temperatura"
-
-#~ msgid "Pressure"
-#~ msgstr "Presión"
-
-#~ msgid "Solution"
-#~ msgstr "Solución"
-
-#~ msgid "Hello!"
-#~ msgstr "¡Hola!"
-
-#~ msgid ""
-#~ "Welcome to Organilab, the simple laboratory organizer. Let's take a look "
-#~ "of the main features of this system"
-#~ msgstr ""
-#~ "Bienvenido a Organilab, el simple organizador de laboratorio. Veamos las "
-#~ "características principales de este sistema."
-
-#~ msgid ""
-#~ "The laboratory view is Organilab's main feature because it offers a "
-#~ "general view of the structure of the laboratory for its management"
-#~ msgstr ""
-#~ "La vista de laboratorio es el pilar principal de Organilab porque ofrece "
-#~ "una vista general de la estructura del laboratorio para llevar a cabo su "
-#~ "administración"
-
-#~ msgid "Management"
-#~ msgstr "Administración"
-
-#~ msgid ""
-#~ "In the management views you can find everything you need to control the "
-#~ "components of the laboratory, from rooms to objects."
-#~ msgstr ""
-#~ "En las vistas de administración puedes encontrar lo que necesitas para "
-#~ "controlar los componentes del laboratorio, desde las salas hasta objetos."
-
-#~ msgid "Reports"
-#~ msgstr "Reportes"
-
-#~ msgid ""
-#~ "If you need a full inventory of the whole laboratory or an specific "
-#~ "component, this is the place to do it"
-#~ msgstr ""
-#~ "Si necesitas un inventorio completo del laboratorio o de un componente "
-#~ "específico, este es el lugar para hacerlo"
-
-#~ msgid "Select laboratory"
-#~ msgstr "Seleccione su laboratorio"
-
-#~ msgid ""
-#~ "You can have access to multiple laboratories, select the one you want to "
-#~ "manage by clicking this link"
-#~ msgstr ""
-#~ "Puedes tener acceso a multiples laboratorios, selecciona el que deseas "
-#~ "haciendo click aquí"
-
-#~ msgid "Laboratory view"
-#~ msgstr "Vista de laboratorio"
-
-#~ msgid ""
-#~ "In this view you can manage most of the components related to the lab, "
-#~ "including its rooms, furniture and objects"
-#~ msgstr ""
-#~ "En esta vista puedes administrar la mayoría de los componentes "
-#~ "relacionados con el laboratorio, incluyendo sus salas, muebles y objetos."
-
-#~ msgid "Management views"
-#~ msgstr "Vistas de administración"
-
-#~ msgid ""
-#~ "This views manage the different objects handled by the Organilab system "
-#~ "for the current laboratory"
-#~ msgstr ""
-#~ "Estas vistas permiten administrar los diferentes objectos manipulados por "
-#~ "el sistema Organilab para el laboratorio actual"
-
-#~ msgid ""
-#~ "Here you can see and retrieve the reports generated by the different "
-#~ "components handled and saved in the Organilab system"
-#~ msgstr ""
-#~ "Aquí puedes ver y obtener los reportes generados a partir de los "
-#~ "diferentes componentes manipulados y guardados en el sistema Organilab"
-
-#~ msgid ""
-#~ "In this view you can check out all the reservations related to you and "
-#~ "their current status."
-#~ msgstr ""
-#~ "En esta vista puedes revisar todas las reservaciones relacionadas contigo "
-#~ "y su estado actual"
-
-#~ msgid "Reservation administration"
-#~ msgstr "Administración de reservaciones"
-
-#~ msgid ""
-#~ "Here you create and finish a given reservation registered in the "
-#~ "Organilab system"
-#~ msgstr ""
-#~ "Aquí puedes crear y finalizar una reservación registrada en el sistema "
-#~ "Organilab"
-
-#~ msgid ""
-#~ "If you have an issue testing or using Organilab, let us know. We'll be "
-#~ "eager to help you"
-#~ msgstr ""
-#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber. "
-#~ "Estaremos ansiosos por corregirlo."
-
-#~ msgid "Please use an email client with HTML support"
-#~ msgstr "Por favor use un cliente con soporte a HTML"
-
-#~ msgid "Hi,"
-#~ msgstr "Hola"
-
-#~ msgid ""
-#~ "You have received this email because you are in charge of a laboratory in "
-#~ "the Organilab system."
-#~ msgstr ""
-#~ "Usted ha recibido este correo porque tiene un cambio en un laboratorio en "
-#~ "el sistema Organilab."
-
-#~ msgid ""
-#~ "This message is to notify you that one or more of the shelf objects of "
-#~ "your laboratory has reached its limit"
-#~ msgstr ""
-#~ "Este mensaje es para notificarle que uno o más estantes en el laboratorio "
-#~ "han llegado a su cuota mínima"
-
-#~ msgid "This are the details of the products:"
-#~ msgstr "Detalle de los productos"
-
-#~ msgid "Shelf:"
-#~ msgstr "Estante:"
-
-#~ msgid "Object:"
-#~ msgstr "Objeto:"
-
-#~ msgid "Material quantity:"
-#~ msgstr "Cantidad de material:"
-
-#~ msgid "Limit material quantity:"
-#~ msgstr "Cantidad límite de material:"
-
-#~ msgid "Measurement unit:"
-#~ msgstr "Unidad de medida:"
-
-#~ msgid "No shelf objects have reached their limit."
-#~ msgstr "No hay  objetos en mínimos límites."
-
-#~ msgid ""
-#~ "Please refill this product or contact the people that reserved it to "
-#~ "balance the current quantity."
-#~ msgstr ""
-#~ "Por favor recargue este producto o contacte a la persona que pueda "
-#~ "hacerlo."
-
-#~ msgid "Thanks,"
-#~ msgstr "Gracias,"
-
-#~ msgid "Organilab system"
-#~ msgstr "Organilab: Reporte de objetos"
-
-#~ msgid ""
-#~ "This message is to notify you that one of the shelf objects of your "
-#~ "laboratory has reached its limit"
-#~ msgstr ""
-#~ "Este mensaje es para notificarle que uno o más objetos en su laboratorio "
-#~ "están en las cuotas mínimas."
-
-#~ msgid "This are the details of the product:"
-#~ msgstr "Detalle de productos"
-
-#~ msgid "Add Shelf"
-#~ msgstr "Agregar estante"
-
-#~ msgid "Feedback"
-#~ msgstr "Retroalimentación"
-
-#~ msgid "If you had some problem using Organilab, please let us know about it"
-#~ msgstr ""
-#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
-
-#~ msgid "Send"
-#~ msgstr "Enviar"
-
-#~ msgid "Are you sure you want to delete"
-#~ msgstr "¿Está seguro que desea eliminar "
-
-#~ msgid "Confirm"
-#~ msgstr "Confirmar"
-
-#~ msgid "Furniture management"
-#~ msgstr "Administración de muebles"
-
-#~ msgid "PDF"
-#~ msgstr "PDF"
-
-#~ msgid "Laboratory administration"
-#~ msgstr "Administración del laboratorio"
-
-#~ msgid "Furnitures"
-#~ msgstr "Muebles"
-
-#~ msgid "Welcome to the Simple laboratory organizer"
-#~ msgstr "Bienvenido al organizador de laboratorio"
-
-#~ msgid "Login"
-#~ msgstr "Inicio de sesión"
-
-#~ msgid "Laboratory Management"
-#~ msgstr "Administración de laboratorio"
-
-#~ msgid "Previous"
-#~ msgstr "Anterior"
-
-#~ msgid "Next"
-#~ msgstr "Siguiente"
-
-#~ msgid "Delete laboratory room"
-#~ msgstr "Eliminar sala de laboratorio"
-
-#~ msgid "Laboratory room management"
-#~ msgstr "Administración de sala de laboratorio"
-
-#~ msgid "Update"
-#~ msgstr "Editar"
-
-#~ msgid "New"
-#~ msgstr "Nuevo"
-
-#~ msgid "Laboratory rooms"
-#~ msgstr "Salas de laboratorio"
-
-#~ msgid "Please click over furniture items"
-#~ msgstr "Por favor hacer clic sobre los muebles"
-
-#~ msgid "Shelves will be displayed here"
-#~ msgstr "Los muebles se mostrarán aquí"
-
-#~ msgid "Limited shelf objects"
-#~ msgstr "Objetos en el límite"
-
-#~ msgid "All objects"
-#~ msgstr "Todos los objetos"
-
-#~ msgid "All objects in PDF"
-#~ msgstr "Todos los objetos en PDF"
-
-#~ msgid "Quantity:"
-#~ msgstr "Cantidad:"
-
-#~ msgid "Limit quantity:"
-#~ msgstr "Cantidad límite:"
-
-#~ msgid "No objects"
-#~ msgstr "No hay objetos"
-
-#~ msgid "Log in"
-#~ msgstr "Iniciar Sesión"
-
-#~ msgid "Sign in"
-#~ msgstr "Registrarse"
-
-#~ msgid "Objects Management"
-#~ msgstr "Manejo de objetos"
-
-#~ msgid "Delete object feature"
-#~ msgstr "Eliminar características de objeto"
-
-#~ msgid "Object features management"
-#~ msgstr "Administración de características de objetos"
-
-#~ msgid "No object features"
-#~ msgstr "No hay características de objeto"
-
-#~ msgid "Delete object"
-#~ msgstr "Borrar objeto"
-
-#~ msgid "Object management"
-#~ msgstr "Administración de objetos"
-
-#~ msgid "Equipment management"
-#~ msgstr "Administración de Equipos"
-
-#~ msgid "Search"
-#~ msgstr "Buscar"
-
-#~ msgid "Administration"
-#~ msgstr "Administración"
-
-#~ msgid "Laboratory management"
-#~ msgstr "Administración de sala de laboratorio"
-
-#~ msgid "Reactive precursor objects"
-#~ msgstr "Objetos reactivos precursores"
-
-#~ msgid "Finish reservation"
-#~ msgstr "Finalizar reservación"
-
-#~ msgid "Create a reservation"
-#~ msgstr "Crear reservación"
-
-#~ msgid "User:"
-#~ msgstr "Usuario:"
-
-#~ msgid "Log out"
-#~ msgstr "Cerrar Sesión"
-
-#~ msgid "Permission denied"
-#~ msgstr "Permiso denegado"
-
-#~ msgid "You don't have the permissions required to access this section"
-#~ msgstr ""
-#~ "Usted no cuenta con los privilegios suficientes para acceder este "
-#~ "laboratorio"
-
-#~ msgid "Please"
-#~ msgstr "Por favor"
-
-#~ msgid "select"
-#~ msgstr "seleccione"
-
-#~ msgid "one of your labs"
-#~ msgstr "uno de sus laboratorios"
-
-#~ msgid "Not found? include all laboratories"
-#~ msgstr "¿No existe? Incluya todos los laboratorios"
-
-#~ msgid "Name:"
-#~ msgstr "Nombre:"
-
-#~ msgid "Type:"
-#~ msgstr "Tipo:"
-
-#~ msgid "Features:"
-#~ msgstr "Características:"
-
-#~ msgid "No Data"
-#~ msgstr "No hay datos"
-
-#~ msgid "Description:"
-#~ msgstr "Descripción:"
-
-#~ msgid "Molecular formula:"
-#~ msgstr "Fórmula molecular:"
-
-#~ msgid "Furniture report"
-#~ msgstr "Reporte de muebles"
-
-#~ msgid "Download PDF"
-#~ msgstr "Descargar PDF"
-
-#~ msgid "Laboratory room:"
-#~ msgstr "Sala de Laboratorio:"
-
-#~ msgid "Total"
-#~ msgstr "Total"
-
-#~ msgid "objects"
-#~ msgstr "Objetos"
-
-#~ msgid "No object elements"
-#~ msgstr "No hay objetos"
-
-#~ msgid "No shelf elements"
-#~ msgstr "No hay estantes"
-
-#~ msgid "No furniture elements"
-#~ msgstr "No hay piezas de mueble"
-
-#~ msgid "Laboratory report"
-#~ msgstr "Reporte de laboratorio"
-
-#~ msgid "Furniture:"
-#~ msgstr "Mueble:"
-
-#~ msgid "Quantity"
-#~ msgstr "Cantidad"
-
-#~ msgid "No Labs"
-#~ msgstr "No hay laboratorios"
-
-#~ msgid "Reactives report"
-#~ msgstr "Reporte de Reactivos"
-
-#~ msgid "Materials report"
-#~ msgstr "Reporte de Materiales"
-
-#~ msgid "Equipments report"
-#~ msgstr "Reporte de Equipos"
-
-#~ msgid "Objects report"
-#~ msgstr "Reporte de objetos"
-
-#~ msgid "No data"
-#~ msgstr "No hay datos"
-
-#~ msgid "Information"
-#~ msgstr "Información"
-
-#~ msgid "Not found"
-#~ msgstr "No encontrado"
-
-#~ msgid "In all laboratories"
-#~ msgstr "En todos los laboratorios"
-
-#~ msgid "Select your laboratory"
-#~ msgstr "Seleccione su laboratorio"
-
-#~ msgid "Select"
-#~ msgstr "Seleccionar"
-
-#~ msgid "Position:"
-#~ msgstr "Posición:"
-
-#~ msgid "Add Object"
-#~ msgstr "Agregar Objeto"
-
-#~ msgid "Update Object"
-#~ msgstr "Editar Objeto"
-
-#~ msgid "Are you sure?"
-#~ msgstr "¿Está seguro?"
-
-#~ msgid "Are you sure that do you want delete this object"
-#~ msgstr "¿Está seguro que desea eliminar este objeto?"
-
-#~ msgid "Solution calculator"
-#~ msgstr "Calculadora de Disoluciones"
-
-#~ msgid "Calculate"
-#~ msgstr "Calcular"
-
-#~ msgid "Solution detail"
-#~ msgstr "Detalle de la solución"
-
-#~ msgid "Check all the solution results"
-#~ msgstr "Ver todos los resultados de soluciones"
-
-#~ msgid "Calculate new solution"
-#~ msgstr "Calcular una nueva solución"
-
-#~ msgid "Value"
-#~ msgstr "Valor"
-
-#~ msgid "Solution list"
-#~ msgstr "Lista de soluciones"
-
-#~ msgid "Check solution"
-#~ msgstr "Ver solución"
-
-#~ msgid "Organilab Furniture Report"
-#~ msgstr "Organilab: Reporte de Muebles"
-
-#~ msgid "LaboratoryRoom:"
-#~ msgstr "Sala de Laboratorio:"
-
-#~ msgid "Object Code:"
-#~ msgstr "Código de objeto:"
-
-#~ msgid "No Object Elements"
-#~ msgstr "No hay objetos"
-
-#~ msgid "No Shelf Elements"
-#~ msgstr "No hay estantes"
-
-#~ msgid "No Furniture Elements"
-#~ msgstr "No hay elementos en los muebles"
-
-#~ msgid "Organilab Laboratory Report"
-#~ msgstr "Organilab: Reporte de Laboratorio"
-
-#~ msgid "Organilab Objects Report"
-#~ msgstr "Organilab: Reporte de Objetos"
-
-#~ msgid "No Object Features"
-#~ msgstr "Sin Características de objeto"
-
-#~ msgid "No Objects Elements"
-#~ msgstr "No hay Objetos"
-
-#~ msgid "Organilab Shelf Objects Report"
-#~ msgstr "Organilab: Reporte de objetos de estante"
-
-#~ msgid "Organilab Summary Furniture Report"
-#~ msgstr "Organilab: Reporte de Muebles"
-
-#~ msgid "%(value)s is not a valid molecular formula"
-#~ msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
-
-#~ msgid ""
-#~ "Thank you for your help. We are gonna check your problem as soon as we can"
-#~ msgstr ""
-#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
-
-#~ msgid "Invalid format in shelf dataconfig "
-#~ msgstr "Formato inválido en dataconfig del estante"
-
-#~ msgid "Alkalinity"
-#~ msgstr "Alcalinidad"
-
-#~ msgid "Bjerrum length"
-#~ msgstr "Longitud de Bjerrum"
-
-#~ msgid "Charge balance"
-#~ msgstr "Balance de carga"
-
-#~ msgid "Debye length"
-#~ msgstr "Longitud de Debye"
-
-#~ msgid "Dielectric constant"
-#~ msgstr "Constante dieléctrica"
-
-#~ msgid "Hardness"
-#~ msgstr "Dureza"
-
-#~ msgid "Ionic strength"
-#~ msgstr "Fuerza iónica"
-
-#~ msgid "Mass"
-#~ msgstr "Masa"
-
-#~ msgid "Moles solvent"
-#~ msgstr "Moles de disolvente"
-
-#~ msgid "Osmotic coefficient"
-#~ msgstr "Coeficiente osmótico"
-
-#~ msgid "Total moles solute"
-#~ msgstr "Total de moles por soluto"
-
-#~ msgid "Viscosity kinematic"
-#~ msgstr "Viscosidad kinemática"
-
-#~ msgid "Viscosity relative"
-#~ msgstr "Viscosidad relativa"
-
-#~ msgid "Volume"
-#~ msgstr "Volumen"
-
-#~ msgid ""
-#~ "Write in each line the formula along with its amount, separated by a comma"
-#~ msgstr ""
-#~ "Escriba en cada línea la fórmula junto con su cantidad, separada por una "
-#~ "coma"
-
-#~ msgid "For example: 500 mL, 1 L"
-#~ msgstr "Por ejemplo: 500 mL, 1 L"
-
-#~ msgid "In degC"
-#~ msgstr "En degC"
-
-#~ msgid "In atm"
-#~ msgstr "En atm"
-
-#~ msgid "Incorrect solute definition"
-#~ msgstr "Definición incorrecta de soluto"
-
-#~ msgid "There are errors in the solution definition, please try again"
-#~ msgstr "Hay errores en la definición de la solución, intente de nuevo"
-
-#~ msgid "Keyword, for instance Beaker"
-#~ msgstr "Palabra clave, por ejemplo Beaker"
-
-#~ msgid "Organilab Build Report"
-#~ msgstr "Organilab: Reporte de Edificios"
-
-#~ msgid "Furniture Management"
-#~ msgstr "Administración de muebles"
-
-#~ msgid "OBJECTS INFORMATION"
-#~ msgstr "Información de objetos"
-
-#~ msgid "LABORATORYROOM INFORMATION"
-#~ msgstr "Información del Laboratorio:"
-
-#~ msgid "user:"
-#~ msgstr "usuario:"
-
-#~ msgid "Download Object PDF"
-#~ msgstr "Descargar Objecto en PDF"
-
-#~ msgid "Object Features"
-#~ msgstr "Características del objeto"
-
-#~ msgid "Summary Furniture PDF"
-#~ msgstr "Resumen de Mueble PDF"
-
-#~ msgid "Furniture PDF"
-#~ msgstr "Mueble PDF"
-
-#~ msgid "Download Summary PDF"
-#~ msgstr "Descargar PDF Resumido"
-
-#~ msgid "Crate"
-#~ msgstr "Caja"
-
-#~ msgid "General Use"
-#~ msgstr "Uso General"
-
-#~ msgid "Security Equipment"
-#~ msgstr "Equipo de Seguridad"
-
-#~ msgid "Chemical and Biological Process"
-#~ msgstr "Proceso Biológico y Químico"
-
-#~ msgid "FURNITURE INFORMATION"
-#~ msgstr "INFORMACIÓN DE MUEBLE"

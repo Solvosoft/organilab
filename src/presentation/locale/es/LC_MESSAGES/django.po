@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
 "PO-Revision-Date: 2022-11-01 17:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,10 +18,91 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.3\n"
 
+#: presentation/templates/gentelella/app/administration_menu.html:6
+msgid "Administration"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:11
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:16
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:17
+msgid "My laboratories"
+msgstr "Mis Laboratorios"
+
+#: presentation/templates/gentelella/app/administration_menu.html:17
+msgid "View laboratory"
+msgstr "Ver laboratorio"
+
+#: presentation/templates/gentelella/app/administration_menu.html:25
+msgid "Laboratory Management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:33
+msgid "Object management"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:35
+#: presentation/templates/gentelella/app/report_menu.html:41
+msgid "Reactive"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:41
+#: presentation/templates/gentelella/app/report_menu.html:46
+msgid "Material"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:46
+#: presentation/templates/gentelella/app/report_menu.html:51
+msgid "Equipment"
+msgstr ""
+
+#: presentation/templates/gentelella/app/administration_menu.html:55
+msgid "Object features management"
+msgstr ""
+
 #: presentation/templates/gentelella/app/footer.html:4
 #: presentation/templates/gentelella/registration/footer.html:7
 msgid "All Rights Reserved."
 msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:6
+msgid "Reports"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:11
+#: presentation/templates/partials/laboratories_menu.html:5
+msgid "Laboratory"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:14
+#: presentation/templates/gentelella/app/report_menu.html:38
+msgid "Objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:19
+msgid "Principal Technician"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:31
+msgid "Furnitures"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:59
+msgid "Reactive precursor objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:67
+msgid "Object changes"
+msgstr "Movimiento de Objetos"
+
+#: presentation/templates/gentelella/app/report_menu.html:75
+msgid "Limited shelf objects"
+msgstr ""
+
+#: presentation/templates/gentelella/app/report_menu.html:82
+#, fuzzy
+#| msgid "Precursor report"
+msgid "Precursor Report"
+msgstr "Reporte sobre precursores"
 
 #: presentation/templates/gentelella/app/sidebar.html:10
 msgid "user profile icon"
@@ -49,104 +130,42 @@ msgstr ""
 msgid "Feedback"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:17
-msgid "Add Laboratory"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:24
-#: presentation/templates/gentelella/app/top_navigation.html:25
-#: presentation/templates/gentelella/app/top_navigation.html:40
-msgid "My laboratories"
-msgstr "Mis Laboratorios"
-
-#: presentation/templates/gentelella/app/top_navigation.html:35
-msgid "Administration"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:46
-msgid "Laboratory Management"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:52
-msgid "Object management"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:54
-#: presentation/templates/gentelella/app/top_navigation.html:100
-msgid "Reactive"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:56
-#: presentation/templates/gentelella/app/top_navigation.html:102
-msgid "Material"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:58
-#: presentation/templates/gentelella/app/top_navigation.html:104
-msgid "Equipment"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:65
-msgid "Object features management"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:76
-msgid "Reports"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:81
-#: presentation/templates/partials/laboratories_menu.html:5
-msgid "Laboratory"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:83
-#: presentation/templates/gentelella/app/top_navigation.html:98
-msgid "Objects"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:85
-msgid "Principal Technician"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:93
-#: presentation/templates/gentelella/app/top_navigation.html:121
-msgid "Informs"
-msgstr "Informes"
-
-#: presentation/templates/gentelella/app/top_navigation.html:82
-msgid "Furnitures"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:110
-msgid "Reactive precursor objects"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:116
-msgid "Object changes"
-msgstr "Movimiento de Objetos"
-
-#: presentation/templates/gentelella/app/top_navigation.html:122
-msgid "Limited shelf objects"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:127
-#, fuzzy
-#| msgid "Precursor report"
-msgid "Precursor Report"
-msgstr "Reporte sobre precursores"
-
-#: presentation/templates/gentelella/app/top_navigation.html:136
-msgid "My reservations"
-msgstr ""
-
-#: presentation/templates/gentelella/app/top_navigation.html:143
+#: presentation/templates/gentelella/app/top_navigation.html:22
 msgid "Tutorials"
 msgstr ""
 
-#: presentation/templates/gentelella/app/top_navigation.html:147
+#: presentation/templates/gentelella/app/top_navigation.html:26
 #: presentation/templates/gentelella/registration/login.html:43
 #: presentation/templates/gentelella/registration/password_reset_complete.html:15
 msgid "Log in"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:27
+msgid "My reservations"
+msgstr ""
+
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
+msgid "Informs"
+msgstr "Informes"
+
+#: presentation/templates/gentelella/blocks/permissions_management.html:7
+msgid "Permission Management"
+msgstr ""
+
+#: presentation/templates/gentelella/blocks/permissions_management.html:14
+msgid "Permission Type"
+msgstr ""
+
+#: presentation/templates/gentelella/blocks/permissions_management.html:16
+msgid "Group"
+msgstr ""
+
+#: presentation/templates/gentelella/blocks/permissions_management.html:32
+msgid "Close"
+msgstr ""
+
+#: presentation/templates/gentelella/blocks/permissions_management.html:33
+msgid "Save"
 msgstr ""
 
 #: presentation/templates/gentelella/registration/activate.html:11
@@ -203,7 +222,7 @@ msgid "Lost your password?"
 msgstr ""
 
 #: presentation/templates/gentelella/registration/login.html:56
-msgid "Request a demonstration"
+msgid "Register to platform"
 msgstr ""
 
 #: presentation/templates/gentelella/registration/logout.html:15
@@ -235,9 +254,7 @@ msgid "Your username is: "
 msgstr ""
 
 #: presentation/templates/gentelella/registration/new_user.html:11
-msgid ""
-"for security reason password was create randomly and it is not provided "
-"here, please use this link"
+msgid "for security reason password was create randomly and it is not provided here, please use this link"
 msgstr ""
 
 #: presentation/templates/gentelella/registration/new_user.html:13
@@ -293,8 +310,7 @@ msgstr ""
 
 #: presentation/templates/gentelella/registration/password_reset_email.html:13
 msgid ""
-"This email was send because someone try to reset your password, if you "
-"didn't request a reset, please delete this email and do not more actions\n"
+"This email was send because someone try to reset your password, if you didn't request a reset, please delete this email and do not more actions\n"
 "    "
 msgstr ""
 
@@ -328,7 +344,7 @@ msgid "You are now registered. Activation email sent."
 msgstr ""
 
 #: presentation/templates/partials/auth_and_perms.html:6
-msgid "Organizations and perms"
+msgid "Org and perms"
 msgstr ""
 
 #: presentation/templates/partials/auth_and_perms.html:11
@@ -343,6 +359,11 @@ msgstr ""
 #: presentation/templates/partials/derb_menu.html:13
 #: presentation/templates/partials/derb_menu.html:15
 msgid "Report List"
+msgstr ""
+
+#: presentation/templates/partials/derb_menu.html:21
+#: presentation/templates/partials/derb_menu.html:23
+msgid "Report Reactive presence"
 msgstr ""
 
 #: presentation/templates/partials/laboratories_menu.html:10
@@ -455,7 +476,3 @@ msgstr ""
 #: presentation/templates/tutorial.html:7
 msgid "MSDS Files"
 msgstr ""
-
-#: presentation/templates/gentelella/app/administration_menu.html:7
-msgid "View laboratory"
-msgstr "Ver laboratorio"

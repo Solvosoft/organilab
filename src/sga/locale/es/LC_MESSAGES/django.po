@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:05-0600\n"
-"PO-Revision-Date: 2022-11-02 15:01-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
+"PO-Revision-Date: 2022-11-17 15:36-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,15 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: sga/admin.py:18
 msgid "Download Label"
 msgstr "Descargar etiquetas"
 
-#: sga/forms.py:14 sga/forms.py:137 sga/models.py:16 sga/models.py:49 sga/models.py:65 sga/models.py:85 sga/models.py:134
-#: sga/models.py:224 sga/models.py:246 sga/models.py:287 sga/models.py:304 sga/models.py:324 sga/models.py:350
-#: sga/templates/donate_organilab.html:37 sga/templates/list_pictograms.html:26 sga/templates/personal_template.html:41
+#: sga/forms.py:14 sga/forms.py:137 sga/models.py:16 sga/models.py:49
+#: sga/models.py:65 sga/models.py:85 sga/models.py:134 sga/models.py:224
+#: sga/models.py:246 sga/models.py:287 sga/models.py:304 sga/models.py:324
+#: sga/models.py:350 sga/templates/donate_organilab.html:34
+#: sga/templates/list_pictograms.html:21
+#: sga/templates/personal_template.html:39
 msgid "Name"
 msgstr "Nombre"
 
@@ -32,7 +35,7 @@ msgstr "Nombre"
 msgid "Template"
 msgstr "Plantilla"
 
-#: sga/forms.py:140 sga/models.py:326 sga/templates/donate_organilab.html:45
+#: sga/forms.py:140 sga/models.py:326 sga/templates/donate_organilab.html:42
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -40,7 +43,8 @@ msgstr "Cantidad"
 msgid "*Type the amount in dollars"
 msgstr "*Tipo de cantidad en dolares"
 
-#: sga/forms.py:143 sga/models.py:325 sga/models.py:355 sga/templates/donate_organilab.html:41
+#: sga/forms.py:143 sga/models.py:325 sga/models.py:355
+#: sga/templates/donate_organilab.html:38
 msgid "Email"
 msgstr "Correo"
 
@@ -52,7 +56,7 @@ msgstr "Agregarme a la lista de donantes"
 msgid "UIPA name"
 msgstr "Nombre UIPA"
 
-#: sga/forms.py:219
+#: sga/forms.py:218
 msgid "Select Provider"
 msgstr "Seleccione Proveedor"
 
@@ -84,14 +88,13 @@ msgstr "Clases de peligro"
 msgid "Weigth"
 msgstr "Peso"
 
-#: sga/models.py:56 sga/models.py:66 sga/templates/editor/generic.html:6 sga/templates/list_pictograms.html:27
-#, fuzzy
+#: sga/models.py:56 sga/models.py:66 sga/templates/editor/generic.html:6
+#: sga/templates/list_pictograms.html:22
 msgid "Warning Word"
 msgstr "Palabra de advertencia"
 
-#: sga/models.py:57 sga/templates/danger_indication_info.html:40 sga/templates/editor/live.html:3 sga/models.py:61
-#: academic/templates/academic/substance/warning_words.html:12
-
+#: sga/models.py:57 sga/templates/danger_indication_info.html:36
+#: sga/templates/editor/live.html:3
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
@@ -99,7 +102,8 @@ msgstr "Palabras de advertencia"
 msgid "Pictogram"
 msgstr "Pictograma"
 
-#: sga/models.py:76 sga/models.py:106 sga/templates/danger_indication_info.html:28
+#: sga/models.py:76 sga/models.py:106
+#: sga/templates/danger_indication_info.html:23
 msgid "Pictograms"
 msgstr "Pictogramas"
 
@@ -115,8 +119,7 @@ msgstr "Ayuda en los consejos de prudencia"
 msgid "Prudence Advice"
 msgstr "Consejo de prudencia"
 
-#: sga/models.py:96 sga/templates/danger_indication_info.html:57 sga/models.py:100
-#: academic/templates/academic/substance/prudence_advice.html:12
+#: sga/models.py:96 sga/templates/danger_indication_info.html:51
 msgid "Prudence Advices"
 msgstr "Consejos de prudencia"
 
@@ -140,8 +143,7 @@ msgstr "Categorías de peligro"
 msgid "Prudence advice"
 msgstr "Consejos de prudencia"
 
-#: sga/models.py:122 sga/models.py:202 sga/templates/editor/generic.html:9 sga/models.py:127 sga/models.py:209
-#: academic/templates/academic/substance/danger_indication.html:12
+#: sga/models.py:122 sga/models.py:202 sga/templates/editor/generic.html:9
 msgid "Danger Indication"
 msgstr "Indicación de peligro"
 
@@ -222,14 +224,12 @@ msgid "NFPA codes"
 msgstr "Códigos NFPA"
 
 #: sga/models.py:209
-#, fuzzy
-#| msgid "Danger class"
 msgid "Storage class"
-msgstr "Clase de peligro"
+msgstr "Clase de almacenamiento"
 
 #: sga/models.py:210
 msgid "Is Seveso list III?"
-msgstr ""
+msgstr "¿Es Seveso lista III?"
 
 #: sga/models.py:211
 msgid "Number Index"
@@ -249,11 +249,11 @@ msgstr "Concentración"
 
 #: sga/models.py:217
 msgid "Substance characteristic SGA"
-msgstr ""
+msgstr "Característica de sustancia SGA"
 
 #: sga/models.py:218
 msgid "Substance characteristics SGA"
-msgstr ""
+msgstr "Características de sustancia SGA"
 
 #: sga/models.py:225
 msgid "Phone"
@@ -372,14 +372,10 @@ msgid "Donations"
 msgstr "Donaciones"
 
 #: sga/models.py:345
-#, fuzzy
-#| msgid "Other Causes"
 msgid "Other Dangers"
-msgstr "Otras Causas"
+msgstr "Otros peligros"
 
 #: sga/models.py:347
-#, fuzzy
-#| msgid "Warning Word"
 msgid "WarningWord"
 msgstr "Palabra de advertencia"
 
@@ -405,29 +401,27 @@ msgstr "Numero de emergencia"
 
 #: sga/models.py:363
 msgid "No. Registro"
-msgstr ""
+msgstr "No. Registro"
 
 #: sga/models.py:364
 msgid "REACH No."
-msgstr ""
+msgstr "REACH No."
 
 #: sga/models.py:365
-#, fuzzy
-#| msgid "Specific end uses"
 msgid "Identified uses"
 msgstr "Usos específicos finales"
 
 #: sga/models.py:366
 msgid "Reference"
-msgstr ""
+msgstr "Referencia"
 
 #: sga/models.py:369
 msgid "Classification according to Regulation (CE) 1272/2008"
-msgstr ""
+msgstr "Clasificación deacuerdo con la regulación (CE) 1272/2008"
 
 #: sga/models.py:370
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
-msgstr ""
+msgstr "Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
 
 #: sga/models.py:372
 msgid "General recommendations"
@@ -555,7 +549,7 @@ msgstr "Umbral olfativo"
 
 #: sga/models.py:417
 msgid "pH"
-msgstr ""
+msgstr "pH"
 
 #: sga/models.py:418
 msgid "Melting point/ point of freezing"
@@ -742,8 +736,6 @@ msgid "Packaging group"
 msgstr "Grupo embalaje"
 
 #: sga/models.py:471
-#, fuzzy
-#| msgid "Environmental hazards\""
 msgid "Environmental hazards"
 msgstr "Peligros para el medio ambiente"
 
@@ -773,7 +765,7 @@ msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
 
 #: sga/models.py:480
 msgid "Otro datos"
-msgstr ""
+msgstr "Otro datos"
 
 #: sga/models.py:485
 msgid "Note"
@@ -787,13 +779,15 @@ msgstr "Crear  Sustancia"
 msgid "Create New Recipient"
 msgstr "Crear Nuevo Recipiente"
 
-#: sga/templates/add_recipient_size.html:22 sga/templates/add_substance.html:22 sga/templates/donate_organilab.html:24
-#: sga/templates/personal_template.html:116
+#: sga/templates/add_recipient_size.html:22 sga/templates/add_substance.html:22
+#: sga/templates/donate_organilab.html:21
+#: sga/templates/personal_template.html:112
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: sga/templates/add_recipient_size.html:23 sga/templates/add_substance.html:23 sga/templates/donate_organilab.html:25
-#: sga/templates/personal_template.html:88
+#: sga/templates/add_recipient_size.html:23 sga/templates/add_substance.html:23
+#: sga/templates/donate_organilab.html:22
+#: sga/templates/personal_template.html:85
 msgid "Continue"
 msgstr "Continuar"
 
@@ -801,32 +795,33 @@ msgstr "Continuar"
 msgid "Create New Substance"
 msgstr "Crear Nueva Sustancia"
 
-#: sga/templates/danger_indication_info.html:4 sga/templates/index_organilab.html:4
+#: sga/templates/danger_indication_info.html:4
+#: sga/templates/index_organilab.html:8
 msgid "SGA Search"
 msgstr "Buscador SGA"
 
 # Información de las indicaciones de peligro
-#: sga/templates/danger_indication_info.html:10
+#: sga/templates/danger_indication_info.html:9
 msgid "Danger Indication Information"
 msgstr "Información de las indicaciones de peligro"
 
-#: sga/templates/danger_indication_info.html:33
+#: sga/templates/danger_indication_info.html:28
 msgid "Without Pictograms"
 msgstr "Sin Pictogramas"
 
-#: sga/templates/danger_indication_info.html:45
+#: sga/templates/danger_indication_info.html:41
 msgid "Without Warning Words"
 msgstr "Sin palabras de advertencia"
 
-#: sga/templates/danger_indication_info.html:62
+#: sga/templates/danger_indication_info.html:56
 msgid "Without Prudence Advices"
 msgstr "Sin consejos de prudencia"
 
-#: sga/templates/danger_indication_info.html:74
+#: sga/templates/danger_indication_info.html:68
 msgid "Survey"
 msgstr "Encuesta"
 
-#: sga/templates/danger_indication_info.html:80
+#: sga/templates/danger_indication_info.html:72
 msgid ""
 "Are you a professional in chemistry, chemical engineering or industrial maintenance?\n"
 "                        If the answer is yes, we appreciate you completing the following form."
@@ -834,35 +829,35 @@ msgstr ""
 "Es usted profesional en química, ingeniería química o mantenimiento industrial?\n"
 "Si la respuesta es sí le agradecemos llenar el siguiente formulario."
 
-#: sga/templates/danger_indication_info.html:82
+#: sga/templates/danger_indication_info.html:74
 msgid "Go to form"
 msgstr "Ir al formulario"
 
-#: sga/templates/danger_indication_info.html:86
+#: sga/templates/danger_indication_info.html:78
 msgid "Close"
 msgstr "Cerrar"
 
-#: sga/templates/donate_organilab.html:4 sga/views.py:304
+#: sga/templates/donate_organilab.html:4 sga/views.py:309
 msgid "Donate Organilab"
-msgstr ""
+msgstr "Donar a Organilab"
 
-#: sga/templates/donate_organilab.html:10
+#: sga/templates/donate_organilab.html:9
 msgid "Thank for support this project making your donation."
-msgstr ""
+msgstr "Gracias por apoyar este proyecto con una donación."
 
-#: sga/templates/donate_organilab.html:32
+#: sga/templates/donate_organilab.html:30
 msgid "Donation Details"
-msgstr ""
+msgstr "Detalle de la donación"
 
-#: sga/templates/donate_organilab.html:49
+#: sga/templates/donate_organilab.html:46
 msgid "Add to donators list?"
-msgstr ""
+msgstr "Agregar a lista de donantes?"
 
-#: sga/templates/donate_organilab.html:50
+#: sga/templates/donate_organilab.html:47
 msgid "Yes"
 msgstr "Sí"
 
-#: sga/templates/donate_organilab.html:50
+#: sga/templates/donate_organilab.html:47
 msgid "No"
 msgstr "No"
 
@@ -870,31 +865,33 @@ msgstr "No"
 msgid "Available templates"
 msgstr "Plantillas disponibles"
 
-#: sga/templates/editor.html:63
+#: sga/templates/editor.html:60
 msgid "Customize the selected template using the canvas editor and it elements"
 msgstr "Personaliza la plantilla seleccionada usando el editor de cuadro y sus elementos"
 
-#: sga/templates/editor.html:75 sga/templates/template.html:57 sga/templates/template_edit.html:83
+#: sga/templates/editor.html:72 sga/templates/template.html:57
+#: sga/templates/template_edit.html:83
 msgid "General"
 msgstr "General"
 
-#: sga/templates/editor.html:79
+#: sga/templates/editor.html:76
 msgid "Live"
 msgstr "En vivo"
 
-#: sga/templates/editor.html:83
+#: sga/templates/editor.html:80
 msgid "Generic"
 msgstr "Genérico"
 
-#: sga/templates/editor.html:87
+#: sga/templates/editor.html:84
 msgid "Custom"
-msgstr ""
+msgstr "Cliente"
 
-#: sga/templates/editor.html:98
+#: sga/templates/editor.html:95
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
-#: sga/templates/editor.html:99 sga/templates/template.html:65 sga/templates/template_edit.html:91
+#: sga/templates/editor.html:96 sga/templates/template.html:65
+#: sga/templates/template_edit.html:91
 msgid "Save"
 msgstr "Guardar"
 
@@ -922,23 +919,24 @@ msgstr "Teléfono del vendedor"
 msgid "Seler address"
 msgstr "Dirección del vendedor"
 
-#: sga/templates/index_organilab.html:10
+#: sga/templates/index_organilab.html:13
 msgid "SGA Information Searcher"
 msgstr "Buscador de información del SGA"
 
-#: sga/templates/index_organilab.html:11
+#: sga/templates/index_organilab.html:14
 msgid "Enter in the following searcher the danger indication codes (H-Codes)."
 msgstr "Introduzca en el siguiente buscador los códigos de indicación de peligro (Códigos H)."
 
-#: sga/templates/index_organilab.html:23
+#: sga/templates/index_organilab.html:27
 msgid "Search"
 msgstr "Búsqueda"
 
-#: sga/templates/index_organilab.html:27
+#: sga/templates/index_organilab.html:35
 msgid "Donate"
 msgstr "Donar"
 
-#: sga/templates/index_sga.html:11 sga/templates/index_sga.html:24 sga/templates/label_index.html:64
+#: sga/templates/index_sga.html:11 sga/templates/index_sga.html:24
+#: sga/templates/label_index.html:64
 msgid "GHS Label Creator"
 msgstr "Creador de etiquetas del SGA"
 
@@ -959,13 +957,8 @@ msgid "Online GHS Solution"
 msgstr "Solución GHS en línea"
 
 #: sga/templates/index_sga.html:37
-msgid ""
-"Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps "
-"suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance."
-msgstr ""
-"Crear y personalizar una etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA). Por otra parte, este "
-"instrumento ayuda a los proveedores y usuarios intermedios, como los laboratorios, a adoptar rápidamente la nueva norma y "
-"evitar el riesgo de incumplimiento."
+msgid "Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance."
+msgstr "Crear y personalizar una etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los proveedores y usuarios intermedios, como los laboratorios, a adoptar rápidamente la nueva norma y evitar el riesgo de incumplimiento."
 
 #: sga/templates/index_sga.html:38
 msgid "Moreover, the solution contains multiples features:"
@@ -1007,55 +1000,60 @@ msgstr "SGA"
 msgid "List of Pictograms"
 msgstr "Listado de Pictogramas"
 
-#: sga/templates/list_pictograms.html:20
-msgid "Add Pictogram"
-msgstr "Crear Pictograma"
-
-#: sga/templates/list_pictograms.html:20 sga/views.py:460
+#: sga/templates/list_pictograms.html:14 sga/views.py:467
 msgid "Add"
 msgstr "Agregar"
 
-#: sga/templates/list_pictograms.html:28
+#: sga/templates/list_pictograms.html:15
+msgid "Add Pictogram"
+msgstr "Crear Pictograma"
+
+#: sga/templates/list_pictograms.html:23
 msgid "Image"
 msgstr "Imágen"
 
-#: sga/templates/list_pictograms.html:29 sga/templates/personal_template.html:42
+#: sga/templates/list_pictograms.html:24
+#: sga/templates/personal_template.html:40
 msgid "Actions"
 msgstr "Acciones"
 
-#: sga/templates/list_pictograms.html:38 sga/templates/personal_template.html:49 sga/views.py:488
+#: sga/templates/list_pictograms.html:34 sga/templates/list_pictograms.html:37
+#: sga/templates/personal_template.html:47 sga/views.py:495
 msgid "Edit"
 msgstr "Editar"
 
-#: sga/templates/personal_template.html:32
+#: sga/templates/personal_template.html:30
 msgid "List of SGA Labels"
 msgstr "Listado de Etiquetas SGA"
 
-#: sga/templates/personal_template.html:34 sga/templates/personal_template.html:80
+#: sga/templates/personal_template.html:32
+#: sga/templates/personal_template.html:78
 msgid "New SGA Label"
 msgstr "Nueva etiqueta SGA"
 
-#: sga/templates/personal_template.html:50 sga/templates/personal_template.html:67
+#: sga/templates/personal_template.html:48
+#: sga/templates/personal_template.html:64
 msgid "Preview"
 msgstr "Vista previa"
 
-#: sga/templates/personal_template.html:51
+#: sga/templates/personal_template.html:49
 msgid "Generate PNG"
 msgstr "Generar PNG"
 
-#: sga/templates/personal_template.html:52
+#: sga/templates/personal_template.html:50
 msgid "Generate PDF"
 msgstr "Generar PDF"
 
-#: sga/templates/personal_template.html:53 sga/templates/personal_template.html:117
+#: sga/templates/personal_template.html:51
+#: sga/templates/personal_template.html:113
 msgid "Delete"
 msgstr "Borrar"
 
-#: sga/templates/personal_template.html:102
+#: sga/templates/personal_template.html:99
 msgid "Are you sure?"
 msgstr "¿Esta seguro?"
 
-#: sga/templates/personal_template.html:105
+#: sga/templates/personal_template.html:102
 msgid "This action is irreversible"
 msgstr "Esta acción es irreversible"
 
@@ -1084,191 +1082,38 @@ msgstr "Ir al editor"
 msgid "Go to your labels"
 msgstr "Ir a tus etiquetas"
 
-#: sga/views.py:123
+#: sga/views.py:126
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
-#: sga/views.py:216 sga/views.py:256
+#: sga/views.py:221 sga/views.py:261
 msgid "Invalid form"
 msgstr "Formulario Inválido"
 
-#: sga/views.py:323
+#: sga/views.py:328
 msgid "Your donation was completed successfully, thank you for support this project!"
 msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
 
-#: sga/views.py:346
+#: sga/views.py:353
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
 
-#: sga/views.py:348
+#: sga/views.py:355
 msgid "Error, user is not creator label"
 msgstr "Error, usuario no es el creador de la etiqueta"
 
-#: sga/views.py:391
+#: sga/views.py:398
 msgid "The substance saved successfully"
 msgstr "La sustancias fue guardada con éxito"
 
-#: sga/views.py:404
+#: sga/views.py:411
 msgid "The Recipient size saved successfully"
 msgstr "El recipiente fue guardado con éxito"
 
-#: sga/views.py:459
+#: sga/views.py:466
 msgid "Create pictogram"
 msgstr "Crear pictograma"
 
-#: sga/views.py:487
+#: sga/views.py:494
 msgid "Update pictogram"
 msgstr "Actualizar pictograma"
-
-#~ msgid "Other Information"
-#~ msgstr "Otra Informacion"
-
-#~ msgid "Sustance"
-#~ msgstr "Sustancia"
-
-#~ msgid "Sustances"
-#~ msgstr "Sustancias"
-
-#~ msgid "Enter all required label and recipient information"
-#~ msgstr "Introduzca toda la información necesaria sobre la etiqueta y el destinatario"
-
-#~ msgid "Name or CAS number"
-#~ msgstr "Nombre o número CAS"
-
-#~ msgid "Did you find the substance?"
-#~ msgstr "¿Encontraste la sustancia?"
-
-#~ msgid "Create it Here!"
-#~ msgstr "¡Créalo aquí!"
-
-#~ msgid "View substance label information"
-#~ msgstr "Ver la información de la etiqueta de la sustancia"
-
-#~ msgid "Supplier Identification"
-#~ msgstr "Información sobre los proveedores"
-
-#~ msgid "Additionals product identifiers"
-#~ msgstr "Identificadores de productos adicionales"
-
-#~ msgid "Recipient"
-#~ msgstr "Recipientes"
-
-#~ msgid "Name - Height x Width"
-#~ msgstr "Nombre - Altura x Anchura"
-
-#~ msgid "Did you find the recipient?"
-#~ msgstr "¿Encontraste al recipiente?"
-
-#~ msgid "Did you find the template?"
-#~ msgstr "¿Encontraste la plantilla?"
-
-#~ msgid "Next"
-#~ msgstr "Siguiente"
-
-#~ msgid "Powered by"
-#~ msgstr "Potenciado por"
-
-#~ msgid "Pre designed template"
-#~ msgstr "Plantilla prediseñada"
-
-#~ msgid "Loading"
-#~ msgstr "Cargando"
-
-#~ msgid "Line"
-#~ msgstr "Línea"
-
-#~ msgid "Fill / Stroke / Background"
-#~ msgstr "Relleno / Trazo / Fondo"
-
-#~ msgid "Font Size"
-#~ msgstr "Tamaño de la fuente"
-
-#~ msgid "actual"
-#~ msgstr "Actual"
-
-#~ msgid "Font family"
-#~ msgstr "Familia de fuentes"
-
-#~ msgid "Create a new label template or select a pre-designed template in accordance with your needs"
-#~ msgstr "Cree una nueva plantilla de etiquetas o seleccione una plantilla prediseñada de acuerdo con tus necesidades"
-
-#~ msgid "Edit basic information"
-#~ msgstr "Editar la información básica"
-
-#~ msgid "Change information"
-#~ msgstr "Cambiar información"
-
-#~ msgid "Get as Image"
-#~ msgstr "Obtener como imagen"
-
-#~ msgid "Label Name"
-#~ msgstr "Nombre de la etiqueta"
-
-#~ msgid "Load"
-#~ msgstr "Cargar"
-
-#~ msgid "Go to custom templates"
-#~ msgstr "Ir a tus plantillas"
-
-#~ msgid "Get as PDF"
-#~ msgstr "Obtener como PDF"
-
-#~ msgid "Logo and Bar Code"
-#~ msgstr "Logotipo y código de barras"
-
-#~ msgid "Finish"
-#~ msgstr "Finalizar"
-
-#~ msgid "The user will be removed from laboratory."
-#~ msgstr "El usuario se eliminará del laboratorio."
-
-#~ msgid "Can see available Warning Classes"
-#~ msgstr "Puede ver clases de peligro disponibles"
-
-#~ msgid "Can see available Warning Words"
-#~ msgstr "Puede ver palabras de advertencia disponibles"
-
-#~ msgid "Can see available pictograms"
-#~ msgstr "Puede ver pictogramas disponibles"
-
-#~ msgid "Can see available prudence advice"
-#~ msgstr "Puede ver los consejos de prudencia disponibles"
-
-#~ msgid "Can see available indication of danger"
-#~ msgstr "Puede ver las indicaciones de peligro disponibles"
-
-#~ msgid "Can see available Component"
-#~ msgstr "Puede ver los componentes disponibles"
-
-#~ msgid "Can see available Sustance"
-#~ msgstr "Puede ver las sustancias disponibles"
-
-#~ msgid "Can see available Builder Information"
-#~ msgstr "Puede ver la información de los fabricantes"
-
-#~ msgid "Can see available Recipient Size"
-#~ msgstr "Puede ver los tamaños de recipiente disponibles"
-
-#~ msgid "Can see available labels"
-#~ msgstr "Puede ver las etiquetas"
-
-#~ msgid "Can see available Warning Categories"
-#~ msgstr "Puede ver categorías de peligro disponibles"
-
-#~ msgid "Categories"
-#~ msgstr "Categorias"
-
-#~ msgid "Physic danger"
-#~ msgstr "Peligro físico"
-
-#~ msgid "Healty danger"
-#~ msgstr "Peligro a la salud"
-
-#~ msgid "Environment danger"
-#~ msgstr "Peligro ambiental"
-
-#~ msgid "Type"
-#~ msgstr "Tipo"
-
-#~ msgid "Fill me"
-#~ msgstr "Llenar me por favor"
