@@ -627,8 +627,6 @@ msgstr "Cancelar"
 
 
 #: laboratory/templates/laboratory/edit.html:15
-#: laboratory/templates/laboratory/furniture_form.html:28
-#: laboratory/templates/laboratory/furniture_form.html:65
 #: laboratory/templates/laboratory/laboratory_form.html:12
 #: laboratory/templates/laboratory/object_form.html:10
 #: laboratory/templates/laboratory/objectfeatures_form.html:25
@@ -649,7 +647,6 @@ msgid "You don't have the permissions required to access this action"
 msgstr "No tienes los permisos necesarios para acceder a esta acción"
 
 #: laboratory/templates/laboratory/dataconfig.html:9
-#: laboratory/templates/laboratory/furniture_form.html:83
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
@@ -693,12 +690,10 @@ msgstr "¿Está seguro que desea eliminar?"
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: laboratory/templates/laboratory/furniture_form.html:6
-#: laboratory/templates/laboratory/furniture_form.html:13
 msgid "Furniture management"
 msgstr "Administración de muebles"
 
-#: laboratory/templates/laboratory/furniture_form.html:34
+
 #: laboratory/templates/laboratory/laboratoryroom_form.html:89
 #: laboratory/templates/laboratory/objectfeatures_form.html:52
 #: laboratory/templates/laboratory/objectview_list.html:54
@@ -706,19 +701,6 @@ msgstr "Administración de muebles"
 msgid "Delete"
 msgstr "Eliminar"
 
-#: laboratory/templates/laboratory/furniture_form.html:49
-#: laboratory/templates/laboratory/furniture_form.html:57
-msgid "Row"
-msgstr "Fila"
-
-#: laboratory/templates/laboratory/furniture_form.html:52
-#: laboratory/templates/laboratory/furniture_form.html:60
-msgid "Column"
-msgstr "Columna"
-
-#: laboratory/templates/laboratory/furniture_form.html:96
-msgid "Create shelf"
-msgstr "Crear nuevo estante"
 
 #: laboratory/templates/laboratory/furniture_list.html:21
 #: laboratory/templates/laboratory/h_code_report.html:44
