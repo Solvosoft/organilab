@@ -403,16 +403,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_laboratoryroom'
         },
         {
-            'name': 'Change Laboratory Room',
-            'category': 'Laboratory Room',
-            'permission': 'laboratory.change_laboratoryroom'
-        },
-        {
-            'name': 'Delete Laboratory Room',
-            'category': 'Laboratory Room',
-            'permission': 'laboratory.delete_laboratoryroom'
-        },
-        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
@@ -450,18 +440,6 @@ URLNAME_PERMISSIONS = {
             'name': 'Delete Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.delete_shelfobject'
-        }
-    ],
-    'furniture_delete': [
-        {
-            'name': 'Delete Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.delete_furniture'
-        },
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
         }
     ],
     'objectview_list': [
@@ -917,34 +895,9 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_laboratoryroom'
         },
         {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        },
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'Delete Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.delete_shelfobject'
-        },
-        {
             'name': 'Add Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.add_reservedproducts'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
         }
     ],
     'organizationManager': [
@@ -1546,5 +1499,101 @@ URLNAME_PERMISSIONS = {
             'category': 'Organization Structure',
             'permission': 'laboratory.view_organizationstructure'
         }
-    ]
+    ],
+    'furniture_create': [
+        {
+            'name': 'Add Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.add_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        }
+    ],
+    'furniture_update': [
+        {
+            'name': 'Change Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.change_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        }
+    ],
+    'furniture_list': [
+        {
+            'name': 'Add Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.add_furniture'
+        },
+        {
+            'name': 'Change Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.change_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        }
+    ],
+    'list_shelf': [
+        {
+            'name': 'View Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.view_shelf'
+        }
+    ],
+    'list_shelfobject': [
+        {
+            'name': 'Add Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobject'
+        },
+        {
+            'name': 'Delete Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.delete_shelfobject'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        }
+    ],
+    'edit_object': [
+        {
+            'name': 'Change Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.change_shelfobject'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        }
+    ],
+    'get_object_detail': [
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        }
+    ],
+    'delete_transfer': [
+        {
+            'name': 'Change Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.change_tranferobject'
+        },
+        {
+            'name': 'View Transfer Object',
+            'category': 'Transfer Object',
+            'permission': 'laboratory.view_tranferobject'
+        }
+    ],
 }

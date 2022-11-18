@@ -3,6 +3,11 @@
 {% load urlname_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'rooms_list' %}
+	{% define_urlname_action 'furniture_list' %}
+	{% define_urlname_action 'list_shelf' %}
+	{% define_urlname_action 'list_shelfobject' %}
+	{% define_urlname_action 'edit_object' %}
+	{% define_urlname_action 'get_object_detail' %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 {# Container #}

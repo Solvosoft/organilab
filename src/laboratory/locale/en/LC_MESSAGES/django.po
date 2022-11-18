@@ -614,8 +614,6 @@ msgstr ""
 
 #: laboratory/registry.py:88 laboratory/registry.py:100
 #: laboratory/templates/laboratory/edit.html:15
-#: laboratory/templates/laboratory/furniture_form.html:30
-#: laboratory/templates/laboratory/furniture_form.html:60
 #: laboratory/templates/laboratory/laboratory_form.html:13
 #: laboratory/templates/laboratory/object_form.html:14
 #: laboratory/templates/laboratory/objectfeatures_form.html:24
@@ -666,7 +664,6 @@ msgid "Create"
 msgstr ""
 
 #: laboratory/templates/ajax/lab_admins_list.html:15
-#: laboratory/templates/laboratory/furniture_form.html:82
 #: laboratory/templates/laboratory/laboratory_list.html:31
 #: laboratory/templates/laboratory/laboratoryroom_form.html:88
 #: laboratory/templates/laboratory/objectfeatures_form.html:51
@@ -821,7 +818,6 @@ msgstr ""
 #: laboratory/templates/laboratory/admin_shelf_list.html:7
 #: laboratory/templates/laboratory/admin_shelf_list.html:15
 #: laboratory/templates/laboratory/dataconfig.html:9
-#: laboratory/templates/laboratory/furniture_form.html:100
 msgid "Add Shelf"
 msgstr ""
 
@@ -849,22 +845,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: laboratory/templates/laboratory/furniture_form.html:6
-#: laboratory/templates/laboratory/furniture_form.html:16
-msgid "Furniture management"
-msgstr ""
 
-#: laboratory/templates/laboratory/furniture_form.html:44
-#: laboratory/templates/laboratory/furniture_form.html:52
-msgid "Row"
-msgstr ""
-
-#: laboratory/templates/laboratory/furniture_form.html:47
-#: laboratory/templates/laboratory/furniture_form.html:55
-msgid "Column"
-msgstr ""
-
-#: laboratory/templates/laboratory/furniture_form.html:78
 #: laboratory/templates/laboratory/laboratory_list.html:26
 #: laboratory/templates/laboratory/objectfeatures_form.html:26
 #: laboratory/templates/laboratory/objectfeatures_form.html:47
@@ -874,9 +855,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: laboratory/templates/laboratory/furniture_form.html:114
-msgid "Create shelf"
-msgstr ""
 
 #: laboratory/templates/laboratory/furniture_list.html:21
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:26
