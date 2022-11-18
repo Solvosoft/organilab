@@ -31,7 +31,21 @@ msgstr "Buscar por nombre, código o número de CAS"
 msgid "All labs"
 msgstr "Todos los laboratorios"
 
-#: laboratory/forms.py:74
+#: laboratory/forms.py:25
+msgid "First name"
+msgstr "Nombre"
+
+#: laboratory/forms.py:26
+msgid "Last name"
+msgstr "Apellidos"
+
+#: laboratory/forms.py:27 laboratory/models.py:414 laboratory/models.py:441
+#: laboratory/templates/laboratory/provider_list.html:20
+#: laboratory/views/reports.py:812
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: laboratory/forms.py:92
 msgid "Filter substances by H Code"
 msgstr "Filtre reactivos por código H"
 
@@ -54,8 +68,18 @@ msgstr "Nombre"
 msgid "Group"
 msgstr "Grupo"
 
-#: laboratory/forms.py:105 laboratory/forms.py:121 laboratory/forms.py:135
-#: laboratory/templates/laboratory/transfer_objects.html:23
+#: laboratory/forms.py:102 laboratory/forms.py:111 laboratory/models.py:472
+#: laboratory/templates/laboratory/objectlogchange_list.html:32
+#: laboratory/views/reports.py:768
+msgid "User"
+msgstr "Usuario"
+
+#: laboratory/forms.py:113 laboratory/templates/laboratory/profile_form.html:15
+msgid "Roles"
+msgstr "Roles"
+
+#: laboratory/forms.py:133 laboratory/forms.py:149 laboratory/forms.py:163
+#: laboratory/templates/laboratory/transfer_objects.html:30
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -429,7 +453,7 @@ msgstr "Notificaciones de la lista de bloqueados"
 
 #: laboratory/models.py:495
 msgid "Requested"
-msgstr ""
+msgstr "Solicitado"
 
 #: laboratory/models.py:496
 #, fuzzy
@@ -752,7 +776,7 @@ msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 
 #: laboratory/templates/laboratory/dataconfig.html:9
-#: laboratory/templates/laboratory/furniture_form.html:82
+#: laboratory/templates/laboratory/furniture_form.html:83
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
@@ -1367,7 +1391,7 @@ msgstr "seleccione"
 msgid "one of your labs"
 msgstr "uno de sus laboratorios"
 
-#: laboratory/templates/laboratory/precursor_report.html:13
+#: laboratory/templates/laboratory/precursor_report.html:14
 msgid "Precursor Report"
 msgstr "Reporte de Precursores"
 
@@ -1375,8 +1399,8 @@ msgstr "Reporte de Precursores"
 msgid "Consecutive"
 msgstr "Consecutivo"
 
-#: laboratory/templates/laboratory/precursor_report.html:24
-#: laboratory/views/reports.py:799
+#: laboratory/templates/laboratory/precursor_report.html:26
+#: laboratory/views/reports.py:809
 msgid "Month"
 msgstr "Mes"
 
@@ -1387,10 +1411,6 @@ msgstr "Exportar"
 #: laboratory/templates/laboratory/profile_form.html:9
 msgid "Profile Management"
 msgstr "Gestión de perfiles"
-
-#: laboratory/templates/laboratory/profile_form.html:15
-msgid "Roles"
-msgstr ""
 
 #: laboratory/templates/laboratory/provider_add.html:11
 msgid "Create Provider"
@@ -1839,6 +1859,7 @@ msgstr "Fecha"
 #, fuzzy
 msgid "add"
 msgstr "Agregar"
+
 
 #: laboratory/templates/pdf/base_organization_pdf.html:51
 #: laboratory/templates/pdf/base_pdf.html:47

@@ -183,8 +183,21 @@ function add_reservation(){
         data: form,
         processData: false,
         contentType: false,
-        success: function(response) {
-            console.log(response)
+        success: function({state, errors}) {
+            if(state){
+            Swal.fire(
+                    '',
+                    reserved,
+                    'success'
+            )
+            }else{
+                let list=""
+                errors.forEach(element =>
+                                    list += `<li class="list-group-item">${element}</li>`
+                );
+                document.querySelector("#list_errors").innerHTML=list;
+                $("#error_reserved").modal('show')
+            }
         }
         });
   }
