@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-17 15:53-0600\n"
+"POT-Creation-Date: 2022-11-02 16:55-0600\n"
 "PO-Revision-Date: 2022-11-02 16:54-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -81,7 +81,11 @@ msgstr "permisos"
 msgid "Rol"
 msgstr "Rol"
 
-#: auth_and_perms/models.py:47
+#: auth_and_perms/models.py:37
+msgid "Rols"
+msgstr "Roles"
+
+#: auth_and_perms/models.py:44
 msgid "Profile"
 msgstr "Perfil"
 
@@ -98,54 +102,58 @@ msgstr "Roles de perfil"
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:3
 #: auth_and_perms/templates/auth_and_perms/create_user_success.html:3
 msgid "Register with new organization"
-msgstr ""
+msgstr "Registrar con nueva organización"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:11
 msgid "Register you as organization administrator"
-msgstr ""
+msgstr "Registrarse como administrador de organización"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:18
 msgid "Create user"
-msgstr ""
+msgstr "Crear usuario"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:24
 msgid "Validation method"
-msgstr ""
+msgstr "Método de validación"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:27
 msgid "We need to validate that you are not a robot or spamer, so you need to configure a Two-Factor Authentication"
-msgstr ""
+msgstr "Necesitamos validar que no sos un robot spammer, por eso necesitamos configurar un método de 2 pasos de autenticación"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:30
 msgid "You need an OTP generator to login on the platform, you can use a free app called FreeOTP:"
-msgstr ""
+msgstr "Usted necesita un generador de OTP para registrarse en la plataforma, por favor use una aplicación llamada FreeOTP"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:42
 msgid "Digital signature"
-msgstr ""
+msgstr "Firma digital"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:43
 msgid "For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
+msgstr "Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a Organilab"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:11
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:11
 msgid "Configure your profile"
-msgstr ""
+msgstr "Configure su perfil"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:18
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:21
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:18
 msgid "Validate user"
-msgstr ""
+msgstr "Validar usuario"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:24
 msgid "Your OTP Seed"
-msgstr ""
+msgstr "Su semilla OTP"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:27
 msgid "This image will not available in the future, please save it"
-msgstr ""
+msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:13
+msgid "User"
+msgstr "Usuario"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_success.html:11
 #, fuzzy
@@ -175,20 +183,9 @@ msgstr "Agregar Nuevo Rol"
 msgid "Add"
 msgstr "Agregar"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:48
-msgid "Add User"
-msgstr "Agregar Usuario"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:49
-msgid "User"
-msgstr "Usuario"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:51
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:55
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:63
-#, fuzzy
-#| msgid "Manage Users"
-msgid "Related Users"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:28
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:106
+msgid "Manage Users"
 msgstr "Administrar Usuarios"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:61
@@ -274,19 +271,19 @@ msgstr "Administrar perfil"
 
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:20
 msgid "How to deal with permission merge"
-msgstr ""
+msgstr "Como manejar las mezclas de permisos"
 
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:21
 msgid "Append"
-msgstr ""
+msgstr "Agregar"
 
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:22
 msgid "Sustract"
-msgstr ""
+msgstr "Eliminar"
 
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:23
 msgid "Only rols selected"
-msgstr ""
+msgstr "Solo usar roles seleccionados"
 
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:43
 msgid "Manage Users"
