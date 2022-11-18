@@ -22,18 +22,15 @@ msgstr ""
 msgid "Users"
 msgstr "Usuarios"
 
-#: auth_and_perms/forms.py:18 auth_and_perms/forms.py:23
-#: auth_and_perms/models.py:43
-msgid "Rols"
-msgstr "Roles"
+
 
 #: auth_and_perms/forms.py:40 auth_and_perms/forms.py:41
 msgid "new-password"
-msgstr ""
+msgstr "New password"
 
 #: auth_and_perms/forms.py:52 auth_and_perms/forms.py:72
 msgid "First name"
-msgstr ""
+msgstr "Nombre"
 
 #: auth_and_perms/forms.py:53 auth_and_perms/forms.py:73
 #, fuzzy
@@ -43,7 +40,7 @@ msgstr "Apellido:"
 
 #: auth_and_perms/forms.py:54 auth_and_perms/forms.py:74
 msgid "Email address"
-msgstr ""
+msgstr "Correo electrónico"
 
 #: auth_and_perms/forms.py:55 auth_and_perms/forms.py:75
 #: auth_and_perms/models.py:15
@@ -52,7 +49,7 @@ msgstr "Teléfono"
 
 #: auth_and_perms/forms.py:56 auth_and_perms/forms.py:76
 msgid "Identification"
-msgstr ""
+msgstr "Identificación"
 
 #: auth_and_perms/forms.py:57 auth_and_perms/forms.py:78
 #: auth_and_perms/models.py:18
@@ -61,7 +58,7 @@ msgstr "Puesto de trabajo"
 
 #: auth_and_perms/forms.py:77
 msgid "It will used to login when you want to login with digital signature"
-msgstr ""
+msgstr "Este campo será usado cuando se autentique con firma digital"
 
 #: auth_and_perms/models.py:16
 msgid "ID Card"
@@ -182,11 +179,6 @@ msgstr "Agregar Nuevo Rol"
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:41
 msgid "Add"
 msgstr "Agregar"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:28
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:106
-msgid "Manage Users"
-msgstr "Administrar Usuarios"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:61
 msgid "Add Laboratory"
