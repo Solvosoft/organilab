@@ -120,10 +120,6 @@ msgstr "Posición actual"
 msgid "Manage Profile"
 msgstr "Administración de producto"
 
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:34
-#: reservations_management/templates/reservations_management/reservations_list.html:97
-msgid "Manage"
-msgstr "Administrar"
 
 #: auth_and_perms/templates/auth_and_perms/profile_list.html:38
 msgid "No objects"
@@ -215,10 +211,6 @@ msgstr "Su contraseña no debe ser muy común."
 msgid "Your password cannot be completely numeric."
 msgstr "Su contraseña no puede contener solo números."
 
-#: authentication/templates/auth/change_user.html:48
-#: reservations_management/templates/reservations_management/product_modal.html:42
-msgid "Cancel"
-msgstr "Cancelar"
 
 #: authentication/templates/auth/change_user.html:49
 msgid "Save"
@@ -376,9 +368,6 @@ msgstr "Aceptar"
 msgid "Reservations List"
 msgstr "Lista de reservaciones"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:70
-msgid "User"
-msgstr "Usuario"
 
 #: reservations_management/templates/reservations_management/reservations_list.html:72
 msgid "Massive Reservation"
