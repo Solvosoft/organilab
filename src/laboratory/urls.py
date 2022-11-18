@@ -8,22 +8,22 @@ from rest_framework.routers import DefaultRouter
 
 from authentication.users import ChangeUser, password_change
 from laboratory import views
-from authentication import users
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
+from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
+from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, LaboratoryEdit
-from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
-from laboratory.views.profiles_management import ProfilesListView,ProfileUpdateView
-from laboratory.views.objects import ObjectView, block_notifications 
-from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
-from laboratory.views.my_reservations import MyReservationView
-from laboratory.views.provider import ProviderCreate,ProviderList,ProviderUpdate
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
-from laboratory.validators import validate_duplicate_initial_date
-from laboratory.functions import return_laboratory_of_shelf_id
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.my_reservations import MyReservationView
+from laboratory.views.objects import ObjectView, block_notifications
+from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
+from laboratory.views.profiles_management import ProfilesListView, ProfileUpdateView
+from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
+
 objviews = ObjectView()
 
 urlpatterns = [
@@ -194,7 +194,6 @@ router.register('api_inform', CommentAPI, basename='api-inform')
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     path('mylabs', LaboratoryListView.as_view(), name="mylabs"),
-    re_path(r'^lab/(?P<pk>\d+)/edit', LaboratoryEdit.as_view(), name="laboratory_edit"),
     re_path(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     re_path(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     re_path(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
