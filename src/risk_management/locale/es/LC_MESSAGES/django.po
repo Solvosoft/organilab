@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-31 14:30-0600\n"
-"PO-Revision-Date: 2022-10-17 13:55-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
+"PO-Revision-Date: 2022-11-17 15:36-0600\n"
 "Last-Translator: \n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -164,19 +164,13 @@ msgstr "Impacto ambiental"
 
 #: risk_management/models.py:86
 #: risk_management/templates/risk_management/incidentreport_pdf.html:37
-msgid ""
-"Resultado de la implementación del Plan de Prevención, Preparación y "
-"Respuesta ante Accidentes Químicos."
-msgstr ""
-"Resultado de la implementación del Plan de Prevención, Preparación y "
-"Respuesta ante Accidentes Químicos."
+msgid "Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos."
+msgstr "Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos."
 
 #: risk_management/models.py:90
 #: risk_management/templates/risk_management/incidentreport_pdf.html:39
-msgid ""
-"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
-msgstr ""
-"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgid "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgstr "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 
 #: risk_management/models.py:94
 msgid "Recomendaciones"
@@ -184,20 +178,12 @@ msgstr "Recomendaciones"
 
 #: risk_management/models.py:95
 #: risk_management/templates/risk_management/incidentreport_pdf.html:41
-msgid ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
-msgstr ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+msgid "Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+msgstr "Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 
 #: risk_management/models.py:99
-msgid ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al "
-"Centro Nacional de Control de Intoxicaciones (CNCI)"
-msgstr ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al "
-"Centro Nacional de Control de Intoxicaciones (CNCI)"
+msgid "En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)"
+msgstr "En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)"
 
 #: risk_management/templates/risk_management/incidentreport_confirm_delete.html:6
 msgid "Delete Incident report"
@@ -218,39 +204,39 @@ msgid "Laboratory incidents list"
 msgstr "Lista de incidentes del laboratorio"
 
 #: risk_management/templates/risk_management/incidentreport_detail.html:12
-#: risk_management/templates/risk_management/incidentreport_list.html:56
+#: risk_management/templates/risk_management/incidentreport_list.html:47
 #: risk_management/templates/risk_management/riskzone_detail.html:13
 #: risk_management/templates/risk_management/riskzone_list.html:61
 msgid "Edit"
 msgstr "Editar"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:37
-#: risk_management/templates/risk_management/incidentreport_detail.html:88
+#: risk_management/templates/risk_management/incidentreport_detail.html:35
+#: risk_management/templates/risk_management/incidentreport_detail.html:78
 msgid "Download"
 msgstr "Descargar"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:40
-#: risk_management/templates/risk_management/incidentreport_detail.html:91
+#: risk_management/templates/risk_management/incidentreport_detail.html:39
+#: risk_management/templates/risk_management/incidentreport_detail.html:82
 msgid "Toggle Dropdown"
 msgstr "Toggle Dropdown"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:44
-#: risk_management/templates/risk_management/incidentreport_detail.html:95
+#: risk_management/templates/risk_management/incidentreport_detail.html:43
+#: risk_management/templates/risk_management/incidentreport_detail.html:86
 msgid "PDF"
 msgstr "PDF"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:47
-#: risk_management/templates/risk_management/incidentreport_detail.html:98
+#: risk_management/templates/risk_management/incidentreport_detail.html:46
+#: risk_management/templates/risk_management/incidentreport_detail.html:89
 msgid "Ods"
 msgstr "Ods"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:52
-#: risk_management/templates/risk_management/incidentreport_detail.html:103
+#: risk_management/templates/risk_management/incidentreport_detail.html:49
+#: risk_management/templates/risk_management/incidentreport_detail.html:92
 msgid "Xls"
 msgstr "Xls"
 
-#: risk_management/templates/risk_management/incidentreport_detail.html:57
-#: risk_management/templates/risk_management/incidentreport_detail.html:108
+#: risk_management/templates/risk_management/incidentreport_detail.html:52
+#: risk_management/templates/risk_management/incidentreport_detail.html:95
 msgid "Xlsx"
 msgstr "Xlsx"
 
@@ -272,22 +258,22 @@ msgstr "Guardar"
 msgid "Incidents Management"
 msgstr "Administración de incidentes"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:61
+#: risk_management/templates/risk_management/incidentreport_list.html:51
 #: risk_management/templates/risk_management/riskzone_list.html:66
 msgid "Delete"
 msgstr "Eliminar"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:73
+#: risk_management/templates/risk_management/incidentreport_list.html:62
 #: risk_management/templates/risk_management/riskzone_list.html:78
 msgid "Previous"
 msgstr "Anterior"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:78
+#: risk_management/templates/risk_management/incidentreport_list.html:66
 #: risk_management/templates/risk_management/riskzone_list.html:83
 msgid "Page"
 msgstr "Página"
 
-#: risk_management/templates/risk_management/incidentreport_list.html:83
+#: risk_management/templates/risk_management/incidentreport_list.html:70
 #: risk_management/templates/risk_management/riskzone_list.html:88
 msgid "Next"
 msgstr "Siguiente"
@@ -301,11 +287,11 @@ msgstr "Eliminar zona de riesgo"
 msgid "Zone list"
 msgstr "Lista de zonas"
 
-#: risk_management/templates/risk_management/riskzone_detail.html:40
+#: risk_management/templates/risk_management/riskzone_detail.html:43
 msgid "Incident Reports"
 msgstr "Reportes de incidentes"
 
-#: risk_management/templates/risk_management/riskzone_detail.html:43
+#: risk_management/templates/risk_management/riskzone_detail.html:46
 msgid "Incident Reports Create"
 msgstr "Crear Reporte de incidentes"
 
@@ -317,7 +303,4 @@ msgstr "Administración de zonas de riesgo"
 
 #: risk_management/templates/risk_management/riskzone_list.html:24
 msgid "Add"
-msgstr ""
-
-#~ msgid "Incident report"
-#~ msgstr "Reporte de incidentes"
+msgstr "Agregar"

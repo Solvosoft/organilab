@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 16:55-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
 "PO-Revision-Date: 2022-11-02 16:54-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,106 +18,279 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.3\n"
 
-#: auth_and_perms/forms.py:16
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:28
+#: auth_and_perms/forms.py:13
 msgid "Users"
 msgstr "Usuarios"
 
-#: auth_and_perms/models.py:13
-msgid "Phone"
-msgstr "Teléfono"
-
-#: auth_and_perms/models.py:14
-msgid "ID Card"
-msgstr "Tarjeta de identificación"
-
-#: auth_and_perms/models.py:15
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:39
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:41
-msgid "Laboratories"
-msgstr "Laboratorios"
-
-#: auth_and_perms/models.py:16
-msgid "Job Position"
-msgstr "Puesto de trabajo"
-
-#: auth_and_perms/models.py:30
-msgid "permissions"
-msgstr "permisos"
-
-#: auth_and_perms/models.py:36 auth_and_perms/models.py:51
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:27
-msgid "Rol"
-msgstr "Rol"
-
-#: auth_and_perms/models.py:37
+#: auth_and_perms/forms.py:18 auth_and_perms/forms.py:23
+#: auth_and_perms/models.py:43
 msgid "Rols"
 msgstr "Roles"
 
-#: auth_and_perms/models.py:44
+#: auth_and_perms/forms.py:40 auth_and_perms/forms.py:41
+msgid "new-password"
+msgstr ""
+
+#: auth_and_perms/forms.py:52 auth_and_perms/forms.py:72
+msgid "First name"
+msgstr ""
+
+#: auth_and_perms/forms.py:53 auth_and_perms/forms.py:73
+#, fuzzy
+#| msgid "Last Name:"
+msgid "Last name"
+msgstr "Apellido:"
+
+#: auth_and_perms/forms.py:54 auth_and_perms/forms.py:74
+msgid "Email address"
+msgstr ""
+
+#: auth_and_perms/forms.py:55 auth_and_perms/forms.py:75
+#: auth_and_perms/models.py:15
+msgid "Phone"
+msgstr "Teléfono"
+
+#: auth_and_perms/forms.py:56 auth_and_perms/forms.py:76
+msgid "Identification"
+msgstr ""
+
+#: auth_and_perms/forms.py:57 auth_and_perms/forms.py:78
+#: auth_and_perms/models.py:18
+msgid "Job Position"
+msgstr "Puesto de trabajo"
+
+#: auth_and_perms/forms.py:77
+msgid "It will used to login when you want to login with digital signature"
+msgstr ""
+
+#: auth_and_perms/models.py:16
+msgid "ID Card"
+msgstr "Tarjeta de identificación"
+
+#: auth_and_perms/models.py:17
+msgid "Laboratories"
+msgstr "Laboratorios"
+
+#: auth_and_perms/models.py:34
+msgid "permissions"
+msgstr "permisos"
+
+#: auth_and_perms/models.py:42 auth_and_perms/models.py:52
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:42
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:108
+msgid "Rol"
+msgstr "Rol"
+
+#: auth_and_perms/models.py:47
 msgid "Profile"
 msgstr "Perfil"
 
-#: auth_and_perms/models.py:57
+#: auth_and_perms/models.py:58
 msgid "Profile Rol"
 msgstr "Rol de perfil"
 
-#: auth_and_perms/models.py:58
+#: auth_and_perms/models.py:59
 msgid "Profile Rols"
 msgstr "Roles de perfil"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:13
-msgid "Add User"
-msgstr "Agregar Usuario"
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:3
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:3
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:3
+#: auth_and_perms/templates/auth_and_perms/create_user_success.html:3
+msgid "Register with new organization"
+msgstr ""
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:13
-msgid "User"
-msgstr "Usuario"
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:11
+msgid "Register you as organization administrator"
+msgstr ""
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:27
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:18
+msgid "Create user"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:24
+msgid "Validation method"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:27
+msgid "We need to validate that you are not a robot or spamer, so you need to configure a Two-Factor Authentication"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:30
+msgid "You need an OTP generator to login on the platform, you can use a free app called FreeOTP:"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:42
+msgid "Digital signature"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:43
+msgid "For Costa Rica citicen, use your digital signature to login on organilab"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:11
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:11
+msgid "Configure your profile"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:18
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:21
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:18
+msgid "Validate user"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:24
+msgid "Your OTP Seed"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:27
+msgid "This image will not available in the future, please save it"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_success.html:11
+#, fuzzy
+#| msgid "Element saved successfully"
+msgid "Profile create successfully"
+msgstr "Elemento guardado exitosamente"
+
+#: auth_and_perms/templates/auth_and_perms/create_user_success.html:15
+msgid "Your organization was created successfully, please login with your credentials"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/create_user_success.html:18
+msgid "Login"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:20
+#, fuzzy
+#| msgid "Add Laboratory"
+msgid "Add organization"
+msgstr "Agregar Laboratorio"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:40
 msgid "Add new rol"
 msgstr "Agregar Nuevo Rol"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:27
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:41
 msgid "Add"
 msgstr "Agregar"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:28
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:106
-msgid "Manage Users"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:48
+msgid "Add User"
+msgstr "Agregar Usuario"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:49
+msgid "User"
+msgstr "Usuario"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:51
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:55
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:63
+#, fuzzy
+#| msgid "Manage Users"
+msgid "Related Users"
 msgstr "Administrar Usuarios"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:30
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:61
 msgid "Add Laboratory"
 msgstr "Agregar Laboratorio"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:31
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:62
 msgid "Laboratory"
 msgstr "Laboratorio"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:48
-msgid "Organization doesn't have laboratories"
-msgstr "Organización no tiene laboratorios"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:66
+#, fuzzy
+#| msgid "Add Laboratory"
+msgid "Related Laboratory"
+msgstr "Agregar Laboratorio"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:59
-msgid "Administrators users"
-msgstr "Administrar usuarios"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:114
+#, fuzzy
+#| msgid "Add new rol"
+msgid "Add New Rol"
+msgstr "Agregar Nuevo Rol"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:92
-msgid "Please enter a valid name"
-msgstr "Ingrese un nombre válido"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:115
+#, fuzzy
+#| msgid "Rols"
+msgid "Copy Rols"
+msgstr "Roles"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:95
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:121
 msgid "Rol name"
 msgstr "Nombre de rol"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:112
-msgid "Cancel"
-msgstr "Cancelar"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:138
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:160
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:183
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:214
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:27
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:50
+msgid "Close"
+msgstr ""
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:113
-msgid "Save"
-msgstr "Guardar"
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:139
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:161
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:184
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:215
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:28
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:51
+msgid "Save changes"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:153
+msgid "Create Organization"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:175
+msgid "Relate Organization with Permission objects"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:197
+msgid "Change parent of organization"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:204
+#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
+msgid "Name:"
+msgstr "Nombre:"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:209
+#, fuzzy
+#| msgid "Organization doesn't exists"
+msgid "Organization parent:"
+msgstr "Organización no existe"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:210
+msgid "Select an organization to be parent of"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:14
+#, fuzzy
+#| msgid "Manage Profile"
+msgid "Manage Rol"
+msgstr "Administrar perfil"
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:20
+msgid "How to deal with permission merge"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:21
+msgid "Append"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:22
+msgid "Sustract"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:23
+msgid "Only rols selected"
+msgstr ""
+
+#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:43
+msgid "Manage Users"
+msgstr "Administrar Usuarios"
 
 #: auth_and_perms/templates/auth_and_perms/profile_list.html:10
 msgid "Lab profiles management"
@@ -126,10 +299,6 @@ msgstr "Gestión de perfiles de laboratorio"
 #: auth_and_perms/templates/auth_and_perms/profile_list.html:13
 msgid " Laboratory Profiles"
 msgstr " Perfiles de laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/profile_list.html:19
-msgid "Name:"
-msgstr "Nombre:"
 
 #: auth_and_perms/templates/auth_and_perms/profile_list.html:20
 msgid "Last Name:"
@@ -155,11 +324,29 @@ msgstr "Administrar"
 msgid "No objects"
 msgstr "Sin objetos"
 
-#: auth_and_perms/views/organizationstructure.py:125
-#: auth_and_perms/views/organizationstructure.py:138
+#: auth_and_perms/views/organizationstructure.py:167
+#: auth_and_perms/views/organizationstructure.py:201
+#: auth_and_perms/views/organizationstructure.py:223
+#: auth_and_perms/views/organizationstructure.py:289
 msgid "Element saved successfully"
 msgstr "Elemento guardado exitosamente"
 
-#: auth_and_perms/views/organizationstructure.py:127
+#: auth_and_perms/views/organizationstructure.py:169
 msgid "Organization doesn't exists"
 msgstr "Organización no existe"
+
+#: auth_and_perms/views/organizationstructure.py:203
+#: auth_and_perms/views/organizationstructure.py:291
+msgid "Error, form is invalid"
+msgstr ""
+
+#: auth_and_perms/views/user_org_creation.py:55
+#, fuzzy
+#| msgid "Organization doesn't exists"
+msgid "Organization Management"
+msgstr "Organización no existe"
+
+#: auth_and_perms/views/user_org_creation.py:92
+#: auth_and_perms/views/user_org_creation.py:122
+msgid "You have no creation process, maybe it was expired, please try to register again"
+msgstr ""

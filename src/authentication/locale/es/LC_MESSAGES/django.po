@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 16:55-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
 "PO-Revision-Date: 2022-11-02 16:55-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.3\n"
 
-#: authentication/forms.py:22
+#: authentication/forms.py:23
 msgid "Phone"
 msgstr ""
 
-#: authentication/forms.py:23
+#: authentication/forms.py:24
 msgid "ID Card"
 msgstr ""
 
-#: authentication/forms.py:24
+#: authentication/forms.py:25
 msgid "Job Position"
 msgstr ""
 
@@ -86,36 +86,32 @@ msgstr ""
 msgid "Demo Requests"
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:16
+#: authentication/templates/auth/change_user.html:17
 msgid "Update"
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:18
-#: authentication/templates/auth/change_user.html:32
+#: authentication/templates/auth/change_user.html:20
+#: authentication/templates/auth/change_user.html:33
 msgid "Change password"
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:38
-msgid "Your password may not closely resemble your other personal information."
-msgstr ""
-
-#: authentication/templates/auth/change_user.html:39
+#: authentication/templates/auth/change_user.html:42
 msgid "Your password must contain at least 8 characters."
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:40
+#: authentication/templates/auth/change_user.html:43
 msgid "Your password cannot be a commonly used password."
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:41
+#: authentication/templates/auth/change_user.html:44
 msgid "Your password cannot be completely numeric."
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:48
+#: authentication/templates/auth/change_user.html:51
 msgid "Cancel"
 msgstr ""
 
-#: authentication/templates/auth/change_user.html:49
+#: authentication/templates/auth/change_user.html:52
 msgid "Save"
 msgstr ""
 
@@ -128,15 +124,15 @@ msgid "Create"
 msgstr ""
 
 #: authentication/templates/feedback/feedbackentry_form.html:4
-#: authentication/templates/feedback/feedbackentry_form.html:10
+#: authentication/templates/feedback/feedbackentry_form.html:9
 msgid "Feedback"
 msgstr ""
 
-#: authentication/templates/feedback/feedbackentry_form.html:11
+#: authentication/templates/feedback/feedbackentry_form.html:10
 msgid "If you had some problem using Organilab, please let us know about it"
 msgstr ""
 
-#: authentication/templates/feedback/feedbackentry_form.html:17
+#: authentication/templates/feedback/feedbackentry_form.html:16
 #: authentication/templates/registration/request_a_demo.html:19
 msgid "Send"
 msgstr ""
@@ -150,9 +146,7 @@ msgid "Requesting a demonstration"
 msgstr ""
 
 #: authentication/templates/registration/request_a_demo.html:14
-msgid ""
-"Hey, thanks for you interest in Organilab, we work hard to have a great "
-"software."
+msgid "Hey, thanks for you interest in Organilab, we work hard to have a great software."
 msgstr ""
 
 #: authentication/templates/registration/request_demo_done.html:4
@@ -167,10 +161,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: authentication/views.py:28
+#: authentication/views.py:34
 msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
 
-#: authentication/views.py:91
+#: authentication/views.py:97
 msgid "We will contact you soon"
 msgstr ""

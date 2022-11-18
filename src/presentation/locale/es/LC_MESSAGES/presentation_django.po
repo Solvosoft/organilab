@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-25 01:26-0600\n"
-"PO-Revision-Date: 2022-10-18 10:10-0600\n"
+"PO-Revision-Date: 2022-11-17 15:45-0600\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,16 +20,16 @@ msgstr ""
 
 #: templates/comments/zinnia/entry/form.html:10
 msgid "Post your comment"
-msgstr ""
+msgstr "Enviar comentario"
 
 #: templates/comments/zinnia/entry/form.html:33
 msgid "Comment as"
-msgstr ""
+msgstr "Comentar como"
 
 #: templates/comments/zinnia/entry/form.html:33
 #: templates/partials/navbar.html:118
 msgid "Log out"
-msgstr ""
+msgstr "Salir"
 
 #: templates/comments/zinnia/entry/form.html:37
 msgid "Post"
@@ -37,61 +37,60 @@ msgstr ""
 
 #: templates/comments/zinnia/entry/form.html:38
 msgid "Preview"
-msgstr ""
+msgstr "Previsualizar"
 
 #: templates/partials/laboratories_menu.html:10
 #: templates/partials/navbar.html:72
 msgid "Laboratory"
-msgstr ""
+msgstr "Laboratorio"
 
 #: templates/partials/laboratories_menu.html:15
 msgid "Laboratory view"
-msgstr ""
+msgstr "Vista de laboratorio"
 
 #: templates/partials/laboratories_menu.html:22
 msgid "Procedures"
-msgstr ""
+msgstr "Procedimientos"
 
 #: templates/partials/laboratories_menu.html:28
 msgid "Dissolution calculator (experimental)"
-msgstr ""
-
+msgstr "Calculadora de disoluciones"
 
 #: templates/partials/laboratories_menu.html:40
 msgid "Edit laboratory"
-msgstr ""
+msgstr "Editar laboratorio"
 
 #: templates/partials/navbar.html:12
 msgid "Add Laboratory"
-msgstr ""
+msgstr "Nuevo laboratorio"
 
 #: templates/partials/navbar.html:19 templates/partials/navbar.html:20
 msgid "My laboratories"
-msgstr ""
+msgstr "Mis Laboratorios"
 
 #: templates/partials/navbar.html:29
 msgid "Administration"
-msgstr ""
+msgstr "Administración"
 
 #: templates/partials/navbar.html:34
 msgid "My Laboratories"
-msgstr ""
+msgstr "Mis laboratorios"
 
 #: templates/partials/navbar.html:40
 msgid "Laboratory management"
-msgstr ""
+msgstr "Administración de laboratorio"
 
 #: templates/partials/navbar.html:45
 msgid "Object management"
-msgstr ""
+msgstr "Manejo de objetos"
 
 #: templates/partials/navbar.html:47 templates/partials/navbar.html:86
 msgid "Reactive"
-msgstr ""
+msgstr "Reactivo"
 
 #: templates/partials/navbar.html:48 templates/partials/navbar.html:87
 msgid "Material"
-msgstr ""
+msgstr "Materiales"
 
 #: templates/partials/navbar.html:49 templates/partials/navbar.html:88
 msgid "Equipment"

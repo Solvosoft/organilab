@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-31 14:30-0600\n"
+"POT-Creation-Date: 2022-11-17 15:53-0600\n"
 "PO-Revision-Date: 2020-01-07 14:18-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -44,7 +44,7 @@ msgstr "Archivo de regulación"
 msgid "Regulation document"
 msgstr "Documento regulatorio"
 
-#: msds/models.py:57 msds/templates/regulation/regulations_document.html:5
+#: msds/models.py:57 msds/templates/regulation/regulations_document.html:8
 msgid "Regulation documents"
 msgstr "Documentos y reglamentos"
 
@@ -58,9 +58,9 @@ msgstr "Subir sus MSDS"
 
 #: msds/templates/index_msds.html:20 msds/templates/index_msds.html:28
 #: msds/templates/msds/msdsobject/cruds/detail.html:19
-#: msds/templates/regulation/regulations_document.html:13
-#: msds/templates/regulation/regulations_document.html:23
-#: msds/templates/regulation/regulations_document.html:32 msds/views.py:27
+#: msds/templates/regulation/regulations_document.html:16
+#: msds/templates/regulation/regulations_document.html:26
+#: msds/templates/regulation/regulations_document.html:35 msds/views.py:27
 msgid "Download"
 msgstr "Descargar"
 
@@ -86,17 +86,17 @@ msgstr "Confirme eliminación"
 msgid "by "
 msgstr "por "
 
-#: msds/templates/regulation/regulations_document.html:11
-#: msds/templates/regulation/regulations_document.html:30
+#: msds/templates/regulation/regulations_document.html:14
+#: msds/templates/regulation/regulations_document.html:33
 msgid "Name"
 msgstr "Nombre"
 
-#: msds/templates/regulation/regulations_document.html:12
-#: msds/templates/regulation/regulations_document.html:31
+#: msds/templates/regulation/regulations_document.html:15
+#: msds/templates/regulation/regulations_document.html:34
 msgid "Country"
 msgstr "País"
 
-#: msds/templates/regulation/regulations_document.html:40
+#: msds/templates/regulation/regulations_document.html:43
 #, fuzzy
 #| msgid "Download"
 msgid "Download all"
@@ -121,15 +121,3 @@ msgstr "Su MSDS fue editado satisfactoriamente"
 #: msds/views.py:143
 msgid "Your MSDS was delete successfully"
 msgstr "Su MSDS fue eliminado satisfactoriamente"
-
-#~ msgid "Not allowed filetype!"
-#~ msgstr "¡Tipo de archivo no permitido!"
-
-#~ msgid "Prev"
-#~ msgstr "Prev"
-
-#~ msgid " of "
-#~ msgstr " de "
-
-#~ msgid "Next"
-#~ msgstr "Siguiente"
