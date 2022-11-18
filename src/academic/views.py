@@ -158,7 +158,7 @@ def delete_step(request):
     step.delete()
     return JsonResponse({'data': True})
 
-@method_decorator(permission_required('academic.delete_procedurerequiredobject'), name='dispatch')
+@permission_required('academic.delete_procedurerequiredobject')
 def remove_object(request, pk):
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
@@ -207,7 +207,7 @@ def get_procedure(request):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     return JsonResponse({'data': {'title': procedure.title, 'pk': procedure.pk}})
 
-@method_decorator(permission_required('academic.delete_procedure'), name='dispatch')
+@permission_required('academic.delete_procedure')
 def delete_procedure(request):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
@@ -276,14 +276,14 @@ def convert_to_general_unit(data):
 
     return result
 
-@method_decorator(permission_required('reservations_management.add_reservedproducts'), name='dispatch')
+@permission_required('reservations_management.add_reservedproducts')
 def generate_reservation(request):
     lab = request.POST['lab_pk']
     procedure = request.POST['procedure']
     objects_pk = list_step_objects(procedure)
     obj_find = 0
     state = False
-
+    obj_unknown=[]
     for obj in objects_pk:
 
         objs = convert_to_general_unit(get_objects_list(lab, obj))
@@ -291,6 +291,9 @@ def generate_reservation(request):
 
         if objs >= step_objs:
             obj_find += 1
+        else:
+            obj_unknown.append(Object.objects.get(pk=obj).__str__())
+
 
     if len(objects_pk) == obj_find:
         state = True
@@ -298,7 +301,7 @@ def generate_reservation(request):
             add_reservation(request, get_objects_list(lab, obj),
                             get_step_object(procedure, obj))
 
-    return JsonResponse({'state': state})
+    return JsonResponse({'state': state, 'errors':obj_unknown})
 
 
 def add_reservation(request, data, data_step):

@@ -25,12 +25,15 @@ class IncidentReportList(djgeneric.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(laboratories__pk=self.lab)
+
         if 'q' in self.request.GET:
             q = self.request.GET['q']
             queryset = queryset.filter(Q(short_description__icontains=q)|Q(
                 laboratories__name__icontains=q
-            ))
+            ), laboratories__pk=self.lab)
+
+
         return queryset
 
 
