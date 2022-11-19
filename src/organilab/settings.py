@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
+
 ]
 
 
@@ -70,6 +71,7 @@ IMAGE_CROPPING_JQUERY_URL = None
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # new
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,6 +143,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale/',
 ]
 
 # Internationalization
