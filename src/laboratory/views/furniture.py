@@ -111,16 +111,6 @@ class FurnitureUpdateView(UpdateView):
                             args=(self.lab,))
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
-@method_decorator(permission_required('laboratory.delete_furniture'), name='dispatch')
-class FurnitureDelete(DeleteView):
-    model = Furniture
-    success_url = "/"
-
-    def get_success_url(self):
-        return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
-
-
 @login_required
 def list_furniture_render(request, lab_pk=None):
     var = request.GET.get('namelaboratoryRoom', '0')
