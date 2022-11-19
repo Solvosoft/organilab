@@ -132,3 +132,16 @@ img {
 #furniture_size a{
     background: #169F85;
 }
+
+.btedit span {
+    font-color: #169F85!important;
+    font-size: 0.9em;
+    color: darkgoldenrod;
+}
+
+.btdel span {
+    font-color: #169F85!important;
+    font-size: 0.7em;
+    color: tomato;
+    margin-left: 10px;
+}
