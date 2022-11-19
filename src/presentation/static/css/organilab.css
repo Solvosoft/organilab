@@ -145,3 +145,28 @@ img {
     color: tomato;
     margin-left: 10px;
 }
+
+.top_nav .dropdown-menu li a {
+  width: 100 %;
+  padding: 2px 2px;
+}
+
+.login_title{
+    background: #2A3F54;
+    display: grid;
+     grid-template-columns: auto auto auto;
+    height: 6em;
+}
+
+.login_wrapper {
+  right: 0px;
+  margin: 0px auto;
+  max-width: 350px;
+  position: relative;
+}
+
+.withoutsidebar {
+    width: auto!important;
+    color: #ECF0F1 !important;
+
+}

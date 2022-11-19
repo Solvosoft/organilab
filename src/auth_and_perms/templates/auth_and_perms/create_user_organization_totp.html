@@ -1,16 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'base_without_sidebar.html' %}
 {% load static i18n %}
 {% block title %}{% trans 'Register with new organization' %}{% endblock %}
 
-{% block content_block_wrap %}{% endblock %}
+ {% block extra_nav %}
+<div class="nav-item">
+          <h4  class="text-white">{% trans 'Configure your profile' %}</h4>
+</div>
+{% endblock %}
+
 {% block body_class %}login{% endblock body_class %}
-{% block body %}
+{% block content %}
 <div class="center-container">
   <div class="row vertical-center hp-75">
-      <div class="col-xs-12 col-md-12">
-          <h4 class="text-danger text-center">{% trans 'Configure your profile' %}</h4>
-      </div>
-     <div class="col-xs-12 col-md-6 offset-2">
+     <div class="col-xs-12 col-md-6 offset-1">
 
              <form action="" method="post">
               {{form.as_horizontal}}
