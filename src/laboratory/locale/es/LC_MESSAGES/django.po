@@ -396,11 +396,7 @@ msgstr "Teléfono"
 msgid "Location"
 msgstr "Ubicación"
 
-#: laboratory/models.py:422 laboratory/models.py:449
-#: laboratory/templates/laboratory/provider_list.html:20
-#: laboratory/views/reports.py:802
-msgid "Email"
-msgstr "Correo electrónico"
+
 
 #: laboratory/models.py:423 laboratory/views/reports.py:796
 msgid "Coordinator"
@@ -436,12 +432,6 @@ msgstr "Puede descargar los informes disponibles"
 msgid "legal identity"
 msgstr "Cédula Jurídica"
 
-#: laboratory/models.py:480
-#: laboratory/templates/laboratory/objectlogchange_list.html:32
-#: laboratory/templates/laboratory/reports/logobject_pdf.html:17
-#: laboratory/views/reports.py:758
-msgid "User"
-msgstr "Usuario"
 
 #: laboratory/models.py:484
 msgid "Blocked List Notification"
