@@ -170,6 +170,7 @@ STATIC_ROOT = os.getenv('STATIC_ROOT', '/run/static/')
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
+TINYMCE_UPLOAD_PATH=Path(MEDIA_ROOT) / 'editorupload/'
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('index')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')

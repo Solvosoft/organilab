@@ -40,7 +40,6 @@ from reservations_management.urls import urlpatterns as reservation_management_u
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 
 urlpatterns = urls_djgentelela + auth_urls + [
-    re_path('^media/(?P<path>.*)', media_access, name='media'),
     path('derb/', include('derb.urls')),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
@@ -71,4 +70,9 @@ urlpatterns += reservations_management_api_urlpatterns
 if settings.DEBUG:
     from django.conf.urls.static import static
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        re_path('^media/(?P<path>.*)', media_access, name='media'),
+    ]
+
 

@@ -5,23 +5,26 @@
 <div class="col-sm-4">
     <div class="card">
         <div class="card-body">
-        <div class="card-title titles flex">
-            <div class="text-center">
+        <div class="row card-title titles">
+            <div class="col-10 text-center">
             <a href="{% url  'laboratory:labindex' lab.pk %}" title="{% trans 'Edit laboratory'%}">
                <h5>{{ lab.name }}</h5>  </a>
             </div>
-                <div style="position:absolute;display:inline-block;top:0;right:0;margin-right:3%;margin-top:2%">
+
+             <div class="col-2">
+                <div class="btn-group" role="group" aria-label="">
              {% if perms.laboratory.change_laboratory %}
-                 <a class="btn btn-outline-info btn-sm" title="{% trans 'Edit' %}" style="font-size:13px;text-align:left" href="{% url 'laboratory:laboratory_update' lab.pk %}">
+                 <a class="btn-outline-info btn-sm btedit" title="{% trans 'Edit' %}" href="{% url 'laboratory:laboratory_update' lab.pk %}">
                 <span class="fa fa-edit" aria-hidden="true"></span>
                 </a>
             {% endif %}
             {% if perms.laboratory.delete_laboratory %}
-                    <a class="btn btn-outline-danger btn-sm"  href="{% url 'laboratory:laboratory_delete' lab.pk %}"
-                       title="{% trans 'Delete laboratory'%}"  style="font-size:13px;text-align:left">
+                    <a class="btn-outline-danger btn-sm btdel"  href="{% url 'laboratory:laboratory_delete' lab.pk %}"
+                       title="{% trans 'Delete laboratory'%}">
                     <span class="fa fa-remove" aria-hidden="true"></span></a>
              {% endif %}
                 </div>
+             </div>
         </div>
 
             <h5>A disposicion de uso</h5>
