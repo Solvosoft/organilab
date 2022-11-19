@@ -5,9 +5,11 @@
 {% block content_block_wrap %}{% endblock %}
 {% block body_class %}login{% endblock body_class %}
 {% block body %}
-
+<div class="navbar  login_title">
+        <a href="/" class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
+</div>
 <div class="center-container">
-  <div class="row vertical-center hp-75">
+  <div class="row">
    <div class="col-xs-12 col-md-12">
     <a class="hiddenanchor" id="signup"></a>
     <a class="hiddenanchor" id="signin"></a>
@@ -40,7 +42,8 @@
                         <input type="password" class="form-control" name="password" placeholder="{% trans 'Password' %}" required="" />
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-default submit" >{% trans 'Log in' %}</button>
+                        <button type="submit" class="btn btn-outline-success submit" >
+                            <i class="fa fa-sign-in" aria-hidden="true"></i> {% trans 'Log in' %}</button>
                         <a class="reset_pass" href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a>
 
 
@@ -53,7 +56,9 @@
 
     </div>
     <div class="center-block" align="center" >
-        <a  class="btn btn-danger"  style="font: normal 25px Helvetica, Arial, sans-serif;" href="{% url 'auth_and_perms:register_user_to_platform' %}"> {% trans 'Register to platform' %}</a>
+        <a  class="btn btn-outline-danger"  style="font: normal 25px Helvetica, Arial, sans-serif;" href="{% url 'auth_and_perms:register_user_to_platform' %}">
+            <i class="fa fa-user-circle" aria-hidden="true"></i>
+{% trans 'Register to platform' %}</a>
     </div>
   </div>
         <div class="clearfix"></div>

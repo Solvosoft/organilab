@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block body %}
+
+<div class="navbar  login_title">
+        <a href="/" class="nav-item site_title withoutsidebar"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
+        {% block extra_nav %}{% endblock %}
+</div>
+{% if messages %}
+            {% include "gentelella/app/messages.html" %}
+{% endif %}
+
+{% block content %}
+<!-- {{ content }} -->
+{% endblock content %}
+
+{% endblock %}
