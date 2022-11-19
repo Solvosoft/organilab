@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'edit_object' %}
+	{% define_urlname_action 'get_object_detail' %}
+	{% define_urlname_action 'rooms_list' %}
+	{% define_urlname_action 'get_shelfobject_limit' %}
+	{% define_urlname_action 'date_validator' %}
+	{% define_urlname_action 'search' %}
+{% endblock %}
 {% block content %}
 <input type="hidden" id="edit_url" value="{% url 'laboratory:edit_object' pk=laboratory %}">
 <input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">

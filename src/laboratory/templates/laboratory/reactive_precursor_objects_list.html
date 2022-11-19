@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'reactive_precursor_object_list' %}
+	{% define_urlname_action 'reports_objects' %}
+	{% define_urlname_action 'reports_reactive_precursor_objects' %}
+{% endblock %}
 {% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
 
 {% block content %}

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
-
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'object_change_logs' %}
 {% endblock %}
-
 
 
 {% block content %}

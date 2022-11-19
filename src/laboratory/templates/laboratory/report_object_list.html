@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory%}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'reports_objects_list' %}
+	{% define_urlname_action 'reports_objects' %}
+{% endblock %}
 {% block title%}{% if type_id == "0" %} {% trans 'Reactives report' %}{% elif type_id == "1" %}{% trans 'Materials report' %}{% elif type_id == "2" %}{% trans 'Equipments report' %}{% else %} {% trans 'Objects report' %}{% endif %}{% endblock %}
 
 {% block content %} 

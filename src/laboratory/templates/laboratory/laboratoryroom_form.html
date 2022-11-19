@@ -4,9 +4,12 @@
 {% block pre_head %}
 	{% if object_list %}
 		{% define_urlname_action 'rooms_create' %}
-		{% define_urlname_action 'rooms_delete' %}
-	{% else %}
 		{% define_urlname_action 'rooms_update' %}
+		{% define_urlname_action 'rooms_delete' %}
+		{% define_urlname_action 'furniture_create' %}
+		{% define_urlname_action 'furniture_update' %}
+	{% else %}
+		{% define_urlname_action 'rooms_create' %}
 	{% endif %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory room management' %}{% endblock %}

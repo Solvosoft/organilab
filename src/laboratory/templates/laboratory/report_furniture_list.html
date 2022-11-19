@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'reports_furniture_detail' %}
+{% endblock %}
 {% block title %}{% trans 'Furniture report' %}{% endblock %}
 {% block content %}
   	<div class="page-header"><h1>{% trans 'Furniture report' %}</h1></div>
