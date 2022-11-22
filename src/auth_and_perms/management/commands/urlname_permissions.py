@@ -1220,7 +1220,7 @@ URLNAME_PERMISSIONS = {
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
         }
-    ], #REVISAR DESDE AQUÍ HACIA ARRIBA
+    ],
     'h_code_reports': [
         {
             'name': 'View Furniture',
@@ -1914,6 +1914,711 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
+        }
+    ],
+    'download_all_regulations': [
+        {
+            'name': 'View Regulation Document',
+            'category': 'Regulation Document',
+            'permission': 'msds.view_regulationdocument'
+        }
+    ],
+    'list_msds': [
+        {
+            'name': 'Add MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.add_msdsobject'
+        },
+        {
+            'name': 'Change MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.change_msdsobject'
+        },
+        {
+            'name': 'Delete MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.delete_msdsobject'
+        },
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        }
+    ],
+    'delete_form': [
+        {
+            'name': 'Delete Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.delete_customform'
+        },
+        {
+            'name': 'View Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.view_customform'
+        }
+    ],
+    'create_form': [
+        {
+            'name': 'Add Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.add_customform'
+        },
+        {
+            'name': 'View Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.view_customform'
+        }
+    ],
+    'preview_form': [
+        {
+            'name': 'View Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.view_customform'
+        }
+    ],
+    'edit_view': [
+        {
+            'name': 'Change Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.change_customform'
+        },
+        {
+            'name': 'View Report Template',
+            'category': 'Report Template',
+            'permission': 'derb.view_customform'
+        }
+    ],
+    'add_steps_wrapper': [
+        {
+            'name': 'Add Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.add_procedurestep'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.view_procedurestep'
+        }
+    ],
+    'get_procedure': [
+        {
+            'name': 'View Procedure',
+            'category': 'Procedure',
+            'permission': 'academic.view_procedure'
+        }
+    ],
+    'remove_object': [
+        {
+            'name': 'Delete Procedure Required Object',
+            'category': 'Procedure Required Object',
+            'permission': 'academic.delete_procedurerequiredobject'
+        },
+        {
+            'name': 'View Procedure Required Object',
+            'category': 'Procedure Required Object',
+            'permission': 'academic.view_procedurerequiredobject'
+        }
+    ],
+    'add_observation_procedureobservations': [
+        {
+            'name': 'Add Procedure Observations',
+            'category': 'Procedure Observations',
+            'permission': 'academic.add_procedureobservations'
+        },
+        {
+            'name': 'View Procedure Observations',
+            'category': 'Procedure Observations',
+            'permission': 'academic.view_procedureobservations'
+        }
+    ],
+    'add_observation_substanceobservation': [
+        {
+            'name': 'Add Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.add_substanceobservation'
+        },
+        {
+            'name': 'View Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.view_substanceobservation'
+        }
+    ],
+    'remove_observation': [
+        {
+            'name': 'Delete Procedure Observations',
+            'category': 'Procedure Observations',
+            'permission': 'academic.delete_procedureobservations'
+        },
+        {
+            'name': 'View Procedure Observations',
+            'category': 'Procedure Observations',
+            'permission': 'academic.delete_procedureobservations'
+        }
+    ],
+    'create_sustance': [
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'Add Substance',
+            'category': 'Substance',
+            'permission': 'sga.add_substance'
+        },
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        },
+        {
+            'name': 'Add Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.add_substancecharacteristics'
+        },
+        {
+            'name': 'Change Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.change_substancecharacteristics'
+        },
+        {
+            'name': 'View Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.view_substancecharacteristics'
+        }
+    ],
+    'update_substance': [
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'Add Substance',
+            'category': 'Substance',
+            'permission': 'sga.add_substance'
+        },
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        },
+        {
+            'name': 'Add Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.add_substancecharacteristics'
+        },
+        {
+            'name': 'Change Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.change_substancecharacteristics'
+        },
+        {
+            'name': 'View Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.view_substancecharacteristics'
+        }
+    ],
+    'get_substance': [
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'approved_substance': [
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'accept_substance': [
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'delete_substance': [
+        {
+            'name': 'Delete Substance',
+            'category': 'Substance',
+            'permission': 'sga.delete_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'detail_substance': [
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'step_one': [
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'Add Substance',
+            'category': 'Substance',
+            'permission': 'sga.add_substance'
+        },
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        },
+        {
+            'name': 'Add Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.add_substancecharacteristics'
+        },
+        {
+            'name': 'Change Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.change_substancecharacteristics'
+        },
+        {
+            'name': 'View Substance Characteristics',
+            'category': 'Substance Characteristics',
+            'permission': 'sga.view_substancecharacteristics'
+        }
+    ],
+    'step_two': [
+        {
+            'name': 'Add SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.add_sgacomplement'
+        },
+        {
+            'name': 'Change SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.change_sgacomplement'
+        },
+        {
+            'name': 'View SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.view_sgacomplement'
+        }
+    ],
+    'step_three': [
+        {
+            'name': 'View SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.view_sgacomplement'
+        },
+        {
+            'name': 'Change Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.add_personaltemplatesga'
+        },
+        {
+            'name': 'Change Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.change_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        },
+        {
+            'name': 'Add Label',
+            'category': 'Label',
+            'permission': 'sga.add_label'
+        }
+    ],
+    'step_four': [
+        {
+            'name': 'Change Security Leaf',
+            'category': 'Security Leaf',
+            'permission': 'sga.change_securityleaf'
+        },
+        {
+            'name': 'View SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.view_sgacomplement'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        },
+        {
+            'name': 'Add Provider',
+            'category': 'Provider',
+            'permission': 'sga.add_provider'
+        },
+        {
+            'name': 'View Provider',
+            'category': 'Provider',
+            'permission': 'sga.view_provider'
+        }
+    ],
+    'add_warning_word': [
+        {
+            'name': 'Add Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.add_warningword'
+        },
+        {
+            'name': 'View Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.view_warningword'
+        }
+    ],
+    'update_observation': [
+        {
+            'name': 'Change Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.change_substanceobservation'
+        },
+        {
+            'name': 'View Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.view_substanceobservation'
+        }
+    ],
+    'delete_observation': [
+        {
+            'name': 'Delete Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.delete_substanceobservation'
+        },
+        {
+            'name': 'View Substance Observation',
+            'category': 'Substance Observation',
+            'permission': 'academic.view_substanceobservation'
+        }
+    ],
+    'update_danger_indication': [
+        {
+            'name': 'Change Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.change_dangerindication'
+        },
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        }
+    ],
+    'update_warning_word': [
+        {
+            'name': 'Change Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.change_warningword'
+        },
+        {
+            'name': 'View Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.view_warningword'
+        }
+    ],
+    'update_prudence_advice': [
+        {
+            'name': 'Change Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.change_prudenceadvice'
+        },
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
+        }
+    ],
+    'add_sga_provider': [
+        {
+            'name': 'Add Provider',
+            'category': 'Provider',
+            'permission': 'sga.add_provider'
+        },
+        {
+            'name': 'View Provider',
+            'category': 'Provider',
+            'permission': 'sga.view_provider'
+        }
+    ],
+    'security_leaf_pdf': [
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        },
+        {
+            'name': 'View SGA Complement',
+            'category': 'SGA Complement',
+            'permission': 'sga.view_sgacomplement'
+        },
+        {
+            'name': 'View Security Leaf',
+            'category': 'Security Leaf',
+            'permission': 'sga.view_securityleaf'
+        }
+    ],
+    'get_product_name_and_quantity': [
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'validate_reservation': [
+        {
+            'name': 'Add Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'increase_stock': [
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'update_pictogram': [
+        {
+            'name': 'Change Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.change_pictogram'
+        },
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'add_pictograms': [
+        {
+            'name': 'Add Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.add_pictogram'
+        },
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'pictograms_list': [
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'add_recipient_size': [
+        {
+            'name': 'Add Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.add_recipientsize'
+        },
+        {
+            'name': 'View Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.view_recipientsize'
+        }
+    ],
+    'add_substance': [
+        {
+            'name': 'Add Object',
+            'category': 'Object',
+            'permission': 'laboratory.add_object'
+        },
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'Add Substance',
+            'category': 'Substance',
+            'permission': 'sga.add_substance'
+        },
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'delete_sgalabel': [
+        {
+            'name': 'Delete Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.delete_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_danger_indication': [
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        }
+    ],
+    'prudence': [
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
+        }
+    ],
+    'get_svgexport': [
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_preview': [
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_recipient_size': [
+        {
+            'name': 'View Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.view_recipientsize'
+        }
+    ],
+    'riskzone_update': [
+        {
+            'name': 'Change Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_riskzone'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        }
+    ],
+    'incident_detail': [
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_delete': [
+        {
+            'name': 'Delete Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.delete_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_report': [
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'tutorials': [
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        },
+        {
+            'name': 'View Regulation Document',
+            'category': 'Regulation Document',
+            'permission': 'msds.view_regulationdocument'
         }
     ],
 }

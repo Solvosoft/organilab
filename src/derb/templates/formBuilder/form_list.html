@@ -5,6 +5,10 @@
 {% block pre_head %}
     {% define_true "use_datatables" as use_datatables %}
     {% define_urlname_action 'form_list' %}
+    {% define_urlname_action 'delete_form' %}
+    {% define_urlname_action 'edit_view' %}
+    {% define_urlname_action 'create_form' %}
+    {% define_urlname_action 'preview_form' %}
 {% endblock %}
 
 {% block title %}{% trans 'Report Template List' %}{% endblock %}

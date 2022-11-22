@@ -4,7 +4,10 @@
 {% load static %}
 {% load urlname_tags %}
 {% block pre_head %}
+    {% define_urlname_action 'increase_stock' %}
     {% define_urlname_action 'manage_reservation' %}
+    {% define_urlname_action 'get_product_name_and_quantity' %}
+    {% define_urlname_action 'validate_reservation' %}
 {% endblock %}
 {% block title %}{% trans 'Manage Reservation' %}{% endblock %}
 
