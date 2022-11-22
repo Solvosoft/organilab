@@ -4,6 +4,8 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_urlname_action 'index' %}
+    {% define_urlname_action 'get_substance' %}
+    {% define_urlname_action 'approved_substance' %}
 {% endblock %}
 {% block title %}{% trans 'SGA Search' %}{% endblock title %}
 {% block content %}

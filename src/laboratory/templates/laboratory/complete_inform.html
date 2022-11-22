@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'complete_inform' %}
+{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
 {% endblock %}
