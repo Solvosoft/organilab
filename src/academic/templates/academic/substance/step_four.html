@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'step_one' %}
+    {% define_urlname_action 'step_two' %}
+    {% define_urlname_action 'step_three' %}
+    {% define_urlname_action 'step_four' %}
+    {% define_urlname_action 'add_sga_provider' %}
+    {% define_urlname_action 'update_substance' %}
+{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">

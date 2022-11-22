@@ -3,6 +3,9 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_urlname_action 'incident_list' %}
+    {% define_urlname_action 'incident_delete' %}
+    {% define_urlname_action 'incident_detail' %}
+    {% define_urlname_action 'incident_update' %}
 {% endblock %}
 {% block content %}
   {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
