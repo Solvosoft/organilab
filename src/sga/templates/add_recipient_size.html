@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'add_recipient_size' %}
+{% endblock %}
 {% block content %}
 
 

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'incident_delete' %}
+{% endblock %}
 
 {% block title %}{% trans 'Delete Incident report' %}{% endblock %}
 {% block content %}
