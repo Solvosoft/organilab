@@ -1,5 +1,9 @@
 {% extends 'gentelella/base.html' %}
 {% load i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'tutorials' %}
+{% endblock %}
 {% block content %}
 <h2>Próximamente Manuales</h2>
 

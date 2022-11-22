@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static i18n gtsettings %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'pictograms_list' %}
+{% endblock %}
 {% block content %}
 
     <a class="btn btn-primary" href="{% url 'sga:pictograms_list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>

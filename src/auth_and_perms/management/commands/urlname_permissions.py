@@ -2402,5 +2402,223 @@ URLNAME_PERMISSIONS = {
             'category': 'Security Leaf',
             'permission': 'sga.view_securityleaf'
         }
-    ]
+    ],
+    'get_product_name_and_quantity': [
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'validate_reservation': [
+        {
+            'name': 'Add Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'increase_stock': [
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        }
+    ],
+    'update_pictogram': [
+        {
+            'name': 'Change Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.change_pictogram'
+        },
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'add_pictograms': [
+        {
+            'name': 'Add Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.add_pictogram'
+        },
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'pictograms_list': [
+        {
+            'name': 'View Pictogram',
+            'category': 'Pictogram',
+            'permission': 'sga.view_pictogram'
+        }
+    ],
+    'add_recipient_size': [
+        {
+            'name': 'Add Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.add_recipientsize'
+        },
+        {
+            'name': 'View Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.view_recipientsize'
+        }
+    ],
+    'add_substance': [
+        {
+            'name': 'Add Object',
+            'category': 'Object',
+            'permission': 'laboratory.add_object'
+        },
+        {
+            'name': 'Change Object',
+            'category': 'Object',
+            'permission': 'laboratory.change_object'
+        },
+        {
+            'name': 'View Object',
+            'category': 'Object',
+            'permission': 'laboratory.view_object'
+        },
+        {
+            'name': 'Add Substance',
+            'category': 'Substance',
+            'permission': 'sga.add_substance'
+        },
+        {
+            'name': 'Change Substance',
+            'category': 'Substance',
+            'permission': 'sga.change_substance'
+        },
+        {
+            'name': 'View Substance',
+            'category': 'Substance',
+            'permission': 'sga.view_substance'
+        }
+    ],
+    'delete_sgalabel': [
+        {
+            'name': 'Delete Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.delete_personaltemplatesga'
+        },
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_danger_indication': [
+        {
+            'name': 'View Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.view_dangerindication'
+        }
+    ],
+    'prudence': [
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
+        }
+    ],
+    'get_svgexport': [
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_preview': [
+        {
+            'name': 'View Label SGA',
+            'category': 'Label SGA',
+            'permission': 'sga.view_personaltemplatesga'
+        }
+    ],
+    'get_recipient_size': [
+        {
+            'name': 'View Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.view_recipientsize'
+        }
+    ],
+    'riskzone_update': [
+        {
+            'name': 'Change Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_riskzone'
+        },
+        {
+            'name': 'View Risk Zone',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_riskzone'
+        }
+    ],
+    'incident_detail': [
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_delete': [
+        {
+            'name': 'Delete Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.delete_incidentreport'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'incident_report': [
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        },
+        {
+            'name': 'View Incident Report',
+            'category': 'Incident Report',
+            'permission': 'risk_management.view_incidentreport'
+        }
+    ],
+    'tutorials': [
+        {
+            'name': 'View MSDS Object',
+            'category': 'MSDS Object',
+            'permission': 'msds.view_msdsobject'
+        },
+        {
+            'name': 'View Regulation Document',
+            'category': 'Regulation Document',
+            'permission': 'msds.view_regulationdocument'
+        }
+    ],
 }
