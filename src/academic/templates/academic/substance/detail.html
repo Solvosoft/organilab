@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'add_observation_substanceobservation' %}
+    {% define_urlname_action 'update_observation' %}
+    {% define_urlname_action 'delete_observation' %}
+{% endblock %}
 {% block content %}
 <div class="row">
     <div class="offset-md-2 col-md-8">

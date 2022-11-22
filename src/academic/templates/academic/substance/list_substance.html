@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings label_tags %}
+{% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'security_leaf_pdf' %}
+    {% define_urlname_action 'create_sustance' %}
+    {% define_urlname_action 'update_substance' %}
+    {% define_urlname_action 'detail_substance' %}
+    {% define_urlname_action 'delete_substance' %}
+    {% define_urlname_action 'get_preview' %}
 {% endblock %}
 
 {% block content %}

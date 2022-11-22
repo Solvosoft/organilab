@@ -1,7 +1,14 @@
 {% extends 'label_index.html' %}
 {% load i18n %}
 {% load static %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'step_one' %}
+    {% define_urlname_action 'step_two' %}
+    {% define_urlname_action 'step_three' %}
+    {% define_urlname_action 'step_four' %}
+    {% define_urlname_action 'update_substance' %}
+{% endblock %}
 {# CSS #}
 {% block css %}
 <link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
