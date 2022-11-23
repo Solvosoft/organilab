@@ -53,6 +53,7 @@ Run your development server
 Compile translations 
 
 	$ django-admin makemessages --all
+	$ django-admin compilemessages --locale es
 
 ## Run with composer in development environment
 

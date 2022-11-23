@@ -259,7 +259,7 @@ msgstr "Observaciones"
 #: academic/templates/academic/substance/detail.html:33
 #: laboratory/templates/laboratory/complete_inform.html:14
 msgid "Observations"
-msgstr "Mis reservaciones"
+msgstr "Observaciones"
 
 #: academic/substance/views.py:171
 msgid "The substance is removed successfully"
@@ -2552,7 +2552,7 @@ msgstr "Finalizado"
 #: laboratory/models.py:542 laboratory/templates/laboratory/inform.html:29
 #: sga/forms.py:16 sga/templates/label_index.html:82
 msgid "Template"
-msgstr "Temperatura"
+msgstr "Plantilla"
 
 #: laboratory/models.py:559
 msgid "Comment"
