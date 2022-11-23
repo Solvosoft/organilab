@@ -55,6 +55,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^donate$', donate, name='donate'),
     re_path(r'^donate_success$', donate_success, name='donate_success'),
+    path('api/', include('src.risk_management.api.routers'), name='risk_zone'),
 ]
 
 paypal_urls = [

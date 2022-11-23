@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% load static i18n gtsettings %}
+
+{% block pre_head %}
+    {% define_urlname_action 'zonetype_list' %}
+    {% define_true 'use_datatables' %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-11">
+    <div class="page-header" align="center">
+      <h3 class="heading-1" >
+        <span>{% trans 'Zone Type Management' %}</span>
+      </h3>
+    </div>
+  </div>
+</div>
+{% endblock %}

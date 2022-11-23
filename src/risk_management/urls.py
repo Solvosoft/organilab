@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from risk_management import views as zoneviews
 from risk_management import  incidents
@@ -13,5 +13,6 @@ urlpatterns = [
     re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/update', incidents.IncidentReportEdit.as_view(), name='incident_update'),
     re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/detail', incidents.IncidentReportDetail.as_view(), name='incident_detail'),
     re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/delete', incidents.IncidentReportDelete.as_view(), name='incident_delete'),
-    re_path(r'incident/report/(?P<lab_pk>\d+)/(?P<pk>\d+)?', incidents.report_incidentreport, name='incident_report' )
+    re_path(r'incident/report/(?P<lab_pk>\d+)/(?P<pk>\d+)?', incidents.report_incidentreport, name='incident_report' ),
+    path('zonetype/list', zoneviews.ListZoneType.as_view(), name='zonetype_list'),
 ]
