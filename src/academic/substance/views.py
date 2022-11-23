@@ -437,7 +437,8 @@ def step_three(request, organilabcontext, template, substance):
     if personaltemplateSGA.label:
         bi_info = personaltemplateSGA.label.builderInformation
         initial.update({'substance': personaltemplateSGA.label.substance.pk,
-            'commercial_information': personaltemplateSGA.label.commercial_information})
+            'commercial_information':
+                personaltemplateSGA.label.builderInformation.commercial_information if personaltemplateSGA.label.builderInformation else ''})
 
         if bi_info:
             initial.update({'company_name': bi_info.name,
@@ -469,7 +470,9 @@ def step_two(request, organilabcontext, pk):
         form = SGAComplementsForm(request.POST, instance=complement)
         if form.is_valid():
             obj = form.save()
-            return  redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+            return redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext,
+                                                          'template':personaltemplateSGA.pk,
+                                                          'substance':personaltemplateSGA.label.substance.pk}))
         else:
             messages.error(request, _("Invalid form"))
             context={
@@ -483,6 +486,7 @@ def step_two(request, organilabcontext, pk):
             return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext,'complement':complement.pk, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
     context = {
         'form': SGAComplementsForm(instance=complement),
+        #'companyform': CompanyForm(),
         'organilabcontext': organilabcontext,
         'step': 2,
         'complement': complement.pk,

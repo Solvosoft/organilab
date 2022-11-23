@@ -11,14 +11,14 @@
         <li>
             <a href="{% url 'step_two' organilabcontext complement %}" class="{% if step == 2 %}selected{%else%}disabled{% endif %}" isdone="0" rel="1">
                 <span class="step_no">2</span>
-                <span class="step_descr">{% trans 'SGA Components' %}</span>
+                <span class="step_descr">{% trans 'Label Components' %}</span>
             </a>
         </li>
 
         <li>
             <a href="{% url 'step_three' organilabcontext template substance %}" class="{% if step == 3 %}selected{%else%}disabled{% endif %}" isdone="0" rel="3">
                 <span class="step_no">3</span>
-                <span class="step_descr">{% trans 'Commercial Information' %}</span>
+                <span class="step_descr">{% trans 'Label editor' %}</span>
             </a>
         </li>
 

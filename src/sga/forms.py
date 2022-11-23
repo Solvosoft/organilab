@@ -101,7 +101,6 @@ class PersonalFormAcademic(GTForm):
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
-
 class PersonalSGAForm(forms.ModelForm, GTForm):
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -125,7 +124,7 @@ class BuilderInformationForm(forms.ModelForm, GTForm):
 class LabelForm(forms.ModelForm, GTForm):
     class Meta:
         model = Label
-        fields = ['substance', 'commercial_information']
+        fields = ['substance']
         exclude = ['builderInformation']
         widgets = {
             'substance': genwidgets.Select

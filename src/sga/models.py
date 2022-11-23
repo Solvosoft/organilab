@@ -225,7 +225,9 @@ class BuilderInformation(models.Model):
     phone = models.TextField(max_length=15, verbose_name=_("Phone"))
     address = models.TextField(max_length=100, verbose_name=_("Address"))
     user = models.ForeignKey(User, verbose_name=_("User"),on_delete=models.DO_NOTHING, null=True)
-    community_share = models.BooleanField(default=False,blank=True, verbose_name=_("Share with community"))
+    commercial_information = models.TextField(
+        null=True, blank=True,
+        verbose_name=_("Commercial Information"))
     def __str__(self):
         return self.name
 
@@ -270,9 +272,8 @@ class Label(models.Model):
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
         on_delete=models.CASCADE, null=True)
-    commercial_information = models.TextField(
-        null=True, blank=True,
-        verbose_name=_("Commercial Information"))
+
+    community_share = models.BooleanField(default=False,blank=True, verbose_name=_("Share with community"))
 
     def __str__(self):
         return str(self.substance)
@@ -358,6 +359,7 @@ class Provider(models.Model):
 
     def __str__(self):
         return self.name
+
 class SecurityLeaf(models.Model):
     """Identificacion de sustancias"""
     register_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("No. Registro"))
@@ -479,6 +481,7 @@ class SecurityLeaf(models.Model):
     full_text_phrases = models.TextField(null=True, blank=True, verbose_name=_("The full text of the R-phrases referred to in points 2 and 3"))
     other_data_text = models.TextField(null=True, blank=True, verbose_name=_("Otro datos"))
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class ReviewSubstance(models.Model):
     substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
