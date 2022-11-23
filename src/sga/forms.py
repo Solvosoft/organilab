@@ -235,3 +235,24 @@ class PictogramForm(forms.ModelForm, GTForm):
             "warning_word": genwidgets.Select(),
             "image": genwidgets.FileInput(),
         }
+
+class CompanyForm(forms.ModelForm, GTForm):
+    def __init__(self, *args, **kwargs):
+        user = None
+        if 'user' in kwargs:
+            user=kwargs.pop('user')
+        super(CompanyForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['user'].initial = user
+
+    class Meta:
+        model = BuilderInformation
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput,
+            'phone': genwidgets.TextInput,
+            'address':genwidgets.Textarea,
+            'commercial_information': genwidgets.Textarea,
+            'user': genwidgets.HiddenInput
+
+        }

@@ -22,8 +22,8 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm, PictogramForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram
+    LabelForm, PersonalTemplateForm, PictogramForm, CompanyForm
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
@@ -495,3 +495,43 @@ def update_pictogram(request,id_pictogram):
         'button_text': _('Edit')
     }
     return render(request, 'add_pictograms.html', context=context)
+
+def get_companies(request):
+    company = BuilderInformation.objects.filter(user=request.user)
+    return render(request,'list_company.html', context={'companies':company})
+def create_company(request):
+    form = CompanyForm(user=request.user)
+    if request.method=='POST':
+        form= CompanyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('sga:get_companies'))
+
+    context={
+        'form':form
+    }
+
+    return render(request,'add_company.html', context=context)
+
+def edit_company(request,pk):
+    company = BuilderInformation.objects.get(pk=pk)
+    form = CompanyForm(instance=company)
+    if request.method=='POST':
+        form= CompanyForm(request.POST)
+        if form.is_valid():
+            company = form.save(commit=False)
+            company.user = request.user
+            company.save()
+            return redirect(reverse('sga:get_companies'))
+    context={
+        'form':form
+    }
+
+    return render(request,'add_company.html', context=context)
+def remove_company(request,pk):
+    if pk:
+        company = BuilderInformation.objects.get(pk=pk)
+        company.delete()
+        return redirect(reverse('sga:get_companies'))
+
+    return render(request,'list_company.html', context=context)
