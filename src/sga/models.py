@@ -358,6 +358,7 @@ class Provider(models.Model):
 
     def __str__(self):
         return self.name
+
 class SecurityLeaf(models.Model):
     """Identificacion de sustancias"""
     register_number = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("No. Registro"))
@@ -480,6 +481,7 @@ class SecurityLeaf(models.Model):
     other_data_text = models.TextField(null=True, blank=True, verbose_name=_("Otro datos"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 class ReviewSubstance(models.Model):
     substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
     note = models.IntegerField(null=True, blank=True, verbose_name=_('Note'))
@@ -490,3 +492,11 @@ class ReviewSubstance(models.Model):
 
     def __str__(self):
         return f'{self.substance.creator}- ${self.note}'
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=250)
+    phone = models.CharField(max_length=50)
+    commercial_information = models.TextField()
+    logo = models.ImageField(upload_to='sga/logos')

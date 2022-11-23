@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-22 23:10-0600\n"
+"POT-Creation-Date: 2022-11-23 12:52-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -36,7 +36,7 @@ msgstr "Objeto"
 
 #: academic/forms.py:39 academic/templates/academic/procedure_steps.html:36
 #: laboratory/forms.py:105 laboratory/forms.py:121 laboratory/forms.py:135
-#: laboratory/templates/laboratory/transfer_objects.html:25 sga/forms.py:140
+#: laboratory/templates/laboratory/transfer_objects.html:25 sga/forms.py:153
 #: sga/models.py:326 sga/templates/donate_organilab.html:42
 msgid "Amount"
 msgstr "Cantidad"
@@ -126,7 +126,7 @@ msgstr "Observaciones del procedimiento"
 #: msds/templates/regulation/regulations_document.html:15
 #: msds/templates/regulation/regulations_document.html:34
 #: risk_management/models.py:36 risk_management/models.py:49 sga/forms.py:14
-#: sga/forms.py:137 sga/models.py:16 sga/models.py:49 sga/models.py:65
+#: sga/forms.py:150 sga/models.py:16 sga/models.py:49 sga/models.py:65
 #: sga/models.py:85 sga/models.py:134 sga/models.py:224 sga/models.py:246
 #: sga/models.py:287 sga/models.py:304 sga/models.py:324 sga/models.py:350
 #: sga/templates/donate_organilab.html:34 sga/templates/list_pictograms.html:25
@@ -158,7 +158,7 @@ msgstr "Administración de Materiales"
 msgid "Synonymous"
 msgstr "Sinónimos"
 
-#: academic/models.py:93 sga/forms.py:158 sga/models.py:149
+#: academic/models.py:93 sga/forms.py:171 sga/models.py:149
 msgid "UIPA name"
 msgstr "Nombre UIPA"
 
@@ -289,7 +289,7 @@ msgstr "Actualizar consejo de prudencia"
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
 
-#: academic/substance/views.py:418 academic/substance/views.py:474
+#: academic/substance/views.py:418 academic/substance/views.py:476
 #: sga/views.py:221 sga/views.py:261
 msgid "Invalid form"
 msgstr "Formularion inválido"
@@ -527,7 +527,7 @@ msgstr "Uso general"
 #: academic/templates/academic/substance/check_substances.html:74
 #: academic/templates/academic/substance/pdf/section_eight.html:9
 #: academic/templates/academic/substance/pdf/section_three.html:4
-#: sga/models.py:179 sga/models.py:268 sga/models.py:484
+#: sga/models.py:179 sga/models.py:268 sga/models.py:486
 msgid "Substance"
 msgstr "Eliminar sustancia"
 
@@ -836,7 +836,7 @@ msgid "Exposure controls"
 msgstr "Controles de la exposición"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:55
-#: sga/models.py:405
+#: sga/models.py:406
 msgid "Appropriate technical controls"
 msgstr "Controles técnicos apropiados"
 
@@ -930,27 +930,27 @@ msgid "no data available"
 msgstr "Sin datos disponibles"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:61
-#: sga/models.py:406
+#: sga/models.py:407
 msgid "Eye/face protection"
 msgstr "Protección de los ojos/ la cara"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:66
-#: sga/models.py:407
+#: sga/models.py:408
 msgid "Skin protection"
 msgstr "Protección de la piel"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:71
-#: sga/models.py:408
+#: sga/models.py:409
 msgid "Corporal protection"
 msgstr "Controles de exposición/protección individual"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:76
-#: sga/models.py:409
+#: sga/models.py:410
 msgid "Breath protection"
 msgstr "Protección respiratoria"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:81
-#: sga/models.py:410
+#: sga/models.py:411
 msgid "Environmental exposure control"
 msgstr "Control de exposición ambiental"
 
@@ -975,67 +975,67 @@ msgid "Information on toxicological effects"
 msgstr "Información sobre los efectos toxicológicos"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:6
-#: sga/models.py:444
+#: sga/models.py:445
 msgid "Acute toxicity"
 msgstr "Toxicidad aguda"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:10
-#: sga/models.py:445
+#: sga/models.py:446
 msgid "Skin corrosion or irritation"
 msgstr "Corrosión o irritación cutáneas"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:14
-#: sga/models.py:446
+#: sga/models.py:447
 msgid "Serious eye damage or irritation"
 msgstr "Lesiones o irritación ocular graves"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:18
-#: sga/models.py:447
+#: sga/models.py:448
 msgid "Respiratory or skin sensitization"
 msgstr "Sanitización de respiratoria o de piel"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:22
-#: sga/models.py:448
+#: sga/models.py:449
 msgid "Germ cell mutagenicity"
 msgstr "Mutagenicidad en células germinales"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:26
-#: sga/models.py:449
+#: sga/models.py:450
 msgid "Carcinogenicity"
 msgstr "Carcinogenicidad"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:30
-#: sga/models.py:450
+#: sga/models.py:451
 msgid "Reproductive toxicity"
 msgstr "Toxicidad para la reproducción"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:34
-#: sga/models.py:451
+#: sga/models.py:452
 msgid "Specific target organ toxicity - single exposure"
 msgstr "Toxicidad específica en determinados órganos - exposición única"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:38
-#: sga/models.py:452
+#: sga/models.py:453
 msgid "Specific target organ toxicity - repeated exposure"
 msgstr "Toxicidad específica en determinados órganos - exposiciones repetidas"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:42
-#: sga/models.py:453
+#: sga/models.py:454
 msgid "Aspiration hazard"
 msgstr "Peligro de aspiración"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:46
-#: sga/models.py:454
+#: sga/models.py:455
 msgid "Additional Information"
 msgstr "Información Adicional"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:2
-#: academic/templates/academic/substance/step_four.html:329 sga/models.py:474
+#: academic/templates/academic/substance/step_four.html:329 sga/models.py:475
 msgid "Regulatory information"
 msgstr "Información reglamentaria"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:4
-#: sga/models.py:475
+#: sga/models.py:476
 msgid ""
 "Regulations and legislation on safety, health and the environment specific "
 "to the substance or mixture"
@@ -1044,7 +1044,7 @@ msgstr ""
 "específicas para la sustancia o la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:8
-#: sga/models.py:476
+#: sga/models.py:477
 msgid "Chemical Safety Assessment"
 msgstr "Evaluación de la seguridad química"
 
@@ -1057,27 +1057,27 @@ msgid "Extinguishing media"
 msgstr "Medios de extinción"
 
 #: academic/templates/academic/substance/pdf/section_five.html:6
-#: sga/models.py:382
+#: sga/models.py:383
 msgid "Suitable extinguishing media"
 msgstr "Medios de extinción apropiados"
 
 #: academic/templates/academic/substance/pdf/section_five.html:10
-#: sga/models.py:383
+#: sga/models.py:384
 msgid "Unsuitable extinguishing media"
 msgstr "Medios de extinción no apropiados"
 
 #: academic/templates/academic/substance/pdf/section_five.html:15
-#: sga/models.py:384
+#: sga/models.py:385
 msgid "Specific hazards arising from the substance or mixture"
 msgstr "Peligros específicos derivados de la sustancia o la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_five.html:20
-#: sga/models.py:385
+#: sga/models.py:386
 msgid "Hazardous Combustion Products"
 msgstr "Productos de combustión peligrosos"
 
 #: academic/templates/academic/substance/pdf/section_five.html:26
-#: sga/models.py:386
+#: sga/models.py:387
 msgid "Recommendations for firefighters"
 msgstr "Recomendaciones para el personal de lucha contra incendios"
 
@@ -1094,42 +1094,42 @@ msgid "Description of first aid"
 msgstr "Descripción de los primeros auxilios"
 
 #: academic/templates/academic/substance/pdf/section_four.html:7
-#: sga/models.py:372
+#: sga/models.py:373
 msgid "General recommendations"
 msgstr "Recomendaciones generales"
 
 #: academic/templates/academic/substance/pdf/section_four.html:12
-#: sga/models.py:373
+#: sga/models.py:374
 msgid "If inhaled"
 msgstr "Si es inhalado"
 
 #: academic/templates/academic/substance/pdf/section_four.html:17
-#: sga/models.py:374
+#: sga/models.py:375
 msgid "In case of skin contact"
 msgstr "En caso de contacto con la piel"
 
 #: academic/templates/academic/substance/pdf/section_four.html:22
-#: sga/models.py:375
+#: sga/models.py:376
 msgid "In case of contact with eyes"
 msgstr "En caso de contacto con los ojos"
 
 #: academic/templates/academic/substance/pdf/section_four.html:27
-#: sga/models.py:376
+#: sga/models.py:377
 msgid "if it is swallowed"
 msgstr "si es tragado"
 
 #: academic/templates/academic/substance/pdf/section_four.html:32
-#: sga/models.py:377
+#: sga/models.py:378
 msgid "Most important symptoms and effects, both acute and delayed"
 msgstr "Principales síntomas y efectos, agudos y retardados"
 
 #: academic/templates/academic/substance/pdf/section_four.html:37
-#: sga/models.py:378
+#: sga/models.py:379
 msgid "Other Causes"
 msgstr "Otros Peligros"
 
 #: academic/templates/academic/substance/pdf/section_four.html:43
-#: sga/models.py:379
+#: sga/models.py:380
 msgid ""
 "Indication of any medical attention and special treatment that should be "
 "provided immediately"
@@ -1143,32 +1143,32 @@ msgid "Transport information"
 msgstr "Información relativa al transporte"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:4
-#: sga/models.py:467
+#: sga/models.py:468
 msgid "ONU Number"
 msgstr "Número CAS"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:8
-#: sga/models.py:468
+#: sga/models.py:469
 msgid "United Nations proper shipping name"
 msgstr "Designación oficial de transporte de las Naciones Unidas"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:12
-#: sga/models.py:469
+#: sga/models.py:470
 msgid "Transport hazard class"
 msgstr "Clase(s) de peligro para el transporte"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:16
-#: sga/models.py:470
+#: sga/models.py:471
 msgid "Packaging group"
 msgstr "Grupo embalaje"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:20
-#: sga/models.py:471
+#: sga/models.py:472
 msgid "Environmental hazards"
 msgstr "Peligros para el medio ambiente"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:24
-#: sga/models.py:472
+#: sga/models.py:473
 msgid "Special precautions for users"
 msgstr "Precauciones particulares para los usuarios"
 
@@ -1182,72 +1182,72 @@ msgid "Information on basic physical and chemical properties"
 msgstr "Información sobre propiedades físicas y químicas básicas"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:7
-#: sga/models.py:414
+#: sga/models.py:415
 msgid "Aspect"
 msgstr "Aspecto"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:11
-#: sga/models.py:415
+#: sga/models.py:416
 msgid "Smell"
 msgstr "Olor"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:15
-#: sga/models.py:416
+#: sga/models.py:417
 msgid "Olfactory threshold"
 msgstr "Umbral olfativo"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:19
-#: sga/models.py:417
+#: sga/models.py:418
 msgid "pH"
 msgstr "pH"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:23
-#: sga/models.py:418
+#: sga/models.py:419
 msgid "Melting point/ point of freezing"
 msgstr "Punto de fusión/ punto de congelación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:27
-#: sga/models.py:419
+#: sga/models.py:420
 msgid "Starting point of boiling and range boiling"
 msgstr "Punto inicial de ebullición e intervalo de ebullición"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:31
-#: sga/models.py:420
+#: sga/models.py:421
 msgid "Flashpoint"
 msgstr "Punto de inflamación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:35
-#: sga/models.py:421
+#: sga/models.py:422
 msgid "Evaporation rate"
 msgstr "Tasa de evaporación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:39
-#: sga/models.py:422
+#: sga/models.py:423
 msgid "Flammability (solid,gas)"
 msgstr "Inflamabilidad (sólido,gas)"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:43
-#: sga/models.py:423
+#: sga/models.py:424
 msgid "Inflammability top/bottom or explosive limits"
 msgstr "Inflamabilidad superior/inferior o límites explosivos"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:47
-#: sga/models.py:424
+#: sga/models.py:425
 msgid "Vapor pressure"
 msgstr "Presión osmótica"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:51
-#: sga/models.py:425
+#: sga/models.py:426
 msgid "Vapor density"
 msgstr "Densidad de vapor"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:55
-#: sga/models.py:426
+#: sga/models.py:427
 msgid "Relative density"
 msgstr "Administración de Reactivos"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:59
-#: sga/models.py:427
+#: sga/models.py:428
 msgid "Water solubility"
 msgstr "Solubilidad en agua"
 
@@ -1256,32 +1256,32 @@ msgid "Partition coefficient n-octanol/wate"
 msgstr "Coeficiente de partición: N-Octanol/Agua"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:67
-#: sga/models.py:429
+#: sga/models.py:430
 msgid "Auto-temperature inflammation"
 msgstr "Temperatura de auto-inflamación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:71
-#: sga/models.py:430
+#: sga/models.py:431
 msgid "Temperature of decomposition"
 msgstr "Temperatura de descomposición"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:75
-#: sga/models.py:431
+#: sga/models.py:432
 msgid "Viscosity"
 msgstr "Viscosidad dinámica"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:79
-#: sga/models.py:432
+#: sga/models.py:433
 msgid "Explosive properties"
 msgstr "Propiedades de la solución"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:83
-#: sga/models.py:433
+#: sga/models.py:434
 msgid "Properties oxidising"
 msgstr "Propiedades comburentes"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:87
-#: sga/models.py:434
+#: sga/models.py:435
 msgid "Other security information"
 msgstr "Otra información de seguridad"
 
@@ -1304,7 +1304,7 @@ msgid "Product name"
 msgstr "Nombre del producto"
 
 #: academic/templates/academic/substance/pdf/section_one.html:12
-#: sga/models.py:366
+#: sga/models.py:367
 msgid "Reference"
 msgstr "Referencia"
 
@@ -1357,7 +1357,7 @@ msgstr "Teléfono de emergencia"
 #: academic/templates/academic/substance/pdf/section_one.html:60
 #: laboratory/models.py:422 laboratory/models.py:449
 #: laboratory/templates/laboratory/provider_list.html:20
-#: laboratory/views/reports.py:802 sga/forms.py:143 sga/models.py:325
+#: laboratory/views/reports.py:802 sga/forms.py:156 sga/models.py:325
 #: sga/models.py:355 sga/templates/donate_organilab.html:38
 msgid "Email"
 msgstr "Correo electrónico"
@@ -1373,18 +1373,18 @@ msgid "SECTION 7: Handling and storage"
 msgstr "SECCIÓN 7: Manipulación y almacenamiento"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:4
-#: sga/models.py:395
+#: sga/models.py:396
 msgid "Precautions for safe handling"
 msgstr "Precauciones para una manipulación segura"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:8
-#: sga/models.py:396
+#: sga/models.py:397
 msgid "Conditions for safe storage, including possible incompatibilities"
 msgstr ""
 "Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:12
-#: sga/models.py:397
+#: sga/models.py:398
 msgid "Specific end uses"
 msgstr "Usos específicos finales"
 
@@ -1393,23 +1393,23 @@ msgid "SECTION 6: Accidental Release Measures"
 msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
 
 #: academic/templates/academic/substance/pdf/section_six.html:4
-#: sga/models.py:390
+#: sga/models.py:391
 msgid "Personnel who are not part of the emergency services"
 msgstr ""
 "Precauciones personales, equipo de protección y procedimientos de emergencia"
 
 #: academic/templates/academic/substance/pdf/section_six.html:9
-#: sga/models.py:391
+#: sga/models.py:392
 msgid "Environmental relative precautions"
 msgstr "Precauciones relativas al medio ambiente"
 
 #: academic/templates/academic/substance/pdf/section_six.html:14
-#: sga/models.py:392
+#: sga/models.py:393
 msgid "Methods and material for containment and cleaning up"
 msgstr "Métodos y material de contención y de limpieza"
 
 #: academic/templates/academic/substance/pdf/section_six.html:19
-#: sga/models.py:393
+#: sga/models.py:394
 msgid "Reference to other sections"
 msgstr "Referencia a otras secciones"
 
@@ -1419,12 +1419,12 @@ msgid "Other information"
 msgstr "Otra información"
 
 #: academic/templates/academic/substance/pdf/section_sixteen.html:4
-#: sga/models.py:478
+#: sga/models.py:479
 msgid "Full text of the H-Statements referred to in sections 2 and 3."
 msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
 
 #: academic/templates/academic/substance/pdf/section_sixteen.html:8
-#: sga/models.py:479
+#: sga/models.py:480
 msgid "The full text of the R-phrases referred to in points 2 and 3"
 msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
 
@@ -1438,32 +1438,32 @@ msgid "Stability and Reactivity"
 msgstr "Estabilidad y Reactividad"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:4
-#: sga/models.py:436
+#: sga/models.py:437
 msgid "Reactivity"
 msgstr "Reactividad"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:8
-#: sga/models.py:437
+#: sga/models.py:438
 msgid "Chemical stability"
 msgstr "Energía química potencial"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:12
-#: sga/models.py:438
+#: sga/models.py:439
 msgid "Possibility of hazardous reactions"
 msgstr "Posibilidad de reacciones peligrosas"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:16
-#: sga/models.py:439
+#: sga/models.py:440
 msgid "Conditions to avoid"
 msgstr "Condiciones que deben evitarse"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:20
-#: sga/models.py:440
+#: sga/models.py:441
 msgid "Incompatible materials"
 msgstr "Materiales incompatibles"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:24
-#: sga/models.py:441
+#: sga/models.py:442
 msgid "Hazardous decomposition products"
 msgstr "Productos de descomposición peligrosos"
 
@@ -1478,12 +1478,12 @@ msgstr "Métodos para el tratamiento de residuos"
 
 #: academic/templates/academic/substance/pdf/section_thirdteen.html:6
 #: msds/models.py:12 msds/templates/index_msds.html:20
-#: msds/templates/index_msds.html:28 sga/models.py:464
+#: msds/templates/index_msds.html:28 sga/models.py:465
 msgid "Product"
 msgstr "Nombre del producto"
 
 #: academic/templates/academic/substance/pdf/section_thirdteen.html:10
-#: sga/models.py:465
+#: sga/models.py:466
 msgid "Contaminated packaging"
 msgstr "Envases contaminados"
 
@@ -1527,32 +1527,32 @@ msgid "Ecological Information"
 msgstr "Información Ecológica"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:4
-#: sga/models.py:456
+#: sga/models.py:457
 msgid "Toxicity"
 msgstr "Toxicidad"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:8
-#: sga/models.py:457
+#: sga/models.py:458
 msgid "Persistence and degradability"
 msgstr "Persistencia y degradabilidad"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:12
-#: sga/models.py:458
+#: sga/models.py:459
 msgid "Bioaccumulative potential"
 msgstr "Potencial de bioacumulación"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:16
-#: sga/models.py:459
+#: sga/models.py:460
 msgid "Soil mobility"
 msgstr "Movilidad en el suelo"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:20
-#: sga/models.py:460
+#: sga/models.py:461
 msgid "Results of PBT and vPvB assessment"
 msgstr "Resultados de la valoración PBT y mPmB"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:24
-#: sga/models.py:461
+#: sga/models.py:462
 msgid "Other adverse effects"
 msgstr "Otros efectos adversos"
 
@@ -1565,12 +1565,12 @@ msgid "Classification of the substance or mixture"
 msgstr "Clasificación de la sustancia o de la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_two.html:7
-#: sga/models.py:369
+#: sga/models.py:370
 msgid "Classification according to Regulation (CE) 1272/2008"
 msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
 
 #: academic/templates/academic/substance/pdf/section_two.html:11
-#: sga/models.py:370
+#: sga/models.py:371
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
 msgstr ""
 "Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
@@ -1645,6 +1645,7 @@ msgid "Exposure controls/personal protection"
 msgstr "Controles de exposición/protección individual"
 
 #: academic/templates/academic/substance/step_four.html:390
+#: academic/templates/academic/substance/step_two.html:31
 #: sga/templates/add_recipient_size.html:26 sga/templates/add_substance.html:23
 #: sga/templates/donate_organilab.html:22
 #: sga/templates/personal_template.html:87
@@ -1676,21 +1677,31 @@ msgstr "En vivo"
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
-#: academic/templates/academic/substance/step_two.html:20
-#: academic/templates/academic/substance/steps.html:14
+#: academic/templates/academic/substance/step_two.html:24
 #: presentation/templates/partials/sga_complements.html:6
 msgid "SGA Components"
 msgstr "Componentes SGA"
+
+#: academic/templates/academic/substance/step_two.html:36
+#, fuzzy
+#| msgid "Commercial Information"
+msgid "Commercial information"
+msgstr "Información Comercial"
 
 #: academic/templates/academic/substance/steps.html:8
 #: presentation/templates/partials/sga_academic.html:13
 msgid "Create Substances"
 msgstr "Crear Sustancias"
 
-#: academic/templates/academic/substance/steps.html:21 sga/models.py:275
-#: sga/templates/editor/generic.html:34
-msgid "Commercial Information"
-msgstr "Información Comercial"
+#: academic/templates/academic/substance/steps.html:14
+msgid "Label Components"
+msgstr "Componentes de etiqueta"
+
+#: academic/templates/academic/substance/steps.html:21
+#, fuzzy
+#| msgid "GHS Label Creator"
+msgid "Label editor"
+msgstr "Editor de etiquetas"
 
 #: academic/templates/academic/substance/steps.html:29
 msgid "Security Leafs"
@@ -2234,7 +2245,7 @@ msgid "Bill"
 msgstr "Factura"
 
 #: laboratory/forms.py:124 msds/models.py:8 msds/templates/index_msds.html:19
-#: msds/templates/index_msds.html:27 sga/models.py:356 sga/models.py:368
+#: msds/templates/index_msds.html:27 sga/models.py:356 sga/models.py:369
 msgid "Provider"
 msgstr "Proveedores"
 
@@ -2550,7 +2561,7 @@ msgid "Finalized"
 msgstr "Finalizado"
 
 #: laboratory/models.py:542 laboratory/templates/laboratory/inform.html:29
-#: sga/forms.py:16 sga/templates/label_index.html:82
+#: sga/forms.py:16
 msgid "Template"
 msgstr "Plantilla"
 
@@ -3569,7 +3580,6 @@ msgid "Reserve/Add/Transfer/Substract"
 msgstr "Reservar/Añador/Transferir/Substraer"
 
 #: laboratory/templates/laboratory/search.html:51
-#: sga/templates/label_index.html:76
 msgid "Information"
 msgstr "Información"
 
@@ -4302,7 +4312,7 @@ msgstr "Etiquetas SGA"
 
 #: presentation/templates/partials/sga_menu.html:20
 msgid "SGA Editor"
-msgstr ""
+msgstr "Editor SGA"
 
 #: presentation/templates/partials/sga_menu.html:28
 msgid "MSDS: Security sheets"
@@ -4633,15 +4643,15 @@ msgstr "Administración de zonas de riesgo"
 msgid "Download Label"
 msgstr "Descargar etiquetas"
 
-#: sga/forms.py:141
+#: sga/forms.py:154
 msgid "*Type the amount in dollars"
 msgstr "*Tipo de cantidad en dolares"
 
-#: sga/forms.py:145 sga/models.py:328
+#: sga/forms.py:158 sga/models.py:328
 msgid "Add me to the donators list"
 msgstr "Agregarme a la lista de donantes"
 
-#: sga/forms.py:218
+#: sga/forms.py:231
 msgid "Select Provider"
 msgstr "Seleccione Proveedor"
 
@@ -4765,6 +4775,10 @@ msgstr "Tamaño de recipiente"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
+#: sga/models.py:275 sga/templates/editor/generic.html:34
+msgid "Commercial Information"
+msgstr "Información Comercial"
+
 #: sga/models.py:281 sga/models.py:308
 msgid "Label"
 msgstr "Etiqueta"
@@ -4825,39 +4839,39 @@ msgstr "Otros peligros"
 msgid "WarningWord"
 msgstr "Palabra de advertencia"
 
-#: sga/models.py:363
+#: sga/models.py:364
 msgid "No. Registro"
 msgstr "No. Registro"
 
-#: sga/models.py:364
+#: sga/models.py:365
 msgid "REACH No."
 msgstr "REACH No."
 
-#: sga/models.py:365
+#: sga/models.py:366
 msgid "Identified uses"
 msgstr "Usos específicos finales"
 
-#: sga/models.py:411
+#: sga/models.py:412
 msgid "Annotation"
 msgstr "Anotacion"
 
-#: sga/models.py:412
+#: sga/models.py:413
 msgid "Font"
 msgstr "Fuente"
 
-#: sga/models.py:428
+#: sga/models.py:429
 msgid "Partition coefficient n-octanol/water"
 msgstr "Coeficiente de reparto n-octanol/agua"
 
-#: sga/models.py:480
+#: sga/models.py:481
 msgid "Otro datos"
 msgstr "Otro datos"
 
-#: sga/models.py:485
+#: sga/models.py:487
 msgid "Note"
 msgstr "Nota"
 
-#: sga/models.py:488 sga/models.py:489
+#: sga/models.py:490 sga/models.py:491
 msgid "Review Substance"
 msgstr "Crear  Sustancia"
 
@@ -4989,7 +5003,6 @@ msgid "Donate"
 msgstr "Donar"
 
 #: sga/templates/index_sga.html:11 sga/templates/index_sga.html:24
-#: sga/templates/label_index.html:64
 msgid "GHS Label Creator"
 msgstr "Creador de etiquetas del SGA"
 
@@ -4997,7 +5010,7 @@ msgstr "Creador de etiquetas del SGA"
 msgid "Go to custom labels"
 msgstr "Ir a tus etiquetas"
 
-#: sga/templates/index_sga.html:25 sga/templates/label_index.html:65
+#: sga/templates/index_sga.html:25
 msgid ""
 "Create your own chemical label according to the Globally Harmonized System "
 "(GHS)."
@@ -5049,11 +5062,7 @@ msgstr "¿Tienes etiquetas ya creadas? ¡Imprímelas!"
 msgid "Create a GHS Label"
 msgstr "Crear una etiqueta SGA"
 
-#: sga/templates/label_index.html:88
-msgid "Editor"
-msgstr "Editor"
-
-#: sga/templates/label_index.html:96
+#: sga/templates/label_index.html:13
 msgid "GHS"
 msgstr "SGA"
 
@@ -5134,6 +5143,9 @@ msgstr "Crear pictograma"
 #: sga/views.py:494
 msgid "Update pictogram"
 msgstr "Actualizar pictograma"
+
+#~ msgid "Editor"
+#~ msgstr "Editor"
 
 #~ msgid ""
 #~ "pyEQL interprets the chemical formula of a substance to calculate its "
