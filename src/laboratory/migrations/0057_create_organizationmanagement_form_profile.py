@@ -17,9 +17,12 @@ def reparair_rol_organization(apps, schema_editor):
         Profile.objects.create(user=user, phone_number='5068888888',
                                id_card='0000000', job_position='')
 
-    cc = ContentType.objects.get(app_label='laboratory', model="profile")
-    cc.app_label="auth_and_perms"
-    cc.save()
+    try:
+        cc = ContentType.objects.get(app_label='laboratory', model="profile")
+        cc.app_label="auth_and_perms"
+        cc.save()
+    except Exception as e:
+        ContentType.objects.create(app_label='auth_and_perms', model="profile")
     for org in OrganizationStructure.objects.all():
         query = OrganizationUserManagement.objects.filter(organization=org)
         if query.count() > 1:
