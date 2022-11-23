@@ -2,7 +2,6 @@ from django import forms
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from .models import ProcedureStep, Procedure
-from django.conf import settings
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from laboratory.models import Object,Catalog,Shelf
