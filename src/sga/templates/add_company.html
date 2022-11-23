@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'add_recipient_size' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="offset-md-3 col-md-6">
+        <div class="card">
+            <h1 class="card-title text-center">{% trans 'Create Company' %}</h1>
+            <div class="card-body">
+                <form class="form-horizontal" action="" method="POST">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                    <button type="submit" class="btn btn-success">{% trans 'Save' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+  {% endblock content %}

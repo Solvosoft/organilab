@@ -30,7 +30,11 @@
         </li>
         {% endif %}
     {% include 'partials/sga_complements.html' %}
-
+        <li>
+            <a href="{% url 'sga:get_companies'%}">
+                {% trans 'Companies' %}
+            </a>
+        </li>
     </ul>
     <!-- /.nav-second-level -->
 </li>
