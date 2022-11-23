@@ -11,7 +11,6 @@ from django.utils.translation import gettext as _
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 import json
-from derb.models import CustomForm
 
 
 @permission_required('laboratory.view_inform')
@@ -55,6 +54,27 @@ def create_informs(request, *args, **kwargs):
 
     return render(request, 'laboratory/inform.html', context={'laboratory':laboratory})
 
+def update_inform_data(item,data):
+
+    if 'key' in item and 'defaultValue' in item:
+        if item['key'] in data:
+            if item['type'] not in ["selectboxes"]:
+                item['defaultValue']=data[item['key']][0]
+            else:
+                aux_list = {}
+                for key in data[item['key']]:
+                    aux_list[key] = True
+                    item['defaultValue'] = aux_list
+
+    if 'components' in item:
+        for child in item['components']:
+            update_inform_data(child,data)
+
+    if 'rows' in item and isinstance(item['rows'], (list,tuple)):
+        for row in item['rows']:
+            for child in row:
+                update_inform_data(child,data)
+
 @has_lab_assigned()
 @permission_required('laboratory.change_inform')
 def complete_inform(request, *args, **kwargs):
@@ -79,37 +99,7 @@ def complete_inform(request, *args, **kwargs):
         for d in data.keys():
             result[d[d.find("[")+1:d.find("]")]]=data[d]
 
-        i = 0
-        j=0
-        for f in schema['components']:
-
-            if f['key'] in result:
-
-                if schema['components'][i]['type'] not in ["selectboxes"]:
-                    schema['components'][i]['defaultValue'] = result[f['key']][0]
-                else:
-                    z={}
-                    for s in result[f['key']]:
-                        z[s]=True
-                    schema['components'][i]['defaultValue'] = z
-
-            if 'components' in schema['components'][i]:
-
-                for tab in schema['components'][i]['components']:
-                    c=0
-                    for t in tab['components']:
-                        if t['key'] in result:
-                            if schema['components'][i]['components'][j]['components'][c]['type'] not in ["selectboxes"]:
-                                schema['components'][i]['components'][j]['components'][c]['defaultValue'] = result[t['key']][0]
-                            else:
-                                z = {}
-                                for a in result[t['key']]:
-                                    z[a] = True
-                                schema['components'][i]['components'][j]['components'][c]['defaultValue'] = z
-                        c+=1
-                    j+=1
-                j=0
-            i += 1
+        update_inform_data(schema, result)
         inform.schema = schema
         inform.save()
 
