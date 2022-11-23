@@ -29,7 +29,7 @@ function load_data_sga_label_form(urlParams){
 }
 
 
-$(window).load(function(){
+$(window).ready(function(){
 
     let elem = document.querySelector('#canvas_editor');
     let rect = elem.getBoundingClientRect();

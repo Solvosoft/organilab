@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm
+    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, CompanyForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
@@ -469,7 +469,9 @@ def step_two(request, organilabcontext, pk):
         form = SGAComplementsForm(request.POST, instance=complement)
         if form.is_valid():
             obj = form.save()
-            return  redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+            return redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext,
+                                                          'template':personaltemplateSGA.pk,
+                                                          'substance':personaltemplateSGA.label.substance.pk}))
         else:
             messages.error(request, _("Invalid form"))
             context={
@@ -483,6 +485,7 @@ def step_two(request, organilabcontext, pk):
             return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext,'complement':complement.pk, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
     context = {
         'form': SGAComplementsForm(instance=complement),
+        'companyform': CompanyForm(),
         'organilabcontext': organilabcontext,
         'step': 2,
         'complement': complement.pk,
