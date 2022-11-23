@@ -126,7 +126,8 @@
                             </div>
                             <div id="selectroldiv">
                                 <div class="form-group">
-                                    No <input type="checkbox" name="relate_rols" data-widget="YesNoInput" /> Sí
+                                    <label for="id_relate_rols">{% trans 'Copy permissions from other roles?' %}:</label>
+                                    No <input type="checkbox" id="id_relate_rols" name="relate_rols" data-widget="YesNoInput" /> Sí
                                 </div>
                                 <div id="rolS2container">
                                     <select autocomplete="off" name="rols" multiple data-url="{% url 'roluserorgbase-list' %}"></select>
