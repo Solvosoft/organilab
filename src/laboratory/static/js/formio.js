@@ -145,7 +145,7 @@ function update_comment(comment){
                 Swal.fire(
                     '',
                     update_translation['successfull'],
-                    result['icon']
+                    'success'
                     )
                  document.querySelector('#listado').innerHTML=success.data;
             },
