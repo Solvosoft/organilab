@@ -56,10 +56,10 @@
             <div class="row">
                 <div class="col-md-3">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-bs-toggle="tab">
+                        <li role="presentation" class="nav-item"><a class="nav-link active" href="#general" aria-controls="general" role="tab" data-bs-toggle="tab" aria-selected="true">
                             {% trans 'General' %}</a>
                         </li>
-                        <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-bs-toggle="tab">
+                        <li role="presentation" class="nav-item"><a class="nav-link" href="#live" aria-controls="live" role="tab" data-bs-toggle="tab">
                             {% trans 'En vivo' %}</a></li>
                     </ul>
                     <div class="tab-content" style="padding: 15px 20px 10px;">
@@ -71,9 +71,9 @@
                     {% include 'editor/canvas_and_utils.html' %}
                 </div>
             </div>
-
+            <br>
             {% trans 'Use save before finish' %}
-        <button id="editor_save" type="submit" class="btn btn-success" >{% trans 'Save' %} </button>
+        <button id="editor_save" type="submit" class="btn btn-success"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %} </button>
             {% endblock content %}
         </div>
     </div>
