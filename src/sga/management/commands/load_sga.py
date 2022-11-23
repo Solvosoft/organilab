@@ -48,17 +48,17 @@ class Command(BaseCommand):
                     'https://upload.wikimedia.org/wikipedia/commons/6/6a/GHS-pictogram-bottle.svg')
             },
             {
-                'name': 'GHS05 -Corrosión - Corrosivo.',
+                'name': 'GHS05 -Corrosión - Corrosivo',
                 'image': self.get_pictogram(
                     'https://upload.wikimedia.org/wikipedia/commons/a/a1/GHS-pictogram-acid.svg')
             },
             {
-                'name': 'GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte.',
+                'name': 'GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte',
                 'image': self.get_pictogram(
                     'https://upload.wikimedia.org/wikipedia/commons/5/58/GHS-pictogram-skull.svg')
             },
             {
-                'name': 'GHS07 -Signo de Exclamación - Irritante.',
+                'name': 'GHS07 -Signo de Exclamación - Irritante',
                 'image': self.get_pictogram(
                     'https://upload.wikimedia.org/wikipedia/commons/c/c3/GHS-pictogram-exclam.svg')
             },
@@ -68,7 +68,7 @@ class Command(BaseCommand):
                     'https://upload.wikimedia.org/wikipedia/commons/2/21/GHS-pictogram-silhouette.svg')
             },
             {
-                'name': 'GHS09 -Medio Ambiente - Dañino para el ambiente.',
+                'name': 'GHS09 -Medio Ambiente - Dañino para el ambiente',
                 'image': self.get_pictogram(
                     'https://upload.wikimedia.org/wikipedia/commons/b/b9/GHS-pictogram-pollu.svg')
             },
@@ -98,20 +98,20 @@ class Command(BaseCommand):
             'GHS04 -Botella de Gas - Gas Presurizado': [
                 'H280', 'H281'
             ],
-            'GHS05 -Corrosión - Corrosivo.': [
+            'GHS05 -Corrosión - Corrosivo': [
                 'H290', 'H314', 'H318'
             ],
-            'GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte.': [
+            'GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte': [
                 'H300', 'H310', 'H330', 'H301', 'H311', 'H331'
             ],
-            'GHS07 -Signo de Exclamación - Irritante. ': [
+            'GHS07 -Signo de Exclamación - Irritante': [
                 'H302', 'H312', 'H332', 'H315', 'H319', 'H317', 'H335', 'H336', 'H420'
             ],
             'GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico': [
                 'H334', 'H340', 'H341', 'H350', 'H351', 'H360', 'H361', 'H370', 'H371',
                 'H372', 'H373', 'H304', 'H305'
             ],
-            'GHS09 -Medio Ambiente - Dañino para el ambiente.': [
+            'GHS09 -Medio Ambiente - Dañino para el ambiente': [
                 'H400', 'H410', 'H411',
             ]
         }

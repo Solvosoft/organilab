@@ -91,7 +91,7 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'View Profile',
             'category': 'Profile',
-            'permission': 'laboratory.view_profile'
+            'permission': 'auth_and_perms.view_profile'
         },
         {
             'name': 'View Laboratory Room',
