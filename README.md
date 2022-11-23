@@ -38,6 +38,7 @@ Check your database configuration and sync your models
 	$ python manage.py createcachetable
     $ python manage.py load_urlname_permissions
     $ python manage.py loadgroup
+    $ python manage.py load_sga
     
 Could be required to call python manage.py initial_data
 
