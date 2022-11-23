@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management import BaseCommand
+from auth_and_perms.management.commands.urlname_permissions import URLNAME_PERMISSIONS
 
 class Command(BaseCommand):
     help = 'Load permission category'
@@ -8,6 +9,7 @@ class Command(BaseCommand):
         group, _ = Group.objects.get_or_create(name='RegisterOrganization')
         group.permissions.clear()
         # ('codename', 'content_type__app_label')
+        """
         PERMISSIONS = [
             ('laboratory', 'view_inform'),
             ('laboratory', 'add_inform'),
@@ -51,9 +53,17 @@ class Command(BaseCommand):
             ('sga', 'view_pictogram'),
             ('sga', 'change_templatesga'),
             ('sga', 'view_substance'),
+            ('sga', 'view_prudenceadvice'),
+            ('sga', 'add_pictogram'),
+            ('sga', 'view_warningword'),
+            ('sga', 'change_sgacomplement'),
+            ('sga', 'change_securityleaf'),
             ('sga', 'add_personaltemplatesga'),
             ('sga', 'change_personaltemplatesga'),
             ('msds', 'view_msdsobject'),
+            ('msds', 'create_msdsobject'),
+            ('msds', 'change_msdsobject'),
+            ('msds', 'delete_msdsobject'),
             ('auth_and_perms', 'add_rol'),
             ('auth_and_perms', 'add_profile'),
             ('risk_management', 'view_riskzone'),
@@ -69,8 +79,14 @@ class Command(BaseCommand):
 
 
         ]
+        """
 
+        PERMISSIONS = set()
+        for item in URLNAME_PERMISSIONS:
+            for perm in URLNAME_PERMISSIONS[item]:
+                PERMISSIONS.add(perm['permission'])
         for perm in PERMISSIONS:
+            perm = perm.split('.')
             permission = Permission.objects.filter(codename=perm[1], content_type__app_label=perm[0]).first()
             if permission:
                 group.permissions.add(permission)

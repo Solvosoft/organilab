@@ -8,6 +8,7 @@
     {% define_urlname_action 'riskzone_create' %}
     {% define_urlname_action 'riskzone_delete' %}
     {% define_urlname_action 'riskzone_detail' %}
+    {% define_urlname_action 'riskzone_update' %}
     {% define_true 'use_datatables' %}
 {% endblock %}
 {% block content %}
@@ -39,12 +40,11 @@
   {% include 'risk_management/update_zone_risk_modal.html' %}
 
 {% endblock %}
-{% block javascripts %}
+{% block js %}
 {{ block.super }}
 <script>
   document.risk_zone_url='{% url "risk_zone-list" %}'
   document.risk_zoneRetrieve='{% url "risk_zone_update-detail" 0 %}'
-  document.risk_zoneUpdate='{% url "risk_zone_update-detail" 0 %}'
 </script>
 <script src="{% static 'riskzone/js/riskzone.js' %}"></script>
 {% endblock %}

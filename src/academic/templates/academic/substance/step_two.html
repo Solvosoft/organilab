@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'step_one' %}
+    {% define_urlname_action 'step_two' %}
+    {% define_urlname_action 'step_three' %}
+    {% define_urlname_action 'step_four' %}
+    {% define_urlname_action 'update_substance' %}
+{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -9,22 +16,34 @@
             <br>
         </div>
     </div>
-    <div class="row text-center">
-        <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
-    </div>
-    <br>
-    <form class="form-horizontal" action="{% url 'step_two' organilabcontext complement %}" method="POST">
+<form class="form-horizontal" action="{% url 'step_two' organilabcontext complement %}" method="POST">
     {% csrf_token %}
-    <div class="row justify-content-center">
-        <div class=" col-md-8" >
-           {{ form }}
-        </div>
-    </div>
+    <div class="container text-center">
+<div class="row">
+    <div class="col">
+       <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
+
+        <div class="card">
+  <div class="card-body">
+           {{ form.as_horizontal }}
+  </div></div>
     <div class="col-md-12 text-center mt-2" style="display:inline-block">
-        <button type="submit" class="btn btn-success">Continuar</button>
+        <button type="submit" class="btn btn-success">{% trans 'Continue' %}</button>
     </div>
-    </form>
+
     </div>
+    <div class="col">
+       <h2 style="color:#337ab7">{% trans 'Commercial information' %}</h2>
+        <div class="card">
+  <div class="card-body">
+
+        {{ companyform.as_horizontal }}
+  </div></div>
+    </div>
+  </div>
+</div>
+
+ </form>
 
 </div>
 

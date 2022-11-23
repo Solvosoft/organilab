@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
-
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'incident_list' %}
+    {% define_urlname_action 'incident_update' %}
+    {% define_urlname_action 'incident_create' %}
+    {% define_urlname_action 'incident_report' %}
+    {% define_urlname_action 'labindex' %}
+{% endblock %}
 {% block content %}
  {%  has_perms "laboratory.do_report" as perm_do_report %}
 <div class="clearfix">
