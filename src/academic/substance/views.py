@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, CompanyForm
+    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
@@ -437,7 +437,8 @@ def step_three(request, organilabcontext, template, substance):
     if personaltemplateSGA.label:
         bi_info = personaltemplateSGA.label.builderInformation
         initial.update({'substance': personaltemplateSGA.label.substance.pk,
-            'commercial_information': personaltemplateSGA.label.commercial_information})
+            'commercial_information':
+                personaltemplateSGA.label.builderInformation.commercial_information if personaltemplateSGA.label.builderInformation else ''})
 
         if bi_info:
             initial.update({'company_name': bi_info.name,
@@ -485,7 +486,7 @@ def step_two(request, organilabcontext, pk):
             return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext,'complement':complement.pk, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
     context = {
         'form': SGAComplementsForm(instance=complement),
-        'companyform': CompanyForm(),
+        #'companyform': CompanyForm(),
         'organilabcontext': organilabcontext,
         'step': 2,
         'complement': complement.pk,
