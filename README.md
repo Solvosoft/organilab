@@ -50,6 +50,10 @@ Run your development server
 
 	$ python manage.py runserver
 
+Compile translations 
+
+	$ django-admin makemessages --all
+
 ## Run with composer in development environment
 
 Create your image organilab
