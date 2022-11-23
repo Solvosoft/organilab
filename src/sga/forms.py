@@ -7,7 +7,7 @@ from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectM
 from djgentelella.widgets.tagging import TaggingInput
 
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label, SGAComplement, Provider, Pictogram, Company
+    BuilderInformation, Label, SGAComplement, Provider, Pictogram
 
 
 class PersonalTemplateForm(GTForm):
@@ -101,20 +101,6 @@ class PersonalFormAcademic(GTForm):
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
-
-class CompanyForm(forms.ModelForm, GTForm):
-    barcode = forms.CharField(widget=genwidgets.TextInput, max_length=150, required=False)
-
-    class Meta:
-        model = Company
-        fields = '__all__'
-        widgets = {
-            'name': genwidgets.TextInput,
-            'address': genwidgets.TextInput,
-            'phone': genwidgets.TextInput,
-            'commercial_information': genwidgets.Textarea,
-            'logo': genwidgets.FileInput
-        }
 class PersonalSGAForm(forms.ModelForm, GTForm):
     logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -138,7 +124,7 @@ class BuilderInformationForm(forms.ModelForm, GTForm):
 class LabelForm(forms.ModelForm, GTForm):
     class Meta:
         model = Label
-        fields = ['substance', 'commercial_information']
+        fields = ['substance']
         exclude = ['builderInformation']
         widgets = {
             'substance': genwidgets.Select
