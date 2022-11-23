@@ -5,12 +5,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <a href="{% url 'laboratory:sustance_list' lab_pk=lab_pk %}" class="btn btn-danger">{% trans 'Back' %}</a>
-            <a role="button" class="btn btn-primary pull-right" data-bs-toggle="modal" href="#helpModal"
-               aria-expanded="false">
-                <i class="glyphicon glyphicon-question-sign" title="{% trans 'Help' %}"></i>
-                {% trans 'Help' %}
-            </a>
+            <a href="{% url 'laboratory:sustance_list' lab_pk=lab_pk %}" class="btn btn-outline-danger">
+                <i class="fa fa-reply"></i>
+                {% trans 'Back' %}</a>
+
         </div>
 
     </div>
@@ -31,63 +29,16 @@
             </div>
         </div>
         <div class="col-md-11" style="display:inline-block">
-            <input type="submit" class="btn btn-info" value="{% trans 'Submit' %}">
+
+            <button type="submit" class="btn btn-outline-success" value="{% trans 'Submit' %}">
+            <i class="fa fa-send"></i> {% trans 'Submit' %}
+            </button>
         </div>
     </form>
 </div>
 
 </div>
 
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">{% trans 'Representing Chemical Substances in pyEQL' %}</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="section">
-
-                    <p>{% blocktrans %}pyEQL interprets the chemical formula of a substance to calculate its molecular
-                        weight and formal charge. The formula is also used as a key to search the
-                        database for parameters (e.g. diffusion coefficient) that are used in subsequent
-                        calculations.{% endblocktrans %}</p>
-                    <div class="section" id="how-to-enter-valid-chemical-formulas">
-                        <h3>{% trans 'How to Enter Valid Chemical Formulas' %}</h3>
-                        <p>{% blocktrans %}Generally speaking, type the chemical formula of your solute the “normal” way
-                            and pyEQL should be able to interpret it. Here are some examples:{% endblocktrans %}</p>
-                        <ul class="simple">
-                            <li>{% trans 'Sodium Chloride - NaCl' %}</li>
-                            <li>{% trans 'Sodium Sulfate - Na(SO4)2' %}</li>
-                            <li>{% trans 'Methanol - CH4OH or CH5O' %}</li>
-                            <li>{% trans 'Magnesium Ion - Mg+2' %}</li>
-                            <li>{% trans 'Chloride Ion - Cl-' %}</li>
-                        </ul>
-                        <p>{% trans 'Formula Rules:' %}</p>
-                        <ol class="arabic simple">
-                            <li>{% trans 'Are composed of valid atomic symbols that start with capital letters' %}</li>
-                            <li>{% trans 'Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘' %}
-                            </li>
-                            <li>{% blocktrans %}If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-‘
-                                (e.g. ‘Na+-‘ is invalid) and the formula must end with either a series of
-                                charges (e.g. ‘Fe+++’) or a numeric charge (e.g. ‘Fe+3’){% endblocktrans %}
-                            </li>
-                            <li>{% trans 'Formula must contain matching numbers of ‘(‘ and ‘)’' %}</li>
-                            <li>{% trans 'Open parentheses must precede closed parentheses' %}</li>
-                        </ol>
-                    </div>
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 {% endblock %}
 
 
