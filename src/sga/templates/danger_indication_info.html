@@ -23,7 +23,7 @@
                         <h5 class="fw-bold">{% trans 'Pictograms' %}</h5></div>
                     <div class="card-body">
                         {% for pictogram in pictograms %}
-                        <img src="{% static 'sga/img/pictograms/' %}{{pictogram}}" width="90px" height="90px" />
+                        <img src="{{pictogram.image.url}}" width="90px" height="90px" />
                         {% empty %}
                         <p>{% trans 'Without Pictograms' %}</p>
                         {% endfor %}
