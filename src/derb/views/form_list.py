@@ -31,29 +31,7 @@ def CreateForm(request):
         empty_schema = {
             "name": request.POST.get('name'),
             "status": "admin",
-            "components": [
-                {
-                "collapsible": False,
-                "key": "section",
-                "type": "custom_section",
-                "label": "Section",
-                "title": "New Untitled Section",
-                "input": False,
-                "tableView": False,
-                "components": [
-                    {
-                    "collapsible": False,
-                    "key": "section1",
-                    "type": "custom_section",
-                    "label": "Section",
-                    "title": "New Untitled Subsection",
-                    "input": False,
-                    "tableView": False,
-                    "components": []
-                    }
-                ]
-                }
-            ]
+            "components": []
         }
 
         custom_form = CustomForm.objects.create(
