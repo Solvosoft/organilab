@@ -2,10 +2,6 @@ window.onload = function () {
     Formio.builder($('#formio')[0], saved, {
         noDefaultSubmitButton: true,
         builder: {
-            derb_layout: {
-                title: 'Layout',
-                weight: 0
-            },
             advanced: false,
             data: false,
             premium: false
