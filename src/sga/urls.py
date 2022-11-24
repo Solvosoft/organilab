@@ -42,6 +42,10 @@ urlpatterns = [
     re_path(r'get_pictograms', views.get_pictograms, name='pictograms_list'),
     re_path(r'add_pictogram', views.add_pictogram, name='add_pictograms'),
     re_path(r'update_pictogram/(?P<id_pictogram>\w+)', views.update_pictogram, name='update_pictogram'),
+    re_path(r'company/list', views.get_companies, name='get_companies'),
+    re_path(r'company/add', views.create_company, name='add_company'),
+    re_path(r'company/edit/(?P<pk>\d+)$', views.edit_company, name='edit_company'),
+    re_path(r'company/remove/(?P<pk>\d+)$', views.remove_company, name='remove_company'),
 
 
     path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),

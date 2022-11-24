@@ -2,11 +2,12 @@
 import json
 
 import cairosvg
-from djgentelella.models import ChunkedUpload
+from barcode import Code128
+from barcode.writer import SVGWriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core import serializers
 from django.core.files import temp as tempfile
+from django.db.models import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 from django.http import JsonResponse, HttpResponseRedirect
@@ -15,6 +16,7 @@ from django.template import Library
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
+from djgentelella.models import ChunkedUpload
 from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
 from xhtml2pdf import pisa
@@ -22,16 +24,14 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm, PictogramForm, SGAComplementsForm, SGALabelForm, SGALabelComplementsForm, \
-    SGALabelBuilderInformationForm, PersonalSGAAddForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, SGAComplement, Substance
+    LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
+    SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
+from sga.models import SGAComplement, Substance
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
 from .api.serializers import SGAComplementSerializer
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
-from django.db.models import Max
-from barcode.writer import SVGWriter
-from barcode import Code128
 
 register = Library()
 
@@ -608,3 +608,54 @@ def get_barcode_from_number(request, code):
     response = HttpResponse(content_type='image/svg+xml')
     Code128(code,  writer=SVGWriter()).write(response)
     return response
+
+@login_required
+@permission_required('sga.view_builderinformation')
+def get_companies(request):
+    company = BuilderInformation.objects.filter(user=request.user)
+    return render(request,'list_company.html', context={'companies':company})
+
+@login_required
+@permission_required('sga.add_builderinformation')
+def create_company(request):
+    form = CompanyForm(user=request.user)
+    if request.method=='POST':
+        form= CompanyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('sga:get_companies'))
+
+    context={
+        'form':form,
+        'title':_('Create Company'),
+        'url': reverse('sga:add_company')
+    }
+
+    return render(request,'add_company.html', context=context)
+
+@login_required
+@permission_required('sga.change_builderinformation')
+def edit_company(request,pk):
+    company = BuilderInformation.objects.filter(pk=pk).first()
+    form = CompanyForm(instance=company)
+    if request.method=='POST':
+        form= CompanyForm(request.POST,instance=company)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('sga:get_companies'))
+    context={
+        'form':form,
+        'title': _('Edit Company'),
+        'url': reverse('sga:edit_company', kwargs={'pk':pk})
+    }
+
+    return render(request,'add_company.html', context=context)
+@login_required
+@permission_required('sga.delete_builderinformation')
+def remove_company(request,pk):
+    if pk:
+        company = BuilderInformation.objects.get(pk=pk)
+        company.delete()
+        return JsonResponse({'msg':_('The company is removed successfully'),'status':True})
+
+    return JsonResponse({'msg': _('Error'), 'status':False})
