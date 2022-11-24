@@ -27,15 +27,16 @@
             {% include 'editor/canvas_and_utils.html' %}
         </div>
     </div>
+    <br><br>
     <div class="col-md-11 text-center mt-2" style="display:inline-block">
-        <a type="button" class="btn btn-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
-            {% trans 'Back' %}
+        <a type="button" class="btn btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
+            <i class="fa fa-reply"></i>  {% trans 'Back' %}
         </a>
-        <a type="button" class="btn btn-danger" href="{% url 'sga:add_personal' organilabcontext %}">
-            {% trans 'Cancel' %}
+        <a type="button" class="btn btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext %}">
+             <i class="fa fa-close"></i> {% trans 'Cancel' %}
         </a>
-        <button id="savesgalabel" type="button" class="btn btn-success">
-            {% trans 'Save' %}
+        <button id="savesgalabel" type="button" class="btn btn-outline-success">
+            <i class="fa fa-save"></i>  {% trans 'Save' %}
         </button>
     </div>
 </div>
