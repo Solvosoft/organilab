@@ -59,7 +59,7 @@ class IncidentReportForm(GTForm,forms.ModelForm):
         }
 
 
-class ZoneTypeForm(forms.ModelForm):
+class ZoneTypeForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = ZoneType

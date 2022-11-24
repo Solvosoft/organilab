@@ -4,18 +4,44 @@
 {% load static i18n gtsettings %}
 
 {% block pre_head %}
-    {% define_urlname_action 'zonetype_list' %}
     {% define_true 'use_datatables' %}
 {% endblock %}
 
 {% block content %}
+
 <div class="row justify-content-center">
-  <div class="col-md-11">
-    <div class="page-header" align="center">
-      <h3 class="heading-1" >
-        <span>{% trans 'Zone Type Management' %}</span>
-      </h3>
+    <div class="col-md-11">
+        <div class="page-header">
+            <h3 class="heading-1 text-center" >{% trans 'Zone Type Management'  %}</h3>
+        </div>
+
+
+        <a role="button" class="btn btn-success float-end" data-bs-toggle="modal"
+           onclick="open_modal_add_zone_type()" data-bs-target="#create_zone_type_modal">
+            <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %} </a>
+
     </div>
-  </div>
 </div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="zone_type_table" class="display table table-striped table-bordered"></table>
+    </div>
+</div>
+{% include 'risk_management/update_zone_type_modal.html' %}
+{% include 'risk_management/create_zone_type_modal.html' %}
+{% endblock %}
+{% block js %}
+{{ block.super }}
+    <script>
+
+      document.zone_type_url='{% url "zone_type-list" %}'
+      document.zone_type_retrieve='{% url "zone_type_crud-detail" 0 %}'
+      document.zone_type_form='{% url "zone_type_crud-formcreate" %}'
+      document.zone_type_create='{% url "zone_type_crud-list" %}'
+
+    </script>
+    <script src="{% static 'riskzone/js/zonetype.js' %}"></script>
+
 {% endblock %}

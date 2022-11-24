@@ -30,7 +30,7 @@
     }
 
     function update_risk_zone(){
-        urlApi=document.risk_zoneUpdate
+        urlApi=document.risk_zoneRetrieve
         urlApi=urlApi.replace('0', pk_global)
         var modal = $('#update_zone_risk_modal')
 

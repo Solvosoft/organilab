@@ -18,24 +18,22 @@
 
 
 <div class="row justify-content-center">
-<div class="col-md-11">
-        <div class="page-header" align="center">
-          <h3 class="heading-1" ><span>{% trans 'Risk Zone Management'  %}
-                  </span></h3>
-
+    <div class="col-md-11">
+        <div class="page-header">
+            <h3 class="heading-1" >{% trans 'Risk Zone Management'  %}</h3>
         </div>
-    {% if perm_add_riskzone %}
-          <a class="btn btn-success float-end" href="{% url 'riskmanagement:riskzone_create' %}">
-              <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %} </a>
+        {% if perm_add_riskzone %}
+        <a class="btn btn-success float-end" href="{% url 'riskmanagement:riskzone_create' %}">
+            <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %} </a>
         {% endif %}
-</div>
+    </div>
 </div>
 
 
 <div class="row">
-<div class="col-md-12">
-      <table id="risk_zone_table" class="display table table-striped table-bordered"></table>
-</div>
+    <div class="col-md-12">
+        <table id="risk_zone_table" class="display table table-striped table-bordered"></table>
+    </div>
 </div>
   {% include 'risk_management/update_zone_risk_modal.html' %}
 
@@ -43,8 +41,8 @@
 {% block js %}
 {{ block.super }}
 <script>
-  document.risk_zone_url='{% url "risk_zone-list" %}'
-  document.risk_zoneRetrieve='{% url "risk_zone_update-detail" 0 %}'
+    document.risk_zone_url='{% url "risk_zone-list" %}'
+    document.risk_zoneRetrieve='{% url "risk_zone_update-detail" 0 %}'
 </script>
 <script src="{% static 'riskzone/js/riskzone.js' %}"></script>
 {% endblock %}
