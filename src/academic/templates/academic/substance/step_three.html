@@ -55,26 +55,21 @@
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-bs-toggle="tab">
-                            {% trans 'General' %}</a>
-                        </li>
-                        <li role="presentation"><a href="#live" aria-controls="live" role="tab" data-bs-toggle="tab">
-                            {% trans 'En vivo' %}</a></li>
-                    </ul>
-                    <div class="tab-content" style="padding: 15px 20px 10px;">
-                        {% include 'editor/general.html' %}
-                        {% include 'academic/substance/sga_complements.html' %}
+                    <div class="text-center">
+
+{% trans 'Use save before finish' %}<br><br>
+ <button id="editor_save" type="submit" class="btn btn-outline-success text-center" > <i class="fa fa-send"></i> {% trans 'Save' %} </button>
+<br><br>
                     </div>
+                    {% include 'editor/sga_live.html' with complement=sga_elements %}
                 </div>
                 <div class="col-md-9">
+
                     {% include 'editor/canvas_and_utils.html' %}
                 </div>
             </div>
 
-            {% trans 'Use save before finish' %}
-        <button id="editor_save" type="submit" class="btn btn-success" >{% trans 'Save' %} </button>
-            {% endblock content %}
+                      {% endblock content %}
         </div>
     </div>
 </div>

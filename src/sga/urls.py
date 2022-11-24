@@ -19,6 +19,7 @@ app_name = 'sga'
 urlpatterns = [
     # sga/index_sga/
     path('index_sga', index_sga, name='index_sga'),
+    path('barcode/<str:code>/', views.get_barcode_from_number, name='barcode_from_number'),
     path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
     # sga/editor
     re_path(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),

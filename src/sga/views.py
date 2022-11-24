@@ -22,13 +22,17 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm, PictogramForm, SGAComplementsForm, SGALabelForm, SGALabelComplementsForm
+    LabelForm, PersonalTemplateForm, PictogramForm, SGAComplementsForm, SGALabelForm, SGALabelComplementsForm, \
+    SGALabelBuilderInformationForm, PersonalSGAAddForm
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, SGAComplement, Substance
 from .api.serializers import SGAComplementSerializer
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
 from django.db.models import Max
+from barcode.writer import SVGWriter
+from barcode import Code128
+
 register = Library()
 
 
@@ -275,13 +279,13 @@ def edit_personal_template(request, organilabcontext, pk):
 
     if personaltemplateSGA.label:
         bi_info = personaltemplateSGA.label.builderInformation
-        initial.update({'substance': personaltemplateSGA.label.substance,
-            'commercial_information': personaltemplateSGA.label.commercial_information})
+        initial.update({'substance': personaltemplateSGA.label.substance })
 
         if bi_info:
             initial.update({'company_name': bi_info.name,
                             'phone': bi_info.phone,
-                            'address': bi_info.address})
+                            'address': bi_info.address,
+                            'commercial_information': bi_info.commercial_information})
 
     context={
         'warningwords': WarningWord.objects.all(),
@@ -518,32 +522,48 @@ def create_sgalabel(request, organilabcontext):
 
 def sgalabel_step_one(request, organilabcontext, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
-    complementsga_form = SGALabelComplementsForm()
+    builderinformation = sgalabel.label.builderInformation
+    sustance = sgalabel.label.substance
     complement = None
-
-
-    if sgalabel.label.substance:
+    if sustance:
         complement = SGAComplement.objects.filter(substance=sgalabel.label.substance).first()
-        complementsga_form = SGALabelComplementsForm(instance=complement)
+
+    complementsga_form = SGALabelComplementsForm(instance=complement)
+    sgabuilderinfo_form = SGALabelBuilderInformationForm(instance=builderinformation)
+    personal_form = PersonalSGAAddForm(request.POST, request.FILES, instance=sgalabel)
 
 
     if request.method == "POST":
-        complementsga_form = SGALabelComplementsForm(request.POST)
+        complementsga_form = SGALabelComplementsForm(request.POST, instance=complement)
+        sgabuilderinfo_form = SGALabelBuilderInformationForm(request.POST, instance=builderinformation)
+        personal_form = PersonalSGAAddForm(request.POST, request.FILES, instance=sgalabel)
 
-        if complement:
-            complementsga_form = SGALabelComplementsForm(request.POST, instance=complement)
+        complementsga_form_ok = complementsga_form.is_valid()
+        sgabuilderinfo_form_ok = sgabuilderinfo_form.is_valid()
+        personal_form_ok = personal_form.is_valid()
 
-        if complementsga_form.is_valid():
+        if complementsga_form_ok:
             complementsga_form.save()
             sgalabel.label.substance = complementsga_form.cleaned_data['substance']
             sgalabel.label.save()
+        if sgabuilderinfo_form_ok:
+            instance = sgabuilderinfo_form.save()
+            if sgalabel.label.builderInformation is None:
+                sgalabel.label.builderInformation = instance
+                sgalabel.label.save()
+        if personal_form_ok:
+            personal_form.save()
+
+        if complementsga_form_ok and sgabuilderinfo_form_ok and personal_form_ok:
             return redirect(reverse("sga:sgalabel_step_two", kwargs={'organilabcontext':organilabcontext,
                                                                      'pk': sgalabel.pk}))
 
     context = {
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
-        'complementsga_form': complementsga_form
+        'complementsga_form': complementsga_form,
+        'builderinformationform': sgabuilderinfo_form,
+        'pesonalform': personal_form
     }
 
     return render(request, 'sgalabel/step_one.html', context=context)
@@ -571,3 +591,9 @@ def get_sgacomplement_by_substance(request, pk):
     else:
         data = {}
     return JsonResponse(data)
+
+@login_required
+def get_barcode_from_number(request, code):
+    response = HttpResponse(content_type='image/svg+xml')
+    Code128(code,  writer=SVGWriter()).write(response)
+    return response

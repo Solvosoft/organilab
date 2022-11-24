@@ -38,3 +38,4 @@ weasyprint==56.1
 CairoSVG==2.5.2
 pyfva==0.0.43
 django-otp==1.1.4
+python-barcode==0.14.0

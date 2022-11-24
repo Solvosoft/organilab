@@ -388,48 +388,15 @@ def change_danger_indication(request, pk):
 @organilab_context_decorator
 def step_three(request, organilabcontext, template, substance):
     personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
+    complement = get_object_or_404(SGAComplement, substance__pk=substance)
     user = request.user
-    complement =  get_object_or_404(SGAComplement, substance__pk=substance)
-    if request.method == 'POST':
 
+    if request.method == 'POST':
         form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
         label_form = LabelForm(request.POST, instance=personaltemplateSGA.label)
-
         builder_information_form = BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
         if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
-            instance = form.save(commit=False)
-            upload_id = form.cleaned_data['logo_upload_id']
-
-            if upload_id:
-                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
-                instance.logo = tmpupload.get_uploaded_file()
-
-            instance.save()
-            builder = builder_information_form.save(commit=False)
-            builder.user=request.user
-            builder.save()
-            label = label_form.save(commit=False)
-            label.builderInformation= builder
-            label.save()
-            return redirect(reverse('step_three',
-                                    kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk,
-                                            'substance':personaltemplateSGA.label.substance.pk}))
-        else:
-            messages.error(request, _("Invalid form"))
-            context = {
-                'laboratory': None,
-                'form': SGAEditorForm(),
-                'warningwords': WarningWord.objects.all(),
-                'generalform': PersonalFormAcademic(request.POST, user=user, substance=substance),
-                'form_url': reverse('step_three',
-                                    kwargs={'organilabcontext':organilabcontext, 'template':personaltemplateSGA.pk,
-                                            'substance':personaltemplateSGA.label.substance.pk}),
-                'organilabcontext': organilabcontext,
-                'step': 3,
-                'template': personaltemplateSGA.pk,
-                'substance': personaltemplateSGA.label.substance.pk,
-            }
-            return render(request, 'academic/substance/step_three.html', context)
+            pass
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
                'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
@@ -446,15 +413,17 @@ def step_three(request, organilabcontext, template, substance):
                             'address': bi_info.address})
 
     context={
+
         'warningwords': WarningWord.objects.all(),
         'form': SGAEditorForm,
         "instance": personaltemplateSGA,
+        "sgalabel": personaltemplateSGA,
         'organilabcontext': organilabcontext,
         'complement': complement.pk,
         'sga_elements': complement,
-        "generalform": PersonalFormAcademic(user=user, substance=substance, initial=initial),
         'step': 3,
         'template': personaltemplateSGA.pk,
+        'label': personaltemplateSGA.label,
         'substance': personaltemplateSGA.label.substance.pk,
     }
     return render(request, 'academic/substance/step_three.html', context)
@@ -467,12 +436,13 @@ def step_two(request, organilabcontext, pk):
         label__substance__pk=complement.substance.pk).first()
     context ={}
     if request.method == 'POST':
-        pesonalform = PersonalSGAAddForm(request.POST, instance=personaltemplateSGA, files=request.FILES)
+        pesonalform = PersonalSGAAddForm(request.POST, request.FILES, instance=personaltemplateSGA)
         complementform = SGAComplementsForm(request.POST, instance=complement)
         builderinformationform=BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
         complementform_ok = complementform.is_valid()
         builderinformationform_ok = builderinformationform.is_valid()
         pesonalform_ok = pesonalform.is_valid()
+
         if complementform_ok:
             obj = complementform.save()
         if builderinformationform_ok:
