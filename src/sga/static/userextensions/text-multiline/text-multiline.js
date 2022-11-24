@@ -1,5 +1,4 @@
-const name = 'textmultiline'
-
+const name = 'text'
 const loadExtensionTranslation = async function (svgEditor) {
   let translationModule
   const lang = svgEditor.configObj.pref('lang')
@@ -19,104 +18,54 @@ export default {
     await loadExtensionTranslation(svgEditor)
     const { svgCanvas } = svgEditor
     const { $id, $click } = svgCanvas
-    const modeId = 'tool_multiline'
-    const plugId = 'ext-textmultiline'
-    const insertAfter = (referenceNode, newNode) => {
-      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
-    }
+    const modeId = 'tool_textcodes'
+    const plugId = 'ext-text'
     const registerTextEvent= ()=>{
         document.body.addEventListener('click',(e)=>{
               if (e.target.classList.contains('text_content')) {
                 let content=e.target.textContent;
-                addTextToDom(content);
+                let letter=content.split(" ");
+                let count_letter= letter.length;
+                let spaces=0;
+                let index=0;
+                let y=50;
+                let word=""
+                while(count_letter>0){
+                    word += letter[index]+" ";
+                    if(spaces==4 || letter.length-1==index){
+                        addTextToDom(word,y);
+                        y+=10;
+                        spaces=0;
+                        word=""
+                     }
+                    spaces+=1;
+                    index+=1
+                    count_letter-=1
+                }
               }
         })
     }
-    const editText = (event)=>{
 
-         let selects = svgCanvas.getSelectedElements()
-         if(selects.length==1 && selects[0].attributes.class != undefined && selects[0].attributes.class.value=="textelementforeign"){
-             tinymce.get("wyswygmodaltextarea").setContent(selects[0].innerHTML);
-             $('#wyswygmodal').modal('show');
-         }
-    }
-
-    const addTextToDom= (content)=>{
-        const textclass="textelementforeign"
+    const addTextToDom= (content,y)=>{
+        const textclass="text"
         const curStyle = svgCanvas.getStyle()
         const curShape = svgCanvas.addSVGElementsFromJson({
-              element: 'foreignObject',
+              element: 'text',
               curStyles: true,
-              attr: { x:100, y:100,  height: 100,  width: 100,
+              attr: { x:100, y:y,  height: 100,  width: 100,
                       class: textclass, id: svgCanvas.getNextId(),
                       opacity: curStyle.opacity
                     }
             })
-        curShape.innerHTML=content
-        curShape.addEventListener("dblclick", editText);
+        curShape.textContent=content
         svgCanvas.setSelectedElements(0, curShape)
-        svgCanvas.setCurrentMode('select')
-        svgEditor.leftPanel.updateLeftPanel('tool_select')
-    }
-
-    const addText = (event)=>{
-        let content = tinymce.get("wyswygmodaltextarea").getContent()
-        let selects = svgCanvas.getSelectedElements()
-        if(selects.length==1 && selects[0].attributes.class != undefined && selects[0].attributes.class.value=="textelementforeign"){
-            selects[0].innerHTML=content
-        }else{
-            addTextToDom(content);
-        }
-        $('#wyswygmodal').modal('hide');
-    }
-
-    document.getElementById("btnsave-multiline").addEventListener("click", addText);
-
-    const addStyleText  = (elements) => {
-        elements.forEach((htmlelement)=>{
-
-            if(htmlelement.attributes.hasOwnProperty('data-mce-style') ){
-               htmlelement.style.cssText = htmlelement.attributes['data-mce-style'].value
-            }
-            if(htmlelement.children !== undefined){
-               addStyleText(Array.from(htmlelement.children))
-            }
-        })
     }
 
     return {
            name: svgEditor.i18next.t(`${name}:name`),
        callback () {
-            const btitle = `${name}:buttons.0.title`
-            // Add the button and its handler(s)
-            const buttonTemplate = document.createElement('template')
-        buttonTemplate.innerHTML = `<se-button id="${plugId}" title="${btitle}" src="multilinetext.svg"></se-button>`
-        insertAfter($id('tool_zoom'), buttonTemplate.content.cloneNode(true))
         registerTextEvent()
-        $click($id(`${plugId}`), () => {
-          if (this.leftPanel.updateLeftPanel(`${plugId}`)) {
-            svgCanvas.setMode(modeId)
-            $('#wyswygmodal').modal();
-          }
-        })
       },
-      mouseDown () {
-       if (svgCanvas.getMode() === modeId) {
-          return {
-            started: true
-          }
-        }
-        return undefined
-      },
-      mouseUp () {
-        if (svgCanvas.getMode() === modeId) {
-          return {
-            keep: false,
-            element: null
-          }
-        }
-        return undefined
-      }
     }
    }
  }
