@@ -119,7 +119,7 @@ class PersonalSGAAddForm(forms.ModelForm, GTForm):
         fields = ['logo', 'barcode']
         exclude = ['user']
         widgets = {
-            'logo': genwidgets.FileInput,
+            'logo': forms.FileInput(attrs={'class': 'form-control'}),
             'barcode': genwidgets.NumberInput
         }
 class BuilderInformationForm(forms.ModelForm, GTForm):
