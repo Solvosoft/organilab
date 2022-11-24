@@ -17,38 +17,50 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <div style="padding: 15px 20px 10px;">
+        <div class="col-3">
                 {% include 'editor/sga_live.html' %}
-            </div>
-
         </div>
-        <div class="col-md-9">
+
+        <div class="col-9">
+             <form method="post" id="sgaform">{% csrf_token %}
+            <div class="row  mb-3">
+                <div class="col-9">
+                    <div class="card">
+                    <div class="card-body">
+                        {{editorform.as_inline}}
+                    </div>
+                    </div>
+                </div>
+                <div class="col-3">
+<div class="btn-group" role="group">
+        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
+            <i class="fa fa-reply"></i>  {% trans 'Back' %}
+        </a>
+        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext %}">
+             <i class="fa fa-close"></i> {% trans 'Cancel' %}
+        </a>
+</div>
+                    <div class="row  mt-3 mb-2 p-2 text-center">
+        <button id="savesgalabel" type="button" class="btn btn-outline-success">
+            <i class="fa fa-save"></i>  {% trans 'Save' %}
+        </button></div>
+
+
+                </div>
+            </div>
+             </form>
             {% include 'editor/canvas_and_utils.html' %}
         </div>
     </div>
-    <br><br>
-    <div class="col-md-11 text-center mt-2" style="display:inline-block">
-        <a type="button" class="btn btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
-            <i class="fa fa-reply"></i>  {% trans 'Back' %}
-        </a>
-        <a type="button" class="btn btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext %}">
-             <i class="fa fa-close"></i> {% trans 'Cancel' %}
-        </a>
-        <button id="savesgalabel" type="button" class="btn btn-outline-success">
-            <i class="fa fa-save"></i>  {% trans 'Save' %}
-        </button>
-    </div>
+
+
 </div>
 {% endblock %}
 {% block js %}
 
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
-
 </script>
 <script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
 <script src="{% static 'sga/js/canvas_editor.js' %}"></script>
-<script src="{% static 'sga/js/codigosPH.js' %}"></script>
-<script src="{% static 'sga/js/jquery-ui.min.js' %}"></script>
 {% endblock %}
