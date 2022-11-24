@@ -3,9 +3,9 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
-    {% define_urlname_action 'add_pictograms' %}
-    {% define_urlname_action 'update_pictogram' %}
-    {% define_urlname_action 'pictograms_list' %}
+    {% define_urlname_action 'add_company' %}
+    {% define_urlname_action 'edit_company' %}
+    {% define_urlname_action 'remove_company' %}
 {% endblock %}
 
 {% block content %}
@@ -43,8 +43,8 @@
                            href="{% url 'sga:edit_company' company.pk %}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {% trans 'Edit' %}</a>
-                        <a class="btn btn-danger" title="{% trans 'Edit' %}"
-                           href="{% url 'sga:remove_company' company.pk %}">
+                        <a class="btn btn-danger" title="{% trans 'Remove' %}"
+                           data-url="{% url 'sga:remove_company' company.pk %}" data-company="{{company.name}}" onclick="remove_company(this)">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                             {% trans 'Remove' %}</a>
                     </td>
@@ -57,12 +57,19 @@
 {% endblock %}
 {% block js %}
 {{block.super}}
-
 <script>
-
 (function(){
-    $("#pictogramtable").DataTable();
+   var table = $("#companytable").DataTable();
 })(jQuery);
+const messages= {
+    title: "{% trans 'Remove company' %}",
+    text: "{% trans 'Do you want to remove the company?' %}",
+    text_success: "{% trans 'The company is removed successfully' %}",
+    yes: "{% trans 'Yes' %}"
+}
 </script>
+<script src="{% static 'sga/js/functions.js'%}"></script>
+
+
 
 {% endblock %}
