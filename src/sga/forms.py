@@ -113,12 +113,27 @@ class PersonalSGAForm(forms.ModelForm, GTForm):
             'template': genwidgets.HiddenInput
         }
 
-
+class PersonalSGAAddForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = PersonalTemplateSGA
+        fields = ['logo', 'barcode']
+        exclude = ['user']
+        widgets = {
+            'logo': genwidgets.FileInput,
+            'barcode': genwidgets.NumberInput
+        }
 class BuilderInformationForm(forms.ModelForm, GTForm):
+
     class Meta:
         model = BuilderInformation
-        fields = ['address', 'phone', 'name']
-        exclude = ['user', 'community_share']
+        fields = ['name', 'address', 'phone', 'commercial_information']
+        exclude = ['user', ]
+        widgets ={
+            'address': genwidgets.TextInput,
+            'phone': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'commercial_information': genwidgets.Textarea
+        }
 
 
 class LabelForm(forms.ModelForm, GTForm):
