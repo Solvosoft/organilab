@@ -5144,6 +5144,34 @@ msgstr "Crear pictograma"
 msgid "Update pictogram"
 msgstr "Actualizar pictograma"
 
+#: sga/templates/list_company.html:15
+msgid "List of Companies"
+msgstr "Listado de companías"
+
+#: sga/templates/list_company.html:65
+msgid "Remove company"
+msgstr "Eliminar Compañía"
+
+#: sga/templates/list_company.html:66
+msgid "Do you want to remove the company?"
+msgstr "¿Deseas eliminar la companía "
+
+#: sga/templates/list_company.html:67
+msgid "The company is removed successfully"
+msgstr "Se elimino correctamente la compañía"
+
+#: sga/templates/list_company.html:67
+msgid "Companies Managment"
+msgstr "Gestión de Compañías"
+
+#: sga/views.py:512
+msgid "Create Company"
+msgstr "Crear Compañía"
+
+#: sga/views.py:529
+msgid "Edit Company"
+msgstr "Editar Compañía"
+
 #~ msgid "Editor"
 #~ msgstr "Editor"
 

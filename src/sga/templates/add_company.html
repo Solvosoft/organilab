@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'add_company' %}
+    {% define_urlname_action 'edit_company' %}
+    {% define_urlname_action 'get_companies' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="offset-md-3 col-md-6">
+        <div class="card">
+            <h1 class="card-title text-center">{{title}}</h1>
+            <div class="card-body">
+                <form class="form-horizontal" action="{{url}}" method="POST">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+
+                    <a href="{% url 'sga:get_companies'%}" class="btn btn-danger float-end"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
+                    <button type="submit" class="btn btn-success float-end"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+  {% endblock content %}
