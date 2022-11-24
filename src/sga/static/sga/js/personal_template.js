@@ -40,8 +40,3 @@ $(".btnpreview").on('click', function(){
         }
     });
 });
-
-
-$("#newsgalabel").on("click", function(){
-    $("#newsgalabelmodal").modal();
-});

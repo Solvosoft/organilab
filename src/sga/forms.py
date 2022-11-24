@@ -235,3 +235,27 @@ class PictogramForm(forms.ModelForm, GTForm):
             "warning_word": genwidgets.Select(),
             "image": genwidgets.FileInput(),
         }
+
+class SGALabelForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = PersonalTemplateSGA
+        fields = ['name', 'template']
+        widgets = {
+            "name": genwidgets.TextInput(),
+            "template": genwidgets.Select(),
+        }
+
+
+class SGALabelComplementsForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = SGAComplement
+        fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        order_fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        widgets = {
+            'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
+            'danger_indication': AutocompleteSelectMultiple('dangersearch'),
+            'pictograms': genwidgets.SelectMultiple,
+            'warningword': genwidgets.Select,
+            'substance': genwidgets.Select,
+            'other_dangers': genwidgets.Textarea
+        }
