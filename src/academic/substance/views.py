@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm
+    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
@@ -463,30 +463,47 @@ def step_three(request, organilabcontext, template, substance):
 @permission_required('sga.change_sgacomplement')
 def step_two(request, organilabcontext, pk):
     complement = get_object_or_404(SGAComplement, pk=pk)
-    form= None
+    personaltemplateSGA = PersonalTemplateSGA.objects.filter(user=request.user,
+        label__substance__pk=complement.substance.pk).first()
     context ={}
-    personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=complement.substance.pk).first()
     if request.method == 'POST':
-        form = SGAComplementsForm(request.POST, instance=complement)
-        if form.is_valid():
-            obj = form.save()
+        pesonalform = PersonalSGAAddForm(request.POST, instance=personaltemplateSGA, files=request.FILES)
+        complementform = SGAComplementsForm(request.POST, instance=complement)
+        builderinformationform=BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
+        complementform_ok = complementform.is_valid()
+        builderinformationform_ok = builderinformationform.is_valid()
+        pesonalform_ok = pesonalform.is_valid()
+        if complementform_ok:
+            obj = complementform.save()
+        if builderinformationform_ok:
+            instance = builderinformationform.save()
+            if personaltemplateSGA.label.builderInformation is None:
+                personaltemplateSGA.label.builderInformation = instance
+                personaltemplateSGA.label.save()
+        if pesonalform_ok:
+            pesonalform.save()
+
+        if complementform_ok and builderinformationform_ok and pesonalform_ok:
             return redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext,
                                                           'template':personaltemplateSGA.pk,
                                                           'substance':personaltemplateSGA.label.substance.pk}))
         else:
             messages.error(request, _("Invalid form"))
-            context={
+            context = {
                 'form': SGAComplementsForm(instance=complement),
+                'builderinformationform': builderinformationform,
+                'pesonalform': pesonalform,
                 'organilabcontext': organilabcontext,
                 'step': 2,
                 'template': personaltemplateSGA.pk,
                 'complement': complement.pk,
                 'substance': complement.substance.pk,
             }
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext,'complement':complement.pk, 'template':personaltemplateSGA.pk, 'substance':personaltemplateSGA.label.substance.pk}))
+            return render(request, 'academic/substance/step_two.html', context)
     context = {
         'form': SGAComplementsForm(instance=complement),
-        #'companyform': CompanyForm(),
+        'builderinformationform': BuilderInformationForm(instance=personaltemplateSGA.label.builderInformation),
+        'pesonalform': PersonalSGAAddForm(instance=personaltemplateSGA),
         'organilabcontext': organilabcontext,
         'step': 2,
         'complement': complement.pk,
