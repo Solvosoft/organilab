@@ -15,24 +15,39 @@
             <br>
         </div>
     </div>
-    <div class="row text-center">
-        <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
-    </div>
-    <br>
-    <form class="form-horizontal" action="" method="POST">
+<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="row justify-content-center">
-        <div class=" col-md-8" >
+
+    <div class="container text-center">
+<div class="row">
+    <div class="col">
+         <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
+
+
+
+<div class="card">
+  <div class="card-body">
            {{ complementsga_form }}
-        </div>
-    </div>
+  </div>
+</div>
+
     <div class="col-md-12 text-center mt-2" style="display:inline-block">
         <button type="submit" class="btn btn-outline-success">
              <i class="fa fa-send"></i> {% trans  'Continue' %}</button>
     </div>
-    </form>
-    </div>
 
+    </div>
+    <div class="col">
+       <h2 style="color:#337ab7">{% trans 'Commercial information' %}</h2>
+        <div class="card">
+  <div class="card-body">
+        {{ builderinformationform.as_horizontal }}
+        {{ pesonalform.as_horizontal }}
+  </div></div>
+    </div>
+</div>
+    </div>
+</form>
 {% endblock %}
 {% block js %}
 

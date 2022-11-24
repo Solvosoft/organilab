@@ -274,3 +274,16 @@ class SGALabelComplementsForm(forms.ModelForm, GTForm):
             'substance': genwidgets.Select,
             'other_dangers': genwidgets.Textarea
         }
+
+class SGALabelBuilderInformationForm(forms.ModelForm, GTForm):
+
+    class Meta:
+        model = BuilderInformation
+        fields = ['name', 'address', 'phone', 'commercial_information']
+        exclude = ['user', ]
+        widgets ={
+            'address': genwidgets.TextInput,
+            'phone': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'commercial_information': genwidgets.Textarea
+        }
