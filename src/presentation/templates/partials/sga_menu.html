@@ -30,11 +30,13 @@
         </li>
         {% endif %}
     {% include 'partials/sga_complements.html' %}
+        {% if perms.sga.view_builderinformation %}
         <li>
             <a href="{% url 'sga:get_companies'%}">
-                {% trans 'Companies' %}
+                {% trans 'Companies Managment' %}
             </a>
         </li>
+        {% endif %}
     </ul>
     <!-- /.nav-second-level -->
 </li>

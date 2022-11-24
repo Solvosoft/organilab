@@ -496,9 +496,14 @@ def update_pictogram(request,id_pictogram):
     }
     return render(request, 'add_pictograms.html', context=context)
 
+@login_required
+@permission_required('sga.view_builderinformation')
 def get_companies(request):
     company = BuilderInformation.objects.filter(user=request.user)
     return render(request,'list_company.html', context={'companies':company})
+
+@login_required
+@permission_required('sga.add_builderinformation')
 def create_company(request):
     form = CompanyForm(user=request.user)
     if request.method=='POST':
@@ -508,30 +513,36 @@ def create_company(request):
             return redirect(reverse('sga:get_companies'))
 
     context={
-        'form':form
+        'form':form,
+        'title':_('Create Company'),
+        'url': reverse('sga:add_company')
     }
 
     return render(request,'add_company.html', context=context)
 
+@login_required
+@permission_required('sga.change_builderinformation')
 def edit_company(request,pk):
-    company = BuilderInformation.objects.get(pk=pk)
+    company = BuilderInformation.objects.filter(pk=pk).first()
     form = CompanyForm(instance=company)
     if request.method=='POST':
-        form= CompanyForm(request.POST)
+        form= CompanyForm(request.POST,instance=company)
         if form.is_valid():
-            company = form.save(commit=False)
-            company.user = request.user
-            company.save()
+            form.save()
             return redirect(reverse('sga:get_companies'))
     context={
-        'form':form
+        'form':form,
+        'title': _('Edit Company'),
+        'url': reverse('sga:edit_company', kwargs={'pk':pk})
     }
 
     return render(request,'add_company.html', context=context)
+@login_required
+@permission_required('sga.delete_builderinformation')
 def remove_company(request,pk):
     if pk:
         company = BuilderInformation.objects.get(pk=pk)
         company.delete()
-        return redirect(reverse('sga:get_companies'))
+        return JsonResponse({'msg':_('The company is removed successfully'),'status':True})
 
-    return render(request,'list_company.html', context=context)
+    return JsonResponse({'msg': _('Error'), 'status':False})
