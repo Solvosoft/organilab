@@ -46,6 +46,19 @@ class EditorForm(forms.ModelForm, GTForm):
             'community_share': genwidgets.YesNoInput
         }
 
+class EditorForm(forms.ModelForm, GTForm):
+    preview = forms.CharField(widget=forms.HiddenInput())
+    json_representation = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = TemplateSGA
+        fields = ('name', 'recipient_size', 'json_representation', 'community_share', 'preview')
+        widgets = {
+            'name': genwidgets.TextInput,
+            'recipient_size': genwidgets.Select,
+            'community_share': genwidgets.YesNoInput
+        }
+
 
 class SearchDangerIndicationForm(GTForm):
     codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"),

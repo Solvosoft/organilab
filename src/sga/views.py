@@ -573,11 +573,22 @@ def sgalabel_step_two(request, organilabcontext, pk):
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
 
+    if request.method == 'POST':
+        form = EditorForm(request.POST, instance=sgalabel.template)
+        if form.is_valid():
+            instance = form.save()
+            instance.creator = request.user
+            instance.save()
+            return redirect(
+                reverse('sga:add_personal', args=('laboratory',) )
+            )
+
     context = {
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complement': complement,
-        'form': SGAEditorForm()
+        'form': SGAEditorForm(),
+        'editorform': EditorForm()
     }
 
     return render(request, 'sgalabel/step_two.html', context=context)

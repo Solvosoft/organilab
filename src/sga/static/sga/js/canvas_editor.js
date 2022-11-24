@@ -62,12 +62,7 @@ $(window).ready(function(){
 
 });
 
-$(window).ready(function(){
-    if(document.logo_name){
-        $("input[name='logo_upload_id']").attr('data-url', document.logo_url);
-        $("#logo_name").html(document.logo_name);
-    }
-});
+
 
 function load_data_form(idform){
     var svg_text = svgEditor.svgCanvas.getSvgString();
@@ -123,8 +118,3 @@ $("#savesgalabel").on('click', function(){
 });
 
 
-$(document).on( "fileuploaddone", function(e, data){
-    if(data.result){
-        $("#id_logo_upload_id").val(data.result.upload_id);
-    }
-});

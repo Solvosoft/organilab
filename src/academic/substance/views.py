@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm
+    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, EditorForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
 
@@ -392,11 +392,11 @@ def step_three(request, organilabcontext, template, substance):
     user = request.user
 
     if request.method == 'POST':
-        form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
-        label_form = LabelForm(request.POST, instance=personaltemplateSGA.label)
-        builder_information_form = BuilderInformationForm(request.POST, instance=personaltemplateSGA.label.builderInformation)
-        if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
-            pass
+        form = EditorForm(request.POST, instance=personaltemplateSGA.template)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('step_four', kwargs={'organilabcontext':organilabcontext,
+                                                          'substance': personaltemplateSGA.label.substance.pk}))
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
                'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
@@ -413,7 +413,7 @@ def step_three(request, organilabcontext, template, substance):
                             'address': bi_info.address})
 
     context={
-
+        'editorform': EditorForm(),
         'warningwords': WarningWord.objects.all(),
         'form': SGAEditorForm,
         "instance": personaltemplateSGA,
