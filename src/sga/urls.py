@@ -42,4 +42,10 @@ urlpatterns = [
     re_path(r'add_pictogram', views.add_pictogram, name='add_pictograms'),
     re_path(r'update_pictogram/(?P<id_pictogram>\w+)', views.update_pictogram, name='update_pictogram'),
 
+
+    path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
+    path('sgalabel/create/<str:organilabcontext>', views.create_sgalabel, name='sgalabel_create'),
+    path('sgalabel/step_one/<str:organilabcontext>/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
+    path('sgalabel/step_two/<str:organilabcontext>/<int:pk>', views.sgalabel_step_two, name='sgalabel_step_two'),
+
 ]
