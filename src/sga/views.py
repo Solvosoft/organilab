@@ -530,7 +530,7 @@ def sgalabel_step_one(request, organilabcontext, pk):
 
     complementsga_form = SGALabelComplementsForm(instance=complement)
     sgabuilderinfo_form = SGALabelBuilderInformationForm(instance=builderinformation)
-    personal_form = PersonalSGAAddForm(request.POST, request.FILES, instance=sgalabel)
+    personal_form = PersonalSGAAddForm(instance=sgalabel)
 
 
     if request.method == "POST":
