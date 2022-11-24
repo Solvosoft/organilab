@@ -4,7 +4,7 @@ from django.core.management import BaseCommand
 import requests
 from django.core.files.base import ContentFile
 
-from sga.models import Pictogram, DangerIndication
+from sga.models import Pictogram, DangerIndication, WarningWord
 
 
 class Command(BaseCommand):
@@ -21,8 +21,14 @@ class Command(BaseCommand):
         response = requests.get(url, headers=headers)
         return ContentFile(response.content, name=name)
 
+    def title_warning_word(self):
+        for ww in WarningWord.objects.all():
+            ww.name = ww.name.title()
+            ww.save()
+
     def get_warning_word(self, name):
-        pass
+        instance, x = WarningWord.objects.get_or_create(name=name)
+        return instance
 
     def load_pictograms(self):
         pictograms =[
@@ -124,4 +130,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.load_pictograms()
         self.sync_pictogram_with_dangerindication()
+        self.title_warning_word()
 
