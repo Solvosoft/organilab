@@ -31,7 +31,7 @@
         {% csrf_token %}
         <h2 class="card-title titles">{% trans 'List of SGA Labels' %}</h2>
         <div class="float-end">
-            <button type="button" class="btn btn-success" id="newsgalabel">{% trans 'New SGA Label' %}</button>
+            <button type="button" class="btn btn-success" id="newsgalabel" data-bs-toggle="modal" data-bs-target="#newsgalabelmodal">{% trans 'New SGA Label' %}</button>
         </div>
         <div class="clearfix"></div>
 
@@ -82,7 +82,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="newsgalabelform"  method="GET" action="{% url 'sga:template' organilabcontext='laboratory' %}">
+                    <form id="newsgalabelform"  method="POST" action="{% url 'sga:sgalabel_create' organilabcontext='laboratory' %}">
+                        {% csrf_token %}
                         {{form.as_horizontal}}
                         <button type="submit" class="btn btn-success" style="margin-top: 3%;">{% trans 'Continue' %}</button>
                     </form>
