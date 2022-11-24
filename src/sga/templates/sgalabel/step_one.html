@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'step_one' %}
+    {% define_urlname_action 'step_two' %}
+    {% define_urlname_action 'step_three' %}
+    {% define_urlname_action 'update_substance' %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+                {% include 'sgalabel/steps.html' %}
+            <br>
+        </div>
+    </div>
+    <div class="row text-center">
+        <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
+    </div>
+    <br>
+    <form class="form-horizontal" action="" method="POST">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class=" col-md-8" >
+           {{ complementsga_form }}
+        </div>
+    </div>
+    <div class="col-md-12 text-center mt-2" style="display:inline-block">
+        <button type="submit" class="btn btn-success">Continuar</button>
+    </div>
+    </form>
+    </div>
+
+{% endblock %}
+{% block js %}
+
+<script>
+    document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' 0 %}"
+</script>
+
+<script src="{% static 'sga/js/sgalabel.js' %}"></script>
+{% endblock %}

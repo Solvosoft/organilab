@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf
+from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf, SGAComplement
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
     RecipientSize, Donation
@@ -62,3 +62,4 @@ admin.site.register(TemplateSGA)
 admin.site.register(Donation, DonationAdmin)
 admin.site.register(PersonalTemplateSGA)
 admin.site.register(SecurityLeaf)
+admin.site.register(SGAComplement)

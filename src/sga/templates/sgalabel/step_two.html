@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+{% endblock %}
+
+{# CSS #}
+{% block css %}
+<link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
+{% endblock css %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% include 'sgalabel/steps.html' %}
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div style="padding: 15px 20px 10px;">
+                {% include 'editor/sga_live.html' %}
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            {% include 'editor/canvas_and_utils.html' %}
+        </div>
+    </div>
+    <div class="col-md-11 text-center mt-2" style="display:inline-block">
+        <a type="button" class="btn btn-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
+            {% trans 'Back' %}
+        </a>
+        <a type="button" class="btn btn-danger" href="{% url 'sga:add_personal' organilabcontext %}">
+            {% trans 'Cancel' %}
+        </a>
+        <button id="savesgalabel" type="button" class="btn btn-success">
+            {% trans 'Save' %}
+        </button>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+
+<script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
+window.SvgCanvas=SvgCanvas;
+
+</script>
+<script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
+<script src="{% static 'sga/js/canvas_editor.js' %}"></script>
+<script src="{% static 'sga/js/codigosPH.js' %}"></script>
+<script src="{% static 'sga/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

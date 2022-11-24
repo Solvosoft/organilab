@@ -22,8 +22,9 @@ from xhtml2pdf import pisa
 from organilab import settings
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm, PictogramForm
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram
+    LabelForm, PersonalTemplateForm, PictogramForm, SGAComplementsForm, SGALabelForm, SGALabelComplementsForm
+from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, SGAComplement, Substance
+from .api.serializers import SGAComplementSerializer
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
@@ -495,3 +496,78 @@ def update_pictogram(request,id_pictogram):
         'button_text': _('Edit')
     }
     return render(request, 'add_pictograms.html', context=context)
+
+
+def create_sgalabel(request, organilabcontext):
+
+    if request.method == "POST":
+        form = SGALabelForm(request.POST)
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.json_representation = form.cleaned_data['template'].json_representation
+            label = Label.objects.create()
+            instance.label = label
+            instance.save()
+            return redirect(reverse("sga:sgalabel_step_one", kwargs={'organilabcontext':organilabcontext,
+                                                                     'pk': instance.pk}))
+        else:
+            messages.error(request, _("Form is invalid"))
+
+
+def sgalabel_step_one(request, organilabcontext, pk):
+    sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    complementsga_form = SGALabelComplementsForm()
+    complement = None
+
+
+    if sgalabel.label.substance:
+        complement = SGAComplement.objects.filter(substance=sgalabel.label.substance).first()
+        complementsga_form = SGALabelComplementsForm(instance=complement)
+
+
+    if request.method == "POST":
+        complementsga_form = SGALabelComplementsForm(request.POST)
+
+        if complement:
+            complementsga_form = SGALabelComplementsForm(request.POST, instance=complement)
+
+        if complementsga_form.is_valid():
+            complementsga_form.save()
+            sgalabel.label.substance = complementsga_form.cleaned_data['substance']
+            sgalabel.label.save()
+            return redirect(reverse("sga:sgalabel_step_two", kwargs={'organilabcontext':organilabcontext,
+                                                                     'pk': sgalabel.pk}))
+
+    context = {
+        'sgalabel': sgalabel,
+        'organilabcontext': organilabcontext,
+        'complementsga_form': complementsga_form
+    }
+
+    return render(request, 'sgalabel/step_one.html', context=context)
+
+def sgalabel_step_two(request, organilabcontext, pk):
+    sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    substance = sgalabel.label.substance
+    complement = SGAComplement.objects.filter(substance=substance).first()
+
+    context = {
+        'sgalabel': sgalabel,
+        'organilabcontext': organilabcontext,
+        'complement': complement,
+        'form': SGAEditorForm()
+    }
+
+    return render(request, 'sgalabel/step_two.html', context=context)
+
+
+def get_sgacomplement_by_substance(request, pk):
+    substance = get_object_or_404(Substance, pk=pk)
+    complement = SGAComplement.objects.filter(substance =substance)
+    if complement.exists():
+        data = SGAComplementSerializer(complement.first()).data
+    else:
+        data = {}
+    return JsonResponse(data)

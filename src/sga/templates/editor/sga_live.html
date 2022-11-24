@@ -1,0 +1,19 @@
+{% load i18n %}
+<div>
+    <label><b>{% trans 'Warning Word' %}</b></label>
+    <ul>
+        <li><p class="genericitem text_content"  id="{{complement.warningword}}"  title="{{complement.warningword}}" data-ftype="danger-itext"  >{{complement.warningword}}</p></li>
+    </ul>
+    <label><b>{% trans 'Prudence Advice' %}</b></label>
+    <ul>
+        {% for prudence_advice in complement.prudence_advice.all %}
+          <li><p class="genericitem text_content"  id="{{prudence_advice}}"  title="{{prudence_advice}}" data-ftype="danger-itext"  >{{prudence_advice}}</p></li>
+        {% endfor %}
+    </ul>
+    <label><b>{% trans 'Danger Indication' %}</b></label>
+    <ul>
+        {% for danger_indication in complement.danger_indication.all %}
+          <li><p class="genericitem text_content"  id="{{danger_indication}}"  title="{{danger_indication}}" data-ftype="danger-itext"  >{{danger_indication}}</p></li>
+        {% endfor %}
+    </ul>
+</div>
