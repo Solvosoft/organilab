@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 import os
-
+import sys
 
 from pathlib import Path
 
@@ -244,26 +244,6 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-        'organilab': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-    },
-}
-
 INTERNAL_IPS = ('127.0.0.1',)
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
@@ -308,8 +288,8 @@ RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKe
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 GT_GROUP_MODEL='auth_and_perms.models.Rol'
-DEFAULT_BUSSINESS=1
-DEFAULT_ENTITY=1
+DEFAULT_BUSSINESS = int(os.getenv('DEFAULT_BUSSINESS', 1))
+DEFAULT_ENTITY = int(os.getenv('DEFAULT_ENTITY', 1))
 DEFAULT_SUCCESS_BCCR=0
 
 REST_FRAMEWORK = {
@@ -319,3 +299,32 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
     ]
 }
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'verbose': {
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       },
+   },
+   'handlers': {
+       'console': {
+           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+           'class': 'logging.StreamHandler',
+           'stream': sys.stdout,
+           'formatter': 'verbose'
+       },
+   },
+   'loggers': {
+       '': {
+           'handlers': ['console'],
+           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+           'propagate': True,
+       },
+   },
+}
+
+if not DEBUG:
+    USE_X_FORWARDED_HOST = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
