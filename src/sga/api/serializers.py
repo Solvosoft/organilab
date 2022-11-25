@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, Pictogram, BuilderInformation, \
-    PersonalTemplateSGA
+    PersonalTemplateSGA, RecipientSize
 
 
 class DangerIndicationSerializer(serializers.ModelSerializer):
@@ -41,3 +41,10 @@ class BuilderInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuilderInformation
         fields = ['name', 'address', 'phone', 'commercial_information']
+
+
+class RecipientSizeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecipientSize
+        fields = ['width', 'height']

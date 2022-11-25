@@ -23,7 +23,6 @@ urlpatterns = [
     path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
     # sga/editor
     re_path(r'editor/(?P<organilabcontext>\w+)/', editor, name='editor'),
-    re_path(r'recipient_size/(?P<organilabcontext>\w+)/(?P<is_template>\d+)/(?P<pk>\d+)?$', views.get_recipient_size, name='get_recipient_size'),
     re_path(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
     re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
@@ -49,6 +48,7 @@ urlpatterns = [
 
 
     path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
+    path('sgalabel/get_recipient_size/<int:pk>', views.get_recipient_size, name='get_recipient_size'),
     path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
     path('sgalabel/create/<str:organilabcontext>', views.create_sgalabel, name='sgalabel_create'),
     path('sgalabel/step_one/<str:organilabcontext>/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
