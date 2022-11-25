@@ -46,19 +46,6 @@ class EditorForm(forms.ModelForm, GTForm):
             'community_share': genwidgets.YesNoInput
         }
 
-class EditorForm(forms.ModelForm, GTForm):
-    preview = forms.CharField(widget=forms.HiddenInput())
-    json_representation = forms.CharField(widget=forms.HiddenInput())
-
-    class Meta:
-        model = TemplateSGA
-        fields = ('name', 'recipient_size', 'json_representation', 'community_share', 'preview')
-        widgets = {
-            'name': genwidgets.TextInput,
-            'recipient_size': genwidgets.Select,
-            'community_share': genwidgets.YesNoInput
-        }
-
 
 class SearchDangerIndicationForm(GTForm):
     codes = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all().exclude(code="Ninguno"),
@@ -115,15 +102,15 @@ class PersonalFormAcademic(GTForm):
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
 class PersonalSGAForm(forms.ModelForm, GTForm):
-    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    recipient_size = forms.ModelChoiceField(widget=genwidgets.Select, queryset=RecipientSize.objects.all(), required=True)
 
     class Meta:
         model = PersonalTemplateSGA
-        fields = ['name', 'logo', 'barcode', 'template', 'logo_upload_id', 'json_representation', 'preview']
-        exclude = ['user']
+        fields = ['name', 'json_representation', 'preview']
         widgets = {
-            'logo': genwidgets.FileInput,
-            'template': genwidgets.HiddenInput
+            'name': genwidgets.TextInput,
+            'preview': genwidgets.HiddenInput,
+            'json_representation': genwidgets.HiddenInput,
         }
 
 class PersonalSGAAddForm(forms.ModelForm, GTForm):
