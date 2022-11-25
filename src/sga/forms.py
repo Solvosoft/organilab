@@ -290,6 +290,18 @@ class SGALabelComplementsForm(forms.ModelForm, GTForm):
         }
 
 class SGALabelBuilderInformationForm(forms.ModelForm, GTForm):
+    company = forms.ModelChoiceField(widget=genwidgets.Select(), queryset=BuilderInformation.objects.none(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        user = None
+        if 'user' in kwargs:
+            user = kwargs.pop('user')
+        super(SGALabelBuilderInformationForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['company'].queryset = BuilderInformation.objects.filter(user=user)
+
+
+    field_order = ['company', 'name', 'address', 'phone', 'commercial_information']
 
     class Meta:
         model = BuilderInformation

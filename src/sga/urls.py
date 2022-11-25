@@ -48,6 +48,7 @@ urlpatterns = [
     re_path(r'company/remove/(?P<pk>\d+)$', views.remove_company, name='remove_company'),
 
 
+    path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
     path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
     path('sgalabel/create/<str:organilabcontext>', views.create_sgalabel, name='sgalabel_create'),
     path('sgalabel/step_one/<str:organilabcontext>/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
