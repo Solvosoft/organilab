@@ -6,7 +6,7 @@ ENV REQUESTS_CERT_PATH=/certs/bccr_agent.pem
 ENV REQUESTS_KEY_PATH=/certs/bccr_agent_key.pem
 ENV STUB_SCHEME='https'
 ENV STUB_HOST="firmadorexterno.bccr.fi.cr"
-ENV FVA_TESTURLS="True"
+
 
 ARG UID=1000
 ENV USER="organilab"
