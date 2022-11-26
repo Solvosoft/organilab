@@ -505,7 +505,7 @@ def sgalabel_step_one(request, organilabcontext, pk):
 
     complementsga_form = SGALabelComplementsForm(instance=complement)
     sgabuilderinfo_form = SGALabelBuilderInformationForm(user=request.user, instance=builderinformation,
-                                                         initial={'company': builderinformation.pk})
+                                                         initial={'company': builderinformation.pk if builderinformation else None})
     personal_form = PersonalSGAAddForm(instance=sgalabel)
 
 
@@ -584,8 +584,10 @@ def get_company(request, pk):
     data = BuilderInformationSerializer(builder_info).data
     return JsonResponse(data)
 
-
-def get_recipient_size(request, pk):
+@login_required
+@permission_required('sga.view_builderinformation')
+def get_recipient_size(request, organilabcontext, pk):
+    # Note: @organilab_context_decorator is not used here intentionally
     recipient_size = get_object_or_404(RecipientSize, pk=pk)
     data = RecipientSizeSerializer(recipient_size).data
     return JsonResponse(data)

@@ -63,7 +63,7 @@ window.SvgCanvas=SvgCanvas;
 </script>
 
 <script>
-    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' 0 %}";
+    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
 </script>
 
 <script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
