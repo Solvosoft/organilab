@@ -12,7 +12,7 @@ function delete_template(element){
         url = url.replace('0', id);
     }
     $("#btndeletesgalabel").attr('href', url);
-    $("#deletesgalabelmodal").modal();
+    $("#deletesgalabelmodal").modal('show');
 }
 
 
@@ -32,7 +32,7 @@ $(".btnpreview").on('click', function(){
             var base64 = btoa(decoded);
             var imgSource = 'data:image/svg+xml;base64,'+base64;
             $("#svgtemplate img").attr('src', imgSource);
-            $("#svgtemplate").modal();
+            $("#svgtemplate").modal('show');
           }
         },
         error: function(xhr, resp, text) {

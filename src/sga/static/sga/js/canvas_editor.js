@@ -5,48 +5,16 @@ function update_resolution(width, height){
     svgEditor.svgCanvas.selectAllInCurrentLayer();
 }
 
-function load_data_sga_label_form(urlParams){
-
-    var label_name = urlParams.get('name');
-    var substance = urlParams.get('substance');
-    var template = urlParams.get('template');
-
-    if(label_name){
-        $("#id_name").val(label_name);
-    }
-    if(substance){
-        $("#id_substance").val(substance);
-        $("#id_substance").change();
-    }
-    if(template){
-        var url = document.url_get_recipient_size;
-        url = url.replace('0', '1');
-        url = url+template;
-        load_canvas_editor_template(url);
-        $("#id_template").val(template);
-    }
-
-}
-
 
 $(window).ready(function(){
 
-    let elem = document.querySelector('#canvas_editor');
-    let rect = elem.getBoundingClientRect();
-
-    var urlParams = new URLSearchParams(window.location.search);
-    load_data_sga_label_form(urlParams);
-    var instance = urlParams.get('instance');
-
     var svg_content = $("#id_json_representation").val();
 
-    if(instance || svg_content){
+    if(svg_content){
         svgEditor.svgCanvas.clear();
         try {
             svgEditor.loadSvgString(svg_content);
-            if(document.canvas_size){
-                update_resolution(document.canvas_size.width, document.canvas_size.height);
-            }
+            load_canvas_editor_template($("#id_recipient_size").val());
         } catch (err) {
         if (err.name !== 'AbortError') {
             console.log(err);
@@ -59,7 +27,6 @@ $(window).ready(function(){
             svgEditor.updateCanvas();
         }
     }
-
 });
 
 
@@ -81,18 +48,19 @@ $("#editor_save").on('click', function(){
 });
 
 
-function load_canvas_editor_template(url){
+function load_canvas_editor_template(id){
+
+    var url = document.url_get_recipient_size;
+    if(id){
+        url = url+id;
+    }
 
     $.ajax({
         url: url,
         type: 'GET',
         success: function(result) {
-          if(result.svg_content){
-            svgEditor.loadSvgString(result.svg_content);
-          }
-
-          if(result.size){
-            update_resolution(result.size.width, result.size.height);
+          if(result){
+            update_resolution(result.width, result.height);
           }
         },
         error: function(xhr, resp, text) {
@@ -103,12 +71,7 @@ function load_canvas_editor_template(url){
 
 
 $("#id_recipient_size").on("change", function(){
-    var id = $(this).val();
-    var url = document.url_get_recipient_size;
-    if(id){
-        url = url+id;
-    }
-    load_canvas_editor_template(url);
+    load_canvas_editor_template($(this).val());
 });
 
 

@@ -7,22 +7,44 @@ function select_values(element, data){
     }
 }
 
-function update_complement_form(data){
-    $("#id_warningword").val(data.warningword).change();
-    $("#id_other_dangers").val(data.other_dangers);
-    $("#id_pictograms").val(data.pictograms).change();
-    select_values("#id_prudence_advice", data.prudence_advice);
-    select_values("#id_danger_indication", data.danger_indication);
+function update_complement_form(data, container, selectsimple=null){
+    if(selectsimple){
+        selectsimple.forEach(function(item, i){
+            if(data.hasOwnProperty($(this)[0].name)){
+                $("#id_"+item).val(data[item]).change();
+            }
+        });
+    }
+
+    $(container).find("select[data-widget='AutocompleteSelectMultiple']").each(function(item, i){
+        if(data.hasOwnProperty($(this)[0].name)){
+            select_values("#id_"+$(this)[0].name, data[$(this)[0].name]);
+        }
+    });
+
+    $(container).find("textarea").each(function(i){
+        if(data.hasOwnProperty($(this)[0].name)){
+            $(this).val(data[$(this)[0].name]);
+        }
+    });
+
+    $(container).find("input").each(function(i){
+        if(data.hasOwnProperty($(this)[0].name)){
+            $(this).val(data[$(this)[0].name]);
+        }
+    });
 }
 
 
 
-function clean_complementform(){
-    $("#id_pictograms").val('').change();
-    $("#id_prudence_advice option").remove();
-    $("#id_danger_indication option").remove();
-    $("#id_warningword").val('').change();
-    $("#id_other_dangers").val('');
+function clean_complementform(container, selectsimple=null){
+    if(selectsimple){
+        selectsimple.forEach(function(item, i){
+            $("#id_"+item).val('').change();
+        });
+    }
+    $(container+" select[data-widget='AutocompleteSelectMultiple'] option").remove();
+    $(container+" textarea").val('');
 }
 
 $("#id_substance").on('change', function(){
@@ -35,9 +57,32 @@ $("#id_substance").on('change', function(){
             url: url,
             type: 'GET',
             success: function(result) {
-              clean_complementform();
+              clean_complementform("#complementcontainer", ['warningword', 'pictograms']);
               if(result){
-                update_complement_form(result);
+                update_complement_form(result, "#complementcontainer", ['warningword', 'pictograms']);
+              }
+            },
+            error: function(xhr, resp, text) {
+                console.log(xhr, resp, text);
+            }
+        });
+
+    }
+});
+
+$("#id_company").on('change', function(){
+    var id = $(this).val();
+    if(id){
+        var url = document.url_get_company;
+        url = url.replace('0', id);
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(result) {
+              clean_complementform("#companycontainer")
+              if(result){
+                update_complement_form(result, "#companycontainer");
               }
             },
             error: function(xhr, resp, text) {
