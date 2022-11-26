@@ -20,14 +20,14 @@
 
     <div class="container text-center">
 <div class="row">
-    <div class="col">
+    <div id="complementcontainer" class="col">
          <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
 
 
 
 <div class="card">
   <div class="card-body">
-           {{ complementsga_form }}
+           {{ complementsga_form.as_horizontal }}
   </div>
 </div>
 
@@ -37,7 +37,7 @@
     </div>
 
     </div>
-    <div class="col">
+    <div id="companycontainer" class="col">
        <h2 style="color:#337ab7">{% trans 'Commercial information' %}</h2>
         <div class="card">
   <div class="card-body">
@@ -52,7 +52,8 @@
 {% block js %}
 
 <script>
-    document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' 0 %}"
+    document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' 0 %}";
+    document.url_get_company = "{% url 'sga:get_company' 0 %}";
 </script>
 
 <script src="{% static 'sga/js/sgalabel.js' %}"></script>
