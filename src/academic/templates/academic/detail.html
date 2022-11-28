@@ -73,6 +73,15 @@
 
     <script>
         document.remove_step="{% url 'delete_step' %}";
+        document.message = {
+            'confirmstep': "{% trans 'Are you sure to delete the step' %}",
+            'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",
+            'confirmobj': "{% trans 'Are you sure to delete this object ' %}",
+            'deletemsg': "{% trans 'has been deleted' %}",
+            'deleteobs': "{% trans 'Observation has been deleted' %}",
+            'step': "{% trans 'Step' %}",
+            'object': "{% trans 'Object' %}"
+        }
     </script>
     <script src="{% static 'js/procedures.js'%}"></script>
 

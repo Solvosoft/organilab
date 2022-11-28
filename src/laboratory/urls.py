@@ -68,6 +68,8 @@ lab_furniture_urls = [
 
     re_path(r'^edit/(?P<pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
         name='furniture_update'),
+    re_path(r'^delete/(?P<pk>\d+)$', furniture.FurnitureDelete.as_view(),
+            name='furniture_delete'),
 ]
 
 shelf_object_urls = [

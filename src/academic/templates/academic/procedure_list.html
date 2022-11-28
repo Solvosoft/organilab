@@ -113,6 +113,16 @@
 		var table=$("#datatable").DataTable();
 		table.order( [ 0, 'desc' ] ).draw();
 		const reserved ="{% trans 'Reserved' %}";
+
+		document.message = {
+            'confirmprocedure': "{% trans 'Are you sure to delete the procedure' %}",
+            'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",
+            'confirmobj': "{% trans 'Are you sure to delete this object ' %}",
+            'deletemsg': "{% trans 'has been deleted' %}"
+            'deleteobs': "{% trans 'Observation has been deleted' %}",
+            'object': "{% trans 'Object' %}"
+        }
+
 	</script>
     <script src="{% static 'js/procedures.js'%}"></script>
 {% endblock %}
