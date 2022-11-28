@@ -13,66 +13,66 @@
 {% block content %}
 <div class="card-body">
     <a class="btn btn-primary" href="{% url 'procedure_list' pk=lab_pk %}"><<</a>
-      <h1 class="card-title text-center">Crear Paso</h1>
+    <h1 class="card-title text-center">{% trans 'Create Step' %}</h1>
     <div class="card">
-      <div class="card-body">
-     <form method="post">
-          {% csrf_token %}
-            {{form.as_p | safe}}
-            {{ form.media }}
-          <input class="btn btn-success float-end" type="submit" value="{% trans 'Save' %}">
-    </form>
-      </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{form.as_p | safe}}
+                {{ form.media }}
+                <input class="btn btn-success float-end" type="submit" value="{% trans 'Save' %}">
+            </form>
+        </div>
     </div>
-
     <br>
     <div class="card">
-    <div class="card-body">
-          <h3 class="card-title">{% trans 'Object List'%}</h3>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th width="60%">{% trans 'Name' %}</th>
-            <th class="text-center" width="15%">{% trans 'Amount' %}</th>
-            <th class="text-center" width="20%">{% trans 'Actions' %}</th>
-        </tr>
-        </thead>
-        <tbody id="object_list">
-        {% for obj in step.procedurerequiredobject_set.all %}
-            <tr>
-                <td>{{ obj.object }}</td>
-                <td class="text-center">{{ obj.quantity }} {{obj.get_measurement_unit_display}}</td>
-                <td class="text-center"><span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"><i class="fa fa-trash"></i> {% trans 'Delete'%}</span></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-          <span class="btn btn-success float-end" data-bs-target="#object_modal" data-bs-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Crear' %}</span>
-      </div>
+        <div class="card-body">
+            <h3 class="card-title">{% trans 'Object List'%}</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th width="60%">{% trans 'Name' %}</th>
+                    <th class="text-center" width="15%">{% trans 'Amount' %}</th>
+                    <th class="text-center" width="20%">{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody id="object_list">
+                {% for obj in step.procedurerequiredobject_set.all %}
+                <tr>
+                    <td>{{ obj.object }}</td>
+                    <td class="text-center">{{ obj.quantity }} {{obj.get_measurement_unit_display}}</td>
+                    <td class="text-center"><span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <span class="btn btn-success float-end" data-bs-target="#object_modal" data-bs-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Create' %}</span>
+        </div>
     </div>
-        <br>
-        <div class="card">
-       <div class="card-body">
-          <h3 class="card-title">{% trans 'Observations'%}</h3>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th width="80%">{% trans 'Description' %}</th>
-            <th class="text-center" >{% trans 'Actions' %}</th>
-        </tr>
-        </thead>
-        <tbody id="observation_list">
-       {% for obs in step.procedureobservations_set.all %}
-            <tr>
-                <td>{{ obs.description }}</td>
-                <td class="text-center" ><span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-          <span class="btn btn-success float-end" data-bs-target="#observation_modal" data-bs-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Crear' %}</span>
-      </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{% trans 'Observations'%}</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th width="80%">{% trans 'Description' %}</th>
+                    <th class="text-center" >{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody id="observation_list">
+                {% for obs in step.procedureobservations_set.all %}
+                <tr>
+                    <td>{{ obs.description }}</td>
+                    <td class="text-center" ><span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"><i class="fa fa-trash"></i> {% trans 'Delete' %}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <span class="btn btn-success float-end" data-bs-target="#observation_modal" data-bs-toggle="modal"><i class="fa fa-plus-circle"></i> {% trans 'Crear' %}</span>
+        </div>
     </div>
+</div>
     {% include 'academic/step_modal.html'%}
     {% endblock %}
 
