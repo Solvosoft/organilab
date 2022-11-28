@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-28 12:46-0600\n"
+"POT-Creation-Date: 2022-11-28 16:16-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -344,6 +344,62 @@ msgstr "Objetos requeridos"
 #: academic/templates/academic/detail.html:73
 msgid "Back to list"
 msgstr "Volver a la lista"
+
+#: academic/templates/academic/procedure_list.html:118
+msgid "Are you sure to delete the procedure"
+msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+
+#: academic/templates/academic/detail.html:84
+#: academic/templates/academic/procedure_list.html:119
+#: academic/templates/academic/procedure_steps.html:89
+#, fuzzy
+#| msgid "Are you sure to delete this procedure"
+msgid "Are you sure to delete the step"
+msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+
+#: academic/templates/academic/detail.html:85
+#: academic/templates/academic/procedure_list.html:120
+#: academic/templates/academic/procedure_steps.html:90
+#, fuzzy
+#| msgid "Are you sure to delete this procedure"
+msgid "Are you sure to delete this observation?"
+msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+
+#: academic/templates/academic/detail.html:86
+#: academic/templates/academic/procedure_list.html:121
+#: academic/templates/academic/procedure_steps.html:91
+#, fuzzy
+#| msgid "Are you sure to delete this procedure"
+msgid "Are you sure to delete this object "
+msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+
+#: academic/templates/academic/detail.html:87
+#: academic/templates/academic/procedure_list.html:122
+#: academic/templates/academic/procedure_steps.html:92
+msgid "has been deleted"
+msgstr "ha sido eliminado"
+
+#: academic/templates/academic/detail.html:88
+#: academic/templates/academic/procedure_list.html:123
+#: academic/templates/academic/procedure_steps.html:93
+#, fuzzy
+#| msgid "Observation has been deleted"
+msgid "Observation hs been deleted"
+msgstr "La observación ha sido eliminada"
+
+#: academic/templates/academic/detail.html:89
+#: academic/templates/academic/procedure_list.html:124
+#: academic/templates/academic/procedure_steps.html:94
+msgid "The step"
+msgstr ""
+
+#: academic/templates/academic/detail.html:90
+#: academic/templates/academic/procedure_list.html:125
+#: academic/templates/academic/procedure_steps.html:95
+#, fuzzy
+#| msgid "Shelf object"
+msgid "The object"
+msgstr "Estante del objeto"
 
 #: academic/templates/academic/procedure_create.html:7
 msgid "Detail of"
@@ -1980,7 +2036,7 @@ msgstr "Octubre"
 
 #: laboratory/models.py:522
 msgid "November"
-msgstr "Número de teléfono"
+msgstr "Noviembre"
 
 #: laboratory/models.py:523
 msgid "December"
@@ -2245,6 +2301,7 @@ msgid "Are you sure you want to delete"
 msgstr "¿Está seguro de que desea eliminar?"
 
 #: laboratory/templates/laboratory/furniture_confirm_delete.html:9
+#: laboratory/templates/laboratory/laboratory_delete.html:12
 #: laboratory/templates/laboratory/laboratoryroom_confirm_delete.html:14
 #: laboratory/templates/laboratory/objectfeatures_confirm_delete.html:9
 #: laboratory/templates/laboratory/objectview_delete.html:9

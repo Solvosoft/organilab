@@ -91,26 +91,26 @@ function generate_observation_table(data){
 
 
 function delete_procedure(pk,procedure_name){
-    open_alert(pk,`Esta seguro de eliminar el procedimiento de ${procedure_name}?`,
-    `El procedimiento ${procedure_name} ha sido eliminada.`,
+    open_alert(pk, document.message.confirmprocedure+` ${procedure_name}?`,
+    `${procedure_name} `+ document.message.deletemsg,
     document.remove_procedure,0);
 }
 
 function delete_step(pk,step_name){
-    open_alert(pk,`Esta seguro de eliminar el paso de ${step_name}?`,
-    `El paso ${step_name} ha sido eliminado.`,
+    open_alert(pk, document.message.confirmstep+ ` ${step_name}?`,
+    document.message.step+` ${step_name} `+ document.message.deletemsg,
     document.remove_step,0);
 }
 
 function delete_observation(pk){
-    open_alert(pk,`Esta seguro de eliminar la observacion?`,
-    `La observacion ha sido eliminado.`,
+    open_alert(pk, document.message.confirmobs,
+    document.message.deleteobs,
     document.remove_observation,2);
 }
 
 function delete_object(pk,obj_name){
-    open_alert(pk,`Esta seguro de eliminar el objecto ${obj_name}?`,
-    `El objecto ${obj_name} ha sido eliminado.`,
+    open_alert(pk, document.message.confirmobj+ ` ${obj_name}?`,
+    document.message.object+` ${obj_name} `+document.message.deletemsg,
     document.remove_object,1);
 }
 
