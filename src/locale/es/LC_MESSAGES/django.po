@@ -529,7 +529,7 @@ msgstr "Uso general"
 #: academic/templates/academic/substance/pdf/section_three.html:4
 #: sga/models.py:179 sga/models.py:268 sga/models.py:486
 msgid "Substance"
-msgstr "Eliminar sustancia"
+msgstr "Sustancia"
 
 #: academic/templates/academic/substance/create_sustance.html:21
 #: laboratory/templates/laboratory/sustance/sustance_form.html:18
@@ -1081,6 +1081,7 @@ msgstr "Productos de combustión peligrosos"
 msgid "Recommendations for firefighters"
 msgstr "Recomendaciones para el personal de lucha contra incendios"
 
+#: sga/models.py:389
 #: academic/templates/academic/substance/pdf/section_five.html:32
 msgid "Other Information"
 msgstr "Otra información"
@@ -1682,9 +1683,9 @@ msgstr "Usar guardar antes de terminar"
 msgid "SGA Components"
 msgstr "Componentes SGA"
 
+#: sga/models.py:275
+#: sga/templates/editor/generic.html:34
 #: academic/templates/academic/substance/step_two.html:36
-#, fuzzy
-#| msgid "Commercial Information"
 msgid "Commercial information"
 msgstr "Información Comercial"
 
@@ -1698,8 +1699,6 @@ msgid "Label Components"
 msgstr "Componentes de etiqueta"
 
 #: academic/templates/academic/substance/steps.html:21
-#, fuzzy
-#| msgid "GHS Label Creator"
 msgid "Label editor"
 msgstr "Editor de etiquetas"
 
@@ -1708,10 +1707,8 @@ msgid "Security Leafs"
 msgstr "Hojas de Seguridad"
 
 #: academic/templates/academic/substance/warning_words.html:22
-#, fuzzy
-#| msgid "Height"
 msgid "Weight"
-msgstr "Alto"
+msgstr "Peso"
 
 #: academic/views.py:134
 msgid "There is no object in the inventory with this unit of measurement"
@@ -4775,10 +4772,6 @@ msgstr "Tamaño de recipiente"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: sga/models.py:275 sga/templates/editor/generic.html:34
-msgid "Commercial Information"
-msgstr "Información Comercial"
-
 #: sga/models.py:281 sga/models.py:308
 msgid "Label"
 msgstr "Etiqueta"
@@ -4874,6 +4867,14 @@ msgstr "Nota"
 #: sga/models.py:490 sga/models.py:491
 msgid "Review Substance"
 msgstr "Crear  Sustancia"
+
+#: sga/models.py:190
+msgid "White organ"
+msgstr "Organo blanco"
+
+#: sga/models.py:192
+msgid "Bioaccumulable"
+msgstr "Bioacumulable"
 
 #: sga/templates/add_recipient_size.html:12
 msgid "Create New Recipient"

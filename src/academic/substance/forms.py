@@ -7,6 +7,7 @@ from academic.models import SubstanceObservation
 from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice, SecurityLeaf, \
     ReviewSubstance
 from djgentelella.widgets.tagging import TaggingInput
+from django.utils.translation import gettext_lazy as _
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
 
@@ -121,6 +122,7 @@ class SecurityLeafForm(forms.ModelForm,GTForm):
                 self.fields[str(field)].widget = genwidgets.TextInput()
 
         self.fields['provider'].required= False
+        self.fields['other_info'].label= _('Other Information')
     class Meta:
         model = SecurityLeaf
         exclude = ['substance']

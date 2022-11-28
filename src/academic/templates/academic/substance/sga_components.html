@@ -12,9 +12,9 @@
     {% endif %}
 {% endblock %}
 {% block content %}
-
-    <div>
-          <a class="btn btn-primary" href="{{view_url}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+<div class="row">
+    <div class="col-sm-8 offset-md-2">
+        <a class="btn btn-danger" href="{{view_url}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
         <div class="card-body">
             <div class="card-title">
                 <h1 class="text-center">{{title}}</h1>
@@ -23,10 +23,11 @@
                 {% csrf_token %}
                 {{form.as_inline}}
                 <button class="btn btn-success float-end" type="submit">
-                    {% trans 'Save' %}
                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    {% trans 'Save' %}
                 </button>
             </form>
         </div>
     </div>
+</div>
 {% endblock %}
