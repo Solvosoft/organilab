@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load laboratory static i18n  %}
+
+
+
+{% block title %}{% trans 'Furniture management' %}{% endblock %}
+
+{% block content %}
+
+  <div id="intro_title" class="container-fluid">
+          <div class="page-header col-xs-13" align="center">
+            <h3 class="heading-1" center=""><span>{% trans 'Furniture management' %}</span></h3>
+          </div>
+
+  {% if perms.laboratory.view_furniture or perms.laboratory.add_furniture or perms.laboratory.change_furniture or perms.laboratory.delete_furniture %}
+    <br>
+    {{ form.errors }}
+    <form class="form-horizontal" action="" method="post">
+      {% if perms.laboratory.add_furniture %}
+      {% csrf_token %}
+	      <div class="row">
+	        <div id="furniture_form" class="col-md-4 col-md-offset-2">
+	          {{ form.as_horizontal }}
+	        </div>
+	        <div id="save_button1" class="col-md-1">
+	          <button class="btn btn-success" type="submit">
+	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+	          </button>
+	        </div>
+              <div class="col-md-1">
+                {% if perms.laboratory.delete_furniture and object %}
+                  <a href="{% url 'laboratory:furniture_delete' laboratory object.pk %}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
+                  </a>
+                {% endif %}
+              </div>
+	      </div>
+      {% endif %}
+      {% if form.instance.pk %}
+        {% if perms.laboratory.add_furniture %}
+          <div id="furniture_size" class="table-responsive">
+            <table class="table table-bordered" id="mytab">
+              {{ dataconfig|safe }}
+            </table>
+            <div class="btn-toolbar p-2" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group" aria-label="...">
+                <button id="btnAddRow" class="btn btn-success"  type="button" onclick="addRow()">
+                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Row' %}
+                </button>
+                <button class="btn btn-info me-2" type="button" onclick="addColumn()">
+                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Column' %}
+                </button>
+              </div>
+              <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-warning" type="button" onclick="deleteRows()">
+                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Row' %}
+                </button>
+                <button class="btn btn-danger me-2" type="button" onclick="deleteColumns()">
+                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Column' %}
+                </button>
+              </div>
+
+              <div id="save_button2" class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </form>
+  {% else %}
+    {% include 'laboratory/action_denied.html' %}   
+       {% include 'laboratory/action_denied.html' %}   
+    {% include 'laboratory/action_denied.html' %}   
+  {% endif %}
+  </div>
+
+  <div class="hidden" id="addshelfproto">
+    <a style="margin-left: 19px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
+       href="{% url 'laboratory:shelf_create' laboratory %}?row=ROW&col=COL&furniture={{ form.instance.pk }}">
+      <span class="fa fa-plus" aria-hidden="true"></span>
+      {% trans 'Add Shelf' %}
+    </a>
+    <div class="" id="row_ROW_col_COL">
+      <ul class='list-group  sortableself'></ul>
+    </div>
+  </div>
+
+  <div id="createshelfmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Create shelf' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="shelfmodalbody">
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+  </div>
+  <div id="modalclose"></div>
+{% endblock%}
+
+{% block css %}
+  <style>
+    body.dragging, body.dragging * {
+      cursor: move !important;
+    }
+
+    .dragged {
+      position: absolute;
+      opacity: 0.5;
+      z-index: 2000;
+    }
+
+    ul.sortableself {
+      list-style: none;
+    }
+
+    ul.sortableself li.placeholder {
+      position: relative;
+      /** More li styles **/
+    }
+
+    ul.sortableself li.placeholder:before {
+      position: absolute;
+      /** Define arrowhead **/
+    }
+  </style>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'laboratory/js/jquery-sortable-min.js' %}"></script>
+  <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
+{% endblock %}
