@@ -4064,7 +4064,7 @@ msgstr "Blog"
 
 #: presentation/templates/gentelella/app/top_navigation.html:22
 msgid "Tutorials"
-msgstr ""
+msgstr "Tutoriales"
 
 #: presentation/templates/gentelella/app/top_navigation.html:26
 #: presentation/templates/gentelella/registration/login.html:46
