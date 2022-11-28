@@ -150,7 +150,7 @@ msgstr "Componente SGA"
 
 #: academic/models.py:89 sga/models.py:147
 msgid "Comercial name"
-msgstr "Administración de Materiales"
+msgstr "Nombre Comercial"
 
 #: academic/models.py:90
 #: academic/templates/academic/substance/pdf/section_three.html:7
@@ -376,7 +376,7 @@ msgstr "Acciones"
 
 #: academic/templates/academic/procedure_list.html:60
 msgid "Reservation"
-msgstr "Observaciones"
+msgstr "Reservación"
 
 #: academic/templates/academic/procedure_list.html:61
 #: academic/templates/academic/procedure_list.html:78
@@ -2004,7 +2004,7 @@ msgstr "Nombre del producto"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:129
 msgid "Copy permissions from other roles?"
-msgstr ""
+msgstr "¿Copiar permisos de otros roles?"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:157
 msgid "Create Organization"
@@ -2758,6 +2758,7 @@ msgstr "¿Deseas enviar el reporte a Revision?"
 msgid "Do you want to finish the report?"
 msgstr "¿Deseas finalizar el reporte?"
 
+#: derb/templates/formBuilder/form_list.html:39
 #: laboratory/templates/laboratory/complete_inform.html:67
 msgid "Discarding cannot be undone."
 msgstr "El descarte no se puede deshacer."
@@ -4248,53 +4249,121 @@ msgstr ""
 
 #: presentation/templates/partials/auth_and_perms.html:6
 msgid "Org and perms"
-msgstr ""
+msgstr "Organizaciones y permisos"
 
 #: presentation/templates/partials/auth_and_perms.html:11
 #: presentation/templates/partials/auth_and_perms.html:12
 msgid "Manage Organizations"
-msgstr ""
+msgstr "Administración de Organizaciones"
 
 #: presentation/templates/partials/derb_menu.html:7
 msgid "Report Management"
-msgstr ""
+msgstr "Administrar Reportes"
 
 #: presentation/templates/partials/derb_menu.html:13
 #: presentation/templates/partials/derb_menu.html:15
 msgid "Report List"
-msgstr ""
+msgstr "Listado de Reportes"
 
 #: presentation/templates/partials/derb_menu.html:21
 #: presentation/templates/partials/derb_menu.html:23
 msgid "Report Reactive presence"
-msgstr ""
+msgstr "Reporte de presencia de reactivos"
+
+#: derb/templates/formBuilder/form_list.html:22
+msgid "My Forms"
+msgstr "Mis Formularios"
+
+#: derb/templates/formBuilder/form_list.html:22
+msgid "Create Form"
+msgstr "Crear Formulario"
+
+#: derb/templates/formBuilder/form_list.html:71
+msgid "Preview form"
+msgstr "Previsualizar Formulario"
+
+#: derb/templates/formBuilder/preview_form.html:19
+msgid "Return to Form List"
+msgstr "Regresar al listado"
+
+#: derb/templates/formBuilder/edit_view.html:19
+msgid "Rename"
+msgstr "Renombrar"
+
+#: derb/templates/formBuilder/form_list.html:93
+msgid "Do you want to delete the form"
+msgstr "¿Deseas eliminar el formulario"
+
+#: derb/templates/formBuilder/form_list.html:96
+msgid "The form could not be deleted."
+msgstr "El formulario no se pudo eliminar"
+
+#: derb/templates/formBuilder/form_list.html:97
+msgid "The form has been deleted."
+msgstr "El formulario fue eliminado."
+
+#: derb/templates/formBuilder/form_list.html:97
+msgid "Deleted!"
+msgstr "Eliminado!"
+
+#: derb/templates/formBuilder/edit_view.html:37
+msgid "The form could not be updated."
+msgstr "El formulario no se pudo actualizar"
+
+#: derb/templates/formBuilder/edit_view.html:41
+msgid "Discard."
+msgstr "Descartar"
+
+#: derb/templates/formBuilder/form_list.html:97
+msgid "Updated!"
+msgstr "Actualizado!"
+
+#: derb/templates/formBuilder/form_list.html:97
+msgid "Saved!"
+msgstr "Guardado!"
+
+#: derb/templates/formBuilder/form_list.html:43
+msgid "The form name has been saved!"
+msgstr "El nombre del formulario se guardo!"
+
+#: derb/templates/formBuilder/form_list.html:38
+msgid "Save or discard your changes to proceed"
+msgstr "Guarde o descarte sus cambios para continuar"
+
+#: derb/templates/formBuilder/form_list.html:96
+msgid "This action cannot be undone"
+msgstr "Esta acción no se puede deshacer"
+
+#: derb/templates/formBuilder/edit_view.html:31
+msgid "Update Form Name"
+msgstr "Actualizar nombre del formulario"
+
+#: derb/templates/formBuilder/edit_view.html:36
+msgid "The form name has been updated"
+msgstr "El nombre del formulario ha sido actualizado."
 
 #: presentation/templates/partials/reservations_menu.html:6
 msgid "Manage Reservations"
-msgstr ""
+msgstr "Administrar Reservas"
 
 #: presentation/templates/partials/reservations_menu.html:12
-msgid "Requested reservations"
-msgstr ""
-
-#: presentation/templates/partials/reservations_menu.html:14
 msgid "Requested Reservations"
-msgstr ""
+msgstr "Reservaciones Solicitadas"
 
 #: presentation/templates/partials/reservations_menu.html:20
 #: presentation/templates/partials/reservations_menu.html:21
 msgid "Accepted Reservations"
-msgstr ""
+msgstr "Reservaciones Aceptadas"
 
 #: presentation/templates/partials/reservations_menu.html:26
 #: presentation/templates/partials/reservations_menu.html:27
 msgid "Denied Reservations"
-msgstr ""
+msgstr "Reservaciones Denegadas"
 
 #: presentation/templates/partials/reservations_menu.html:32
 #: presentation/templates/partials/reservations_menu.html:33
 msgid "Closed Reservations"
-msgstr ""
+msgstr "Reservaciones Cerradas"
 
 #: presentation/templates/partials/riskmanagement_menu.html:7
 msgid "Risk Management"
@@ -5198,6 +5267,10 @@ msgstr "Crear Compañía"
 #: sga/views.py:529
 msgid "Edit Company"
 msgstr "Editar Compañía"
+
+#: reservations_management/models.py:53
+msgid "Comments"
+msgstr "Comentarios"
 
 #~ msgid "Editor"
 #~ msgstr "Editor"

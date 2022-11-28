@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
@@ -14,7 +14,8 @@
         <div class="container">
           <div id="formio">
           </div>
-          <button class="btn btn-default" title="Return to Form List" onclick="window.location='{% url 'derb:form_list' %}';" style="float: right;">Return to Form List</button>
+          <button class="btn btn-primary" title="Return to Form List" onclick="window.location='{% url 'derb:form_list' %}';" style="float: right;">
+              {% trans 'Return to Form List' %}</button>
         </div>
       </div>  
                                 
