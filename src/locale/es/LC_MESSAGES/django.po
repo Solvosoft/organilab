@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: academic/forms.py:33 academic/forms.py:45 academic/models.py:12
 #: academic/models.py:26 academic/models.py:64 academic/models.py:101
@@ -481,9 +481,7 @@ msgid "Error"
 msgstr "Error"
 
 #: academic/templates/academic/procedure_list.html:93
-msgid ""
-"The requested quantity of the material is not found in the inventory of the "
-"following materials:"
+msgid "The requested quantity of the material is not found in the inventory of the following materials:"
 msgstr ""
 
 #: academic/templates/academic/procedure_list.html:115
@@ -714,12 +712,8 @@ msgid "¿You want to remove the substance?"
 msgstr "¿Quieres eliminar la sustancia?"
 
 #: academic/templates/academic/substance/observations.html:6
-msgid ""
-"If you want to edit or delete the observations that you have created, you "
-"must double click on it"
-msgstr ""
-"Si desea editar o eliminar los observaciones que usted ha creado debe dar "
-"doble click sobre el mismo"
+msgid "If you want to edit or delete the observations that you have created, you must double click on it"
+msgstr "Si desea editar o eliminar los observaciones que usted ha creado debe dar doble click sobre el mismo"
 
 #: academic/templates/academic/substance/observations.html:57
 msgid "New observation"
@@ -1024,12 +1018,8 @@ msgstr "Información reglamentaria"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:4
 #: sga/models.py:477
-msgid ""
-"Regulations and legislation on safety, health and the environment specific "
-"to the substance or mixture"
-msgstr ""
-"Reglamentación y legislación en materia de seguridad, salud y medio ambiente "
-"específicas para la sustancia o la mezcla"
+msgid "Regulations and legislation on safety, health and the environment specific to the substance or mixture"
+msgstr "Reglamentación y legislación en materia de seguridad, salud y medio ambiente específicas para la sustancia o la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:8
 #: sga/models.py:478
@@ -1119,12 +1109,8 @@ msgstr "Otros Peligros"
 
 #: academic/templates/academic/substance/pdf/section_four.html:43
 #: sga/models.py:381
-msgid ""
-"Indication of any medical attention and special treatment that should be "
-"provided immediately"
-msgstr ""
-"Indicación de toda atención médica y de los tratamientos especiales que "
-"deban dispensarse inmediatamente"
+msgid "Indication of any medical attention and special treatment that should be provided immediately"
+msgstr "Indicación de toda atención médica y de los tratamientos especiales que deban dispensarse inmediatamente"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:2
 #: academic/templates/academic/substance/step_four.html:347
@@ -1275,12 +1261,8 @@ msgid "Other security information"
 msgstr "Otra información de seguridad"
 
 #: academic/templates/academic/substance/pdf/section_one.html:3
-msgid ""
-"SECTION 1: Identification of the substance or mixture and of the company or "
-"undertaking"
-msgstr ""
-"SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la "
-"empresa"
+msgid "SECTION 1: Identification of the substance or mixture and of the company or undertaking"
+msgstr "SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la empresa"
 
 #: academic/templates/academic/substance/pdf/section_one.html:5
 #: academic/templates/academic/substance/step_four.html:30
@@ -1313,11 +1295,8 @@ msgid "Number Index"
 msgstr "Numero indice"
 
 #: academic/templates/academic/substance/pdf/section_one.html:33
-msgid ""
-"Relevant identified uses of the substance or mixture and uses advised against"
-msgstr ""
-"Usos pertinentes identificados de la sustancia o de la mezcla y usos "
-"desaconsejados"
+msgid "Relevant identified uses of the substance or mixture and uses advised against"
+msgstr "Usos pertinentes identificados de la sustancia o de la mezcla y usos desaconsejados"
 
 #: academic/templates/academic/substance/pdf/section_one.html:37
 msgid "Details of the supplier of the safety data sheet"
@@ -1369,8 +1348,7 @@ msgstr "Precauciones para una manipulación segura"
 #: academic/templates/academic/substance/pdf/section_seven.html:8
 #: sga/models.py:398
 msgid "Conditions for safe storage, including possible incompatibilities"
-msgstr ""
-"Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
+msgstr "Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:12
 #: sga/models.py:399
@@ -1384,8 +1362,7 @@ msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
 #: academic/templates/academic/substance/pdf/section_six.html:4
 #: sga/models.py:392
 msgid "Personnel who are not part of the emergency services"
-msgstr ""
-"Precauciones personales, equipo de protección y procedimientos de emergencia"
+msgstr "Precauciones personales, equipo de protección y procedimientos de emergencia"
 
 #: academic/templates/academic/substance/pdf/section_six.html:9
 #: sga/models.py:393
@@ -1561,8 +1538,7 @@ msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
 #: academic/templates/academic/substance/pdf/section_two.html:11
 #: sga/models.py:372
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
-msgstr ""
-"Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
+msgstr "Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
 
 #: academic/templates/academic/substance/pdf/section_two.html:15
 msgid "Label elements"
@@ -1658,10 +1634,8 @@ msgstr "Usar guardar antes de terminar"
 msgid "SGA Components"
 msgstr "Componentes SGA"
 
-#: sga/models.py:275
-#: sga/templates/editor/generic.html:34
+#: sga/models.py:275 sga/templates/editor/generic.html:34
 #: academic/templates/academic/substance/step_two.html:36
-
 #: sga/templates/sgalabel/step_one.html:41
 msgid "Commercial information"
 msgstr "Información Comercial"
@@ -1708,7 +1682,6 @@ msgstr "New password"
 
 #: auth_and_perms/forms.py:52 auth_and_perms/forms.py:72
 #: authentication/models.py:25 laboratory/views/reports.py:978
-#: laboratory/views/reports.py:978
 msgid "First name"
 msgstr "Nombre"
 
@@ -1727,7 +1700,7 @@ msgstr "Dirección de correo electrónico"
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
 #: laboratory/templates/pdf/base_organization_pdf.html:63
 #: laboratory/views/reports.py:77 laboratory/views/reports.py:802
-#: sga/models.py:225
+#: sga/models.py:225 sga/templates/list_company.html:26
 msgid "Phone"
 msgstr "Teléfono"
 
@@ -1748,8 +1721,7 @@ msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
 
 #: auth_and_perms/models.py:16 authentication/forms.py:24
-#: laboratory/views/reports.py:985
-#: laboratory/forms.py:143
+#: laboratory/views/reports.py:985 laboratory/forms.py:143
 #: laboratory/templates/laboratory/organization_reactive_presence.html:48
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
@@ -1759,7 +1731,7 @@ msgstr "Tarjeta de identificación"
 #: risk_management/models.py:68
 #: risk_management/templates/risk_management/incidentreport_pdf.html:21
 msgid "Laboratories"
-msgstr "Id de laboratorio"
+msgstr "Laboratorios"
 
 #: auth_and_perms/models.py:34
 msgid "permissions"
@@ -1772,7 +1744,6 @@ msgid "Rol"
 msgstr "Rol"
 
 #: auth_and_perms/models.py:47 laboratory/views/reports.py:78
-#: laboratory/views/reports.py:78
 msgid "Profile"
 msgstr "Perfil"
 
@@ -1804,31 +1775,26 @@ msgid "Validation method"
 msgstr "Método de validación"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:29
-msgid ""
-"We need to validate that you are not a robot or spamer, so you need to "
-"configure a Two-Factor Authentication"
-msgstr ""
-"Necesitamos validar que no sos un robot spammer, por eso necesitamos "
-"configurar un método de 2 pasos de autenticación"
+msgid "We need to validate that you are not a robot or spamer, so you need to configure a Two-Factor Authentication"
+msgstr "Necesitamos validar que no sos un robot spammer, por eso necesitamos configurar un método de 2 pasos de autenticación"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:32
-msgid ""
-"You need an OTP generator to login on the platform, you can use a free app "
-"called FreeOTP:"
-msgstr ""
-"Usted necesita un generador de OTP para registrarse en la plataforma, por "
-"favor use una aplicación llamada FreeOTP"
+msgid "You need an OTP generator to login on the platform, you can use a free app called FreeOTP:"
+msgstr "Usted necesita un generador de OTP para registrarse en la plataforma, por favor use una aplicación llamada FreeOTP"
 
+#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:35
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:44
+#: auth_and_perms/forms.py:33
 msgid "Digital signature"
 msgstr "Firma digital"
 
+#: auth_and_perms/forms.py:31
+msgid "Organization name"
+msgstr "Nombre de la Organización"
+
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:45
-msgid ""
-"For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
-"Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
-"Organilab"
+msgid "For Costa Rica citicen, use your digital signature to login on organilab"
+msgstr "Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a Organilab"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:7
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:7
@@ -1841,15 +1807,8 @@ msgstr "Configure su perfil"
 msgid "Validate user"
 msgstr "Validar usuario"
 
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:35
-#, fuzzy
-#| msgid "Digital signature"
-msgid "How use Digital Signature"
-msgstr "Firma digital"
-
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:39
-msgid ""
-"If you don't have Digital signature, please request on your favorite bank"
+msgid "If you don't have Digital signature, please request on your favorite bank"
 msgstr ""
 
 #: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:43
@@ -1879,12 +1838,8 @@ msgid "Profile create successfully"
 msgstr "Elemento guardado exitosamente"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_success.html:14
-msgid ""
-"Your organization was created successfully, please login with your "
-"credentials"
-msgstr ""
-"Su organización fue creada con éxito, por favor autentifiques con sus "
-"credenciales"
+msgid "Your organization was created successfully, please login with your credentials"
+msgstr "Su organización fue creada con éxito, por favor autentifiques con sus credenciales"
 
 #: auth_and_perms/templates/auth_and_perms/create_user_success.html:17
 #: laboratory/templates/laboratory/index.html:163
@@ -1899,10 +1854,8 @@ msgid "Add organization"
 msgstr "Agregar Organización"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:51
-#, fuzzy
-#| msgid "User"
 msgid "Add User"
-msgstr "Usuario"
+msgstr "Agregar Usuario"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:52
 #: authentication/models.py:14 laboratory/models.py:480
@@ -1910,7 +1863,7 @@ msgstr "Usuario"
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:17
 #: laboratory/views/reports.py:758
 #: reservations_management/templates/reservations_management/reservations_list.html:68
-#: sga/models.py:227
+#: sga/models.py:227 sga/templates/list_company.html:28
 msgid "User"
 msgstr "Usuario"
 
@@ -1925,20 +1878,6 @@ msgstr "Archivo relacionado"
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:64
 msgid "Add Laboratory"
 msgstr "Agregar Laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:65
-#: laboratory/forms.py:108 laboratory/models.py:432 laboratory/models.py:479
-#: laboratory/models.py:529 laboratory/templates/laboratory/index.html:91
-#: laboratory/templates/laboratory/index.html:137
-#: laboratory/templates/laboratory/objectlogchange_list.html:33
-#: laboratory/templates/laboratory/organization_reactive_presence.html:46
-#: laboratory/templates/laboratory/reports/logobject_pdf.html:18
-#: laboratory/views/laboratory.py:84 laboratory/views/laboratory_utils.py:8
-#: laboratory/views/reports.py:329 laboratory/views/reports.py:759
-#: presentation/templates/gentelella/app/report_menu.html:11
-#: presentation/templates/partials/laboratories_menu.html:5
-msgid "Laboratory"
-msgstr "Laboratorio"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:69
 msgid "Related Laboratory"
@@ -2036,12 +1975,8 @@ msgstr "Organización no existe"
 
 #: auth_and_perms/views/user_org_creation.py:92
 #: auth_and_perms/views/user_org_creation.py:122
-msgid ""
-"You have no creation process, maybe it was expired, please try to register "
-"again"
-msgstr ""
-"No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
-"inscribirse"
+msgid "You have no creation process, maybe it was expired, please try to register again"
+msgstr "No tiene un proceso de creación activo, o está expirado, por favor vuelva a inscribirse"
 
 #: authentication/models.py:8
 msgid "Explanation"
@@ -2075,7 +2010,6 @@ msgstr "Nombre de la empresa"
 msgid "Country Name"
 msgstr "Ciudad"
 
-#: authentication/models.py:29
 msgid "Phone Number"
 msgstr "Teléfono"
 
@@ -2127,6 +2061,7 @@ msgstr "Su contraseña no puede contener solo números."
 #: sga/templates/add_recipient_size.html:25 sga/templates/add_substance.html:22
 #: sga/templates/donate_organilab.html:21
 #: sga/templates/personal_template.html:114
+#: sga/templates/sgalabel/step_two.html:40
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2151,37 +2086,35 @@ msgstr "Enviar"
 
 #: authentication/templates/registration/request_a_demo.html:5
 msgid "Request a demostration"
-msgstr ""
+msgstr "Solicita una demostración"
 
 #: authentication/templates/registration/request_a_demo.html:13
 msgid "Requesting a demonstration"
-msgstr ""
+msgstr "Solicitar una demostración"
 
 #: authentication/templates/registration/request_a_demo.html:14
-msgid ""
-"Hey, thanks for you interest in Organilab, we work hard to have a great "
-"software."
-msgstr ""
+msgid "Hey, thanks for you interest in Organilab, we work hard to have a great software."
+msgstr "Hola, gracias por su interés en Organilab, trabajamos duro para tener un gran software."
 
 #: authentication/templates/registration/request_demo_done.html:4
 msgid "Thank you"
-msgstr ""
+msgstr "Gracias"
 
 #: authentication/templates/registration/request_demo_done.html:15
 msgid "Demonstration Requested Successfully"
-msgstr ""
+msgstr "Demostración solicitada con éxito"
 
 #: authentication/templates/registration/request_demo_done.html:26
 msgid "Home"
-msgstr ""
+msgstr "Casa"
 
 #: authentication/views.py:34
 msgid "Thank you for your help. We will check your problem as soon as we can"
-msgstr ""
+msgstr "Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos."
 
 #: authentication/views.py:97
 msgid "We will contact you soon"
-msgstr ""
+msgstr "Los contactaremos pronto"
 
 #: derb/templates/formBuilder/form_list.html:14
 msgid "Report Template List"
@@ -2233,12 +2166,6 @@ msgstr "Proveedores"
 #: laboratory/forms.py:142 laboratory/views/reports.py:979
 msgid "Last Name"
 msgstr "Apellidos"
-
-#: laboratory/forms.py:144
-#: laboratory/templates/laboratory/organization_reactive_presence.html:49
-#: laboratory/views/reports.py:986
-msgid "Job Position"
-msgstr "Puesto de trabajo"
 
 #: laboratory/forms.py:149 laboratory/models.py:138 laboratory/models.py:211
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:57
@@ -2430,15 +2357,6 @@ msgstr "Puede observar la gestión de usuarios de la organización"
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
 
-#: laboratory/models.py:417 laboratory/models.py:448
-#: laboratory/templates/laboratory/provider_list.html:19
-#: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
-#: laboratory/templates/pdf/base_organization_pdf.html:63
-#: laboratory/views/reports.py:77 laboratory/views/reports.py:802
-#: sga/models.py:225 sga/templates/list_company.html:26
-msgid "Phone"
-msgstr "Teléfono"
-
 #: laboratory/models.py:419
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:57
 #: laboratory/templates/pdf/base_organization_pdf.html:60
@@ -2454,12 +2372,6 @@ msgstr "Coordinador"
 msgid "Rooms"
 msgstr "Salas"
 
-#: laboratory/models.py:433 risk_management/incidents.py:110
-#: risk_management/models.py:50 risk_management/models.py:68
-#: risk_management/templates/risk_management/incidentreport_pdf.html:21
-msgid "Laboratories"
-msgstr "Id de laboratorio"
-
 #: laboratory/models.py:435
 msgid "Can see available reports"
 msgstr "Puede ver los informes disponibles"
@@ -2471,15 +2383,6 @@ msgstr "Puede descargar los informes disponibles"
 #: laboratory/models.py:450
 msgid "legal identity"
 msgstr "Cédula Jurídica"
-
-#: laboratory/models.py:480
-#: laboratory/templates/laboratory/objectlogchange_list.html:32
-#: laboratory/templates/laboratory/reports/logobject_pdf.html:17
-#: laboratory/views/reports.py:758
-#: reservations_management/templates/reservations_management/reservations_list.html:68
-#: sga/models.py:227 sga/templates/list_company.html:28
-msgid "User"
-msgstr "Usuario"
 
 #: laboratory/models.py:484
 msgid "Blocked List Notification"
@@ -2622,20 +2525,12 @@ msgid "Hi,"
 msgstr "Hola,"
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:4
-msgid ""
-"You have received this email because you are in charge of a laboratory in "
-"the Organilab system."
-msgstr ""
-"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el "
-"sistema Organilab."
+msgid "You have received this email because you are in charge of a laboratory in the Organilab system."
+msgstr "Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab."
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:5
-msgid ""
-"This message is to notify you that one of the shelf objects of your "
-"laboratory has reached its limit"
-msgstr ""
-"Este mensaje es para notificarle que uno o más objetos en su laboratorio "
-"están en las cuotas mínimas"
+msgid "This message is to notify you that one of the shelf objects of your laboratory has reached its limit"
+msgstr "Este mensaje es para notificarle que uno o más objetos en su laboratorio están en las cuotas mínimas"
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:7
 msgid "This are the details of the product:"
@@ -2668,11 +2563,8 @@ msgid "Measurement unit:"
 msgstr "Unidad de medida:"
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:16
-msgid ""
-"Please refill this product or contact the people that reserved it to balance "
-"the current quantity."
-msgstr ""
-"Por favor recargue este producto o contacte a la persona que pueda hacerlo."
+msgid "Please refill this product or contact the people that reserved it to balance the current quantity."
+msgstr "Por favor recargue este producto o contacte a la persona que pueda hacerlo."
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:18
 msgid "If you don't want to recieve notifications of this object, please use"
@@ -2683,11 +2575,8 @@ msgid "this link"
 msgstr "Este enlace"
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:22
-msgid ""
-"if your email service block links then copy and paste this url in a new tab"
-msgstr ""
-"si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta "
-"url en una nueva pestaña"
+msgid "if your email service block links then copy and paste this url in a new tab"
+msgstr "si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta url en una nueva pestaña"
 
 #: laboratory/templates/email/shelf_object_quantity_limit.html:26
 msgid "Thanks,"
@@ -2744,20 +2633,6 @@ msgstr "¿Deseas finalizar el reporte?"
 #: laboratory/templates/laboratory/complete_inform.html:67
 msgid "Discarding cannot be undone."
 msgstr "El descarte no se puede deshacer."
-
-#: laboratory/templates/laboratory/complete_inform.html:69
-#: laboratory/templates/laboratory/inform.html:65
-#: laboratory/templates/laboratory/my_reservation_delete.html:17
-#: laboratory/templates/laboratory/my_reservation_delete_all.html:17
-#: laboratory/templates/laboratory/search.html:93
-#: laboratory/templates/laboratory/transfer_object_modal.html:27
-#: reservations_management/templates/reservations_management/product_modal.html:42
-#: sga/templates/add_recipient_size.html:25 sga/templates/add_substance.html:22
-#: sga/templates/donate_organilab.html:21
-#: sga/templates/personal_template.html:114
-#: sga/templates/sgalabel/step_two.html:40
-msgid "Cancel"
-msgstr "Cancelar"
 
 #: laboratory/templates/laboratory/complete_inform.html:73
 msgid "Delete the observation"
@@ -3003,13 +2878,6 @@ msgstr "Muebles"
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-#: laboratory/templates/laboratory/index.html:163
-#: presentation/templates/gentelella/registration/login.html:3
-#: presentation/templates/gentelella/registration/login.html:22
-#: presentation/templates/gentelella/registration/logout.html:20
-msgid "Login"
-msgstr "Inicio de sesión"
-
 #: laboratory/templates/laboratory/inform.html:11
 #: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
 msgid "Informs"
@@ -3056,12 +2924,8 @@ msgid "Next"
 msgstr "Siguiente"
 
 #: laboratory/templates/laboratory/laboratory_notperm.html:7
-msgid ""
-"Sorry, you have not permission to create laboratory, please contact your "
-"administrator"
-msgstr ""
-"Disculpas, usted no tiene permiso para crear un laboratorio, por favor "
-"contáctese con su administrador"
+msgid "Sorry, you have not permission to create laboratory, please contact your administrator"
+msgstr "Disculpas, usted no tiene permiso para crear un laboratorio, por favor contáctese con su administrador"
 
 #: laboratory/templates/laboratory/laboratory_notperm.html:10
 msgid "Maybe you are not associate with any laboratory in a role"
@@ -3314,8 +3178,7 @@ msgstr "Carcinógeno"
 
 #: laboratory/templates/laboratory/permission_denied.html:7
 msgid "You don't have the permissions required to access this section"
-msgstr ""
-"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
+msgstr "Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
 
 #: laboratory/templates/laboratory/permission_denied.html:8
 msgid "Please"
@@ -3565,9 +3428,7 @@ msgstr "Correos electrónicos"
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:87
 #: laboratory/templates/pdf/hcode_pdf.html:31
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:27
-msgid ""
-"You have not assigned laboratories yet, or there is no laboratories "
-"registered"
+msgid "You have not assigned laboratories yet, or there is no laboratories registered"
 msgstr "Aún no ha asignado laboratorios, o no hay laboratorios registrados"
 
 #: laboratory/templates/laboratory/reports/toxicity_exposition.html:13
@@ -3739,12 +3600,8 @@ msgid "Laboratory was created successfully"
 msgstr "Substraído exitosamente"
 
 #: laboratory/views/laboratory.py:199
-msgid ""
-"Sorry, there is not available laboratory, please contact the administrator "
-"and request a laboratory enrollment"
-msgstr ""
-"Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
-"administrador y solicite que lo asigne a algún laboratorio"
+msgid "Sorry, there is not available laboratory, please contact the administrator and request a laboratory enrollment"
+msgstr "Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su administrador y solicite que lo asigne a algún laboratorio"
 
 #: laboratory/views/laboratory_utils.py:8
 msgid "H code"
@@ -3819,11 +3676,8 @@ msgid "Format"
 msgstr "Formato"
 
 #: laboratory/views/reports.py:752
-msgid ""
-"When resume date, we use last object for fill User, Laboratory, and Day "
-msgstr ""
-"Cuando se reanuda la fecha, usamos el último objeto para rellenar Usuario, "
-"Laboratorio, y Día "
+msgid "When resume date, we use last object for fill User, Laboratory, and Day "
+msgstr "Cuando se reanuda la fecha, usamos el último objeto para rellenar Usuario, Laboratorio, y Día "
 
 #: laboratory/views/reports.py:796
 msgid "#Consecutivo"
@@ -3903,8 +3757,7 @@ msgstr "Solo se pueden aceptar números enteros o números decimales con ."
 
 #: laboratory/views/shelfobject.py:352
 msgid "The amount sending is less that the amount we have in the Shelf"
-msgstr ""
-"La cantidad de envío es inferior a la cantidad que existe en la estantería"
+msgstr "La cantidad de envío es inferior a la cantidad que existe en la estantería"
 
 #: laboratory/views/shelfobject.py:353 laboratory/views/shelfobject.py:430
 msgid "Transfer done successfully"
@@ -4090,7 +3943,7 @@ msgstr ""
 
 #: presentation/templates/gentelella/registration/login.html:61
 msgid "Register to platform"
-msgstr ""
+msgstr "Registrar a la plataforma"
 
 #: presentation/templates/gentelella/registration/logout.html:15
 msgid "Logged out"
@@ -4121,9 +3974,7 @@ msgid "Your username is: "
 msgstr ""
 
 #: presentation/templates/gentelella/registration/new_user.html:11
-msgid ""
-"for security reason password was create randomly and it is not provided "
-"here, please use this link"
+msgid "for security reason password was create randomly and it is not provided here, please use this link"
 msgstr ""
 
 #: presentation/templates/gentelella/registration/new_user.html:13
@@ -4173,8 +4024,7 @@ msgstr ""
 
 #: presentation/templates/gentelella/registration/password_reset_email.html:13
 msgid ""
-"This email was send because someone try to reset your password, if you "
-"didn't request a reset, please delete this email and do not more actions\n"
+"This email was send because someone try to reset your password, if you didn't request a reset, please delete this email and do not more actions\n"
 "    "
 msgstr ""
 
@@ -4271,7 +4121,7 @@ msgid "The form could not be updated."
 msgstr "El formulario no se pudo actualizar"
 
 #: derb/templates/formBuilder/edit_view.html:41
-msgid "Discard."
+msgid "Discard"
 msgstr "Descartar"
 
 #: derb/templates/formBuilder/form_list.html:97
@@ -4299,7 +4149,7 @@ msgid "Update Form Name"
 msgstr "Actualizar nombre del formulario"
 
 #: derb/templates/formBuilder/edit_view.html:36
-msgid "The form name has been updated"
+msgid "The form name has been updated."
 msgstr "El nombre del formulario ha sido actualizado."
 
 #: presentation/templates/partials/reservations_menu.html:6
@@ -4616,19 +4466,13 @@ msgstr "Impacto ambiental"
 
 #: risk_management/models.py:86
 #: risk_management/templates/risk_management/incidentreport_pdf.html:37
-msgid ""
-"Resultado de la implementación del Plan de Prevención, Preparación y "
-"Respuesta ante Accidentes Químicos."
-msgstr ""
-"Resultado de la implementación del Plan de Prevención, Preparación y "
-"Respuesta ante Accidentes Químicos."
+msgid "Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos."
+msgstr "Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos."
 
 #: risk_management/models.py:90
 #: risk_management/templates/risk_management/incidentreport_pdf.html:39
-msgid ""
-"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
-msgstr ""
-"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgid "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgstr "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 
 #: risk_management/models.py:94
 msgid "Recomendaciones"
@@ -4636,20 +4480,12 @@ msgstr "Recomendaciones"
 
 #: risk_management/models.py:95
 #: risk_management/templates/risk_management/incidentreport_pdf.html:41
-msgid ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
-msgstr ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+msgid "Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+msgstr "Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 
 #: risk_management/models.py:99
-msgid ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al "
-"Centro Nacional de Control de Intoxicaciones (CNCI)"
-msgstr ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al "
-"Centro Nacional de Control de Intoxicaciones (CNCI)"
+msgid "En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)"
+msgstr "En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)"
 
 #: risk_management/templates/risk_management/incidentreport_confirm_delete.html:9
 msgid "Delete Incident report"
@@ -4832,8 +4668,7 @@ msgstr "Tamaño de recipiente"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: sga/models.py:281 sga/models.py:308
-#: sga/models.py:276 sga/models.py:291
+#: sga/models.py:281 sga/models.py:308 sga/models.py:276 sga/models.py:291
 msgid "Share with community"
 msgstr "Comparte con la comunidad"
 
@@ -4976,17 +4811,11 @@ msgstr "Encuesta"
 
 #: sga/templates/danger_indication_info.html:72
 #, fuzzy
-#| msgid ""
-#| "Are you a professional in chemistry, chemical engineering or industrial "
-#| "maintenance"
+#| msgid "Are you a professional in chemistry, chemical engineering or industrial maintenance"
 msgid ""
-"Are you a professional in chemistry, chemical engineering or industrial "
-"maintenance?\n"
-"                        If the answer is yes, we appreciate you completing "
-"the following form."
-msgstr ""
-"Es usted profesional en química, ingeniería química o mantenimiento "
-"industrial"
+"Are you a professional in chemistry, chemical engineering or industrial maintenance?\n"
+"                        If the answer is yes, we appreciate you completing the following form."
+msgstr "Es usted profesional en química, ingeniería química o mantenimiento industrial"
 
 #: sga/templates/danger_indication_info.html:74
 msgid "Go to form"
@@ -5014,9 +4843,7 @@ msgstr "Plantillas disponibles"
 
 #: sga/templates/editor.html:63
 msgid "Customize the selected template using the canvas editor and it elements"
-msgstr ""
-"Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
-"elementos"
+msgstr "Personaliza la plantilla seleccionada usando el editor de cuadro y sus elementos"
 
 #: sga/templates/editor.html:75 sga/templates/template.html:60
 #: sga/templates/template_edit.html:84
@@ -5075,9 +4902,7 @@ msgstr "Buscador de información del SGA"
 
 #: sga/templates/index_organilab.html:16
 msgid "Enter in the following searcher the danger indication codes (H-Codes)."
-msgstr ""
-"Introduzca en el siguiente buscador los códigos de indicación de peligro "
-"(Códigos H)."
+msgstr "Introduzca en el siguiente buscador los códigos de indicación de peligro (Códigos H)."
 
 #: sga/templates/index_organilab.html:37
 msgid "Donate"
@@ -5092,12 +4917,8 @@ msgid "Go to custom labels"
 msgstr "Ir a tus etiquetas"
 
 #: sga/templates/index_sga.html:25
-msgid ""
-"Create your own chemical label according to the Globally Harmonized System "
-"(GHS)."
-msgstr ""
-"Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente "
-"Armonizado (SGA)."
+msgid "Create your own chemical label according to the Globally Harmonized System (GHS)."
+msgstr "Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA)."
 
 #: sga/templates/index_sga.html:32
 msgid "GHS Label Example and Requirements"
@@ -5108,16 +4929,8 @@ msgid "Online GHS Solution"
 msgstr "Solución GHS en línea"
 
 #: sga/templates/index_sga.html:37
-msgid ""
-"Create and customize a chemical label according to Globally Harmonized "
-"System (GHS).On the other hand, this tool helps suppliers and downstream "
-"users such as laboratories to quickly adopt the new standard and avoid the "
-"risk of non-compliance."
-msgstr ""
-"Crear y personalizar una etiqueta química de acuerdo con el Sistema "
-"Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los "
-"proveedores y usuarios intermedios, como los laboratorios, a adoptar "
-"rápidamente la nueva norma y evitar el riesgo de incumplimiento."
+msgid "Create and customize a chemical label according to Globally Harmonized System (GHS).On the other hand, this tool helps suppliers and downstream users such as laboratories to quickly adopt the new standard and avoid the risk of non-compliance."
+msgstr "Crear y personalizar una etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA). Por otra parte, este instrumento ayuda a los proveedores y usuarios intermedios, como los laboratorios, a adoptar rápidamente la nueva norma y evitar el riesgo de incumplimiento."
 
 #: sga/templates/index_sga.html:38
 msgid "Moreover, the solution contains multiples features:"
@@ -5207,12 +5020,8 @@ msgid "Edit your label"
 msgstr "Edita tu etiqueta"
 
 #: sga/templates/template_edit.html:63
-msgid ""
-"Doesn't have templates created yet, go to the editor and generate your "
-"custom templates!"
-msgstr ""
-"No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas "
-"personalizadas!"
+msgid "Doesn't have templates created yet, go to the editor and generate your custom templates!"
+msgstr "No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas personalizadas!"
 
 #: sga/templates/template_edit.html:64
 msgid "Go to Editor"
@@ -5227,8 +5036,7 @@ msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
 #: sga/views.py:333
-msgid ""
-"Your donation was completed successfully, thank you for support this project!"
+msgid "Your donation was completed successfully, thank you for support this project!"
 msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
 
 #: sga/views.py:358
@@ -5280,17 +5088,11 @@ msgstr "Comentarios"
 #~ msgstr "Cómo introducir fórmulas químicas válidas"
 
 #, fuzzy
-#~| msgid ""
-#~| "Generally speaking, type the chemical formula of your solute the "
-#~| "“normal” wa"
+#~| msgid "Generally speaking, type the chemical formula of your solute the “normal” wa"
 #~ msgid ""
-#~ "Generally speaking, type the chemical formula of your solute the “normal” "
-#~ "way\n"
-#~ "            and pyEQL should be able to interpret it. Here are some "
-#~ "examples:"
-#~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
-#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
+#~ "Generally speaking, type the chemical formula of your solute the “normal” way\n"
+#~ "            and pyEQL should be able to interpret it. Here are some examples:"
+#~ msgstr "En general, escriba la fórmula química de su soluto de la manera \"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Sodium Chloride - NaCl"
 #~ msgstr "Cloruro de sodio - NaCl"
@@ -5311,14 +5113,10 @@ msgstr "Comentarios"
 #~ msgstr "Reglas de la Fórmula:"
 
 #~ msgid "Are composed of valid atomic symbols that start with capital letters"
-#~ msgstr ""
-#~ "Están compuestas por símbolos atómicos válidos que comienzan con letras "
-#~ "mayúsculas"
+#~ msgstr "Están compuestas por símbolos atómicos válidos que comienzan con letras mayúsculas"
 
-#~ msgid ""
-#~ "Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘"
-#~ msgstr ""
-#~ "No contiene ningún carácter no alfanumérico excepto '(', ')', '+' o '-'."
+#~ msgid "Contain no non-alphanumeric characters other than ‘(‘, ‘)’, ‘+’, or ‘-‘"
+#~ msgstr "No contiene ningún carácter no alfanumérico excepto '(', ')', '+' o '-'."
 
 #~ msgid "Formula must contain matching numbers of ‘(‘ and ‘)’"
 #~ msgstr "La fórmula debe contener los números correspondientes de '(' y ')'."
@@ -5326,42 +5124,24 @@ msgstr "Comentarios"
 #~ msgid "Open parentheses must precede closed parentheses"
 #~ msgstr "Los paréntesis abiertos deben preceder a los paréntesis cerrados"
 
-#~ msgid ""
-#~ "You need an OTP generator to login on the platform, you can use a free "
-#~ "app called FreeOTP:"
-#~ msgstr ""
-#~ "Usted necesita un generador de OTP para registrarse en la plataforma, por "
-#~ "favor use una aplicación llamada FreeOTP"
-
 #~ msgid "Help"
 #~ msgstr "Colabora"
 
 #, fuzzy
-#~| msgid ""
-#~| "Generally speaking, type the chemical formula of your solute the "
-#~| "“normal” wa"
+#~| msgid "Generally speaking, type the chemical formula of your solute the “normal” wa"
 #~ msgid ""
-#~ "Generally speaking, type the chemical formula of your solute the “normal” "
-#~ "way\n"
-#~ "                            and pyEQL should be able to interpret it. "
-#~ "Here are some examples:"
-#~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
-#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
+#~ "Generally speaking, type the chemical formula of your solute the “normal” way\n"
+#~ "                            and pyEQL should be able to interpret it. Here are some examples:"
+#~ msgstr "En general, escriba la fórmula química de su soluto de la manera \"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Editor"
 #~ msgstr "Editor"
 
-#~ msgid ""
-#~ "pyEQL interprets the chemical formula of a substance to calculate its "
-#~ "molecula"
-#~ msgstr ""
-#~ "El pyEQL interpreta la fórmula química de una sustancia para calcular su "
-#~ "peso molecula"
+#~ msgid "pyEQL interprets the chemical formula of a substance to calculate its molecula"
+#~ msgstr "El pyEQL interpreta la fórmula química de una sustancia para calcular su peso molecula"
 
 #~ msgid "If a ‘+’ or ‘-‘ is present, the formula must contain ONLY ‘+’ or ‘-"
-#~ msgstr ""
-#~ "Si hay un \"+\" o un \"-\", la fórmula debe contener SOLAMENTE \"+\" o \""
+#~ msgstr "Si hay un \"+\" o un \"-\", la fórmula debe contener SOLAMENTE \"+\" o \""
 
 #~ msgid "Lab profiles management"
 #~ msgstr "Gestión de perfiles de laboratorio"
@@ -5374,9 +5154,6 @@ msgstr "Comentarios"
 
 #~ msgid "Id Card:"
 #~ msgstr "Tarjeta de identificación:"
-
-#~ msgid "Job Position:"
-#~ msgstr "Puesto de trabajo:"
 
 #~ msgid "Manage Profile"
 #~ msgstr "Administración de producto"
@@ -5589,7 +5366,7 @@ msgstr "Comentarios"
 #~ msgstr "Entradas de retroalimentación"
 
 #~ msgid "Categories"
-#~ msgstr "Laboratorios"
+#~ msgstr "Categorías"
 
 #~ msgid "Nothing found."
 #~ msgstr "No encontrado"
@@ -5645,12 +5422,8 @@ msgstr "Comentarios"
 #~ msgid "Please use an email client with HTML support"
 #~ msgstr "Por favor use un cliente con soporte a HTML"
 
-#~ msgid ""
-#~ "This message is to notify you that one or more of the shelf objects of "
-#~ "your laboratory has reached its limit"
-#~ msgstr ""
-#~ "Este mensaje es para notificarle que uno o más estantes en el laboratorio "
-#~ "han llegado a su cuota mínima"
+#~ msgid "This message is to notify you that one or more of the shelf objects of your laboratory has reached its limit"
+#~ msgstr "Este mensaje es para notificarle que uno o más estantes en el laboratorio han llegado a su cuota mínima"
 
 #~ msgid "This are the details of the products:"
 #~ msgstr "Detalle de los productos"
@@ -5670,19 +5443,11 @@ msgstr "Comentarios"
 #~ msgid "Password confirm"
 #~ msgstr "Confirmar contraseña"
 
-#~ msgid ""
-#~ "We've emailed you instructions for setting your password, if an account "
-#~ "exists with the email you entered. You should receive them shortly."
-#~ msgstr ""
-#~ "Hemos enviado instrucciones para editar su contraseña, si alguna cuenta "
-#~ "existe con el correo ingresado.  Usted recibirá un correo pronto."
+#~ msgid "We've emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly."
+#~ msgstr "Hemos enviado instrucciones para editar su contraseña, si alguna cuenta existe con el correo ingresado.  Usted recibirá un correo pronto."
 
-#~ msgid ""
-#~ "If you don't receive an email, please make sure you've entered the "
-#~ "address you registered with, and check your spam folder."
-#~ msgstr ""
-#~ "Si usted no recibe un correo, por favor asegúrese que ha ingresado la "
-#~ "dirección de correo correcta y revise su bandeja de SPAM"
+#~ msgid "If you don't receive an email, please make sure you've entered the address you registered with, and check your spam folder."
+#~ msgstr "Si usted no recibe un correo, por favor asegúrese que ha ingresado la dirección de correo correcta y revise su bandeja de SPAM"
 
 #~ msgid "Your username, in case you've forgotten:"
 #~ msgstr "Su nombre de usuario, en caso de que lo olvidara es:"
@@ -5693,10 +5458,8 @@ msgstr "Comentarios"
 #~ msgid "Organilab Password Reset"
 #~ msgstr "Recuperar contraseña en organilab"
 
-#~ msgid ""
-#~ "Thank you for your help. We are gonna check your problem as soon as we can"
-#~ msgstr ""
-#~ "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
+#~ msgid "Thank you for your help. We are gonna check your problem as soon as we can"
+#~ msgstr "Gracias por su ayuda, Vamos a revisar su observación lo más pronto posible"
 
 #~ msgid "Keyword, for instance Beaker"
 #~ msgstr "Palabra clave, por ejemplo Beaker"
