@@ -18,6 +18,9 @@ class Profile(models.Model):
     job_position = models.CharField(_('Job Position'), max_length=100)
 
     def __str__(self):
+        name = self.user.get_full_name()
+        if name:
+            return name
         return '%s' % (self.user,)
 
 
