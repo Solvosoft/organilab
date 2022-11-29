@@ -28,11 +28,12 @@ class AddProfileRolForm(GTForm, forms.Form):
 
 
 class CreationUserOrganization(UserCreationForm, GTForm):
-    organization_name = forms.CharField(max_length=255, widget=genwidgets.TextInput)
+    organization_name = forms.CharField(max_length=255, widget=genwidgets.TextInput, label=_('Organization name'))
     validation_method = forms.ChoiceField(
-        choices=((1, 'OTPT' ),(2, 'Digital Signature')),
+        choices=((1, 'OTPT' ),(2, _('Digital signature'))),
         #choices=((1, 'OTPT'),),
-        widget=genwidgets.RadioSelect
+        widget=genwidgets.RadioSelect,
+        label=_('Validation method')
     )
 
     def __init__(self, *args, **kwargs):
