@@ -1,8 +1,10 @@
 # encoding: utf-8
 from django import forms
 from django.contrib import messages
+from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, path
@@ -18,6 +20,7 @@ from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm
 from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.utils import organilab_logentry
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
@@ -38,6 +41,12 @@ class LaboratoryEdit(UpdateView):
 
     def get_success_url(self):
         return reverse('laboratory:mylabs')
+
+    def form_valid(self,form):
+        laboratory = form.save()
+        ct = ContentType.objects.get_for_model(laboratory)
+        organilab_logentry(self.request.user, ct, laboratory, CHANGE, 'laboratory', changed_data=form.changed_data)
+        return super(LaboratoryEdit, self).form_valid(form)
 
 
 class LaboratoryView(object):
@@ -165,6 +174,9 @@ class CreateLaboratoryFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'laboratory', changed_data=form.changed_data)
+
         user = self.request.user
         admins = User.objects.filter(is_superuser=True)
         user.profile.laboratories.add(self.object)
@@ -231,6 +243,13 @@ class LaboratoryDeleteView(DeleteView):
         context = super().get_context_data()
         context['laboratory'] = self.object.pk
         return context
+
+    def form_valid(self, form):
+        laboratory = self.object
+        laboratory.delete()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, laboratory, DELETION, 'laboratory')
+        return super(LaboratoryDeleteView, self).form_valid(laboratory)
 
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class HCodeReports(ListView):

@@ -6,7 +6,9 @@ Created on 26/12/2016
 '''
 
 from django import forms
+from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -22,6 +24,7 @@ from django_ajax.mixin import AJAXMixin
 from laboratory.models import Furniture, Shelf
 from laboratory.shelf_utils import get_dataconfig
 from .djgeneric import CreateView, UpdateView
+from ..utils import organilab_logentry
 
 
 def get_shelves(furniture):
@@ -63,6 +66,8 @@ def ShelfDelete(request, lab_pk, pk, row, col):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
+    ct = ContentType.objects.get_for_model(shelf)
+    organilab_logentry(request.user, ct, shelf, DELETION, 'shelf')
     url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col))
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
@@ -111,6 +116,8 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'shelf', changed_data=form.changed_data)
 
         dev = render_to_string(
             "laboratory/shelf_details.html",
@@ -175,6 +182,9 @@ class ShelfEdit(AJAXMixin, UpdateView):
 
         self.object.furniture = furniture
         self.object.save()
+
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, CHANGE, 'shelf', changed_data=form.changed_data)
 
         dev = render_to_string(
             "laboratory/shelf_details.html",

@@ -5,22 +5,25 @@ Created on 26/12/2016
 @author: luisza
 '''
 from __future__ import unicode_literals
+
+from django import forms
+from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django import forms
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, CreateView, UpdateView
 from djgentelella.forms.forms import GTForm
-from tree_queries.forms import TreeNodeChoiceField
-from djgentelella.widgets import core as genwidget
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
-from auth_and_perms.models import Profile
-from .djgeneric import ListView
-from laboratory.decorators import has_lab_assigned
 from djgentelella.widgets import core as genwidgets
-from django.utils.translation import gettext_lazy as _
+from tree_queries.forms import TreeNodeChoiceField
 
+from auth_and_perms.models import Profile
+from laboratory.decorators import has_lab_assigned
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
+from .djgeneric import ListView
 from ..forms import AddOrganizationForm
+from ..utils import organilab_logentry
 
 
 class OrganizationSelectableForm(GTForm, forms.Form):
@@ -116,6 +119,13 @@ class OrganizationDeleteView(DeleteView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
 
+    def form_valid(self, form):
+        org_structure = self.object
+        org_structure.delete()
+        ct = ContentType.objects.get_for_model(org_structure)
+        organilab_logentry(self.request.user, ct, org_structure, DELETION, 'organization structure')
+        return super(OrganizationDeleteView, self).form_valid(org_structure)
+
 @method_decorator(permission_required('laboratory.add_organizationstructure'), name='dispatch')
 class OrganizationCreateView(CreateView):
     model = OrganizationStructure
@@ -128,6 +138,8 @@ class OrganizationCreateView(CreateView):
             organization=self.object
         )
         orguserman.users.add(self.request.user)
+        ct = ContentType.objects.get_for_model(orguserman)
+        organilab_logentry(self.request.user, ct, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response
 
 
@@ -137,3 +149,8 @@ class OrganizationUpdateView(UpdateView):
     success_url = reverse_lazy('auth_and_perms:organizationManager')
     form_class = AddOrganizationForm
 
+    def form_valid(self, form):
+        orguserman=form.save()
+        ct = ContentType.objects.get_for_model(orguserman)
+        organilab_logentry(self.request.user, ct, orguserman, CHANGE, 'organization structure', changed_data=form.changed_data)
+        return super(OrganizationUpdateView, self).form_valid(orguserman)

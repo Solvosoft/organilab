@@ -1,8 +1,13 @@
 # encoding: utf-8
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
 
 from ..forms import FurnitureForm
 from djgentelella.widgets import core as genwidgets
 from django.utils.translation import gettext_lazy as _
+
+from ..utils import organilab_logentry
+
 '''
 Created on 26/12/2016
 
@@ -55,6 +60,8 @@ class FurnitureCreateView(CreateView):
         self.object.labroom = get_object_or_404(
             LaboratoryRoom, pk=self.labroom)
         self.object.save()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'furniture', changed_data=form.changed_data)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
@@ -110,6 +117,13 @@ class FurnitureUpdateView(UpdateView):
         return reverse_lazy('laboratory:rooms_create',
                             args=(self.lab,))
 
+
+    def form_valid(self, form):
+        self.object = form.save()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, CHANGE, 'furniture', changed_data=form.changed_data)
+        return redirect(self.get_success_url())
+
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_furniture'), name='dispatch')
 class FurnitureDelete(DeleteView):
@@ -118,6 +132,12 @@ class FurnitureDelete(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
+
+    def form_valid(self, form):
+        self.object.delete()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'furniture')
+        return super(FurnitureDelete, self).form_valid(self.object)
 
 @login_required
 def list_furniture_render(request, lab_pk=None):
