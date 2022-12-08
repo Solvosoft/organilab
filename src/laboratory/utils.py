@@ -1,4 +1,4 @@
-
+from django.contrib.admin.models import LogEntry
 from django.db.models.query_utils import Q
 
 from auth_and_perms.models import Profile
@@ -130,3 +130,27 @@ def get_molecular_formula(object, default=None):
     if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
         result = object.sustancecharacteristics.molecular_formula
     return result
+
+
+def organilab_logentry(user, content_type, object, action_flag, model_name, object_repr='', change_message=''):
+
+    action = 'added'
+    if action_flag == 2:
+        action = 'changed'
+    elif action_flag == 3:
+        action = 'deleted'
+
+    if not object_repr:
+        object_repr = model_name.capitalize() + " has been %s" % (action,)
+
+    if not change_message:
+        change_message = "%s %s has been %s" % (str(object), model_name, action)
+
+    LogEntry.objects.log_action(
+        user_id=user.id,
+        content_type_id=content_type.id,
+        object_id=object.id,
+        object_repr=object_repr,
+        action_flag=action_flag,
+        change_message=change_message
+    )
