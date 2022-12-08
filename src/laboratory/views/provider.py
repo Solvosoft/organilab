@@ -25,7 +25,7 @@ class ProviderCreate(CreateView):
         provider.laboratory = lab
         provider.save()
         ct = ContentType.objects.get_for_model(provider)
-        organilab_logentry(self.request.user, ct, provider, ADDITION, 'provider')
+        organilab_logentry(self.request.user, ct, provider, ADDITION, 'provider', changed_data=form.changed_data)
         return super(ProviderCreate, self).form_valid(provider)
 
 
@@ -46,7 +46,7 @@ class ProviderUpdate(UpdateView):
     def form_valid(self, form):
         provider = form.save()
         ct = ContentType.objects.get_for_model(provider)
-        organilab_logentry(self.request.user, ct, provider, CHANGE, 'provider')
+        organilab_logentry(self.request.user, ct, provider, CHANGE, 'provider', changed_data=form.changed_data)
         return super(ProviderUpdate, self).form_valid(provider)
 
 

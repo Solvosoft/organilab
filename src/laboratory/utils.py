@@ -132,7 +132,7 @@ def get_molecular_formula(object, default=None):
     return result
 
 
-def organilab_logentry(user, content_type, object, action_flag, model_name, object_repr='', change_message=''):
+def organilab_logentry(user, content_type, object, action_flag, model_name, changed_data=None, object_repr='', change_message=''):
 
     action = 'added'
     if action_flag == 2:
@@ -144,7 +144,10 @@ def organilab_logentry(user, content_type, object, action_flag, model_name, obje
         object_repr = model_name.capitalize() + " has been %s" % (action,)
 
     if not change_message:
-        change_message = "%s %s has been %s" % (str(object), model_name, action)
+        if action_flag != 3:
+            change_message = str([{action: {"fields": changed_data if changed_data else []}}])
+        else:
+            change_message = "%s %s has been %s" % (str(object), model_name, action)
 
     LogEntry.objects.log_action(
         user_id=user.id,

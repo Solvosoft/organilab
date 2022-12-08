@@ -58,6 +58,12 @@ class ProcedureCreateView(CreateView):
         success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
         return success_url
 
+    def form_valid(self, form):
+        procedure = form.save()
+        ct = ContentType.objects.get_for_model(procedure)
+        organilab_logentry(self.request.user, ct, procedure, ADDITION, 'procedure', changed_data=form.changed_data)
+        return super(ProcedureCreateView, self).form_valid(procedure)
+
 
 @method_decorator(permission_required('academic.change_procedure'), name='dispatch')
 class ProcedureUpdateView(UpdateView):
@@ -78,7 +84,7 @@ class ProcedureUpdateView(UpdateView):
     def form_valid(self, form):
         procedure = form.save()
         ct = ContentType.objects.get_for_model(procedure)
-        organilab_logentry(self.request.user, ct, procedure, CHANGE, 'procedure')
+        organilab_logentry(self.request.user, ct, procedure, CHANGE, 'procedure', changed_data=form.changed_data)
         return super(ProcedureUpdateView, self).form_valid(procedure)
 
 @login_required
@@ -136,7 +142,7 @@ class ProcedureStepUpdateView(UpdateView):
     def form_valid(self, form):
         procedurestep = form.save()
         ct = ContentType.objects.get_for_model(procedurestep)
-        organilab_logentry(self.request.user, ct, procedurestep, CHANGE, 'procedure step')
+        organilab_logentry(self.request.user, ct, procedurestep, CHANGE, 'procedure step', changed_data=form.changed_data)
         return super(ProcedureStepUpdateView, self).form_valid(procedurestep)
 
 @login_required
@@ -149,6 +155,7 @@ def save_object(request, pk, lab_pk):
     obj = Object.objects.get(pk=int(request.POST['object']))
     status = False
     msg = _('There is no object in the inventory with this unit of measurement')
+
     if unit.description in validate_unit(lab_pk, obj):
         objects = ProcedureRequiredObject.objects.create(step=step, object=obj,
                                                          quantity=request.POST['quantity'],
@@ -156,7 +163,10 @@ def save_object(request, pk, lab_pk):
         objects.save()
         status = True
         ct = ContentType.objects.get_for_model(objects)
-        organilab_logentry(request.user, ct, objects, ADDITION, 'procedure required object')
+        str_obj = f'{objects.object} {objects.quantity} {str(objects.measurement_unit)}'
+        change_message = str_obj + " procedure required object has been added"
+        changed_data = ['object', 'quantity', 'unit']
+        organilab_logentry(request.user, ct, objects, ADDITION, 'procedure required object', changed_data=changed_data, change_message=change_message)
 
     return JsonResponse({'data': get_objects(pk), 'status': status, 'msg': msg})
 
@@ -167,7 +177,6 @@ def validate_unit(lab, obj):
     units = []
     for obj in shelf_obj:
         units.append(obj.measurement_unit.description)
-
     return set(units)
 
 @login_required
@@ -206,7 +215,7 @@ def save_observation(request, pk):
     objects = ProcedureObservations.objects.create(step=step, description=request.POST['description'])
     objects.save()
     ct = ContentType.objects.get_for_model(objects)
-    organilab_logentry(request.user, ct, objects, ADDITION, 'procedure observations')
+    organilab_logentry(request.user, ct, objects, ADDITION, 'procedure observations', changed_data=['description'])
 
     return JsonResponse({'data': get_observations(pk)})
 
@@ -337,7 +346,6 @@ def add_reservation(request, data, data_step):
     result = 0
     for obj in data:
         index = 0
-
         while index < len(data_step):
 
             result = convertions.convertion(data_step[index].quantity, obj.measurement_unit.description,
@@ -364,7 +372,7 @@ def add_reservation(request, data, data_step):
                                                                amount_required=result)
                     reserved.save()
                     ct = ContentType.objects.get_for_model(reserved)
-                    organilab_logentry(request.user, ct, reserved, ADDITION, 'reserved products')
+                    organilab_logentry(request.user, ct, reserved, ADDITION, 'reserved products', changed_data=form.changed_data)
 
             if result == 0 or obj.quantity == 0:
                 index+=1

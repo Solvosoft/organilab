@@ -3,12 +3,15 @@ Created on /8/2016
 
 @author: natalia
 '''
+from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.forms import ObjectFeaturesForm
+from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
 from laboratory.models import ObjectFeatures
 from laboratory.decorators import has_lab_assigned
@@ -41,6 +44,12 @@ class FeatureCreateView(CreateView):
             return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
         return super(FeatureCreateView, self).get_success_url()
 
+    def form_valid(self, form):
+        object_feactures = form.save()
+        ct = ContentType.objects.get_for_model(object_feactures)
+        organilab_logentry(self.request.user, ct, object_feactures, ADDITION, 'object feactures', changed_data=form.changed_data)
+        return super(FeatureCreateView, self).form_valid(object_feactures)
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.change_objectfeatures'), name='dispatch')
@@ -53,6 +62,12 @@ class FeatureUpdateView(UpdateView):
             return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
         return super(FeatureUpdateView, self).get_success_url()
 
+    def form_valid(self, form):
+        object_feactures = form.save()
+        ct = ContentType.objects.get_for_model(object_feactures)
+        organilab_logentry(self.request.user, ct, object_feactures, CHANGE, 'object feactures', changed_data=form.changed_data)
+        return super(FeatureUpdateView, self).form_valid(object_feactures)
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_objectfeatures'), name='dispatch')
@@ -63,3 +78,10 @@ class FeatureDeleteView(DeleteView):
         if self.lab is not None:
             return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
         return super(FeatureDeleteView, self).get_success_url()
+
+    def form_valid(self, form):
+        object_feactures = self.object
+        object_feactures.delete()
+        ct = ContentType.objects.get_for_model(object_feactures)
+        organilab_logentry(self.request.user, ct, object_feactures, DELETION, 'object feactures')
+        return super(FeatureDeleteView, self).form_valid(object_feactures)
