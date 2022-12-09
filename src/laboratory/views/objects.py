@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import path
 from django.urls.base import reverse_lazy
@@ -52,7 +53,7 @@ class ObjectView(object):
                 object = form.save()
                 ct = ContentType.objects.get_for_model(object)
                 organilab_logentry(self.request.user, ct, object, ADDITION, 'object', changed_data=form.changed_data)
-                return super(ObjectCreateView, self).form_valid(object)
+                return super(ObjectCreateView, self).form_valid(form)
 
         self.create = ObjectCreateView.as_view(
             model=self.model,
@@ -96,11 +97,11 @@ class ObjectView(object):
                                     args=(self.lab,))
 
             def form_valid(self, form):
-                object = self.object
-                object.delete()
-                ct = ContentType.objects.get_for_model(object)
-                organilab_logentry(self.request.user, ct, object, DELETION, 'object')
-                return super(ObjectDeleteView, self).form_valid(object)
+                success_url = self.get_success_url()
+                ct = ContentType.objects.get_for_model(self.object)
+                organilab_logentry(self.request.user, ct, self.object, DELETION, 'object')
+                self.object.delete()
+                return HttpResponseRedirect(success_url)
 
         self.delete = ObjectDeleteView.as_view(
             model=self.model,

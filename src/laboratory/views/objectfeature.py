@@ -7,6 +7,7 @@ from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
@@ -80,8 +81,8 @@ class FeatureDeleteView(DeleteView):
         return super(FeatureDeleteView, self).get_success_url()
 
     def form_valid(self, form):
-        object_feactures = self.object
-        object_feactures.delete()
-        ct = ContentType.objects.get_for_model(object_feactures)
-        organilab_logentry(self.request.user, ct, object_feactures, DELETION, 'object feactures')
-        return super(FeatureDeleteView, self).form_valid(object_feactures)
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'object feactures')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
