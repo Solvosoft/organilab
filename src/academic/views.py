@@ -62,7 +62,7 @@ class ProcedureCreateView(CreateView):
         procedure = form.save()
         ct = ContentType.objects.get_for_model(procedure)
         organilab_logentry(self.request.user, ct, procedure, ADDITION, 'procedure', changed_data=form.changed_data)
-        return super(ProcedureCreateView, self).form_valid(procedure)
+        return super(ProcedureCreateView, self).form_valid(form)
 
 
 @method_decorator(permission_required('academic.change_procedure'), name='dispatch')
@@ -85,7 +85,7 @@ class ProcedureUpdateView(UpdateView):
         procedure = form.save()
         ct = ContentType.objects.get_for_model(procedure)
         organilab_logentry(self.request.user, ct, procedure, CHANGE, 'procedure', changed_data=form.changed_data)
-        return super(ProcedureUpdateView, self).form_valid(procedure)
+        return super(ProcedureUpdateView, self).form_valid(form)
 
 @login_required
 @permission_required('academic.view_procedure')
@@ -113,6 +113,9 @@ class ProcedureStepCreateView(FormView):
         step = ProcedureStep.objects.create(procedure=procedure, title=form.cleaned_data['title'],
                                             description=form.cleaned_data['description'])
         step.save()
+        ct = ContentType.objects.get_for_model(step)
+        organilab_logentry(self.request.user, ct, step, ADDITION, 'procedure step', changed_data=form.changed_data)
+
         return response
 
     def get_success_url(self):
@@ -143,7 +146,7 @@ class ProcedureStepUpdateView(UpdateView):
         procedurestep = form.save()
         ct = ContentType.objects.get_for_model(procedurestep)
         organilab_logentry(self.request.user, ct, procedurestep, CHANGE, 'procedure step', changed_data=form.changed_data)
-        return super(ProcedureStepUpdateView, self).form_valid(procedurestep)
+        return super(ProcedureStepUpdateView, self).form_valid(form)
 
 @login_required
 @permission_required('academic.add_procedurerequiredobject')

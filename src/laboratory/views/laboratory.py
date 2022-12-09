@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, path
 from django.urls.base import reverse
@@ -245,11 +246,11 @@ class LaboratoryDeleteView(DeleteView):
         return context
 
     def form_valid(self, form):
-        laboratory = self.object
-        laboratory.delete()
+        success_url = self.get_success_url()
         ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, laboratory, DELETION, 'laboratory')
-        return super(LaboratoryDeleteView, self).form_valid(laboratory)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'laboratory')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class HCodeReports(ListView):

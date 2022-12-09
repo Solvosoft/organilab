@@ -1,11 +1,10 @@
 # encoding: utf-8
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect
+from djgentelella.widgets import core as genwidgets
 
 from ..forms import FurnitureForm
-from djgentelella.widgets import core as genwidgets
-from django.utils.translation import gettext_lazy as _
-
 from ..utils import organilab_logentry
 
 '''
@@ -134,10 +133,12 @@ class FurnitureDelete(DeleteView):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
     def form_valid(self, form):
-        self.object.delete()
+        success_url = self.get_success_url()
         ct = ContentType.objects.get_for_model(self.object)
         organilab_logentry(self.request.user, ct, self.object, DELETION, 'furniture')
-        return super(FurnitureDelete, self).form_valid(self.object)
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
 
 @login_required
 def list_furniture_render(request, lab_pk=None):

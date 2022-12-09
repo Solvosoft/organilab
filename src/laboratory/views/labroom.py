@@ -7,6 +7,7 @@ Created on 26/12/2016
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -99,12 +100,12 @@ class LaboratoryRoomDelete(DeleteView):
         return reverse_lazy('laboratory:rooms_create', args=(
             self.kwargs.get('lab_pk'),))
 
-    def form_valid(self,form):
-        room = self.object
-        room.delete()
-        ct = ContentType.objects.get_for_model(room)
-        organilab_logentry(self.request.user, ct, room, DELETION, 'laboratory room')
-        return super(LaboratoryRoomDelete, self).form_valid(room)
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'laboratory room')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')

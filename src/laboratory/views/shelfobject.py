@@ -12,7 +12,7 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -259,9 +259,6 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         self.row = request.POST.get("row")
         self.col = request.POST.get("col")
 
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'shelf object')
-
         return {
             'inner-fragments': {
                 '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
@@ -269,6 +266,13 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
         }
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'shelf object')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 @has_lab_assigned(lab_pk="pk")
 @permission_required('laboratory.change_shelfobject')

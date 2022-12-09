@@ -10,6 +10,7 @@ from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -120,11 +121,11 @@ class OrganizationDeleteView(DeleteView):
     success_url = reverse_lazy('auth_and_perms:organizationManager')
 
     def form_valid(self, form):
-        org_structure = self.object
-        org_structure.delete()
-        ct = ContentType.objects.get_for_model(org_structure)
-        organilab_logentry(self.request.user, ct, org_structure, DELETION, 'organization structure')
-        return super(OrganizationDeleteView, self).form_valid(org_structure)
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'organization structure')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 @method_decorator(permission_required('laboratory.add_organizationstructure'), name='dispatch')
 class OrganizationCreateView(CreateView):
