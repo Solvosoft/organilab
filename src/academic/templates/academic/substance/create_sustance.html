@@ -2,63 +2,62 @@
 {% load static i18n %}
 {% load urlname_tags %}
 {% block pre_head %}
-    {% define_urlname_action 'step_one' %}
-    {% define_urlname_action 'step_two' %}
-    {% define_urlname_action 'step_three' %}
-    {% define_urlname_action 'step_four' %}
-    {% define_urlname_action 'add_danger_indication' %}
-    {% define_urlname_action 'update_substance' %}
+{% define_urlname_action 'step_one' %}
+{% define_urlname_action 'step_two' %}
+{% define_urlname_action 'step_three' %}
+{% define_urlname_action 'step_four' %}
+{% define_urlname_action 'add_danger_indication' %}
+{% define_urlname_action 'update_substance' %}
 {% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-                {% include 'academic/substance/steps.html' %}
+            {% include 'academic/substance/steps.html' %}
             <br>
-         </div>
+        </div>
     </div>
     <div class="row text-center">
         <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
     </div>
     <br>
     <form class="form-horizontal" action="{% url 'step_one' organilabcontext pk %}" method="POST">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-5">
-            {% for form in objform %}
-            <div class="form-group">
-                {{ form.label_tag }} {{ form }}
-            </div>
-                {% if form.id_for_label == 'id_components_sga' %}
-                 <!--  <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a> -->
-                {% endif %}
-
-            {% endfor %}
-
-        </div>
-        <div class="col-md-5">
-            {% for form in suschacform %}
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                {% for form in objform %}
                 <div class="form-group">
                     {{ form.label_tag }} {{ form }}
                 </div>
-            {% if form.id_for_label == 'id_h_code' %}
-                       <label>¿Encontraste el componente codigo_H?</label><a href="{% url 'add_danger_indication' %}">¡Créalo aquí!</a>
+                {% if form.id_for_label == 'id_components_sga' %}
+                <!--  <label>¿Encontraste el componente?</label><a href="#">¡Créalo aquí!</a> -->
                 {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-    <div class="col-md-11 text-center" style="display:inline-block">
-        <button type="submit" class="btn btn-success">Continuar</button>
-    </div>
-    </form>
-    </div>
 
+                {% endfor %}
+
+            </div>
+            <div class="col-md-5">
+                {% for form in suschacform %}
+                <div class="form-group">
+                    {{ form.label_tag }} {{ form }}
+                </div>
+                {% if form.id_for_label == 'id_h_code' %}
+                <label>{% trans 'Did you find H code component?' %}</label><a href="{% url 'add_danger_indication' %}">
+                {% trans 'Create it here!' %}</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-11 text-center" style="display:inline-block">
+            <button type="submit" class="btn btn-success">{% trans 'Continue' %}</button>
+        </div>
+    </form>
 </div>
 
 {% endblock %}
 
 
 {% block js %}
-<script src="{% static 'laboratory/js/substance_creation.js' %}"> </script>
+<script src="{% static 'laboratory/js/substance_creation.js' %}"></script>
 {% endblock %}
