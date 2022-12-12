@@ -153,7 +153,7 @@ class Substance(models.Model):
     danger_indications = models.ManyToManyField(
         DangerIndication,
         verbose_name=_("Danger indications"))
-    synonymous = models.TextField(verbose_name=_("Synonymous"))
+    synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
