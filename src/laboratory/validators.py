@@ -15,8 +15,8 @@ def validate_molecular_formula(value):
 
 
 def isValidate_molecular_formula(value):
-    from pyEQL.chemical_formula import is_valid_formula
-    if not is_valid_formula(value):
+    # TODO:  HACER LA VALIDACIÓN
+    if not value:
         return False
     return True
 

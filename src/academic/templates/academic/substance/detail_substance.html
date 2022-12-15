@@ -1,5 +1,6 @@
 {% load static i18n gtsettings %}
-<div class="row">
+{% trans "Unknown" as default_value %}
+<div class="row p-3">
     <div class="col-sm-6">
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'Creator' %}: </label></div>
@@ -12,13 +13,18 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Sinonimos: </label></div>
-            <div class="col-sm-7"><p>{% if object.synonymous %} {{object.synonymous}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-5"><label>{% trans 'Synonymous' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.synonymous|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Nombre UIPA: </label></div>
-            <div class="col-sm-7"><p>{% if object.uipa_name %} {{object.uipa_name}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-5"><label>{% trans 'UIPA name' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.uipa_name|default:default_value}}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Brand' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.brand|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">
@@ -26,24 +32,39 @@
             <div class="col-sm-7">
                 {% if object.components %}
                 <ul>
-                    {% for component in object.components.all %}
+                    {% for component in object.components_sga.all %}
                     <li>{{component.name}}({{component.cas_number}})</li>
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Agroquímicos: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Molecular Weight' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.molecular_weight|default:default_value}}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Concentration' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.concentration|default:default_value}}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Agrochemical' %}: </label></div>
             <div class="col-sm-7"><p>{% if object.agrochemical %} {% trans 'Yes' %} {% else %}No {% endif %}</p></div>
         </div>
         <hr>
         <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Is Seveso list III?' %}: </label></div>
+            <div class="col-sm-7"><p>{% if object.seveso_list %} {% trans 'Yes' %} {% else %}No {% endif %}</p></div>
+        </div>
+        <hr>
+        <div class="row">
             <div class="col-sm-5"><label>{% trans 'Description' %}: </label></div>
-            <div class="col-sm-7"><p>{% if object.descripcion %} {{object.descripcion}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-7"><p>{{object.description|default:default_value}}</p></div>
         </div>
         <hr>
     </div>
@@ -54,7 +75,7 @@
                 {% if object.sustancecharacteristicssga.iarc %}
                 <p>{{object.sustancecharacteristicssga.iarc}}</p>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
@@ -65,7 +86,7 @@
                 {% if object.sustancecharacteristicssga.imdg %}
                 <p>{{object.sustancecharacteristicssga.imdg}}</p>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
@@ -80,28 +101,38 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
         <hr>
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'Bioaccomulable' %}: </label></div>
-            <div class="col-sm-7"><p>{% if object.bioaccumulable %} {{object.bioaccumulable}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-7"><p>{{object.bioaccumulable|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Formula Molecular: </label></div>
-            <div class="col-sm-7"><p>{% if object.molecular_formula %} {{object.molecular_formula}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-5"><label>{% trans 'Molecular formula' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.molecular_formula|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'CAS number' %}: </label></div>
-            <div class="col-sm-7"><p>{% if object.cas_id_number %} {{object.cas_id_number}} {% else %} Desconocido {% endif %}</p></div>
+            <div class="col-sm-7"><p>{{object.cas_id_number|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Codigos H: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Number Index' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.number_index|default:default_value}}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Number CE' %}: </label></div>
+            <div class="col-sm-7"><p>{{object.number_ce|default:default_value}}</p></div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-5"><label>{% trans 'Danger Indication' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.sustancecharacteristicssga.h_code %}
                 <ul>
@@ -110,13 +141,13 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No se agregaron</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Codigos UE: </label></div>
+            <div class="col-sm-5"><label>{% trans 'UE codes' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.sustancecharacteristicssga.ue_code %}
                 <ul>
@@ -125,13 +156,13 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>NFPA: </label></div>
+            <div class="col-sm-5"><label>{% trans 'NFPA codes' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.sustancecharacteristicssga.nfpa %}
                 <ul>
@@ -140,13 +171,13 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-sm-5"><label>Clases de Almacenamiento: </label></div>
+            <div class="col-sm-5"><label>{% trans 'Storage class' %}: </label></div>
             <div class="col-sm-7">
                 {% if object.sustancecharacteristicssga.storage_class %}
                 <ul>
@@ -155,7 +186,7 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p>No existe</p>
+                <p>{{default_value}}</p>
                 {% endif %}
             </div>
         </div>

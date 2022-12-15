@@ -19,13 +19,13 @@
     <div class="row" >
         <div class="col-md-9" >
             <h1 >
-                My Forms
+                {% trans 'My Forms' %}
             </h1>
         </div>
         <div class="col-md-3 align-self-center">
             <button title="Create form"
                     type="button"
-                    class="btn btn-sm btn-primary create_btn" >Create Form</button>
+                    class="btn btn-sm btn-primary create_btn" >{% trans 'Create Form' %}</button>
         </div>
     </div>
 </div>
@@ -41,11 +41,11 @@
             <thead>
             <tr>
                 <th>
-                    Form Name
+                    {% trans 'Name' %}
                 </th>
 
                 <th>
-                    Status
+                    {% trans 'Status' %}
                 </th>
 
                 <th>
@@ -68,9 +68,9 @@
                 </td>
 
                 <td style="width: 120px">
-                    <a title="Preview form" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    <a title="Edit form" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="Delete form" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Preview form' %}" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                 </td>
             </tr>
@@ -84,6 +84,20 @@
 
 
 {% block js %}
+<script>
+const translations = {
+    create_title: "{% trans 'Create Form' %}",
+    btn_create: "{% trans 'Create' %}",
+    btn_cancel: "{% trans 'Cancel' %}",
+    create_text: "{% trans 'Name' %}",
+    delete_title: "{% trans 'Do you want to delete the form' %}",
+    btn_delete: "{% trans 'Delete' %}",
+    delete_text: "{% trans 'This action cannot be undone' %}",
+    delete_error_text: "{% trans 'The form could not be deleted.' %}",
+    delete_success_text: "{% trans 'The form has been deleted.' %}",
+    delete_success_title: "{% trans 'Deleted!' %}",
+}
+</script>
 <script src="{% static 'js/list.js' %}"></script>
 <script>
 window.urls = {
@@ -93,6 +107,7 @@ window.urls = {
     edit: "{% url 'derb:edit_view' 0 %}",
     create: "{% url 'derb:create_form' %}"
 }
+
 </script>
 <script>
         $(document).ready(loadDataTable);

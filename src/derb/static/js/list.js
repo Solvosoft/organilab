@@ -9,12 +9,12 @@ function deleteForm() {
     var name = $(this).attr('form_name')
     
     Swal.fire({
-        title: 'Do you want to delete the form ' + name + '?',
-        text: "This action cannot be undone",
+        title: translations['delete_title'] + name + '?',
+        text: translations['delete_text'],
         icon: 'warning',
         showCloseButton: true,
         showCancelButton: true,
-        confirmButtonText: 'Delete'
+        confirmButtonText: translations['btn_delete']
 
         }).then((result) => {
         if (result.isConfirmed) {
@@ -32,8 +32,8 @@ function deleteForm() {
                     } else {
                         $('#tr_' + id).hide(); 
                         Swal.fire(
-                        'Deleted!',
-                        'The form has been deleted.',
+                        translations['delete_success_title'],
+                        translations['delete_success_text'],
                         'success'
                         )
                     }
@@ -41,7 +41,7 @@ function deleteForm() {
                 error: function () {
                     Swal.fire(
                     'Error!',
-                    'The form could not be deleted.',
+                    translations['delete_error_text'],
                     'error'
                     )
                 }
@@ -53,12 +53,13 @@ function deleteForm() {
 
 function createForm() {
     Swal.fire({
-        title: "Create Form",
-        text: "Form name:",
+        title: translations['create_title'],
+        text: translations['create_text'],
         input: 'text',
         showCancelButton: true, 
         showCloseButton: true,
-        confirmButtonText: 'Create',  
+        confirmButtonText: translations['btn_create'],
+        cancelButtonText: translations['btn_cancel'],
 
         preConfirm: (value) => {
             if (!value) {

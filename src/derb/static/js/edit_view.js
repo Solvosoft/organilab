@@ -1,10 +1,10 @@
 function editForm() {
     Swal.fire({
-        title: "Update Form Name",
-        text: "Form name:",
+        title: translations_form['update_title'],
+        text: translations_form['update_text'],
         input: 'text',
         showCancelButton: true, 
-        confirmButtonText: 'Update',  
+        confirmButtonText: translations_form['btn_update'],
 
         preConfirm: (value) => {
             if (!value) {
@@ -29,15 +29,15 @@ function editForm() {
                 success: function() {
                     document.getElementById("form_name").textContent = name;
                     Swal.fire(
-                        'Updated!',
-                        'The form name has been updated.',
+                        translations_form['update_success_title'],
+                        translations_form['update_success_text'],
                         'success'
                         )       
                 },
                 error: function () {
                     Swal.fire(
                     'Error!',
-                    'The form could not be created.',
+                    translations_form['update_error_text'],
                     'error'
                     )
                 }
@@ -48,11 +48,11 @@ function editForm() {
 
 function redirectSave() {
     Swal.fire({
-        title: 'Save or discard your changes to proceed',
-        text: "Discarding cannot be undone.",
+        title: translations_form['return_title'],
+        text: translations_form['return_text'],
         icon: 'warning',
-        confirmButtonText: 'Save',
-        denyButtonText: `Discard`,
+        confirmButtonText: translations_form['return_save'],
+        denyButtonText: translations_form['return_discard'],
         showDenyButton: true, 
         showCloseButton: true
 
@@ -70,8 +70,8 @@ function redirectSave() {
                 },
                 success: (success) => {
                     Swal.fire(
-                        'Saved!',
-                        'The form name has been saved.',
+                        translations_form['return_success_title'],
+                        translations_form['return_success_text'],
                         'success'
                         )     
                     location.href = window.urls['formlist'];

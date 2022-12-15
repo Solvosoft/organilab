@@ -18,13 +18,14 @@ from auth_and_perms.models import Profile
 from .djgeneric import ListView
 from laboratory.decorators import has_lab_assigned
 from djgentelella.widgets import core as genwidgets
+from django.utils.translation import gettext_lazy as _
 
 from ..forms import AddOrganizationForm
 
 
 class OrganizationSelectableForm(GTForm, forms.Form):
     organizations = OrganizationStructure.objects.none()
-    filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select)
+    filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select, label=_("Filter Organization"))
 
     def __init__(self, user, *args, **kwargs):
         self.user = user

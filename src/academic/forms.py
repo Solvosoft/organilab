@@ -46,5 +46,5 @@ class StepForm(GTForm, forms.Form):
 
 
 class ReservationForm(GTForm, forms.Form):
-    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False)
-    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False)
+    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False, label=_("Initial Date"))
+    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False, label=_("Final Date"))
