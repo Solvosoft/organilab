@@ -24,7 +24,7 @@
             <button id="BotonDeAutenticar"
 						data-fva="true" data-url="{% url 'auth_and_perms:login_with_bccr' %}"
 						data-urlconsultafirma="{% url 'auth_and_perms:check_signature_window_status_register' %}"
-						data-dominio="https://{{ request.get_host }}"
+						data-dominio="{{ request.scheme }}://{{ request.get_host }}"
 						data-parautenticarse="al Sitio de Verificaci&oacute;n"
 						data-mensajedeerror="No se pudo realizar la autenticaci&oacute;n en el sitio de verificaci&oacute;n."
 						type="button" class="d-none botonVerificacion botonVerificacion-Inicio"> </button>

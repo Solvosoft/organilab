@@ -9,10 +9,10 @@
 {% block content %}
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-md-12">
         <h1>{% trans 'Danger Indication' %}</h1>
         <a href="{% url 'add_danger_indication' %}" class="btn btn-success float-end">
-            {% trans 'Add' %} <i class="fa fa-plus" aria-hidden="true"></i></a>
+            <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
         <table id="danger_table" class="table table-bordered text-center">
             <thead>
                 <tr>

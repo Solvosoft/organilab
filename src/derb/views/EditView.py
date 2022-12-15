@@ -46,7 +46,7 @@ class EditView(TemplateView):
         else:
             return HttpResponseBadRequest('Invalid request')
 
-@method_decorator(permission_required('derb.change_customform'), name='dispatch')
+@permission_required('derb.change_customform')
 def UpdateForm(request):
     form_id = getId(request)
     if request.method == 'POST':

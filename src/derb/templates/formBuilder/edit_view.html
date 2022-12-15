@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block extra_css %}
  <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
+    <div class="container text-center">
         <h1 id="form_name"> </h1>
-        <a title="Change Name" onclick="editForm()" class="btn btn-sm btn-default edit_name_btn" ><span class="glyphicon glyphicon-pencil"></span> </a> 
+        <a title="{% trans 'Rename' %}" onclick="editForm()" class="btn btn-sm btn-secondary edit_name_btn" ><span class="fa fa-edit"></span> {% trans 'Rename' %}</a>
     </div>
     
     <div class="container">
         <div class="row">
             <div class="col-md-12 d-grid pt-5 text-center">
-                <button class="btn btn-primary btn-block" id="save_btn" name="" onclick="save_form_schema()">Save Form</button>
+                <button class="btn btn-primary btn-block" id="save_btn" name="" onclick="save_form_schema()">{% trans 'Save' %}</button>
             </div>
         </div>
         <div class="row pt-2">
@@ -21,11 +21,28 @@
         </div>
 
         <br>
-        <button class="btn btn-sm btn-primary" onclick="save()" title="Form List" style="float: right;">Return to Form List</button> 
+        <button class="btn btn-sm btn-primary" onclick="save()" title="Form List" style="float: right;">{% trans 'Return to Form List' %}</button>
     </div>
     {% endblock %}
 
     {% block js %}
+<script>
+const translations_form = {
+    update_title: "{% trans 'Update Form Name' %}",
+    btn_update: "{% trans 'Update' %}",
+    btn_cancel: "{% trans 'Cancel' %}",
+    update_text: "{% trans 'Name' %}",
+    update_error_text: "{% trans 'The form could not be updated.' %}",
+    update_success_text: "{% trans 'The form name has been updated.' %}",
+    update_success_title: "{% trans 'Updated!' %}",
+    return_title: "{% trans 'Save or discard your changes to proceed' %}",
+    return_text: "{% trans 'Discarding cannot be undone.' %}",
+    return_save: "{% trans 'Save' %}",
+    return_discard: "{% trans 'Discard' %}",
+    return_success_title: "{% trans 'Saved!' %}",
+    return_success_text: "{% trans 'The form name has been saved!' %}",
+}
+</script>
     <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
     <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}"></script>

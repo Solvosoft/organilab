@@ -28,7 +28,7 @@ from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, Don
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
 from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
-from .api.serializers import SGAComplementSerializer
+from .api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
 from .decorators import organilab_context_decorator
 from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
@@ -362,31 +362,6 @@ def delete_sgalabel(request, organilabcontext, pk):
 
 @login_required
 @organilab_context_decorator
-def get_recipient_size(request, organilabcontext, is_template, pk):
-    response = {}
-
-    if int(is_template):
-        template = TemplateSGA.objects.filter(pk=pk)
-        if template.exists():
-            template = template.first()
-            response.update({
-                'size': {
-                    'width': template.recipient_size.width,
-                    'height': template.recipient_size.height},
-                'svg_content': template.json_representation
-            })
-    else:
-        recipient = get_object_or_404(RecipientSize, pk=pk)
-        response.update({
-            'size': {
-                'width': recipient.width,
-                'height': recipient.height}
-        })
-    return JsonResponse(response)
-
-
-@login_required
-@organilab_context_decorator
 def get_preview(request, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
@@ -432,7 +407,7 @@ def get_svgexport(request, is_pdf, pk):
             type = "pdf"
         else:
            file = cairosvg.svg2png(svg)
-           response = HttpResponse(file, content_type='application/'+type)
+        response = HttpResponse(file, content_type='application/'+type)
     except IOError:
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
@@ -529,13 +504,14 @@ def sgalabel_step_one(request, organilabcontext, pk):
         complement = SGAComplement.objects.filter(substance=sgalabel.label.substance).first()
 
     complementsga_form = SGALabelComplementsForm(instance=complement)
-    sgabuilderinfo_form = SGALabelBuilderInformationForm(instance=builderinformation)
+    sgabuilderinfo_form = SGALabelBuilderInformationForm(user=request.user, instance=builderinformation,
+                                                         initial={'company': builderinformation.pk if builderinformation else None})
     personal_form = PersonalSGAAddForm(instance=sgalabel)
 
 
     if request.method == "POST":
         complementsga_form = SGALabelComplementsForm(request.POST, instance=complement)
-        sgabuilderinfo_form = SGALabelBuilderInformationForm(request.POST, instance=builderinformation)
+        sgabuilderinfo_form = SGALabelBuilderInformationForm(request.POST, user=request.user, instance=builderinformation)
         personal_form = PersonalSGAAddForm(request.POST, request.FILES, instance=sgalabel)
 
         complementsga_form_ok = complementsga_form.is_valid()
@@ -548,6 +524,8 @@ def sgalabel_step_one(request, organilabcontext, pk):
             sgalabel.label.save()
         if sgabuilderinfo_form_ok:
             instance = sgabuilderinfo_form.save()
+            instance.user = request.user
+            instance.save()
             if sgalabel.label.builderInformation is None:
                 sgalabel.label.builderInformation = instance
                 sgalabel.label.save()
@@ -568,27 +546,25 @@ def sgalabel_step_one(request, organilabcontext, pk):
 
     return render(request, 'sgalabel/step_one.html', context=context)
 
+@login_required
+@permission_required('sga.change_pictogram')
 def sgalabel_step_two(request, organilabcontext, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
 
     if request.method == 'POST':
-        form = EditorForm(request.POST, instance=sgalabel.template)
+        form = PersonalSGAForm(request.POST, instance=sgalabel)
         if form.is_valid():
-            instance = form.save()
-            instance.creator = request.user
-            instance.save()
-            return redirect(
-                reverse('sga:add_personal', args=('laboratory',) )
-            )
+            form.save()
+            return redirect(reverse('sga:add_personal', args=('laboratory',)))
 
     context = {
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complement': complement,
         'form': SGAEditorForm(),
-        'editorform': EditorForm()
+        'editorform': PersonalSGAForm(instance=sgalabel, initial={'recipient_size': sgalabel.template.recipient_size})
     }
 
     return render(request, 'sgalabel/step_two.html', context=context)
@@ -602,6 +578,20 @@ def get_sgacomplement_by_substance(request, pk):
     else:
         data = {}
     return JsonResponse(data)
+
+def get_company(request, pk):
+    builder_info = get_object_or_404(BuilderInformation, pk=pk)
+    data = BuilderInformationSerializer(builder_info).data
+    return JsonResponse(data)
+
+@login_required
+@permission_required('sga.view_builderinformation')
+def get_recipient_size(request, organilabcontext, pk):
+    # Note: @organilab_context_decorator is not used here intentionally
+    recipient_size = get_object_or_404(RecipientSize, pk=pk)
+    data = RecipientSizeSerializer(recipient_size).data
+    return JsonResponse(data)
+
 
 @login_required
 def get_barcode_from_number(request, code):

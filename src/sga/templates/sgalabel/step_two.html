@@ -61,6 +61,11 @@
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
 </script>
+
+<script>
+    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+</script>
+
 <script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
 <script src="{% static 'sga/js/canvas_editor.js' %}"></script>
 {% endblock %}

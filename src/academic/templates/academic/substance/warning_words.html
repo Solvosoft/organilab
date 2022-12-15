@@ -13,8 +13,8 @@
     <div class="col-sm-12">
         <h1> {% trans 'Warning Words' %}</h1>
         <a href="{% url 'add_warning_word' %}" class="btn btn-success float-end">
-            {% trans 'Add' %}
-            <i class="fa fa-plus" aria-hidden="true"></i></a>
+           <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}
+        </a>
         <table id="warning_word_table" class="table table-bordered text-center">
             <thead>
                 <tr>

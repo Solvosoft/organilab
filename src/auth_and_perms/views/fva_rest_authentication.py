@@ -72,7 +72,7 @@ def login_with_bccr(request):
                     response = requests.post(app.notification_url+str(data['id_solicitud']), headers=headers)
                     response.raise_for_status()
             except Exception as e:
-                pass
+                print(e)
 
         else:
             #logger.warning({'message':"Auth BCCR not available", 'location': __file__})

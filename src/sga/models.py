@@ -157,7 +157,7 @@ class Substance(models.Model):
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
-    description = models.TextField(blank=True,null=True)
+    description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
     organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
     objects = OrganilabContextQueryset.as_manager()
 
@@ -188,8 +188,8 @@ class SubstanceCharacteristics(models.Model):
     imdg = catalog.GTForeignKey("laboratory.Catalog", related_name="gt_imdg_sga", on_delete=models.DO_NOTHING,
                                 null=True, blank=True, key_name="key", key_value="IDMG")
     white_organ = catalog.GTManyToManyField("laboratory.Catalog", related_name="gt_white_organ_sga", key_name="key",
-                                            key_value="white_organ", blank=True)
-    bioaccumulable = models.BooleanField(null=True)
+                                            key_value="white_organ", blank=True, verbose_name=_('White organ'))
+    bioaccumulable = models.BooleanField(null=True, verbose_name=_('Bioaccumulable'))
     molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)

@@ -47,11 +47,11 @@ DAYS = (
 
 
 class Reservations(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
-    status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED)
-    comments = models.CharField(max_length=500, null=True, blank=True)
-    is_massive = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('User'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
+    status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED, verbose_name=_('Status'))
+    comments = models.CharField(max_length=500, null=True, blank=True, verbose_name=_('Comments'))
+    is_massive = models.BooleanField(default=False, verbose_name=_('Is massive'))
 
     class Meta:
         ordering = ['status']
@@ -59,14 +59,14 @@ class Reservations(models.Model):
 
 class ReservedProducts(models.Model):
     shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True)
-    is_returnable = models.BooleanField(default=True)
-    amount_required = models.FloatField()
-    amount_returned = models.FloatField(default=0)
-    initial_date = models.DateTimeField()
-    final_date = models.DateTimeField()
-    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_('User'))
+    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True, verbose_name=_('Reservation'))
+    is_returnable = models.BooleanField(default=True, verbose_name=_('Is Returnable'))
+    amount_required = models.FloatField(verbose_name=_('Amount Required'))
+    amount_returned = models.FloatField(default=0, verbose_name=_('Amount Returned'))
+    initial_date = models.DateTimeField(verbose_name=_('Initial Date'))
+    final_date = models.DateTimeField(verbose_name=_('Final Date'))
+    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED, verbose_name=_('Status'))
 
 
 class ReservationTasks(models.Model):

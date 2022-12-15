@@ -3,7 +3,7 @@
     <div class="card-body">
     <label><b>{% trans 'Warning Word' %}</b></label>
     <ul>
-        <li><p class="genericitem text_content"  id="{{complement.warningword}}"  title="{{complement.warningword}}" data-ftype="danger-itext"  >{{complement.warningword}}</p></li>
+        <li><p class="genericitem text_content"  id="{{complement.warningword}}"  title="{{complement.warningword}}" data-ftype="danger-itext"  >{{complement.warningword|default:''}}</p></li>
     </ul>
     <label><b>{% trans 'Prudence Advice' %}</b></label>
     <ul>
