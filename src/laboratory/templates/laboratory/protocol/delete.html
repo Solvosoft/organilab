@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block title %}{% trans 'Delete Protocol' %}{% endblock %}
+{% block pre_head %}
+    {% define_urlname_action 'laboratory:protocol/protocol_delete' %}
+{% endblock %}
+{% block content %}
+	{% if perms.laboratory.delete_protocol %}
+		<form action="" method="post">{% csrf_token %}
+			<p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+			<input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+		</form>
+		<br> <br>
+	{% else %} 
+       	{% include 'laboratory/action_denied.html' %} 
+  	{% endif %}
+{% endblock%}

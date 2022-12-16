@@ -70,6 +70,14 @@
                 </li>
               {% endif %}
 
+              {% if perms.laboratory.view_protocol %}
+              <li class="list-group-item">
+                  <a href="{% url 'laboratory:protocol_list' laboratory %}">
+                    <strong>{% trans 'Protocols' %}</strong>
+                  </a>
+                </li>
+              {% endif %}
+
             </ul>
           </div>
         </div>
