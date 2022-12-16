@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 from authentication.users import ChangeUser, password_change
 from laboratory import views
-from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
@@ -21,6 +21,7 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
+from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
@@ -180,16 +181,27 @@ informs_urls = [
     re_path(r'remove_inform/(?P<pk>\d+)$', remove_inform, name="remove_inform"),
 
 ]
+lab_protocols_urls = [
+    path('list', protocol_list, name='protocol_list'),
+    path('create', ProtocolCreateView.as_view(), name='protocol_create'),
+    path('update/<int:pk>/', ProtocolUpdateView.as_view(), name='protocol_update'),
+    path('delete/<int:pk>/', ProtocolDeleteView.as_view(), name='protocol_delete'),
+
+    #re_path(r'regulations$', regulation_view, name="regulation_docs"),
+    #re_path(r'regulations/download/all', download_all_regulations, name="download_all_regulations")
+]
 
 
 """APIS"""
 router = DefaultRouter()
 
 router.register('api_inform', CommentAPI, basename='api-inform')
+router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     path('mylabs', LaboratoryListView.as_view(), name="mylabs"),
+    re_path(r'^lab/(?P<lab_pk>\d+)/protocols/', include(lab_protocols_urls)),
     re_path(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     re_path(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     re_path(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
