@@ -3,27 +3,23 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
-{% define_urlname_action 'protocol_list' %}
-	{% define_urlname_action 'protocols_list' %}
-{% define_urlname_action 'protocol_delete' %}
+    {% define_urlname_action 'protocol_list' %}
 {% endblock %}
 {% block content %}
-<style>
-    .link {
-        font-size: 1.5em;
-        color: #198754;
-    }
-</style>
-<h4 class="text-center">  {% trans 'Search Protocol' %}
-  {% if perms.laboratory.add_protocol %}
-        <a class="btn btn-outline-success float-end" href="{% url 'laboratory:protocol_create' lab_pk %}">
+<div class="row mb-2">
+    <div class="col"><h4 class="text-center">  {% trans 'Search Protocol' %}</h4></div>
+    <div class="col">
+          {% if perms.laboratory.add_protocol %}
+        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'laboratory:protocol_create' laboratory %}">
+            <i class='fa fa-upload' aria-hidden='true'></i>
         {% trans 'Upload your Protocol' %}
         </a>
   {% endif %}
-</h4>
+    </div>
+</div>
 
-<table id="protocolTable" class="display">
-</table>
+
+<table id="protocolTable" class="display table"></table>
 
 {% endblock %}
 {% block js %}
@@ -47,7 +43,7 @@ $(document).ready(function() {
             type: 'GET',
             data: function(dataTableParams, settings) {
                 var data = formatDataTableParams(dataTableParams, settings);
-                data['lab_pk']={{lab_pk}};
+                data['lab_pk']={{laboratory}};
                 return data;
             }
         }

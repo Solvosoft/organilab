@@ -3,7 +3,7 @@
 {% load urlname_tags %}
 {% block title %}{% trans 'Delete Protocol' %}{% endblock %}
 {% block pre_head %}
-    {% define_urlname_action 'laboratory:protocol/protocol_delete' %}
+    {% define_urlname_action 'protocol_list' %}
 {% endblock %}
 {% block content %}
 	{% if perms.laboratory.delete_protocol %}

@@ -59,19 +59,22 @@ class ProtocolSerializer(serializers.ModelSerializer):
 
         return {
             'url': obj.file.url,
-            'display_name': _("Download")
+            'class': 'btn btn-sm btn-outline-success',
+            'display_name': "<i class='fa fa-download' aria-hidden='true'></i> %s" % _("Download")
         }
 
     def get_action(self, obj):
         user = self.context['request'].user
         btn = ''
         if user.has_perm('laboratory.change_protocol'):
-            btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> Edit</a>"%(
-                reverse('laboratory:protocol_update', args=(obj.laboratory.pk, obj.pk))
+            btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> %s</a>"%(
+                reverse('laboratory:protocol_update', args=(obj.laboratory.pk, obj.pk)),
+                _("Edit")
             )
         if user.has_perm('laboratory.delete_protocol'):
-            btn += "<a href=\"%s\" class='btn btn-outline-danger btn-sm'><i class='fa fa-trash' aria-hidden='true'></i> Delete</a>"%(
-                reverse('laboratory:protocol_delete', args=(obj.laboratory.pk, obj.pk))
+            btn += "<a href=\"%s\" class='btn btn-outline-danger btn-sm'><i class='fa fa-trash' aria-hidden='true'></i> %s</a>"%(
+                reverse('laboratory:protocol_delete', args=(obj.laboratory.pk, obj.pk)),
+                _("Delete")
             )
 
         return btn
