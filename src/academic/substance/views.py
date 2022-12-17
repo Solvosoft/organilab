@@ -1,27 +1,25 @@
+from datetime import datetime
 
-from djgentelella.models import ChunkedUpload
-from django.http import JsonResponse, HttpResponse
-from django.urls import reverse
+from django.contrib import messages
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from academic.models import SubstanceSGA, SubstanceObservation
-from django.contrib.auth.models import User
+from django.template.loader import get_template
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from weasyprint import HTML
+
+from academic.models import SubstanceObservation
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
     WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm, ReviewSubstanceForm
-from laboratory.validators import isValidate_molecular_formula
-from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
-
+from laboratory.utils import organilab_logentry
 from sga.decorators import organilab_context_decorator
-from sga.forms import SGAEditorForm, PersonalForm, PersonalFormAcademic, PersonalSGAForm, LabelForm, \
-    BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, EditorForm
+from sga.forms import SGAEditorForm, BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
+    EditorForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf
-
-from django.template.loader import get_template
-from weasyprint import HTML
-from datetime import datetime
-from organilab.settings import MEDIA_ROOT as path
 
 
 @login_required
@@ -70,12 +68,22 @@ def create_edit_sustance(request, organilabcontext, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
+
+            ct_subs = ContentType.objects.get_for_model(obj)
+            ct_charac = ContentType.objects.get_for_model(suscharinst)
+            organilab_logentry(request.user, ct_subs, obj, CHANGE, "substance", changed_data=objform.changed_data)
+            organilab_logentry(request.user, ct_charac, suscharinst, CHANGE, "substance characteristics", changed_data=suschacform.changed_data)
+
             return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'pk':complement.pk}))
 
     elif instance == None and request.method=='GET':
 
             substance = Substance.objects.create(organilab_context=organilabcontext, creator=request.user)
-            SubstanceCharacteristics.objects.create(substance=substance)
+            charac = SubstanceCharacteristics.objects.create(substance=substance)
+            ct_subs = ContentType.objects.get_for_model(substance)
+            ct_charac = ContentType.objects.get_for_model(charac)
+            organilab_logentry(request.user, ct_subs, substance, ADDITION, "substance")
+            organilab_logentry(request.user, ct_charac, charac, ADDITION, "substance characteristics")
 
             return redirect(reverse('step_one', kwargs={'organilabcontext':organilabcontext,'pk':substance.pk}))
 
@@ -159,6 +167,8 @@ def approve_substances(request,organilabcontext,pk):
 
         substances.is_approved=True
         substances.save()
+        ct = ContentType.objects.get_for_model(substances)
+        organilab_logentry(request.user, ct, substances, CHANGE, "substance", changed_data=['is_approved'])
         return redirect('approved_substance')
     return redirect('approved_substance')
 
@@ -169,6 +179,8 @@ def delete_substance(request,organilabcontext,pk):
     substances=Substance.objects.filter(pk=pk).first()
     if substances:
         messages.success(request, _("The substance is removed successfully"))
+        ct = ContentType.objects.get_for_model(substances)
+        organilab_logentry(request.user, ct, substances, DELETION, "substance")
         substances.delete()
 
         return redirect(reverse("get_substance", kwargs={'organilabcontext':organilabcontext}))
@@ -228,6 +240,15 @@ def add_sga_complements(request, element):
 
         if form.is_valid():
             obj = form.save()
+
+            model_name = {
+                'warning': 'warning word',
+                'danger': 'danger indication',
+                'prudence': 'prudence advice'
+            }
+
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, ADDITION, model_name[element], changed_data=form.changed_data)
             return redirect(reverse(view_urls[element]))
 
     else:
@@ -277,6 +298,8 @@ def add_observation(request, organilabcontext, substance):
             obj.creator = request.user
             request.session['step'] = 2
             obj.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, ADDITION, "substance observation", changed_data=form.changed_data)
             messages.success(request, 'Se Guardo correctamente')
             return redirect(reverse('detail_substance',kwargs={'organilabcontext':organilabcontext,'pk':substance}))
         else:
@@ -298,6 +321,8 @@ def update_observation(request):
         if substance_obj:
             substance_obj.description=request.POST.get('description','')
             substance_obj.save()
+            ct = ContentType.objects.get_for_model(substance_obj)
+            organilab_logentry(request.user, ct, substance_obj, CHANGE, "substance observation", changed_data=['description'])
             request.session['step'] = 2
 
             return JsonResponse({'status':True})
@@ -313,6 +338,8 @@ def delete_observation(request):
 
         substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
         if substance_obj:
+            ct = ContentType.objects.get_for_model(substance_obj)
+            organilab_logentry(request.user, ct, substance_obj, DELETION, "substance observation")
             substance_obj.delete()
             request.session['step'] = 2
             return JsonResponse({'status':True})
@@ -330,7 +357,9 @@ def change_warning_word(request,pk):
     if request.method =='POST':
         form = WarningWordForm(request.POST, instance=instance)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "warning word", changed_data=form.changed_data)
             return redirect(reverse('warning_words'))
     else:
         form = WarningWordForm(instance=instance)
@@ -341,6 +370,7 @@ def change_warning_word(request,pk):
             'url':reverse('update_warning_word', kwargs={'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
+
 @login_required
 @permission_required('sga.change_prudenceadvice')
 def change_prudence_advice(request, pk):
@@ -351,7 +381,9 @@ def change_prudence_advice(request, pk):
     if request.method =='POST':
         form = PrudenceAdviceForm(request.POST, instance=instance)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "prudence advice", changed_data=form.changed_data)
             return redirect(reverse('prudence_advices'))
     else:
         form = PrudenceAdviceForm(instance=instance)
@@ -362,6 +394,7 @@ def change_prudence_advice(request, pk):
             'url':reverse('update_prudence_advice', kwargs={'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
+
 @login_required
 @permission_required('sga.change_dangerindication')
 def change_danger_indication(request, pk):
@@ -372,7 +405,9 @@ def change_danger_indication(request, pk):
     if request.method =='POST':
         form = DangerIndicationForm(request.POST, instance=instance)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "danger indication", changed_data=form.changed_data)
             return redirect(reverse('danger_indications'))
     else:
         form = DangerIndicationForm(instance=instance)
@@ -394,7 +429,9 @@ def step_three(request, organilabcontext, template, substance):
     if request.method == 'POST':
         form = EditorForm(request.POST, instance=personaltemplateSGA.template)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "template sga", changed_data=form.changed_data)
             return redirect(reverse('step_four', kwargs={'organilabcontext':organilabcontext,
                                                           'substance': personaltemplateSGA.label.substance.pk}))
 
@@ -445,13 +482,23 @@ def step_two(request, organilabcontext, pk):
 
         if complementform_ok:
             obj = complementform.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "sga complement", changed_data=complementform.changed_data)
+
         if builderinformationform_ok:
             instance = builderinformationform.save()
+            ct = ContentType.objects.get_for_model(instance)
+            organilab_logentry(request.user, ct, instance, CHANGE, "builder information", changed_data=builderinformationform.changed_data)
+
             if personaltemplateSGA.label.builderInformation is None:
                 personaltemplateSGA.label.builderInformation = instance
                 personaltemplateSGA.label.save()
+
         if pesonalform_ok:
-            pesonalform.save()
+            personal_obj = pesonalform.save()
+            ct = ContentType.objects.get_for_model(personal_obj)
+            organilab_logentry(request.user, ct, personal_obj, CHANGE, "personal template sga",
+                               changed_data=pesonalform.changed_data)
 
         if complementform_ok and builderinformationform_ok and pesonalform_ok:
             return redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext,
@@ -492,7 +539,9 @@ def step_four(request,organilabcontext, substance):
     if request.method == 'POST':
         form = SecurityLeafForm(request.POST, instance=security_leaf)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            ct = ContentType.objects.get_for_model(obj)
+            organilab_logentry(request.user, ct, obj, CHANGE, "security leaf", changed_data=form.changed_data)
             return redirect(reverse('get_substance',kwargs={'organilabcontext':organilabcontext}))
     form = SecurityLeafForm(instance=security_leaf)
     context = {'step': 4,
@@ -504,6 +553,7 @@ def step_four(request,organilabcontext, substance):
 
                'substance': substance}
     return render(request,'academic/substance/step_four.html',context=context)
+
 @login_required
 @permission_required('sga.add_provider')
 def add_sga_provider(request):
@@ -512,10 +562,12 @@ def add_sga_provider(request):
     if form.is_valid():
         provider=form.save(commit=False)
         provider.save()
-
+        ct = ContentType.objects.get_for_model(provider)
+        organilab_logentry(request.user, ct, provider, ADDITION, "provider", changed_data=form.changed_data)
         return JsonResponse({'result':True,'provider_pk':provider.pk,'provider':provider.name})
     else:
         return JsonResponse({'result':False})
+
 @login_required
 def security_leaf_pdf(request, substance):
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)

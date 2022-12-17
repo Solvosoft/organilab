@@ -1,11 +1,15 @@
+from django.contrib.admin.models import DELETION
 from django.contrib.auth.decorators import permission_required
-from django.http import JsonResponse
+from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 
 from derb.models import CustomForm
+from laboratory.utils import organilab_logentry
+
 
 @method_decorator(permission_required('derb.view_customform'), name='dispatch')
 class FormList(ListView):
@@ -22,6 +26,14 @@ class FormList(ListView):
 class DeleteForm(DeleteView):
     model = CustomForm
     success_url = reverse_lazy('derb:form_list')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'custom form')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
     # decir este formulario tiene x respuestas en el warning
 @permission_required('derb.add_customform')
 def CreateForm(request):

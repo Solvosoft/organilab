@@ -4,8 +4,10 @@ Created on 26/12/2016
 
 @author: luisza
 '''
-
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -15,6 +17,7 @@ from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.decorators import has_lab_assigned
+from ..utils import organilab_logentry
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')
@@ -59,6 +62,8 @@ class LabroomCreate(CreateView):
         lab = get_object_or_404(Laboratory, pk=self.lab)
         lab.rooms.add(room)
         lab.save()
+        ct = ContentType.objects.get_for_model(room)
+        organilab_logentry(self.request.user, ct, room, ADDITION, 'laboratory room', changed_data=form.changed_data)
         return super(LabroomCreate, self).form_valid(form)
 
     def get_success_url(self):
@@ -78,6 +83,12 @@ class LabroomUpdate(UpdateView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
 
+    def form_valid(self,form):
+        room = form.save()
+        ct = ContentType.objects.get_for_model(room)
+        organilab_logentry(self.request.user, ct, room, CHANGE, 'laboratory room', changed_data=form.changed_data)
+        return super(LabroomUpdate, self).form_valid(form)
+
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
@@ -88,6 +99,13 @@ class LaboratoryRoomDelete(DeleteView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(
             self.kwargs.get('lab_pk'),))
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'laboratory room')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')

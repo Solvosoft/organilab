@@ -560,3 +560,14 @@ class CommentInform(models.Model):
     inform = models.ForeignKey(Inform, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Inform'))
     def __str__(self):
         return f'{self.creator} - {self.create_at}'
+
+
+
+class LabOrgLogEntry(models.Model):
+    log_entry = models.ForeignKey('admin.LogEntry', on_delete=models.CASCADE, verbose_name=_("Log Entry"))
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f'{self.log_entry}'

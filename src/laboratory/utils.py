@@ -1,8 +1,9 @@
-
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry
 
 
 def check_group_has_perm(group,codename):
@@ -130,3 +131,39 @@ def get_molecular_formula(object, default=None):
     if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
         result = object.sustancecharacteristics.molecular_formula
     return result
+
+
+def organilab_logentry(user, content_type, object, action_flag, model_name, changed_data=None, object_repr='', change_message='', relobj=None):
+
+    action = 'added'
+    if action_flag == 2:
+        action = 'changed'
+    elif action_flag == 3:
+        action = 'deleted'
+
+    if not object_repr:
+        object_repr = model_name.capitalize() + " has been %s" % (action,)
+
+    if not change_message:
+        if action_flag != 3:
+            change_message = str([{action: {"fields": changed_data if changed_data else []}}])
+        else:
+            change_message = "%s %s has been %s" % (str(object), model_name, action)
+
+    log_entry = LogEntry.objects.log_action(
+        user_id=user.id,
+        content_type_id=content_type.id,
+        object_id=object.id,
+        object_repr=object_repr,
+        action_flag=action_flag,
+        change_message=change_message
+    )
+
+    if relobj:
+        content_type_obj = ContentType.objects.get_for_model(relobj)
+
+        LabOrgLogEntry.objects.create(
+            log_entry=log_entry,
+            content_type=content_type_obj,
+            object_id=relobj.id
+        )
