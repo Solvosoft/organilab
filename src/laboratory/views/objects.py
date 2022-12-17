@@ -8,10 +8,13 @@ Free as freedom will be 26/8/2016
 
 from django import forms
 from django.contrib import messages
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import path
 from django.urls.base import reverse_lazy
@@ -21,7 +24,7 @@ from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidget
 from laboratory.models import Laboratory, BlockedListNotification
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import filter_laboratorist_profile
+from laboratory.utils import filter_laboratorist_profile, organilab_logentry
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 from laboratory.decorators import has_lab_assigned
 
@@ -46,6 +49,12 @@ class ObjectView(object):
                 kwargs['request'] = self.request
                 return kwargs
 
+            def form_valid(self, form):
+                object = form.save()
+                ct = ContentType.objects.get_for_model(object)
+                organilab_logentry(self.request.user, ct, object, ADDITION, 'object', changed_data=form.changed_data)
+                return super(ObjectCreateView, self).form_valid(form)
+
         self.create = ObjectCreateView.as_view(
             model=self.model,
             form_class=ObjectForm,
@@ -66,6 +75,12 @@ class ObjectView(object):
                 kwargs['request'] = self.request
                 return kwargs
 
+            def form_valid(self, form):
+                object = form.save()
+                ct = ContentType.objects.get_for_model(object)
+                organilab_logentry(self.request.user, ct, object, CHANGE, 'object', changed_data=form.changed_data)
+                return super(ObjectUpdateView, self).form_valid(object)
+
 
         self.edit = ObjectUpdateView.as_view(
             model=self.model,
@@ -80,6 +95,13 @@ class ObjectView(object):
             def get_success_url(self):
                 return reverse_lazy('laboratory:objectview_list',
                                     args=(self.lab,))
+
+            def form_valid(self, form):
+                success_url = self.get_success_url()
+                ct = ContentType.objects.get_for_model(self.object)
+                organilab_logentry(self.request.user, ct, self.object, DELETION, 'object')
+                self.object.delete()
+                return HttpResponseRedirect(success_url)
 
         self.delete = ObjectDeleteView.as_view(
             model=self.model,

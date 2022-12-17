@@ -1,8 +1,13 @@
+from django.contrib.admin.models import DELETION
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+
+from laboratory.utils import organilab_logentry
 from risk_management.forms import RiskZoneCreateForm
 from risk_management.models import RiskZone
 
@@ -61,6 +66,13 @@ class ZoneEdit(UpdateView):
 class ZoneDelete(DeleteView):
     model = RiskZone
     success_url = reverse_lazy('riskmanagement:riskzone_list')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        ct = ContentType.objects.get_for_model(self.object)
+        organilab_logentry(self.request.user, ct, self.object, DELETION, 'risk zone')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 @method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
