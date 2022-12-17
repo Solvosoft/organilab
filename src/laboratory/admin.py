@@ -15,6 +15,7 @@ class OrganizationStrutureAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Laboratory)
+admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
