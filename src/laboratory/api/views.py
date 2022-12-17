@@ -1,4 +1,7 @@
 from django.template.loader import render_to_string
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,9 +9,11 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 from rest_framework import status, viewsets
 from django.http import Http404
 
-from laboratory.models import CommentInform, Inform
+from laboratory.api import serializers
+from laboratory.models import CommentInform, Inform, Protocol
 from reservations_management.models import ReservedProducts, Reservations
-from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, ReservedProductsSerializerUpdate, CommentsSerializer
+from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -115,3 +120,33 @@ class CommentAPI(viewsets.ModelViewSet):
 
             return Response({'data':template},status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProtocolViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.ProtocolDataTableSerializer
+    queryset = Protocol.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['name', 'short_description']
+    filterset_class = ProtocolFilterSet
+    ordering_fields = ['pk']
+    ordering = ('pk', )
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        lab_pk = self.request.GET.get('lab_pk', None)
+        if lab_pk:
+            queryset = queryset.filter(laboratory__pk=lab_pk)
+        else:
+            queryset = queryset.none()
+        return queryset
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': Protocol.objects.count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)

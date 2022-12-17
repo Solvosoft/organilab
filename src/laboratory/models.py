@@ -1,8 +1,10 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models.expressions import F
 from django.utils.translation import gettext_lazy as _
@@ -10,7 +12,6 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-
 from . import catalog
 
 
@@ -553,14 +554,15 @@ class Inform(models.Model):
             models.Index(fields=["content_type", "object_id"]),
         ]
 
+
 class CommentInform(models.Model):
     creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
     create_at = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
     inform = models.ForeignKey(Inform, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Inform'))
+
     def __str__(self):
         return f'{self.creator} - {self.create_at}'
-
 
 
 class LabOrgLogEntry(models.Model):
@@ -571,3 +573,25 @@ class LabOrgLogEntry(models.Model):
 
     def __str__(self):
         return f'{self.log_entry}'
+
+
+class Protocol(models.Model):
+    name = models.CharField(_("Name"), max_length=300)
+    file = models.FileField(upload_to="protocols", verbose_name=_("Protocol PDF File"),
+                            validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+
+    short_description = models.CharField(_("short description"), max_length=300)
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
+    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('pk',)
+        verbose_name = _('Protocol')
+        verbose_name_plural = _('Protocols')
+
+

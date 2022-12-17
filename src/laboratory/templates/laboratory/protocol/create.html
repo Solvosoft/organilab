@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'protocol_list' %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col-md-6">
+		<form method="post" action="{% url 'laboratory:protocol_create' lab_pk %}" enctype="multipart/form-data" role="form">
+			<legend>{% trans 'Add new Protocol' %}</legend>
+			{% csrf_token %}
+			{{ form.as_horizontal }}
+			<div class="form-group d-flex justify-content-center">
+				<button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+			</div>
+		</form>
+
+
+	</div>
+</div>
+{% endblock %}

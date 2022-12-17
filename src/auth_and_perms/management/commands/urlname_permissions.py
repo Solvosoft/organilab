@@ -2621,4 +2621,21 @@ URLNAME_PERMISSIONS = {
             'permission': 'msds.view_regulationdocument'
         }
     ],
+    'protocol_list': [
+        {
+            'name': 'Create a Protocol',
+            'category': 'Protocol',
+            'permission': 'laboratory.add_protocol'
+        },
+        {
+            'name': 'Update a Protocol',
+            'category': 'Protocol',
+            'permission': 'laboratory.change_protocol'
+        },
+        {
+            'name': 'Delete a Protocol',
+            'category': 'Protocol',
+            'permission': 'laboratory.delete_protocol'
+        },
+    ],
 }

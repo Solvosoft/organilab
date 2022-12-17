@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'protocol_list' %}
+{% endblock %}
+{% block content %}
+<div class="row mb-2">
+    <div class="col"><h4 class="text-center">  {% trans 'Search Protocol' %}</h4></div>
+    <div class="col">
+          {% if perms.laboratory.add_protocol %}
+        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'laboratory:protocol_create' laboratory %}">
+            <i class='fa fa-upload' aria-hidden='true'></i>
+        {% trans 'Upload your Protocol' %}
+        </a>
+  {% endif %}
+    </div>
+</div>
+
+
+<table id="protocolTable" class="display table"></table>
+
+{% endblock %}
+{% block js %}
+<script>
+
+function get_columns_protocol(){
+    var columns = [
+        {data: "name", name: "name", title: "{% trans 'Name' %}", type: "string", visible: true},
+        {data: "short_description", name: "product", title: "{% trans 'Short Description' %}", type: "string", visible: true},
+        {data: "file", name: "file", title: "{% trans 'Download' %}", type: "string", visible: true, render: objshowlink},
+        {data: "action", name: "action", title: "{% trans 'Action' %}", type: "string", visible: true}
+    ];
+    return columns;
+}
+
+$(document).ready(function() {
+   document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' %}",{
+          'columns': get_columns_protocol(),
+          ajax: {
+            url: "{% url 'laboratory:api-protocol-list' %}",
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                var data = formatDataTableParams(dataTableParams, settings);
+                data['lab_pk']={{laboratory}};
+                return data;
+            }
+        }
+    });
+} );
+</script>
+{% endblock %}
