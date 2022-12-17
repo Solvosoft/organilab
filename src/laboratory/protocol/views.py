@@ -12,7 +12,7 @@ from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 @permission_required('laboratory.view_protocol')
 def protocol_list(request, *args, **kwargs ):
     context={
-        'lab_pk': kwargs['lab_pk']
+        'laboratory': kwargs['lab_pk']
     }
     return render(request, 'laboratory/protocol/protocol_list.html', context=context)
 
