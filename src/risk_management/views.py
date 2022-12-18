@@ -1,6 +1,5 @@
-from django.contrib.admin.models import DELETION
+from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -50,6 +49,12 @@ class ZoneCreate(CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def form_valid(self, form):
+        dev = super().form_valid(form)
+        organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
+        return dev
+
+
 @method_decorator(permission_required('risk_management.change_riskzone'), name="dispatch")
 class ZoneEdit(UpdateView):
     model = RiskZone
@@ -61,6 +66,10 @@ class ZoneEdit(UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def form_valid(self, form):
+        dev = super().form_valid(form)
+        organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
+        return dev
 
 @method_decorator(permission_required('risk_management.delete_riskzone'), name="dispatch")
 class ZoneDelete(DeleteView):
@@ -69,8 +78,7 @@ class ZoneDelete(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'risk zone')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=list(self.object.laboratories.all()))
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

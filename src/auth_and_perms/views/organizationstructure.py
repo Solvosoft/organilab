@@ -254,15 +254,12 @@ class AddUser(CreateView):
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
-
-
         self.send_email(user)
-
-        ct_user = ContentType.objects.get_for_model(user)
-        ct_profile = ContentType.objects.get_for_model(profile)
-        organilab_logentry(self.request.user, ct_user, profile, ADDITION, 'user', changed_data=['user', 'phone_number', 'id_card', 'job_position'])
-        organilab_logentry(self.request.user, ct_profile, profile, ADDITION, 'profile',
-                           changed_data=['user', 'phone_number', 'id_card', 'job_position'])
+        organilab_logentry(user, user, ADDITION, 'user', changed_data=['user', 'phone_number', 'id_card', 'job_position'],
+                           relobj=self.organization)
+        organilab_logentry(user, profile, ADDITION, 'profile',
+                           changed_data=['user', 'phone_number', 'id_card', 'job_position'],
+                           relobj=self.organization)
 
         return response
 

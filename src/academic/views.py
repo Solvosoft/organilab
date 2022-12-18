@@ -25,8 +25,7 @@ from . import convertions
 def add_steps_wrapper(request, pk, lab_pk=None):
     procedure = get_object_or_404(Procedure, pk=pk)
     procstep = ProcedureStep.objects.create(procedure=procedure)
-    ct = ContentType.objects.get_for_model(procstep)
-    organilab_logentry(request.user, ct, procstep, ADDITION, 'procedure step')
+    organilab_logentry(request.user, procstep, ADDITION, relobj=lab_pk)
     return redirect(reverse('update_step', kwargs={'pk': procstep.pk, 'lab_pk': lab_pk}))
 
 
@@ -60,8 +59,8 @@ class ProcedureCreateView(CreateView):
 
     def form_valid(self, form):
         procedure = form.save()
-        ct = ContentType.objects.get_for_model(procedure)
-        organilab_logentry(self.request.user, ct, procedure, ADDITION, 'procedure', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, procedure, ADDITION, changed_data=form.changed_data,
+                           relobj=self.kwargs['lab_pk'])
         return super(ProcedureCreateView, self).form_valid(form)
 
 
@@ -83,8 +82,8 @@ class ProcedureUpdateView(UpdateView):
 
     def form_valid(self, form):
         procedure = form.save()
-        ct = ContentType.objects.get_for_model(procedure)
-        organilab_logentry(self.request.user, ct, procedure, CHANGE, 'procedure', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, procedure, CHANGE, changed_data=form.changed_data,
+                           relobj=self.kwargs['lab_pk'])
         return super(ProcedureUpdateView, self).form_valid(form)
 
 @login_required
@@ -113,8 +112,8 @@ class ProcedureStepCreateView(FormView):
         step = ProcedureStep.objects.create(procedure=procedure, title=form.cleaned_data['title'],
                                             description=form.cleaned_data['description'])
         step.save()
-        ct = ContentType.objects.get_for_model(step)
-        organilab_logentry(self.request.user, ct, step, ADDITION, 'procedure step', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, step, ADDITION, changed_data=form.changed_data,
+                           relobj=procedure.content_object)
 
         return response
 
@@ -144,8 +143,8 @@ class ProcedureStepUpdateView(UpdateView):
 
     def form_valid(self, form):
         procedurestep = form.save()
-        ct = ContentType.objects.get_for_model(procedurestep)
-        organilab_logentry(self.request.user, ct, procedurestep, CHANGE, 'procedure step', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, procedurestep, CHANGE, changed_data=form.changed_data,
+                           relobj=self.kwargs['lab_pk'])
         return super(ProcedureStepUpdateView, self).form_valid(form)
 
 @login_required
@@ -165,11 +164,11 @@ def save_object(request, pk, lab_pk):
                                                          measurement_unit=unit)
         objects.save()
         status = True
-        ct = ContentType.objects.get_for_model(objects)
         str_obj = f'{objects.object} {objects.quantity} {str(objects.measurement_unit)}'
         change_message = str_obj + " procedure required object has been added"
         changed_data = ['object', 'quantity', 'unit']
-        organilab_logentry(request.user, ct, objects, ADDITION, 'procedure required object', changed_data=changed_data, change_message=change_message)
+        organilab_logentry(request.user, objects, ADDITION, changed_data=changed_data, change_message=change_message,
+                           relobj=lab_pk)
 
     return JsonResponse({'data': get_objects(pk), 'status': status, 'msg': msg})
 
@@ -186,17 +185,15 @@ def validate_unit(lab, obj):
 @permission_required('academic.delete_procedurestep')
 def delete_step(request):
     step = ProcedureStep.objects.get(pk=int(request.POST['pk']))
+    organilab_logentry(request.user, step, DELETION, relobj=step.procedure.content_object)
     step.delete()
-    ct = ContentType.objects.get_for_model(step)
-    organilab_logentry(request.user, ct, step, DELETION, 'procedure step')
     return JsonResponse({'data': True})
 
 @permission_required('academic.delete_procedurerequiredobject')
 def remove_object(request, pk):
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
-    ct = ContentType.objects.get_for_model(obj)
-    organilab_logentry(request.user, ct, obj, DELETION, 'procedure required object')
+    organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({'data': get_objects(pk)})
 
 
@@ -217,8 +214,7 @@ def save_observation(request, pk):
 
     objects = ProcedureObservations.objects.create(step=step, description=request.POST['description'])
     objects.save()
-    ct = ContentType.objects.get_for_model(objects)
-    organilab_logentry(request.user, ct, objects, ADDITION, 'procedure observations', changed_data=['description'])
+    organilab_logentry(request.user,  objects, ADDITION, changed_data=['description'])
 
     return JsonResponse({'data': get_observations(pk)})
 
@@ -235,8 +231,7 @@ def get_observations(pk):
 def remove_observation(request, pk):
     obj = ProcedureObservations.objects.get(pk=int(request.POST['pk']))
     obj.delete()
-    ct = ContentType.objects.get_for_model(obj)
-    organilab_logentry(request.user, ct, obj, DELETION, 'procedure observations')
+    organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({'data': get_observations(pk)})
 
 @login_required
@@ -249,8 +244,7 @@ def get_procedure(request):
 def delete_procedure(request):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
-    ct = ContentType.objects.get_for_model(procedure)
-    organilab_logentry(request.user, ct, procedure, DELETION, 'procedure')
+    organilab_logentry(request.user, procedure, DELETION)
     return JsonResponse({'data': True})
 
 
@@ -374,8 +368,7 @@ def add_reservation(request, data, data_step):
                                                                final_date=form.cleaned_data['final_date'],
                                                                amount_required=result)
                     reserved.save()
-                    ct = ContentType.objects.get_for_model(reserved)
-                    organilab_logentry(request.user, ct, reserved, ADDITION, 'reserved products', changed_data=form.changed_data)
+                    organilab_logentry(request.user, reserved, ADDITION, changed_data=form.changed_data)
 
             if result == 0 or obj.quantity == 0:
                 index+=1

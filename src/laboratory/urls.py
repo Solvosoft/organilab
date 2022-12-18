@@ -53,12 +53,10 @@ lab_shelf_urls = [
 ]
 
 lab_rooms_urls = [
-    re_path(r'^$', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
-    re_path(r'^create$', labroom.LabroomCreate.as_view(), name='rooms_create'),
-    re_path(r'^(?P<pk>\d+)/delete$', labroom.LaboratoryRoomDelete.as_view(),
-        name='rooms_delete'),
-    re_path(r'^(?P<pk>\d+)/edit$', labroom.LabroomUpdate.as_view(),
-        name='rooms_update'),
+    path('', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
+    path('create', labroom.LabroomCreate.as_view(), name='rooms_create'),
+    path('<int:pk>/delete', labroom.LaboratoryRoomDelete.as_view(), name='rooms_delete'),
+    path('<int:pk>/edit', labroom.LabroomUpdate.as_view(), name='rooms_update'),
 ]
 
 lab_furniture_urls = [

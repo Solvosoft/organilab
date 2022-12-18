@@ -42,8 +42,6 @@ class ShelfObjectReservation(ProductReservationView):
 
         )
         self.object.save()
-
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'product', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, ADDITION, 'product', changed_data=form.changed_data)
         messages.success(self.request, _('Product added successful'))
         return self.get_success_view()

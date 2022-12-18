@@ -45,8 +45,8 @@ class LaboratoryEdit(UpdateView):
 
     def form_valid(self,form):
         laboratory = form.save()
-        ct = ContentType.objects.get_for_model(laboratory)
-        organilab_logentry(self.request.user, ct, laboratory, CHANGE, 'laboratory', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, laboratory, CHANGE, changed_data=form.changed_data,
+                           relobj=self.object)
         return super(LaboratoryEdit, self).form_valid(form)
 
 
@@ -175,8 +175,8 @@ class CreateLaboratoryFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'laboratory', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data,
+                           relobj=self.object)
 
         user = self.request.user
         admins = User.objects.filter(is_superuser=True)
@@ -247,8 +247,7 @@ class LaboratoryDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'laboratory')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

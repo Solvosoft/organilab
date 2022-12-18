@@ -133,7 +133,40 @@ def get_molecular_formula(object, default=None):
     return result
 
 
-def organilab_logentry(user, content_type, object, action_flag, model_name, changed_data=None, object_repr='', change_message='', relobj=None):
+def find_rel_object(object):
+    natural_name = "%s.%s"%(
+        object._meta.app_label,
+        object._meta.model_name
+    )
+    instance = None
+    if natural_name == 'academic.procedurestep':
+        instance = object.procedure.content_object
+    elif natural_name == 'academic.procedure':
+        instance = object.content_object
+    elif natural_name == 'academic.procedurerequiredobject':
+        instance = object.step.procedure.content_object
+    elif natural_name == 'academic.procedureobservations':
+        instance = object.step.procedure.content_object
+    elif natural_name == ' reservations_management.reservedproducts':
+        #TODO: Allow return a list
+        instance = object.shelf_object.shelf.furniture.labroom.laboratory_set.all().first()
+    elif natural_name == "laboratory.protocol":
+        instance = object.laboratory
+
+    return instance
+
+
+def organilab_logentry(user, object, action_flag, model_name=None, changed_data=None, object_repr='', change_message='',
+                       content_type=None, relobj=None):
+
+    if content_type is None:
+        content_type = ContentType.objects.get_for_model(object)
+
+    if model_name is None:
+        model_name = object._meta.verbose_name
+
+    if isinstance(relobj, (int, str)):
+        relobj=Laboratory.objects.filter(pk=relobj).first()
 
     action = 'added'
     if action_flag == 2:
@@ -159,11 +192,16 @@ def organilab_logentry(user, content_type, object, action_flag, model_name, chan
         change_message=change_message
     )
 
-    if relobj:
-        content_type_obj = ContentType.objects.get_for_model(relobj)
+    if relobj is None:
+        relobj = find_rel_object(object)
 
-        LabOrgLogEntry.objects.create(
-            log_entry=log_entry,
-            content_type=content_type_obj,
-            object_id=relobj.id
-        )
+    if relobj:
+        if not isinstance(relobj, (list,)):
+            relobj=[relobj]
+        for rel_obj in relobj:
+            content_type_obj = ContentType.objects.get_for_model(rel_obj)
+            LabOrgLogEntry.objects.create(
+                log_entry=log_entry,
+                content_type=content_type_obj,
+                object_id=rel_obj.id
+            )

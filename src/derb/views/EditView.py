@@ -26,6 +26,7 @@ def getId(request):
     url = url.split("/")
     form_id = url[len(url)-1]
     return form_id
+
 @method_decorator(permission_required('derb.change_customform'), name='dispatch')
 class EditView(TemplateView):
     template_name = 'formBuilder/edit_view.html'
@@ -45,8 +46,7 @@ class EditView(TemplateView):
                 custom_form = CustomForm.objects.get(id=form_id)
                 custom_form.schema = schema
                 custom_form.save()
-                ct = ContentType.objects.get_for_model(custom_form)
-                organilab_logentry(self.request.user, ct, custom_form, CHANGE, 'custom form', changed_data=['schema'])
+                organilab_logentry(self.request.user, custom_form, CHANGE, 'custom form', changed_data=['schema'])
                 return JsonResponse(json.dumps({"result": True}), safe=False)
             else:
                 return JsonResponse(json.dumps({"result": False}), safe=False)
@@ -61,6 +61,5 @@ def UpdateForm(request):
         form.name = request.POST.get('name')
         form.schema['name'] = form.name
         form.save()
-        ct = ContentType.objects.get_for_model(form)
-        organilab_logentry(request.user, ct, form, CHANGE, 'custom form', changed_data=['name', 'schema'])
+        organilab_logentry(request.user, form, CHANGE, 'custom form', changed_data=['name', 'schema'])
     return JsonResponse({"name": form.schema['name']})

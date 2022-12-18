@@ -62,8 +62,8 @@ class LabroomCreate(CreateView):
         lab = get_object_or_404(Laboratory, pk=self.lab)
         lab.rooms.add(room)
         lab.save()
-        ct = ContentType.objects.get_for_model(room)
-        organilab_logentry(self.request.user, ct, room, ADDITION, 'laboratory room', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, room, ADDITION, changed_data=form.changed_data,
+                           relobj=self.lab)
         return super(LabroomCreate, self).form_valid(form)
 
     def get_success_url(self):
@@ -85,8 +85,8 @@ class LabroomUpdate(UpdateView):
 
     def form_valid(self,form):
         room = form.save()
-        ct = ContentType.objects.get_for_model(room)
-        organilab_logentry(self.request.user, ct, room, CHANGE, 'laboratory room', changed_data=form.changed_data)
+        organilab_logentry(self.request.user,  room, CHANGE, changed_data=form.changed_data,
+                           relobj=self.lab)
         return super(LabroomUpdate, self).form_valid(form)
 
 
@@ -102,8 +102,8 @@ class LaboratoryRoomDelete(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'laboratory room')
+        organilab_logentry(self.request.user, self.object, DELETION,
+                           relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

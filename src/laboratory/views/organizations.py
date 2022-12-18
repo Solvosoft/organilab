@@ -122,8 +122,7 @@ class OrganizationDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'organization structure')
+        organilab_logentry(self.request.user, self.object, DELETION, 'organization structure')
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
@@ -139,8 +138,7 @@ class OrganizationCreateView(CreateView):
             organization=self.object
         )
         orguserman.users.add(self.request.user)
-        ct = ContentType.objects.get_for_model(orguserman)
-        organilab_logentry(self.request.user, ct, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
+        organilab_logentry(self.request.user, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response
 
 
@@ -152,6 +150,5 @@ class OrganizationUpdateView(UpdateView):
 
     def form_valid(self, form):
         orguserman=form.save()
-        ct = ContentType.objects.get_for_model(orguserman)
-        organilab_logentry(self.request.user, ct, orguserman, CHANGE, 'organization structure', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, orguserman, CHANGE, 'organization structure', changed_data=form.changed_data)
         return super(OrganizationUpdateView, self).form_valid(orguserman)

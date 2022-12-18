@@ -59,8 +59,8 @@ class FurnitureCreateView(CreateView):
         self.object.labroom = get_object_or_404(
             LaboratoryRoom, pk=self.labroom)
         self.object.save()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'furniture', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, ADDITION, 'furniture', changed_data=form.changed_data,
+                           relobj=self.lab)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
@@ -119,8 +119,8 @@ class FurnitureUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, CHANGE, 'furniture', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, CHANGE, changed_data=form.changed_data,
+                           relobj=self.lab)
         return redirect(self.get_success_url())
 
 @method_decorator(has_lab_assigned(), name='dispatch')
@@ -134,8 +134,7 @@ class FurnitureDelete(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'furniture')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

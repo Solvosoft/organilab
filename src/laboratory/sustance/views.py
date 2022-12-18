@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
-from laboratory.models import Object
+from laboratory.models import Object, Laboratory
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
 from laboratory.utils import get_cas, organilab_logentry
 from laboratory.validators import isValidate_molecular_formula
@@ -19,7 +19,7 @@ from laboratory.validators import isValidate_molecular_formula
 @permission_required('laboratory.change_object')
 def create_edit_sustance(request, lab_pk, pk=None):
     instance = Object.objects.filter(pk=pk).first()
-
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj=None
     if instance:
         suscharobj = instance.sustancecharacteristics
@@ -46,16 +46,12 @@ def create_edit_sustance(request, lab_pk, pk=None):
 
             suscharinst.save()
             suschacform.save_m2m()
-
-            ct_obj = ContentType.objects.get_for_model(obj)
-            ct_subs_charac = ContentType.objects.get_for_model(suscharinst)
-
             action = ADDITION
             if pk:
                 action = CHANGE
-
-            organilab_logentry(request.user, ct_obj, obj, action, 'object', changed_data=objform.changed_data)
-            organilab_logentry(request.user, ct_subs_charac, suscharinst, action, 'sustance characteristics', changed_data=suschacform.changed_data)
+            organilab_logentry(request.user, obj, action, 'object', changed_data=objform.changed_data, relobj=laboratory)
+            organilab_logentry(request.user, suscharinst, action, 'sustance characteristics',
+                               changed_data=suschacform.changed_data, relobj=laboratory)
 
             messages.success(request, _("Sustance saved successfully"))
             return redirect(reverse('laboratory:sustance_list',args=[lab_pk]))
@@ -94,8 +90,7 @@ class SubstanceDelete(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'object')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.kwargs['lab_pk'])
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
