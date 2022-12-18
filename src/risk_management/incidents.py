@@ -1,5 +1,5 @@
 import django_excel
-from django.contrib.admin.models import DELETION
+from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -67,6 +67,11 @@ class IncidentReportCreate(djgeneric.CreateView):
         }
         return kwargs
 
+    def form_valid(self, form):
+        dev = super().form_valid(form)
+        organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
+        return dev
+
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.change_incidentreport'), name="dispatch")
@@ -83,6 +88,10 @@ class IncidentReportEdit(djgeneric.UpdateView):
         }
         return kwargs
 
+    def form_valid(self, form):
+        dev = super().form_valid(form)
+        organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
+        return dev
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.delete_incidentreport'), name="dispatch")
@@ -92,8 +101,7 @@ class IncidentReportDelete(djgeneric.DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'incident report')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=list(self.object.laboratories.all()))
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

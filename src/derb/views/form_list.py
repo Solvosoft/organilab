@@ -29,8 +29,7 @@ class DeleteForm(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'custom form')
+        organilab_logentry(self.request.user, self.object, DELETION, 'custom form')
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

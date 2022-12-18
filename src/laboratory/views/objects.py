@@ -51,8 +51,7 @@ class ObjectView(object):
 
             def form_valid(self, form):
                 object = form.save()
-                ct = ContentType.objects.get_for_model(object)
-                organilab_logentry(self.request.user, ct, object, ADDITION, 'object', changed_data=form.changed_data)
+                organilab_logentry(self.request.user, object, ADDITION, changed_data=form.changed_data, relobj=self.lab)
                 return super(ObjectCreateView, self).form_valid(form)
 
         self.create = ObjectCreateView.as_view(
@@ -77,8 +76,7 @@ class ObjectView(object):
 
             def form_valid(self, form):
                 object = form.save()
-                ct = ContentType.objects.get_for_model(object)
-                organilab_logentry(self.request.user, ct, object, CHANGE, 'object', changed_data=form.changed_data)
+                organilab_logentry(self.request.user, object, CHANGE,  changed_data=form.changed_data, relobj=self.lab)
                 return super(ObjectUpdateView, self).form_valid(object)
 
 
@@ -98,8 +96,7 @@ class ObjectView(object):
 
             def form_valid(self, form):
                 success_url = self.get_success_url()
-                ct = ContentType.objects.get_for_model(self.object)
-                organilab_logentry(self.request.user, ct, self.object, DELETION, 'object')
+                organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
                 self.object.delete()
                 return HttpResponseRedirect(success_url)
 

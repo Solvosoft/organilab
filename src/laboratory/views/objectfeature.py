@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from laboratory.forms import ObjectFeaturesForm
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView
-from laboratory.models import ObjectFeatures
+from laboratory.models import ObjectFeatures, Laboratory
 from laboratory.decorators import has_lab_assigned
 
 
@@ -47,8 +47,8 @@ class FeatureCreateView(CreateView):
 
     def form_valid(self, form):
         object_feactures = form.save()
-        ct = ContentType.objects.get_for_model(object_feactures)
-        organilab_logentry(self.request.user, ct, object_feactures, ADDITION, 'object feactures', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, object_feactures, ADDITION, changed_data=form.changed_data,
+                           relobj=self.lab)
         return super(FeatureCreateView, self).form_valid(object_feactures)
 
 
@@ -65,8 +65,8 @@ class FeatureUpdateView(UpdateView):
 
     def form_valid(self, form):
         object_feactures = form.save()
-        ct = ContentType.objects.get_for_model(object_feactures)
-        organilab_logentry(self.request.user, ct, object_feactures, CHANGE, 'object feactures', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, object_feactures, CHANGE, changed_data=form.changed_data,
+                           relobj=self.lab)
         return super(FeatureUpdateView, self).form_valid(object_feactures)
 
 
@@ -82,7 +82,6 @@ class FeatureDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'object feactures')
+        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)

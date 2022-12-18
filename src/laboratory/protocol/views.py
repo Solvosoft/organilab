@@ -25,7 +25,6 @@ class ProtocolCreateView(CreateView):
     template_name = 'laboratory/protocol/create.html'
     form_class = ProtocolForm
 
-
     def get_success_url(self):
         return reverse_lazy('laboratory:protocol_list', args=(self.lab,))
 
@@ -35,14 +34,14 @@ class ProtocolCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        protocol = form.save(commit=False)
-        laboratory = get_object_or_404(Laboratory, pk = self.lab)
+        self.object = form.save(commit=False)
+        protocol = self.object
+        laboratory = get_object_or_404(Laboratory, pk=self.lab)
         protocol.laboratory = laboratory
         protocol.upload_by = self.request.user
         protocol.save()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'incident report')
-        return super(ProtocolCreateView,self).form_valid(form)
+        organilab_logentry(self.request.user, self.object, ADDITION, 'Protocol', relobj=laboratory)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ProtocolUpdateView(UpdateView):
@@ -56,8 +55,7 @@ class ProtocolUpdateView(UpdateView):
 
     def form_valid(self, form):
         dev = super().form_valid()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, DELETION, 'Protocol')
+        organilab_logentry(self.request.user, self.object, DELETION, 'Protocol', relobj=self.object.laboratory)
         return dev
 
 
@@ -72,7 +70,6 @@ class ProtocolDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(request.user, ct, self.object, DELETION, 'Protocol')
+        organilab_logentry(request.user, self.object, DELETION, 'Protocol', relobj=self.object.laboratory)
         self.object.delete()
         return HttpResponseRedirect(success_url)

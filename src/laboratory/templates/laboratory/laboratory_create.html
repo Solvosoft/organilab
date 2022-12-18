@@ -5,23 +5,23 @@
     {% define_urlname_action 'create_lab' %}
 {% endblock %}
 {% block content %}
+
   <div class="row">
     <div class="col-md-offset-2 col-md-8">
       <div class="page-header col-xs-13" align="center">
-        <h3 class="heading-1" center=""><span>{% trans 'Create laboratory' %}</span></h3>
+        <h3 class="heading-1"><span>{% trans 'Create laboratory' %}</span></h3>
       </div>
     </div>
   </div>
   {% if perms.laboratory.add_laboratory %}
-    <div class="row">
-      <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal">{% csrf_token %}
-        <div class=" body ">
+  <div class="row">
+      <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal"> {% csrf_token %}
+        <div class="body">
           {{ form.as_horizontal }}
-
         </div>
         <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
       </form>
-    </div>
+  </div>
   {% else %} 
     {% include 'laboratory/action_denied.html' %} 
   {% endif %}	

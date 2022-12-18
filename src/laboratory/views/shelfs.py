@@ -66,8 +66,7 @@ def ShelfDelete(request, lab_pk, pk, row, col):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
-    ct = ContentType.objects.get_for_model(shelf)
-    organilab_logentry(request.user, ct, shelf, DELETION, 'shelf')
+    organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
     url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col))
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
@@ -116,8 +115,8 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, ADDITION, 'shelf', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
+                           relobj=self.lab)
 
         dev = render_to_string(
             "laboratory/shelf_details.html",
@@ -182,9 +181,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
 
         self.object.furniture = furniture
         self.object.save()
-
-        ct = ContentType.objects.get_for_model(self.object)
-        organilab_logentry(self.request.user, ct, self.object, CHANGE, 'shelf', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, CHANGE, changed_data=form.changed_data, relobj=self.lab)
 
         dev = render_to_string(
             "laboratory/shelf_details.html",

@@ -16,17 +16,15 @@
 
 {% block content %}
 	{% if perms.laboratory.view_laboratoryroom or perms.laboratory.add_laboratoryroom or  perms.laboratory.change_laboratoryroom or perms.laboratory.delete_laboratoryroom %}
-	<div class="row">
-		<div class="">
-			<div class="page-header col-xs-13" align="center">
-				<h3 class="heading-1"><span>{% trans 'Laboratory room management' %}</span></h3>
-			</div>
-		</div>
+<div class="row">
+	<div class="page-header col-xs-13" align="center">
+		<h3 class="heading-1"><span>{% trans 'Laboratory room management' %}</span></h3>
 	</div>
-	<div class="row ">
+</div>
+<div class="row ">
 		<div class="container-fluid">
 			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-			<div class="" style="padding: 15px;">
+			<div style="padding: 15px;">
 				<form class="form-horizontal " action="" method="post">{% csrf_token %}
 					{{ form.as_horizontal }}
 					<button class="btn btn-sm btn-outline-success" type="submit" style="width:90px; float: right; ">
@@ -59,13 +57,13 @@
 												{% endfor %}
 											</ul>
 										</div>
-										<button type="button" class="btn btn-outline-success" style="width:60px"
-												data-bs-container="body" data-bs-toggle="popover" 5
+										<button type="button" class="btn btn-sm btn-outline-success"
+												data-bs-container="body" data-bs-toggle="popover"
 												data-content="f{{object.pk}}"
 												data-bs-html=true>
 											{{ object.furniture_set.count }}
 										</button>
-										<button type="button" class="btn btn-outline-dark" title="{% trans 'Create Furniture' %}"
+										<button type="button" class="btn btn-sm btn-outline-dark" title="{% trans 'Create Furniture' %}"
 												data-bs-toggle="modal" data-bs-target="#furnitureModal"
 												data-href="{% url 'laboratory:furniture_create' laboratory object.pk %}">
 											+ <span  class="fa fa-bed" aria-hidden="true"></span>
@@ -75,14 +73,14 @@
 							</div>
 						</div>
 						<div class="col-md-2">
-							<div class="btn-group" role="group" aria-label="...">
+							<div class="btn-group btn-group-sm" role="group" >
 								{% if perms.laboratory.change_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-outline-warning">
+									<a href="{% url 'laboratory:rooms_update' laboratory object.pk %}" class="btn btn-group btn-group-sm btn-outline-warning">
 										<span class="fa fa-edit" aria-hidden="true"> </span>{% trans 'Update' %}
 									</a>
 								{% endif %}
 								{% if perms.laboratory.delete_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-outline-danger">
+									<a href="{% url 'laboratory:rooms_delete' laboratory object.pk %}" class="btn btn-group btn-group-sm btn-outline-danger">
 										<span class="fa fa-trash" aria-hidden="true"> </span>{% trans 'Delete' %}
 									</a>
 								{% endif %}
@@ -117,6 +115,7 @@
 			</div>
 		</div>
 	{% endif %}
+</div>
 {% endblock %}
 
 {% block js %}
