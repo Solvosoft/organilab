@@ -108,10 +108,13 @@ def get_profile_by_organization(organization):
     users = get_users_from_organization(organization)
     return Profile.objects.filter(user__in=users)
 
+
 def get_laboratories_from_organization(rootpk):
-    return Laboratory.objects.filter(organization__in=OrganizationStructure.objects.filter(
-        pk=rootpk).descendants(include_self=True)
-                              ).distinct()
+    org = OrganizationStructure.objects.filter(pk=rootpk).first()
+    if org:
+        desendants = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True, of=org).values_list('pk', flat=True))
+        return Laboratory.objects.filter(organization__in= desendants).distinct()
+    return Laboratory.objects.none()
 
 def get_cas(object, default=None):
     result = default

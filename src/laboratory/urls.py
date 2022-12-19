@@ -8,7 +8,8 @@ from rest_framework.routers import DefaultRouter
 
 from authentication.users import ChangeUser, password_change
 from laboratory import views
-from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
+    LogEntryViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
@@ -18,6 +19,7 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
@@ -161,10 +163,9 @@ organization_urls = [
     path('organization/<int:pk>/delete', OrganizationDeleteView.as_view(), name="delete_organization"),
     path('organization/create', OrganizationCreateView.as_view(), name="create_organization"),
     path('organization/<int:pk>/update', OrganizationUpdateView.as_view(), name="update_organization"),
-
-    re_path('profile/(?P<pk>\d+)/info$', ChangeUser.as_view(), name='profile'),
-    re_path('profile/(?P<pk>\d+)/password$', password_change, name='password_change'),
-
+    path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
+    path('profile/<int:pk>/password', password_change, name='password_change'),
+    path('logentry/<int:pk>', get_logentry_from_organization, name='logentry_list'),
 ]
 
 provider_urls=[
@@ -195,6 +196,7 @@ router = DefaultRouter()
 
 router.register('api_inform', CommentAPI, basename='api-inform')
 router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
+router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
