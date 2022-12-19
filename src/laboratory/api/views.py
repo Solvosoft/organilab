@@ -1,3 +1,5 @@
+from django.contrib.admin.models import LogEntry
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -10,10 +12,12 @@ from rest_framework import status, viewsets
 from django.http import Http404
 
 from laboratory.api import serializers
-from laboratory.models import CommentInform, Inform, Protocol
+from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
+    LabOrgLogEntry
+from laboratory.utils import get_laboratories_from_organization
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -148,5 +152,47 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
         response = {'data': data, 'recordsTotal': Protocol.objects.count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+
+class LogEntryViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.LogEntryDataTableSerializer
+    queryset = LogEntry.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['object_repr', 'action_flag']
+    filterset_class =LogEntryFilterSet
+    ordering_fields = ['pk']
+    ordering = ('pk', )
+
+    def get_queryset(self):
+        org = self.request.GET.get('org', None)
+        if not org:
+            return self.queryset.none()
+        else:
+            org = OrganizationStructure.objects.filter(pk=org).first()
+            if not org:
+                return self.queryset.none()
+        laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk' , flat=True))
+
+        log_entries = LabOrgLogEntry.objects.filter(
+            Q(content_type__app_label='laboratory',
+              content_type__model='laboratory',
+              object_id__in=laboratories
+            ) | Q(
+              content_type__app_label='laboratory',
+              content_type__model='organizationstructure',
+              object_id=org.pk
+            )
+        ).values_list('log_entry', flat=True)
+        return LogEntry.objects.filter(pk__in=log_entries)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': LogEntry.objects.count(), 'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)

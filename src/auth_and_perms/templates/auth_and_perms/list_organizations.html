@@ -75,6 +75,14 @@
 
             <div class="float-end">
                 <ul class="list-group list-group-horizontal">
+
+                    {% if perms.laboratory.change_organizationstructure %}
+                    <li class="list-group-item">
+                        <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.node.pk %}"  title="{% trans 'Log List' %}">
+                            <i class="fa fa-file-text-o"></i></a>
+                    </li>
+                    {% endif %}
+
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
                         <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.node.pk %}" data-org="{{node.0.node.pk}}" data-display="{{node.0.node}}">
