@@ -148,7 +148,6 @@ edit_objects=[
 reports_all_lab=[
     path('reports/hcode', laboratory.HCodeReports.as_view(), name='h_code_reports'),
     path('reports/download/hcode', reports.report_h_code, name='download_h_code_reports'),
-    path('reportreactivepresence', reports.get_exposition_report_links, name='report_reactive_presence'),
 ]
 
 sustance_urls = [
@@ -166,6 +165,7 @@ organization_urls = [
     path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
     path('profile/<int:pk>/password', password_change, name='password_change'),
     path('logentry/<int:pk>', get_logentry_from_organization, name='logentry_list'),
+    path('organizations', reports.get_exposition_report_links, name='organizations'),
 ]
 
 provider_urls=[

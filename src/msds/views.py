@@ -15,8 +15,8 @@ from django.conf import settings
 import os
 
 
-def index_msds(request):
-    return render(request, 'index_msds.html')
+def index_msds(request, pk):
+    return render(request, 'index_msds.html', context={'pk': pk})
 
 
 def get_download_links(request, obj):
@@ -38,10 +38,13 @@ def get_download_links(request, obj):
     return dev
 
 
-def get_list_msds(request):
+def get_list_msds(request, pk):
     q = request.GET.get('search[value]')
     length = request.GET.get('length', '10')
     pgnum = request.GET.get('start', '0')
+
+    queryset = MSDSObject.objects.filter(organization__pk=pk)
+    objs = queryset.none()
 
     try:
         length = int(length)
@@ -51,11 +54,10 @@ def get_list_msds(request):
         pgnum = 1
 
     if q:
-        objs = MSDSObject.objects.filter(
+        objs = queryset.filter(
             Q(provider__icontains=q) | Q(product__icontains=q)
-        ).order_by('product')
-    else:
-        objs = MSDSObject.objects.all().order_by('product')
+        )
+    objs = objs.order_by('product')
 
     recordsFiltered = objs.count()
     p = Paginator(objs, length)

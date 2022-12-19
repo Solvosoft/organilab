@@ -10,7 +10,13 @@
     <div class="{{node.1.0}}">
         <div class="bs-callout bs-callout-{{node.1.1}}">
             <h4 class="w-100" >{{node.0}}</h4>
-            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.0.pk %}" target="_blank"><i class="fa fa-medkit"></i>{% trans 'Exposition report' %}</a>
+            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' node.0.pk %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Exposition report' %}</a>
+            {% if perms.sga.view_substance %}
+                <a class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="{% trans 'SGA' %}" href="{% url 'get_substance' 'academic' node.0.pk %}" target="_blank"><i class="fa fa-tags"></i> {% trans 'SGA' %}</a>
+            {% endif %}
+            {% if perms.msds.view_msdsobject %}
+                <a class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="{% trans 'MSDS: Security sheets' %}" href="{% url 'msds:index_msds' node.0.pk %}" target="_blank"><i class="fa fa-file"></i> {% trans 'MSDS: Security sheets' %}</a>
+            {% endif %}
         </div>
     </div>
 </div>

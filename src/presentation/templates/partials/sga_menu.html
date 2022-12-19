@@ -22,13 +22,6 @@
         </li>
          {% endif %}
 
-        {% if perms.msds.view_msdsobject %}
-        <li>
-            <a href="{% url 'msds:index_msds'%}">
-                {% trans 'MSDS: Security sheets' %}
-            </a>
-        </li>
-        {% endif %}
     {% include 'partials/sga_complements.html' %}
         {% if perms.sga.view_builderinformation %}
         <li>

@@ -160,7 +160,8 @@ class Substance(models.Model):
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
     organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
     objects = OrganilabContextQueryset.as_manager()
-
+    organization = models.ForeignKey('laboratory.OrganizationStructure', on_delete=models.DO_NOTHING, null=True,
+                                     blank=True)
 
     @property
     def warning_word(self):
