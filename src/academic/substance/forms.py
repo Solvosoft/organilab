@@ -21,7 +21,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             'comercial_name', 'synonymous',
             'uipa_name', 'components_sga',
             'agrochemical', 'description',
-            'brand'
+            'brand', 'organization'
         ]
         widgets = {
             'comercial_name': genwidgets.TextInput,
@@ -31,6 +31,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             'agrochemical': genwidgets.YesNoInput,
             'description': genwidgets.Textarea,
             'brand': genwidgets.TextInput,
+            'organization': genwidgets.HiddenInput
         }
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):

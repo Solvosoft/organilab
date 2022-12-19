@@ -10,6 +10,7 @@ class MSDSObject(models.Model):
                             validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
 
     product = models.CharField(_("Product"), max_length=300)
+    organization = models.ForeignKey('laboratory.OrganizationStructure', on_delete=models.DO_NOTHING, null=True, blank=True)
 
     class Meta:
         ordering = ('pk',)

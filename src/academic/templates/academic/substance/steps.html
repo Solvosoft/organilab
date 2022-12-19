@@ -3,7 +3,7 @@
 <div id="wizard" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">
         <li>
-            <a href="{% if not substance %} {% url 'create_sustance' organilabcontext %} {% else %} {% url 'update_substance' organilabcontext substance %} {% endif %}" class="{% if step == 1 %}selected{%else%}disabled{% endif %}" isdone="1" rel="1">
+            <a href="{% if not substance %} {% url 'create_sustance' organilabcontext pk_org %} {% else %} {% url 'update_substance' organilabcontext pk_org substance %} {% endif %}" class="{% if step == 1 %}selected{%else%}disabled{% endif %}" isdone="1" rel="1">
                 <span class="step_no">1</span>
                 <span class="step_descr">{% trans 'Create Substances' %}</span>
             </a>
