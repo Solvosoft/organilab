@@ -97,7 +97,7 @@ def find_username(request):
 
 class LogEntryFilterSet(FilterSet):
     action_time = DateFromToRangeFilter(widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
-    user = filters.ModelChoiceFilter(queryset=find_username)
+    #user = filters.ModelChoiceFilter(queryset=find_username)
     class Meta:
         model = LogEntry
         fields = {
