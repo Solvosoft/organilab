@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from presentation.models import AbstractOrganizationRef
 from risk_management.models_utils import PriorityCalculator
 
-class PriorityConstrain(models.Model, PriorityCalculator):
+class PriorityConstrain(AbstractOrganizationRef, PriorityCalculator):
     OPERATIONS = (
         ('<', '<'),
         ('<=', '<='),
@@ -32,7 +34,7 @@ class PriorityConstrain(models.Model, PriorityCalculator):
             return "%d %s  %s --> %s" % (self.left_value, self.get_operation_display(), right, self.priority)
         return "%d %s X --> %s"%(self.left_value, self.operation, self.priority)
 
-class ZoneType(models.Model):
+class ZoneType(AbstractOrganizationRef):
     name = models.CharField(max_length=250, verbose_name=_('Name'))
     priority_validator = models.ManyToManyField(PriorityConstrain, verbose_name=_('Priority calculate operators'))
 
@@ -45,7 +47,7 @@ class ZoneType(models.Model):
     def __str__(self):
         return self.name
 
-class RiskZone(models.Model):
+class RiskZone(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_('Name'))
     laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_('Laboratories'))
     num_workers = models.SmallIntegerField(verbose_name=_('Number of workers (aprox)'))
@@ -60,7 +62,7 @@ class RiskZone(models.Model):
         verbose_name_plural = _('Risk zones')
         ordering = ('priority', 'pk')
 
-class IncidentReport(models.Model):
+class IncidentReport(AbstractOrganizationRef):
     creation_date = models.DateTimeField(auto_now_add=True)
     short_description = models.CharField(max_length=500, verbose_name=_("Descipción corta"),
                                          help_text=_('Descipción corta de evento, max 500 caracteres'))
