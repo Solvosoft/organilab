@@ -119,7 +119,7 @@ class FurnitureUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        organilab_logentry(self.request.user, self.object, CHANGE, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, self.object, CHANGE, 'furniture', changed_data=form.changed_data,
                            relobj=self.lab)
         return redirect(self.get_success_url())
 
@@ -134,7 +134,7 @@ class FurnitureDelete(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
+        organilab_logentry(self.request.user, self.object, DELETION, 'furniture', relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

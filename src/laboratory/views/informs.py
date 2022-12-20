@@ -1,4 +1,5 @@
 # encoding: utf-8
+from django.contrib.admin.models import DELETION, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect, reverse
 from django.shortcuts import render
@@ -11,6 +12,8 @@ from django.utils.translation import gettext as _
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 import json
+
+from laboratory.utils import organilab_logentry
 
 
 @permission_required('laboratory.view_inform')
@@ -29,6 +32,7 @@ def get_informs(request, *args, **kwargs):
 def remove_inform(request, *args, **kwargs):
     informs= Inform.objects.filter(pk=int(kwargs.get('pk'))).first()
     if informs:
+        organilab_logentry(request.user, informs, DELETION, 'informs', relobj=kwargs.get('lab_pk'))
         informs.delete()
         return redirect(reverse('laboratory:get_informs',kwargs={'lab_pk':kwargs.get('lab_pk')}))
     return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk': kwargs.get('lab_pk')}))
@@ -47,9 +51,8 @@ def create_informs(request, *args, **kwargs):
         inform.content_type=content
         inform.object_id=int(laboratory)
         inform.schema=inform.custom_form.schema
-
-
         inform.save()
+        organilab_logentry(request.user, inform, ADDITION, 'informs', relobj=laboratory)
         return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory}))
 
     return render(request, 'laboratory/inform.html', context={'laboratory':laboratory})

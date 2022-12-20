@@ -1,4 +1,4 @@
-from django.contrib.admin.models import ADDITION, DELETION
+from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
@@ -40,7 +40,7 @@ class ProtocolCreateView(CreateView):
         protocol.laboratory = laboratory
         protocol.upload_by = self.request.user
         protocol.save()
-        organilab_logentry(self.request.user, self.object, ADDITION, 'Protocol', relobj=laboratory)
+        organilab_logentry(self.request.user, self.object, ADDITION, 'protocol', changed_data=form.changed_data, relobj=laboratory)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -55,7 +55,7 @@ class ProtocolUpdateView(UpdateView):
 
     def form_valid(self, form):
         dev = super().form_valid()
-        organilab_logentry(self.request.user, self.object, DELETION, 'Protocol', relobj=self.object.laboratory)
+        organilab_logentry(self.request.user, self.object, CHANGE, 'protocol', changed_data=form.changed_data, relobj=self.object.laboratory)
         return dev
 
 
@@ -70,6 +70,6 @@ class ProtocolDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        organilab_logentry(request.user, self.object, DELETION, 'Protocol', relobj=self.object.laboratory)
+        organilab_logentry(request.user, self.object, DELETION, 'protocol', relobj=self.object.laboratory)
         self.object.delete()
         return HttpResponseRedirect(success_url)
