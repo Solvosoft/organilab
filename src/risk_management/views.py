@@ -4,11 +4,12 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
+from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from risk_management.forms import RiskZoneCreateForm
 from risk_management.models import RiskZone
+from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 
 @method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
@@ -19,11 +20,14 @@ class ListZone(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        org = self.kwargs['org_pk']
+
+        queryset = super().get_queryset().filter(organization__pk=org)
         if 'q' in self.request.GET:
             q = self.request.GET['q']
             queryset = queryset.filter(Q(name__icontains=q)|Q(
                                        laboratories__name__icontains=q)).distinct()
+
         return queryset
 
 
@@ -42,7 +46,6 @@ class ListZone(ListView):
 class ZoneCreate(CreateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -51,15 +54,23 @@ class ZoneCreate(CreateView):
 
     def form_valid(self, form):
         dev = super().form_valid(form)
+        risk_zone= form.save(commit=False)
+        org = self.kwargs['org_pk']
+        org = OrganizationStructure.objects.filter(pk=org).first()
+        risk_zone.organization=org
+        risk_zone.created_by=self.request.user
+        risk_zone.save()
         organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
         return dev
-
+    def get_success_url(self, **kwargs):
+        org_pk = self.kwargs['org_pk']
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 
 @method_decorator(permission_required('risk_management.change_riskzone'), name="dispatch")
 class ZoneEdit(UpdateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -70,11 +81,13 @@ class ZoneEdit(UpdateView):
         dev = super().form_valid(form)
         organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
         return dev
-
+    def get_success_url(self, **kwargs):
+        org_pk = self.org
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 @method_decorator(permission_required('risk_management.delete_riskzone'), name="dispatch")
 class ZoneDelete(DeleteView):
     model = RiskZone
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def form_valid(self, form):
         success_url = self.get_success_url()
@@ -82,6 +95,10 @@ class ZoneDelete(DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
+    def get_success_url(self, **kwargs):
+        org_pk = self.org
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 
 @method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
 class ZoneDetail(DetailView):
