@@ -60,68 +60,117 @@ def link_callback(uri, rel):
 
 class CreateView(djCreateView):
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
+
+
         return djCreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djCreateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djCreateView.get_context_data(self, **kwargs)
-        context['laboratory'] = int(self.lab)
+        context['org_pk'] = self.org
+        context['laboratory'] = self.lab
         return context
 
 
 class UpdateView(djUpdateView):
+
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djUpdateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+            print(self.org)
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djUpdateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djUpdateView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
+        context['org_pk'] = self.org
         return context
 
 
 class DeleteView(djDeleteView):
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djDeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djDeleteView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djDeleteView.get_context_data(self, **kwargs)
+        context['org_pk'] = self.org
         context['laboratory'] = self.lab
         return context
 
 
 class ListView(djListView):
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djListView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djListView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
+        context['org_pk'] = self.org
         context['datetime'] = timezone.now()
         return context
 
 class DetailView(djDetailView):
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org= int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab= int(kwargs['lab_pk'])
         return djDetailView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djDetailView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
+        context['org_pk'] = self.org
         context['datetime'] = timezone.now()
         return context
 
