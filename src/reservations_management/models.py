@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from laboratory.models import ShelfObject, Laboratory
 import uuid
 
+from presentation.models import AbstractOrganizationRef
 
 REQUESTED = 0
 ACCEPTED = 1
@@ -46,8 +47,8 @@ DAYS = (
 )
 
 
-class Reservations(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('User'))
+class Reservations(AbstractOrganizationRef):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservation_user', verbose_name=_('User'))
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
     status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED, verbose_name=_('Status'))
     comments = models.CharField(max_length=500, null=True, blank=True, verbose_name=_('Comments'))
@@ -57,9 +58,9 @@ class Reservations(models.Model):
         ordering = ['status']
 
 
-class ReservedProducts(models.Model):
+class ReservedProducts(AbstractOrganizationRef):
     shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_('User'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='reserved_user', verbose_name=_('User'))
     reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True, verbose_name=_('Reservation'))
     is_returnable = models.BooleanField(default=True, verbose_name=_('Is Returnable'))
     amount_required = models.FloatField(verbose_name=_('Amount Required'))
