@@ -99,14 +99,14 @@ def index_sga(request):
 # SGA template visualize
 @login_required
 @organilab_context_decorator
-def template(request, organilabcontext):
+def template(request, organilabcontext, org_pk):
     context = {
         'laboratory': None,
         'form': SGAEditorForm(),
         'warningwords': WarningWord.objects.all(),
         'generalform': PersonalForm(user=request.user),
         'organilabcontext': organilabcontext,
-        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext})
+        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk})
     }
     return render(request, 'template.html', context)
 
@@ -114,7 +114,7 @@ def template(request, organilabcontext):
 # SGA editor
 @login_required
 @organilab_context_decorator
-def editor(request, organilabcontext):
+def editor(request, organilabcontext, org_pk):
     finstance = None
     clean_canvas_editor = True
     if 'instance' in request.POST:
@@ -129,7 +129,7 @@ def editor(request, organilabcontext):
             finstance.creator = request.user
             finstance.save()
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
-            return redirect(reverse('sga:editor', kwargs={'organilabcontext': organilabcontext}))
+            return redirect(reverse('sga:editor', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}))
         else:
             clean_canvas_editor = False
     else:
@@ -144,7 +144,8 @@ def editor(request, organilabcontext):
         'templates': TemplateSGA.objects.filter(creator=request.user),
         'clean_canvas_editor': clean_canvas_editor,
         'organilabcontext': organilabcontext,
-        'form_url': reverse('sga:editor', kwargs={'organilabcontext': organilabcontext})
+        'form_url': reverse('sga:editor', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk,}),
+        'org_pk': org_pk
     }
     return render(request, 'editor.html', context)
 
@@ -191,13 +192,13 @@ def index_organilab(request):
 @login_required
 @permission_required('sga.add_personaltemplatesga')
 @organilab_context_decorator
-def create_personal_template(request, organilabcontext):
+def create_personal_template(request, organilabcontext, org_pk):
     user = request.user
     personal_templates = PersonalTemplateSGA.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates,
-               "organilabcontext": organilabcontext, "form": PersonalTemplateForm(user=request.user)}
+               "organilabcontext": organilabcontext, "form": PersonalTemplateForm(user=request.user), 'org_pk': org_pk}
 
     if request.method == 'POST':
         form = PersonalSGAForm(request.POST)
@@ -221,7 +222,7 @@ def create_personal_template(request, organilabcontext):
             label.save()
             instance.label = label
             instance.save()
-            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
+            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}))
         else:
             messages.error(request, _("Invalid form"))
             context = {
@@ -229,8 +230,9 @@ def create_personal_template(request, organilabcontext):
                 'form': SGAEditorForm(),
                 'warningwords': WarningWord.objects.all(),
                 'generalform': PersonalForm(request.POST, user=user),
-                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}),
-                'organilabcontext': organilabcontext
+                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}),
+                'organilabcontext': organilabcontext,
+                'org_pk': org_pk
             }
             return render(request, 'template.html', context)
 
@@ -239,7 +241,7 @@ def create_personal_template(request, organilabcontext):
 @login_required
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
-def edit_personal_template(request, organilabcontext, pk):
+def edit_personal_template(request, organilabcontext, org_pk, pk):
     personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=pk)
     user = request.user
 
@@ -261,7 +263,7 @@ def edit_personal_template(request, organilabcontext, pk):
             builder_information_form.save()
             label_form.save()
 
-            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,}))
+            return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext,'org_pk': org_pk}))
         else:
             messages.error(request, _("Invalid form"))
             context = {
@@ -269,8 +271,9 @@ def edit_personal_template(request, organilabcontext, pk):
                 'form': SGAEditorForm(),
                 'warningwords': WarningWord.objects.all(),
                 'generalform': PersonalForm(request.POST, user=user),
-                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}),
-                'organilabcontext': organilabcontext
+                'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}),
+                'organilabcontext': organilabcontext,
+                'org_pk': org_pk
             }
             return render(request, 'template_edit.html', context)
 
@@ -292,7 +295,8 @@ def edit_personal_template(request, organilabcontext, pk):
         'form': SGAEditorForm,
         "instance": personaltemplateSGA,
         'organilabcontext': organilabcontext,
-        "generalform": PersonalForm(user=user, initial=initial)
+        "generalform": PersonalForm(user=user, initial=initial),
+        'org_pk': org_pk
     }
     return render(request, 'template_edit.html', context)
 
@@ -351,14 +355,14 @@ def get_danger_indication(request,organilabcontext):
 @login_required
 @permission_required('sga.delete_personaltemplatesga')
 @organilab_context_decorator
-def delete_sgalabel(request, organilabcontext, pk):
+def delete_sgalabel(request, organilabcontext, org_pk, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     if template.user == request.user:
         template.delete()
         messages.success(request, _("SGA label was deleted successfully"))
     else:
         messages.error(request, _("Error, user is not creator label"))
-    return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext}))
+    return redirect(reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}))
 
 @login_required
 @organilab_context_decorator
@@ -477,7 +481,7 @@ def update_pictogram(request,id_pictogram):
     return render(request, 'add_pictograms.html', context=context)
 
 
-def create_sgalabel(request, organilabcontext):
+def create_sgalabel(request, organilabcontext, org_pk):
 
     if request.method == "POST":
         form = SGALabelForm(request.POST)
@@ -490,12 +494,12 @@ def create_sgalabel(request, organilabcontext):
             instance.label = label
             instance.save()
             return redirect(reverse("sga:sgalabel_step_one", kwargs={'organilabcontext':organilabcontext,
-                                                                     'pk': instance.pk}))
+                                                                     'pk': instance.pk, 'org_pk': org_pk}))
         else:
             messages.error(request, _("Form is invalid"))
 
 
-def sgalabel_step_one(request, organilabcontext, pk):
+def sgalabel_step_one(request, organilabcontext, org_pk, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     builderinformation = sgalabel.label.builderInformation
     sustance = sgalabel.label.substance
@@ -534,21 +538,23 @@ def sgalabel_step_one(request, organilabcontext, pk):
 
         if complementsga_form_ok and sgabuilderinfo_form_ok and personal_form_ok:
             return redirect(reverse("sga:sgalabel_step_two", kwargs={'organilabcontext':organilabcontext,
-                                                                     'pk': sgalabel.pk}))
+                                                                     'pk': sgalabel.pk,
+                                                                     'org_pk': org_pk}))
 
     context = {
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complementsga_form': complementsga_form,
         'builderinformationform': sgabuilderinfo_form,
-        'pesonalform': personal_form
+        'pesonalform': personal_form,
+        'org_pk': org_pk
     }
 
     return render(request, 'sgalabel/step_one.html', context=context)
 
 @login_required
 @permission_required('sga.change_pictogram')
-def sgalabel_step_two(request, organilabcontext, pk):
+def sgalabel_step_two(request, organilabcontext, org_pk, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
@@ -557,14 +563,15 @@ def sgalabel_step_two(request, organilabcontext, pk):
         form = PersonalSGAForm(request.POST, instance=sgalabel)
         if form.is_valid():
             form.save()
-            return redirect(reverse('sga:add_personal', args=('laboratory',)))
+            return redirect(reverse('sga:add_personal', args=('laboratory', org_pk,)))
 
     context = {
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complement': complement,
         'form': SGAEditorForm(),
-        'editorform': PersonalSGAForm(instance=sgalabel, initial={'recipient_size': sgalabel.template.recipient_size})
+        'editorform': PersonalSGAForm(instance=sgalabel, initial={'recipient_size': sgalabel.template.recipient_size}),
+        'org_pk': org_pk
     }
 
     return render(request, 'sgalabel/step_two.html', context=context)

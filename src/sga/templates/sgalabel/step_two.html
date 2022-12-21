@@ -33,10 +33,10 @@
                 </div>
                 <div class="col-3">
 <div class="btn-group" role="group">
-        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext sgalabel.pk %}">
+        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext org_pk sgalabel.pk %}">
             <i class="fa fa-reply"></i>  {% trans 'Back' %}
         </a>
-        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext %}">
+        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext org_pk %}">
              <i class="fa fa-close"></i> {% trans 'Cancel' %}
         </a>
 </div>
