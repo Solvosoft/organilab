@@ -9,18 +9,18 @@
     </a>
     <ul class="nav child_menu">
         <li>
-            <a href="{% url 'create_sustance' organilabcontext='academic' org_pk=42 %}">
+            <a href="{% url 'create_sustance' organilabcontext='academic' org_pk=org_pk %}">
                 {% trans 'Create Substances' %}
             </a>
         </li>
         <li>
-            <a href="{% url 'get_substance' organilabcontext='academic' org_pk=42 %}">
+            <a href="{% url 'get_substance' organilabcontext='academic' org_pk=org_pk %}">
                 {% trans 'My Substances' %}
             </a>
         </li>
 
         <li>
-            <a href="{% url 'approved_substance' organilabcontext='academic' org_pk=42 %}">
+            <a href="{% url 'approved_substance' organilabcontext='academic' org_pk=org_pk %}">
                 {% trans 'Check of Substances' %}
             </a>
         </li>
