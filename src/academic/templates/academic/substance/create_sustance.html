@@ -21,7 +21,7 @@
         <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
     </div>
     <br>
-    <form class="form-horizontal" action="{% url 'step_one' organilabcontext pk_org pk %}" method="POST">
+    <form class="form-horizontal" action="{% url 'step_one' organilabcontext org_pk pk %}" method="POST">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-1"></div>
