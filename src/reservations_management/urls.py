@@ -28,8 +28,8 @@ from .functions import (
 )
 
 urlpatterns = [
-    re_path(r'reservations/(?P<pk>\d+)/manage$',ManageReservationView.as_view(), name='manage_reservation'),
-    re_path(r'reservations/list/(?P<status>\d+)$',ReservationsListView.as_view(), name='reservations_list'),
+    re_path(r'reservations/(?P<pk>\d+)/manage/(?P<org_pk>\d+)$',ManageReservationView.as_view(), name='manage_reservation'),
+    re_path(r'reservations/list/(?P<status>\d+)/(?P<org_pk>\d+)$',ReservationsListView.as_view(), name='reservations_list'),
     
     # Functions URLs
     re_path(r'reservedproduct/get_product_name_and_quantity',get_product_name_and_quantity, name='get_product_name_and_quantity'),
