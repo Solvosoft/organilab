@@ -1,9 +1,12 @@
 from datetime import datetime,timedelta
 import pytz
 from collections import namedtuple
+
+from django.contrib.admin.models import CHANGE
 from django.http import JsonResponse
 
 from laboratory.models import ShelfObject
+from laboratory.utils import organilab_logentry
 from .models import Reservations, ReservedProducts, ReservationTasks
 from .tasks import decrease_stock
 
@@ -356,6 +359,7 @@ def increase_stock(request):
             product.shelf_object.quantity += amount_to_return
             was_increase = True
             product.shelf_object.save()
+            organilab_logentry(request.user, product.shelf_object, CHANGE, relobj=product.shelf_object)
 
     return JsonResponse({'was_increase': was_increase})
 
