@@ -15,8 +15,8 @@ from django.conf import settings
 import os
 
 
-def index_msds(request, pk):
-    return render(request, 'index_msds.html', context={'pk': pk})
+def index_msds(request, org_pk):
+    return render(request, 'index_msds.html', context={'org_pk': org_pk})
 
 
 def get_download_links(request, obj):
@@ -38,12 +38,12 @@ def get_download_links(request, obj):
     return dev
 
 
-def get_list_msds(request, pk):
+def get_list_msds(request, org_pk):
     q = request.GET.get('search[value]')
     length = request.GET.get('length', '10')
     pgnum = request.GET.get('start', '0')
 
-    queryset = MSDSObject.objects.filter(organization__pk=pk)
+    queryset = MSDSObject.objects.filter(organization__pk=org_pk)
     objs = queryset.none()
 
     try:
