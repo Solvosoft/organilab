@@ -20,7 +20,7 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
     class Meta:
         model = RiskZone
         exclude = ['priority']
-        fields = '__all__'
+        exclude = ('organization','created_by')
         widgets = {
             'name': djgentelella.TextInput,
             "laboratories": djgentelella.SelectMultiple,
@@ -35,7 +35,7 @@ class IncidentReportForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = IncidentReport
-        fields = '__all__'
+        exclude = ('organization', 'created_by')
         widgets = {
             'short_description':djgentelella.TextInput,
             'causes': TextareaWysiwyg,

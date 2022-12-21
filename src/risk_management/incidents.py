@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from xhtml2pdf import pisa
 
+from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from laboratory.views.reports import link_callback
 from laboratory.decorators import user_group_perms
@@ -30,7 +31,7 @@ class IncidentReportList(djgeneric.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(laboratories__pk=self.lab)
-
+        print(queryset)
         if 'q' in self.request.GET:
             q = self.request.GET['q']
             queryset = queryset.filter(Q(short_description__icontains=q)|Q(
@@ -57,7 +58,6 @@ class IncidentReportList(djgeneric.ListView):
 class IncidentReportCreate(djgeneric.CreateView):
     model = IncidentReport
     form_class = IncidentReportForm
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -69,16 +69,24 @@ class IncidentReportCreate(djgeneric.CreateView):
 
     def form_valid(self, form):
         dev = super().form_valid(form)
+        incident = form.save(commit=False)
+        org = self.org
+        org = OrganizationStructure.objects.filter(pk=org).first()
+        incident.organization = org
+        incident.created_by = self.request.user
+        incident.save()
         organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
         return dev
-
+    def get_success_url(self, **kwargs):
+        org_pk = self.org
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.change_incidentreport'), name="dispatch")
 class IncidentReportEdit(djgeneric.UpdateView):
     model = IncidentReport
     form_class = IncidentReportForm
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -93,18 +101,24 @@ class IncidentReportEdit(djgeneric.UpdateView):
         organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
         return dev
 
+    def get_success_url(self, **kwargs):
+        org_pk = self.org
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.delete_incidentreport'), name="dispatch")
 class IncidentReportDelete(djgeneric.DeleteView):
     model = IncidentReport
-    success_url = reverse_lazy('riskmanagement:riskzone_list')
 
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(self.request.user, self.object, DELETION, relobj=list(self.object.laboratories.all()))
         self.object.delete()
         return HttpResponseRedirect(success_url)
-
+    def get_success_url(self, **kwargs):
+        org_pk = self.org
+        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        return success_url
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")

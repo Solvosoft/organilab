@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <div class="float-start">
-    <a href="{% url 'riskmanagement:riskzone_list' %}" class="btn btn-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
+    <a href="{% url 'riskmanagement:riskzone_list' org_pk %}" class="btn btn-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
 </div>
 
 <div class="row">
@@ -25,9 +25,9 @@
     <div class="offset-md-1 col-md-10">
         <div class="float-end">
             {% if perms.add_riskzone %}
-                <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
+                <a class="btn btn-success" href="{% url 'riskmanagement:riskzone_create' org_pk %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
             {% endif %}
-            <a href="{% url 'riskmanagement:riskzone_update' object.pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+            <a href="{% url 'riskmanagement:riskzone_update' object.pk org_pk %}" class="btn btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
         </div>
         <div class="clearfix"></div>
     </div>
@@ -43,10 +43,10 @@
                         </a>
                     </div>
                     <div class="float-end p-2 m-0">
-                        <a class="btn btn-secondary btn-md" href="{% url 'riskmanagement:incident_list' lab.pk %}" title="{% trans 'Incident Reports' %}">
+                        <a class="btn btn-secondary btn-md" href="{% url 'riskmanagement:incident_list' lab.pk org_pk %}" title="{% trans 'Incident Reports' %}">
                             <span class="badge">{{lab.incidentreport_set.all.count }}</span>
                         </a>
-                        <a class="btn btn-success btn-md btn-rounded" href="{% url 'riskmanagement:incident_create' lab.pk %}" title="{% trans 'Incident Reports Create' %}">
+                        <a class="btn btn-success btn-md btn-rounded" href="{% url 'riskmanagement:incident_create' lab.pk org_pk %}" title="{% trans 'Incident Reports Create' %}">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
