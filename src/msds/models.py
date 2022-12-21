@@ -3,8 +3,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
 
+from presentation.models import AbstractOrganizationRef
 
-class MSDSObject(models.Model):
+
+class MSDSObject(AbstractOrganizationRef):
     provider = models.CharField(_("Provider"), max_length=300)
     file = models.FileField(upload_to="msds", verbose_name=_("MSDS File"),
                             validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
