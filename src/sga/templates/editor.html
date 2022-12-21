@@ -56,7 +56,7 @@
             </button>
             <ul class="dropdown-menu">
               {% for tem in templates %}
-                <li class="dropdown-item"><a href="{% url 'sga:editor' organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li class="dropdown-item"><a href="{% url 'sga:editor' organilabcontext org_pk %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
             </ul>
         </div>

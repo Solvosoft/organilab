@@ -9,14 +9,14 @@
     </a>
     <ul class="nav child_menu">
         <li>
-            <a href="{% url 'sga:add_personal' organilabcontext='laboratory' %}">
+            <a href="{% url 'sga:add_personal' organilabcontext='laboratory' org_pk=42 %}">
                 {% trans 'SGA Labeling' %}
             </a>
         </li>
 
         {% if perms.sga.change_templatesga %}
          <li>
-            <a href="{% url 'sga:editor' organilabcontext='laboratory' %}">
+            <a href="{% url 'sga:editor' organilabcontext='laboratory' org_pk=42 %}">
                 {% trans 'SGA Editor' %}
             </a>
         </li>
@@ -24,7 +24,7 @@
 
         {% if perms.msds.view_msdsobject %}
         <li>
-            <a href="{% url 'msds:index_msds'%}">
+            <a href="{% url 'msds:index_msds' org_pk=42 %}">
                 {% trans 'MSDS: Security sheets' %}
             </a>
         </li>
