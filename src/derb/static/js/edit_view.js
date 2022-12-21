@@ -20,7 +20,7 @@ function editForm() {
             var status = 'admin';
             $.ajax({
                 type: 'POST', 
-                url: 'update/', 
+                url: window.urls['update_form'],
                 data: { 'name' : name, 'status': status}, 
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
