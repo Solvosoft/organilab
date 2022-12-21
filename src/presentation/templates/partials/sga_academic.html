@@ -1,0 +1,32 @@
+{% load i18n %}
+{% if perms.sga.view_label %}
+<li>
+    <a>
+        <i class="fa fa-tags"></i>
+        {% trans 'SGA' %}
+        <span class="fa fa-chevron-down">
+    </span>
+    </a>
+    <ul class="nav child_menu">
+        <li>
+            <a href="{% url 'create_sustance' organilabcontext='academic' org_pk=42 %}">
+                {% trans 'Create Substances' %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'get_substance' organilabcontext='academic' org_pk=42 %}">
+                {% trans 'My Substances' %}
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'approved_substance' organilabcontext='academic' org_pk=42 %}">
+                {% trans 'Check of Substances' %}
+            </a>
+        </li>
+
+    </ul>
+
+</li>
+
+{% endif %}
