@@ -1,15 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.http.response import JsonResponse
 from djgentelella.cruds.base import CRUDView
+
+from laboratory.models import OrganizationStructure
 from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 from django.db.models.query_utils import Q
 from django.core.paginator import Paginator
 from django.utils.translation import gettext as _
 from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
 from django.urls.base import reverse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import zipfile
 from django.conf import settings
 import os
@@ -21,17 +23,17 @@ def index_msds(request, org_pk):
 
 def get_download_links(request, obj):
 
-    new_url = reverse('msds:msds_msdsobject_detail', args=(obj.pk,))
+    new_url = reverse('msds:msds_msdsobject_detail', args=(obj.organization.pk, obj.pk,))
     dev = '<a href="%s" target="_blank">%s</a>' % (
         new_url,
         _("Download"))
     if request.user.has_perm('msds.change_msdsobject'):
-        new_url = reverse('msds:msds_msdsobject_update', args=(obj.pk,))
+        new_url = reverse('msds:msds_msdsobject_update', args=(obj.organization.pk, obj.pk,))
         dev += ' -- <a href="%s" target="_blank">%s</a>' % (
             new_url,
             _("Edit"))
     if request.user.has_perm('msds.delete_msdsobject'):
-        new_url = reverse('msds:msds_msdsobject_delete', args=(obj.pk,))
+        new_url = reverse('msds:msds_msdsobject_delete', args=(obj.organization.pk, obj.pk,))
         dev += ' -- <a href="%s" target="_blank">%s</a>' % (
             new_url,
             _("Delete"))
@@ -43,8 +45,7 @@ def get_list_msds(request, org_pk):
     length = request.GET.get('length', '10')
     pgnum = request.GET.get('start', '0')
 
-    queryset = MSDSObject.objects.filter(organization__pk=org_pk)
-    objs = queryset.none()
+    objs = MSDSObject.objects.filter(organization__pk=org_pk)
 
     try:
         length = int(length)
@@ -54,7 +55,7 @@ def get_list_msds(request, org_pk):
         pgnum = 1
 
     if q:
-        objs = queryset.filter(
+        objs = objs.filter(
             Q(provider__icontains=q) | Q(product__icontains=q)
         )
     objs = objs.order_by('product')
@@ -115,10 +116,24 @@ class MSDSObjectCRUD(CRUDView):
 
         class OCreateView(CreateViewClass):
             def get_success_url(self):
-                url = reverse("msds:index_msds")
+                url = reverse("msds:index_msds", kwargs={'org_pk': self.kwargs['org_pk']})
                 messages.success(self.request,
                                  _("Your MSDS was uploaded successfully"))
                 return url
+
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                context['org_pk'] = self.kwargs['org_pk']
+                return context
+
+            def form_valid(self, form):
+                instance = form.save(commit=False)
+                organization = get_object_or_404(OrganizationStructure, pk=self.kwargs['org_pk'])
+                instance.organization = organization
+                instance.save()
+                return HttpResponseRedirect(self.get_success_url())
+
+
         return OCreateView
 
     def get_update_view(self):
@@ -127,10 +142,15 @@ class MSDSObjectCRUD(CRUDView):
         class OEditView(EditViewClass):
 
             def get_success_url(self):
-                url = reverse("msds:index_msds")
+                url = reverse("msds:index_msds", kwargs={'org_pk': self.kwargs['org_pk']})
                 messages.success(self.request,
                                  _("Your MSDS was updated successfully"))
                 return url
+
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                context['org_pk'] = self.kwargs['org_pk']
+                return context
 
         return OEditView
 
@@ -140,7 +160,7 @@ class MSDSObjectCRUD(CRUDView):
         class ODeleteView(ODeleteClass):
 
             def get_success_url(self):
-                url = reverse("msds:index_msds")
+                url = reverse("msds:index_msds", kwargs={'org_pk': self.kwargs['org_pk']})
                 messages.success(self.request,
                                  _("Your MSDS was delete successfully"))
                 return url
@@ -150,6 +170,12 @@ class MSDSObjectCRUD(CRUDView):
                 if not self.request.user.has_perm('msds.delete_msdsobject'):
                     query = query.none()
                 return query
+
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                context['org_pk'] = self.kwargs['org_pk']
+                return context
+
         return ODeleteView
 
 

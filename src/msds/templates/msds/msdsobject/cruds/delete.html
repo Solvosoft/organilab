@@ -9,7 +9,7 @@
 <div class="col-md-offset-3 col-md-6" >
   <h1 class="heading text-center">{% trans "Remove" %} {{ object }}?</h1>
 
-  <form action="{{ url_delete }}{{getparams}}" method="POST">
+  <form method="POST">
     {% csrf_token %}
 
     <p style="text-align: center">

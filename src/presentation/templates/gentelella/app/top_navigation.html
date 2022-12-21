@@ -18,9 +18,13 @@
         {% include 'gentelella/app/top_navigation_user_authenticated.html' %}
         {% endif %}
 
-        <li id="tutorials">
-            <a href="{% url 'tutorials' %}"><strong>{% trans 'Tutorials' %}</strong></a>
-        </li>
+        {% if org_pk %}
+
+            <li id="tutorials">
+                <a href="{% url 'tutorials' org_pk %}"><strong>{% trans 'Tutorials' %}</strong></a>
+            </li>
+
+        {% endif %}
 
         {% if not request.user.is_authenticated %}
         <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>

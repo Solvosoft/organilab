@@ -8,7 +8,7 @@
 {% endblock %}
 {% block content %} 
 <h1 class="text-center">  {% trans 'Search MSDS' %}
-<a class="btn btn-success float-end" href="{% url 'msds:msds_msdsobject_create' %}">
+<a class="btn btn-success float-end" href="{% url 'msds:msds_msdsobject_create' org_pk %}">
 {% trans 'Upload your MSDS' %}
 </a>
 
