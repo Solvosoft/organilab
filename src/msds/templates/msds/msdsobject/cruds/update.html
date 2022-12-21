@@ -7,9 +7,9 @@
 {% block content %}
 <div class="row">
 <div class="col-md-offset-3 col-md-6" >
-	<form method="post" action="{% url 'msds:msds_msdsobject_update' form.instance.pk %}" 
+	<legend>{% trans 'Add new MSDS' %}</legend>
+	<form method="post" action="{% url 'msds:msds_msdsobject_update' org_pk form.instance.pk %}"
 	enctype="multipart/form-data" role="form">
-	    <legend>{% trans 'Add new MSDS' %}</legend>
 	    {% csrf_token %}
 	    {{ form.as_horizontal }}
 	    <div class="form-group">

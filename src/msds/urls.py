@@ -12,8 +12,12 @@ from msds.views import MSDSObjectCRUD
 
 msdsobj = MSDSObjectCRUD()
 
-urlpatterns = msdsobj.get_urls() + [
+urlpatterns = [
     re_path(r'index_msds/(?P<org_pk>\d+)$', index_msds, name='index_msds'),
+    re_path(r'msds/msdsobject/create/(?P<org_pk>\d+)$', msdsobj.create, name='msds_msdsobject_create'),
+    re_path(r'msds/msdsobject/(?P<org_pk>\d+)/(?P<pk>\d+)/detail$', msdsobj.detail, name='msds_msdsobject_detail'),
+    re_path(r'msds/msdsobject/(?P<org_pk>\d+)/(?P<pk>\d+)/update$', msdsobj.update, name='msds_msdsobject_update'),
+    re_path(r'msds/msdsobject/(?P<org_pk>\d+)/(?P<pk>\d+)/delete$', msdsobj.delete, name='msds_msdsobject_delete'),
     re_path(r'^list/(?P<org_pk>\d+)$', get_list_msds, name="list_msds"),
     re_path(r'regulations$', regulation_view, name="regulation_docs"),
     re_path(r'regulations/download/all', download_all_regulations, name="download_all_regulations")

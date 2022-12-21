@@ -8,7 +8,9 @@
 <h2>Próximamente Manuales</h2>
 
 <ul class="list-group">
-    <li><a class="list-group-item" href="{% url 'msds:index_msds' %}"> {% trans 'MSDS Files' %}</a></li>
+    {% if org_pk %}
+        <li><a class="list-group-item" href="{% url 'msds:index_msds' org_pk %}"> {% trans 'MSDS Files' %}</a></li>
+    {% endif %}
     <li><a class="list-group-item"  href="{% url 'msds:regulation_docs' %}"> {% trans 'Regulation documents' %}</a></li>
 </ul>
 {% endblock %}
