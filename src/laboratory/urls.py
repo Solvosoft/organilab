@@ -164,7 +164,7 @@ organization_urls = [
     path('organization/<int:pk>/update', OrganizationUpdateView.as_view(), name="update_organization"),
     path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
     path('profile/<int:pk>/password', password_change, name='password_change'),
-    path('logentry/<int:pk>', get_logentry_from_organization, name='logentry_list'),
+    path('logentry/<int:org_pk>', get_logentry_from_organization, name='logentry_list'),
     path('organizations', reports.get_exposition_report_links, name='organizations'),
 ]
 
