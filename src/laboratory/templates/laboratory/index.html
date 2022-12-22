@@ -57,7 +57,7 @@
             <ul class="list-group">
               {% if perms.laboratory.view_laboratory %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_list' laboratory %}">
+                  <a href="{% url 'laboratory:rooms_list' laboratory org_pk %}">
                     <strong>{% trans 'Laboratory view' %}</strong>
                   </a>
                 </li>
@@ -95,7 +95,7 @@
             <ul class="list-group">
               {% if perms.laboratory.add_laboratoryroom %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_create' laboratory %}">
+                  <a href="{% url 'laboratory:rooms_create' laboratory org_pk %}">
                     <strong>{% trans 'Laboratory' %}</strong>
                   </a>
                 </li>
@@ -103,14 +103,14 @@
 
                 {% if perms.laboratory.add_object %}
                 <li class="list-group-item">
-                    <a  href="{% url 'laboratory:sustance_list' lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
-                    /  <a  href="{% url 'laboratory:objectview_list' laboratory %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
-                    /  <a  href="{% url 'laboratory:objectview_list' laboratory %}?type_id=2"><strong>{% trans 'Equipment' %}</strong></a>
+                    <a  href="{% url 'laboratory:sustance_list' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Reactive' %}</strong></a>
+                    /  <a  href="{% url 'laboratory:objectview_list' laboratory org_pk %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
+                    /  <a  href="{% url 'laboratory:objectview_list' laboratory org_pk %}?type_id=2"><strong>{% trans 'Equipment' %}</strong></a>
                 </li>
               {% endif %}
               {% if perms.laboratory.add_objectfeatures %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:object_feature_create' laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
+                  <a href="{% url 'laboratory:object_feature_create' laboratory org_pk %}"><strong>{% trans 'Object features' %}</strong></a>
                 </li>
               {% endif %}
 
@@ -122,7 +122,7 @@
 
             {% if perms.laboratory.add_provider %}
             <li class="list-group-item">
-                  <a href="{% url 'laboratory:list_provider' laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
+                  <a href="{% url 'laboratory:list_provider' laboratory org_pk %}"><strong>{% trans 'Providers' %}</strong></a>
                 </li>
             {% endif %}
             </ul>

@@ -29,7 +29,7 @@ class ProviderCreate(CreateView):
 
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_provider', args=(self.lab,))
+        return reverse_lazy('laboratory:list_provider', args=(self.lab,self.org))
 
 
 @method_decorator(permission_required('laboratory.change_provider'), name='dispatch')
@@ -40,7 +40,7 @@ class ProviderUpdate(UpdateView):
     lab_pk_field = 'pk'
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_provider', args=(self.lab,))
+        return reverse_lazy('laboratory:list_provider', args=(self.lab,self.org))
 
     def form_valid(self, form):
         provider = form.save()

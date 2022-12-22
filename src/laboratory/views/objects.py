@@ -41,7 +41,7 @@ class ObjectView(object):
             
             def get_success_url(self, *args, **kwargs):
                 redirect = reverse_lazy('laboratory:objectview_list', args=(
-                    self.lab,)) + "?type_id=" + self.object.type
+                    self.lab,self.org)) + "?type_id=" + self.object.type
                 return redirect
 
             def get_form_kwargs(self):
@@ -67,7 +67,7 @@ class ObjectView(object):
             def get_success_url(self):
                 return reverse_lazy(
                     'laboratory:objectview_list',
-                    args=(self.lab,)) + "?type_id=" + self.get_object().type
+                    args=(self.lab,self.org)) + "?type_id=" + self.get_object().type
 
             def get_form_kwargs(self):
                 kwargs = super(ObjectUpdateView, self).get_form_kwargs()
@@ -92,7 +92,7 @@ class ObjectView(object):
 
             def get_success_url(self):
                 return reverse_lazy('laboratory:objectview_list',
-                                    args=(self.lab,))
+                                    args=(self.lab,self.org))
 
             def form_valid(self, form):
                 success_url = self.get_success_url()
@@ -150,13 +150,13 @@ class ObjectView(object):
 
     def get_urls(self):
         return [
-            path("list", self.list,
+            path("list/<int:org_pk>", self.list,
                 name="objectview_list"),
-            path("create", self.create,
+            path("create/<int:org_pk>", self.create,
                 name="objectview_create"),
-            path("edit/<int:pk>/", self.edit,
+            path("edit/<int:pk>/<int:org_pk>", self.edit,
                 name="objectview_update"),
-            path("delete/<int:pk>", self.delete,
+            path("delete/<int:pk>/<int:org_pk>", self.delete,
                 name="objectview_delete"),
 
         ]
