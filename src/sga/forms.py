@@ -298,7 +298,7 @@ class CompanyForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = BuilderInformation
-        fields = '__all__'
+        exclude = ['created_by', 'organization']
         widgets = {
             'name': genwidgets.TextInput,
             'phone': genwidgets.TextInput,
