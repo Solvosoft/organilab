@@ -6,10 +6,10 @@
     <div class="nav toggle" style="margin-top:9px;">
         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
     </div>
-    {% if laboratory %}
+    {% if laboratory and org_pk %}
 
         <ul class="nav navbar-nav float-start">
-            <li><a href="{% url 'laboratory:rooms_list' laboratory %}">{% show_laboratory_name %}</a></li>
+            <li><a href="{% url 'laboratory:rooms_list' laboratory org_pk %}">{% show_laboratory_name %}</a></li>
         </ul>
     {% endif %}
 
