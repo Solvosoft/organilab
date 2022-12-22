@@ -1,9 +1,10 @@
 from async_notifications.utils import send_email_from_template
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.urls.base import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
@@ -11,12 +12,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from auth_and_perms.api.serializers import AuthenticateDataRequestNotifySerializer, AuthenticateDataRequestSerializer
+from auth_and_perms.api.serializers import AuthenticateDataRequestSerializer
 from auth_and_perms.models import AuthenticateDataRequest
 from authentication.forms import DemoRequestForm, FeedbackEntryForm
 from authentication.models import FeedbackEntry, DemoRequest
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 
 
 class PermissionDeniedView(TemplateView):
@@ -57,8 +56,6 @@ class FeedbackView(CreateView):
 
         return dev
 
-def request_demo_done(request):
-    return render(request, 'registration/request_demo_done.html')
 
 from async_notifications.register import update_template_context
 context = [
@@ -76,26 +73,6 @@ update_template_context("Request demo",  "New demo request", context,
                         {{data.country}}<br>
                         {{data.phone_number}}
                         """)
-
-
-class RequestDemoView(CreateView):
-    model = DemoRequest
-    form_class = DemoRequestForm
-    template_name = 'registration/request_a_demo.html'
-    success_url = reverse_lazy('index')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        send_email_from_template("Request demo",
-                                 settings.DEFAULT_FROM_EMAIL,
-                                 context={
-                                     'data': form.cleaned_data
-                                 },
-                                 enqueued=True,
-                                 user=None,
-                                 upfile=None)
-        messages.success(self.request, _('We will contact you soon'))
-        return response
 
 
 class SignDataRequestViewSet(viewsets.ViewSet):

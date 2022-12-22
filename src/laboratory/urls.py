@@ -165,7 +165,7 @@ organization_urls = [
     path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
     path('profile/<int:pk>/password', password_change, name='password_change'),
     path('logentry/<int:org_pk>', get_logentry_from_organization, name='logentry_list'),
-    path('organizations', reports.get_exposition_report_links, name='organizations'),
+    path('reports/<org_pk>/', reports.report_index, name='reports'),
 ]
 
 provider_urls=[

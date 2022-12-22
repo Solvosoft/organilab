@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n static laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'report_reactive_presence' %}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10">
+        <div class="bs-callout bs-callout-info">
+            <h4 class="w-100" >{{organization}}</h4>
+            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' org_pk %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Exposition report' %}</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

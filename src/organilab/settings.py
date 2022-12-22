@@ -172,7 +172,7 @@ MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
 TINYMCE_UPLOAD_PATH=Path(MEDIA_ROOT) / 'editorupload/'
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy('index')
+LOGIN_REDIRECT_URL = reverse_lazy('auth_and_perms:select_organization_by_user')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
 
 # Email development settings

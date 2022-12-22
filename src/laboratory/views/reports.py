@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.contrib.staticfiles import finders
 from django.db.models.aggregates import Sum, Min
 from django.db.models.query_utils import Q
+from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404,render
 from django.template.loader import get_template
@@ -35,6 +36,10 @@ from organilab import settings
 from laboratory.decorators import has_lab_assigned
 from auth_and_perms.models import Profile
 from weasyprint import HTML
+
+from sga.forms import SearchDangerIndicationForm
+
+
 #Convert html URI to absolute
 def link_callback(uri, rel):
     """
@@ -1007,15 +1012,33 @@ def getLevelClass(level):
     return cl, color[level]
 
 @permission_required('laboratory.view_report')
-def get_exposition_report_links(request):
-    query_list = OrganizationStructure.os_manager.filter_user(request.user)
-    parents=list(query_list.filter(parent=None))
-    nodes = []
-    for parent in parents:
-        nodes+=[(x, getLevelClass(x.level)) for x in parent.descendants(include_self=True)]
+def report_index(request, org_pk):
+    org=OrganizationStructure.os_manager.filter_user(request.user).filter(pk=org_pk).first()
+    if not org:
+        raise Http404
 
     context = {
-        'nodes': nodes
+        'organization': org,
+        'org_pk': org_pk
     }
+    return render(request, 'laboratory/reports/report_index.html', context=context)
 
-    return render(request, 'laboratory/reports/toxicity_exposition.html', context=context)
+
+def search_danger_indication_report(request):
+    if request.method == "POST":
+        form = SearchDangerIndicationForm(request.POST)
+
+        if form.is_valid():
+            hcodes_list = form.cleaned_data['codes']
+            prudence_advices = set([y for x in hcodes_list for y in x.prudence_advice.all()])
+            pictograms = set([y for x in hcodes_list for y in x.pictograms.all() if y.name != "Sin Pictograma"])
+            warning_word = max(hcodes_list, key=lambda x: x.warning_words.weigth).warning_words
+            return render(request, 'danger_indication_info.html', {'hcodes_list': hcodes_list,
+                                                                   'prudence_advices': prudence_advices,
+                                                                   'warning_word': warning_word,
+                                                                   'pictograms': pictograms})
+
+    else:
+        form = SearchDangerIndicationForm()
+
+    return render(request, 'index_organilab.html', {'form': form})

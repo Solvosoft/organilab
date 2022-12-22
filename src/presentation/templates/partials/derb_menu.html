@@ -3,19 +3,24 @@
 {% if perms.derb.add_customform %}
     <li>
         <a>
-            <i class="fa fa-shopping-basket"></i>
-                {% trans 'Report Management' %}
+                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                {% trans 'Reports and Informs' %}
             <span class="fa fa-chevron-down"></span>
         </a>
         <ul class="nav child_menu">
             <li>
-                <a class="nav-link" href="{% url 'derb:form_list' %}"
+                <a class="nav-link" href="{% url 'laboratory:reports' org_pk %}"
         title="{% trans 'Report List' %}">
             <i class="fa fa-child"></i>
             {% trans 'Report List' %}
                 </a>
             </li>
-
+            <li>
+                <a class="nav-link" href="{% url 'derb:form_list' %}"  title="{% trans 'Report List' %}">
+            <i class="fa fa-child"></i>
+            {% trans 'Inform List' %}
+                </a>
+            </li>
         </ul>
     </li>
 {% endif %}

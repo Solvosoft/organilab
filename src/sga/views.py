@@ -10,24 +10,22 @@ from django.core.files import temp as tempfile
 from django.db.models import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Library
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from djgentelella.models import ChunkedUpload
-from paypal.standard.forms import PayPalPaymentsForm
 from weasyprint import HTML
 from xhtml2pdf import pisa
 
-from organilab import settings
-from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, DonateForm, \
+from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
     LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
-from sga.models import TemplateSGA, Donation, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
+from sga.models import TemplateSGA, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
 from .api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
 from .decorators import organilab_context_decorator
 from .json2html import json2html
@@ -169,25 +167,6 @@ def get_step(step):
 def clean_json_text(text):
     return json.dumps(text)[1:-1]
 
-@login_required
-def index_organilab(request):
-    if request.method == "POST":
-        form = SearchDangerIndicationForm(request.POST)
-
-        if form.is_valid():
-            hcodes_list = form.cleaned_data['codes']
-            prudence_advices = set([y for x in hcodes_list for y in x.prudence_advice.all()])
-            pictograms = set([y for x in hcodes_list for y in x.pictograms.all() if y.name != "Sin Pictograma"])
-            warning_word = max(hcodes_list, key=lambda x: x.warning_words.weigth).warning_words
-            return render(request, 'danger_indication_info.html', {'hcodes_list': hcodes_list,
-                                                                   'prudence_advices': prudence_advices,
-                                                                   'warning_word': warning_word,
-                                                                   'pictograms': pictograms})
-
-    else:
-        form = SearchDangerIndicationForm()
-
-    return render(request, 'index_organilab.html', {'form': form})
 
 @login_required
 @permission_required('sga.add_personaltemplatesga')
@@ -300,42 +279,6 @@ def edit_personal_template(request, organilabcontext, org_pk, pk):
     }
     return render(request, 'template_edit.html', context)
 
-@login_required
-def donate(request):
-    pay = False
-
-    if request.method == "POST":
-        form = DonateForm(request.POST)
-        if form.is_valid():
-            donation = Donation(
-                name=form.cleaned_data['name'], email=form.cleaned_data['email'],
-                amount=form.cleaned_data['amount'], is_donator=form.cleaned_data['is_donator'],
-                is_paid=False)
-            donation.save()
-            paypal_dict = {
-                'business': settings.PAYPAL_RECEIVER_EMAIL,
-                'amount': form.cleaned_data['amount'],
-                'item_name': _('Donate Organilab'),
-                'invoice': str(donation.pk),
-                'currency_code': 'USD',
-                'notify_url': settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
-                'return_url': settings.MY_PAYPAL_HOST + reverse('donate_success'),
-                'cancel_return': settings.MY_PAYPAL_HOST + reverse('index'),
-            }
-            pay = True
-            paypal_form = PayPalPaymentsForm(initial=paypal_dict)
-            paypal_form.button_type = "donate"
-        return render(
-            request, 'donate_organilab.html', {'paypal_form': paypal_form, 'pay': pay, 'form':form})
-    else:
-        form = DonateForm()
-        return render(
-            request, 'donate_organilab.html', {'form': form, 'pay': pay})
-
-
-def donate_success(request):
-    messages.success(request, _("Your donation was completed successfully, thank you for support this project!"))
-    return HttpResponseRedirect(reverse('donate'))
 
 @login_required
 @organilab_context_decorator
@@ -647,6 +590,8 @@ def edit_company(request,pk):
     }
 
     return render(request,'add_company.html', context=context)
+
+
 @login_required
 @permission_required('sga.delete_builderinformation')
 def remove_company(request,pk):

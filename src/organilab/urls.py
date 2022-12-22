@@ -14,47 +14,37 @@ Including another URLconf
     2. Add a URL to urlpatterns:  re_path(r'^blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.contrib import admin
 from django.urls import re_path, path, include
-
-from auth_and_perms.views import media_access
-from laboratory import urls as laboratory_urls
-
+from djgentelella.urls import urlpatterns as urls_djgentelela
 from djreservation import urls as djreservation_urls
-from academic.urls import urlpatterns as academic_urls
-from authentication.urls import urlpatterns as auth_urls
-from django.conf import settings
 
+from academic.urls import urlpatterns as academic_urls
+from api.urls import urlpatterns as api_urls
+from auth_and_perms.views import media_access
+from authentication.urls import urlpatterns as auth_urls
+from laboratory import urls as laboratory_urls
 from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
-from api.urls import urlpatterns as api_urls
-from django.views.generic.base import RedirectView
-from django.urls.base import reverse_lazy
-from djgentelella.urls import urlpatterns as urls_djgentelela
-
-from sga import urls as sga_urls
-from risk_management import urls as risk_urls
-from sga.views import index_organilab, donate, donate_success
-
-from reservations_management.urls import urlpatterns as reservation_management_urls
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
+from reservations_management.urls import urlpatterns as reservation_management_urls
+from risk_management import urls as risk_urls
+from sga import urls as sga_urls
 
 urlpatterns = urls_djgentelela + auth_urls + [
     path('derb/', include('derb.urls')),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
-    path('', index_organilab, name='index'),
     path('', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     path('', include((api_urls,'api'), namespace='api')),
     path('msds/', include((msds_urls, 'msds'), namespace='msds')),
     path('weblog/', include('djgentelella.blog.urls')),
-    path(r'sga/', include((sga_urls, 'sga'), namespace='sga')),
-    path(r'risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
+    path('sga/', include((sga_urls, 'sga'), namespace='sga')),
+    path('risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
-    re_path(r'^admin/', admin.site.urls),
-    re_path(r'^donate$', donate, name='donate'),
-    re_path(r'^donate_success$', donate_success, name='donate_success'),
+    path('admin/', admin.site.urls),
 ]
 
 paypal_urls = [

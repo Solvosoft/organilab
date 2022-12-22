@@ -3138,7 +3138,7 @@ msgstr "Bienvenido al organizador de laboratorio"
 #: laboratory/templates/laboratory/inform.html:11
 #: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
 msgid "Informs"
-msgstr "Información"
+msgstr "Informes"
 
 #: laboratory/templates/laboratory/inform.html:16
 #: laboratory/templates/laboratory/inform.html:19
