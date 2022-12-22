@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DeleteView
+from laboratory.views.djgeneric import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from laboratory.models import Object, Laboratory
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
@@ -17,7 +17,7 @@ from laboratory.validators import isValidate_molecular_formula
 
 
 @permission_required('laboratory.change_object')
-def create_edit_sustance(request, lab_pk, pk=None):
+def create_edit_sustance(request, lab_pk, org_pk, pk=None):
     instance = Object.objects.filter(pk=pk).first()
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj=None
@@ -54,7 +54,7 @@ def create_edit_sustance(request, lab_pk, pk=None):
                                changed_data=suschacform.changed_data, relobj=laboratory)
 
             messages.success(request, _("Sustance saved successfully"))
-            return redirect(reverse('laboratory:sustance_list',args=[lab_pk]))
+            return redirect(reverse('laboratory:sustance_list',args=[lab_pk, org_pk]))
 
         else:
             messages.warning(request, _("Pending information in form"))
@@ -63,18 +63,20 @@ def create_edit_sustance(request, lab_pk, pk=None):
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
-        'lab_pk': lab_pk
+        'lab_pk': lab_pk,
+        'org_pk':org_pk
     })
 
 
 @permission_required('laboratory.view_object')
-def sustance_list(request,lab_pk):
+def sustance_list(request,lab_pk, org_pk):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
     if request.method == 'POST':
         lab_pk = request.POST.get('lab_pk')
     return render(request, 'laboratory/sustance/list.html', {
         'object_url': '#',
-        'laboratory': lab_pk
+        'laboratory': lab_pk,
+        'org_pk': org_pk,
     })
 
 
@@ -85,7 +87,7 @@ class SubstanceDelete(DeleteView):
 
     def get_success_url(self, **kwargs):
         lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('laboratory:sustance_list', kwargs={'lab_pk':lab_pk})
+        success_url = reverse_lazy('laboratory:sustance_list', kwargs={'lab_pk':lab_pk,'org_pk':self.org})
         return success_url
 
     def form_valid(self, form):
@@ -137,11 +139,11 @@ class SustanceListJson(BaseDatatableView):
             is_public = '<i class="{0}"  title="{1} {2}" aria-hidden="true"></i>'.format(
                 warning_is_public, _('Is public?'), _("Yes") if item.is_public else _("No"))
             name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
-                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['pk']}),
+                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['pk'], 'org_pk':self.kwargs['org_pk']}),
                 item.synonym or item.name, item.name)
             delete = """<a href="{0}" title="{1}" class="float-end"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
-                                kwargs={'pk': item.id, 'lab_pk':self.kwargs['pk']}), _('Delete sustance'))
+                                kwargs={'pk': item.id, 'lab_pk':self.kwargs['pk'], 'org_pk':self.kwargs['org_pk']}), _('Delete sustance'))
             if hasattr(item, 'sustancecharacteristics') and item.sustancecharacteristics and \
                     item.sustancecharacteristics.security_sheet:
                 download = """<a href="{0}" title="{1}"><i class="fa fa-download" ></i></a>""" \

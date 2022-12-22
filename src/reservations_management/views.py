@@ -1,10 +1,13 @@
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import ListView, UpdateView
+from laboratory.views.djgeneric import ListView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from laboratory.decorators import user_group_perms
+from laboratory.models import OrganizationStructure
+from laboratory.utils import organilab_logentry
 
 from .models import Reservations
 from .forms import ReservationsForm, ProductForm
@@ -34,7 +37,7 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         new_status = self.object.status
-        success_url = reverse("reservations_list",kwargs={'status': new_status})
+        success_url = reverse("reservations_list",kwargs={'status': new_status,'org_pk':self.org})
         return success_url
 
     def get_context_data(self, **kwargs):
@@ -43,3 +46,14 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
             instance=Reservations.objects.get(pk=self.kwargs['pk']))
         context['product_form'] = ProductForm()
         return context
+
+    def form_valid(self, form):
+        dev = super().form_valid(form)
+        reservation = form.save(commit=False)
+        org = self.kwargs['org_pk']
+        org = OrganizationStructure.objects.filter(pk=org).first()
+        reservation.organization = org
+        reservation.created_by = self.request.user
+        reservation.save()
+        organilab_logentry(self.request.user, self.object, CHANGE, relobj=self.object)
+        return dev

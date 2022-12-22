@@ -5,9 +5,10 @@
     {% define_urlname_action 'add_provider' %}
 {% endblock %}
 {% block content %}
+<a class="btn btn-outline-danger" href="{% url 'laboratory:list_provider' laboratory org_pk %}"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
   <div class="row">
-    <div class="col-md-offset-2 col-md-8">
-      <div class="page-header col-xs-13" align="center">
+    <div class="offset-md-2 col-md-8 pb-2">
+      <div class="page-header" align="center">
         <h3 class="heading-1" center=""><span>{% trans 'Create Provider' %}</span></h3>
       </div>
     </div>
@@ -19,7 +20,7 @@
         <div class=" body ">
           {{ form.as_horizontal }}
         </div>
-        <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
+        <button type="submit" name="action" class="save btn btn-success"><i class="fa fa-save" aria-hidden="true"></i> {% trans 'Create' %}</button>
       </form>
     </div>
 {% endif %}
