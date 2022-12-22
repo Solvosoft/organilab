@@ -3,7 +3,7 @@ from django.contrib import admin
 from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf, SGAComplement
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
-    RecipientSize, Donation
+    RecipientSize
 from .utils import render_pdf_view
 from django.utils.translation import gettext_lazy as _
 
@@ -49,17 +49,12 @@ class AdminSustance(admin.ModelAdmin):
     filter_horizontal = ['components_sga', 'danger_indications']
 
 
-class DonationAdmin(admin.ModelAdmin):
-    search_fields = ['details']
-
-
 admin.site.register(WarningClass)
 admin.site.register([BuilderInformation, RecipientSize, PrudenceAdvice, Component, WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
 admin.site.register(Label, AdminLabels)
 admin.site.register(TemplateSGA)
-admin.site.register(Donation, DonationAdmin)
 admin.site.register(PersonalTemplateSGA)
 admin.site.register(SecurityLeaf)
 admin.site.register(SGAComplement)

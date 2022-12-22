@@ -7,6 +7,7 @@ from rest_framework.routers import SimpleRouter
 
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
+from auth_and_perms.views.select_organization import select_organization_by_user
 from authentication.views import SignDataRequestViewSet
 
 routes = SimpleRouter()
@@ -17,6 +18,7 @@ routes.register('profilepermissionrol', UpdateRolOrganizationProfilePermission, 
 app_name='auth_and_perms'
 
 urlpatterns = [
+    path('organizations', select_organization_by_user, name='select_organization_by_user'),
     path('api/', include(routes.urls)),
     path('login_bccr', fva_rest_authentication.login_with_bccr, name="login_with_bccr"),
     path('create_profile_by_digital_signature/<int:pk>', user_org_creation.create_profile_by_digital_signature, name="create_profile_by_digital_signature"),

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load i18n static laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+
+{% endblock %}
+{% block content %}
+{% for node in nodes %}
+<div class="row">
+    <div class="{{node.1.0}}">
+        <div class="bs-callout bs-callout-{{node.1.1}}">
+            <h4 class="w-100" >{{node.0}}</h4>
+            <a class="btn btn-success btn-sm" title="{% trans 'My laboratories' %}" href="{% url 'laboratory:mylabs'  %}" data-org="{{node.0.pk}}" target="_blank"><i class="fa fa-flask"></i> {% trans 'My laboratories' %}</a>
+            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reports' %}" href="{% url 'laboratory:reports' node.0.pk %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Reports' %}</a>
+
+            <a class="btn btn-secondary btn-sm" href="{% url 'riskmanagement:riskzone_list' node.0.pk %}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+ {% trans 'Risk Zones' %}</a>
+            <a class="btn btn-info btn-sm" href="{% url 'riskmanagement:riskzone_list' node.0.pk %}">
+                <i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Informs' %}</a>
+            <a class="btn btn-danger btn-sm" href="{% url 'msds:index_msds' node.0.pk %}"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+{% trans 'MSDS' %}</a>
+            <a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' 'laboratory' node.0.pk %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
