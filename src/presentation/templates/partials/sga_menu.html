@@ -32,7 +32,7 @@
     {% include 'partials/sga_complements.html' %}
         {% if perms.sga.view_builderinformation %}
         <li>
-            <a href="{% url 'sga:get_companies'%}">
+            <a href="{% url 'sga:get_companies' org_pk %}">
                 {% trans 'Companies Managment' %}
             </a>
         </li>
