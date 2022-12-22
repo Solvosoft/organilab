@@ -49,8 +49,9 @@ const translations_form = {
 
 <script>
     window.urls = {
-    editview: "{% url 'derb:edit_view' %}",
-    formlist: "{% url 'derb:form_list' %}"
+    editview: "{% url 'derb:edit_view' org_pk %}",
+    formlist: "{% url 'derb:form_list' org_pk %}",
+    update_form: "{% url 'derb:update_form' %}"
     }
 </script>
     <script type="text/javascript">

@@ -14,9 +14,9 @@
     <div id="management_buttons">
         <input data-bs-toggle="modal"
             data-bs-target="#delete_all_obj_reservation_modal" type="button"
-            disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="pull-right btn btn-danger"
+            disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="float-end btn btn-danger"
             id="cancel_all_products_btn">
-        <input id="reserve_btn" class="pull-right btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
+        <input id="reserve_btn" class="float-end btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
     </div>
     <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
         <thead>

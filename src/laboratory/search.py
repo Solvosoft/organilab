@@ -9,7 +9,7 @@ Free as freedom will be 26/8/2016
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
-from django.views.generic.list import ListView
+from .views.djgeneric import ListView
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import ObjectSearchForm, ReservedModalForm, TransferObjectForm, AddObjectForm, SubtractObjectForm
 from laboratory.forms import ReservationModalForm
