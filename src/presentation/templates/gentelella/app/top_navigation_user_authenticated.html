@@ -11,9 +11,9 @@
     </li>
     {% endif %}
     {% endif %}
-
+{% if org_pk %}
 <li>
-    <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
+    <a href="{% url 'laboratory:mylabs' 1 %}" title="{% trans 'My laboratories' %}">
         <strong>{% trans 'My laboratories' %}</strong>
     </a>
 </li>
@@ -24,7 +24,7 @@
 
         {% if perms.djreservation.add_reservation %}
         <li id="reservation_list_id"><a
-                href="{% url 'laboratory:my_reservations' laboratory %}">{% trans 'My reservations' %} </a>
+                href="{% url 'laboratory:my_reservations' laboratory org_pk %}">{% trans 'My reservations' %} </a>
         </li>
         {% endif %}
         {% if perms.laboratory.view_inform %}
@@ -43,4 +43,6 @@
     {% endif %}
 
 {% endif %}
+{% endif %}
+
 
