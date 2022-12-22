@@ -48,12 +48,12 @@
           <div class="col-md-2 float-end">
             <div class="btn-group" role="group" aria-label="...">
               {% if perms.laboratory.change_objectfeatures %}
-                <a href="{% url 'laboratory:object_feature_update' laboratory object.pk %}" class="btn btn-warning">
+                <a href="{% url 'laboratory:object_feature_update' laboratory object.pk org_pk %}" class="btn btn-warning">
                   <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
                 </a>
               {% endif %}
               {% if perms.laboratory.delete_objectfeatures %}
-                <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk %}" class="btn btn-danger">
+                <a href="{% url 'laboratory:object_feature_delete' laboratory object.pk org_pk %}" class="btn btn-danger">
                   <span class="fa fa-trash" aria-hidden="true"></span> {% trans 'Delete' %}</a>
               {% endif %}
             </div>

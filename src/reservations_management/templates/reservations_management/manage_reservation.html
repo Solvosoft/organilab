@@ -32,7 +32,7 @@
         <div class="card-title titles">
             <ul class="nav navbar-left panel_toolbox">
                 <li>
-                    <a  href="{% url 'reservations_list' object.status%}" title="{% trans 'Back to the reservations list'%}">
+                    <a  href="{% url 'reservations_list' object.status org_pk %}" title="{% trans 'Back to the reservations list'%}">
                         <i class="fs-5 fa fa-angle-double-left red"></i>
                     </a>
                 </li>
@@ -56,7 +56,7 @@
                 <div class="form-group mt-2">
                     <div class="controls text-end">
 
-                        <a href="{% url 'reservations_list' object.status%}" class="btn btn-danger"><i class='fa fa-times'></i>
+                        <a href="{% url 'reservations_list' object.status org_pk %}" class="btn btn-danger"><i class='fa fa-times'></i>
                             Volver</a>
 
                         <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>

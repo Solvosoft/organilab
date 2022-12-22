@@ -28,7 +28,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
-from .djgeneric import CreateView, UpdateView, DeleteView, ListView
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
 
@@ -120,7 +120,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
+        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
 
     def form_valid(self, form):
         self.object = form.save()
@@ -153,7 +153,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
+        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
 
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
@@ -289,6 +289,7 @@ def add_object(request, pk):
             object.save()
             log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
                                   request.POST.get('bill'), create=False)
+            organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
             response = {
                 'status': True,
@@ -323,6 +324,8 @@ def subtract_object(request, pk):
             object.quantity = new
             object.save()
             log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
+            organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+
         else:
             response = {
                 'status': False,

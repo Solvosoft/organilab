@@ -1,11 +1,10 @@
-from django.contrib.admin.models import DELETION
+from django.contrib.admin.models import DELETION, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import DeleteView
-from django.views.generic.list import ListView
+from laboratory.views.djgeneric import ListView, DeleteView
 
 from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
@@ -25,7 +24,6 @@ class FormList(ListView):
 @method_decorator(permission_required('derb.delete_customform'), name='dispatch')
 class DeleteForm(DeleteView):
     model = CustomForm
-    success_url = reverse_lazy('derb:form_list')
 
     def form_valid(self, form):
         success_url = self.get_success_url()
@@ -34,8 +32,11 @@ class DeleteForm(DeleteView):
         return HttpResponseRedirect(success_url)
 
     # decir este formulario tiene x respuestas en el warning
+    def get_success_url(self, **kwargs):
+        success_url =  reverse_lazy('derb:form_list', kwargs={'org_pk':self.org})
+        return success_url
 @permission_required('derb.add_customform')
-def CreateForm(request):
+def CreateForm(request, org_pk):
 
     if request.method == 'POST':
 
@@ -50,5 +51,7 @@ def CreateForm(request):
             status=empty_schema['status'],
             schema=empty_schema
         )
-        url = reverse('derb:edit_view', args=[custom_form.id])
+        url = reverse('derb:edit_view', args=[custom_form.id,org_pk])
+        organilab_logentry(request.user, custom_form, ADDITION, 'custom form')
+
         return JsonResponse({"url": url})
