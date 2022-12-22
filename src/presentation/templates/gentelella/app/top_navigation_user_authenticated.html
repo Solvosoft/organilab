@@ -11,13 +11,13 @@
     </li>
     {% endif %}
     {% endif %}
-
+{% if org_pk %}
 <li>
-    <a href="{% url 'laboratory:mylabs' %}" title="{% trans 'My laboratories' %}">
+    <a href="{% url 'laboratory:mylabs' org_pk %}" title="{% trans 'My laboratories' %}">
         <strong>{% trans 'My laboratories' %}</strong>
     </a>
 </li>
-
+{% endif %}
 
 {% if laboratory %}
 
