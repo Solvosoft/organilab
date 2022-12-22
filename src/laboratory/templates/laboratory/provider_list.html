@@ -10,7 +10,7 @@
 
 {% block content %}
   	<div class="page-header text-center"><h1>{% trans 'Providers List' %}</h1></div>
-		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' laboratory%}">+ {% trans 'Add' %}</a>
+		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' laboratory org_pk %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
 		{% if perms.laboratory.view_provider  %}
 			<table id="providertable" class="table">
 				<thead>
@@ -28,7 +28,7 @@
 							<td class="text-center">{{ obj.phone_number }}</td>
 							<td class="text-center">{{ obj.email }}</td>
 							<td class="text-center"> <a class="btn btn-md btn-success"
-									href="{% url 'laboratory:update_lab_provider' lab_pk=laboratory pk=obj.pk %}"  title="{% trans 'Update' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+									href="{% url 'laboratory:update_lab_provider' lab_pk=laboratory pk=obj.pk org_pk=org_pk %}"  title="{% trans 'Update' %}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
 							</td>
 						</tr>
 					{% empty %}

@@ -34,9 +34,9 @@ urlpatterns = [
     re_path(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     re_path(r'rp/api/reservedProducts/(?P<pk>\d+)/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     re_path(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
-    re_path(r"my_reservations/(?P<pk>\d+)$", MyReservationView.as_view(), name="my_reservations"),
-    re_path(r'^(?P<lab_pk>\d+)$', views.lab_index, name='labindex'),
-    re_path(r'^(?P<pk>\d+)/edit$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
+    re_path(r"my_reservations/(?P<pk>\d+)//(?P<org_pk>\d+)$", MyReservationView.as_view(), name="my_reservations"),
+    re_path(r'^(?P<lab_pk>\d+)/(?P<org_pk>\d+)$', views.lab_index, name='labindex'),
+    re_path(r'^(?P<pk>\d+)/edit/(?P<org_pk>\d+)$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     re_path(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     re_path(r'^create_lab/(?P<orgpk>\d+)?$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     re_path(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
@@ -47,7 +47,7 @@ urlpatterns = [
 
 lab_shelf_urls = [
     re_path(r"^list$", shelfs.list_shelf, name="list_shelf"),
-    re_path(r"^create$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
+    re_path(r"^create/(?P<org_pk>\d+)$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
     re_path(r"^delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
         shelfs.ShelfDelete, name="shelf_delete"),
     re_path(r'^edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
@@ -64,12 +64,12 @@ lab_rooms_urls = [
 lab_furniture_urls = [
     re_path(r'^$', furniture.list_furniture, name='furniture_list'),
 
-    re_path(r'^create/(?P<labroom>\d+)$', furniture.FurnitureCreateView.as_view(),
+    re_path(r'^create/(?P<labroom>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureCreateView.as_view(),
         name='furniture_create'),
 
-    re_path(r'^edit/(?P<pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
+    re_path(r'^edit/(?P<pk>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
         name='furniture_update'),
-    re_path(r'^delete/(?P<pk>\d+)$', furniture.FurnitureDelete.as_view(),
+    re_path(r'^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureDelete.as_view(),
             name='furniture_delete'),
 ]
 
@@ -127,11 +127,11 @@ lab_reports_organization_urls = [
 ]
 
 lab_features_urls = [
-    re_path(r'^create$', objectfeature.FeatureCreateView.as_view(),
+    re_path(r'^create/(?P<org_pk>\d+)$', objectfeature.FeatureCreateView.as_view(),
         name='object_feature_create'),
-    re_path(r'^edit/(?P<pk>\d+)$', objectfeature.FeatureUpdateView.as_view(),
+    re_path(r'^edit/(?P<pk>\d+)/(?P<org_pk>\d+)$', objectfeature.FeatureUpdateView.as_view(),
         name='object_feature_update'),
-    re_path(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(),
+    re_path(r'^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$', objectfeature.FeatureDeleteView.as_view(),
         name='object_feature_delete'),
 ]
 
@@ -151,11 +151,11 @@ reports_all_lab=[
 ]
 
 sustance_urls = [
-    re_path('sustance/edit/(?P<pk>\d+)?/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
-    re_path('sustance/add/(?P<lab_pk>\d+)?$', create_edit_sustance, name='sustance_add'),
-    re_path('sustance/delete/(?P<pk>\d+)/lab/(?P<lab_pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
-    re_path('sustance/(?P<lab_pk>\d+)$', sustance_list, name='sustance_list'),
-    re_path('sustance/json/(?P<pk>\d+)?$', SustanceListJson.as_view(), name='sustance_list_json'),
+    re_path('sustance/edit/(?P<pk>\d+)?/(?P<lab_pk>\d+)/(?P<org_pk>\d+)?$', create_edit_sustance, name='sustance_manage'),
+    re_path('sustance/add/(?P<lab_pk>\d+)/(?P<org_pk>\d+)?$', create_edit_sustance, name='sustance_add'),
+    re_path('sustance/delete/(?P<pk>\d+)/lab/(?P<lab_pk>\d+)/(?P<org_pk>\d+)?$', SubstanceDelete.as_view(), name='sustance_delete'),
+    re_path('sustance/(?P<lab_pk>\d+)/(?P<org_pk>\d+)$', sustance_list, name='sustance_list'),
+    re_path('sustance/json/(?P<pk>\d+)/(?P<org_pk>\d+)?$', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 organization_urls = [
@@ -169,9 +169,9 @@ organization_urls = [
 ]
 
 provider_urls=[
-    re_path(r"provider$", ProviderCreate.as_view(), name="add_provider"),
-    re_path(r"update_provider/(?P<pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
-    re_path(r"list$", ProviderList.as_view(), name="list_provider"),
+    re_path(r"provider/(?P<org_pk>\d+)$", ProviderCreate.as_view(), name="add_provider"),
+    re_path(r"update_provider/(?P<pk>\d+)/(?P<org_pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
+    re_path(r"list/(?P<org_pk>\d+)$", ProviderList.as_view(), name="list_provider"),
 ]
 informs_urls = [
     re_path(r'get_list$', get_informs, name="get_informs"),
@@ -200,11 +200,11 @@ router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
-    path('mylabs', LaboratoryListView.as_view(), name="mylabs"),
+    path('mylabs/<int:org_pk>', LaboratoryListView.as_view(), name="mylabs"),
     re_path(r'^lab/(?P<lab_pk>\d+)/protocols/', include(lab_protocols_urls)),
-    re_path(r'^lab/(?P<pk>\d+)/delete', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
-    re_path(r"^lab/(?P<lab_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
-    re_path(r'^lab/(?P<lab_pk>\d+)/rooms/', include(lab_rooms_urls)),
+    re_path(r'^lab/(?P<pk>\d+)/delete/(?P<org_pk>\d+)', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
+    re_path(r"^lab/(?P<lab_pk>\d+)/(?P<org_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
+    re_path(r'^lab/(?P<lab_pk>\d+)/(?P<org_pk>\d+)/rooms/', include(lab_rooms_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
     re_path(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),

@@ -67,7 +67,7 @@ class LabroomCreate(CreateView):
         return super(LabroomCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
+        return reverse_lazy('laboratory:rooms_create', args=(self.lab,self.org))
 
 
 @method_decorator(has_lab_assigned(), name='dispatch')
@@ -81,7 +81,7 @@ class LabroomUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:rooms_create', args=(self.lab,))
+        return reverse_lazy('laboratory:rooms_create', args=(self.lab,self.org))
 
     def form_valid(self,form):
         room = form.save()
@@ -98,7 +98,7 @@ class LaboratoryRoomDelete(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(
-            self.kwargs.get('lab_pk'),))
+            self.kwargs.get('lab_pk'),self.org))
 
     def form_valid(self, form):
         success_url = self.get_success_url()
