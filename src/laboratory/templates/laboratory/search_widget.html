@@ -4,9 +4,9 @@
 <div class="row">
   <div class="col-md-10 pt-4">
       {% if laboratory %}
-      <form method="get" action="{% url 'laboratory:search' laboratory %}">
+      <form method="get" action="{% url 'laboratory:search' laboratory org_pk %}">
         {% else %}
-        <form method="get" action="{% url 'laboratory:search' %}">
+        <form method="get" action="{% url 'laboratory:search' org_pk %}">
           {% endif %}
 
           <div class="col-md-10">

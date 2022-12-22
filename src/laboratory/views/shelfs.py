@@ -34,7 +34,7 @@ def get_shelves(furniture):
     if furniture.dataconfig:
         return get_dataconfig(furniture.dataconfig)
 
-def list_shelf_render(request, lab_pk):
+def list_shelf_render(request, lab_pk,org_pk):
     var = request.GET.get('furniture', '0')
     furniture = Furniture.objects.filter(pk=var)
     shelf = get_shelves(furniture)
@@ -44,16 +44,17 @@ def list_shelf_render(request, lab_pk):
         context={
             'object_list': shelf,
             'laboratory': lab_pk,
-            'request': request
+            'request': request,
+            'org_pk':org_pk
         }, request=request)
 
 
 @permission_required('laboratory.view_shelf')
 @ajax
-def list_shelf(request, lab_pk):
+def list_shelf(request, lab_pk, org_pk):
     x =  {
         'inner-fragments': {
-            '#shelf': list_shelf_render(request, lab_pk)
+            '#shelf': list_shelf_render(request, lab_pk,org_pk)
 
         },
     }
@@ -123,6 +124,7 @@ class ShelfCreate(AJAXMixin, CreateView):
             {"crow": row,
              "ccol": col,
              "data": self.object,
+             "org_pk": self.org_pk,
              "laboratory": self.lab})
         return {
             'inner-fragments': {

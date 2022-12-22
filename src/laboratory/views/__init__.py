@@ -10,9 +10,10 @@ from laboratory.decorators import has_lab_assigned
 
 @has_lab_assigned()
 @login_required
-def lab_index(request, lab_pk):
+def lab_index(request, lab_pk, org_pk):
     return render(request, 'laboratory/index.html',
-                  {'laboratory': int(lab_pk)})
+                  {'laboratory': int(lab_pk),
+                   'org_pk':org_pk})
 
 # def is_laboratory_admin(user):
 #     return bool(user.groups.filter(name='laboratory_admin'))

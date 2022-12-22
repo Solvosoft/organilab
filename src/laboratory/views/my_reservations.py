@@ -1,4 +1,4 @@
-from django.views.generic.list import ListView
+from .djgeneric import ListView
 from reservations_management.models import ReservedProducts
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required

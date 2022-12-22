@@ -12,10 +12,8 @@ from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, UpdateView
-from django.views.generic.edit import DeleteView
+from laboratory.views.djgeneric import CreateView, UpdateView,ListView,DeleteView
 from django.views.generic.edit import FormView
-from django.views.generic.list import ListView
 
 from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned

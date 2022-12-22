@@ -42,7 +42,7 @@ class FeatureCreateView(CreateView):
 
     def get_success_url(self):
         if self.lab is not None:
-            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab, 'org_pk':self.org})
         return super(FeatureCreateView, self).get_success_url()
 
     def form_valid(self, form):
@@ -60,7 +60,7 @@ class FeatureUpdateView(UpdateView):
 
     def get_success_url(self):
         if self.lab is not None:
-            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab,'org_pk':self.org})
         return super(FeatureUpdateView, self).get_success_url()
 
     def form_valid(self, form):
@@ -77,7 +77,7 @@ class FeatureDeleteView(DeleteView):
 
     def get_success_url(self):
         if self.lab is not None:
-            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab})
+            return reverse_lazy('laboratory:object_feature_create', kwargs={'lab_pk': self.lab,'org_pk':self.org})
         return super(FeatureDeleteView, self).get_success_url()
 
     def form_valid(self, form):

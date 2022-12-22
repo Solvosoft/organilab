@@ -3,7 +3,7 @@
 <li id="shelf_{{data.pk}}" data-id="{{data.pk}}" class="list-group-item">
 	{% if perms.laboratory.delete_shelf %}
 		<a id="close" class="close" aria-label="Close"  
-		href="{% url 'laboratory:shelf_delete' laboratory data.pk crow ccol %}"
+		href="{% url 'laboratory:shelf_delete' laboratory data.pk org_pk crow ccol %}"
 		data-ajax="true" ><span aria-hidden="true">&times;</span></a>
 	{% endif %}
 
@@ -12,7 +12,7 @@
 
 	{% if perms.laboratory.change_shelf %}
 		<a class="btn btn-xs btn-warning" data-ajax="true" data-success="processResponse"
-		href="{% url 'laboratory:shelf_edit' laboratory data.pk crow ccol %}?furniture={{data.furniture.pk}}"> {% trans 'Edit' %}</a>
+		href="{% url 'laboratory:shelf_edit' laboratory data.pk org_pk crow ccol %}?furniture={{data.furniture.pk}}"> {% trans 'Edit' %}</a>
 	{% endif %}
 
 </li>	
