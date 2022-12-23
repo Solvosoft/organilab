@@ -52,8 +52,8 @@
 {% block js %}
 
 <script>
-    document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' 0 %}";
-    document.url_get_company = "{% url 'sga:get_company' 0 %}";
+    document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' org_pk 0 %}";
+    document.url_get_company = "{% url 'sga:get_company' org_pk 0 %}";
 </script>
 
 <script src="{% static 'sga/js/sgalabel.js' %}"></script>
