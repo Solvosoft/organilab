@@ -6,17 +6,15 @@
     {% define_urlname_action 'protocol_list' %}
 {% endblock %}
 {% block content %}
-<div class="row mb-2">
-    <div class="col"><h4 class="text-center">  {% trans 'Search Protocol' %}</h4></div>
-    <div class="col">
+<div class="mb-2">
           {% if perms.laboratory.add_protocol %}
-        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'laboratory:protocol_create' laboratory %}">
+        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'laboratory:protocol_create' lab_pk=laboratory org_pk=org_pk %}">
             <i class='fa fa-upload' aria-hidden='true'></i>
         {% trans 'Upload your Protocol' %}
         </a>
   {% endif %}
-    </div>
 </div>
+  <div class=""><h4 class="text-center">  {% trans 'Search Protocol' %}</h4></div>
 
 
 <table id="protocolTable" class="display table"></table>
@@ -36,10 +34,10 @@ function get_columns_protocol(){
 }
 
 $(document).ready(function() {
-   document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' %}",{
+   document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' org_pk=org_pk %}",{
           'columns': get_columns_protocol(),
           ajax: {
-            url: "{% url 'laboratory:api-protocol-list' %}",
+            url: "{% url 'laboratory:api-protocol-list' org_pk=org_pk %}",
             type: 'GET',
             data: function(dataTableParams, settings) {
                 var data = formatDataTableParams(dataTableParams, settings);
