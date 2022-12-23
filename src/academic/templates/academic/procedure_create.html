@@ -9,7 +9,7 @@
 
 <div class="card-body">
 
-    <a class="btn btn-danger" href="{% url 'procedure_list' pk=lab_pk %}"><i class="fa fa-arrow-left"></i></a>
+    <a class="btn btn-danger" href="{% url 'procedure_list' lab_pk=laboratory org_pk=org_pk %}"><i class="fa fa-arrow-left"></i></a>
 
     <div class="card-title">
   {% if 'update' in request.path %}

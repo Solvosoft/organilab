@@ -3,7 +3,7 @@ Created on 4 may. 2017
 
 @author: luis
 '''
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ReviewSubstanceViewSet
@@ -23,24 +23,26 @@ router = DefaultRouter()
 
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 
+procedure_url =[
+    re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper, name='add_steps_wrapper'),
+    re_path('save_object/(?P<pk>\d+)/', save_object, name='save_object'),
+    re_path('academic/procedure_list/', ProcedureListView.as_view(), name='procedure_list'),
+    re_path('academic/procedure_create/', ProcedureCreateView.as_view(), name='procedure_create'),
+    re_path('procedure_update/(?P<pk>\d+)/', ProcedureUpdateView.as_view(), name='procedure_update'),
+    re_path('academic/get_procedure/', get_procedure, name='get_procedure'),
+    re_path('academic/delete_procedure/', delete_procedure, name='delete_procedure'),
+    re_path('procedure_detail/(?P<pk>\d+)/', procedureStepDetail, name='procedure_detail'),
+    re_path('academic/procedure/(?P<pk>\d+)/step/', ProcedureStepCreateView.as_view(), name='procedure_step'),
+    re_path('academic/step/(?P<pk>\d+)/update/', ProcedureStepUpdateView.as_view(), name='update_step'),
+    re_path('academic/step/delete/', delete_step, name='delete_step'),
+    re_path('academic/add_object/(?P<pk>\d+)/', save_object, name='add_object'),
+    re_path('academic/remove_object/(?P<pk>\d+)/', remove_object, name='remove_object'),
+    re_path('academic/add_observation/(?P<pk>\d+)/', save_observation, name='add_observation'),
+    re_path('academic/remove_observation/(?P<pk>\d+)/', remove_observation, name='remove_observation'),
+    re_path('academic/generate_reservation', generate_reservation, name='generate_reservation'),
 
+]
 urlpatterns = [
-    path('add_steps_wrapper/<int:pk>/lab/<int:lab_pk>/', add_steps_wrapper, name='add_steps_wrapper'),
-    path('save_object/<int:pk>/<int:lab_pk>/', save_object, name='save_object'),
-    path('academic/procedure_list/<int:pk>/', ProcedureListView.as_view(), name='procedure_list'),
-    path('academic/procedure_create/lab/<int:lab_pk>/', ProcedureCreateView.as_view(), name='procedure_create'),
-    path('procedure_update/<int:pk>/lab/<int:lab_pk>/', ProcedureUpdateView.as_view(), name='procedure_update'),
-    path('academic/get_procedure/', get_procedure, name='get_procedure'),
-    path('academic/delete_procedure/', delete_procedure, name='delete_procedure'),
-    path('procedure_detail/<int:pk>/<int:lab_pk>/', procedureStepDetail, name='procedure_detail'),
-    path('academic/procedure/<int:pk>/step/', ProcedureStepCreateView.as_view(), name='procedure_step'),
-    path('academic/step/<int:pk>/lab/<int:lab_pk>/update/', ProcedureStepUpdateView.as_view(), name='update_step'),
-    path('academic/step/delete/', delete_step, name='delete_step'),
-    path('academic/add_object/<int:pk>/', save_object, name='add_object'),
-    path('academic/remove_object/<int:pk>/', remove_object, name='remove_object'),
-    path('academic/add_observation/<int:pk>/', save_observation, name='add_observation'),
-    path('academic/remove_observation/<int:pk>/', remove_observation, name='remove_observation'),
-    path('academic/generate_reservation', generate_reservation, name='generate_reservation'),
     path('academic/sustance/<str:organilabcontext>/<int:org_pk>/', create_edit_sustance, name='create_sustance'),
     path('academic/update_substance/<str:organilabcontext>/<int:org_pk>/<int:pk>/', create_edit_sustance, name='update_substance'),
     path('academic/get_substance/<str:organilabcontext>/<int:org_pk>/', get_substances, name='get_substance'),
@@ -73,4 +75,6 @@ urlpatterns = [
     path('academic/substance/provider/', add_sga_provider, name='add_sga_provider'),
     path('academic/substance/get_security_leaf/<int:substance>/', security_leaf_pdf, name='security_leaf_pdf'),
     path('academic/api/', include(router.urls)),
+    re_path(r'^academic/(?P<lab_pk>\d+)/(?P<org_pk>\d+)/procedure/', include(procedure_url)),
+
 ]
