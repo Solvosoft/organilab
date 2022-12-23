@@ -37,8 +37,8 @@
                 <td>{{inform.name}}</td>
                 <td>{{inform.custom_form.name}}</td>
                 <td>{% trans inform.status %}</td>
-                <td><a class="btn btn-success" href="{% url 'laboratory:complete_inform' laboratory inform.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
-                <a class="btn btn-danger" href="{% url 'laboratory:remove_inform' laboratory inform.pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                <td><a class="btn btn-success" href="{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                <a class="btn btn-danger" href="{% url 'laboratory:remove_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
               </tr>
             {% endfor %}
 
@@ -58,7 +58,7 @@
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'laboratory:add_informs' lab_pk=laboratory content_type='laboratory' model='laboratory' %}" method="POST">
+        <form action="{% url 'laboratory:add_informs' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk %}" method="POST">
             {% csrf_token %}
             {{form.as_horizontal}}
       <div class="modal-footer">

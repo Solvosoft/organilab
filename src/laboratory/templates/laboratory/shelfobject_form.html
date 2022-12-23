@@ -7,7 +7,7 @@
 				action="{% url 'laboratory:shelfobject_searchupdate' laboratory form.instance.pk %}"
 			{% else %}
 				data-success="processResponseshelfobject"
-				action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' laboratory %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}" 
+				action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}"
 			{% endif %} >
 		
 		<div class="modal-body">

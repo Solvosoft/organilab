@@ -41,8 +41,8 @@
 <script src="{% static 'formio/formio.full.min.js' %}"></script>
 <script type="text/javascript">
 const urls ={
-    edit:"{% url 'laboratory:complete_inform' laboratory inform.pk %}",
-    list: "{% url 'laboratory:get_informs' laboratory %}",
+    edit:"{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}",
+    list: "{% url 'laboratory:get_informs' lab_pk=laboratory org_pk=org_pk %}",
     add_comment:"{% url 'laboratory:api-inform-list' %}",
     get_comment:"{% url 'laboratory:api-inform-list' %}",
     delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",

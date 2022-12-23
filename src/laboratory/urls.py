@@ -46,11 +46,11 @@ urlpatterns = [
 ]
 
 lab_shelf_urls = [
-    re_path(r"^list$", shelfs.list_shelf, name="list_shelf"),
+    re_path(r"^list/(?P<org_pk>\d+)$", shelfs.list_shelf, name="list_shelf"),
     re_path(r"^create/(?P<org_pk>\d+)$", shelfs.ShelfCreate.as_view(), name="shelf_create"),
-    re_path(r"^delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$",
+    re_path(r"^delete/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)/(?P<org_pk>\d+)$",
         shelfs.ShelfDelete, name="shelf_delete"),
-    re_path(r'^edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)$',
+    re_path(r'^edit/(?P<pk>\d+)/(?P<row>\d+)/(?P<col>\d+)/(?P<org_pk>\d+)$',
         shelfs.ShelfEdit.as_view(), name="shelf_edit")
 ]
 
@@ -76,15 +76,15 @@ lab_furniture_urls = [
 shelf_object_urls = [
     re_path(r"^list$", shelfobject.list_shelfobject,
         name="list_shelfobject"),
-    re_path(r"^create$", shelfobject.ShelfObjectCreate.as_view(),
+    re_path(r"^create/(?P<org_pk>\d+)$", shelfobject.ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
-    re_path(r"^delete/(?P<pk>\d+)$",
+    re_path(r"^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$",
         shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     re_path(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     re_path(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
-    re_path(r"transfer_objects$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
+    re_path(r"transfer_objects/(?P<org_pk>\d+)$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     re_path(r"get_shelfobject_limit/(?P<pk>\d+)$", shelfobject.edit_limit_object, name="get_shelfobject_limit"),
 ]
 
@@ -174,10 +174,10 @@ provider_urls=[
     re_path(r"list/(?P<org_pk>\d+)$", ProviderList.as_view(), name="list_provider"),
 ]
 informs_urls = [
-    re_path(r'get_list$', get_informs, name="get_informs"),
-    re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)$', create_informs, name="add_informs"),
-    re_path(r'complete_inform/(?P<pk>\d+)$', complete_inform, name="complete_inform"),
-    re_path(r'remove_inform/(?P<pk>\d+)$', remove_inform, name="remove_inform"),
+    re_path(r'get_list/(?P<org_pk>\d+)$', get_informs, name="get_informs"),
+    re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)/(?P<org_pk>\d+)$', create_informs, name="add_informs"),
+    re_path(r'complete_inform/(?P<pk>\d+)/(?P<org_pk>\d+)$', complete_inform, name="complete_inform"),
+    re_path(r'remove_inform/(?P<pk>\d+)/(?P<org_pk>\d+)$', remove_inform, name="remove_inform"),
 
 ]
 lab_protocols_urls = [

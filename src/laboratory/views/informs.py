@@ -24,7 +24,8 @@ def get_informs(request, *args, **kwargs):
     context = {
         'informs':informs,
         'form': InformForm,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
+        'org_pk': kwargs.get('org_pk'),
 
     }
     return render(request, 'laboratory/inform.html', context=context)
@@ -34,8 +35,8 @@ def remove_inform(request, *args, **kwargs):
     if informs:
         organilab_logentry(request.user, informs, DELETION, 'informs', relobj=kwargs.get('lab_pk'))
         informs.delete()
-        return redirect(reverse('laboratory:get_informs',kwargs={'lab_pk':kwargs.get('lab_pk')}))
-    return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk': kwargs.get('lab_pk')}))
+        return redirect(reverse('laboratory:get_informs',kwargs={'lab_pk':kwargs.get('lab_pk'),'org_pk':kwargs.get('org_pk')}))
+    return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk': kwargs.get('lab_pk'),'org_pk':kwargs.get('org_pk')}))
 
 
 @has_lab_assigned()
@@ -44,6 +45,7 @@ def create_informs(request, *args, **kwargs):
 
     form = InformForm(request.POST)
     laboratory = kwargs.get('lab_pk')
+    org = kwargs.get('org_pk')
     if form.is_valid():
 
         inform= form.save(commit=False)
@@ -53,9 +55,9 @@ def create_informs(request, *args, **kwargs):
         inform.schema=inform.custom_form.schema
         inform.save()
         organilab_logentry(request.user, inform, ADDITION, 'informs', relobj=laboratory)
-        return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory}))
+        return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory,'org_pk':org}))
 
-    return render(request, 'laboratory/inform.html', context={'laboratory':laboratory})
+    return render(request, 'laboratory/inform.html', context={'laboratory':laboratory, 'org_pk':org})
 
 def update_inform_data(item,data):
 
@@ -84,10 +86,12 @@ def complete_inform(request, *args, **kwargs):
     inform = Inform.objects.get(pk=kwargs.get('pk'))
     schema = inform.schema
     laboratory= kwargs.get('lab_pk')
+    org= kwargs.get('org_pk')
     form = json.dumps(schema,indent=2)
     context = {"schema": form,
                'inform': inform,
                'laboratory': laboratory,
+               'org_pk': org,
                'form':CommentForm}
 
     if request.method=='POST':
@@ -106,5 +110,5 @@ def complete_inform(request, *args, **kwargs):
         inform.schema = schema
         inform.save()
 
-        return JsonResponse({'url':reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory})})
+        return JsonResponse({'url':reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory, 'org_pk':org})})
     return render(request, 'laboratory/complete_inform.html', context)
