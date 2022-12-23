@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
@@ -147,28 +147,20 @@ class CreateLaboratoryFormView(FormView):
     form_class = LaboratoryCreate
     success_url = ''
 
-    def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.has_perm('laboratory.add_laboratory'):
-            return render(request, 'laboratory/laboratory_notperm.html')
-        return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
+ #   def dispatch(self, request, *args, **kwargs):
+ #       if not self.request.user.has_perm('laboratory.add_laboratory'):
+ #           return render(request, 'laboratory/laboratory_notperm.html')
+ #       return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
-        user = self.request.user
-
-        if 'orgpk' in self.kwargs:
-            query_list = OrganizationStructure.os_manager.filter_user(user)
-            organization = query_list.filter(pk=self.kwargs['orgpk'])
-
-            if organization.exists():
-                kwargs['initial'] = {
-                    'organization': organization.first().pk
-                }
+        kwargs['initial'] = {'organization': self.kwargs['org_pk']}
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
         context['addorgform'] = OrganizationUserManagementForm(prefix='addorg')
+        context['org_pk'] = self.kwargs['org_pk']
         return context
 
     def form_valid(self, form):
@@ -178,6 +170,7 @@ class CreateLaboratoryFormView(FormView):
 
         user = self.request.user
         admins = User.objects.filter(is_superuser=True)
+        # TODO: This is necesary ?  all user has to be profile
         user.profile.laboratories.add(self.object)
         for admin in admins: 
             if not hasattr(admin, 'profile'):

@@ -60,7 +60,7 @@
                             {% endif %}
                             {% if perms.laboratory.add_laboratory %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-                                                        href="{% url 'laboratory:create_lab' node.0.node.pk %}?lab={{laboratory|get_lab_pk}}"
+                                                        href="{% url 'laboratory:create_lab' node.0.node.pk %}"
                                                         title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
                             <li class="rolcontainer" title="{% trans 'Related Users' %}"><a
