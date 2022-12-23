@@ -13,9 +13,10 @@ from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 
 @permission_required('laboratory.view_protocol')
-def protocol_list(request, *args, **kwargs ):
+def protocol_list(request, *args, **kwargs):
     context={
-        'laboratory': kwargs['lab_pk']
+        'laboratory': kwargs['lab_pk'],
+        'org_pk': kwargs['org_pk']
     }
     return render(request, 'laboratory/protocol/protocol_list.html', context=context)
 
@@ -26,7 +27,7 @@ class ProtocolCreateView(CreateView):
     form_class = ProtocolForm
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,))
+        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
 
     def get_context_data(self, **kwargs):
         context = super(ProtocolCreateView, self).get_context_data(**kwargs)
@@ -51,12 +52,13 @@ class ProtocolUpdateView(UpdateView):
     template_name = 'laboratory/protocol/update.html'
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,))
+        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
 
     def form_valid(self, form):
-        dev = super().form_valid()
+        form.save()
         organilab_logentry(self.request.user, self.object, CHANGE, 'protocol', changed_data=form.changed_data, relobj=self.object.laboratory)
-        return dev
+        return super(ProtocolUpdateView, self).form_valid(form)
+
 
 
 class ProtocolDeleteView(DeleteView):
@@ -65,7 +67,7 @@ class ProtocolDeleteView(DeleteView):
     success_url = ''
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,))
+        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
