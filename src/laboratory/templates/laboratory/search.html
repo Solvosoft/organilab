@@ -103,7 +103,7 @@
 {{block.super}}
 <script>
     document.api_modal = '{% url "laboratory:api_reservation_create" %}';
-    document.object_limit = '{% url "laboratory:get_shelfobject_limit" laboratory 0%}';
+    document.object_limit = '{% url "laboratory:get_shelfobject_limit"  laboratory org_pk 0%}';
     document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
     const msgs= {
             limit:"{% trans 'Do you want to update the quantity limit?' %}",

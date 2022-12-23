@@ -46,13 +46,13 @@
       <div class="col-md-3">
         {% if perms.laboratory.change_object %}
         <a class="btn btn-warning"
-           href="{% url 'laboratory:objectview_update' laboratory object.pk org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+           href="{% url 'laboratory:objectview_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
           <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
         </a>
         {% endif %}
         {% if perms.laboratory.delete_object %}
         <a class="btn btn-danger"
-           href="{% url 'laboratory:objectview_delete' laboratory object.pk org_pk %}">
+           href="{% url 'laboratory:objectview_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}">
           <span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}
         </a>
         {% endif %}
