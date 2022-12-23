@@ -110,6 +110,7 @@ class FurnitureUpdateView(UpdateView):
                                  'obj': self.object,
                                  'col': col,
                                  'row': row,
+                                 'org_pk':self.org,
                                  'laboratory': self.lab})
 
     def get_success_url(self):
