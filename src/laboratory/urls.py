@@ -30,7 +30,7 @@ objviews = ObjectView()
 
 organization_urls_org_pk = [
     path('my_reservations/<int:pk>', MyReservationView.as_view(), name="my_reservations"),
-    path('<int:lab_pk>', views.lab_index, name='labindex'),  # Todo: remove this ?
+    path('labindex/<int:lab_pk>', views.lab_index, name='labindex'),  # Todo: remove this ?
     path('laboratory/<int:pk>/edit/', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     path('create_lab/', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     path('my_labs/', LaboratoryListView.as_view(), name="mylabs"),
@@ -50,7 +50,7 @@ urlpatterns = [
 
 lab_shelf_urls = [
     path('list/', shelfs.list_shelf, name="list_shelf"),
-    path('create/<int:org_pk>/', shelfs.ShelfCreate.as_view(), name="shelf_create"),
+    path('create/', shelfs.ShelfCreate.as_view(), name="shelf_create"),
     path('delete/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfDelete, name="shelf_delete"),
     path('edit/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfEdit.as_view(), name="shelf_edit")
 ]
@@ -165,7 +165,6 @@ informs_urls = [
     path('add_informs/<str:content_type>/<str:model>/', create_informs, name="add_informs"),
     path('complete_inform/<int:pk>/', complete_inform, name="complete_inform"),
     path('remove_inform/<int:pk>/', remove_inform, name="remove_inform"),
-
 ]
 lab_protocols_urls = [
     path('list', protocol_list, name='protocol_list'),
@@ -187,7 +186,6 @@ router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
-
     path('lab/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:pk>/delete/<int:org_pk>', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     path('lab/<int:lab_pk>/<int:org_pk>/search/', SearchObject.as_view(), name="search"),
@@ -195,12 +193,14 @@ urlpatterns += sustance_urls + organization_urls + [
     path('lab/<int:lab_pk>/furniture/', include(lab_furniture_urls)),
     path('lab/<int:lab_pk>/objects/', include(objviews.get_urls())),
     path('lab/<int:lab_pk>/reports/', include(lab_reports_urls)),
-    path('lab/<int:lab_pk>/shelfobject/', include(shelf_object_urls)),
-    path('lab/<int:lab_pk>/shelf/', include(lab_shelf_urls)),
+    path('lab/<int:lab_pk>/shelfobject/<int:org_pk>', include(shelf_object_urls)),
+    path('lab/<int:lab_pk>/shelf/<int:org_pk>', include(lab_shelf_urls)),
     path('lab/<int:lab_pk>/features/', include(lab_features_urls)),
     path('lab//organizations/reports/', include(lab_reports_organization_urls)),
     path('lab/<int:lab_pk>?/provider/', include(provider_urls)),
-    path('lab/<int:lab_pk>/informs/', include(informs_urls)),
+    path('lab/<int:lab_pk>/informs/<int:org_pk>/', include(informs_urls)),
     path('inform/api/', include(router.urls)),
-    path('lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', block_notifications, name="block_notification")
+    path('lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', block_notifications, name="block_notification"),
+    path('lab_reports_org/<int:obj_pk>/', include(lab_reports_organization_urls))
+
 ] + reports_all_lab + edit_objects

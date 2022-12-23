@@ -82,7 +82,7 @@
 {% block js %}
     <script>
         document.furniture_list = '{% url "laboratory:furniture_list" laboratory %}';
-        document.shelf_list = '{% url "laboratory:list_shelf" laboratory %}';
+        document.shelf_list = '{% url "laboratory:list_shelf" laboratory org_pk %}';
         document.shelfobject_list = '{% url "laboratory:list_shelfobject" laboratory %}';
         document.api_modal = '{% url "laboratory:api_reservation_create"%}';
         document.date_validation_script_url = '{% url "laboratory:date_validator"%}';

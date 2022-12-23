@@ -7,7 +7,7 @@
         <div class="card-body">
         <div class="row card-title titles">
             <div class="col-10 text-center">
-            <a href="{% url  'laboratory:labindex' lab.pk org_pk %}" title="{% trans 'Edit laboratory'%}">
+            <a href="{% url  'laboratory:labindex' org_pk lab.pk  %}" title="{% trans 'Edit laboratory'%}">
                <h5>{{ lab.name }}</h5>  </a>
             </div>
 
@@ -32,7 +32,7 @@
             <p>Equipo: <span class="badge bg-secondary pull-right">{{lab|get_equipo_lab}}</span></p>
             <p>Reactivos: <span class="badge bg-secondary pull-right">{{lab|get_reactivos_lab}}</span></p>
         </div>
-        <a href="{% url  'laboratory:labindex' lab.pk org_pk %}" >
+        <a href="{% url  'laboratory:labindex' org_pk lab.pk  %}" >
             <div class="card-footer text-center">
                 <h5>{{ lab.location }}</h5>
             </div>
