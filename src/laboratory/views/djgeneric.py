@@ -180,6 +180,7 @@ class ReportListView(djListView):
 
     def get(self, request, *args, **kwargs):
         self.lab = kwargs['lab_pk']
+        self.org = kwargs['org_pk']
         self.request_format = request.GET.get('format', 'html')
 
         if self.request_format=='html':
@@ -191,6 +192,7 @@ class ReportListView(djListView):
     def get_context_data(self, **kwargs):
         context = djListView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
+        context['org_pk'] = self.org
         context['datetime'] = timezone.now()
         return context
 
