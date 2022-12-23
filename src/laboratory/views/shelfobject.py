@@ -34,7 +34,7 @@ from ..utils import organilab_logentry
 
 
 @login_required
-def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
+def list_shelfobject_render(request, shelf=0, row=0, col=0, org_pk=None,lab_pk=None):
     if shelf == 0:
         var = request.GET.get('shelf', '0')
     else:
@@ -50,6 +50,7 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, lab_pk=None):
         'row': row,
         'col': col,
         'laboratory': lab_pk,
+        'org_pk':org_pk
     }
     return render_to_string(
         'laboratory/shelfObject_list.html',context,request)
@@ -132,7 +133,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return {
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    self.request, self.object.shelf.pk, row, col, lab_pk=self.lab),
+                    self.request, self.object.shelf.pk, row, col, org_pk=self.org, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_create").modal("hide");</script>'
             },
         }
@@ -237,7 +238,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,))
+        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
 
     def get_context_data(self, **kwargs):
         context = DeleteView.get_context_data(self, **kwargs)
@@ -258,7 +259,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return {
             'inner-fragments': {
                 '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
-                    request, row=self.row, col=self.col, shelf=self.object.shelf.pk, lab_pk=self.lab),
+                    request, row=self.row, col=self.col, shelf=self.object.shelf.pk, org_pk=self.org, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             },
         }

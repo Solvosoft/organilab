@@ -2,7 +2,7 @@
  
 <form data-ajax-submit="" onsubmit="return false;"
 		data-success="processResponseshelfobject"
-		action="{% url 'laboratory:shelfobject_delete' laboratory object.pk %}" method="post">
+		action="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" method="post">
 	{% csrf_token %}
 	<div class="modal-body">
 		{% if perms.laboratory.delete_shelfobject %}

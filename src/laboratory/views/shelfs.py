@@ -63,12 +63,12 @@ def list_shelf(request, lab_pk, org_pk):
 @ajax
 @has_lab_assigned()
 @permission_required('laboratory.delete_shelf')
-def ShelfDelete(request, lab_pk, pk, row, col):
+def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     row, col = int(row), int(col)
     shelf = get_object_or_404(Shelf, pk=pk)
     shelf.delete()
     organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
-    url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col))
+    url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col,org_pk))
     return {'inner-fragments': {
         "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
     },}
@@ -118,13 +118,13 @@ class ShelfCreate(AJAXMixin, CreateView):
         self.object.save()
         organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
                            relobj=self.lab)
-
+        print(self.org)
         dev = render_to_string(
             "laboratory/shelf_details.html",
             {"crow": row,
              "ccol": col,
              "data": self.object,
-             "org_pk": self.org_pk,
+             "org_pk": self.org,
              "laboratory": self.lab})
         return {
             'inner-fragments': {
