@@ -17,7 +17,7 @@
             <br>
         </div>
     </div>
-    <form id="leaf_form" action="{% url 'step_four' organilabcontext org_pk substance %}" method="POST">
+    <form id="leaf_form" action="{% url 'academic:step_four' org_pk organilabcontext substance %}" method="POST">
     {% csrf_token %}
 
     <div class="row " style="justify-content: center">
@@ -422,7 +422,7 @@
 
     $.ajax({
       method: "POST",
-      url: "{% url 'add_sga_provider' %}",
+      url: "{% url 'academic:add_sga_provider' org_pk %}",
       headers: {'X-CSRFToken': getCookie('csrftoken')},
       data: json
     }).done(function(data){
