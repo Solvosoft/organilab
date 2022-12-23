@@ -16,7 +16,7 @@
                     {% csrf_token %}
                     {{form.as_horizontal}}
 
-                    <a href="{% url 'sga:get_companies'%}" class="btn btn-danger float-end"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
+                    <a href="{% url 'sga:get_companies' org_pk %}" class="btn btn-danger float-end"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
                     <button type="submit" class="btn btn-success float-end"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
                 </form>
             </div>

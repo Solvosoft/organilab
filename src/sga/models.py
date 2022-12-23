@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from tree_queries.models import TreeNode
 
+from presentation.models import AbstractOrganizationRef
 from sga.managers import OrganilabContextQueryset
 from laboratory import catalog
 
@@ -142,7 +143,7 @@ class Component(models.Model):
         verbose_name_plural = _('Components')
 
 
-class Substance(models.Model):
+class Substance(AbstractOrganizationRef):
     comercial_name = models.CharField(max_length=250,
                                       verbose_name=_("Comercial name"))
     uipa_name= models.CharField(max_length=250, default="",
@@ -156,12 +157,10 @@ class Substance(models.Model):
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True)
+    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True, related_name='creator')
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
     organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
     objects = OrganilabContextQueryset.as_manager()
-    organization = models.ForeignKey('laboratory.OrganizationStructure', on_delete=models.DO_NOTHING, null=True,
-                                     blank=True)
 
     @property
     def warning_word(self):
@@ -221,11 +220,11 @@ class SubstanceCharacteristics(models.Model):
 # build information
 
 
-class BuilderInformation(models.Model):
+class BuilderInformation(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     phone = models.TextField(max_length=15, verbose_name=_("Phone"))
     address = models.TextField(max_length=100, verbose_name=_("Address"))
-    user = models.ForeignKey(User, verbose_name=_("User"),on_delete=models.DO_NOTHING, null=True)
+    user = models.ForeignKey(User, verbose_name=_("User"),on_delete=models.DO_NOTHING, null=True, related_name='user_bi')
     commercial_information = models.TextField(
         null=True, blank=True,
         verbose_name=_("Commercial Information"))

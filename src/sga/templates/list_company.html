@@ -14,7 +14,7 @@
     <div class="col-md-12">
            <h1 class="text-center">{% trans 'List of Companies' %}</h1>
         <div class="add-container float-end">
-            <a class="btn btn-success" href="{% url 'sga:add_company' %}">
+            <a class="btn btn-success" href="{% url 'sga:add_company' org_pk %}">
                 <i class="fa fa-plus" title="{% trans 'Add Company' %}"></i> {% trans 'Add' %}
             </a>
         </div>
@@ -40,7 +40,7 @@
                     <td class="text-center">{{company.commercial_information}}</td>
                     <td class="text-center">
                         <a class="btn btn-warning" title="{% trans 'Edit' %}"
-                           href="{% url 'sga:edit_company' company.pk %}">
+                           href="{% url 'sga:edit_company' org_pk company.pk %}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {% trans 'Edit' %}</a>
                         <a class="btn btn-danger" title="{% trans 'Remove' %}"
