@@ -1,22 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-
-from djgentelella.forms.forms import CustomForm, GTForm
-from djgentelella.widgets import core as djgenwidgets
-from djgentelella.widgets.wysiwyg import TextareaWysiwyg
-
-from auth_and_perms.models import Rol
-from authentication.models import DemoRequest, FeedbackEntry
-from captcha.fields import ReCaptchaField
 from django.utils.translation import gettext_lazy as _
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as djgenwidgets
 
-
-class DemoRequestForm(forms.ModelForm, GTForm):
-    captcha = ReCaptchaField()
-
-    class Meta:
-        model = DemoRequest
-        fields = '__all__'
 
 
 class CreateUserForm(forms.ModelForm, GTForm):
@@ -53,13 +40,3 @@ class PasswordChangeForm(GTForm, forms.Form):
     password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)
 
 
-class FeedbackEntryForm(forms.ModelForm, GTForm):
-    class Meta:
-        model = FeedbackEntry
-        fields = ['title', 'explanation', 'related_file']
-        widgets = {
-            'title': djgenwidgets.TextInput,
-            'explanation': TextareaWysiwyg,
-             'related_file': djgenwidgets.FileInput
-
-        }
