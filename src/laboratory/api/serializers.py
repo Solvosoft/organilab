@@ -66,7 +66,7 @@ class ProtocolSerializer(serializers.ModelSerializer):
 
     def get_action(self, obj):
         user = self.context['request'].user
-        org_pk = self.context['view'].kwargs.get('org_pk', 0)
+        org_pk = self.context['request'].GET['org_pk']
         btn = ''
         if user.has_perm('laboratory.change_protocol'):
             btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> %s</a>"%(
