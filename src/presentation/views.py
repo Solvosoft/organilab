@@ -1,13 +1,16 @@
+from async_notifications.utils import send_email_from_template
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views.generic import CreateView
 from paypal.standard.forms import PayPalPaymentsForm
 
-from presentation.models import Donation
-from presentation.forms import DonateForm
+from presentation.models import Donation, FeedbackEntry
+from presentation.forms import DonateForm, FeedbackEntryForm
 from django.conf import settings
 
 
@@ -53,7 +56,42 @@ def donate_success(request):
     return HttpResponseRedirect(reverse('donate'))
 
 
+@method_decorator(login_required(), name='dispatch')
+class FeedbackView(CreateView):
+    template_name = 'feedback/feedbackentry_form.html'
+    model = FeedbackEntry
+    form_class = FeedbackEntryForm
 
-@login_required
+    def get_success_url(self):
+        text_message = _(
+            'Thank you for your help. We will check your problem as soon as we can')
+        messages.add_message(self.request, messages.SUCCESS, text_message)
+        try:
+            lab_pk = int(self.request.GET.get('lab_pk', 0))
+        except:
+            lab_pk = None
+        dev = reverse('index')
+        if self.request.user.is_authenticated:
+            self.object.user = self.request.user
+        if lab_pk:
+            self.object.laboratory_id = lab_pk
+            dev = reverse('laboratory:labindex', kwargs={'lab_pk': lab_pk})
+        if self.request.user.is_authenticated or lab_pk:
+            self.object.save()
+
+        send_email_from_template("New feedback",
+                                 settings.DEFAULT_FROM_EMAIL,
+                                 context={
+                                     'feedback': self.object
+                                 },
+                                 enqueued=True,
+                                 user=None,
+                                 upfile=self.object.related_file)
+
+        return dev
+
+
 def index_organilab(request):
-    return render(request, 'index_organilab.html')
+    if request.user.is_authenticated:
+        return redirect(reverse('auth_and_perms:select_organization_by_user'))
+    return render(request, 'index.html')

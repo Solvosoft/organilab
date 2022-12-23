@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'index' %}
+{% endblock %}
+{% block title %}{% trans 'Welcome to Organilab' %}{% endblock title %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-sm-8">
+        <h1 class="text-center text-success">{% trans 'Welcome to Organilab' %}</h1>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="flex-shrink-0 col-md-3 align-baseline ">
+        <div class="text-center mb-5">
+             <i class="fa fa-flask"  style="font-size: 10em;"></i>
+            <p class="m-1 text-info">Organilab es un proyecto comunitario, tu aporte nos ayuda crear un mejor programa </p>
+        </div>
+
+        <div class="d-flex justify-content-center">
+        <a class="btn btn-outline-danger btn-sm" href="https://github.com/Solvosoft" >
+            <summary icon="heart" id="sponsor-button" title="Sponsor Solvosoft/organilab" aria-label="Sponsor Solvosoft/organilab" data-view-component="true" class="btn-sm btn" role="button">    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-heart icon-sponsor mr-1 color-fg-sponsors">
+            <path fill-rule="evenodd" d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25zm0 0l.345.666a.752.752 0 01-.69 0L8 14.25z"></path>
+            </svg> {% trans 'Sponsor' %}
+         </summary>
+        </a>
+
+        <a type="button" class="btn btn-lg btn-outline-success" href="{% url 'donate' %}"><i class="fa fa-money" ></i> {% trans 'Donate' %}</a>
+    </div>
+    </div>
+
+    <div class="flex-grow-1 col-md-9" style="text-align: justify">
+        <p>Organilab es una herrmanienta informatica basada y enfocada en estándares de software libre y código abierto para la virtualización de entornos laborales en los que se manipula sustancias químicas. Permite la administración de materias primas mediante el registro del flujo y clasifica las sustancias según su peligrosidad acorde con el Sistema Globalmente Armonizado de clasificación y etiquetado de productos químicos (SGA) de la ONU.
+        </p>
+        <p>El SGA es un acuerdo internacional de sistematización técnica, cuyo objetivo es estandarizar y armonizar el manejo de sustancias químicas con base en su uso y peligrosidad, lo cual facilita el acceso, comprensión e implementación de la información relacionada por parte de las personas que manipulan productos químicos.
+</p><p>El código abierto es una técnica de desarrollo de software comunitaria ampliamente usada y respaldad por gigantes tecnológicos debido a las bondades que proporciona para las partes involucradas, tanto económicos como de seguridad, ya que permite compartir el desarrollo entre diferentes instituciones interesadas y compartir sus revisiones de partes aumentando fiabilidad de los mismos.
+</p><p>Tanto SGA como el software libre permiten armonizar los entornos laborales, pueden ser constructores de estandarización y pueden aportar ampliamente a la población usuaria.
+</p>
+        <div class="text-center">
+              <a type="button" class="btn btn-lg btn-outline-success" href="{% url 'login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i> {% trans 'Login' %}</a>
+              <a type="button" class="btn btn-lg btn-outline-danger" href="{% url 'auth_and_perms:register_user_to_platform' %}"><i class="fa fa-user-circle" aria-hidden="true"></i> {% trans 'Register' %}</a>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock content %}

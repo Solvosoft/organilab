@@ -1041,4 +1041,4 @@ def search_danger_indication_report(request):
     else:
         form = SearchDangerIndicationForm()
 
-    return render(request, 'index_organilab.html', {'form': form})
+    return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})

@@ -14,6 +14,24 @@ class AbstractOrganizationRef(models.Model):
         abstract = True
 
 
+class FeedbackEntry(models.Model):
+    title = models.CharField(_('Title'), max_length=255)
+    explanation = models.TextField(_('Explanation'), null=True, blank=True)
+    related_file = models.FileField(
+        _('Related file'), upload_to='media/feedback_entries/', null=True, blank=True)
+    laboratory_id = models.IntegerField(
+        default=0, null=True, verbose_name=_("Laboratory id"))
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=_("User"), null=True, blank=True, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _('Feedback entry')
+        verbose_name_plural = _('Feedback entries')
+
+    def __str__(self):
+        return '%s' % (self.title,)
+
+
 class Donation(models.Model):
     name = models.CharField(max_length=200, verbose_name=_("Name"))
     email = models.CharField(max_length=100, verbose_name=_("Email"))

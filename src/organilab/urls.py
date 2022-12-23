@@ -16,7 +16,8 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import re_path, path, include
+from django.urls import re_path, path, include, reverse_lazy
+from django.views.generic import RedirectView
 from djgentelella.urls import urlpatterns as urls_djgentelela
 from djreservation import urls as djreservation_urls
 
@@ -34,6 +35,7 @@ from sga import urls as sga_urls
 
 urlpatterns = urls_djgentelela + auth_urls + [
     path('derb/', include('derb.urls')),
+    path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
     path('', include((laboratory_urls,'laboratory'), namespace='laboratory')),
