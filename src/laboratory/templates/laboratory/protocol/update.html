@@ -8,7 +8,7 @@
 {% block content %}
 <div class="row justify-content-center">
 	<div class="col-md-6">
-		<form method="post" action="{% url 'laboratory:protocol_update' laboratory object.pk %}" enctype="multipart/form-data" role="form">
+		<form method="post" action="{% url 'laboratory:protocol_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" enctype="multipart/form-data" role="form">
 			<legend>{% trans 'Update your Protocol' %}</legend>
 			{% csrf_token %}
 			{{ form.as_horizontal }}
