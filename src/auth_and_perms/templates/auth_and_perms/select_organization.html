@@ -11,10 +11,10 @@
         <div class="bs-callout bs-callout-{{node.1.1}}">
             <h4 class="w-100" >{{node.0}}</h4>
              {% if perms.laboratory.view_laboratory %}
-            <a class="btn btn-success btn-sm" title="{% trans 'My laboratories' %}" href="{% url 'laboratory:mylabs'  node.0.pk  %}" data-org="{{node.0.pk}}" target="_blank"><i class="fa fa-flask"></i> {% trans 'My laboratories' %}</a>
+            <a class="btn btn-success btn-sm" title="{% trans 'My laboratories' %}" href="{% url 'laboratory:mylabs'  node.0.pk  %}"><i class="fa fa-flask"></i> {% trans 'My laboratories' %}</a>
             {% endif %}
             {% if perms.laboratory.do_report %}
-            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reports' %}" href="{% url 'laboratory:reports' node.0.pk %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Reports' %}</a>
+            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reports' %}" href="{% url 'laboratory:reports' node.0.pk %}"><i class="fa fa-medkit"></i> {% trans 'Reports' %}</a>
             {% endif %}
             {% if perms.risk_management.view_riskzone %}
             <a class="btn btn-secondary btn-sm" href="{% url 'riskmanagement:riskzone_list' node.0.pk %}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
