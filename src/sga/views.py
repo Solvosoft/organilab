@@ -20,6 +20,7 @@ from djgentelella.models import ChunkedUpload
 from weasyprint import HTML
 from xhtml2pdf import pisa
 
+from laboratory.models import OrganizationStructure
 from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, \
     PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
     LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
@@ -551,42 +552,48 @@ def get_barcode_from_number(request, code):
 
 @login_required
 @permission_required('sga.view_builderinformation')
-def get_companies(request):
-    company = BuilderInformation.objects.filter(user=request.user)
-    return render(request,'list_company.html', context={'companies':company})
+def get_companies(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    company = BuilderInformation.objects.filter(user=request.user, organization=organization)
+    return render(request,'list_company.html', context={'companies':company, 'org_pk': org_pk})
 
 @login_required
 @permission_required('sga.add_builderinformation')
-def create_company(request):
+def create_company(request, org_pk):
     form = CompanyForm(user=request.user)
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     if request.method=='POST':
         form= CompanyForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect(reverse('sga:get_companies'))
+            obj = form.save(commit=False)
+            obj.organization = organization
+            obj.save()
+            return redirect(reverse('sga:get_companies', kwargs={'org_pk': org_pk}))
 
     context={
         'form':form,
         'title':_('Create Company'),
-        'url': reverse('sga:add_company')
+        'url': reverse('sga:add_company', kwargs={'org_pk': org_pk}),
+        'org_pk': org_pk
     }
 
     return render(request,'add_company.html', context=context)
 
 @login_required
 @permission_required('sga.change_builderinformation')
-def edit_company(request,pk):
+def edit_company(request, org_pk, pk):
     company = BuilderInformation.objects.filter(pk=pk).first()
     form = CompanyForm(instance=company)
     if request.method=='POST':
         form= CompanyForm(request.POST,instance=company)
         if form.is_valid():
             form.save()
-            return redirect(reverse('sga:get_companies'))
+            return redirect(reverse('sga:get_companies', kwargs={'org_pk': org_pk}))
     context={
         'form':form,
         'title': _('Edit Company'),
-        'url': reverse('sga:edit_company', kwargs={'pk':pk})
+        'url': reverse('sga:edit_company', kwargs={'org_pk': org_pk, 'pk':pk}),
+        'org_pk': org_pk
     }
 
     return render(request,'add_company.html', context=context)
@@ -594,7 +601,7 @@ def edit_company(request,pk):
 
 @login_required
 @permission_required('sga.delete_builderinformation')
-def remove_company(request,pk):
+def remove_company(request, pk):
     if pk:
         company = BuilderInformation.objects.get(pk=pk)
         company.delete()
