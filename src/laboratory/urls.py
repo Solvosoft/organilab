@@ -6,6 +6,7 @@ from django.conf.urls import include
 from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
+from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
@@ -197,6 +198,7 @@ router = DefaultRouter()
 router.register('api_inform', CommentAPI, basename='api-inform')
 router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
+router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
