@@ -34,7 +34,7 @@ urlpatterns = [
     re_path(r'rp/api/reservedProducts/(?P<pk>\d+)/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     re_path(r'rp/api/reservedProducts/(?P<pk>\d+)/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     re_path(r'r/api/reservation$', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
-    re_path(r"my_reservations/(?P<pk>\d+)//(?P<org_pk>\d+)$", MyReservationView.as_view(), name="my_reservations"),
+    re_path(r"my_reservations/(?P<pk>\d+)/(?P<org_pk>\d+)$", MyReservationView.as_view(), name="my_reservations"),
     re_path(r'^(?P<lab_pk>\d+)/(?P<org_pk>\d+)$', views.lab_index, name='labindex'),
     re_path(r'^(?P<pk>\d+)/edit/(?P<org_pk>\d+)$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     re_path(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
@@ -214,7 +214,7 @@ urlpatterns += sustance_urls + organization_urls + [
     re_path(r'^lab/(?P<lab_pk>\d+)/organizations/reports/(?P<org_pk>\d+)/',
         include(lab_reports_organization_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/provider/(?P<org_pk>\d+)/',include(provider_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/informs/(?P<org_pk>\d+)',include(informs_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/informs/(?P<org_pk>\d+)/',include(informs_urls)),
     re_path(r'^inform/api/',include(router.urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 

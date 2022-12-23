@@ -34,10 +34,10 @@ function get_columns_protocol(){
 }
 
 $(document).ready(function() {
-   document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' org_pk=org_pk %}",{
+   document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' %}"+"?org_pk={{ org_pk }}",{
           'columns': get_columns_protocol(),
           ajax: {
-            url: "{% url 'laboratory:api-protocol-list' org_pk=org_pk %}",
+            url: "{% url 'laboratory:api-protocol-list'%}"+"?org_pk={{ org_pk }}",
             type: 'GET',
             data: function(dataTableParams, settings) {
                 var data = formatDataTableParams(dataTableParams, settings);
