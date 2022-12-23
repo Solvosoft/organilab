@@ -13,18 +13,14 @@
       </div>
     </div>
   </div>
-  {% if perms.laboratory.add_laboratory %}
   <div class="row">
-      <form method="POST" action="{% url 'laboratory:create_lab' %}" class="form-horizontal"> {% csrf_token %}
+      <form method="POST" action="{% url 'laboratory:create_lab' org_pk %}" class="form-horizontal"> {% csrf_token %}
         <div class="body">
           {{ form.as_horizontal }}
         </div>
         <button type="submit" name="action" value="createlab" class="save btn btn-danger">{% trans 'Create' %}</button>
       </form>
   </div>
-  {% else %} 
-    {% include 'laboratory/action_denied.html' %} 
-  {% endif %}	
 {% endblock%}
 
 {% block js %}
