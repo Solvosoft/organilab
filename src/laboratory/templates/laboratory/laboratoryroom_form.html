@@ -52,7 +52,7 @@
 											<ul class="list-group">
 												{% for furniture in object.furniture_set.all %}
 													<li class="list-group-item">
-														<a href="{% url 'laboratory:furniture_update' laboratory furniture.pk org_pk %}" > {{furniture}} </a>
+														<a href="{% url 'laboratory:furniture_update' lab_pk=laboratory pk=furniture.pk org_pk=org_pk %}" > {{furniture}} </a>
 													</li>
 												{% endfor %}
 											</ul>

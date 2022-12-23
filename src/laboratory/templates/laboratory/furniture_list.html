@@ -16,7 +16,7 @@
         </a>
         {% if perms.laboratory.do_report %} 
         <a class="float-end"
-           href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
+           href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}?pk={{ furniture.pk }}">
           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
           {% trans "PDF" %}
         </a>

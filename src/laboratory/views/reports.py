@@ -153,6 +153,7 @@ def report_organization_building(request, *args, **kwargs):
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk'),
+        'org_pk': kwargs.get('org_pk'),
     }
 
     template = get_template('pdf/organizationlaboratory_pdf.html')
@@ -203,12 +204,14 @@ def make_book_laboratory(rooms):
 @has_lab_assigned()
 @permission_required('laboratory.do_report')
 def report_labroom_building(request, *args, **kwargs):
+    org=None
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
             Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
     else:
         rooms = LaboratoryRoom.objects.all()
-
+    if 'org_pk' in kwargs:
+        org=kwargs.get('org_pk')
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(
@@ -222,6 +225,7 @@ def report_labroom_building(request, *args, **kwargs):
         'datetime': timezone.now(),
         'request': request,
         'laboratory': kwargs.get('lab_pk'),
+        'org_pk': org
     }
     template = get_template('pdf/laboratoryroom_pdf.html')
     #added explicit context
@@ -240,6 +244,8 @@ def report_labroom_building(request, *args, **kwargs):
 @permission_required('laboratory.do_report')
 def report_shelf_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
+    org = kwargs.get('org_pk')
+
     if var is None:
         if 'lab_pk' in kwargs:
             shelf_objects = ShelfObject.objects.filter(
@@ -254,6 +260,7 @@ def report_shelf_objects(request, *args, **kwargs):
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
+        'org_pk': org,
         'laboratory': kwargs.get('lab_pk')
     }
 
@@ -293,6 +300,8 @@ def report_limited_shelf_objects(request, *args, **kwargs):
                 yield shelf_object
 
     var = request.GET.get('pk')
+    org = kwargs.get('org_pk')
+
     if var is None:
         if 'lab_pk' in kwargs:
             shelf_objects = ShelfObject.objects.filter(
@@ -316,6 +325,7 @@ def report_limited_shelf_objects(request, *args, **kwargs):
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
+        'org_pk': org,
         'laboratory': kwargs.get('lab_pk')
     }
     html = template.render(context=context)
@@ -380,6 +390,8 @@ def make_book_objects(objects, summary=False, type_id=None, lab_pk=None):
 @permission_required('laboratory.do_report')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
+    org = kwargs.get('org_pk')
+
     try:
         detail = bool(int(request.GET.get('details', 0)))
     except:
@@ -435,7 +447,8 @@ def report_objects(request, *args, **kwargs):
         'object_list': objects,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': kwargs.get('lab_pk')
+        'laboratory': kwargs.get('lab_pk'),
+        'org_pk': org
     }
     html = template.render(context=context)
     page = HTML(string=html, encoding='utf-8').write_pdf()
@@ -452,6 +465,8 @@ def report_objects(request, *args, **kwargs):
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
+    org = kwargs.get('org_pk')
+
     try:
         all_labs = int(request.GET.get('all_labs', '0'))
     except:
@@ -479,7 +494,8 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
         'rpo': rpo,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': lab
+        'laboratory': lab,
+        'org_pk': org,
     }
 
     html = template.render(context=context)
@@ -525,6 +541,8 @@ def make_book_furniture_objects(furnitures):
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
     lab = kwargs.get('lab_pk')
+    org = kwargs.get('org_pk')
+
     if var is None:
         furniture = Furniture.objects.filter(
             labroom__laboratory__pk=lab)
@@ -542,7 +560,8 @@ def report_furniture(request, *args, **kwargs):
         'object_list': furniture,
         'datetime': timezone.now(),
         'request': request,
-        'laboratory': lab
+        'laboratory': lab,
+        'org_pk': org
     }
 
     template = get_template('pdf/summaryfurniture_pdf.html')

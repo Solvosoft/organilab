@@ -16,7 +16,7 @@
         {% endif %}
 
         {% if perms.laboratory.do_report %}
-        <a class="float-end" href="{% url 'laboratory:reports_shelf_objects' laboratory %}?pk={{ shelfobject.pk }}"
+        <a class="float-end" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?pk={{ shelfobject.pk }}"
            style="margin-right: 10px;">
            <i class="fa fa-download" aria-hidden="true"></i>
         </a>

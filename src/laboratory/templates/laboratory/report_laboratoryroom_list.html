@@ -24,16 +24,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>
@@ -89,16 +89,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:report_building' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:report_building' lab_pk=laboratory org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>
@@ -108,14 +108,6 @@
 {% endblock %}
 {% block js %}
 {{block.super}}
-<script>
-
-(function(){
-    $("li").click(()=>{
-    	console.log('sss')
-    })
-})(jQuery);
-</script>
 
 
 

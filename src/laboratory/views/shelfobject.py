@@ -66,10 +66,10 @@ class ShelfObjectReservationModal(FormView):
 
 @login_required
 @ajax
-def list_shelfobject(request, lab_pk):
+def list_shelfobject(request, *args, **kwargs):
     return {
         'inner-fragments': {
-            '#shelfobject': list_shelfobject_render(request, lab_pk=lab_pk),
+            '#shelfobject': list_shelfobject_render(request, org_pk=kwargs['org_pk'],lab_pk=kwargs['lab_pk']),
             '#shelfposition': request.GET.get('shelf', '0'),
             '#shelfposition1': request.GET.get('shelf', '0')
 
@@ -168,7 +168,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             'inner-fragments': {
                 '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk):
                     list_shelfobject_render(
-                        self.request, self.object.shelf.pk, row, col, lab_pk=self.lab),
+                        self.request, self.object.shelf.pk, row, col,org_pk=self.org, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_update").modal("hide");</script>'
             },
         }

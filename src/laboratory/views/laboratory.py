@@ -39,7 +39,7 @@ class LaboratoryEdit(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('laboratory:mylabs')
+        return reverse('laboratory:mylabs',kwargs={'org_pk':self.org})
 
     def form_valid(self,form):
         laboratory = form.save()
@@ -156,9 +156,9 @@ class CreateLaboratoryFormView(FormView):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
         user = self.request.user
 
-        if 'orgpk' in self.kwargs:
+        if 'org_pk' in self.kwargs:
             query_list = OrganizationStructure.os_manager.filter_user(user)
-            organization = query_list.filter(pk=self.kwargs['orgpk'])
+            organization = query_list.filter(pk=self.kwargs['org_pk'])
 
             if organization.exists():
                 kwargs['initial'] = {
@@ -169,6 +169,8 @@ class CreateLaboratoryFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CreateLaboratoryFormView, self).get_context_data(**kwargs)
         context['addorgform'] = OrganizationUserManagementForm(prefix='addorg')
+        context['org_pk'] = self.kwargs['org_pk']
+
         return context
 
     def form_valid(self, form):

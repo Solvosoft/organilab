@@ -38,7 +38,7 @@ urlpatterns = [
     re_path(r'^(?P<lab_pk>\d+)/(?P<org_pk>\d+)$', views.lab_index, name='labindex'),
     re_path(r'^(?P<pk>\d+)/edit/(?P<org_pk>\d+)$', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     re_path(r'^select$', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
-    re_path(r'^create_lab/(?P<orgpk>\d+)?$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
+    re_path(r'^create_lab/(?P<org_pk>\d+)?$', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     re_path(r"reserve_object/(?P<modelpk>\d+)$", ShelfObjectReservation.as_view(), name="object_reservation"),
 
     re_path(r"validators", validate_duplicate_initial_date, name="date_validator"),
@@ -64,27 +64,27 @@ lab_rooms_urls = [
 lab_furniture_urls = [
     re_path(r'^$', furniture.list_furniture, name='furniture_list'),
 
-    re_path(r'^create/(?P<labroom>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureCreateView.as_view(),
+        re_path(r'^create/(?P<labroom>\d+)$', furniture.FurnitureCreateView.as_view(),
         name='furniture_create'),
 
-    re_path(r'^edit/(?P<pk>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
+    re_path(r'^edit/(?P<pk>\d+)$', furniture.FurnitureUpdateView.as_view(),
         name='furniture_update'),
-    re_path(r'^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$', furniture.FurnitureDelete.as_view(),
+    re_path(r'^delete/(?P<pk>\d+)$', furniture.FurnitureDelete.as_view(),
             name='furniture_delete'),
 ]
 
 shelf_object_urls = [
     re_path(r"^list$", shelfobject.list_shelfobject,
         name="list_shelfobject"),
-    re_path(r"^create/(?P<org_pk>\d+)$", shelfobject.ShelfObjectCreate.as_view(),
+    re_path(r"^create$", shelfobject.ShelfObjectCreate.as_view(),
         name="shelfobject_create"),
-    re_path(r"^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$",
+    re_path(r"^delete/(?P<pk>\d+)$",
         shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     re_path(r"^edit/(?P<pk>\d+)$",
         shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     re_path(r"q/update/(?P<pk>\d+)$", shelfobject.ShelfObjectSearchUpdate.as_view(),
         name="shelfobject_searchupdate"),
-    re_path(r"transfer_objects/(?P<org_pk>\d+)$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
+    re_path(r"transfer_objects$", shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     re_path(r"get_shelfobject_limit/(?P<pk>\d+)$", shelfobject.edit_limit_object, name="get_shelfobject_limit"),
 ]
 
@@ -104,7 +104,7 @@ lab_reports_urls = [
     # HTML reports
     re_path(r'^list/laboratory$', labroom.LaboratoryRoomReportView.as_view(),
         name='reports_laboratory'),
-    re_path(r'^list/furniture$$', furniture.FurnitureReportView.as_view(),
+    re_path(r'^list/furniture$', furniture.FurnitureReportView.as_view(),
         name='reports_furniture_detail'),
     re_path(r'^list/objects$', reports.ObjectList.as_view(),
         name='reports_objects_list'),
@@ -127,11 +127,11 @@ lab_reports_organization_urls = [
 ]
 
 lab_features_urls = [
-    re_path(r'^create/(?P<org_pk>\d+)$', objectfeature.FeatureCreateView.as_view(),
+    re_path(r'^create$', objectfeature.FeatureCreateView.as_view(),
         name='object_feature_create'),
-    re_path(r'^edit/(?P<pk>\d+)/(?P<org_pk>\d+)$', objectfeature.FeatureUpdateView.as_view(),
+    re_path(r'^edit/(?P<pk>\d+)$', objectfeature.FeatureUpdateView.as_view(),
         name='object_feature_update'),
-    re_path(r'^delete/(?P<pk>\d+)/(?P<org_pk>\d+)$', objectfeature.FeatureDeleteView.as_view(),
+    re_path(r'^delete/(?P<pk>\d+)$', objectfeature.FeatureDeleteView.as_view(),
         name='object_feature_delete'),
 ]
 
@@ -169,15 +169,15 @@ organization_urls = [
 ]
 
 provider_urls=[
-    re_path(r"provider/(?P<org_pk>\d+)$", ProviderCreate.as_view(), name="add_provider"),
-    re_path(r"update_provider/(?P<pk>\d+)/(?P<org_pk>\d+)$", ProviderUpdate.as_view(), name="update_lab_provider"),
-    re_path(r"list/(?P<org_pk>\d+)$", ProviderList.as_view(), name="list_provider"),
+    re_path(r"add/", ProviderCreate.as_view(), name="add_provider"),
+    re_path(r"update_provider/(?P<pk>\d+)/", ProviderUpdate.as_view(), name="update_lab_provider"),
+    re_path(r"list/", ProviderList.as_view(), name="list_provider"),
 ]
 informs_urls = [
-    re_path(r'get_list/(?P<org_pk>\d+)$', get_informs, name="get_informs"),
-    re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)/(?P<org_pk>\d+)$', create_informs, name="add_informs"),
-    re_path(r'complete_inform/(?P<pk>\d+)/(?P<org_pk>\d+)$', complete_inform, name="complete_inform"),
-    re_path(r'remove_inform/(?P<pk>\d+)/(?P<org_pk>\d+)$', remove_inform, name="remove_inform"),
+    re_path(r'get_list', get_informs, name="get_informs"),
+    re_path(r'add_informs/(?P<content_type>\w+)/(?P<model>\w+)$', create_informs, name="add_informs"),
+    re_path(r'complete_inform/(?P<pk>\d+)$', complete_inform, name="complete_inform"),
+    re_path(r'remove_inform/(?P<pk>\d+)$', remove_inform, name="remove_inform"),
 
 ]
 lab_protocols_urls = [
@@ -201,20 +201,20 @@ router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     path('mylabs/<int:org_pk>', LaboratoryListView.as_view(), name="mylabs"),
-    re_path(r'^lab/(?P<lab_pk>\d+)/protocols/', include(lab_protocols_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/protocols/(?P<org_pk>\d+)/', include(lab_protocols_urls)),
     re_path(r'^lab/(?P<pk>\d+)/delete/(?P<org_pk>\d+)', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     re_path(r"^lab/(?P<lab_pk>\d+)/(?P<org_pk>\d+)?/search$", SearchObject.as_view(), name="search"),
     re_path(r'^lab/(?P<lab_pk>\d+)/(?P<org_pk>\d+)/rooms/', include(lab_rooms_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/furniture/', include(lab_furniture_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/objects/', include(objviews.get_urls())),
-    re_path(r'^lab/(?P<lab_pk>\d+)/reports/', include(lab_reports_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/shelfobject/', include(shelf_object_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/furniture/(?P<org_pk>\d+)/', include(lab_furniture_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/objects/(?P<org_pk>\d+)/', include(objviews.get_urls())),
+    re_path(r'^lab/(?P<lab_pk>\d+)/reports/(?P<org_pk>\d+)/', include(lab_reports_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/shelfobject/(?P<org_pk>\d+)/', include(shelf_object_urls)),
     re_path(r'^lab/(?P<lab_pk>\d+)/shelf/', include(lab_shelf_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/features/', include(lab_features_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/organizations/reports/',
+    re_path(r'^lab/(?P<lab_pk>\d+)/features/(?P<org_pk>\d+)/', include(lab_features_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/organizations/reports/(?P<org_pk>\d+)/',
         include(lab_reports_organization_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)?/provider/',include(provider_urls)),
-    re_path(r'^lab/(?P<lab_pk>\d+)/informs/',include(informs_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/provider/(?P<org_pk>\d+)/',include(provider_urls)),
+    re_path(r'^lab/(?P<lab_pk>\d+)/informs/(?P<org_pk>\d+)',include(informs_urls)),
     re_path(r'^inform/api/',include(router.urls)),
     path(
         'lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', 
