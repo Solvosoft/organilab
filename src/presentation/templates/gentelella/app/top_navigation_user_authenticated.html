@@ -19,7 +19,7 @@
 </li>
 {% endif %}
 
-{% if laboratory %}
+{% if laboratory and org_pk %}
 
 
         {% if perms.djreservation.add_reservation %}
@@ -29,7 +29,7 @@
         {% endif %}
         {% if perms.laboratory.view_inform %}
         <li id="inform_id"><a
-                href="{% url 'laboratory:get_informs' laboratory %}">{% trans 'Informs' %} </a>
+                href="{% url 'laboratory:get_informs' laboratory org_pk %}">{% trans 'Informs' %} </a>
         </li>
         {% endif %}
 

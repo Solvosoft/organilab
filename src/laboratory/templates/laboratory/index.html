@@ -57,7 +57,7 @@
             <ul class="list-group">
               {% if perms.laboratory.view_laboratory %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_list' laboratory org_pk %}">
+                  <a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">
                     <strong>{% trans 'Laboratory view' %}</strong>
                   </a>
                 </li>
@@ -72,7 +72,7 @@
 
               {% if perms.laboratory.view_protocol %}
               <li class="list-group-item">
-                  <a href="{% url 'laboratory:protocol_list' laboratory %}">
+                  <a href="{% url 'laboratory:protocol_list' lab_pk=laboratory %}">
                     <strong>{% trans 'Protocols' %}</strong>
                   </a>
                 </li>
@@ -116,7 +116,7 @@
 
               {% if perms.laboratory.view_tranferobject %}
              <li class="list-group-item">
-                  <a href="{% url 'laboratory:transfer_objects' laboratory %}?lab={{laboratory}}"><strong>{% trans 'Transfers' %}</strong></a>
+                  <a href="{% url 'laboratory:transfer_objects' lab_pk=laboratory org_pk=org_pk %}?lab={{laboratory}}"><strong>{% trans 'Transfers' %}</strong></a>
                 </li>
               {% endif %}
 

@@ -10,7 +10,7 @@
         {% if perms.laboratory.delete_shelfobject %}
         <a class="float-end" data-ajax="true"
            data-success="processResponseshelfobjectDelete"
-           href="{% url 'laboratory:shelfobject_delete' laboratory shelfobject.pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
+           href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
            style="margin-left: 10px; color:red">
            <i class="fa fa-trash" aria-hidden="true"></i> </a>
         {% endif %}
