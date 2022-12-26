@@ -33,35 +33,7 @@
 
 <div class="row">
 <div class="col-md-12">
-  <table id="sustancetable" class="table table-sm table-striped table-bordered" style="width:100%">
-<!--        <thead>-->
-<!--            <tr>-->
-<!--                <th class="text-center">{% trans 'Creator' %}</th>-->
-<!--                <th class="text-center">{% trans 'Substances' %}</th>-->
-<!--                <th class="text-center">{% trans 'Actions' %}</th>-->
-<!--            </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--            {% for substance in substances %}-->
-<!--                           {% get_personal_template substance.pk as template %}-->
-
-<!--                <tr class="text-center">-->
-<!--                    <td>{{substance.creator}}</td>-->
-<!--                    <td>{{substance.comercial_name}}</td>-->
-<!--                    <td><button title="{% trans 'Approve' %}" type="button" data-substance="{{substance.pk}}" data-url="{% url 'accept_substance' 'academic' org_pk substance.pk %}" class="btn btn-info text-white btn_review"><i class="icons fa fa-check"></i></button>-->
-<!--                        <a class="btn btn-warning" title="{% trans 'Detail' %}" href="{% url 'detail_substance' organilabcontext org_pk substance.pk %}"><i class="icons fa fa-eye"></i></a>-->
-<!--                        {% if template %}-->
-<!--                        &lt;!&ndash;<a class="btn  btn-md  btn-info btnpreview" title="{% trans 'Preview' %}" data-id="{{template}}"><i class="icons fa fa-eye"></i></a>-->
-<!--                        <a class="btn  btn-md  btn-primary" title="{% trans 'Generate PNG' %}" href="{% url 'sga:get_svgexport' 0 template %}"><i class="icons fa fa-file-image-o" aria-hidden="true"></i></a>-->
-<!--                        <a class="btn  btn-md  btn-danger" title="{% trans 'Generate PDF' %}" href="{% url 'sga:get_svgexport' 1 template %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>-->
-<!--                        &ndash;&gt;-->
-<!--                        <a class="btn  btn-md  btn-danger" title="{% trans 'Generate PDF' %}" href="{% url 'security_leaf_pdf' substance.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>-->
-<!--                        {% endif %}-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            {% endfor %}-->
-<!--        </tbody>-->
-  </table>
+  <table id="sustancetable" class="table table-sm table-striped table-bordered" style="width:100%"></table>
 </div>
 </div>
 <div class="modal fade bs-example-modal-lg" id="svgtemplate" tabindex="-1"
@@ -142,10 +114,10 @@ function get_columns_logentry(){
     return columns;
 }
 $(document).ready(function() {
-       sustancetable = createDataTable("#sustancetable", "{% url 'api-reviewsubstance-list' %}", {
+       sustancetable = createDataTable("#sustancetable", "{% url 'laboratory:api-reviewsubstance-list' %}", {
           'columns': get_columns_logentry(),
           ajax: {
-            url: "{% url 'api-reviewsubstance-list' %}",
+            url: "{% url 'laboratory:api-reviewsubstance-list' %}",
             type: 'GET',
             data: function(dataTableParams, settings) {
                 var data = formatDataTableParams(dataTableParams, settings);
@@ -173,7 +145,7 @@ $(document).ready(function() {
 </script>
 
 <script>
-    document.url_get_preview = "{% url 'sga:get_preview' organilabcontext 0 %}";
+    document.url_get_preview = "{% url 'sga:get_preview' org_pk organilabcontext 0 %}";
 </script>
 <script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}"></script>
 

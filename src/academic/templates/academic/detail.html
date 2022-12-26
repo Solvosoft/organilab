@@ -12,7 +12,7 @@
 {% block content %}
 {% trans "Unknown" as default_value %}
 
-<a href="{% url 'procedure_update' pk=procedure lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary">
+<a href="{% url 'academic:procedure_update' pk=procedure lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary">
     <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
 <div class="card p-2">
     <div class="card-title">
@@ -28,7 +28,7 @@
             <h3 class="card-title">{{forloop.counter}} -- {{step.title|default:default_value}}
                 <a class="btn float-end" title="{% trans 'remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
                     <span class="fa fa-trash" aria-hidden="true"></span> </a>
-                <a class="btn float-end" title="{% trans 'Edit' %}" href="{% url 'update_step' pk=step.pk lab_pk=laboratory org_pk=org_pk %}">
+                <a class="btn float-end" title="{% trans 'Edit' %}" href="{% url 'academic:update_step' pk=step.pk lab_pk=laboratory org_pk=org_pk %}">
                     <span class="fa fa-edit" title="{% trans 'Edit' %}"aria-hidden="true"></span> </a>
             </h3>
         </div>
@@ -63,7 +63,7 @@
     {% endfor %}
 </div>
 <div class="d-flex justify-content-center">
-      <a href="{% url 'procedure_list' lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary">
+      <a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary">
           <i class="fa fa-undo"></i> {% trans "Back to list" %}</a>
     </div>
 
@@ -72,7 +72,7 @@
 {% block js %}
 
     <script>
-        document.remove_step="{% url 'delete_step' lab_pk=laboratory org_pk=org_pk %}";
+        document.remove_step="{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}";
         document.message = {
             'confirmstep': "{% trans 'Are you sure to delete the step' %}",
             'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",

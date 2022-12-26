@@ -12,7 +12,7 @@
 {% block title %}{% trans "Procedures" %}{% endblock %}
 {% block content %}
 <div class="card-body">
-    <a class="btn btn-primary" href="{% url 'procedure_list' lab_pk=laboratory org_pk=org_pk %}"><<</a>
+    <a class="btn btn-primary" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}"><<</a>
     <h1 class="card-title text-center">{% trans 'Create Step' %}</h1>
     <div class="card">
         <div class="card-body">
@@ -79,10 +79,10 @@
     {% block js %}
 
     <script>
-        document.save_object="{% url 'save_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-        document.remove_object="{% url 'remove_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-        document.save_observation="{% url 'add_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-        document.remove_observation="{% url 'remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
+        document.save_object="{% url 'academic:save_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
+        document.remove_object="{% url 'academic:remove_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
+        document.save_observation="{% url 'academic:add_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
+        document.remove_observation="{% url 'academic:remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
 
         document.message = {
             'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",

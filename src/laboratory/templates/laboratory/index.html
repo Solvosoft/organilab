@@ -64,7 +64,7 @@
               {% endif %}
               {% if perms.academic.view_procedure %}
                 <li class="list-group-item">
-                  <a href="{% url 'procedure_list' lab_pk=laboratory org_pk=org_pk %}">
+                  <a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}">
                     <strong>{% trans 'Procedures' %}</strong>
                   </a>
                 </li>

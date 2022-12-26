@@ -15,7 +15,7 @@
 {% endblock %}
 {% block title %}{% trans 'Procedure' %}{% endblock %}
 {% block content %}
-    <h2><a href="{% url 'procedure_create' lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary">
+    <h2><a href="{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary">
         <i class="fa fa-plus"></i> {% trans 'Create New Procedure' %}</a></h2>
 
     <table  id="datatable" class="table table-bordered table-hover">
@@ -35,13 +35,13 @@
                     <td>{{ procedure.description | safe }}</td>
                     <td>
                         <div class="d-flex justify-content-center flex-column p-2">
-                        <a class="btn btn-info btn-block" href="{% url 'procedure_detail' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
+                        <a class="btn btn-info btn-block" href="{% url 'academic:procedure_detail' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
                             <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
-                        <a class="btn btn-success btn-block" href="{% url 'add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk%}">
+                        <a class="btn btn-success btn-block" href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
                             <i class="fa fa-plus"></i> {% trans 'New Step' %}</a>
                         <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">
                            <i class="fa fa-book"></i> {% trans 'Reserve' %}</a>
-                        <a href="{% url 'procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
+                        <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
                            <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
                         <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">
                             <i class="fa fa-trash"></i> {% trans 'Remove' %}</a>
@@ -107,9 +107,9 @@
 {% block js %}
 	{{block.super}}
 	<script>
-	    document.getProcedure="{% url 'get_procedure' lab_pk=laboratory org_pk=org_pk %}"
-	    document.reservation="{% url 'generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
-	    document.remove_procedure="{% url 'delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
+	    document.getProcedure="{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}"
+	    document.reservation="{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
+	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
 		var table=$("#datatable").DataTable();
 		table.order( [ 0, 'desc' ] ).draw();
 		const reserved ="{% trans 'Reserved' %}";

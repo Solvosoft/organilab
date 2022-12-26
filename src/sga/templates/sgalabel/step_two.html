@@ -33,10 +33,10 @@
                 </div>
                 <div class="col-3">
 <div class="btn-group" role="group">
-        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' organilabcontext org_pk sgalabel.pk %}">
+        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' org_pk organilabcontext sgalabel.pk %}">
             <i class="fa fa-reply"></i>  {% trans 'Back' %}
         </a>
-        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' organilabcontext org_pk %}">
+        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' org_pk organilabcontext %}">
              <i class="fa fa-close"></i> {% trans 'Cancel' %}
         </a>
 </div>
@@ -63,7 +63,7 @@ window.SvgCanvas=SvgCanvas;
 </script>
 
 <script>
-    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
 </script>
 
 <script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
