@@ -21,7 +21,7 @@
         <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
     </div>
     <br>
-    <form class="form-horizontal" action="{% url 'step_one' organilabcontext org_pk pk %}" method="POST">
+    <form class="form-horizontal" action="{% url 'academic:step_one' org_pk organilabcontext pk %}" method="POST">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-1"></div>
@@ -43,7 +43,7 @@
                     {{ form.label_tag }} {{ form }}
                 </div>
                 {% if form.id_for_label == 'id_h_code' %}
-                <label>{% trans 'Did you find H code component?' %}</label><a href="{% url 'add_danger_indication' %}">
+                <label>{% trans 'Did you find H code component?' %}</label><a href="{% url 'academic:add_danger_indication' org_pk %}">
                 {% trans 'Create it here!' %}</a>
                 {% endif %}
                 {% endfor %}

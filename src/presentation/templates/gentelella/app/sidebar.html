@@ -39,13 +39,15 @@
                         <i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
                     </a>
                 </li>
-                {% if perms.msds.view_regulationdocument %}
-                <li>
-                    <a class="nav-link" href="{% url 'msds:regulation_docs' %}"
-                       title="{% trans 'Regulation documents' %}">
-                        <i class="fa fa-flag fa-fw"></i> {% trans 'Regulation documents' %}
-                    </a>
-                </li>
+                {% if org_pk %}
+                    {% if perms.msds.view_regulationdocument %}
+                    <li>
+                        <a class="nav-link" href="{% url 'msds:regulation_docs' org_pk=org_pk %}"
+                           title="{% trans 'Regulation documents' %}">
+                            <i class="fa fa-flag fa-fw"></i> {% trans 'Regulation documents' %}
+                        </a>
+                    </li>
+                    {% endif %}
                 {% endif %}
                 <li>
                     <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}">

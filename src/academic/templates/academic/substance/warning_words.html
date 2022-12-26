@@ -12,7 +12,7 @@
 
     <div class="col-sm-12">
         <h1> {% trans 'Warning Words' %}</h1>
-        <a href="{% url 'add_warning_word' %}" class="btn btn-success float-end">
+        <a href="{% url 'academic:add_warning_word' org_pk %}" class="btn btn-success float-end">
            <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}
         </a>
         <table id="warning_word_table" class="table table-bordered text-center">

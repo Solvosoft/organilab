@@ -2,7 +2,6 @@ import json
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
@@ -10,17 +9,17 @@ from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, CreateView, UpdateView, FormView
-from laboratory.views.djgeneric import (
-    ListView as DJListView,
-    CreateView as DJCreateView,
-    UpdateView as DJUpdateView
-)
+from django.views.generic import FormView
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations
 from laboratory.models import Object, Catalog, Furniture, ShelfObject
 from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import (
+    ListView as DJListView,
+    CreateView as DJCreateView,
+    UpdateView as DJUpdateView
+)
 from reservations_management.models import ReservedProducts
 from . import convertions
 
@@ -31,7 +30,7 @@ def add_steps_wrapper(request, *args, **kwargs):
     procedure = get_object_or_404(Procedure, pk=kwargs['pk'])
     procstep = ProcedureStep.objects.create(procedure=procedure)
     organilab_logentry(request.user, procstep, ADDITION, relobj=kwargs['lab_pk'])
-    return redirect(reverse('update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
+    return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
 
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
@@ -56,7 +55,7 @@ class ProcedureCreateView(DJCreateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('procedure_list', kwargs={'lab_pk': self.lab,'org_pk':self.org})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):
@@ -77,7 +76,7 @@ class ProcedureUpdateView(DJUpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('procedure_list', kwargs={'lab_pk': self.lab,'org_pk':self.org})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):
@@ -123,7 +122,7 @@ class ProcedureStepCreateView(FormView):
     def get_success_url(self):
         lab_pk = self.kwargs['lab_pk']
         org = self.kwargs['org_pk']
-        success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk,'org_pk':org})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'pk': lab_pk,})
         return success_url
 
 @method_decorator(permission_required('academic.change_procedurestep'), name='dispatch')
@@ -140,7 +139,7 @@ class ProcedureStepUpdateView(DJUpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('procedure_list', kwargs={'lab_pk': self.lab, 'org_pk':self.org})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):

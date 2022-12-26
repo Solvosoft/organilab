@@ -11,7 +11,7 @@
 
     <div class="col-md-12">
         <h1>{% trans 'Danger Indication' %}</h1>
-        <a href="{% url 'add_danger_indication' %}" class="btn btn-success float-end">
+        <a href="{% url 'academic:add_danger_indication' org_pk %}" class="btn btn-success float-end">
             <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
         <table id="danger_table" class="table table-bordered text-center">
             <thead>
