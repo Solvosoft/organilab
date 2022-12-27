@@ -139,11 +139,11 @@ reports_all_lab = [
 ]
 
 sustance_urls = [
-    path('sustance/edit/<int:pk>/<int:org_pk>/<int:lab_pk>/', create_edit_sustance, name='sustance_manage'),
-    path('sustance/add/<int:org_pk>/<int:lab_pk>/', create_edit_sustance, name='sustance_add'),
-    path('sustance/delete/<int:org_pk>/<int:pk>/lab/<int:lab_pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
-    path('sustance/<int:org_pk>/<int:lab_pk>/', sustance_list, name='sustance_list'),
-    path('sustance/json/<int:org_pk>/<int:pk>', SustanceListJson.as_view(), name='sustance_list_json'),
+    path('', sustance_list, name='sustance_list'),
+    path('add/', create_edit_sustance, name='sustance_add'),
+    path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
+    path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
+    path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 organization_urls = [
@@ -186,7 +186,7 @@ router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 
 '''MULTILAB'''
-urlpatterns += sustance_urls + organization_urls + [
+urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
     path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
@@ -201,8 +201,9 @@ urlpatterns += sustance_urls + organization_urls + [
     path('lab/<int:org_pk>/organizations/reports/', include(lab_reports_organization_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('inform/api/', include(router.urls)),
-    path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
 
 ]  + edit_objects

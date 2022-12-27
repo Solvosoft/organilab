@@ -50,7 +50,7 @@
     $("#sustancetable").DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "{% url 'laboratory:sustance_list_json' pk=laboratory org_pk=org_pk %}",
+        "ajax": "{% url 'laboratory:sustance_list_json' org_pk laboratory %}",
         "language": {
             "url": "{% get_datatables_translation %}"
         }
