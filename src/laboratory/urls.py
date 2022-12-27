@@ -201,7 +201,8 @@ urlpatterns += sustance_urls + organization_urls + [
     path('lab/<int:org_pk>/organizations/reports/', include(lab_reports_organization_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
+    path('<int:org_pk>/', include(reports_all_lab)),
     path('inform/api/', include(router.urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
 
-] + reports_all_lab + edit_objects
+]  + edit_objects

@@ -13,7 +13,7 @@
         <a href="{% url 'riskmanagement:riskzone_list' org_pk %}">
             {% trans 'Risk zones' %}</a>
     </li>
-    <li><a id='reports' href="{% url 'laboratory:h_code_reports' %}"
+    <li><a id='reports' href="{% url 'laboratory:h_code_reports' org_pk %}"
            title="{% trans 'Report View' %}">
         {% trans 'H code Reports' %}</a>
     </li>
