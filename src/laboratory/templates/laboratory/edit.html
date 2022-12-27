@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
 	<h1 align="center">{% trans 'Laboratory Management' %}</h1>  
-	{% if perms.laboratory.change_laboratory %}
+
 	  <div class="row" style="justify-content: center;">
 	    <div class="col-md-4 col-md-offset-3">
 	      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' pk=form.instance.pk org_pk=org_pk %}{% else %}{% url 'laboratory:laboratory_create' org_pk=org_pk %} {% endif %}"
@@ -16,9 +16,7 @@
 	      </form>
 	    </div>
 	  </div>
-	{% else %} 
-       {% include 'laboratory/action_denied.html' %} 
-    {% endif %}
+
  {% endblock %}
 
 {% block js %}
