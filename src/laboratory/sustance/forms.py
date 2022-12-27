@@ -1,11 +1,21 @@
 from django import forms
 from djgentelella.forms.forms import GTForm
 
-from laboratory.models import Object, SustanceCharacteristics
+from laboratory.models import Object, SustanceCharacteristics, Laboratory
 from djgentelella.widgets import core as genwidgets
 
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(SustanceObjectForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            labs = Laboratory.objects.filter(organization__pk=org_pk)
+
+            self.fields['laboratory'].queryset = labs
+
     class Meta:
         model = Object
         fields = [

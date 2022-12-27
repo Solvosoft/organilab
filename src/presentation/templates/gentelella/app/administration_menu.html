@@ -33,7 +33,7 @@
         <li class="dropdown-submenu pull-left ">
             <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' laboratory org_pk %}">{% trans 'Reactive' %}</a>
+                <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' org_pk laboratory %}">{% trans 'Reactive' %}</a>
                 </li>
                 <li>
                     <hr class="dropdown-divider">

@@ -44,7 +44,7 @@
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {% trans 'Edit' %}</a>
                         <a class="btn btn-danger" title="{% trans 'Remove' %}"
-                           data-url="{% url 'sga:remove_company' company.pk %}" data-company="{{company.name}}" onclick="remove_company(this)">
+                           data-url="{% url 'sga:remove_company' org_pk company.pk %}" data-company="{{company.name}}" onclick="remove_company(this)">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                             {% trans 'Remove' %}</a>
                     </td>
