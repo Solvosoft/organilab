@@ -39,7 +39,7 @@ class LaboratoryEdit(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('laboratory:mylabs')
+        return reverse('laboratory:mylabs',kwargs={'org_pk':self.org})
 
     def form_valid(self,form):
         laboratory = form.save()

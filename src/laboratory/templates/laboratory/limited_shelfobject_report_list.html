@@ -23,16 +23,16 @@
 	  </button>
 	  <ul class="dropdown-menu">
 		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=pdf">{% trans "PDF" %} </a>
 		  </li>
 		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=ods">{% trans "Ods" %} </a>
+			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
 		  </li>
 		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=xls">{% trans "Xls" %} </a>
+			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
 		  </li>
 		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 		  </li>
 	  </ul>
 	  </div>
@@ -48,7 +48,7 @@
 		      {{ obj }}
 		      <a class="btn btn-sm btn-danger float-end"
 		         title="{{ obj }}"
-		         href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}?pk={{ obj.pk }}">
+		         href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?pk={{ obj.pk }}">
 		   		<i class="fa fa-download" aria-hidden="true"></i>
 		        {% trans "PDF" %}</a>
 		    </h3>
@@ -76,7 +76,7 @@
   <div>
     {% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
     <a class="btn btn-primary float-end" title="{% trans 'All objects' %}"
-         href="{% url 'laboratory:reports_limited_shelf_objects' laboratory %}">
+         href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}">
         <i class="fa fa-download" aria-hidden="true"></i>
         {% trans "All objects in PDF" %}
     </a>

@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from rest_framework import serializers
-from sga.models import ReviewSubstance
+from sga.models import ReviewSubstance, SecurityLeaf
+
 
 class ReviewSubstanceFilterSet(FilterSet):
 
@@ -49,20 +50,23 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
             'org_pk': obj.substance.organization.pk
         }
         obj_kwargs.update({'pk': obj.substance.pk})
-        detail_url = reverse('detail_substance', kwargs=obj_kwargs)
-        security_leaf_pdf_url = reverse('security_leaf_pdf', kwargs={'substance': obj.substance.pk})
+        detail_url = reverse('academic:detail_substance', kwargs=obj_kwargs)
+        security_leaf_pdf_url = reverse('academic:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
+                                                                     'substance': obj.substance.pk})
         action = ""
 
         if not obj.is_approved:
             obj_kwargs.update({'pk': obj.pk})
-            approve_url = reverse('accept_substance', kwargs=obj_kwargs)
+            approve_url = reverse('academic:accept_substance', kwargs=obj_kwargs)
             action += """ <button title='%s' type ='button' data-url='%s' class ='btn btn-info text-white btn_review'>
             <i class='icons fa fa-check'></i></button>""" % (_("Approve"), approve_url,)
 
         action += """<a class ='btn btn-warning' title='%s' href='%s'><i class='icons fa fa-eye'></i></a>""" \
                   % (_("Detail"), detail_url,)
-        action += """<a class='btn  btn-md  btn-danger' title='%s' href='%s'><i class='icons fa fa-file-pdf-o'
-         aria-hidden='true'></i></a>""" % (_("Generate PDF"), security_leaf_pdf_url,)
+        leaf = SecurityLeaf.objects.filter(substance=obj.substance)
+        if leaf.exists():
+            action += """<a class='btn  btn-md  btn-danger' title='%s' href='%s'><i class='icons fa fa-file-pdf-o'
+             aria-hidden='true'></i></a>""" % (_("Generate PDF"), security_leaf_pdf_url,)
         return action
 
     class Meta:

@@ -10,12 +10,12 @@
         <li class="dropdown-submenu">
             <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' laboratory %}">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}">
                     {% trans 'Objects' %}</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' laboratory  %}">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' lab_pk=laboratory org_pk=org_pk  %}">
                     {% trans 'Principal Technician' %}</a></li>
                 <li>
                     <hr class="dropdown-divider">
@@ -27,7 +27,7 @@
         </li>
         {% endif %}
         <li>
-            <a href="{% url 'laboratory:reports_furniture_detail' laboratory %}">
+            <a href="{% url 'laboratory:reports_furniture_detail' lab_pk=laboratory org_pk=org_pk %}">
                 {% trans 'Furnitures' %}
             </a>
         </li>
@@ -37,17 +37,17 @@
         <li class="dropdown-submenu">
             <a class="sub-menu" tabindex="-1" href="#">{% trans 'Objects' %}<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=0">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' lab_pk=laboratory org_pk=org_pk %}?type_id=0">
                     {% trans 'Reactive' %}</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=1">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' lab_pk=laboratory org_pk=org_pk %}?type_id=1">
                     {% trans 'Material' %}</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' laboratory %}?type_id=2">
+                <li><a tabindex="-1" href="{% url 'laboratory:reports_objects_list' lab_pk=laboratory org_pk=org_pk %}?type_id=2">
                     {% trans 'Equipment' %}</a></li>
             </ul>
         </li>
@@ -55,7 +55,7 @@
             <hr class="dropdown-divider">
         </li>
         <li>
-            <a href="{% url 'laboratory:reactive_precursor_object_list' laboratory %}">
+            <a href="{% url 'laboratory:reactive_precursor_object_list' lab_pk=laboratory org_pk=org_pk %}">
                 {% trans 'Reactive precursor objects' %}
             </a>
         </li>
@@ -63,7 +63,7 @@
             <hr class="dropdown-divider">
         </li>
         <li>
-            <a href="{% url 'laboratory:object_change_logs' laboratory %}">
+            <a href="{% url 'laboratory:object_change_logs' lab_pk=laboratory org_pk=org_pk %}">
                 {% trans 'Object changes' %}
             </a>
         </li>
@@ -71,7 +71,7 @@
             <hr class="dropdown-divider">
         </li>
         <li>
-            <a href="{% url 'laboratory:reports_limited_shelf_objects_list' laboratory %}">
+            <a href="{% url 'laboratory:reports_limited_shelf_objects_list' lab_pk=laboratory org_pk=org_pk %}">
                 {% trans 'Limited shelf objects' %}
             </a>
         </li>
@@ -79,7 +79,7 @@
             <hr class="dropdown-divider">
         </li>
         <li>
-            <a href="{% url 'laboratory:precursor_report' laboratory%}">{% trans 'Precursor Report' %}</a>
+            <a href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}">{% trans 'Precursor Report' %}</a>
         </li>
         <li>
             <hr class="dropdown-divider">

@@ -64,7 +64,7 @@
               {% endif %}
               {% if perms.academic.view_procedure %}
                 <li class="list-group-item">
-                  <a href="{% url 'procedure_list' laboratory%}">
+                  <a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}">
                     <strong>{% trans 'Procedures' %}</strong>
                   </a>
                 </li>
@@ -72,7 +72,7 @@
 
               {% if perms.laboratory.view_protocol %}
               <li class="list-group-item">
-                  <a href="{% url 'laboratory:protocol_list' lab_pk=laboratory %}">
+                  <a href="{% url 'laboratory:protocol_list' lab_pk=laboratory org_pk=org_pk %}">
                     <strong>{% trans 'Protocols' %}</strong>
                   </a>
                 </li>
@@ -142,16 +142,16 @@
           <ul class="list-group">
               {% if perms.laboratory.do_report %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:reports_laboratory' laboratory %}"><strong>{% trans 'Laboratory' %}</strong></a>
+                  <a href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
                 </li>
               {% endif %}
                               
               <li class="list-group-item">
-                <a href="{% url 'laboratory:reports_furniture' laboratory %}"><strong>{% trans 'Furnitures' %}</strong></a>
+                <a href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Furnitures' %}</strong></a>
               </li>
 
               <li class="list-group-item">
-                <a href="{% url 'laboratory:reports_objects' laboratory %}"><strong>{% trans 'Objects' %}</strong></a>
+                <a href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Objects' %}</strong></a>
               </li>
             </ul>
           </div>

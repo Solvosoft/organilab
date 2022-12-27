@@ -3,15 +3,15 @@ Created on 1/8/2016
 '''
 
 from django.conf.urls import include
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
+from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
     LogEntryViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
-from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
@@ -24,6 +24,7 @@ from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
+from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
@@ -64,9 +65,9 @@ lab_rooms_urls = [
 
 lab_furniture_urls = [
     path('', furniture.list_furniture, name='furniture_list'),
-    path('create/<int:labroom>/<int:org_pk>/', furniture.FurnitureCreateView.as_view(), name='furniture_create'),
-    path('edit/<int:pk>/<int:org_pk>/', furniture.FurnitureUpdateView.as_view(), name='furniture_update'),
-    path('delete/<int:pk>/<int:org_pk>/', furniture.FurnitureDelete.as_view(), name='furniture_delete'),
+    path('create/<int:labroom>/', furniture.FurnitureCreateView.as_view(), name='furniture_create'),
+    path('edit/<int:pk>/', furniture.FurnitureUpdateView.as_view(), name='furniture_update'),
+    path('delete/<int:pk>/', furniture.FurnitureDelete.as_view(), name='furniture_delete'),
 ]
 
 shelf_object_urls = [
@@ -110,17 +111,17 @@ lab_reports_urls = [
 lab_reports_organization_urls = [
     path('organization', reports.report_organization_building,
          name='reports_organization_building'),
-    path('list', organizations.OrganizationReportView.as_view(),
+    path('<int:lab_pk>/list', organizations.OrganizationReportView.as_view(),
          name='reports_organization'),
 
 ]
 
 lab_features_urls = [
-    path('create/<int:org_pk>/', objectfeature.FeatureCreateView.as_view(),
+    path('create/', objectfeature.FeatureCreateView.as_view(),
          name='object_feature_create'),
-    path('edit/<int:pk>/<int:org_pk>/', objectfeature.FeatureUpdateView.as_view(),
+    path('edit/<int:pk>/', objectfeature.FeatureUpdateView.as_view(),
          name='object_feature_update'),
-    path('delete/<int:pk>/<int:org_pk>/', objectfeature.FeatureDeleteView.as_view(),
+    path('delete/<int:pk>/', objectfeature.FeatureDeleteView.as_view(),
          name='object_feature_delete'),
 ]
 
@@ -138,11 +139,11 @@ reports_all_lab = [
 ]
 
 sustance_urls = [
-    path('sustance/edit/<int:pk>/<int:lab_pk>/<int:org_pk>/', create_edit_sustance, name='sustance_manage'),
-    path('sustance/add/<int:lab_pk>/<int:org_pk>/', create_edit_sustance, name='sustance_add'),
-    path('sustance/delete/<int:pk>/lab/<int:lab_pk>/<int:org_pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
-    path('sustance/<int:lab_pk>/<int:org_pk>/', sustance_list, name='sustance_list'),
-    path('sustance/json/<int:pk>/<int:org_pk>/', SustanceListJson.as_view(), name='sustance_list_json'),
+    path('sustance/edit/<int:pk>/<int:org_pk>/<int:lab_pk>/', create_edit_sustance, name='sustance_manage'),
+    path('sustance/add/<int:org_pk>/<int:lab_pk>/', create_edit_sustance, name='sustance_add'),
+    path('sustance/delete/<int:org_pk>/<int:pk>/lab/<int:lab_pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
+    path('sustance/<int:org_pk>/<int:lab_pk>/', sustance_list, name='sustance_list'),
+    path('sustance/json/<int:org_pk>/<int:pk>', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 organization_urls = [
@@ -156,9 +157,9 @@ organization_urls = [
 ]
 
 provider_urls = [
-    path('provider/<int:org_pk>/', ProviderCreate.as_view(), name="add_provider"),
-    path('update_provider/<int:pk>/<int:org_pk>/', ProviderUpdate.as_view(), name="update_lab_provider"),
-    path('list/<int:org_pk>/', ProviderList.as_view(), name="list_provider"),
+    path('provider/', ProviderCreate.as_view(), name="add_provider"),
+    path('update_provider/<int:pk>/', ProviderUpdate.as_view(), name="update_lab_provider"),
+    path('list/', ProviderList.as_view(), name="list_provider"),
 ]
 informs_urls = [
     path('get_list/', get_informs, name="get_informs"),
@@ -182,25 +183,25 @@ router = DefaultRouter()
 router.register('api_inform', CommentAPI, basename='api-inform')
 router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
+router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 
 '''MULTILAB'''
 urlpatterns += sustance_urls + organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
-    path('lab/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
-    path('lab/<int:pk>/delete/<int:org_pk>', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
-    path('lab/<int:lab_pk>/<int:org_pk>/search/', SearchObject.as_view(), name="search"),
-    path('lab/<int:lab_pk>/<int:org_pk>/rooms/', include(lab_rooms_urls)),
-    path('lab/<int:lab_pk>/furniture/', include(lab_furniture_urls)),
-    path('lab/<int:lab_pk>/objects/', include(objviews.get_urls())),
-    path('lab/<int:lab_pk>/reports/', include(lab_reports_urls)),
-    path('lab/<int:lab_pk>/shelfobject/<int:org_pk>', include(shelf_object_urls)),
-    path('lab/<int:lab_pk>/shelf/<int:org_pk>', include(lab_shelf_urls)),
-    path('lab/<int:lab_pk>/features/', include(lab_features_urls)),
-    path('lab//organizations/reports/', include(lab_reports_organization_urls)),
-    path('lab/<int:lab_pk>?/provider/', include(provider_urls)),
-    path('lab/<int:lab_pk>/informs/<int:org_pk>/', include(informs_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
+    path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
+    path('lab/<int:org_pk>/<int:lab_pk>/search/', SearchObject.as_view(), name="search"),
+    path('lab/<int:org_pk>/<int:lab_pk>/rooms/', include(lab_rooms_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/furniture/', include(lab_furniture_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/objects/', include(objviews.get_urls())),
+    path('lab/<int:org_pk>/<int:lab_pk>/reports/', include(lab_reports_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/', include(shelf_object_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/shelf/', include(lab_shelf_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/features/', include(lab_features_urls)),
+    path('lab/<int:org_pk>/organizations/reports/', include(lab_reports_organization_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('inform/api/', include(router.urls)),
-    path('lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/', block_notifications, name="block_notification"),
-    path('lab_reports_org/<int:obj_pk>/', include(lab_reports_organization_urls))
+    path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
 
 ] + reports_all_lab + edit_objects

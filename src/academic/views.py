@@ -2,7 +2,6 @@ import json
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
@@ -10,88 +9,91 @@ from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, CreateView, UpdateView, FormView
+from django.views.generic import FormView
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations
 from laboratory.models import Object, Catalog, Furniture, ShelfObject
 from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import (
+    ListView as DJListView,
+    CreateView as DJCreateView,
+    UpdateView as DJUpdateView
+)
 from reservations_management.models import ReservedProducts
 from . import convertions
 
 
 @login_required
 @permission_required('academic.add_procedurestep')
-def add_steps_wrapper(request, pk, lab_pk=None):
-    procedure = get_object_or_404(Procedure, pk=pk)
+def add_steps_wrapper(request, *args, **kwargs):
+    procedure = get_object_or_404(Procedure, pk=kwargs['pk'])
     procstep = ProcedureStep.objects.create(procedure=procedure)
-    organilab_logentry(request.user, procstep, ADDITION, relobj=lab_pk)
-    return redirect(reverse('update_step', kwargs={'pk': procstep.pk, 'lab_pk': lab_pk}))
+    organilab_logentry(request.user, procstep, ADDITION, relobj=kwargs['lab_pk'])
+    return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
 
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
-class ProcedureListView(ListView):
+class ProcedureListView(DJListView):
     model = Procedure
     queryset = Procedure.objects.all()
     template_name = 'academic/list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProcedureListView, self).get_context_data()
-        context['lab'] = self.kwargs['pk']
         context['reservation_form'] = ReservationForm
         return context
 
 @method_decorator(permission_required('academic.add_procedure'), name='dispatch')
-class ProcedureCreateView(CreateView):
+class ProcedureCreateView(DJCreateView):
     model = Procedure
     form_class = ProcedureForm
     template_name = 'academic/procedure_create.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProcedureCreateView, self).get_context_data()
-        context['lab_pk'] = self.kwargs['lab_pk']
         return context
 
     def get_success_url(self, **kwargs):
-        lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):
         procedure = form.save()
         organilab_logentry(self.request.user, procedure, ADDITION, changed_data=form.changed_data,
-                           relobj=self.kwargs['lab_pk'])
+                           relobj=self.lab)
         return super(ProcedureCreateView, self).form_valid(form)
 
 
 @method_decorator(permission_required('academic.change_procedure'), name='dispatch')
-class ProcedureUpdateView(UpdateView):
+class ProcedureUpdateView(DJUpdateView):
     model = Procedure
     form_class = ProcedureForm
     template_name = 'academic/procedure_create.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProcedureUpdateView, self).get_context_data()
-        context['lab_pk'] = self.kwargs['lab_pk']
         return context
 
     def get_success_url(self, **kwargs):
-        lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):
         procedure = form.save()
         organilab_logentry(self.request.user, procedure, CHANGE, changed_data=form.changed_data,
-                           relobj=self.kwargs['lab_pk'])
+                           relobj=self.lab)
         return super(ProcedureUpdateView, self).form_valid(form)
 
 @login_required
 @permission_required('academic.view_procedure')
-def procedureStepDetail(request, pk, lab_pk):
+def procedureStepDetail(request, *args, **kwargs):
+    pk= kwargs['pk']
+    lab_pk=kwargs['lab_pk']
+    org_pk=kwargs['org_pk']
     steps = Procedure.objects.filter(pk=pk).first()
     return render(request, 'academic/detail.html',
-                  {'object': steps, 'procedure': pk, 'lab_pk': lab_pk, 'reservation_form': ReservationForm})
+                  {'object': steps, 'procedure': pk, 'laboratory': lab_pk, 'org_pk':org_pk, 'reservation_form': ReservationForm})
 
 
 @method_decorator(permission_required('academic.add_procedurestep'), name='dispatch')
@@ -119,11 +121,12 @@ class ProcedureStepCreateView(FormView):
 
     def get_success_url(self):
         lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
+        org = self.kwargs['org_pk']
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'pk': lab_pk,})
         return success_url
 
 @method_decorator(permission_required('academic.change_procedurestep'), name='dispatch')
-class ProcedureStepUpdateView(UpdateView):
+class ProcedureStepUpdateView(DJUpdateView):
     model = ProcedureStep
     form_class = ProcedureStepForm
     template_name = 'academic/procedure_steps.html'
@@ -133,25 +136,25 @@ class ProcedureStepUpdateView(UpdateView):
         context['object_form'] = ObjectForm
         context['observation_form'] = ObservationForm
         context['step'] = ProcedureStep.objects.get(pk=int(self.kwargs['pk']))
-        context['lab_pk'] = self.kwargs['lab_pk']
         return context
 
     def get_success_url(self, **kwargs):
-        lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('procedure_list', kwargs={'pk': lab_pk})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
         return success_url
 
     def form_valid(self, form):
         procedurestep = form.save()
         organilab_logentry(self.request.user, procedurestep, CHANGE, changed_data=form.changed_data,
-                           relobj=self.kwargs['lab_pk'])
+                           relobj=self.lab)
         return super(ProcedureStepUpdateView, self).form_valid(form)
 
 @login_required
 @permission_required('academic.add_procedurerequiredobject')
-def save_object(request, pk, lab_pk):
+def save_object(request, *args, **kwargs):
     """ Add a Required object """
-
+    pk = kwargs['pk']
+    lab_pk = kwargs['lab_pk']
+    org_pk = kwargs['org_pk']
     step = get_object_or_404(ProcedureStep, pk=pk)
     unit = get_object_or_404(Catalog, pk=int(request.POST['unit']))
     obj = Object.objects.get(pk=int(request.POST['object']))
@@ -183,14 +186,15 @@ def validate_unit(lab, obj):
 
 @login_required
 @permission_required('academic.delete_procedurestep')
-def delete_step(request):
+def delete_step(request, *args, **kwargs):
     step = ProcedureStep.objects.get(pk=int(request.POST['pk']))
     organilab_logentry(request.user, step, DELETION, relobj=step.procedure.content_object)
     step.delete()
     return JsonResponse({'data': True})
 
 @permission_required('academic.delete_procedurerequiredobject')
-def remove_object(request, pk):
+def remove_object(request, *args, **kwargs):
+    pk= kwargs['pk']
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
@@ -209,7 +213,9 @@ def get_objects(pk):
 
 @login_required
 @permission_required('academic.add_procedureobservations')
-def save_observation(request, pk):
+def save_observation(request, *args, **kwargs):
+    pk= kwargs['pk']
+
     step = get_object_or_404(ProcedureStep, pk=pk)
 
     objects = ProcedureObservations.objects.create(step=step, description=request.POST['description'])
@@ -228,7 +234,9 @@ def get_observations(pk):
 
 @login_required
 @permission_required('academic.delete_procedureobservations')
-def remove_observation(request, pk):
+def remove_observation(request, *args, **kwargs):
+    pk= kwargs['pk']
+
     obj = ProcedureObservations.objects.get(pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
@@ -236,12 +244,12 @@ def remove_observation(request, pk):
 
 @login_required
 @permission_required('academic.view_procedure')
-def get_procedure(request):
+def get_procedure(request, *args, **kwargs):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     return JsonResponse({'data': {'title': procedure.title, 'pk': procedure.pk}})
 
 @permission_required('academic.delete_procedure')
-def delete_procedure(request):
+def delete_procedure(request, *args, **kwargs):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
     organilab_logentry(request.user, procedure, DELETION)
@@ -311,7 +319,8 @@ def convert_to_general_unit(data):
     return result
 
 @permission_required('reservations_management.add_reservedproducts')
-def generate_reservation(request):
+def generate_reservation(request, *args, **kwargs):
+
     lab = request.POST['lab_pk']
     procedure = request.POST['procedure']
     objects_pk = list_step_objects(procedure)

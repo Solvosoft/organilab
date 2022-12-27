@@ -4,10 +4,10 @@
  {% if perms.laboratory.add_shelfobject or perms.laboratory.change_shelfobject %}
 	 <form data-ajax-submit="" onsubmit="return false;" method="post"
 			{% if insearch %}
-				action="{% url 'laboratory:shelfobject_searchupdate' laboratory form.instance.pk %}"
+				action="{% url 'laboratory:shelfobject_searchupdate' lab_pk=laboratory pk=form.instance.pk org_pk=org_pk %}"
 			{% else %}
 				data-success="processResponseshelfobject"
-				action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk %}{%else%}{% url 'laboratory:shelfobject_edit' laboratory object.pk  %}{% endif %}"
+				action="{%if not form.instance.pk %}{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk %}{%else%}{% url 'laboratory:shelfobject_edit' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% endif %}"
 			{% endif %} >
 		
 		<div class="modal-body">

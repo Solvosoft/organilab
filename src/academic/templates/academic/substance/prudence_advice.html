@@ -11,7 +11,7 @@
 
     <div class="col-sm-12">
         <h1>{% trans 'Prudence Advices' %}</h1>
-        <a href="{% url 'add_prudence_advice' %}" class="btn btn-success float-end">
+        <a href="{% url 'academic:add_prudence_advice' org_pk %}" class="btn btn-success float-end">
             <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
         <table id="prudence_table" class="table table-bordered text-center">
             <thead>

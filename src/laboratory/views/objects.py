@@ -150,13 +150,13 @@ class ObjectView(object):
 
     def get_urls(self):
         return [
-            path("list/<int:org_pk>", self.list,
+            path("list", self.list,
                 name="objectview_list"),
-            path("create/<int:org_pk>", self.create,
+            path("create", self.create,
                 name="objectview_create"),
-            path("edit/<int:pk>/<int:org_pk>", self.edit,
+            path("edit/<int:pk>", self.edit,
                 name="objectview_update"),
-            path("delete/<int:pk>/<int:org_pk>", self.delete,
+            path("delete/<int:pk>", self.delete,
                 name="objectview_delete"),
 
         ]

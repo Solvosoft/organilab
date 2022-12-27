@@ -26,9 +26,12 @@ from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice,
 @login_required
 @permission_required('laboratory.change_object')
 @organilab_context_decorator
-def create_edit_sustance(request, organilabcontext, org_pk, pk=None):
+def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
+    instance = None
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 
-    instance = Substance.objects.filter(pk=pk).first()
+    if pk:
+        instance = Substance.objects.filter(pk=pk, organization=organization).first()
 
     suscharobj=None
     template = None
@@ -72,18 +75,16 @@ def create_edit_sustance(request, organilabcontext, org_pk, pk=None):
             organilab_logentry(request.user, obj, CHANGE, "substance", changed_data=objform.changed_data)
             organilab_logentry(request.user, suscharinst, CHANGE, "substance characteristics", changed_data=suschacform.changed_data)
 
-            return redirect(reverse('step_two', kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':complement.pk}))
+            return redirect(reverse('academic:step_two', kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':complement.pk}))
 
     elif instance == None and request.method=='GET':
-        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
         substance = Substance.objects.create(organilab_context=organilabcontext, creator=request.user, organization=organization)
         rev_sub = ReviewSubstance.objects.create(substance=substance)
         charac = SubstanceCharacteristics.objects.create(substance=substance)
         organilab_logentry(request.user, substance, ADDITION, "substance")
         organilab_logentry(request.user, charac, ADDITION, "substance characteristics")
         organilab_logentry(request.user, rev_sub, ADDITION, "review substance", changed_data=['substance'])
-
-        return redirect(reverse('step_one', kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk, 'pk':substance.pk}))
+        return redirect(reverse('academic:step_one', kwargs={'org_pk': org_pk, 'organilabcontext': organilabcontext, 'pk':substance.pk}))
 
 
     label, created_label= Label.objects.get_or_create(substance= instance)
@@ -108,7 +109,7 @@ def create_edit_sustance(request, organilabcontext, org_pk, pk=None):
 @login_required
 @permission_required('sga.view_substance')
 @organilab_context_decorator
-def get_substances(request, organilabcontext, org_pk):
+def get_substances(request, org_pk, organilabcontext):
     substances=None
 
     if request.user:
@@ -140,31 +141,31 @@ def get_list_substances(request,organilabcontext, org_pk):
 @login_required
 @permission_required('sga.change_substance')
 @organilab_context_decorator
-def approve_substances(request, organilabcontext, org_pk, pk):
+def approve_substances(request, org_pk, organilabcontext, pk):
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
     review_subs.is_approved=True
     review_subs.save()
     organilab_logentry(request.user, review_subs, CHANGE, "review substance", changed_data=['is_approved'])
-    return redirect(reverse('approved_substance', kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk}))
+    return redirect(reverse('academic:approved_substance', kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk}))
 
 
 @login_required
 @permission_required('sga.delete_substance')
 @organilab_context_decorator
-def delete_substance(request,organilabcontext, org_pk, pk):
+def delete_substance(request, org_pk, organilabcontext, pk):
     substances=Substance.objects.filter(pk=pk).first()
     if substances:
         messages.success(request, _("The substance is removed successfully"))
         organilab_logentry(request.user, substances, DELETION, "substance")
+        Label.objects.filter(substance=substances).delete()
         substances.delete()
-
-        return redirect(reverse("get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
-    return redirect(reverse("get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
+        return redirect(reverse("academic:get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
+    return redirect(reverse("academic:get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
 
 @login_required
 @permission_required('sga.change_substance')
 @organilab_context_decorator
-def detail_substance(request, organilabcontext, org_pk, pk):
+def detail_substance(request, org_pk, organilabcontext, pk):
     detail = None
     observation = None
     step = 1
@@ -181,18 +182,18 @@ def detail_substance(request, organilabcontext, org_pk, pk):
         'organilabcontext': organilabcontext,
         'observationForm':ObservacionForm(),
         'step':step,
-        'url': reverse('add_observation',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'substance':pk}),
+        'url': reverse('academic:add_observation',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'substance':pk}),
         'org_pk': org_pk
     }
     return render(request, "academic/substance/detail.html",context=context)
 
 @login_required
-def add_sga_complements(request, element):
+def add_sga_complements(request, org_pk, element):
 
     form = None
-    urls = {'warning': 'add_warning_word',
-            'danger': 'add_danger_indication',
-            'prudence': 'add_prudence_advice',
+    urls = {'warning': 'academic:add_warning_word',
+            'danger': 'academic:add_danger_indication',
+            'prudence': 'academic:add_prudence_advice',
             }
     view_urls = {'warning': 'warning_words',
                  'danger': 'danger_indications',
@@ -223,7 +224,7 @@ def add_sga_complements(request, element):
                 'prudence': 'prudence advice'
             }
             organilab_logentry(request.user, obj, ADDITION, model_name[element], changed_data=form.changed_data)
-            return redirect(reverse(view_urls[element]))
+            return redirect(reverse(view_urls[element], kwargs={'org_pk': org_pk}))
 
     else:
         form = forms[element]
@@ -245,9 +246,9 @@ def view_danger_indications(request):
     return render(request, 'academic/substance/danger_indication.html', context={'listado': listado})
 @login_required
 @permission_required('sga.view_warningword')
-def view_warning_words(request):
+def view_warning_words(request, org_pk):
     listado = list(WarningWord.objects.all())
-    return render(request, 'academic/substance/warning_words.html', context={'listado': listado})
+    return render(request, 'academic/substance/warning_words.html', context={'listado': listado, 'org_pk': org_pk})
 @login_required
 @permission_required('sga.view_prudenceadvice')
 def view_prudence_advices(request):
@@ -257,7 +258,7 @@ def view_prudence_advices(request):
 @login_required
 @permission_required('academic.view_substanceobservation')
 @organilab_context_decorator
-def add_observation(request, organilabcontext, org_pk, substance):
+def add_observation(request, org_pk, organilabcontext, substance):
 
     obj = None
     form = None
@@ -274,19 +275,19 @@ def add_observation(request, organilabcontext, org_pk, substance):
             obj.save()
             organilab_logentry(request.user, obj, ADDITION, "substance observation", changed_data=form.changed_data)
             messages.success(request, 'Se Guardo correctamente')
-            return redirect(reverse('detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk, 'pk':substance}))
+            return redirect(reverse('academic:detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk, 'pk':substance}))
         else:
             request.session['step'] = 2
             messages.error(request, 'Datos invalidos')
-            return redirect(reverse('detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':substance}))
+            return redirect(reverse('academic:detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':substance}))
     else:
         request.session['step'] = 2
-        return redirect(reverse('detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
-    return redirect(reverse('detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
+        return redirect(reverse('academic:detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
+    return redirect(reverse('academic:detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
 
 @login_required
 @permission_required('academic.change_substanceobservation')
-def update_observation(request):
+def update_observation(request, org_pk):
 
     if request.method == 'POST':
 
@@ -304,7 +305,7 @@ def update_observation(request):
 
 @login_required
 @permission_required('academic.delete_substanceobservation')
-def delete_observation(request):
+def delete_observation(request, org_pk):
 
     if request.method == 'POST':
 
@@ -320,7 +321,7 @@ def delete_observation(request):
 
 @login_required
 @permission_required('sga.change_warningword')
-def change_warning_word(request,pk):
+def change_warning_word(request, org_pk, pk):
     instance = get_object_or_404(WarningWord, pk=pk)
     form = None
     context ={}
@@ -330,20 +331,21 @@ def change_warning_word(request,pk):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "warning word", changed_data=form.changed_data)
-            return redirect(reverse('warning_words'))
+            return redirect(reverse('academic:warning_words', kwargs={'org_pk': org_pk}))
     else:
         form = WarningWordForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('warning_words'),
+            'view_url':reverse('academic:warning_words', kwargs={'org_pk': org_pk}),
             'title':_('Update the Warning Word')+" "+instance.name,
-            'url':reverse('update_warning_word', kwargs={'pk':instance.pk})
+            'url':reverse('academic:update_warning_word', kwargs={'org_pk': org_pk, 'pk':instance.pk}),
+            'org_pk': org_pk
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 
 @login_required
 @permission_required('sga.change_prudenceadvice')
-def change_prudence_advice(request, pk):
+def change_prudence_advice(request, org_pk, pk):
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
     form = None
     context ={}
@@ -353,20 +355,20 @@ def change_prudence_advice(request, pk):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "prudence advice", changed_data=form.changed_data)
-            return redirect(reverse('prudence_advices'))
+            return redirect(reverse('academic:prudence_advices', kwargs={'org_pk': org_pk,}))
     else:
         form = PrudenceAdviceForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('prudence_advices'),
+            'view_url':reverse('academic:prudence_advices', kwargs={'org_pk': org_pk,}),
             'title':_('Update the Prudence Advice')+" "+instance.name,
-            'url':reverse('update_prudence_advice', kwargs={'pk':instance.pk})
+            'url':reverse('academic:update_prudence_advice', kwargs={'org_pk': org_pk, 'pk':instance.pk})
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 
 @login_required
 @permission_required('sga.change_dangerindication')
-def change_danger_indication(request, pk):
+def change_danger_indication(request, org_pk, pk):
     instance = get_object_or_404(DangerIndication, pk=pk)
     form = None
     context ={}
@@ -376,20 +378,21 @@ def change_danger_indication(request, pk):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "danger indication", changed_data=form.changed_data)
-            return redirect(reverse('danger_indications'))
+            return redirect(reverse('academic:danger_indications', kwargs={'org_pk': org_pk}))
     else:
         form = DangerIndicationForm(instance=instance)
         context = {
             'form':form,
-            'view_url':reverse('danger_indications'),
+            'view_url':reverse('academic:danger_indications', kwargs={'org_pk': org_pk}),
             'title':_('Update the Danger indication')+" "+instance.code,
-            'url':reverse('update_danger_indication', kwargs={'pk':instance.pk})
+            'url':reverse('academic:update_danger_indication', kwargs={'org_pk': org_pk, 'pk':instance.pk}),
+            'org_pk': org_pk
         }
     return render(request, 'academic/substance/sga_components.html', context=context)
 
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
-def step_three(request, organilabcontext, org_pk, template, substance):
+def step_three(request, org_pk, organilabcontext, template, substance):
     personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
     complement = get_object_or_404(SGAComplement, substance__pk=substance)
     user = request.user
@@ -399,7 +402,7 @@ def step_three(request, organilabcontext, org_pk, template, substance):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "template sga", changed_data=form.changed_data)
-            return redirect(reverse('step_four', kwargs={'organilabcontext':organilabcontext,
+            return redirect(reverse('academic:step_four', kwargs={'organilabcontext':organilabcontext,
                                                           'substance': personaltemplateSGA.label.substance.pk,
                                                          'org_pk': org_pk}))
 
@@ -436,7 +439,7 @@ def step_three(request, organilabcontext, org_pk, template, substance):
 
 @login_required
 @permission_required('sga.change_sgacomplement')
-def step_two(request, organilabcontext, org_pk, pk):
+def step_two(request, org_pk, organilabcontext, pk):
     complement = get_object_or_404(SGAComplement, pk=pk)
     personaltemplateSGA = PersonalTemplateSGA.objects.filter(user=request.user,
         label__substance__pk=complement.substance.pk).first()
@@ -467,7 +470,7 @@ def step_two(request, organilabcontext, org_pk, pk):
                                changed_data=pesonalform.changed_data)
 
         if complementform_ok and builderinformationform_ok and pesonalform_ok:
-            return redirect(reverse('step_three', kwargs={'organilabcontext':organilabcontext,
+            return redirect(reverse('academic:step_three', kwargs={'organilabcontext':organilabcontext,
                                                           'template':personaltemplateSGA.pk,
                                                           'substance':personaltemplateSGA.label.substance.pk,
                                                           'org_pk': org_pk}))
@@ -500,7 +503,7 @@ def step_two(request, organilabcontext, org_pk, pk):
 
 @login_required
 @permission_required('sga.change_securityleaf')
-def step_four(request,organilabcontext, org_pk, substance):
+def step_four(request, org_pk, organilabcontext, substance):
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=substance).first()
     complement = SGAComplement.objects.filter(substance__pk=substance).first()
@@ -510,7 +513,7 @@ def step_four(request,organilabcontext, org_pk, substance):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "security leaf", changed_data=form.changed_data)
-            return redirect(reverse('get_substance',kwargs={'organilabcontext':organilabcontext,
+            return redirect(reverse('academic:get_substance',kwargs={'organilabcontext':organilabcontext,
                                                             'org_pk': org_pk
                                                             }))
     form = SecurityLeafForm(instance=security_leaf)
@@ -527,7 +530,7 @@ def step_four(request,organilabcontext, org_pk, substance):
 
 @login_required
 @permission_required('sga.add_provider')
-def add_sga_provider(request):
+def add_sga_provider(request, org_pk):
     form = ProviderSGAForm(request.POST)
 
     if form.is_valid():
@@ -539,7 +542,7 @@ def add_sga_provider(request):
         return JsonResponse({'result':False})
 
 @login_required
-def security_leaf_pdf(request, substance):
+def security_leaf_pdf(request, org_pk, substance):
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     component = SGAComplement.objects.filter(substance__pk=substance).first()
     date_print =datetime.today().strftime('%Y-%m-%d')
@@ -550,7 +553,8 @@ def security_leaf_pdf(request, substance):
                    'provider':leaf.provider,
                    'component':component,
                    'date_print':date_print,
-                   'date_check':leaf.created_at.strftime('%Y-%m-%d')}
+                   'date_check':leaf.created_at.strftime('%Y-%m-%d'),
+                   'org_pk': org_pk}
         html_template=template.render(context)
         pdf = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
         return HttpResponse(pdf, content_type='application/pdf')

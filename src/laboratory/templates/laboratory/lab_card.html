@@ -14,7 +14,7 @@
              <div class="col-2">
                 <div class="btn-group" role="group" aria-label="">
              {% if perms.laboratory.change_laboratory %}
-                 <a class="btn-outline-info btn-sm btedit" title="{% trans 'Edit' %}" href="{% url 'laboratory:laboratory_update' lab.pk org_pk %}">
+                 <a class="btn-outline-info btn-sm btedit" title="{% trans 'Edit' %}" href="{% url 'laboratory:laboratory_update' pk=lab.pk org_pk=org_pk %}">
                 <span class="fa fa-edit" aria-hidden="true"></span>
                 </a>
             {% endif %}
@@ -32,7 +32,7 @@
             <p>Equipo: <span class="badge bg-secondary pull-right">{{lab|get_equipo_lab}}</span></p>
             <p>Reactivos: <span class="badge bg-secondary pull-right">{{lab|get_reactivos_lab}}</span></p>
         </div>
-        <a href="{% url  'laboratory:labindex' org_pk lab.pk  %}" >
+        <a href="{% url  'laboratory:labindex' lab_pk=lab.pk org_pk=org_pk %}" >
             <div class="card-footer text-center">
                 <h5>{{ lab.location }}</h5>
             </div>

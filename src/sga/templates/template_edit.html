@@ -21,7 +21,7 @@
 {% endblock css %}
 {% block js %}
 <script>
-document.url_get_recipient_size = "{% url 'sga:get_recipient_size' organilabcontext 0 %}";
+document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
 document.clean_canvas_editor = true;
 
 {% if instance.template %}
