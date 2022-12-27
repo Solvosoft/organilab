@@ -10,7 +10,7 @@ from laboratory.decorators import has_lab_assigned
 
 @has_lab_assigned()
 @login_required
-def lab_index(request, lab_pk, org_pk):
+def lab_index(request, org_pk, lab_pk):
     return render(request, 'laboratory/index.html',
                   {'laboratory': int(lab_pk),
                    'org_pk':org_pk})
