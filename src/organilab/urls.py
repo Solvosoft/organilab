@@ -28,6 +28,7 @@ from authentication.urls import urlpatterns as auth_urls
 from laboratory import urls as laboratory_urls
 from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
+from msds.urls import regulation_urlpath
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
@@ -58,6 +59,7 @@ urlpatterns += paypal_urls
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += reservation_management_urls
 urlpatterns += reservations_management_api_urlpatterns
+urlpatterns += regulation_urlpath
 
 if settings.DEBUG:
     from django.conf.urls.static import static

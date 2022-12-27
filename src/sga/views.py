@@ -454,14 +454,14 @@ def sgalabel_step_one(request, org_pk, organilabcontext, pk):
     if sustance:
         complement = SGAComplement.objects.filter(substance=sgalabel.label.substance).first()
 
-    complementsga_form = SGALabelComplementsForm(instance=complement)
+    complementsga_form = SGALabelComplementsForm(instance=complement, org_pk=org_pk)
     sgabuilderinfo_form = SGALabelBuilderInformationForm(user=request.user, instance=builderinformation,
                                                          initial={'company': builderinformation.pk if builderinformation else None})
     personal_form = PersonalSGAAddForm(instance=sgalabel)
 
 
     if request.method == "POST":
-        complementsga_form = SGALabelComplementsForm(request.POST, instance=complement)
+        complementsga_form = SGALabelComplementsForm(request.POST, instance=complement, org_pk=org_pk)
         sgabuilderinfo_form = SGALabelBuilderInformationForm(request.POST, user=request.user, instance=builderinformation)
         personal_form = PersonalSGAAddForm(request.POST, request.FILES, instance=sgalabel)
 

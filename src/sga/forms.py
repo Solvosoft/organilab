@@ -249,6 +249,15 @@ class SGALabelForm(forms.ModelForm, GTForm):
 
 
 class SGALabelComplementsForm(forms.ModelForm, GTForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(SGALabelComplementsForm, self).__init__(*args, **kwargs)
+        if org_pk:
+            self.fields['substance'].queryset = Substance.objects.filter(organization__pk=org_pk)
+        else:
+            self.fields['substance'].queryset = Substance.objects.none()
+
     class Meta:
         model = SGAComplement
         fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
@@ -261,6 +270,7 @@ class SGALabelComplementsForm(forms.ModelForm, GTForm):
             'substance': genwidgets.Select,
             'other_dangers': genwidgets.Textarea
         }
+
 
 class SGALabelBuilderInformationForm(forms.ModelForm, GTForm):
     company = forms.ModelChoiceField(widget=genwidgets.Select(), queryset=BuilderInformation.objects.none(), required=False)

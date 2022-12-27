@@ -68,14 +68,16 @@ class FeedbackView(CreateView):
         messages.add_message(self.request, messages.SUCCESS, text_message)
         try:
             lab_pk = int(self.request.GET.get('lab_pk', 0))
+            org_pk = int(self.request.GET.get('org_pk', 0))
         except:
             lab_pk = None
+            org_pk = None
         dev = reverse('index')
         if self.request.user.is_authenticated:
             self.object.user = self.request.user
-        if lab_pk:
+        if lab_pk and org_pk:
             self.object.laboratory_id = lab_pk
-            dev = reverse('laboratory:labindex', kwargs={'lab_pk': lab_pk})
+            dev = reverse('laboratory:labindex', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk})
         if self.request.user.is_authenticated or lab_pk:
             self.object.save()
 

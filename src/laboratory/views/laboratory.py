@@ -223,7 +223,7 @@ class LaboratoryListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(profile__user=self.request.user)
+        queryset = queryset.filter(organization__pk=self.org, profile__user=self.request.user)
         q = self.request.GET.get('search_fil', '')
         if q != "":
             queryset = queryset.filter(name__icontains=q) 

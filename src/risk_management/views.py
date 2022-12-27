@@ -50,6 +50,7 @@ class ZoneCreate(CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['org_pk'] = self.org
         return kwargs
 
     def form_valid(self, form):
@@ -75,16 +76,19 @@ class ZoneEdit(UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['org_pk'] = self.org
         return kwargs
 
     def form_valid(self, form):
         dev = super().form_valid(form)
         organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
         return dev
+
     def get_success_url(self, **kwargs):
         org_pk = self.org
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
         return success_url
+
 @method_decorator(permission_required('risk_management.delete_riskzone'), name="dispatch")
 class ZoneDelete(DeleteView):
     model = RiskZone

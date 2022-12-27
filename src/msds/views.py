@@ -179,9 +179,9 @@ class MSDSObjectCRUD(CRUDView):
         return ODeleteView
 
 
-def regulation_view(request, org_pk):
+def regulation_view(request):
     regulations = RegulationDocument.objects.all()
-    return render(request, 'regulation/regulations_document.html', {'object_list': regulations, 'org_pk': org_pk})
+    return render(request, 'regulation/regulations_document.html', {'object_list': regulations})
 
 
 def get_name(name, country, path):
