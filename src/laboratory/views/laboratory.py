@@ -269,4 +269,5 @@ class HCodeReports(ListView):
         context = super(HCodeReports, self).get_context_data(**kwargs)
         context['form'] = H_CodeForm(self.request.GET)
         context['params'] = self.get_filter_params()
+        context['org_pk'] = self.org
         return context

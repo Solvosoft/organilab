@@ -179,8 +179,12 @@ class ReportListView(djListView):
     # pdf_template
 
     def get(self, request, *args, **kwargs):
-        self.lab = kwargs['lab_pk']
-        self.org = kwargs['org_pk']
+        self.lab = None
+        self.org = None
+        if 'org_pk' in kwargs:
+            self.org = int(kwargs['org_pk'])
+        if 'lab_pk' in kwargs:
+            self.lab = int(kwargs['lab_pk'])
         self.request_format = request.GET.get('format', 'html')
 
         if self.request_format=='html':

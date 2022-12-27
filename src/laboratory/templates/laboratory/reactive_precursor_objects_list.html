@@ -112,7 +112,7 @@
   <div>
     {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
 	    <a class="btn btn-primary float-end" title="{% trans 'All objects' %}"
-	       href="{% url 'laboratory:reports_reactive_precursor_objects' laboratory %}?all_labs={{ all_labs }}">
+	       href="{% url 'laboratory:reports_reactive_precursor_objects' org_pk laboratory %}?all_labs={{ all_labs }}">
 	     <i class="fa fa-download" aria-hidden="true"></i>
 	      {% trans "All objects in PDF" %}
 	    </a>
