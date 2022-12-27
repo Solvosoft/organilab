@@ -957,7 +957,7 @@ class OrganizationReactivePresenceList(ReportListView):
         return context
 
     def get_queryset(self):
-        query = self.model.objects.filter(pk = self.lab) #.descendants(include_self=True)
+        query = self.model.objects.filter(pk = self.org) #.descendants(include_self=True)
 
         data = []
         add_profile_info = True

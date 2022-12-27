@@ -14,8 +14,8 @@ def get_users_button(pk_orga):
     return users_button
 
 
-def get_report_button(pk_orga):
-    url = reverse('laboratory:organizationreactivepresence', args=(pk_orga,))
+def get_report_button(org_pk):
+    url = reverse('laboratory:organizationreactivepresence', args=(org_pk,))
     users_button = '<a class="btn btn-primary btn-sm" href="%s" target="_blank"><i class="fa fa-medkit"></i></a>'%(
         url
     )

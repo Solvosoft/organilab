@@ -103,8 +103,6 @@ lab_reports_urls = [
          name='reactive_precursor_object_list'),
     path('objectchanges/', reports.LogObjectView.as_view(), name='object_change_logs'),
     path('precursors/', reports.PrecursorsView.as_view(), name='precursor_report'),
-    path('organizationreactivepresence/', reports.OrganizationReactivePresenceList.as_view(),
-         name='organizationreactivepresence'),
 
 ]
 
@@ -136,6 +134,8 @@ edit_objects = [
 reports_all_lab = [
     path('reports/hcode', laboratory.HCodeReports.as_view(), name='h_code_reports'),
     path('reports/download/hcode', reports.report_h_code, name='download_h_code_reports'),
+    path('organizationreactivepresence/', reports.OrganizationReactivePresenceList.as_view(),
+         name='organizationreactivepresence'),
 ]
 
 sustance_urls = [
