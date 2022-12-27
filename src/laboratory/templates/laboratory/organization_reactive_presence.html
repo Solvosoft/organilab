@@ -25,13 +25,13 @@
 			</button>
 			<ul class="dropdown-menu">
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' lab_pk=laboratory org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' lab_pk=laboratory org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' lab_pk=laboratory org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:organizationreactivepresence' org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 				</li>
 			</ul>
 		</div>
