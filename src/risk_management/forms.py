@@ -9,8 +9,14 @@ from djgentelella.widgets import core as djgentelella
 class RiskZoneCreateForm(forms.ModelForm,GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
+        org_pk = kwargs.pop('org_pk', None)
         super().__init__(*args, **kwargs)
-        self.fields['laboratories'].queryset = get_user_laboratories(user)
+        queryset = get_user_laboratories(user)
+
+        if queryset.exists() and org_pk:
+            queryset = queryset.filter(organization__pk=org_pk)
+
+        self.fields['laboratories'].queryset = queryset
 
     def save(self, commit=True):
         priority = self.instance.zone_type.get_priority(self.instance.num_workers)
@@ -19,8 +25,7 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
 
     class Meta:
         model = RiskZone
-        exclude = ['priority']
-        exclude = ('organization','created_by')
+        exclude = ['priority', 'organization','created_by']
         widgets = {
             'name': djgentelella.TextInput,
             "laboratories": djgentelella.SelectMultiple,

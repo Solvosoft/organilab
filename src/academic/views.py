@@ -2,6 +2,7 @@ import json
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
@@ -39,6 +40,12 @@ class ProcedureListView(DJListView):
     queryset = Procedure.objects.all()
     template_name = 'academic/list.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        content_type = ContentType.objects.get(app_label='laboratory', model="laboratory")
+        queryset = queryset.filter(content_type=content_type, object_id=self.lab)
+        return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProcedureListView, self).get_context_data()
         context['reservation_form'] = ReservationForm
@@ -59,7 +66,11 @@ class ProcedureCreateView(DJCreateView):
         return success_url
 
     def form_valid(self, form):
-        procedure = form.save()
+        procedure = form.save(commit=False)
+        content_type = ContentType.objects.get(app_label='laboratory', model="laboratory")
+        procedure.content_type = content_type
+        procedure.object_id = self.lab
+        procedure.save()
         organilab_logentry(self.request.user, procedure, ADDITION, changed_data=form.changed_data,
                            relobj=self.lab)
         return super(ProcedureCreateView, self).form_valid(form)

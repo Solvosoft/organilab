@@ -19,7 +19,12 @@ urlpatterns = [
     re_path(r'msds/msdsobject/(?P<pk>\d+)/update$', msdsobj.update, name='msds_msdsobject_update'),
     re_path(r'msds/msdsobject/(?P<pk>\d+)/delete$', msdsobj.delete, name='msds_msdsobject_delete'),
     re_path(r'^list/', get_list_msds, name="list_msds"),
+
+
+]
+
+regulation_urlpath = [
     re_path(r'regulations$', regulation_view, name="regulation_docs"),
     re_path(r'regulations/download/all', download_all_regulations, name="download_all_regulations")
 
-]
+    ]

@@ -72,7 +72,7 @@
 			{% for lab in object.laboratories.all %}
 			<li class="list-group-item">
 				<div class="float-start">
-					<a href="{% url 'laboratory:labindex' lab.pk %}" title="{{ lab.name }}">
+					<a href="{% url 'laboratory:labindex' lab.pk org_pk %}" title="{{ lab.name }}">
 						<span class='glyphicon {% cycle "glyphicon-king" "glyphicon-queen" "glyphicon-pawn" "glyphicon-bishop" "glyphicon-knight" "glyphicon-baby-formula" "glyphicon-tent" "glyphicon-blackboard" "glyphicon-bed" "glyphicon-erase" "glyphicon-hourglass" "glyphicon-lamp" "glyphicon-duplicate" "glyphicon-piggy-bank" "glyphicon-tree-conifer" "glyphicon-tree-deciduous" "glyphicon-cd" %}'></span>
 						{{ lab.name }}
 					</a>
