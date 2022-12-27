@@ -1,17 +1,18 @@
-from django.urls import re_path
+from django.urls import path
 
 from risk_management import views as zoneviews
-from risk_management import  incidents
+from risk_management import incidents
 urlpatterns = [
-    re_path(r'riskzone/list/(?P<org_pk>\d+)', zoneviews.ListZone.as_view(), name='riskzone_list'),
-    re_path(r'riskzone/create/(?P<org_pk>\d+)', zoneviews.ZoneCreate.as_view(), name='riskzone_create'),
-    re_path(r'riskzone/(?P<pk>\d+)/detail/(?P<org_pk>\d+)', zoneviews.ZoneDetail.as_view(), name='riskzone_detail'),
-    re_path(r'riskzone/(?P<pk>\d+)/update/(?P<org_pk>\d+)', zoneviews.ZoneEdit.as_view(), name='riskzone_update'),
-    re_path(r'riskzone/(?P<pk>\d+)/delete/(?P<org_pk>\d+)', zoneviews.ZoneDelete.as_view(), name='riskzone_delete'),
-    re_path(r'incident/(?P<lab_pk>\d+)/list/(?P<org_pk>\d+)', incidents.IncidentReportList.as_view(), name='incident_list'),
-    re_path(r'incident/(?P<lab_pk>\d+)/create/(?P<org_pk>\d+)', incidents.IncidentReportCreate.as_view(), name='incident_create'),
-    re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/update/(?P<org_pk>\d+)', incidents.IncidentReportEdit.as_view(), name='incident_update'),
-    re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/detail/(?P<org_pk>\d+)', incidents.IncidentReportDetail.as_view(), name='incident_detail'),
-    re_path(r'incident/(?P<lab_pk>\d+)/(?P<pk>\d+)/delete/(?P<org_pk>\d+)', incidents.IncidentReportDelete.as_view(), name='incident_delete'),
-    re_path(r'incident/report/(?P<lab_pk>\d+)/(?P<pk>\d+)?', incidents.report_incidentreport, name='incident_report' )
+    path('riskzone/list/', zoneviews.ListZone.as_view(), name='riskzone_list'),
+    path('riskzone/create/', zoneviews.ZoneCreate.as_view(), name='riskzone_create'),
+    path('riskzone/<int:pk>/detail/', zoneviews.ZoneDetail.as_view(), name='riskzone_detail'),
+    path('riskzone/<int:pk>/update/', zoneviews.ZoneEdit.as_view(), name='riskzone_update'),
+    path('riskzone/<int:pk>/delete/', zoneviews.ZoneDelete.as_view(), name='riskzone_delete'),
+
+    path('incident/<int:lab_pk>/list/', incidents.IncidentReportList.as_view(), name='incident_list'),
+    path('incident/<int:lab_pk>/create/', incidents.IncidentReportCreate.as_view(), name='incident_create'),
+    path('incident/<int:lab_pk>/<int:pk>/update/', incidents.IncidentReportEdit.as_view(), name='incident_update'),
+    path('incident/<int:lab_pk>/<int:pk>/detail/', incidents.IncidentReportDetail.as_view(), name='incident_detail'),
+    path('incident/<int:lab_pk>/<int:pk>/delete/', incidents.IncidentReportDelete.as_view(), name='incident_delete'),
+    path('incident/report/<int:lab_pk>/<int:pk>/', incidents.report_incidentreport, name='incident_report' )
 ]

@@ -118,7 +118,7 @@ class ShelfCreate(AJAXMixin, CreateView):
         self.object.save()
         organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
                            relobj=self.lab)
-        print(self.org)
+
         dev = render_to_string(
             "laboratory/shelf_details.html",
             {"crow": row,

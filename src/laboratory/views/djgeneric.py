@@ -102,7 +102,7 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
-            print(self.org)
+
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
         return djUpdateView.post(self, request, *args, **kwargs)

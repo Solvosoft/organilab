@@ -604,7 +604,7 @@ def edit_company(request, org_pk, pk):
 
 @login_required
 @permission_required('sga.delete_builderinformation')
-def remove_company(request, pk):
+def remove_company(request, org_pk, pk):
     if pk:
         company = BuilderInformation.objects.get(pk=pk)
         company.delete()

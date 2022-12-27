@@ -35,8 +35,12 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
 class IncidentReportForm(GTForm,forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
+        org_pk = kwargs.pop('org_pk', None)
         super().__init__(*args, **kwargs)
-        self.fields['laboratories'].queryset = get_user_laboratories(user)
+        queryset = get_user_laboratories(user)
+        if org_pk:
+            queryset = queryset.filter(organization__pk=org_pk)
+        self.fields['laboratories'].queryset = queryset
 
     class Meta:
         model = IncidentReport

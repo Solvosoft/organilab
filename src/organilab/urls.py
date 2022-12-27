@@ -44,7 +44,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     path('msds/<int:org_pk>/', include((msds_urls, 'msds'), namespace='msds')),
     path('weblog/', include('djgentelella.blog.urls')),
     path('sga/<int:org_pk>/', include((sga_urls, 'sga'), namespace='sga')),
-    path('risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
+    path('risk/<int:org_pk>/', include((risk_urls, 'riskmanagement'), namespace='riskmanagement')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),

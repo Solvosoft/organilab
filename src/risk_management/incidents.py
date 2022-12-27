@@ -31,7 +31,7 @@ class IncidentReportList(djgeneric.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(laboratories__pk=self.lab)
-        print(queryset)
+
         if 'q' in self.request.GET:
             q = self.request.GET['q']
             queryset = queryset.filter(Q(short_description__icontains=q)|Q(
@@ -62,6 +62,7 @@ class IncidentReportCreate(djgeneric.CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['org_pk'] = self.org
         kwargs['initial']={
             'laboratories':[self.lab]
         }
@@ -77,6 +78,7 @@ class IncidentReportCreate(djgeneric.CreateView):
         incident.save()
         organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
         return dev
+
     def get_success_url(self, **kwargs):
         org_pk = self.org
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})

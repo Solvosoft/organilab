@@ -17,7 +17,7 @@ from laboratory.validators import isValidate_molecular_formula
 
 
 @permission_required('laboratory.change_object')
-def create_edit_sustance(request, lab_pk, org_pk, pk=None):
+def create_edit_sustance(request, org_pk, lab_pk, pk=None):
     instance = Object.objects.filter(pk=pk).first()
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj=None
@@ -29,7 +29,7 @@ def create_edit_sustance(request, lab_pk, org_pk, pk=None):
         postdata = request.POST
         filesdata = request.FILES
 
-    objform = SustanceObjectForm(postdata, instance=instance)
+    objform = SustanceObjectForm(postdata, instance=instance, org_pk=org_pk)
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
@@ -54,7 +54,7 @@ def create_edit_sustance(request, lab_pk, org_pk, pk=None):
                                changed_data=suschacform.changed_data, relobj=laboratory)
 
             messages.success(request, _("Sustance saved successfully"))
-            return redirect(reverse('laboratory:sustance_list',args=[lab_pk, org_pk]))
+            return redirect(reverse('laboratory:sustance_list',args=[org_pk, lab_pk]))
 
         else:
             messages.warning(request, _("Pending information in form"))
@@ -69,7 +69,7 @@ def create_edit_sustance(request, lab_pk, org_pk, pk=None):
 
 
 @permission_required('laboratory.view_object')
-def sustance_list(request,lab_pk, org_pk):
+def sustance_list(request, org_pk, lab_pk):
     #object_list = Object.objects.filter(type=Object.REACTIVE)
     if request.method == 'POST':
         lab_pk = request.POST.get('lab_pk')
@@ -87,7 +87,7 @@ class SubstanceDelete(DeleteView):
 
     def get_success_url(self, **kwargs):
         lab_pk = self.kwargs['lab_pk']
-        success_url = reverse_lazy('laboratory:sustance_list', kwargs={'lab_pk':lab_pk,'org_pk':self.org})
+        success_url = reverse_lazy('laboratory:sustance_list', kwargs={'org_pk':self.org, 'lab_pk':lab_pk,})
         return success_url
 
     def form_valid(self, form):
