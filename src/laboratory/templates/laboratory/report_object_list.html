@@ -23,25 +23,25 @@
 			</button>
 			<ul class="dropdown-menu">
 				<li>  
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=pdf{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "PDF" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=ods{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Ods" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=ods&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Ods" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=xls{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xls" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=xls&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xls" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=xlsx{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Xlsx" %} </a>
 				</li>
 				<li>
-					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' laboratory %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
+					<a class="dropdown-item" href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?format=xlsx&details=1{% if type_id %}&type_id={{type_id}}{% endif %}">{% trans "Without details Xlsx" %} </a>
 				</li>	
 			</ul>
 		</div>
@@ -54,7 +54,7 @@
 				{% if perms.laboratory.do_report  %}
 					<a class="btn btn-sm btn-danger float-end"
 							title="{{ obj.name }}"
-							href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
+							href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}?pk={{ obj.pk }}">
 					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans "PDF" %}
 				</a>
@@ -117,7 +117,7 @@
 	{% endif %}
 	{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
 		<a class="btn btn-primary float-end mt-2" title="{% trans 'All objects' %}"
-			href="{% url 'laboratory:reports_objects' laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+			href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
 			<i class="fa fa-download" aria-hidden="true"></i>
 			{% trans "All objects in PDF" %}
 		</a>

@@ -9,7 +9,7 @@
 
 	  <div class="row" style="justify-content: center;">
 	    <div class="col-md-4 col-md-offset-3">
-	      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' form.instance.pk org_pk %}{% else %}{% url 'laboratory:laboratory_create' org_pk %} {% endif %}"
+	      <form action="{% if form.instance.pk %}{% url 'laboratory:laboratory_update' pk=form.instance.pk org_pk=org_pk %}{% else %}{% url 'laboratory:laboratory_create' org_pk=org_pk %} {% endif %}"
 	            method="post">{% csrf_token %}
 	        {{ form.as_horizontal }}
 	        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">

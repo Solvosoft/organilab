@@ -98,14 +98,15 @@ def index_sga(request):
 # SGA template visualize
 @login_required
 @organilab_context_decorator
-def template(request, organilabcontext, org_pk):
+def template(request, org_pk, organilabcontext):
     context = {
         'laboratory': None,
         'form': SGAEditorForm(),
         'warningwords': WarningWord.objects.all(),
         'generalform': PersonalForm(user=request.user),
         'organilabcontext': organilabcontext,
-        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk})
+        'form_url': reverse('sga:add_personal', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}),
+        'org_pk': org_pk
     }
     return render(request, 'template.html', context)
 
@@ -113,7 +114,7 @@ def template(request, organilabcontext, org_pk):
 # SGA editor
 @login_required
 @organilab_context_decorator
-def editor(request, organilabcontext, org_pk):
+def editor(request, org_pk, organilabcontext):
     finstance = None
     clean_canvas_editor = True
     if 'instance' in request.POST:
@@ -172,7 +173,7 @@ def clean_json_text(text):
 @login_required
 @permission_required('sga.add_personaltemplatesga')
 @organilab_context_decorator
-def create_personal_template(request, organilabcontext, org_pk):
+def create_personal_template(request, org_pk, organilabcontext):
     user = request.user
     personal_templates = PersonalTemplateSGA.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
@@ -283,14 +284,14 @@ def edit_personal_template(request, organilabcontext, org_pk, pk):
 
 @login_required
 @organilab_context_decorator
-def get_prudence_advice(request,organilabcontext):
+def get_prudence_advice(request, org_pk, organilabcontext):
     pk = request.POST.get('pk', '')
     data = PrudenceAdvice.objects.get(pk=pk)
     return HttpResponse(data.name)
 
 @login_required
 @organilab_context_decorator
-def get_danger_indication(request,organilabcontext):
+def get_danger_indication(request, org_pk, organilabcontext):
     pk = request.POST.get('pk', '')
     data = DangerIndication.objects.get(pk=pk)
     return HttpResponse(data.description)
@@ -299,7 +300,7 @@ def get_danger_indication(request,organilabcontext):
 @login_required
 @permission_required('sga.delete_personaltemplatesga')
 @organilab_context_decorator
-def delete_sgalabel(request, organilabcontext, org_pk, pk):
+def delete_sgalabel(request, org_pk, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     if template.user == request.user:
         template.delete()
@@ -310,7 +311,7 @@ def delete_sgalabel(request, organilabcontext, org_pk, pk):
 
 @login_required
 @organilab_context_decorator
-def get_preview(request, organilabcontext, pk):
+def get_preview(request, org_pk, organilabcontext, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
 
@@ -344,7 +345,7 @@ def create_recipient(request):
 
 
 @login_required
-def get_svgexport(request, is_pdf, pk):
+def get_svgexport(request, org_pk, is_pdf, pk):
     personalsga = get_object_or_404(PersonalTemplateSGA, pk=pk)
     svg = personalsga.json_representation
     type = "png"
@@ -370,7 +371,7 @@ def get_pictograms(request):
 
 @login_required
 @permission_required('sga.add_pictogram')
-def add_pictogram(request):
+def add_pictogram(request, org_pk):
 
     if request.method=='POST':
         form = PictogramForm(request.POST)
@@ -387,17 +388,18 @@ def add_pictogram(request):
             instance.id_pictogram=last_id+1
             instance.save()
 
-            return redirect(reverse('sga:pictograms_list'))
+            return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
     context= {
         'url': reverse('sga:add_pictograms'),
         'form': PictogramForm(),
         'title': _('Create pictogram'),
-        'button_text': _('Add')
+        'button_text': _('Add'),
+        'org_pk': org_pk
     }
     return render(request, 'add_pictograms.html', context=context)
 @login_required
 @permission_required('sga.change_pictogram')
-def update_pictogram(request,id_pictogram):
+def update_pictogram(request, org_pk, id_pictogram):
     instance = get_object_or_404(Pictogram,id_pictogram=id_pictogram)
     form = None
     if instance:
@@ -415,12 +417,13 @@ def update_pictogram(request,id_pictogram):
                     instance.image = tmpupload.get_uploaded_file()
 
                 instance.save()
-                return redirect(reverse('sga:pictograms_list'))
+                return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
     context= {
         'url': reverse('sga:update_pictogram',kwargs={'id_pictogram':id_pictogram}),
         'form': form,
         'title': _('Update pictogram'),
-        'button_text': _('Edit')
+        'button_text': _('Edit'),
+        'org_pk': org_pk
     }
     return render(request, 'add_pictograms.html', context=context)
 
@@ -443,7 +446,7 @@ def create_sgalabel(request, organilabcontext, org_pk):
             messages.error(request, _("Form is invalid"))
 
 
-def sgalabel_step_one(request, organilabcontext, org_pk, pk):
+def sgalabel_step_one(request, org_pk, organilabcontext, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     builderinformation = sgalabel.label.builderInformation
     sustance = sgalabel.label.substance
@@ -498,7 +501,7 @@ def sgalabel_step_one(request, organilabcontext, org_pk, pk):
 
 @login_required
 @permission_required('sga.change_pictogram')
-def sgalabel_step_two(request, organilabcontext, org_pk, pk):
+def sgalabel_step_two(request, org_pk, organilabcontext, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
@@ -507,7 +510,7 @@ def sgalabel_step_two(request, organilabcontext, org_pk, pk):
         form = PersonalSGAForm(request.POST, instance=sgalabel)
         if form.is_valid():
             form.save()
-            return redirect(reverse('sga:add_personal', args=('laboratory', org_pk,)))
+            return redirect(reverse('sga:add_personal', args=(org_pk, 'laboratory',)))
 
     context = {
         'sgalabel': sgalabel,
@@ -521,7 +524,7 @@ def sgalabel_step_two(request, organilabcontext, org_pk, pk):
     return render(request, 'sgalabel/step_two.html', context=context)
 
 
-def get_sgacomplement_by_substance(request, pk):
+def get_sgacomplement_by_substance(request, org_pk, pk):
     substance = get_object_or_404(Substance, pk=pk)
     complement = SGAComplement.objects.filter(substance =substance)
     if complement.exists():
@@ -530,14 +533,14 @@ def get_sgacomplement_by_substance(request, pk):
         data = {}
     return JsonResponse(data)
 
-def get_company(request, pk):
+def get_company(request, org_pk, pk):
     builder_info = get_object_or_404(BuilderInformation, pk=pk)
     data = BuilderInformationSerializer(builder_info).data
     return JsonResponse(data)
 
 @login_required
 @permission_required('sga.view_builderinformation')
-def get_recipient_size(request, organilabcontext, pk):
+def get_recipient_size(request, org_pk, organilabcontext, pk):
     # Note: @organilab_context_decorator is not used here intentionally
     recipient_size = get_object_or_404(RecipientSize, pk=pk)
     data = RecipientSizeSerializer(recipient_size).data

@@ -37,7 +37,6 @@ class ProviderUpdate(UpdateView):
     model = Provider
     form_class = ProviderForm
     template_name = 'laboratory/provider_update.html'
-    lab_pk_field = 'pk'
 
     def get_success_url(self):
         return reverse_lazy('laboratory:list_provider', args=(self.lab,self.org))

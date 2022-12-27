@@ -40,13 +40,14 @@ urlpatterns = urls_djgentelela + auth_urls + [
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
     path('', include((laboratory_urls,'laboratory'), namespace='laboratory')),
     path('', include((api_urls,'api'), namespace='api')),
-    path('msds/', include((msds_urls, 'msds'), namespace='msds')),
+    path('msds/<int:org_pk>/', include((msds_urls, 'msds'), namespace='msds')),
     path('weblog/', include('djgentelella.blog.urls')),
-    path('sga/', include((sga_urls, 'sga'), namespace='sga')),
+    path('sga/<int:org_pk>/', include((sga_urls, 'sga'), namespace='sga')),
     path('risk/', include((risk_urls, 'riskmanagemen'), namespace='riskmanagement')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
+    path('academic/<int:org_pk>/', include((academic_urls, 'academic'), namespace='academic')),
 ]
 
 paypal_urls = [
@@ -55,7 +56,6 @@ paypal_urls = [
 
 urlpatterns += paypal_urls
 urlpatterns += djreservation_urls.urlpatterns
-urlpatterns += academic_urls
 urlpatterns += reservation_management_urls
 urlpatterns += reservations_management_api_urlpatterns
 

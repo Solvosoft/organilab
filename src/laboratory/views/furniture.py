@@ -65,7 +65,7 @@ class FurnitureCreateView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:furniture_update',
-                            args=(self.lab, self.object.pk, self.org))
+                            args=(self.lab, self.org, self.object.pk))
 
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
@@ -141,7 +141,7 @@ class FurnitureDelete(DeleteView):
 
 
 @login_required
-def list_furniture_render(request, lab_pk=None):
+def list_furniture_render(request, lab_pk=None, org_pk=None):
     var = request.GET.get('namelaboratoryRoom', '0')
 
     if var:
@@ -154,6 +154,7 @@ def list_furniture_render(request, lab_pk=None):
         context={
             'object_list': furnitures,
             'laboratory': lab_pk,
+            'org_pk': org_pk,
             'request': request
         })
 
@@ -161,10 +162,10 @@ def list_furniture_render(request, lab_pk=None):
 # Here we need to discuss if it is necesary to look for lab_pk in ajax requests
 @login_required
 @ajax
-def list_furniture(request, lab_pk):
+def list_furniture(request, *args, **kwargs):
     return {
         'inner-fragments': {
-            '#furnitures': list_furniture_render(request, lab_pk),
+            '#furnitures': list_furniture_render(request, kwargs['lab_pk'], kwargs['org_pk']),
             '.jsmessage': "<script>see_prototype_shelf_field();</script>"
 
         },
