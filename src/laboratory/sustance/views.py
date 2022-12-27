@@ -139,11 +139,11 @@ class SustanceListJson(BaseDatatableView):
             is_public = '<i class="{0}"  title="{1} {2}" aria-hidden="true"></i>'.format(
                 warning_is_public, _('Is public?'), _("Yes") if item.is_public else _("No"))
             name_url = """<a href="{0}" title="{1}">{2}</a>""".format(
-                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['pk'], 'org_pk':self.kwargs['org_pk']}),
+                reverse('laboratory:sustance_manage', kwargs={'pk': item.id,'lab_pk':self.kwargs['lab_pk'], 'org_pk':self.kwargs['org_pk']}),
                 item.synonym or item.name, item.name)
             delete = """<a href="{0}" title="{1}" class="float-end"><i class="fa fa-trash-o" style="color:red"></i></a>"""\
                 .format(reverse('laboratory:sustance_delete',
-                                kwargs={'pk': item.id, 'lab_pk':self.kwargs['pk'], 'org_pk':self.kwargs['org_pk']}), _('Delete sustance'))
+                                kwargs={'pk': item.id, 'lab_pk':self.kwargs['lab_pk'], 'org_pk':self.kwargs['org_pk']}), _('Delete sustance'))
             if hasattr(item, 'sustancecharacteristics') and item.sustancecharacteristics and \
                     item.sustancecharacteristics.security_sheet:
                 download = """<a href="{0}" title="{1}"><i class="fa fa-download" ></i></a>""" \
