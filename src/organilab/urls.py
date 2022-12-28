@@ -33,9 +33,9 @@ from reservations_management.api.urls import urlpatterns as reservations_managem
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
 from sga import urls as sga_urls
+from derb import urls as derb_urls
 
 urlpatterns = urls_djgentelela + auth_urls + [
-    path('derb/', include('derb.urls')),
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
@@ -45,10 +45,12 @@ urlpatterns = urls_djgentelela + auth_urls + [
     path('weblog/', include('djgentelella.blog.urls')),
     path('sga/<int:org_pk>/', include((sga_urls, 'sga'), namespace='sga')),
     path('risk/<int:org_pk>/', include((risk_urls, 'riskmanagement'), namespace='riskmanagement')),
+    path('derb/<int:org_pk>/', include((derb_urls, 'derb'), namespace='derb')),
+    path('academic/<int:org_pk>/', include((academic_urls, 'academic'), namespace='academic')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
-    path('academic/<int:org_pk>/', include((academic_urls, 'academic'), namespace='academic')),
+
 ]
 
 paypal_urls = [

@@ -35,6 +35,7 @@ class DeleteForm(DeleteView):
     def get_success_url(self, **kwargs):
         success_url =  reverse_lazy('derb:form_list', kwargs={'org_pk':self.org})
         return success_url
+
 @permission_required('derb.add_customform')
 def CreateForm(request, org_pk):
 
@@ -51,7 +52,7 @@ def CreateForm(request, org_pk):
             status=empty_schema['status'],
             schema=empty_schema
         )
-        url = reverse('derb:edit_view', args=[custom_form.id,org_pk])
+        url = reverse('derb:edit_view', args=[org_pk, custom_form.id])
         organilab_logentry(request.user, custom_form, ADDITION, 'custom form')
 
         return JsonResponse({"url": url})

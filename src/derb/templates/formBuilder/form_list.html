@@ -69,8 +69,8 @@
 
                 <td style="width: 120px">
                     <a title="{% trans 'Preview form' %}" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' form.id org_pk %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}" data-url="{% url 'derb:edit_view' org_pk form.id %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}" data-url="{% url 'derb:delete_form' org_pk form.id %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                 </td>
             </tr>
@@ -101,10 +101,8 @@ const translations = {
 <script src="{% static 'js/list.js' %}"></script>
 <script>
 window.urls = {
-    delete: "{% url 'derb:delete_form' '0' org_pk %}",
     editview: "{% url 'derb:edit_view' org_pk %}",
     formlist: "{% url 'derb:form_list' org_pk %}",
-    edit: "{% url 'derb:edit_view' 0  org_pk %}",
     create: "{% url 'derb:create_form' org_pk %}"
 }
 
