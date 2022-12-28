@@ -21,11 +21,12 @@ def get_informs(request, *args, **kwargs):
     lab = int(kwargs.get('lab_pk'))
     content = ContentType.objects.get(app_label="laboratory", model="laboratory")
     informs= Inform.objects.filter(object_id=lab, content_type=content).order_by('-pk')
+    org_pk = kwargs.get('org_pk', None)
     context = {
         'informs':informs,
-        'form': InformForm,
+        'form': InformForm(org_pk=org_pk),
         'laboratory': kwargs.get('lab_pk'),
-        'org_pk': kwargs.get('org_pk'),
+        'org_pk': org_pk,
 
     }
     return render(request, 'laboratory/inform.html', context=context)
@@ -42,10 +43,10 @@ def remove_inform(request, *args, **kwargs):
 @has_lab_assigned()
 @permission_required('laboratory.add_inform')
 def create_informs(request, *args, **kwargs):
-
-    form = InformForm(request.POST)
-    laboratory = kwargs.get('lab_pk')
     org = kwargs.get('org_pk')
+    form = InformForm(request.POST, org_pk=org)
+    laboratory = kwargs.get('lab_pk')
+
     if form.is_valid():
 
         inform= form.save(commit=False)

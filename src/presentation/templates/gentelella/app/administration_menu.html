@@ -22,7 +22,7 @@
         </li>
         {% endif %}
         {% if perms.laboratory.add_laboratory %}
-        <li><a href="{% url 'laboratory:rooms_create' laboratory org_pk %}">
+        <li><a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
             {% trans 'Laboratory Management' %} </a></li>
         <li>
             <hr class="dropdown-divider">

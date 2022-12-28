@@ -1,7 +1,7 @@
 {% load shelf_position i18n laboratory %}
 
 <form data-ajax-submit="" onsubmit="return false;" data-success="function(){return true;}"
-		action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create' laboratory org_pk %}{%else%}{% url 'laboratory:shelf_edit' laboratory form.instance.pk form.row.value form.col.value %}{%endif%}" method="post">
+		action="{% if form.instance.pk is None %}{% url 'laboratory:shelf_create' org_pk laboratory %}{%else%}{% url 'laboratory:shelf_edit' laboratory form.instance.pk form.row.value form.col.value %}{%endif%}" method="post">
 	<div class="modal-body">
 		{% if form.errors %}
 		<div class="alert alert-warning">

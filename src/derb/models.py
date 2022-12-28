@@ -1,7 +1,9 @@
 from django.db import models
 
+from presentation.models import AbstractOrganizationRef
 
-class CustomForm(models.Model):
+
+class CustomForm(AbstractOrganizationRef):
     STATUS_CHOICES = (
         ('admin', 'Creating form'),
         ('fill', 'Filling form'),

@@ -65,7 +65,7 @@ class FurnitureCreateView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:furniture_update',
-                            args=(self.lab, self.org, self.object.pk))
+                            args=(self.org, self.lab, self.object.pk))
 
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
@@ -115,7 +115,7 @@ class FurnitureUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create',
-                            args=(self.lab,self.org))
+                            args=(self.org, self.lab))
 
 
     def form_valid(self, form):
@@ -131,7 +131,7 @@ class FurnitureDelete(DeleteView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:rooms_create', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
     def form_valid(self, form):
         success_url = self.get_success_url()
