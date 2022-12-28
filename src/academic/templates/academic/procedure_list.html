@@ -39,8 +39,11 @@
                             <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
                         <a class="btn btn-success btn-block" href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
                             <i class="fa fa-plus"></i> {% trans 'New Step' %}</a>
-                        <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">
-                           <i class="fa fa-book"></i> {% trans 'Reserve' %}</a>
+                            {% show_reserve_button procedure as show_reserve_btn  %}
+                            {% if show_reserve_btn  %}
+                                <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">
+                                    <i class="fa fa-book"></i> {% trans 'Reserve' %}</a>
+                            {% endif %}
                         <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
                            <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
                         <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">

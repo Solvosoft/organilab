@@ -332,7 +332,7 @@ def convert_to_general_unit(data):
 @permission_required('reservations_management.add_reservedproducts')
 def generate_reservation(request, *args, **kwargs):
 
-    lab = request.POST['lab_pk']
+    lab = kwargs.get('lab_pk')
     procedure = request.POST['procedure']
     objects_pk = list_step_objects(procedure)
     obj_find = 0
