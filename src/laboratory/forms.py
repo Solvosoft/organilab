@@ -1,18 +1,18 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.core.validators import RegexValidator
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
-from djgentelella.forms.forms import CustomForm
-from djgentelella.forms.forms import GTForm
+from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
 
-from auth_and_perms.models import Profile, Rol
+from auth_and_perms.models import Profile
+from derb.models import CustomForm as DerbCustomForm
 from laboratory.models import OrganizationStructure, CommentInform
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
+
 
 class ObjectSearchForm(CustomForm, forms.Form):
     q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
@@ -226,6 +226,16 @@ class FurnitureForm(forms.ModelForm, GTForm):
                    'legal_identity': genwidgets.TextInput(attrs={'required': True}),
                    }
 class InformForm(forms.ModelForm, GTForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(InformForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields['custom_form'].queryset = DerbCustomForm.objects.filter(organization__pk=org_pk)
+        else:
+            self.fields['custom_form'].queryset = DerbCustomForm.objects.none()
+
     class Meta:
         model = Inform
         fields = ['name', 'custom_form']

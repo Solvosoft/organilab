@@ -12,6 +12,8 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
+
+from presentation.models import AbstractOrganizationRef
 from . import catalog
 
 
@@ -538,7 +540,7 @@ STATUS_CHOICES = (
 )
 
 
-class Inform(models.Model):
+class Inform(AbstractOrganizationRef):
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
     custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True, on_delete=models.CASCADE,verbose_name=_('Template'))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

@@ -95,7 +95,7 @@
             <ul class="list-group">
               {% if perms.laboratory.add_laboratoryroom %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_create' laboratory org_pk %}">
+                  <a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
                     <strong>{% trans 'Laboratory' %}</strong>
                   </a>
                 </li>
