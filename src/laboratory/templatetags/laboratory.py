@@ -4,6 +4,8 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django import template
+
+from academic.models import ProcedureStep, ProcedureRequiredObject
 from laboratory.forms import ObjectSearchForm
 from django.shortcuts import get_object_or_404
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile, \
@@ -111,3 +113,13 @@ def get_lab_pk(value):
             return value
     elif isinstance(value, int):
         return value
+
+
+@register.simple_tag()
+def show_reserve_button(procedure):
+    show_reserve_btn = False
+    steps = list(ProcedureStep.objects.filter(procedure=procedure))
+    items = ProcedureRequiredObject.objects.filter(step__in=steps)
+    if items.exists():
+        show_reserve_btn = True
+    return show_reserve_btn
