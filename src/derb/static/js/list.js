@@ -6,8 +6,9 @@ function loadDataTable() {
 
 function deleteForm() {
     var id = $(this).attr('form_id');
-    var name = $(this).attr('form_name')
-    
+    var name = $(this).attr('form_name');
+    var url = $(this).data('url');
+
     Swal.fire({
         title: translations['delete_title'] + name + '?',
         text: translations['delete_text'],
@@ -21,7 +22,7 @@ function deleteForm() {
             
             $.ajax({
                 type: 'POST', 
-                url: window.urls['delete'].replace('0', id) ,
+                url: url,
                 data: id, 
                 headers: {'X-CSRFToken': csrftoken},
                 mode: 'same-origin', 
@@ -96,5 +97,6 @@ function createForm() {
 
 function editForm() {
     var id = $(this).attr('form_id'); 
-    location.href = window.urls['edit'].replace('0', id);
+    var url = $(this).data('url');
+    location.href = url;
 }
