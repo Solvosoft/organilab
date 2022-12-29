@@ -34,7 +34,7 @@ class PriorityConstrain(AbstractOrganizationRef, PriorityCalculator):
             return "%d %s  %s --> %s" % (self.left_value, self.get_operation_display(), right, self.priority)
         return "%d %s X --> %s"%(self.left_value, self.operation, self.priority)
 
-class ZoneType(AbstractOrganizationRef):
+class ZoneType(models.Model):
     name = models.CharField(max_length=250, verbose_name=_('Name'))
     priority_validator = models.ManyToManyField(PriorityConstrain, verbose_name=_('Priority calculate operators'))
 

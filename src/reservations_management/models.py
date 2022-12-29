@@ -47,9 +47,8 @@ DAYS = (
 )
 
 
-class Reservations(AbstractOrganizationRef):
+class Reservations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservation_user', verbose_name=_('User'))
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
     status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED, verbose_name=_('Status'))
     comments = models.CharField(max_length=500, null=True, blank=True, verbose_name=_('Comments'))
     is_massive = models.BooleanField(default=False, verbose_name=_('Is massive'))
@@ -68,6 +67,7 @@ class ReservedProducts(AbstractOrganizationRef):
     initial_date = models.DateTimeField(verbose_name=_('Initial Date'))
     final_date = models.DateTimeField(verbose_name=_('Final Date'))
     status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED, verbose_name=_('Status'))
+    laboratory = models.ForeignKey(Laboratory, null=True, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
 
 
 class ReservationTasks(models.Model):
