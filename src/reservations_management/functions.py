@@ -18,7 +18,7 @@ app = importlib.import_module(settings.CELERY_MODULE).app
 
 ############## METHODS TO USE WITH AJAX ##############
 
-def get_product_name_and_quantity(request):
+def get_product_name_and_quantity(request, org_pk):
     product_name = ''
     if request.method == 'GET':
         product = ReservedProducts.objects.get(id=request.GET['id'])
@@ -104,7 +104,7 @@ def verify_reserved_shelf_objects_stock(requested_product, product_missing_amoun
                     data_set = ReservedProducts.objects.filter(
                         status=1,
                         shelf_object=product.shelf_object,
-                        shelf_object__shelf__furniture__labroom__laboratory__id=product.reservation.laboratory.id
+                        shelf_object__shelf__furniture__labroom__laboratory=product.laboratory
                     ).exclude(pk=product.id)
 
                 except Exception as identifier:
@@ -233,10 +233,11 @@ def get_related_data_sets(requested_product):
     reserved_shelf_products_ids = []
 
     # Retrieves all accepted reserved products that are the same than the requested shelf_object product
+
     related_reserved_products_list = ReservedProducts.objects.filter(
         status=1,
         shelf_object=requested_product.shelf_object,
-        shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
+        shelf_object__shelf__furniture__labroom__laboratory=requested_product.laboratory
     )
 
     reserved_shelf_products_ids = get_shelf_products_id(
@@ -247,7 +248,7 @@ def get_related_data_sets(requested_product):
     related_different_reserved_products_list = ReservedProducts.objects.filter(
         status=1,
         shelf_object__object=requested_product.shelf_object.object,
-        shelf_object__shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id
+        shelf_object__shelf__furniture__labroom__laboratory=requested_product.laboratory
     ).exclude(shelf_object=requested_product.shelf_object)
 
     reserved_shelf_products_ids += get_shelf_products_id(
@@ -259,7 +260,7 @@ def get_related_data_sets(requested_product):
 
     # Retrieves shelf objects of the same laboratory with the same requested product excluding the reserved products and the requested product
     related_available_shelf_objects = ShelfObject.objects.filter(
-        shelf__furniture__labroom__laboratory__id=requested_product.reservation.laboratory.id,
+        shelf__furniture__labroom__laboratory=requested_product.laboratory,
         object=requested_product.shelf_object.object).exclude(id__in=reserved_shelf_products_ids).exclude(id=requested_product.shelf_object.id)
 
     return {
@@ -269,7 +270,7 @@ def get_related_data_sets(requested_product):
     }
 
 
-def validate_reservation(request):
+def validate_reservation(request, org_pk):
     is_valid = True
     # New posible product to add in the reservation
     products_to_request = []
@@ -348,7 +349,7 @@ def validate_reservation(request):
     })
 
 
-def increase_stock(request):
+def increase_stock(request, org_pk):
     # Validate if is possible to compute the sum
     was_increase = False
     if request.method == 'GET':

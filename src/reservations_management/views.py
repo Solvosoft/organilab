@@ -9,7 +9,7 @@ from laboratory.decorators import user_group_perms
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 
-from .models import Reservations
+from .models import Reservations, ReservedProducts
 from .forms import ReservationsForm, ProductForm
 
 
@@ -23,9 +23,12 @@ class ReservationsListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reservations'] = Reservations.objects.filter(
-            laboratory__profile__user_id=self.request.user.id, status=self.kwargs['status']
-        )
+        reservation_list = list(ReservedProducts.objects.filter(
+            laboratory__profile__user_id=self.request.user.id,
+            organization__pk=self.org,
+            reservation__isnull=False
+        ).values_list('reservation__pk', flat=True))
+        context['reservations'] = Reservations.objects.filter(pk__in=reservation_list, status=self.kwargs['status'])
         return context
 
 
@@ -37,7 +40,7 @@ class ManageReservationView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         new_status = self.object.status
-        success_url = reverse("reservations_list",kwargs={'status': new_status,'org_pk':self.org})
+        success_url = reverse("reservations_management:reservations_list",kwargs={'status': new_status, 'org_pk':self.org})
         return success_url
 
     def get_context_data(self, **kwargs):
