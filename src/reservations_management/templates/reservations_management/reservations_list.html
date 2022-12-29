@@ -66,6 +66,7 @@
                 <tr>
                     <th class="text-center">{% trans 'User' %}</th>
                     <th class="text-center">{% trans 'Status' %}</th>
+                    <th class="text-center">{% trans 'Laboratory' %}</th>
                     <th class="text-center">{% trans 'Massive Reservation' %}</th>
                     <th class="text-center">{% trans 'Manage Reservation' %}</th>
                 </tr>
@@ -83,6 +84,7 @@
                     {%if reservation.status == 3 %}text-info {%endif%}">
                             {{ reservation.get_status_display}} </strong>
                     </td>
+                    <td>{{ reservation.reservedproducts_set.first.laboratory }}</td>
                     <td>{% if reservation.is_massive %}
                         {% trans 'Yes' %}
                         {% else %}
@@ -91,7 +93,7 @@
                     </td>
                     <td>
                         <a class="btn btn-md btn-success"
-                           href="{% url 'manage_reservation' reservation.id org_pk %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+                           href="{% url 'reservations_management:manage_reservation' org_pk reservation.id %}" title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
                     </td>
                 </tr>
 

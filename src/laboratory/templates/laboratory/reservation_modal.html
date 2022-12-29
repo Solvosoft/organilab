@@ -47,6 +47,7 @@
                 <form id="modal_reservation_form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" value="{{laboratory}}" name="lab">
+                    <input type="hidden" value="{{org_pk}}" name="organization">
                     <label class="float-end" id="obj"></label>
                     <div class="form-group">
                         <label>{% trans 'Action'%}</label>
