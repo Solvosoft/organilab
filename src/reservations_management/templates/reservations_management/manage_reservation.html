@@ -20,9 +20,9 @@
     <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
     <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
 
-    <input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity" value="{%url 'get_product_name_and_quantity'%}">
-    <input type="hidden" name="validate_reservation" id="validate_reservation" value="{%url 'validate_reservation'%}">
-    <input type="hidden" name="increase_stock" id="increase_stock" value="{%url 'increase_stock'%}">
+    <input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity" value="{% url 'reservations_management:get_product_name_and_quantity' org_pk %}">
+    <input type="hidden" name="validate_reservation" id="validate_reservation" value="{% url 'reservations_management:validate_reservation' org_pk %}">
+    <input type="hidden" name="increase_stock" id="increase_stock" value="{% url 'reservations_management:increase_stock' org_pk %}">
 
 </div>
 
@@ -32,7 +32,7 @@
         <div class="card-title titles">
             <ul class="nav navbar-left panel_toolbox">
                 <li>
-                    <a  href="{% url 'reservations_list' object.status org_pk %}" title="{% trans 'Back to the reservations list'%}">
+                    <a  href="{% url 'reservations_management:reservations_list' org_pk object.status %}" title="{% trans 'Back to the reservations list'%}">
                         <i class="fs-5 fa fa-angle-double-left red"></i>
                     </a>
                 </li>
@@ -56,7 +56,7 @@
                 <div class="form-group mt-2">
                     <div class="controls text-end">
 
-                        <a href="{% url 'reservations_list' object.status org_pk %}" class="btn btn-danger"><i class='fa fa-times'></i>
+                        <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i class='fa fa-times'></i>
                             Volver</a>
 
                         <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
