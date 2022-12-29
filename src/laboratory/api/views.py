@@ -1,5 +1,6 @@
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -13,7 +14,7 @@ from django.http import Http404
 
 from laboratory.api import serializers
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry
+    LabOrgLogEntry, Laboratory
 from laboratory.utils import get_laboratories_from_organization
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
@@ -29,8 +30,13 @@ class ApiReservedProductsCRUD(APIView):
 
     def post(self, request):
         serializer = ReservedProductsSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
+            laboratory = get_object_or_404(Laboratory, pk=int(request.data['lab']))
+            instance = serializer.save()
+            instance.laboratory = laboratory
+            instance.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

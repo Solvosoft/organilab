@@ -47,6 +47,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     path('risk/<int:org_pk>/', include((risk_urls, 'riskmanagement'), namespace='riskmanagement')),
     path('derb/<int:org_pk>/', include((derb_urls, 'derb'), namespace='derb')),
     path('academic/<int:org_pk>/', include((academic_urls, 'academic'), namespace='academic')),
+    path('reservations_management/<int:org_pk>/', include((reservation_management_urls, 'reservations_management'), namespace='reservations_management')),
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
@@ -59,7 +60,6 @@ paypal_urls = [
 
 urlpatterns += paypal_urls
 urlpatterns += djreservation_urls.urlpatterns
-urlpatterns += reservation_management_urls
 urlpatterns += reservations_management_api_urlpatterns
 urlpatterns += regulation_urlpath
 

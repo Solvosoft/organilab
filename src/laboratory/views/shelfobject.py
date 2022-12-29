@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -27,7 +28,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
@@ -94,7 +95,8 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
-            'measurement_unit': core.Select
+            'measurement_unit': core.Select,
+
         }
 
 
@@ -121,7 +123,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
 
     def form_valid(self, form):
         self.object = form.save()

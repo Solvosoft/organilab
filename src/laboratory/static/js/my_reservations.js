@@ -77,7 +77,7 @@ function remove_reservation(){
 /*Function to remove all items that have a status of selected on the My Reservations View*/
 function delete_reserved_products(){
     all_reserved_products_ids = get_all_elements_with_name("rp_id");
-    console.log(all_reserved_products_ids)
+
     for (let i=0; i<all_reserved_products_ids.length;i++){
         $.ajax({
             url: document.api_modal_delete.replace(0, all_reserved_products_ids[i]),
@@ -139,11 +139,12 @@ function make_reservation(){
 
     $.get(document.get_lab_id_script_url, input,
     function({ lab_ids }) {
-        lab_to_make_reservation = lab_ids.filter(onlyUnique); //We only need the individual lab id's
-        for (i=0; i < lab_to_make_reservation.length; i++){
+
+        //lab_to_make_reservation = lab_ids.filter(onlyUnique); //We only need the individual lab id's
+        //for (i=0; i < lab_to_make_reservation.length; i++){
             data = {
                 "user": user,
-                "laboratory": lab_to_make_reservation[i],
+                //"laboratory": lab_to_make_reservation[i],
                 //status default is REQUESTED (0), comments can be null, is_massive default is false
             }
             $.ajax({
@@ -155,7 +156,7 @@ function make_reservation(){
                 },
                 success: function(data) {
                     for (j=0; j < reserved_products_ids_list.length; j++){
-                       if(lab_ids[j] == data["laboratory"]){
+                       if(lab_ids[j] == document.lab_pk){
                            info_update[j] = [
                                 reserved_products_ids_list[j],
                                 data["id"],
@@ -166,7 +167,7 @@ function make_reservation(){
                     update_reserved_products(info_update);
                 }
             });
-        }
+        //}
     });
 }
 

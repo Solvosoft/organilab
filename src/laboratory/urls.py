@@ -30,7 +30,7 @@ from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpda
 objviews = ObjectView()
 
 organization_urls_org_pk = [
-    path('my_reservations/<int:pk>', MyReservationView.as_view(), name="my_reservations"),
+    path('my_reservations/<int:lab_pk>', MyReservationView.as_view(), name="my_reservations"),
     path('labindex/<int:lab_pk>', views.lab_index, name='labindex'),  # Todo: remove this ?
     path('laboratory/<int:pk>/edit/', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
     path('create_lab/', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  re_path(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include
-from django.urls import re_path
+from django.urls import path
 
 from .views import (
     ReservationsListView,
@@ -28,11 +28,11 @@ from .functions import (
 )
 
 urlpatterns = [
-    re_path(r'reservations/(?P<pk>\d+)/manage/(?P<org_pk>\d+)$',ManageReservationView.as_view(), name='manage_reservation'),
-    re_path(r'reservations/list/(?P<status>\d+)/(?P<org_pk>\d+)$',ReservationsListView.as_view(), name='reservations_list'),
+    path('reservations/<int:pk>/manage/',ManageReservationView.as_view(), name='manage_reservation'),
+    path('reservations/list/<int:status>/',ReservationsListView.as_view(), name='reservations_list'),
     
     # Functions URLs
-    re_path(r'reservedproduct/get_product_name_and_quantity',get_product_name_and_quantity, name='get_product_name_and_quantity'),
-    re_path(r'reservedproduct/validate_reservation',validate_reservation, name='validate_reservation'),
-    re_path(r'reservedproduct/increase_stock', increase_stock, name='increase_stock')
+    path('reservedproduct/get_product_name_and_quantity/',get_product_name_and_quantity, name='get_product_name_and_quantity'),
+    path('reservedproduct/validate_reservation/',validate_reservation, name='validate_reservation'),
+    path('reservedproduct/increase_stock/', increase_stock, name='increase_stock')
 ]
