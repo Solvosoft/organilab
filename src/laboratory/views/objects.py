@@ -15,16 +15,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidget
-from laboratory.models import Laboratory, BlockedListNotification
+from laboratory.models import Laboratory, BlockedListNotification, OrganizationStructure
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import filter_laboratorist_profile, organilab_logentry
+from laboratory.utils import filter_laboratorist_profile, organilab_logentry, get_profile_by_organization
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 from laboratory.decorators import has_lab_assigned
 
@@ -41,7 +41,7 @@ class ObjectView(object):
             
             def get_success_url(self, *args, **kwargs):
                 redirect = reverse_lazy('laboratory:objectview_list', args=(
-                    self.lab,self.org)) + "?type_id=" + self.object.type
+                    self.org, self.lab)) + "?type_id=" + self.object.type
                 return redirect
 
             def get_form_kwargs(self):
@@ -50,7 +50,9 @@ class ObjectView(object):
                 return kwargs
 
             def form_valid(self, form):
-                object = form.save()
+                object = form.save(commit=False)
+                organization = get_object_or_404(OrganizationStructure, pk=self.org)
+                object.organization=organization
                 organilab_logentry(self.request.user, object, ADDITION, changed_data=form.changed_data, relobj=self.lab)
                 return super(ObjectCreateView, self).form_valid(form)
 
@@ -67,7 +69,7 @@ class ObjectView(object):
             def get_success_url(self):
                 return reverse_lazy(
                     'laboratory:objectview_list',
-                    args=(self.lab,self.org)) + "?type_id=" + self.get_object().type
+                    args=(self.org, self.lab)) + "?type_id=" + self.get_object().type
 
             def get_form_kwargs(self):
                 kwargs = super(ObjectUpdateView, self).get_form_kwargs()
@@ -92,7 +94,7 @@ class ObjectView(object):
 
             def get_success_url(self):
                 return reverse_lazy('laboratory:objectview_list',
-                                    args=(self.lab,self.org))
+                                    args=(self.org, self.lab))
 
             def form_valid(self, form):
                 success_url = self.get_success_url()
@@ -112,8 +114,10 @@ class ObjectView(object):
         class ObjectListView(ListView):
 
             def get_queryset(self):
+                organization = get_object_or_404(OrganizationStructure, pk=self.org)
+                orgs = [organization] + list(organization.ancestors())
                 query = ListView.get_queryset(self).filter(
-                    Q(laboratory__in = [self.lab])|Q(is_public=True)
+                    organization__in=orgs, is_public=True
                 )
 
                 if 'type_id' in self.request.GET:
@@ -182,8 +186,6 @@ class ObjectForm( CustomForm,ModelForm):
 
         super(ObjectForm, self).__init__(*args, **kwargs)
 
-        self.fields['laboratory'].queryset = filter_laboratorist_profile(self.request.user)
-        self.fields['laboratory'].label = _("Available only on this laboratories if it is private")
         if self.request:
             if 'type_id' in self.request.GET:
                 self.type_id = self.request.GET.get('type_id', '')
@@ -209,10 +211,9 @@ class ObjectForm( CustomForm,ModelForm):
 
     class Meta:
         model = Object
-        fields = '__all__'
+        exclude = ['organization', 'created_by']
         widgets = {
             'features': genwidget.SelectMultiple(),
-            'laboratory': genwidget.SelectMultiple(),
             'code': genwidget.TextInput,
             'name': genwidget.TextInput,
             'synonym':  genwidget.TextInput,

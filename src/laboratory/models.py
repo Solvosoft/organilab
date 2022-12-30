@@ -50,7 +50,7 @@ class ObjectFeatures(models.Model):
         return self.name
 
 
-class Object(models.Model):
+class Object(AbstractOrganizationRef):
     REACTIVE = '0'
     MATERIAL = '1'
     EQUIPMENT = '2'
@@ -73,8 +73,6 @@ class Object(models.Model):
     serie = models.CharField(_('Serie'), max_length=50, null=True, blank=True)
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
-
-    laboratory = models.ManyToManyField('Laboratory', blank=True)
 
     @property
     def is_reactive(self):

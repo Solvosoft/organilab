@@ -110,7 +110,7 @@
               {% endif %}
               {% if perms.laboratory.add_objectfeatures %}
                 <li class="list-group-item">
-                  <a href="{% url 'laboratory:object_feature_create' laboratory org_pk %}"><strong>{% trans 'Object features' %}</strong></a>
+                  <a href="{% url 'laboratory:object_feature_create' org_pk laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
                 </li>
               {% endif %}
 
