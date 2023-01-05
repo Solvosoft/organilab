@@ -32,7 +32,7 @@
 </div>
    {% if perms.laboratory.add_object %}
 <a class="btn btn-success float-end "
-   href="{% url 'laboratory:objectview_create' laboratory org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
+   href="{% url 'laboratory:objectview_create' org_pk laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
   <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Add' %}
 </a>
 {% endif %}

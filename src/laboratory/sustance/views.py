@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from laboratory.views.djgeneric import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
-from laboratory.models import Object, Laboratory
+from laboratory.models import Object, Laboratory, OrganizationStructure
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
 from laboratory.utils import get_cas, organilab_logentry
 from laboratory.validators import isValidate_molecular_formula
@@ -18,6 +18,7 @@ from laboratory.validators import isValidate_molecular_formula
 
 @permission_required('laboratory.change_object')
 def create_edit_sustance(request, org_pk, lab_pk, pk=None):
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     instance = Object.objects.filter(pk=pk).first()
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj=None
@@ -29,12 +30,13 @@ def create_edit_sustance(request, org_pk, lab_pk, pk=None):
         postdata = request.POST
         filesdata = request.FILES
 
-    objform = SustanceObjectForm(postdata, instance=instance, org_pk=org_pk)
+    objform = SustanceObjectForm(postdata, instance=instance)#, org_pk=org_pk)
     suschacform = SustanceCharacteristicsForm(postdata, files=filesdata, instance=suscharobj)
     if request.method == 'POST':
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
             obj.type = Object.REACTIVE
+            obj.organization = organization
             obj.save()
             objform.save_m2m()
             suscharinst = suschacform.save(commit=False)
@@ -104,7 +106,10 @@ class SustanceListJson(BaseDatatableView):
     lab_pk_field ='pk'
 
     def filter_queryset(self, qs):
-        qs = qs.filter(type=Object.REACTIVE)
+        org_pk = self.kwargs['org_pk']
+        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+        orgs = [organization] + list(organization.ancestors())
+        qs = qs.filter(type=Object.REACTIVE, organization__in=orgs)
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(

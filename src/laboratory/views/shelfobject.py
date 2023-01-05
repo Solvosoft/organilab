@@ -15,6 +15,7 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -145,6 +146,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
+        kwargs['org_pk'] = self.org
         return kwargs
 
 
