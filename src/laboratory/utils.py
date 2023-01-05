@@ -208,3 +208,13 @@ def organilab_logentry(user, object, action_flag, model_name=None, changed_data=
                 content_type=content_type_obj,
                 object_id=rel_obj.id
             )
+
+
+def get_pk_org_ancestors(org_pk):
+    organization = OrganizationStructure.objects.filter(pk=org_pk)
+    pks = []
+    if organization.exists():
+        organization = organization.first()
+        pks.append(organization.pk)
+        pks = pks + list(organization.ancestors().values_list('pk', flat=True))
+    return pks
