@@ -39,7 +39,6 @@ function send_form(){
             type: 'POST',
             data: data,
             success: function({status,msg}) {
-                console.log(status)
                 if(status){
                 location.reload()
                 }else{

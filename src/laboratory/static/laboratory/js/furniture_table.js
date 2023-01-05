@@ -95,7 +95,6 @@ function createconfigdata(){
 function save_form(){
 	$('form').submit(
 		function(event){
-			console.log(createconfigdata());
 			$("#id_dataconfig").val(createconfigdata());
 	});
 	
