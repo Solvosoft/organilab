@@ -93,6 +93,7 @@ class IncidentReportEdit(djgeneric.UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['org_pk'] = self.org
         kwargs['initial']={
             'laboratories':[self.lab]
         }
@@ -107,6 +108,7 @@ class IncidentReportEdit(djgeneric.UpdateView):
         org_pk = self.org
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
         return success_url
+
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.delete_incidentreport'), name="dispatch")
 class IncidentReportDelete(djgeneric.DeleteView):
