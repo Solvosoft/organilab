@@ -81,6 +81,13 @@ class OrganizationUserManagementForm(GTForm):
 
 
 class ReservationModalForm(GTForm, ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(ReservationModalForm, self).__init__(*args, **kwargs)
+        self.fields['initial_date'].help_text = _('Entered date should be greater than current date and time')
+        self.fields['final_date'].help_text = _('Entered date should be greater than current date and time')
+
+
     class Meta:
         model = ReservedProducts
         fields = ['amount_required', 'initial_date', 'final_date']
@@ -89,6 +96,7 @@ class ReservationModalForm(GTForm, ModelForm):
             'final_date': genwidgets.DateTimeInput,
             'amount_required': genwidgets.TextInput
         }
+
 class ReservedModalForm(GTForm, ModelForm):
     options = forms.IntegerField(initial=1, widget=genwidgets.HiddenInput)
     class Meta:
