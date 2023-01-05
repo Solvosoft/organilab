@@ -48,7 +48,7 @@
                 </li>
                 {% endif %}
                 <li>
-                    <a class="nav-link" href="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{%endif%}{% if org_pk %}?org_pk={{org_pk}}{%endif%}">
+                    <a class="nav-link" href="{% url 'feedback' %}{% if laboratory and org_pk %}?lab_pk={{laboratory}}&org_pk={{org_pk}}{%endif%}">
                         <i class="fa fa-wrench fa-fw"></i> {% trans 'Feedback' %}</a>
                 </li>
             </ul>

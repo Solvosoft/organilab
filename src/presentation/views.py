@@ -62,13 +62,28 @@ class FeedbackView(CreateView):
     model = FeedbackEntry
     form_class = FeedbackEntryForm
 
+    def get(self, request, *args, **kwargs):
+        self.lab = None
+        self.org = None
+        if 'org_pk' in request.GET:
+            self.org= int(request.GET['org_pk'])
+        if 'lab_pk' in request.GET:
+            self.lab= int(request.GET['lab_pk'])
+        return CreateView.get(self, request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(FeedbackView, self).get_context_data()
+        context['lab_pk'] = self.lab
+        context['org_pk'] = self.org
+        return context
+
     def get_success_url(self):
         text_message = _(
             'Thank you for your help. We will check your problem as soon as we can')
         messages.add_message(self.request, messages.SUCCESS, text_message)
         try:
-            lab_pk = int(self.request.GET.get('lab_pk', 0))
-            org_pk = int(self.request.GET.get('org_pk', 0))
+            lab_pk = int(self.request.POST.get('lab_pk', 0))
+            org_pk = int(self.request.POST.get('org_pk', 0))
         except:
             lab_pk = None
             org_pk = None

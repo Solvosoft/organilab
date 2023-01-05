@@ -8,9 +8,15 @@
   <div class='col-md-12'>
     <h1>{% trans 'Feedback' %}</h1>
     <p>{% trans 'If you had some problem using Organilab, please let us know about it' %}</p>
-    <form action="{% url 'feedback' %}{% if laboratory %}?lab_pk={{laboratory}}{% endif %}"
+    <form action="{% url 'feedback' %}"
           method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      {% if lab_pk %}
+        <input name="lab_pk" value="{{lab_pk}}" type="hidden" />
+      {% endif %}
+      {% if org_pk %}
+        <input name="org_pk" value="{{org_pk}}" type="hidden" />
+      {% endif %}
       {{ form.as_horizontal }}
       <button class='btn btn-primary' type='submit'>
         {% trans 'Send' %}
