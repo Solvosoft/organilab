@@ -15,7 +15,6 @@ from django.conf import settings
 
 
 class FormMSDSobject(forms.ModelForm):
-    captcha = ReCaptchaField()
 
     class Meta:
         model = MSDSObject
@@ -23,7 +22,6 @@ class FormMSDSobject(forms.ModelForm):
 
 
 class FormMSDSobjectUpdate(forms.ModelForm):
-    captcha = ReCaptchaField()
 
     class Meta:
         model = MSDSObject
