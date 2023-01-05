@@ -79,6 +79,22 @@ def list_shelfobject(request, *args, **kwargs):
     }
 
 
+
+class ShelfObjForm(CustomForm, forms.ModelForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = ShelfObject
+        exclude = ['object']
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'quantity': core.TextInput,
+            'limit_quantity': core.TextInput,
+            'measurement_unit': core.Select,
+        }
+
+
 class ShelfObjectForm(CustomForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
@@ -146,7 +162,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
-        kwargs['org_pk'] = self.org
         return kwargs
 
 
@@ -158,7 +173,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
 
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
@@ -242,7 +257,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
 
     def get_context_data(self, **kwargs):
         context = DeleteView.get_context_data(self, **kwargs)

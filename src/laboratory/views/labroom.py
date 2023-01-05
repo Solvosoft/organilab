@@ -17,6 +17,7 @@ from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.decorators import has_lab_assigned
+from .shelfobject import ShelfObjForm
 from ..utils import organilab_logentry
 
 
@@ -39,6 +40,7 @@ class LaboratoryRoomsList(ListView):
         context['subtract_object_form'] = SubtractObjectForm()
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
+        context['formcreate'] = ShelfObjForm()
         return context
 
 
