@@ -75,7 +75,7 @@
   {% endif %}
   </div>
 
-  <div class="hidden" id="addshelfproto">
+  <div style="display: none;" id="addshelfproto">
     <a style="margin-left: 19px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
        href="{% url 'laboratory:shelf_create' org_pk laboratory %}?row=ROW&col=COL&furniture={{ form.instance.pk }}">
       <span class="fa fa-plus" aria-hidden="true"></span>
