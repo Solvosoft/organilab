@@ -98,12 +98,17 @@ class ShelfObjForm(CustomForm, forms.ModelForm):
 class ShelfObjectForm(CustomForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
-    object = forms.ModelChoiceField(
-        queryset=Object.objects.all(),
-        widget=AutocompleteSelect('objectsearch'),
-        label=_("Reactive/Material/Equipment"),
-        help_text=_("Search by name, code or CAS number")
-    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(ShelfObjectForm, self).__init__(*args, **kwargs)
+
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            label=_("Reactive/Material/Equipment"),
+            help_text=_("Search by name, code or CAS number")
+        )
 
     class Meta:
         model = ShelfObject
@@ -162,6 +167,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         kwargs['initial']['shelf'] = self.request.GET.get('shelf')
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
+        kwargs['org_pk'] = self.org
         return kwargs
 
 

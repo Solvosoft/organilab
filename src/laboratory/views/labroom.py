@@ -40,7 +40,6 @@ class LaboratoryRoomsList(ListView):
         context['subtract_object_form'] = SubtractObjectForm()
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
-        context['formcreate'] = ShelfObjForm()
         return context
 
 

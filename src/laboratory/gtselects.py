@@ -8,6 +8,9 @@ from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from laboratory.utils import get_pk_org_ancestors
+
+
 @register_lookups(prefix="rol", basename="rolsearch")
 class RolGModelLookup(BaseSelect2View):
     model = Rol
@@ -23,29 +26,24 @@ class ObjectGModelLookup(BaseSelect2View):
 class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = Object
     fields = ['code', 'name']
-    organization = None
+    org_pk = None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        if self.organization:
-            queryset = queryset.filter(organization=self.organization)
+        if self.org_pk:
+            organizations = get_pk_org_ancestors(self.org_pk)
+            queryset = queryset.filter(organization__in=organizations)
         else:
             queryset = queryset.none()
         return queryset
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        if bool(eval(pk)):
+            self.org_pk = pk
         return self.list(request, pk, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        if not args:
-            raise
-        if self.organization is None:
-            raise
-        return super().list(request, *args, **kwargs)
 
 
 
