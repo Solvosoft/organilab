@@ -38,12 +38,12 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory org_pk %}?type_id=1">
+                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=1">
                     {% trans 'Material' %}</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' laboratory org_pk %}?type_id=2">
+                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=2">
                     {% trans 'Equipment' %}</a></li>
             </ul>
         </li>
@@ -52,7 +52,7 @@
         </li>
         {% endif %}
         {% if perms.laboratory.add_objectfeatures %}
-        <li><a href="{% url 'laboratory:object_feature_create' laboratory org_pk %}">
+        <li><a href="{% url 'laboratory:object_feature_create' org_pk laboratory %}">
             {% trans 'Object features management' %}</a></li>
         <li>
             <hr class="dropdown-divider">
