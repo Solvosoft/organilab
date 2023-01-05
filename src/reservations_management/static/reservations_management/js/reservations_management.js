@@ -193,7 +193,6 @@ const update_product_information = () => {
     const amount_to_return = results.amount_to_return;
 
     if (can_increase && amount_to_return > 0) {
-        console.log(can_increase);
         increase_stock(data['id'], amount_to_return);
     }
 
