@@ -2,7 +2,7 @@
 {% load urlname_tags %}
 {% get_user_labs as mylabs %}
 
-{% if perms.auth_and_perms.change_rol %}
+{% if perms.djgentelella.can_manage_permissions %}
     {% get_urlname_action as urlnameactions %}
     {% validate_context urlnameactions as context %}
     {% if urlnameactions and context %}

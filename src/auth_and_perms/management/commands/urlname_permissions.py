@@ -917,6 +917,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth_and_perms.view_rol'
         },
         {
+            'name': 'Change Rol',
+            'category': 'Rol',
+            'permission': 'auth_and_perms.change_rol'
+        },
+        {
             'name': 'Add Profile Permission',
             'category': 'Profile Permission',
             'permission': 'auth_and_perms.add_profilepermission'
@@ -2636,6 +2641,13 @@ URLNAME_PERMISSIONS = {
             'name': 'Delete a Protocol',
             'category': 'Protocol',
             'permission': 'laboratory.delete_protocol'
+        },
+    ],
+    'djgentelella': [
+        {
+            'name': 'View Permission',
+            'category': 'Djgentelella',
+            'permission': 'djgentelella.can_manage_permissions'
         },
     ],
 }
