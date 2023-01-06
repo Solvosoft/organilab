@@ -79,22 +79,6 @@ def list_shelfobject(request, *args, **kwargs):
     }
 
 
-
-class ShelfObjForm(CustomForm, forms.ModelForm):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
-
-    class Meta:
-        model = ShelfObject
-        exclude = ['object']
-        widgets = {
-            'shelf': forms.HiddenInput,
-            'quantity': core.TextInput,
-            'limit_quantity': core.TextInput,
-            'measurement_unit': core.Select,
-        }
-
-
 class ShelfObjectForm(CustomForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
