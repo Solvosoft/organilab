@@ -93,8 +93,16 @@ class ObjectView(object):
         class ObjectDeleteView(DeleteView):
 
             def get_success_url(self):
-                return reverse_lazy('laboratory:objectview_list',
+                if 'type_id' in self.request.GET:
+
+                    self.type_id = self.request.GET.get('type_id', '')
+
+                    return reverse_lazy('laboratory:objectview_list',
+                                    args=(self.org, self.lab))+"?type_id="+self.type_id
+                else:
+                    return reverse_lazy('laboratory:objectview_list',
                                     args=(self.org, self.lab))
+
 
             def form_valid(self, form):
                 success_url = self.get_success_url()
@@ -218,7 +226,10 @@ class ObjectForm( CustomForm,ModelForm):
             'name': genwidget.TextInput,
             'synonym':  genwidget.TextInput,
             'is_public': genwidget.YesNoInput,
-            'description': genwidget.Textarea
+            'description': genwidget.Textarea,
+            'model': genwidget.TextInput,
+            'serie': genwidget.TextInput,
+            'plaque': genwidget.TextInput
         }
 
 

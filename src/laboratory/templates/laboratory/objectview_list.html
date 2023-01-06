@@ -52,7 +52,7 @@
         {% endif %}
         {% if perms.laboratory.delete_object %}
         <a class="btn btn-danger"
-           href="{% url 'laboratory:objectview_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}">
+           href="{% url 'laboratory:objectview_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
           <span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}
         </a>
         {% endif %}
