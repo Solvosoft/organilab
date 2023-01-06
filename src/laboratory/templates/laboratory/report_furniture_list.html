@@ -46,7 +46,7 @@
 	  	{% for furniture in object_list %}
 			<h3 class="alert alert-info">{% trans 'Piece of furniture' %}: {{ furniture.name }}
 				<a class="btn btn-sm btn-danger float-end"
-					href="{% url 'laboratory:reports_furniture' laboratory %}?pk={{ furniture.pk }}">
+					href="{% url 'laboratory:reports_furniture' org_pk laboratory %}?pk={{ furniture.pk }}">
 					<i class="fa fa-download" aria-hidden="true"></i>
 					{% trans "PDF" %}
 				</a>
@@ -115,16 +115,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>  
-						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' laboratory %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' org_pk laboratory %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' laboratory %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' org_pk laboratory %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' laboratory %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' org_pk laboratory %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'laboratory:reports_furniture' org_pk laboratory %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>

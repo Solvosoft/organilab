@@ -28,7 +28,7 @@ from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure,  SustanceCharacteristics,PrecursorReport
 from laboratory.models import ObjectLogChange
-from laboratory.utils import get_cas, get_imdg, get_molecular_formula
+from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -391,6 +391,7 @@ def make_book_objects(objects, summary=False, type_id=None, lab_pk=None):
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
     org = kwargs.get('org_pk')
+    filters = {}
 
     try:
         detail = bool(int(request.GET.get('details', 0)))
@@ -407,23 +408,20 @@ def report_objects(request, *args, **kwargs):
             namef = slugify(str(lab))+"_"+type_name+"_"+str('resume' if detail else "detail")
     if var is None:
 
-        if 'lab_pk' in kwargs:
-            filters = Q(
-                shelfobject__shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
-            lab_pk = kwargs.get('lab_pk')
+        if org:
+            filters['organization__in'] = get_pk_org_ancestors(org)
+            filters['is_public'] =True
 
         if 'type_id' in request.GET:
+            filters['type'] = request.GET.get('type_id')
 
-            if type_id:
-                filters = filters & Q(type=type_id)
 
-        if 'lab_pk' in kwargs and 'type_id' in request.GET:
-            objects = Object.objects.filter(filters)
+        if filters:
+            objects = Object.objects.filter(**filters)
         else:
-            objects = Object.objects.all()
+            objects = Object.objects.none()
     else:
         objects = Object.objects.filter(pk=var)
-
 
 
     fileformat = request.GET.get('format', 'pdf')
@@ -626,13 +624,15 @@ class ObjectList(ListView):
 
     def get_queryset(self):
         query = super(ObjectList, self).get_queryset()
+        filters = {
+            'organization__in': get_pk_org_ancestors(self.org),
+            'is_public': True
+        }
+
         if self.get_type():
-            return query.filter(
-                type=self.get_type(),
-                shelfobject__shelf__furniture__labroom__laboratory=self.lab)
-        else:
-            return query.filter(
-                shelfobject__shelf__furniture__labroom__laboratory=self.lab)
+            filters['type'] = self.get_type()
+
+        return query.filter(**filters)
 
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)

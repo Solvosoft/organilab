@@ -24,7 +24,8 @@ from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidget
 from laboratory.models import Laboratory, BlockedListNotification, OrganizationStructure
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import filter_laboratorist_profile, organilab_logentry, get_profile_by_organization
+from laboratory.utils import filter_laboratorist_profile, organilab_logentry, get_profile_by_organization, \
+    get_pk_org_ancestors
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 from laboratory.decorators import has_lab_assigned
 
@@ -114,10 +115,8 @@ class ObjectView(object):
         class ObjectListView(ListView):
 
             def get_queryset(self):
-                organization = get_object_or_404(OrganizationStructure, pk=self.org)
-                orgs = [organization] + list(organization.ancestors())
                 query = ListView.get_queryset(self).filter(
-                    organization__in=orgs, is_public=True
+                    organization__in=get_pk_org_ancestors(self.org), is_public=True
                 )
 
                 if 'type_id' in self.request.GET:

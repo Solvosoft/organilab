@@ -12,7 +12,7 @@ from laboratory.views.djgeneric import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from laboratory.models import Object, Laboratory, OrganizationStructure
 from laboratory.sustance.forms import SustanceObjectForm, SustanceCharacteristicsForm
-from laboratory.utils import get_cas, organilab_logentry
+from laboratory.utils import get_cas, organilab_logentry, get_pk_org_ancestors
 from laboratory.validators import isValidate_molecular_formula
 
 
@@ -107,9 +107,7 @@ class SustanceListJson(BaseDatatableView):
 
     def filter_queryset(self, qs):
         org_pk = self.kwargs['org_pk']
-        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-        orgs = [organization] + list(organization.ancestors())
-        qs = qs.filter(type=Object.REACTIVE, organization__in=orgs)
+        qs = qs.filter(type=Object.REACTIVE, organization__in=get_pk_org_ancestors(org_pk))
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(

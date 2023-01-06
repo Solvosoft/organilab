@@ -93,7 +93,7 @@ lab_reports_urls = [
     # HTML reports
     path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(),
          name='reports_laboratory'),
-    path('list/furniture$/', furniture.FurnitureReportView.as_view(),
+    path('list/furniture/', furniture.FurnitureReportView.as_view(),
          name='reports_furniture_detail'),
     path('list/objects/', reports.ObjectList.as_view(),
          name='reports_objects_list'),
