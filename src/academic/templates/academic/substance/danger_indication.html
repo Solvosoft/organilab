@@ -29,7 +29,7 @@
                     <td>{{elem.description}}</td>
                     <td>{{elem.warning_words}}</td>
                     <td>
-                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'update_danger_indication' elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'academic:update_danger_indication' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}
