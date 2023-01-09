@@ -279,7 +279,6 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
-@has_lab_assigned(lab_pk="pk")
 @permission_required('laboratory.change_shelfobject')
 def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
@@ -359,7 +358,7 @@ def subtract_object(request, pk):
     return JsonResponse(response)
 
 
-@permission_required('laboratory.add_tranfer_object')
+@permission_required('laboratory.add_tranferobject')
 def transfer_object(request, pk):
     try:
         amount = float(request.POST.get('amount_send'))

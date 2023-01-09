@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: academic/forms.py:33 academic/forms.py:45 academic/models.py:12
 #: academic/models.py:26 academic/models.py:64 academic/models.py:101
@@ -2030,7 +2030,7 @@ msgstr "Nombre:"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:213
 msgid "Organization parent:"
-msgstr "Organización no existe"
+msgstr "Organización padre:"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:214
 msgid "Select an organization to be parent of"
@@ -2078,7 +2078,7 @@ msgstr "Error el formulario es inválido"
 
 #: auth_and_perms/views/user_org_creation.py:55
 msgid "Organization Management"
-msgstr "Organización no existe"
+msgstr "Administración de Organización"
 
 #: auth_and_perms/views/user_org_creation.py:92
 #: auth_and_perms/views/user_org_creation.py:122
