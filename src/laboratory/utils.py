@@ -126,7 +126,8 @@ def get_cas(object, default=None):
 def get_imdg(object, default=None):
     result = default
     if hasattr(object, 'sustancecharacteristics') and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.imdg
+        imdg = object.sustancecharacteristics.imdg
+        result = imdg if imdg else ""
     return result
 
 def get_molecular_formula(object, default=None):
