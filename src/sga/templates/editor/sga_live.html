@@ -42,7 +42,7 @@
         <li><img src="{{sgalabel.logo.url}}" />  </li>
         {% endif %}
         {% if sgalabel.barcode %}
-        <li><img src="{% url  'sga:barcode_from_number' sgalabel.barcode %}" />  </li>
+        <li><img src="{% url  'sga:barcode_from_number' org_pk sgalabel.barcode %}" />  </li>
         {% endif %}
     </ul>
 </div>

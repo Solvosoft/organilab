@@ -2,58 +2,61 @@
 {% load static i18n %}
 {% load urlname_tags %}
 {% block pre_head %}
-    {% define_urlname_action 'step_one' %}
-    {% define_urlname_action 'step_two' %}
-    {% define_urlname_action 'step_three' %}
-    {% define_urlname_action 'update_substance' %}
+{% define_urlname_action 'step_one' %}
+{% define_urlname_action 'step_two' %}
+{% define_urlname_action 'step_three' %}
+{% define_urlname_action 'update_substance' %}
 {% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-                {% include 'sgalabel/steps.html' %}
+            {% include 'sgalabel/steps.html' %}
             <br>
         </div>
     </div>
-<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <div class="container text-center">
-<div class="row">
-    <div id="complementcontainer" class="col">
-         <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
+        <div class="container text-center">
+            <div class="row">
+                <div id="complementcontainer" class="col">
+                    <h2 style="color:#337ab7">{% trans 'SGA Components' %}</h2>
 
 
+                    <div class="card">
+                        <div class="card-body">
+                            {{ complementsga_form.as_horizontal }}
+                        </div>
+                    </div>
 
-<div class="card">
-  <div class="card-body">
-           {{ complementsga_form.as_horizontal }}
-  </div>
+                    <div class="col-md-12 text-center mt-2" style="display:inline-block">
+                        <button type="submit" class="btn btn-outline-success">
+                            <i class="fa fa-send"></i> {% trans 'Continue' %}
+                        </button>
+                    </div>
+
+                </div>
+                <div id="companycontainer" class="col">
+                    <h2 style="color:#337ab7">{% trans 'Commercial information' %}</h2>
+                    <div class="card">
+                        <div class="card-body">
+                            {{ builderinformationform.as_horizontal }}
+                            {{ pesonalform.as_horizontal }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-
-    <div class="col-md-12 text-center mt-2" style="display:inline-block">
-        <button type="submit" class="btn btn-outline-success">
-             <i class="fa fa-send"></i> {% trans  'Continue' %}</button>
-    </div>
-
-    </div>
-    <div id="companycontainer" class="col">
-       <h2 style="color:#337ab7">{% trans 'Commercial information' %}</h2>
-        <div class="card">
-  <div class="card-body">
-        {{ builderinformationform.as_horizontal }}
-        {{ pesonalform.as_horizontal }}
-  </div></div>
-    </div>
-</div>
-    </div>
-</form>
 {% endblock %}
 {% block js %}
 
 <script>
     document.url_get_sgacomponent = "{% url 'sga:get_sgacomplement_by_substance' org_pk 0 %}";
     document.url_get_company = "{% url 'sga:get_company' org_pk 0 %}";
+
 </script>
 
 <script src="{% static 'sga/js/sgalabel.js' %}"></script>
