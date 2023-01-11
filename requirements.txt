@@ -20,7 +20,6 @@ pyexcel-webio==0.1.4
 pyexcel-xls==0.5.8
 pyexcel-xlsx==0.5.8
 PyYAML>=5.4
-xhtml2pdf==0.2.8
 xlwt==1.3.0
 django-markitup==4.1.0
 djgentelella==0.3.8
