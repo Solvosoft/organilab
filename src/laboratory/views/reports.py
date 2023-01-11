@@ -5,76 +5,36 @@ Created on 26/12/2016
 @author: luisza
 '''
 
-import os
 from datetime import datetime, date
-from django.contrib.auth.decorators import permission_required
+
 import django_excel
 from django import forms
 from django.contrib import messages
-from django.contrib.staticfiles import finders
+from django.contrib.auth.decorators import permission_required
 from django.db.models.aggregates import Sum, Min
-from django.db.models.query_utils import Q
 from django.http import Http404
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404,render
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets.core import DateRangeInput, YesNoInput,Select
+from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
+from weasyprint import HTML
+
+from auth_and_perms.models import Profile
+from laboratory.decorators import has_lab_assigned
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure,  SustanceCharacteristics,PrecursorReport
+    OrganizationStructure, SustanceCharacteristics, PrecursorReport
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from organilab import settings
-from laboratory.decorators import has_lab_assigned
-from auth_and_perms.models import Profile
-from weasyprint import HTML
-
 from sga.forms import SearchDangerIndicationForm
-
-
-#Convert html URI to absolute
-def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
-    result = finders.find(uri)
-    if result:
-        if not isinstance(result, (list, tuple)):
-            result = [result]
-        result = list(os.path.realpath(path) for path in result)
-        path=result[0]
-    else:
-        sUrl = settings.STATIC_URL
-        sRoot = settings.STATIC_ROOT
-        mUrl = settings.MEDIA_URL
-        mRoot = settings.MEDIA_ROOT
-
-        if uri.startswith(mUrl):
-            path = os.path.join(mRoot, uri.replace(mUrl, ""))
-        elif uri.startswith(sUrl):
-            path = os.path.join(sRoot, uri.replace(sUrl, ""))
-        else:
-            return uri
-
-    # make sure that file exists
-    if not os.path.isfile(path):
-        raise Exception(
-            'media URI must start with %s or %s' % (sUrl, mUrl)
-        )
-    return path
 
 
 def make_book_organization_laboratory(objects):
