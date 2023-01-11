@@ -390,7 +390,7 @@ def add_pictogram(request, *args, **kwargs):
 
             return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
     context= {
-        'url': reverse('sga:add_pictograms'),
+        'url': reverse('sga:add_pictograms', kwargs={'org_pk': org_pk}),
         'form': PictogramForm(),
         'title': _('Create pictogram'),
         'button_text': _('Add'),
@@ -550,7 +550,7 @@ def get_recipient_size(request, org_pk, organilabcontext, pk):
 
 
 @login_required
-def get_barcode_from_number(request, code):
+def get_barcode_from_number(request, org_pk, code):
     response = HttpResponse(content_type='image/svg+xml')
     Code128(code,  writer=SVGWriter()).write(response)
     return response
