@@ -9,6 +9,8 @@ Free as freedom will be 26/8/2016
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
+
+from .utils import get_pk_org_ancestors_decendants
 from .views.djgeneric import ListView
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import ObjectSearchForm, ReservedModalForm, TransferObjectForm, AddObjectForm, SubtractObjectForm
@@ -26,21 +28,19 @@ class SearchObject(ListView):
         params = {}
         filter_lab = True
         if 'q' in self.request.GET:
-            form = ObjectSearchForm(self.request.GET)
+            form = ObjectSearchForm(self.request.GET, org_pk=self.org, user=self.request.user)
             if form.is_valid():
                 if 'q' in form.cleaned_data:
                     params = {'object__pk__in': form.cleaned_data['q']}
                 filter_lab = not form.cleaned_data['all_labs']
 
-        organizations = OrganizationStructure.os_manager.filter_user(user)
+        pks = get_pk_org_ancestors_decendants(user,self.org)
+
+        #organizations = OrganizationStructure.os_manager.filter_user(user)
         # User have perm on that organization ?  else it use assigned User with direct relationship
-        if not organizations:    
-             organizations=[]
-        else:
-            organizations=list(organizations.values_list('pk', flat=True))
-        labs = Laboratory.objects.filter(Q(profile__user=user.pk) |
-                                      Q (organization__in=organizations) 
-                                      ).distinct()
+
+        labs = Laboratory.objects.filter(profile__user=user.pk,organization__in=pks).distinct()
+
         query = self.model.objects.filter(shelf__furniture__labroom__laboratory__in=labs)
 
         if filter_lab:
@@ -59,11 +59,12 @@ class SearchObject(ListView):
         if 'lab_pk' in self.kwargs:
             lab_pk=int(self.kwargs.get('lab_pk'))
             context['laboratory'] = self.kwargs.get('lab_pk')
-            context['tranfer_object_form'] = TransferObjectForm(users=self.request.user.profile.pk, lab_send=lab_pk)
+            context['tranfer_object_form'] = TransferObjectForm(users=self.request.user, lab_send=lab_pk,org=self.org)
             context['add_object_form'] = AddObjectForm(lab=lab_pk)
             context['subtract_object_form'] = SubtractObjectForm()
 
         context['q'] = self.request.GET.get('q', '')
+        context['options'] = ['Reservation','Add','Transfer','Substract']
         context['options'] = ['Reservation','Add','Transfer','Substract']
 
         context['modal_form_reservation'] = ReservationModalForm()

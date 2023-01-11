@@ -12,14 +12,28 @@ from laboratory.models import OrganizationStructure, CommentInform
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
+from .utils import get_pk_org_ancestors_decendants
 
 
-class ObjectSearchForm(CustomForm, forms.Form):
-    q = forms.ModelMultipleChoiceField(queryset=Object.objects.all(), widget=genwidgets.SelectMultiple,
+class ObjectSearchForm(GTForm, forms.Form):
+    q = forms.ModelMultipleChoiceField(queryset=Object.objects.none(), widget=genwidgets.SelectMultiple,
                                        required=False, label=_("Search by name, code or CAS number"))
 
     all_labs = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
 
+    def __init__(self, *args, **kwargs):
+        org = None
+        user = None
+
+        if 'org_pk' in kwargs:
+            org=kwargs.pop('org_pk')
+        if 'user' in kwargs:
+            user=kwargs.pop('user')
+
+        super(ObjectSearchForm, self).__init__(*args, **kwargs)
+        if org:
+            org=get_pk_org_ancestors_decendants(user, org)
+            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__organizationusermanagement__users=user).distinct()
 
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
@@ -118,10 +132,12 @@ class TransferObjectForm(GTForm):
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
         lab = kwargs.pop('lab_send')
+        org = kwargs.pop('org')
         super(TransferObjectForm, self).__init__(*args, **kwargs)
-        profile = Profile.objects.filter(pk=users).first()
+        profile = Profile.objects.filter(pk=users.profile.pk).first()
+        orgs= get_pk_org_ancestors_decendants(users,org)
 
-        self.fields['laboratory'].queryset = profile.laboratories.all().exclude(pk=lab)
+        self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
 
 
 class AddObjectForm(GTForm, forms.Form):

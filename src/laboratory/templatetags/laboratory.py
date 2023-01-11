@@ -18,10 +18,12 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def get_search_form(context):
     request = context['request']
+    org = context['request'].resolver_match.kwargs.get('org_pk', None)
+    user = context['request'].user
     if 'q' in request.GET:
-        form = ObjectSearchForm(request.GET)
+        form = ObjectSearchForm(request.GET, org_pk=org, user=user)
     else:
-        form = ObjectSearchForm()
+        form = ObjectSearchForm(org_pk=org,user=user)
     return form
 
 
