@@ -47,9 +47,11 @@
             <tr>
                 <td>{{template.name}}</td>
                 <td><a class="btn  btn-md  btn-success" title="{% trans 'Edit' %}" href="{% url 'sga:sgalabel_step_one' org_pk organilabcontext template.pk %}" ><i class="icons fa fa-edit"></i></a>
-                    <a class="btn  btn-md  btn-info btnpreview" title="{% trans 'Preview' %}" data-id="{{template.pk}}"><i class="icons fa fa-eye"></i></a>
-                    <a class="btn  btn-md  btn-primary" title="{% trans 'Generate PNG' %}" href="{% url 'sga:get_svgexport' org_pk 0 template.pk %}"><i class="icons fa fa-file-image-o" aria-hidden="true"></i></a>
-                    <a class="btn  btn-md  btn-warning" title="{% trans 'Generate PDF' %}" href="{% url 'sga:get_svgexport' org_pk 1 template.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    {% if template.json_representation %}
+                        <a class="btn  btn-md  btn-info btnpreview" title="{% trans 'Preview' %}" data-id="{{template.pk}}"><i class="icons fa fa-eye"></i></a>
+                        <a class="btn  btn-md  btn-primary" title="{% trans 'Generate PNG' %}" href="{% url 'sga:get_svgexport' org_pk 0 template.pk %}"><i class="icons fa fa-file-image-o" aria-hidden="true"></i></a>
+                        <a class="btn  btn-md  btn-warning" title="{% trans 'Generate PDF' %}" href="{% url 'sga:get_svgexport' org_pk 1 template.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    {% endif %}
                     <a class="btn  btn-md  btn-danger"  title="{% trans 'Delete' %}" onclick="delete_template(this)" data-id="{{template.pk}}" ><i class="icons fa fa-trash"></i></a>
                 </td>
             </tr>
@@ -59,7 +61,7 @@
     </div>
 
 <div id="svgtemplate" class="modal fade" tabindex="-1" aria-labelledby="previewmodalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="previewmodalLabel">{% trans 'Preview' %}</h4>
