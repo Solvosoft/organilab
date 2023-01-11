@@ -1,25 +1,22 @@
 import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from xhtml2pdf import pisa
+from django.utils.translation import gettext as _
+from weasyprint import HTML
 
+from laboratory.decorators import has_lab_assigned
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
-from laboratory.views.reports import link_callback
-from laboratory.decorators import user_group_perms
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
-from django.utils.translation import gettext as _
-from laboratory.decorators import has_lab_assigned
-from weasyprint import HTML
+
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")

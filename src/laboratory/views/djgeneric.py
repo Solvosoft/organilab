@@ -12,7 +12,6 @@ from django.views.generic.edit import CreateView as djCreateView
 from django.views.generic.edit import DeleteView as djDeleteView
 from django.views.generic.edit import UpdateView as djUpdateView
 from django.views.generic.list import ListView as djListView
-from xhtml2pdf import pisa
 from django.conf import settings
 from django.contrib.staticfiles import finders
 import os

@@ -109,7 +109,7 @@ lab_reports_urls = [
 lab_reports_organization_urls = [
     path('organization', reports.report_organization_building,
          name='reports_organization_building'),
-    path('<int:lab_pk>/list', organizations.OrganizationReportView.as_view(),
+    path('list', organizations.OrganizationReportView.as_view(),
          name='reports_organization'),
 
 ]
@@ -198,7 +198,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/', include(shelf_object_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/shelf/', include(lab_shelf_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/features/', include(lab_features_urls)),
-    path('lab/<int:org_pk>/organizations/reports/', include(lab_reports_organization_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/organizations/reports/', include(lab_reports_organization_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
