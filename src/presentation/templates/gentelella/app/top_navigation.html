@@ -9,7 +9,7 @@
     {% if laboratory and org_pk %}
 
         <ul class="nav navbar-nav float-start">
-            <li><a href="{% url 'laboratory:rooms_list' laboratory org_pk %}">{% show_laboratory_name %}</a></li>
+            <li><a href="{% url 'laboratory:rooms_list' org_pk laboratory %}">{% show_laboratory_name %}</a></li>
         </ul>
     {% endif %}
 

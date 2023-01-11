@@ -18,7 +18,7 @@
 	 </form>
 	  {% if perm_do_report and perm_laboratory  %}
 		<div class="btn-group dropup float-end">
-		  <button type="button" onclick="location.href='{% url 'laboratory:reports_organization_building' org_pk %}?format=pdf&organization={{ filter_organization.pk }}'"
+		  <button type="button" onclick="location.href='{% url 'laboratory:reports_organization_building' org_pk lab_pk %}?format=pdf&organization={{ filter_organization.pk }}'"
 		   class="btn btn-danger">
 			<i class="fa fa-download" aria-hidden="true"></i>
 		  {% trans 'Download'%}</button>
@@ -30,16 +30,16 @@
 		  </button>
 		  <ul class="dropdown-menu">
 			  <li>
-				  <a href="{% url 'laboratory:reports_organization_building' org_pk %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %}</a>
+				  <a href="{% url 'laboratory:reports_organization_building' org_pk lab_pk %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %}</a>
 			  </li>
 			  <li>
-				  <a href="{% url 'laboratory:reports_organization_building' org_pk %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+				  <a href="{% url 'laboratory:reports_organization_building' org_pk lab_pk %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
 			  </li>
 			  <li>
-				  <a href="{% url 'laboratory:reports_organization_building' org_pk %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+				  <a href="{% url 'laboratory:reports_organization_building' org_pk lab_pk %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
 			  </li>
 			  <li>
-				  <a href="{% url 'laboratory:reports_organization_building' org_pk %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+				  <a href="{% url 'laboratory:reports_organization_building' org_pk lab_pk %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
 			  </li>
 		  </ul>
 	   </div>
@@ -92,7 +92,7 @@
   <div>
   {% if perms.laboratory.do_report and perms.laboratory.view_laboratory  %}
 	<div class="btn-group dropup float-end">
-	  <button  onclick="location.href='{% url 'laboratory:reports_organization_building' org_pk %}?format=pdf&organization={{ filter_organization.pk }}'"
+	  <button  onclick="location.href='{% url 'laboratory:reports_organization_building' org_pk laboratory %}?format=pdf&organization={{ filter_organization.pk }}'"
 	   type="button" class="btn btn-danger">
 		<i class="fa fa-download" aria-hidden="true"></i>
 	  {% trans 'Download'%}</button>
@@ -104,16 +104,16 @@
 	  </button>
 	  <ul class="dropdown-menu">
 		  <li>
-			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk laboratory %}?format=pdf&organization={{ filter_organization.pk }}">{% trans "PDF" %} </a>
 		  </li>
 		  <li>
-			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk laboratory %}?format=ods&organization={{ filter_organization.pk }}">{% trans "Ods" %} </a>
 		  </li>
 		  <li>
-			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk laboratory %}?format=xls&organization={{ filter_organization.pk }}">{% trans "Xls" %} </a>
 		  </li>
 		  <li>
-			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
+			  <a  class="dropdown-item" href="{% url 'laboratory:reports_organization_building' org_pk laboratory %}?format=xlsx&organization={{ filter_organization.pk }}">{% trans "Xlsx" %} </a>
 		  </li>
 	  </ul>
 	</div>
