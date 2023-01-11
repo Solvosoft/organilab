@@ -188,16 +188,18 @@ def detail_substance(request, org_pk, organilabcontext, pk):
     return render(request, "academic/substance/detail.html",context=context)
 
 @login_required
-def add_sga_complements(request, org_pk, element):
+def add_sga_complements(request, *args, **kwargs):
+    org_pk= int(kwargs.get('org_pk'))
+    element= str(kwargs.get('element'))
 
     form = None
     urls = {'warning': 'academic:add_warning_word',
             'danger': 'academic:add_danger_indication',
             'prudence': 'academic:add_prudence_advice',
             }
-    view_urls = {'warning': 'warning_words',
-                 'danger': 'danger_indications',
-                 'prudence': 'prudence_advices',
+    view_urls = {'warning': 'academic:warning_words',
+                 'danger': 'academic:danger_indications',
+                 'prudence': 'academic:prudence_advices',
             }
     titles = {'warning': _('Create Warning Word'),
               'danger': _('Create Danger Indication'),
@@ -223,7 +225,6 @@ def add_sga_complements(request, org_pk, element):
                 'danger': 'danger indication',
                 'prudence': 'prudence advice'
             }
-            organilab_logentry(request.user, obj, ADDITION, model_name[element], changed_data=form.changed_data)
             return redirect(reverse(view_urls[element], kwargs={'org_pk': org_pk}))
 
     else:
@@ -231,8 +232,8 @@ def add_sga_complements(request, org_pk, element):
 
     context = {
         'form':form,
-        'url': reverse(urls[element]),
-        'view_url': reverse(view_urls[element]),
+        'url': reverse(urls[element], kwargs={'org_pk':org_pk}),
+        'view_url': reverse(view_urls[element], kwargs={'org_pk':org_pk}),
         'title': titles[element]
     }
 
@@ -241,9 +242,10 @@ def add_sga_complements(request, org_pk, element):
 
 @login_required
 @permission_required('sga.view_dangerindication')
-def view_danger_indications(request):
+def view_danger_indications(request, *args, **kwargs):
+    org = int(kwargs.get('org_pk'))
     listado = list(DangerIndication.objects.all())
-    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado})
+    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado,'org_pk':org})
 @login_required
 @permission_required('sga.view_warningword')
 def view_warning_words(request, org_pk):
@@ -251,9 +253,10 @@ def view_warning_words(request, org_pk):
     return render(request, 'academic/substance/warning_words.html', context={'listado': listado, 'org_pk': org_pk})
 @login_required
 @permission_required('sga.view_prudenceadvice')
-def view_prudence_advices(request):
+def view_prudence_advices(request, *args, **kwargs):
+    org = int(kwargs.get('org_pk'))
     listado = list(PrudenceAdvice.objects.all())
-    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado})
+    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado,'org_pk':org})
 
 @login_required
 @permission_required('academic.view_substanceobservation')
@@ -345,7 +348,9 @@ def change_warning_word(request, org_pk, pk):
 
 @login_required
 @permission_required('sga.change_prudenceadvice')
-def change_prudence_advice(request, org_pk, pk):
+def change_prudence_advice(request, *args, **kwargs):
+    pk= int(kwargs.get('pk'))
+    org_pk=int(kwargs.get('org_pk'))
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
     form = None
     context ={}
