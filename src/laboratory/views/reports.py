@@ -737,19 +737,21 @@ class LogObjectView(ReportListView):
         objects = set(queryset.values_list('object', flat=True))
         list_obj = []
         for obj in objects:
-            ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
-            end = queryset.filter(object=obj).last()
-            diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
-            list_obj.append(ResultQueryElement({'user': end.user,
-                                                'laboratory': end.laboratory,
-                                                'object': end.object,
-                                                'update_time': end.update_time,
-                                                'old_value': ini,
-                                                'new_value': end.new_value,
-                                                'diff_value': diff,
-                                                'measurement_unit': end.measurement_unit
-                                                })
-                            )
+            obj_check = Object.objects.filter(pk=obj)
+            if obj_check.exists():
+                ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
+                end = queryset.filter(object=obj).last()
+                diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
+                list_obj.append(ResultQueryElement({'user': end.user,
+                                                    'laboratory': end.laboratory,
+                                                    'object': end.object,
+                                                    'update_time': end.update_time,
+                                                    'old_value': ini,
+                                                    'new_value': end.new_value,
+                                                    'diff_value': diff,
+                                                    'measurement_unit': end.measurement_unit
+                                                    })
+                                )
         return list_obj
 
     def get_queryset(self):
