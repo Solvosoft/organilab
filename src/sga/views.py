@@ -18,11 +18,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from djgentelella.models import ChunkedUpload
 from weasyprint import HTML
-from xhtml2pdf import pisa
 
 from laboratory.models import OrganizationStructure
-from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, \
-    PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
+from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, \
+    BuilderInformationForm, \
     LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
@@ -41,7 +40,7 @@ def render_pdf_view(request):
 
     global_info_recipient = request.session['global_info_recipient']
     html_data = json2html(json_data, global_info_recipient)
-    response = generate_pdf(html_data) #html2pdf(html_data)
+    response = generate_pdf(html_data)
     return response
 
 
@@ -66,25 +65,6 @@ def generate_pdf(json):
     except IOError:
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename=x.pdf'
-
-    return response
-
-
-# Return html rendered in pdf o return a html
-def html2pdf(json_data):
-    file_name = "report.pdf"
-    pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
-    result_file = open(pdf_absolute_path, "w+b")
-    pisa_status = pisa.CreatePDF(
-        json_data,  # the HTML to convert
-        dest=result_file)  # file handle to recieve result
-    result_file.close()
-    try:
-        pdf = open(pdf_absolute_path, "rb")
-        response = FileResponse(pdf, content_type='application/pdf')
-    except IOError:
-        return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=' + file_name
 
     return response
 
