@@ -219,3 +219,16 @@ def get_pk_org_ancestors(org_pk):
         pks.append(organization.pk)
         pks = pks + list(organization.ancestors().values_list('pk', flat=True))
     return pks
+
+def get_pk_org_ancestors_decendants(user, org_pk):
+    org = OrganizationStructure.objects.filter(organizationusermanagement__users=user, pk=org_pk)
+
+    pks = []
+    if org.exists():
+        org = org.first()
+        pks.append(org_pk)
+        if org.descendants():
+            pks += list(org.descendants().values_list('pk', flat=True))
+        if org.ancestors():
+            pks += list(org.ancestors().values_list('pk', flat=True))
+    return pks

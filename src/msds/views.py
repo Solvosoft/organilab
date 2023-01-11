@@ -100,7 +100,7 @@ class MSDSObjectCRUD(CRUDView):
         'create': ['msds.add_msdsobject'],
         'list': [],
         'delete': ['msds.delete_msdsobject'],
-        'update': ['msds.update_msdsobject'],
+        'update': ['msds.change_msdsobject'],
         'detail': []
     }
     form_widget_exclude = ['file']
