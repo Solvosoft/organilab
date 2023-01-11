@@ -365,14 +365,14 @@ def get_svgexport(request, org_pk, is_pdf, pk):
 
 @login_required
 @permission_required('sga.view_pictogram')
-def get_pictograms(request):
+def get_pictograms(request,org_pk):
     pictograms = Pictogram.objects.all()
-    return render(request, 'list_pictograms.html', context={'pictograms':pictograms})
+    return render(request, 'list_pictograms.html', context={'pictograms':pictograms,'org_pk':org_pk})
 
 @login_required
 @permission_required('sga.add_pictogram')
-def add_pictogram(request, org_pk):
-
+def add_pictogram(request, *args, **kwargs):
+    org_pk = int(kwargs.get('org_pk'))
     if request.method=='POST':
         form = PictogramForm(request.POST)
 
@@ -399,7 +399,9 @@ def add_pictogram(request, org_pk):
     return render(request, 'add_pictograms.html', context=context)
 @login_required
 @permission_required('sga.change_pictogram')
-def update_pictogram(request, org_pk, id_pictogram):
+def update_pictogram(request, *args, **kwargs):
+    id_pictogram= int(kwargs.get('id_pictogram'))
+    org_pk= int(kwargs.get('org_pk'))
     instance = get_object_or_404(Pictogram,id_pictogram=id_pictogram)
     form = None
     if instance:

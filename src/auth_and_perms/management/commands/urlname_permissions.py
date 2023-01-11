@@ -2649,5 +2649,12 @@ URLNAME_PERMISSIONS = {
             'category': 'Djgentelella',
             'permission': 'djgentelella.can_manage_permissions'
         },
+        ],
+    'transfers': [
+        {
+            'name': 'Add Transfer',
+            'category': 'Transfer',
+            'permission': 'laboratory.add_tranferobject'
+        },
     ],
 }
