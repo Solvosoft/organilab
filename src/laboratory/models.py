@@ -352,6 +352,26 @@ class OrganizationStructureManager(models.Manager):
     def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
+    def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
+        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+        pks = []
+        for org in organizations:
+
+            if descendants:
+                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                    if sons.pk not in pks:
+                        pks.append(sons.pk)
+
+            if ancestors:
+                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                    if parent.pk not in pks:
+                        pks.append(parent.pk)
+
+        if pks:
+
+            return OrganizationStructure.objects.filter(pk__in=pks)
+
+        return OrganizationStructure.objects.none()
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
