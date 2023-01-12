@@ -203,6 +203,7 @@ class ProviderSGAForm(forms.ModelForm, GTForm):
     def __init__(self, *args, **kwargs):
         super(ProviderSGAForm, self).__init__(*args, **kwargs)
         self.fields['provider'].required = False
+    field_order = ['name', 'country', 'provider', 'direction', 'telephone_number', 'fax', 'email', 'emergency_phone']
 
     class Meta:
         model = Provider
