@@ -122,7 +122,7 @@
 
             {% if perms.laboratory.add_provider %}
             <li class="list-group-item">
-                  <a href="{% url 'laboratory:list_provider' laboratory org_pk %}"><strong>{% trans 'Providers' %}</strong></a>
+                  <a href="{% url 'laboratory:list_provider' org_pk laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
                 </li>
             {% endif %}
             </ul>
