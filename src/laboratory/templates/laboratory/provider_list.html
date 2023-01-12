@@ -10,7 +10,7 @@
 
 {% block content %}
   	<div class="page-header text-center"><h1>{% trans 'Providers List' %}</h1></div>
-		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' laboratory org_pk %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
+		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' org_pk laboratory %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
 		{% if perms.laboratory.view_provider  %}
 			<table id="providertable" class="table">
 				<thead>
