@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $('label[for="id_organization"]').hide();
     function hide_show_precursor_type(){
          var checkBox=document.getElementById("id_is_precursor");
          if (checkBox.checked == true){
