@@ -5,7 +5,7 @@
     {% define_urlname_action 'add_provider' %}
 {% endblock %}
 {% block content %}
-<a class="btn btn-outline-danger" href="{% url 'laboratory:list_provider' laboratory org_pk %}"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
+<a class="btn btn-outline-danger" href="{% url 'laboratory:list_provider' org_pk laboratory %}"><i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Back' %}</a>
   <div class="row">
     <div class="offset-md-2 col-md-8 pb-2">
       <div class="page-header" align="center">
