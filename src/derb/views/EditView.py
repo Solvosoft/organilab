@@ -1,13 +1,12 @@
 import json
 
 from django.contrib.admin.models import CHANGE
-from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.generic import TemplateView
 
 from derb.models import CustomForm
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required,permission_required
+from django.contrib.auth.decorators import permission_required
 
 from laboratory.utils import organilab_logentry
 
@@ -56,7 +55,7 @@ class EditView(TemplateView):
             return HttpResponseBadRequest('Invalid request')
 
 @permission_required('derb.change_customform')
-def UpdateForm(request):
+def UpdateForm(request, org_pk):
     form_id = getId(request,2)
     if request.method == 'POST':
         form = CustomForm.objects.get(id=form_id)
