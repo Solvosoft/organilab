@@ -72,7 +72,7 @@
 
               {% if perms.laboratory.view_protocol %}
               <li class="list-group-item">
-                  <a href="{% url 'laboratory:protocol_list' lab_pk=laboratory org_pk=org_pk %}">
+                  <a href="{% url 'laboratory:protocol_list' org_pk=org_pk lab_pk=laboratory %}">
                     <strong>{% trans 'Protocols' %}</strong>
                   </a>
                 </li>

@@ -70,12 +70,12 @@ class ProtocolSerializer(serializers.ModelSerializer):
         btn = ''
         if user.has_perm('laboratory.change_protocol'):
             btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> %s</a>"%(
-                reverse('laboratory:protocol_update', args=(obj.laboratory.pk,org_pk, obj.pk)),
+                reverse('laboratory:protocol_update', args=(org_pk, obj.laboratory.pk, obj.pk)),
                 _("Edit")
             )
         if user.has_perm('laboratory.delete_protocol'):
             btn += "<a href=\"%s\" class='btn btn-outline-danger btn-sm'><i class='fa fa-trash' aria-hidden='true'></i> %s</a>"%(
-                reverse('laboratory:protocol_delete', args=(obj.laboratory.pk,org_pk, obj.pk)),
+                reverse('laboratory:protocol_delete', args=(org_pk, obj.laboratory.pk, obj.pk)),
                 _("Delete")
             )
 

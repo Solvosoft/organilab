@@ -27,7 +27,7 @@ class ProtocolCreateView(CreateView):
     form_class = ProtocolForm
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
 
     def get_context_data(self, **kwargs):
         context = super(ProtocolCreateView, self).get_context_data(**kwargs)
@@ -52,7 +52,7 @@ class ProtocolUpdateView(UpdateView):
     template_name = 'laboratory/protocol/update.html'
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
 
     def form_valid(self, form):
         form.save()
@@ -67,7 +67,7 @@ class ProtocolDeleteView(DeleteView):
     success_url = ''
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.lab,self.org))
+        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
