@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from auth_and_perms.views.organizationstructure import getLevelClass
+from auth_and_perms.views.organizationstructure import getLevelClass, getTree
 from laboratory.models import OrganizationStructure
 
 
@@ -11,14 +11,11 @@ def select_organization_by_user(request):
     query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
     parents = list(query_list)
     nodes = []
-    position=0
-    for parent in parents:
-        position = 0
-        for x in parent.descendants(include_self=True):
+    pks=[]
 
-            level = (x, getLevelClass(position+1))
-            if level not in nodes and x in parents:
-                nodes+=[level]
+    for node in parents:
+        if node.pk not in pks:
+            getTrees(node, nodes, request.user, pks, level=0)
 
     context = {
         'nodes': nodes,
@@ -26,3 +23,13 @@ def select_organization_by_user(request):
     }
 
     return render(request, 'auth_and_perms/select_organization.html', context=context)
+
+def getTrees(node, structure, user, pks, level=0):
+
+    structure+=[(node,getLevelClass(level))]
+    pks.append(node.pk)
+
+    if node.children.exists():
+        for child in node.descendants().filter(organizationusermanagement__users=user):
+            if child.pk not in pks:
+                getTrees(child, structure, user, pks, level=level+1)
