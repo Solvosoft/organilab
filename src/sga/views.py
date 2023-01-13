@@ -6,88 +6,28 @@ from barcode import Code128
 from barcode.writer import SVGWriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.files import temp as tempfile
 from django.db.models import Max
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpResponseNotFound, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Library
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_http_methods
 from djgentelella.models import ChunkedUpload
-from weasyprint import HTML
-from xhtml2pdf import pisa
 
 from laboratory.models import OrganizationStructure
-from sga.forms import SGAEditorForm, EditorForm, SearchDangerIndicationForm, \
-    PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, BuilderInformationForm, \
+from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, \
+    BuilderInformationForm, \
     LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
 from sga.models import TemplateSGA, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
 from .api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
 from .decorators import organilab_context_decorator
-from .json2html import json2html
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
 
 register = Library()
-
-
-@require_http_methods(["POST"])
-def render_pdf_view(request):
-    json_data = request.POST.get("json_data", None)
-
-    global_info_recipient = request.session['global_info_recipient']
-    html_data = json2html(json_data, global_info_recipient)
-    response = generate_pdf(html_data) #html2pdf(html_data)
-    return response
-
-
-def generate_pdf(json):
-    """Generate pdf."""
-    # Model data
-
-    # Rendered
-    pdf_absolute_path = tempfile.gettempdir() + "/x.pdf"
-    result_file = open(pdf_absolute_path, "w+b")
-
-    html = HTML(string=json)
-    result = html.write_pdf(pdf_absolute_path)
-    result_file.close()
-    # Creating http response
-    ''' response = HttpResponse(content_type='application/pdf;')
-    response['Content-Disposition'] = 'inline; filename=list_people.pdf'
-    doc='''
-    try:
-        pdf = open(pdf_absolute_path, "rb")
-        response = FileResponse(pdf, content_type='application/pdf')
-    except IOError:
-        return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=x.pdf'
-
-    return response
-
-
-# Return html rendered in pdf o return a html
-def html2pdf(json_data):
-    file_name = "report.pdf"
-    pdf_absolute_path = tempfile.gettempdir() + "/" + file_name
-    result_file = open(pdf_absolute_path, "w+b")
-    pisa_status = pisa.CreatePDF(
-        json_data,  # the HTML to convert
-        dest=result_file)  # file handle to recieve result
-    result_file.close()
-    try:
-        pdf = open(pdf_absolute_path, "rb")
-        response = FileResponse(pdf, content_type='application/pdf')
-    except IOError:
-        return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=' + file_name
-
-    return response
-
 
 # SGA Home Page
 @login_required

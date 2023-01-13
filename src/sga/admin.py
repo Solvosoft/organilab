@@ -4,23 +4,6 @@ from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf, SGAComple
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
     RecipientSize
-from .utils import render_pdf_view
-from django.utils.translation import gettext_lazy as _
-
-
-def make_label_pdf(modeladmin, request, queryset):
-
-    context = {'obj': queryset.first()}
-    return render_pdf_view(request, "etiqueta",
-                           'labels.html', context)
-
-
-make_label_pdf.short_description = _("Download Label")
-
-
-class AdminLabels(admin.ModelAdmin):
-    actions = [make_label_pdf]
-
 
 class AdminDangerIndication(admin.ModelAdmin):
     # form = DangerIndicationForm
@@ -53,7 +36,7 @@ admin.site.register(WarningClass)
 admin.site.register([BuilderInformation, RecipientSize, PrudenceAdvice, Component, WarningWord, Pictogram])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
-admin.site.register(Label, AdminLabels)
+admin.site.register(Label)
 admin.site.register(TemplateSGA)
 admin.site.register(PersonalTemplateSGA)
 admin.site.register(SecurityLeaf)
