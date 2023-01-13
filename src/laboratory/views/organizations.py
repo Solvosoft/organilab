@@ -149,6 +149,6 @@ class OrganizationUpdateView(UpdateView):
     form_class = AddOrganizationForm
 
     def form_valid(self, form):
-        orguserman=form.save()
-        organilab_logentry(self.request.user, orguserman, CHANGE, 'organization structure', changed_data=form.changed_data)
-        return super(OrganizationUpdateView, self).form_valid(orguserman)
+        response = super().form_valid(form)
+        organilab_logentry(self.request.user, self.object, CHANGE, 'organization structure', changed_data=form.changed_data)
+        return response

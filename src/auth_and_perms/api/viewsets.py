@@ -165,6 +165,18 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                     ).first()
                 }
 
+                content_type=serializer.data['contenttypeobj']
+
+                if content_type['model'] == 'laboratory' and content_type['appname'] == 'laboratory':
+
+                    lab = Laboratory.objects.filter(pk=int(content_type['objectid'])).first()
+
+                    if lab and action == 'append':
+                        profile.laboratories.add(lab)
+
+                    elif lab and action == 'sustract':
+                        profile.laboratories.remove(lab)
+
                 if 'objectid' in serializer.data['contenttypeobj'] and serializer.data['contenttypeobj']['objectid']:
                     ppdata['object_id']=serializer.data['contenttypeobj']['objectid']
                 else:

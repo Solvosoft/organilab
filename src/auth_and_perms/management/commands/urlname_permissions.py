@@ -902,6 +902,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_laboratory'
         },
         {
+            'name': 'Manage Permissions',
+            'category': 'Rol',
+            'permission': 'djgentelella.can_manage_permissions'
+        },
+        {
             'name': 'View Laboratory',
             'category': 'Laboratory',
             'permission': 'laboratory.view_laboratory'
