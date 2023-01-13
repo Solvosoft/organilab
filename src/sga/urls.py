@@ -7,10 +7,8 @@
 # Import functions of another modules
 from django.urls import path, re_path
 
-from .views import index_sga, template, editor, render_pdf_view
-
-from django.conf.urls import  include
 from . import views
+from .views import index_sga, template, editor
 
 # SGA
 app_name = 'sga'
@@ -26,7 +24,6 @@ urlpatterns = [
     re_path(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
     re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
-    re_path(r'download/', render_pdf_view, name='download'),
     # sga/prudence
     path('prudence/<str:organilabcontext>', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
