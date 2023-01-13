@@ -51,25 +51,30 @@ def getNodeInformation(node):
         'labs': labs
     }
 
-def getTree(node, structure, level=0):
+def getTree(node, structure, user, pks, level=0):
+
     klss=list(getLevelClass(level))
+    pks.append(node.pk)
     klss.insert(0, getNodeInformation(node))
     structure.append(klss)
+
     if node.children.exists():
-        for child in node.children.all():
-            getTree(child, structure, level=level+1)
+        for child in node.descendants().filter(organizationusermanagement__users=user):
+            if child.pk not in pks:
+                getTree(child, structure, user, pks, level=level+1)
 
 
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_user(request.user)
-    parents=list(query_list.filter(parent=None))
+    query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
+    parents=list(query_list)
     nodes = []
-
-
+    pks=[]
     for node in parents:
-        getTree(node, nodes, level=0)
+        if node.pk not in pks:
+            getTree(node, nodes,request.user,pks, level=0)
+
     context={'nodes': nodes,
              'adduserform': AddUserForm(),
              'addrolform': AddProfileRolForm(),

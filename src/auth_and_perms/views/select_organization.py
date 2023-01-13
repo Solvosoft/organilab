@@ -8,11 +8,17 @@ from laboratory.models import OrganizationStructure
 
 @login_required
 def select_organization_by_user(request):
-    query_list = OrganizationStructure.os_manager.filter_user(request.user)
-    parents = list(query_list.filter(parent=None))
+    query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
+    parents = list(query_list)
     nodes = []
+    position=0
     for parent in parents:
-        nodes += [(x, getLevelClass(x.level)) for x in parent.descendants(include_self=True)]
+        position = 0
+        for x in parent.descendants(include_self=True):
+
+            level = (x, getLevelClass(position+1))
+            if level not in nodes and x in parents:
+                nodes+=[level]
 
     context = {
         'nodes': nodes,

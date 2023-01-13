@@ -106,7 +106,6 @@ function message(msg,icon,object=undefined){
     const reservation_modal = document.querySelector('#modal_reservation');
     const modal = bootstrap.Modal.getInstance(reservation_modal);
     modal.hide();
-    document.querySelector('#option').selectedIndex=0;
     Swal.fire(
     '',
     msg,
@@ -154,7 +153,6 @@ function error_message(id,msg){
 
 function clear_inputs(){
     input_fields = $('#modal_reservation_form').find(':input');
-    document.querySelector('option').selectedIndex=0;
     for (const input of input_fields) {
         if(input.type!='hidden' && input.name!='options'){
             input.value='';
