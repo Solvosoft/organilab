@@ -3,7 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry, \
+    UserOrganization
 
 
 def check_group_has_perm(group,codename):
@@ -98,10 +99,11 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
     orgs = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(of=org, include_self=True).values_list('pk', flat=True))
    # orgs = org.descendants(include_self=True) .value_list('pk', flat=True)
 
-    query=OrganizationUserManagement.objects.filter(
-        organization__in=orgs, **userfilters
+    query=UserOrganization.objects.filter(
+        organization__in=orgs, user__isnull=False,status=True
     )
-    return query.values_list('users', flat=True)
+
+    return query.values_list('user', flat=True)
 
 
 def get_profile_by_organization(organization):

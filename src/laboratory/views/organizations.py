@@ -21,7 +21,7 @@ from tree_queries.forms import TreeNodeChoiceField
 
 from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, UserOrganization
 from .djgeneric import ListView
 from ..forms import AddOrganizationForm
 from ..utils import organilab_logentry
@@ -138,6 +138,8 @@ class OrganizationCreateView(CreateView):
             organization=self.object
         )
         orguserman.users.add(self.request.user)
+        UserOrganization.objects.create(organization=self.object, user=self.request.user)
+
         organilab_logentry(self.request.user, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response
 
