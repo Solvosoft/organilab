@@ -34,6 +34,7 @@ admin.site.register(models.PrecursorReport)
 
 
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
+admin.site.register(models.UserOrganization)
 
 
 admin.site.site_header = _('Organilab Administration site')

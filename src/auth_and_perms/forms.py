@@ -13,6 +13,10 @@ class AddUserForm(GTForm, forms.Form):
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), label=_("Users"),
                                            widget=AutocompleteSelectMultiple('orguserbase'))
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['users'].required = False
+
 
 class AddRolForm(GTForm, forms.Form):
     rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), label=_("Rols"),
