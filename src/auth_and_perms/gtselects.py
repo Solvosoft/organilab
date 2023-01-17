@@ -65,7 +65,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-
+    organization=None
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         return self.list(request, pk, **kwargs)
@@ -79,7 +79,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
         orgs = []
-        orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user)
+        orgByuser = OrganizationStructure.os_manager.filter_user_orgs(user=self.request.user, org=self.organization)
         for org in orgByuser:
             orgs += list(org.descendants())
             orgs += list(org.ancestors())

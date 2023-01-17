@@ -373,6 +373,27 @@ class OrganizationStructureManager(models.Manager):
 
         return OrganizationStructure.objects.none()
 
+    def filter_user_orgs(self, user, org=None, descendants=True, include_self=True, ancestors=False):
+        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user,organizationusermanagement__organization=org)
+        pks = []
+        for org in organizations:
+
+            if descendants:
+                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                    if sons.pk not in pks:
+                        pks.append(sons.pk)
+
+            if ancestors:
+                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                    if parent.pk not in pks:
+                        pks.append(parent.pk)
+
+        if pks:
+
+            return OrganizationStructure.objects.filter(pk__in=pks)
+
+        return OrganizationStructure.objects.none()
+
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
     position = models.IntegerField(default=0)
@@ -614,4 +635,16 @@ class Protocol(models.Model):
         verbose_name = _('Protocol')
         verbose_name_plural = _('Protocols')
 
+class UserOrganization(models.Model):
+    organization = models.ForeignKey(
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return "%s" % self.user
+
+    class Meta:
+        ordering = ('pk',)
+        verbose_name = _('User Organization')
+        verbose_name_plural = _('User Organizations')

@@ -18,7 +18,7 @@ from auth_and_perms.models import ProfilePermission, Rol, Profile
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
-    OrganizationStructureRelations
+    OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
 
 
@@ -118,7 +118,9 @@ def delete_pp(cc_lab, user, org_labs):
 
 def get_related_users(user_management, form):
     set_old_users = set(user_management.users.all().values_list('pk', flat=True))
-    set_new_users = set(form.cleaned_data['users'].values_list('pk', flat=True))
+    set_new_users= set()
+    if form.cleaned_data['users'] is not None:
+        set_new_users = set(form.cleaned_data['users'].values_list('pk', flat=True))
     remove_users = set_old_users - set_new_users
     add_users = set_new_users - set_old_users
     return remove_users, add_users
@@ -134,8 +136,8 @@ def add_users_organization(request, pk):
     if request.method == 'POST':
 
         form = AddUserForm(request.POST)
-
         if form.is_valid():
+
             remove_users, add_users = get_related_users(user_management, form)
 
             if remove_users:
@@ -143,10 +145,13 @@ def add_users_organization(request, pk):
                 labs = organizationstructure.laboratory_set.all()
                 org_labs = list(labs.values_list('pk', flat=True))
 
+
                 for user in remove_users:
                     user = User.objects.get(pk=user)
                     pp_user = ProfilePermission.objects.filter(content_type=cc_lab, profile__user=user)
-
+                    org_user = UserOrganization.objects.filter(user=user, organization=organizationstructure).first()
+                    org_user.status = False
+                    org_user.save()
                     if user_in_many_org(user): # check if user is in many organizations
                         org_filters = {
                             'users__in': [user],
@@ -170,6 +175,12 @@ def add_users_organization(request, pk):
 
             if add_users:
                 user_management.users.add(*form.cleaned_data['users'])
+                for user in add_users:
+                    u, created = UserOrganization.objects.get_or_create(user=form.cleaned_data['users'].get(pk=user),
+                                                           organization=organizationstructure)
+                    if u:
+                        u.status=True
+                        u.save()
 
             messages.success(request, _("Element saved successfully"))
             return redirect('auth_and_perms:organizationManager')
@@ -256,6 +267,7 @@ class AddUser(CreateView):
         user.password = password
         user.save()
         self.organization.users.add(user)
+        UserOrganization.objects.create(organization=self.organization.organization, user=user)
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
