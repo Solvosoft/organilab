@@ -13,7 +13,7 @@ import qrcode
 import qrcode.image.svg
 from auth_and_perms.forms import CreationUserOrganization, AddProfileForm, AddProfileDigitalSignatureForm
 from auth_and_perms.models import RegistrationUser, UserTOTPDevice, Profile, ProfilePermission, Rol
-from laboratory.models import OrganizationStructure, OrganizationUserManagement
+from laboratory.models import OrganizationStructure, OrganizationUserManagement, UserOrganization
 from django.utils.translation import gettext_lazy as _
 
 
@@ -67,9 +67,9 @@ def create_user_organization(user, organization, form):
 
     orguserman = OrganizationUserManagement.objects.create(organization=org)
     orguserman.users.add(user)
-
     user.active = True
     user.save()
+    UserOrganization.objects.create(user=user, organization=org, status=True)
 
 @transaction.atomic
 def create_profile_otp(request, pk):
