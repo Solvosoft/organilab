@@ -39,6 +39,7 @@ Check your database configuration and sync your models
     $ python manage.py load_urlname_permissions
     $ python manage.py loadgroup
     $ python manage.py load_sga
+    $ python manage.py loaddata sga_components.json
     
 Could be required to call python manage.py initial_data
 
