@@ -23,7 +23,7 @@ ADD requirements.txt /organilab
 RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools gunicorn && \
 pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
-RUN  apt-get remove libxslt-dev libxml2-dev libffi-dev libpq-dev -y && \
+RUN  apt-get remove libxslt-dev libxml2-dev libffi-dev  -y && \
      apt-get -y autoremove && \
      apt-get -y clean   && \
      rm -rf /var/lib/apt/lists/*
