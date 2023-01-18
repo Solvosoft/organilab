@@ -38,3 +38,4 @@ CairoSVG==2.5.2
 pyfva==0.0.43
 django-otp==1.1.4
 python-barcode==0.14.0
+qrcode==7.3.1
