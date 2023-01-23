@@ -4788,6 +4788,14 @@ msgstr "Crear Reporte de incidentes"
 msgid "Risk Zone Management"
 msgstr "Administración de zonas de riesgo"
 
+#: risk_management/views:128
+msgid "There is an error in the form"
+msgstr "Existe un error en el formulario"
+
+#: risk_management/views.py:139
+msgid "Add a new zonetype"
+msgstr "Ingrese un tipo de zona"
+
 #: sga/admin.py:18
 msgid "Download Label"
 msgstr "Descargar etiquetas"
