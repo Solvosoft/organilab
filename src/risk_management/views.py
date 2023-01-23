@@ -1,15 +1,19 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
-from risk_management.forms import RiskZoneCreateForm
-from risk_management.models import RiskZone
+from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm
+from risk_management.models import RiskZone, ZoneType
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
+from urllib.parse import quote
+import uuid
+from django.utils.translation import gettext_lazy as _
 
 
 @method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
@@ -108,4 +112,37 @@ class ZoneDelete(DeleteView):
 class ZoneDetail(DetailView):
     model = RiskZone
 
+def add_zone_type_view(request,org_pk):
+    tipo = request.GET.get('tipo', '')
+    viewid = str(uuid.uuid4())[:4]
+    data=None
+    if request.method == 'POST':
+        data= request.POST.copy()
+        form =ZoneTypeForm(data)
 
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'ok': True, 'id': instance.pk, 'text': str(instance)})
+
+        return JsonResponse({'ok': False,
+                             'title': _("There is an error in the form"),
+                             'message':  render_to_string('risk_management/zone_type_add.html',
+                                    context={
+                                        'form': form,
+                                        'tipo': quote(tipo),
+                                        'viewid': viewid,
+                                        'request': request
+                                    })})
+
+    data = {
+        'ok':  True,
+        'title': _('Add a new zonetype'),
+        'message': render_to_string('risk_management/zone_type_add.html',
+                                    context={
+                                        'form': ZoneTypeForm(),
+                                        'tipo': quote(tipo),
+                                        'viewid': viewid,
+                                        'request':request
+                                    })
+    }
+    return JsonResponse(data)

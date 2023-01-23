@@ -14,5 +14,7 @@ urlpatterns = [
     path('incident/<int:lab_pk>/<int:pk>/update/', incidents.IncidentReportEdit.as_view(), name='incident_update'),
     path('incident/<int:lab_pk>/<int:pk>/detail/', incidents.IncidentReportDetail.as_view(), name='incident_detail'),
     path('incident/<int:lab_pk>/<int:pk>/delete/', incidents.IncidentReportDelete.as_view(), name='incident_delete'),
-    path('incident/report/<int:lab_pk>/<int:pk>/', incidents.report_incidentreport, name='incident_report' )
+    path('incident/report/<int:lab_pk>/<int:pk>/', incidents.report_incidentreport, name='incident_report' ),
+    path('zone_type/add/', zoneviews.add_zone_type_view, name='zone_type_add'),
+
 ]
