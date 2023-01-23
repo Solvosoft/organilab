@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
+    'django_extensions',
 
 ]
 
