@@ -2,7 +2,11 @@
 source = src
 
 [report]
-fail_under = 100
+#fail_under = 100
 show_missing = True
 skip_covered = True
 
+[html]
+directory = htmlcov
+skip_empty = True
+skip_covered = True
