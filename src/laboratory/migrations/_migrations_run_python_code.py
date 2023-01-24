@@ -53,13 +53,13 @@ def create_perms(codename):
         content_type = ContentType.objects.get_for_model(model)
         try:
             permission = Permission.objects.get(codename=codename)
-            print("\t Permission %s exist" % codename)
+            #print("\t Permission %s exist" % codename)
         except Permission.DoesNotExist:
             permission, created = Permission.objects.get_or_create(codename=codename,
                                                                    name=_(
                                                                        'Can %s' % name),
                                                                    content_type=content_type)
-            print("\t Permission %s creating" % codename)
+            #print("\t Permission %s creating" % codename)
 
 
 def check_perms(perms):
