@@ -51,7 +51,6 @@ class ProcedureListView(DJListView):
         context['reservation_form'] = ReservationForm
         return context
 
-@method_decorator(permission_required('academic.add_procedure'), name='dispatch')
 class ProcedureCreateView(DJCreateView):
     model = Procedure
     form_class = ProcedureForm
