@@ -64,11 +64,12 @@ class Command(BaseCommand):
         ).filter(user_count=0).delete()
 
     def delete_laboratory(self):
-        Laboratory.objects.annotate(shobj_count=Count('rooms__furniture__shelf__shelfobject')).filter(shobj_count=0).delete()
-
+        labs = Laboratory.objects.annotate(shobj_count=Count('rooms__furniture__shelf__shelfobject')).filter(shobj_count=0)
+            #.delete()
+        #print(list(labs.values_list('pk', flat=True)))
 
     def handle(self, *args, **options):
-        self.delete_laboratory()
+        #self.delete_laboratory()
         self.delete_users_without_profile()
         self.delete_user_email_not_valid()
         self.delete_laboratory()
