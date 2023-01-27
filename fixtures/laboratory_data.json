@@ -466,5 +466,50 @@
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+      "app_label": "laboratory",
+      "model": "laboratory"
+    }
+  },
+  {
+    "model": "derb.customform",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:31:49.385Z",
+      "last_update": "2023-01-12T21:31:49.385Z",
+      "created_by": null,
+      "name": "Gestión de laboratorio",
+      "status": "admin",
+      "schema": {
+        "name": "Gestión de laboratorio",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.inform",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Gestión de laboratorio",
+      "custom_form": 1,
+      "content_type": 1,
+      "object_id": 1,
+      "status": "In Review",
+      "schema": {
+        "name": "Gestión de laboratorio",
+        "status": "admin",
+        "components": []
+      }
+    }
   }
 ]
