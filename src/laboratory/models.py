@@ -129,6 +129,8 @@ class SustanceCharacteristics(models.Model):
     storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_class", key_name="key",
                                               key_value="storage_class", blank=True, verbose_name=_('Storage class'))
     seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
+    img_representation = models.ImageField(upload_to='sustances/', verbose_name=_('Sustance representation'),
+                                           null=True, blank=True)
 
     class Meta:
         verbose_name = _('Sustance characteristic')
