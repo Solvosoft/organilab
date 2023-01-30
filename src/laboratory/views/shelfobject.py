@@ -89,7 +89,9 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
 
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#object_create"
+            }),
             label=_("Reactive/Material/Equipment"),
             help_text=_("Search by name, code or CAS number")
         )

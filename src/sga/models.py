@@ -157,7 +157,7 @@ class Substance(AbstractOrganizationRef):
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
     agrochemical = models.BooleanField(default=False,
                                        verbose_name=_("Agrochemical"))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.DO_NOTHING, null=True, related_name='creator')
+    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.SET_NULL, null=True, related_name='creator')
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
     organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
     objects = OrganilabContextQueryset.as_manager()

@@ -1,6 +1,7 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-bullseye
 ENV PYTHONUNBUFFERED 1
+ENV DEBIAN_FRONTEND=noninteractive
 ENV REQUESTS_CA_PATH=/certs/ca_nacional_de_CR.pem
 ENV REQUESTS_CERT_PATH=/certs/bccr_agent.pem
 ENV REQUESTS_KEY_PATH=/certs/bccr_agent_key.pem
