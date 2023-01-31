@@ -12,6 +12,8 @@
     {% for furniture in object_list %}
       <li class="list-group-item">
         <a id="furniture_{{furniture.id}}" onclick="function_name_shelf({{ furniture.id }})" style="cursor: pointer;">
+          <span class="furnituredescriptor" ><i style="color: {{furniture.color}}" class="fa fa-folder" aria-hidden="true"></i>
+ </span>
           {{ furniture.name }}
         </a>
         {% if perms.laboratory.do_report %} 

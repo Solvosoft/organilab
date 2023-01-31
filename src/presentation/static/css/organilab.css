@@ -168,3 +168,11 @@ img {
     color: #ECF0F1 !important;
 
 }
+
+.furnituredescriptor i {
+    font-size: 1.3em;
+}
+
+.furnituredescriptor {
+    display: inline;
+}

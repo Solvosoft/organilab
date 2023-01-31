@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models.expressions import F
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
@@ -146,6 +147,8 @@ class ShelfObject(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     marked_as_discard = models.BooleanField(default=False)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     @staticmethod
     def get_units(unit):
@@ -172,6 +175,8 @@ class ShelfObject(models.Model):
 
 class LaboratoryRoom(models.Model):
     name = models.CharField(_('Name'), max_length=255)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('Laboratory Room')
@@ -230,8 +235,11 @@ class Furniture(models.Model):
     # old  'F' Cajón   'D' Estante
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='furniture_type')
-
+    color = models.CharField(default="#73879C", max_length=10)
     dataconfig = models.TextField(_('Data configuration'))
+
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     def remove_shelf_dataconfig(self, shelf_pk):
         if self.dataconfig:
@@ -474,6 +482,9 @@ class Laboratory(models.Model):
 
     rooms = models.ManyToManyField(
         'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
+
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('Laboratory')
