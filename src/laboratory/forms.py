@@ -2,13 +2,14 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.core.validators import RegexValidator
 from django.forms import ModelForm
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
 
 from auth_and_perms.models import Profile
 from derb.models import CustomForm as DerbCustomForm
-from laboratory.models import OrganizationStructure, CommentInform
+from laboratory.models import OrganizationStructure, CommentInform, Catalog
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -128,6 +129,7 @@ class TransferObjectForm(GTForm):
                                   help_text='Use dot like 0.344 on decimal', required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
                                         label=_("Laboratory"), required=True)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
@@ -241,14 +243,17 @@ class FurnitureForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = Furniture
-        fields = ("labroom", "name", "type", 'dataconfig')
+        fields = ("labroom", "name", "type", 'dataconfig', 'color')
         widgets = {'labroom': genwidgets.Select,
                    'name': genwidgets.TextInput,
-                   'type': genwidgets.Select,
+                   'type': genwidgets.SelectWithAdd(attrs={
+                       'add_url': reverse_lazy("laboratory:add_furniture_type_catalog")}),
                    'phone_number': genwidgets.PhoneNumberMaskInput,
                    'email': genwidgets.EmailMaskInput,
                    'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   'color': genwidgets.ColorInput
                    }
+
 class InformForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
@@ -282,4 +287,14 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
         widgets={
             'name': genwidgets.TextInput,
             'parent': genwidgets.HiddenInput
+        }
+
+
+class CatalogForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Catalog
+        fields = '__all__'
+        widgets = {
+            'key': genwidgets.HiddenInput,
+            'description': genwidgets.TextInput
         }

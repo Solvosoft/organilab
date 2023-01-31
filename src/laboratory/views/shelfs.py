@@ -12,12 +12,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from weasyprint.text.line_break import get_next_word_boundaries
-
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
@@ -64,27 +63,32 @@ def list_shelf(request, org_pk, lab_pk):
 @has_lab_assigned()
 @permission_required('laboratory.delete_shelf')
 def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
+    if request.method == 'POST':
+        shelf = get_object_or_404(Shelf, pk=pk)
+        shelf.delete()
+        organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
+        return {'result': "OK"}
+
     row, col = int(row), int(col)
-    shelf = get_object_or_404(Shelf, pk=pk)
-    shelf.delete()
-    organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
-    url = reverse('laboratory:shelf_delete', args=(lab_pk, pk, row, col,org_pk))
+    url = reverse('laboratory:shelf_delete', kwargs={"lab_pk": lab_pk, "pk":pk, "row": row,
+                                                     "col": col,"org_pk": org_pk})
     return {'inner-fragments': {
-        "#modalclose": """<script>$("a[href$='%s']").closest('li').remove();</script>""" % (url)
+        "#modalclose": """<script>delete_shelf("#shelf_%s", "%s");</script>""" % (pk, url)
     },}
 
 
-class ShelfForm(forms.ModelForm,GTForm):
+class ShelfForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'furniture']
+        fields = ['name', 'type', 'furniture', 'color']
         widgets = {
             'name': genwidgets.TextInput,
-            'type':genwidgets.Select(),
-            'furniture': forms.HiddenInput()
+            'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'furniture': forms.HiddenInput(),
+            'color':  genwidgets.ColorInput,
         }
 
 
@@ -94,6 +98,9 @@ class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
     form_class = ShelfForm
+
+    def get_prefix(self):
+        return "shelf-"
 
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
@@ -125,13 +132,13 @@ class ShelfCreate(AJAXMixin, CreateView):
              "ccol": col,
              "data": self.object,
              "org_pk": self.org,
-             "laboratory": self.lab})
+             "laboratory": self.lab}, request=self.request)
         return {
             'inner-fragments': {
                 "#modalclose": "<script>closeModal();</script>"
             },
             'append-fragments': {
-                '#row_%d_col_%d ul' % (row, col): dev,
+                '#row_%d_col_%d ul.sortableself' % (row, col): dev,
             }
         }
 
@@ -151,6 +158,9 @@ class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"
     form_class = ShelfForm
+
+    def get_prefix(self):
+        return "shelf-"
 
     def get(self, request, *args, **kwargs):
         self.row = kwargs.pop('row')
@@ -190,7 +200,8 @@ class ShelfEdit(AJAXMixin, UpdateView):
             {"crow": row,
              "ccol": col,
              "data": self.object,
-             "laboratory": self.lab})
+             "org_pk": self.org,
+             "laboratory": self.lab}, request=self.request)
 
         return {
             'inner-fragments': {
