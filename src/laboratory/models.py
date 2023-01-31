@@ -188,6 +188,7 @@ class Shelf(models.Model):
     # C space  D drawer
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
+    color = models.CharField(default="#000", max_length=10)
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)

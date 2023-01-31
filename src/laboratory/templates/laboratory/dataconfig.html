@@ -3,10 +3,12 @@
 <tr>
 	{% for col in row%}
 	<td>
+		{% if perms.laboratory.add_shelf %}
 	<a style="margin: 5px;" class="btn btn-success" data-ajax="true" 
 	data-success="processResponse"
 	href="{% url 'laboratory:shelf_create' org_pk=org_pk lab_pk=laboratory %}?row={{forloop.parentloop.counter0}}&col={{forloop.counter0}}&furniture={{obj.pk}}">
-	<span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> {% trans 'Add Shelf' %} </a>
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"> </span> {% trans 'Add Shelf' %} </a>
+		{% endif %}
 	
 	<div  id="row_{{forloop.parentloop.counter0}}_col_{{forloop.counter0}}">
 		<ul class="list-group sortableself"> 
