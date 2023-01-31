@@ -82,7 +82,7 @@ class FurnitureCreateView(CreateView):
             "type": genwidgets.Select(),
         }
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.change_furniture'), name='dispatch')
 class FurnitureUpdateView(UpdateView):
     model = Furniture
@@ -111,7 +111,7 @@ class FurnitureUpdateView(UpdateView):
                                  'col': col,
                                  'row': row,
                                  'org_pk':self.org,
-                                 'laboratory': self.lab})
+                                 'laboratory': self.lab}, request=self.request)
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create',

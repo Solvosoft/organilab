@@ -10,6 +10,14 @@ import json
 from laboratory.models import Shelf
 
 
+def preserve_order(order, queryset):
+    for item in queryset:
+        index = order.index(item.pk)
+        if index>=0:
+            order[index]=item
+    return [shelf for shelf in order if isinstance(shelf, Shelf)]
+
+
 def get_dataconfig(dataconfig):
     if dataconfig:
         dataconfig = json.loads(dataconfig)
@@ -26,8 +34,7 @@ def get_dataconfig(dataconfig):
                     val = col
                 else:
                     continue
-                dataconfig[irow][icol] = Shelf.objects.filter(
-                    pk__in=val)
+                dataconfig[irow][icol] = preserve_order(val, Shelf.objects.filter(pk__in=val))
     return dataconfig
 
 

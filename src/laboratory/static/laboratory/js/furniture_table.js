@@ -1,6 +1,9 @@
 
 function do_sortable(){
-	  $("ul.sortableself").sortable({group: 'nested'});
+	  $("ul.sortableself").sortable({group: 'nested',
+	        //cancel: ".ui-state-disabled",
+	        items: "li:not(.ui-state-disabled)"
+	  });
 }
 
 function addRow() {
@@ -66,6 +69,7 @@ function closeModal(){
 
 function processResponse(data) {
 	$("#shelfmodalbody").html(data);
+	gt_find_initialize($("#shelfmodalbody"));
 	activemodal = $("#createshelfmodal").modal('show');
 }
 
@@ -78,7 +82,7 @@ function createconfigdata(){
     var tds = $(trs[x]).find('td');
     for (var y=0; y<tds.length; y++){
       dev+='[';
-      var inp = $(tds[y]).find("li");
+      var inp = $(tds[y]).find("li.shelfitem");
       for (var z=0; z<inp.length; z++){
         dev += $(inp[z]).data('id');
         if(!(z+1==inp.length)) dev+=',';
@@ -93,11 +97,28 @@ function createconfigdata(){
 }
 
 function save_form(){
-	$('form').submit(
-		function(event){
-			$("#id_dataconfig").val(createconfigdata());
-	});
-	
+	$('form').submit(function(event){
+        $("#id_dataconfig").val(createconfigdata());
+    });
+}
+
+function delete_shelf(id, url){
+    var delete_id = id;
+    var delete_url = url;
+
+    Swal.fire({
+      title: 'Do you want to delete this shelf?',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+            ajaxPost(delete_url, {}, function(response){
+                $(delete_id).remove();
+            });
+      }
+    })
 }
 
 save_form();
