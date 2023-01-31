@@ -13,7 +13,7 @@
            data-success="processResponseshelfobjectDelete"
            href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
            style="margin-left: 10px; color:red">
-           <i class="fa fa-trash" aria-hidden="true"></i> </a>
+           <i class="fa fa-close" aria-hidden="true"></i> </a>
         {% endif %}
 
         {% if perms.laboratory.do_report %}
