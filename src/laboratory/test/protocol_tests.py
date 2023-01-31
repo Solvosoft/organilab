@@ -26,7 +26,7 @@ class ProtocolViewTest(BaseSetUpTest):
             "file": self.chfile.upload_id,
             "laboratory": self.lab
         }
-        response_post = self.client.post(url, data=data, enc_type="")
+        response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:protocol_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertRedirects(response_post, success_url)
 
