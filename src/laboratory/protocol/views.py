@@ -69,9 +69,7 @@ class ProtocolDeleteView(DeleteView):
     def get_success_url(self):
         return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        organilab_logentry(request.user, self.object, DELETION, 'protocol', relobj=self.object.laboratory)
-        self.object.delete()
-        return HttpResponseRedirect(success_url)
+    def form_valid(self, form):
+        organilab_logentry(self.request.user, self.object, DELETION, 'protocol', relobj=self.object.laboratory)
+        return super().form_valid(form)
+
