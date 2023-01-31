@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shelf',
             name='color',
-            field=models.CharField(default='#000', max_length=10),
+            field=models.CharField(default='#73879C', max_length=10),
         ),
     ]
