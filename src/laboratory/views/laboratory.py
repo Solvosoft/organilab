@@ -211,6 +211,7 @@ class LaboratoryListView(ListView):
     template_name= 'laboratory/laboratory_list.html'
     success_url = '/'
     paginate_by = 15
+    ordering = ['name']
 
     def get_queryset(self):
         queryset = super().get_queryset()

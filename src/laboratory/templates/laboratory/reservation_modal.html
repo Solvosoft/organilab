@@ -44,7 +44,7 @@
                     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                     <strong id="error_message_object">{% trans 'Complete the fields' %}</strong>
                 </div>
-                <form id="modal_reservation_form" method="POST">
+                <form id="modal_reservation_form" method="POST" autocomplete="off">
                     {% csrf_token %}
                     <input type="hidden" value="{{laboratory}}" name="lab">
                     <input type="hidden" value="{{org_pk}}" name="organization">

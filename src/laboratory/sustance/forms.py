@@ -1,5 +1,6 @@
 from django import forms
 from djgentelella.forms.forms import GTForm
+from djgentelella.widgets.files import FileChunkedUpload
 
 from laboratory.models import Object, SustanceCharacteristics, Laboratory
 from djgentelella.widgets import core as genwidgets
@@ -56,6 +57,7 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             'nfpa': genwidgets.SelectMultiple,
             'storage_class': genwidgets.SelectMultiple,
             'seveso_list': genwidgets.YesNoInput,
+            'img_representation': FileChunkedUpload,
             # 'security_sheet': genwidgets.FileInput
 
         }
