@@ -443,21 +443,27 @@
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
-      "name": "Sala de inventario"
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
     "model": "laboratory.laboratoryroom",
     "pk": 2,
     "fields": {
-      "name": "Sala de muestras"
+      "name": "Sala de muestras",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
     "model": "laboratory.laboratoryroom",
     "pk": 3,
     "fields": {
-      "name": "Sala de equipos de protección individual"
+      "name": "Sala de equipos de protección individual",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -472,7 +478,9 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1]
+      "rooms": [1],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -487,7 +495,9 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [3]
+      "rooms": [3],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -629,6 +639,52 @@
         "status": "admin",
         "components": []
       }
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 1",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[],[],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "Primer Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 2,
+    "fields": {
+      "furniture": 1,
+      "name": "Segundo Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 3,
+    "fields": {
+      "furniture": 3,
+      "name": "Tercer Estante",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C"
     }
   }
 ]
