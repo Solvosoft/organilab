@@ -177,6 +177,11 @@ lab_protocols_urls = [
     # path('regulations/download/all', download_all_regulations, name="download_all_regulations")
 ]
 
+catalogs_urls = [
+    path('furniture/furniture_type', furniture.add_catalog,kwargs={'key': "furniture_type"}, name='add_furniture_type_catalog'),
+    path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
+]
+
 """APIS"""
 router = DefaultRouter()
 
@@ -204,6 +209,8 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('<int:org_pk>/', include(reports_all_lab)),
+    path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
+
 
 ]  + edit_objects

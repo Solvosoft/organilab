@@ -1,10 +1,11 @@
 # encoding: utf-8
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from djgentelella.widgets import core as genwidgets
 
-from ..forms import FurnitureForm
+from ..forms import FurnitureForm, CatalogForm
 from ..utils import organilab_logentry
 
 '''
@@ -23,9 +24,8 @@ from django_ajax.decorators import ajax
 from laboratory.decorators import has_lab_assigned
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom
 from laboratory.shelf_utils import get_dataconfig
-#from laboratory.decorators import check_lab_permissions, user_lab_perms
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
-
+from django.utils.translation import gettext_lazy as _
 
 @method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
@@ -170,3 +170,36 @@ def list_furniture(request, *args, **kwargs):
 
         },
     }
+
+
+
+@login_required
+def add_catalog(request, key):
+
+    if request.method == 'POST':
+        form = CatalogForm(request.POST, initial={'key': key})
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'ok': True, 'id': instance.pk, 'text': instance.description})
+        return JsonResponse({'ok': False,
+                             'title': _("ERROR"),
+                             'message': _('Data is not valid')})
+
+    form = CatalogForm(initial={'key': key})
+    title = _('New furniture type')
+    if key == 'container_type':
+        title = _("New Container type")
+
+    data = {
+        'ok': True,
+        'title': title,
+        'message': """
+        <form method="post" action="%s">
+            %s
+        </form>
+        """%(
+            reverse('laboratory:add_furniture_type_catalog'),
+            str(form.as_horizontal())
+        )
+    }
+    return JsonResponse(data)
