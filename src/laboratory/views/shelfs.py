@@ -12,13 +12,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.color import HorizontalBarColorInput, DefaultColorInput
-from weasyprint.text.line_break import get_next_word_boundaries
-
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
@@ -79,7 +77,7 @@ def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     },}
 
 
-class ShelfForm(forms.ModelForm,GTForm):
+class ShelfForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
@@ -88,7 +86,7 @@ class ShelfForm(forms.ModelForm,GTForm):
         fields = ['name', 'type', 'furniture', 'color']
         widgets = {
             'name': genwidgets.TextInput,
-            'type':genwidgets.Select(),
+            'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
             'furniture': forms.HiddenInput(),
             'color':  genwidgets.ColorInput,
         }
@@ -100,6 +98,9 @@ class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
     form_class = ShelfForm
+
+    def get_prefix(self):
+        return "shelf-"
 
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
@@ -158,6 +159,9 @@ class ShelfEdit(AJAXMixin, UpdateView):
     success_url = "/"
     form_class = ShelfForm
 
+    def get_prefix(self):
+        return "shelf-"
+
     def get(self, request, *args, **kwargs):
         self.row = kwargs.pop('row')
         self.col = kwargs.pop('col')
@@ -174,11 +178,6 @@ class ShelfEdit(AJAXMixin, UpdateView):
         kwargs['initial']['col'] = self.col
         kwargs['initial']['row'] = self.row
         return kwargs
-
-    def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
-        context['request'] = self.request
-        return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

@@ -68,6 +68,7 @@ function closeModal(){
 }
 
 function processResponse(data) {
+	$("#modal_shelf--type_id").remove();
 	$("#shelfmodalbody").html(data);
 	gt_find_initialize($("#shelfmodalbody"));
 	activemodal = $("#createshelfmodal").modal('show');
