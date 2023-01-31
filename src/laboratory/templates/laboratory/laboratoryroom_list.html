@@ -80,6 +80,9 @@
     {% include 'laboratory/shelfobjectUpdate_modal.html' %}
 {% endblock %}
 
+{% block css %}
+<link href="{% static 'laboratory/css/laboratory.css' %}" rel="stylesheet" >
+{% endblock %}
 {% block js %}
     <script>
         document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
