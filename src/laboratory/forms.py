@@ -129,6 +129,7 @@ class TransferObjectForm(GTForm):
                                   help_text='Use dot like 0.344 on decimal', required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
                                         label=_("Laboratory"), required=True)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')

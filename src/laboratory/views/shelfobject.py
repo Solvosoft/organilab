@@ -370,10 +370,12 @@ def transfer_object(request, pk):
     if amount <= obj.quantity:
         lab_send = Laboratory.objects.filter(pk=pk).first()
         lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
+        mark_as_discard = request.POST.get('mark_as_discard', '')
         transfer = TranferObject.objects.create(object=obj,
                                      laboratory_send=lab_send,
                                      laboratory_received=lab_received,
-                                     quantity=amount
+                                     quantity=amount,
+                                     mark_as_discard= mark_as_discard.lower() in ['on', 'true', '1']
                                      )
         changed_data = ['object', 'laboratory_send', 'laboratory_received', 'quantity']
         organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
@@ -425,6 +427,8 @@ def objects_transfer(request,pk):
         if lab_received_obj is not None:
              old = lab_received_obj.quantity
              lab_received_obj.quantity += data.quantity
+             if data.mark_as_discard:
+                 lab_received_obj.marked_as_discard = True
              lab_received_obj.save()
 
              log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
@@ -439,6 +443,8 @@ def objects_transfer(request,pk):
                                            quantity=data.quantity,
                                            limit_quantity=0,
                                            measurement_unit=lab_send_obj.measurement_unit)
+            if data.mark_as_discard:
+                new_object.marked_as_discard = True
             new_object.save()
             log_object_change(request.user, data.laboratory_received.pk, lab_send_obj, 0,
                               data.quantity,

@@ -145,6 +145,8 @@ class ShelfObject(models.Model):
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    marked_as_discard = models.BooleanField(default=False)
+
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
@@ -549,6 +551,7 @@ class TranferObject(models.Model):
     update_time = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
+    mark_as_discard = models.BooleanField(default=False)
 
     def get_object_detail(self):
         return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
