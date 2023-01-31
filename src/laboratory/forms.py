@@ -243,7 +243,7 @@ class FurnitureForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = Furniture
-        fields = ("labroom", "name", "type", 'dataconfig')
+        fields = ("labroom", "name", "type", 'dataconfig', 'color')
         widgets = {'labroom': genwidgets.Select,
                    'name': genwidgets.TextInput,
                    'type': genwidgets.SelectWithAdd(attrs={
@@ -251,6 +251,7 @@ class FurnitureForm(forms.ModelForm, GTForm):
                    'phone_number': genwidgets.PhoneNumberMaskInput,
                    'email': genwidgets.EmailMaskInput,
                    'legal_identity': genwidgets.TextInput(attrs={'required': True}),
+                   'color': genwidgets.ColorInput
                    }
 
 class InformForm(forms.ModelForm, GTForm):
