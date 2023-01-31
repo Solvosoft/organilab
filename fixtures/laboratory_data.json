@@ -418,6 +418,17 @@
     }
   },
   {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Principal technician",
+      "laboratories": [1, 2]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -426,6 +437,27 @@
       "position": 1,
       "level": 1,
       "rol": []
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de muestras"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Sala de equipos de protección individual"
     }
   },
   {
@@ -440,7 +472,22 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": []
+      "rooms": [1]
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Lab Ultra",
+      "phone_number": "22305678",
+      "location": "Cartago",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "rooms": [3]
     }
   },
   {
@@ -455,12 +502,47 @@
     }
   },
   {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "LP Company",
+      "phone_number": "(506)2209-8765",
+      "email": "lpcompany@cr.com",
+      "legal_identity": "3-463-3423432",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 3,
+    "fields": {
+      "name": "Alcoma SA",
+      "phone_number": "(506)2209-8765",
+      "email": "alcomasa@cr.com",
+      "legal_identity": "3-435-24432214",
+      "laboratory": 2
+    }
+  },
+  {
     "model": "laboratory.protocol",
     "pk": 1,
     "fields": {
       "name": "Lavado de manos",
-      "file": "protocols/1.pdf",
+      "file": "protocols/test.pdf",
       "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 2,
+    "fields": {
+      "name": "Control de plagas",
+      "file": "protocols/test.pdf",
+      "short_description": "",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
@@ -493,6 +575,23 @@
     }
   },
   {
+    "model": "derb.customform",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:31:49.385Z",
+      "last_update": "2023-01-12T21:31:49.385Z",
+      "created_by": null,
+      "name": "Recolección de muestras",
+      "status": "admin",
+      "schema": {
+        "name": "Recolección de muestras",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
     "model": "laboratory.inform",
     "pk": 1,
     "fields": {
@@ -507,6 +606,26 @@
       "status": "In Review",
       "schema": {
         "name": "Gestión de laboratorio",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.inform",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Recolección de muestras",
+      "custom_form": 2,
+      "content_type": 1,
+      "object_id": 2,
+      "status": "In Review",
+      "schema": {
+        "name": "Recolección de muestras",
         "status": "admin",
         "components": []
       }
