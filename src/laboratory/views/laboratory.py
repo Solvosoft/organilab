@@ -4,15 +4,13 @@ from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from laboratory.views.djgeneric import CreateView, UpdateView,ListView,DeleteView
 from django.views.generic.edit import FormView
 
 from auth_and_perms.models import Profile
@@ -20,6 +18,7 @@ from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm
 from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
