@@ -51,7 +51,6 @@ class ProcedureListView(DJListView):
         context['reservation_form'] = ReservationForm
         return context
 
-@method_decorator(permission_required('academic.add_procedure'), name='dispatch')
 class ProcedureCreateView(DJCreateView):
     model = Procedure
     form_class = ProcedureForm
@@ -133,7 +132,7 @@ class ProcedureStepCreateView(FormView):
     def get_success_url(self):
         lab_pk = self.kwargs['lab_pk']
         org = self.kwargs['org_pk']
-        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'pk': lab_pk,})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'lab_pk': lab_pk,})
         return success_url
 
 @method_decorator(permission_required('academic.change_procedurestep'), name='dispatch')
@@ -248,7 +247,7 @@ def get_observations(pk):
 def remove_observation(request, *args, **kwargs):
     pk= kwargs['pk']
 
-    obj = ProcedureObservations.objects.get(pk=int(request.POST['pk']))
+    obj = get_object_or_404(ProcedureObservations,pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({'data': get_observations(pk)})
