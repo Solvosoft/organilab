@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import TaggingInput
 
@@ -235,7 +236,8 @@ class PictogramForm(forms.ModelForm, GTForm):
         widgets = {
             "name": genwidgets.TextInput(),
             "warning_word": genwidgets.Select(),
-            "image": genwidgets.FileInput(),
+            "image": FileChunkedUpload,
+            'upload_by': genwidgets.HiddenInput
         }
 
 

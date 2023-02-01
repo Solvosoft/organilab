@@ -192,7 +192,7 @@ def organilab_logentry(user, object, action_flag, model_name=None, changed_data=
     log_entry = LogEntry.objects.log_action(
         user_id=user.id,
         content_type_id=content_type.id,
-        object_id=object.id,
+        object_id=object.pk,
         object_repr=object_repr,
         action_flag=action_flag,
         change_message=change_message
