@@ -30,7 +30,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure
-from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
 
@@ -280,6 +280,13 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
+
+
+@method_decorator(permission_required('laboratory.view_shelfobject'), name='dispatch')
+class ShelfObjectDetail(AJAXMixin, DetailView):
+    model = ShelfObject
+
 
 @permission_required('laboratory.change_shelfobject')
 def add_object(request, pk):

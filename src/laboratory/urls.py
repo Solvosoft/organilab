@@ -74,6 +74,7 @@ shelf_object_urls = [
     path('list/', shelfobject.list_shelfobject, name="list_shelfobject"),
     path('create/', shelfobject.ShelfObjectCreate.as_view(), name="shelfobject_create"),
     path('delete/<int:pk>/', shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
+    path('detail/<int:pk>/', shelfobject.ShelfObjectDetail.as_view(), name="shelfobject_detail"),
     path('edit/<int:pk>/', shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
