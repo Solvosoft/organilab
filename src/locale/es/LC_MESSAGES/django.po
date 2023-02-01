@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-17 15:18-0600\n"
+"POT-Creation-Date: 2023-02-01 15:11-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,46 +10,65 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 
-#: academic/forms.py:33 academic/forms.py:45 academic/models.py:12
-#: academic/models.py:26 academic/models.py:64 academic/models.py:101
-#: academic/models.py:147 academic/templates/academic/procedure_list.html:26
+#: academic/api/serializers.py:62
+#: academic/templates/academic/substance/check_substances.html:66
+msgid "Approve"
+msgstr "Aprobar"
+
+#: academic/api/serializers.py:65
+#: laboratory/templates/laboratory/logentry_list.html:26
+msgid "Detail"
+msgstr "Detalle"
+
+#: academic/api/serializers.py:69
+#: academic/templates/academic/substance/list_substance.html:50
+#: sga/templates/personal_template.html:53
+msgid "Generate PDF"
+msgstr "Uso general"
+
+#: academic/forms.py:33 academic/forms.py:45 academic/models.py:14
+#: academic/models.py:31 academic/models.py:69 academic/models.py:106
+#: academic/models.py:152 academic/templates/academic/procedure_list.html:26
 #: academic/templates/academic/procedure_steps.html:59
 #: academic/templates/academic/substance/danger_indication.html:20
 #: academic/templates/academic/substance/detail_substance.html:66
-#: laboratory/forms.py:137 laboratory/models.py:41 laboratory/models.py:66
-#: laboratory/templates/laboratory/search.html:65 sga/models.py:102
-#: sga/models.py:160
+#: laboratory/forms.py:163 laboratory/models.py:44 laboratory/models.py:69
+#: laboratory/templates/laboratory/search.html:65
+#: laboratory/templates/laboratory/shelfobject_detail.html:18 sga/models.py:106
+#: sga/models.py:164
 msgid "Description"
 msgstr "Descripción"
 
-#: academic/forms.py:37 academic/models.py:41
+#: academic/forms.py:37 academic/models.py:46
 #: academic/templates/academic/detail.html:83
-#: academic/templates/academic/procedure_list.html:123
-#: academic/templates/academic/procedure_steps.html:92 laboratory/models.py:94
-#: laboratory/models.py:482 laboratory/models.py:501
+#: academic/templates/academic/procedure_list.html:126
+#: academic/templates/academic/procedure_steps.html:92 laboratory/models.py:95
+#: laboratory/models.py:539 laboratory/models.py:558
 #: laboratory/templates/laboratory/my_reservations_list.html:24
 #: laboratory/templates/laboratory/objectlogchange_list.html:34
+#: laboratory/templates/laboratory/report_laboratoryroom_list.html:55
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:19
 #: laboratory/templates/laboratory/search.html:29
 #: laboratory/templates/laboratory/transfer_objects.html:24
-#: laboratory/views/reports.py:760
+#: laboratory/views/reports.py:746
 msgid "Object"
 msgstr "Objeto"
 
 #: academic/forms.py:38 academic/templates/academic/procedure_steps.html:35
-#: laboratory/forms.py:105 laboratory/forms.py:121 laboratory/forms.py:135
-#: laboratory/templates/laboratory/transfer_objects.html:25 sga/forms.py:154
-#: sga/models.py:327 sga/templates/donate_organilab.html:42
+#: laboratory/forms.py:128 laboratory/forms.py:147 laboratory/forms.py:161
+#: laboratory/templates/laboratory/transfer_objects.html:25
+#: presentation/forms.py:16 presentation/models.py:38
+#: sga/templates/donate_organilab.html:42
 msgid "Amount"
 msgstr "Cantidad"
 
-#: academic/forms.py:39 laboratory/models.py:425
+#: academic/forms.py:39 laboratory/models.py:479
 #: laboratory/templates/laboratory/objectlogchange_list.html:39
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:24
-#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:765
-#: laboratory/views/reports.py:796
+#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:751
+#: laboratory/views/reports.py:782
 msgid "Unit"
 msgstr "Unidad"
 
@@ -58,239 +77,242 @@ msgid "title"
 msgstr "Título"
 
 #: academic/forms.py:49
-#: laboratory/templates/laboratory/reservation_modal.html:70
+#: laboratory/templates/laboratory/reservation_modal.html:71
 #: reservations_management/models.py:67
 msgid "Initial Date"
 msgstr "Fecha inicial"
 
 #: academic/forms.py:50
-#: laboratory/templates/laboratory/reservation_modal.html:74
+#: laboratory/templates/laboratory/reservation_modal.html:76
 #: reservations_management/models.py:68
 msgid "Final Date"
 msgstr "Fecha final"
 
-#: academic/models.py:11 academic/models.py:25
-#: academic/templates/academic/procedure_list.html:25
-#: authentication/models.py:7
+#: academic/models.py:13 academic/models.py:30
+#: academic/templates/academic/procedure_list.html:25 presentation/models.py:18
 msgid "Title"
 msgstr "Título académico"
 
-#: academic/models.py:19 academic/models.py:24
+#: academic/models.py:24 academic/models.py:29
 #: academic/templates/academic/procedure_list.html:16
 msgid "Procedure"
 msgstr "Procedimientos"
 
-#: academic/models.py:20 academic/templates/academic/detail.html:11
+#: academic/models.py:25 academic/templates/academic/detail.html:11
 #: academic/templates/academic/procedure_steps.html:12
 #: laboratory/templates/laboratory/index.html:68
-#: presentation/templates/partials/laboratories_menu.html:15
 msgid "Procedures"
 msgstr "Procedimientos"
 
-#: academic/models.py:31
+#: academic/models.py:36
 msgid "No titled step"
 msgstr "Paso sin título"
 
-#: academic/models.py:35
+#: academic/models.py:40
 msgid "Procedure step"
 msgstr "Paso en procedimiento"
 
-#: academic/models.py:36
+#: academic/models.py:41
 msgid "Procedure steps"
 msgstr "Pasos en los procedimientos"
 
-#: academic/models.py:42 laboratory/models.py:142
+#: academic/models.py:47 laboratory/models.py:145
 msgid "Material quantity"
 msgstr "Cantidad de material"
 
-#: academic/models.py:44 laboratory/models.py:145 laboratory/models.py:468
+#: academic/models.py:49 laboratory/models.py:148 laboratory/models.py:525
 msgid "Measurement unit"
 msgstr "Unidad de medida"
 
-#: academic/models.py:58
+#: academic/models.py:63
 msgid "Procedure Required Object"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: academic/models.py:59
+#: academic/models.py:64
 msgid "Procedure Required Objects"
 msgstr "Objetos requeridos en el procedimiento"
 
-#: academic/models.py:71
+#: academic/models.py:76
 msgid "Procedure Observation"
 msgstr "Observaciones del procedimiento"
 
-#: academic/models.py:72
+#: academic/models.py:77
 msgid "Procedure Observations"
 msgstr "Observaciones del procedimiento"
 
-#: academic/models.py:76 academic/templates/academic/procedure_steps.html:34
+#: academic/models.py:81 academic/templates/academic/procedure_steps.html:34
 #: academic/templates/academic/substance/detail_substance.html:11
 #: academic/templates/academic/substance/list_substance.html:33
 #: academic/templates/academic/substance/warning_words.html:21
 #: derb/templates/formBuilder/edit_view.html:34
 #: derb/templates/formBuilder/form_list.html:44
-#: derb/templates/formBuilder/form_list.html:92 laboratory/forms.py:78
-#: laboratory/forms.py:141 laboratory/models.py:19 laboratory/models.py:40
-#: laboratory/models.py:62 laboratory/models.py:170 laboratory/models.py:182
-#: laboratory/models.py:224 laboratory/models.py:357 laboratory/models.py:448
-#: laboratory/models.py:542 laboratory/models.py:568
+#: derb/templates/formBuilder/form_list.html:92 laboratory/forms.py:93
+#: laboratory/forms.py:167 laboratory/models.py:22 laboratory/models.py:43
+#: laboratory/models.py:65 laboratory/models.py:177 laboratory/models.py:191
+#: laboratory/models.py:234 laboratory/models.py:411 laboratory/models.py:505
+#: laboratory/models.py:600 laboratory/models.py:637
 #: laboratory/templates/laboratory/inform.html:28
 #: laboratory/templates/laboratory/organization_reactive_presence.html:47
-#: laboratory/templates/laboratory/protocol/protocol_list.html:30
+#: laboratory/templates/laboratory/protocol/protocol_list.html:28
 #: laboratory/templates/laboratory/provider_list.html:18
+#: laboratory/templates/laboratory/shelfobject_detail.html:16
 #: laboratory/templates/laboratory/sustance/list.html:31
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:21
-#: laboratory/views/reports.py:77 laboratory/views/reports.py:171
-#: laboratory/views/reports.py:268 laboratory/views/reports.py:329
-#: laboratory/views/reports.py:496
+#: laboratory/views/reports.py:42 laboratory/views/reports.py:137
+#: laboratory/views/reports.py:240 laboratory/views/reports.py:304
+#: laboratory/views/reports.py:475
 #: msds/templates/regulation/regulations_document.html:15
 #: msds/templates/regulation/regulations_document.html:34
-#: risk_management/models.py:36 risk_management/models.py:49 sga/forms.py:14
-#: sga/forms.py:151 sga/models.py:16 sga/models.py:49 sga/models.py:65
-#: sga/models.py:85 sga/models.py:134 sga/models.py:224 sga/models.py:248
-#: sga/models.py:288 sga/models.py:305 sga/models.py:325 sga/models.py:351
-#: sga/templates/donate_organilab.html:34 sga/templates/list_company.html:25
-#: sga/templates/list_pictograms.html:25
+#: presentation/forms.py:13 presentation/models.py:36
+#: risk_management/models.py:38 risk_management/models.py:51 sga/forms.py:15
+#: sga/models.py:17 sga/models.py:50 sga/models.py:66 sga/models.py:89
+#: sga/models.py:138 sga/models.py:227 sga/models.py:251 sga/models.py:291
+#: sga/models.py:308 sga/models.py:338 sga/templates/donate_organilab.html:34
+#: sga/templates/list_company.html:25 sga/templates/list_pictograms.html:25
 #: sga/templates/personal_template.html:41
 msgid "Name"
 msgstr "Nombre"
 
-#: academic/models.py:77
+#: academic/models.py:82
 #: academic/templates/academic/substance/detail_substance.html:120
-#: sga/models.py:135
+#: sga/models.py:139
 msgid "CAS number"
 msgstr "Número ID CAS"
 
-#: academic/models.py:83
+#: academic/models.py:88
 msgid "ComponentSGA"
 msgstr "Componente SGA"
 
-#: academic/models.py:84
+#: academic/models.py:89
 msgid "ComponentsSGA"
 msgstr "Componente SGA"
 
-#: academic/models.py:89 sga/models.py:147
+#: academic/models.py:94 sga/models.py:151
 msgid "Comercial name"
 msgstr "Nombre Comercial"
 
-#: academic/models.py:90
+#: academic/models.py:95
 #: academic/templates/academic/substance/detail_substance.html:16
 #: academic/templates/academic/substance/pdf/section_three.html:7
-#: sga/models.py:156
+#: sga/models.py:160
 msgid "Synonymous"
 msgstr "Sinónimos"
 
-#: academic/models.py:93
+#: academic/models.py:98
 #: academic/templates/academic/substance/detail_substance.html:21
-#: sga/forms.py:172 sga/models.py:149
+#: sga/forms.py:159 sga/models.py:153
 msgid "UIPA name"
 msgstr "Nombre UIPA"
 
-#: academic/models.py:95
+#: academic/models.py:100
 #: academic/templates/academic/substance/detail_substance.html:31
-#: sga/models.py:142 sga/models.py:152
+#: sga/models.py:146 sga/models.py:156
 msgid "Components"
 msgstr "Componentes"
 
-#: academic/models.py:97
+#: academic/models.py:102
 #: academic/templates/academic/substance/detail_substance.html:56
-#: sga/models.py:158
+#: sga/models.py:162
 msgid "Agrochemical"
 msgstr "Agroquímicos"
 
-#: academic/models.py:98 laboratory/models.py:65
+#: academic/models.py:103 laboratory/models.py:68
 msgid "Share with others"
 msgstr "Compartir con otros"
 
-#: academic/models.py:108
+#: academic/models.py:113
 msgid "SustanceSGA"
 msgstr "Sustancia SGA"
 
-#: academic/models.py:109
+#: academic/models.py:114
 msgid "SustancesSGA"
 msgstr "Sustancias SGA"
 
-#: academic/models.py:121
+#: academic/models.py:126
 #: academic/templates/academic/substance/detail_substance.html:115
 #: academic/templates/academic/substance/pdf/section_three.html:11
-#: laboratory/models.py:114 laboratory/views/reports.py:334 sga/models.py:193
+#: laboratory/models.py:115 laboratory/views/reports.py:309 sga/models.py:196
 msgid "Molecular formula"
 msgstr "Formula molecular"
 
-#: academic/models.py:123 laboratory/models.py:116 sga/models.py:195
+#: academic/models.py:128 laboratory/models.py:117 sga/models.py:198
 msgid "Cas ID Number"
 msgstr "Número ID CAS"
 
-#: academic/models.py:125
+#: academic/models.py:130
 #: academic/templates/academic/substance/security_leaf_pdf.html:7
-#: laboratory/models.py:118 sga/models.py:197
+#: laboratory/models.py:119 sga/models.py:200
 msgid "Security sheet"
 msgstr "Hojas de seguridad"
 
-#: academic/models.py:126 laboratory/models.py:119 sga/models.py:198
+#: academic/models.py:131 laboratory/models.py:120 sga/models.py:201
 msgid "Is precursor"
 msgstr "¿Es precursor?"
 
-#: academic/models.py:130
+#: academic/models.py:135
 #: academic/templates/academic/substance/danger_indication.html:13
 #: academic/templates/academic/substance/detail_substance.html:135
 #: academic/templates/academic/substance/sga_complements.html:7
-#: laboratory/models.py:123
-#: presentation/templates/partials/sga_complements.html:18 sga/models.py:122
-#: sga/models.py:202 sga/templates/editor/generic.html:9
+#: laboratory/models.py:124
+#: presentation/templates/partials/sga_complements.html:18 sga/models.py:126
+#: sga/models.py:205 sga/templates/editor/generic.html:9
 #: sga/templates/editor/sga_live.html:14
 msgid "Danger Indication"
 msgstr "Indicación de peligro"
 
-#: academic/models.py:133
+#: academic/models.py:138
 #: academic/templates/academic/substance/detail_substance.html:150
-#: laboratory/models.py:126 sga/models.py:205
+#: laboratory/models.py:127
+#: laboratory/templates/laboratory/shelfobject_detail.html:66 sga/models.py:208
 msgid "UE codes"
 msgstr "Códigos UE"
 
-#: academic/models.py:135
+#: academic/models.py:140
 #: academic/templates/academic/substance/detail_substance.html:165
-#: laboratory/models.py:128 sga/models.py:207
+#: laboratory/models.py:129
+#: laboratory/templates/laboratory/shelfobject_detail.html:73 sga/models.py:210
 msgid "NFPA codes"
 msgstr "Códigos NFPA"
 
-#: academic/models.py:137
+#: academic/models.py:142
 #: academic/templates/academic/substance/detail_substance.html:180
-#: laboratory/models.py:130 sga/models.py:209
+#: laboratory/models.py:131
+#: laboratory/templates/laboratory/shelfobject_detail.html:80 sga/models.py:212
 msgid "Storage class"
 msgstr "Clases de almacenamientos"
 
-#: academic/models.py:138
+#: academic/models.py:143
 #: academic/templates/academic/substance/detail_substance.html:61
-#: laboratory/models.py:131 sga/models.py:210
+#: laboratory/models.py:132
+#: laboratory/templates/laboratory/shelfobject_detail.html:52 sga/models.py:213
 msgid "Is Seveso list III?"
 msgstr "Esta Seveso en la lista III?"
 
-#: academic/models.py:141
+#: academic/models.py:146
 msgid "Sustance characteristicSGA"
 msgstr "Características"
 
-#: academic/models.py:142
+#: academic/models.py:147
 msgid "Sustance characteristicsSGA"
 msgstr "Características"
 
-#: academic/models.py:148
-#: academic/templates/academic/substance/check_substances.html:26
+#: academic/models.py:153
+#: academic/templates/academic/substance/check_substances.html:110
 #: academic/templates/academic/substance/detail_substance.html:6
-#: laboratory/models.py:559 sga/models.py:159
+#: laboratory/models.py:617 sga/models.py:163
 msgid "Creator"
 msgstr "Creador"
 
-#: academic/models.py:149
+#: academic/models.py:154 laboratory/templates/laboratory/logentry_list.html:18
 #: laboratory/templates/laboratory/transfer_objects.html:28
 msgid "Date"
 msgstr "Fecha:"
 
-#: academic/models.py:152
+#: academic/models.py:157
 msgid "Observation"
 msgstr "Observaciones"
 
-#: academic/models.py:153 academic/templates/academic/detail.html:52
+#: academic/models.py:158 academic/templates/academic/detail.html:52
 #: academic/templates/academic/procedure_steps.html:55
 #: academic/templates/academic/step_modal.html:32
 #: academic/templates/academic/substance/detail.html:33
@@ -298,40 +320,40 @@ msgstr "Observaciones"
 msgid "Observations"
 msgstr "Observaciones"
 
-#: academic/substance/forms.py:125
+#: academic/substance/forms.py:126
 #: academic/templates/academic/substance/pdf/section_five.html:32
 msgid "Other Information"
 msgstr "Otra información"
 
-#: academic/substance/views.py:171
+#: academic/substance/views.py:158
 msgid "The substance is removed successfully"
 msgstr "La sustancia fue eliminada con éxito"
 
-#: academic/substance/views.py:213
+#: academic/substance/views.py:204
 msgid "Create Warning Word"
 msgstr "Crear palabra de advertencia"
 
-#: academic/substance/views.py:214
+#: academic/substance/views.py:205
 msgid "Create Danger Indication"
 msgstr "Crear indicación de peligro"
 
-#: academic/substance/views.py:215
+#: academic/substance/views.py:206
 msgid "Create Prudence Advice"
 msgstr "Crear consejo de prudencia"
 
-#: academic/substance/views.py:340
+#: academic/substance/views.py:343
 msgid "Update the Warning Word"
 msgstr "Actualizar palabra de advertencia"
 
-#: academic/substance/views.py:361
+#: academic/substance/views.py:369
 msgid "Update the Prudence Advice"
 msgstr "Actualizar consejo de prudencia"
 
-#: academic/substance/views.py:382
+#: academic/substance/views.py:392
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
 
-#: academic/substance/views.py:461 sga/views.py:226 sga/views.py:266
+#: academic/substance/views.py:483 sga/views.py:149 sga/views.py:190
 msgid "Invalid form"
 msgstr "Formularion inválido"
 
@@ -344,28 +366,27 @@ msgstr "Desconocido"
 #: academic/templates/academic/detail.html:16
 #: academic/templates/academic/detail.html:31
 #: academic/templates/academic/detail.html:32
-#: academic/templates/academic/procedure_list.html:45
+#: academic/templates/academic/procedure_list.html:48
 #: academic/templates/academic/substance/danger_indication.html:32
 #: academic/templates/academic/substance/list_substance.html:46
 #: academic/templates/academic/substance/observations.html:97
 #: academic/templates/academic/substance/prudence_advice.html:32
 #: academic/templates/academic/substance/warning_words.html:32
 #: derb/templates/formBuilder/form_list.html:72
-#: laboratory/api/serializers.py:72
+#: laboratory/api/serializers.py:74
 #: laboratory/templates/laboratory/lab_card.html:17
 #: laboratory/templates/laboratory/objectfeatures_form.html:30
 #: laboratory/templates/laboratory/objectfeatures_form.html:52
 #: laboratory/templates/laboratory/objectview_list.html:50
 #: laboratory/templates/laboratory/search.html:44
-#: laboratory/templates/laboratory/shelfObject.html:9
-#: laboratory/templates/laboratory/shelf_details.html:15 msds/views.py:32
+#: laboratory/templates/laboratory/shelfObject.html:9 msds/views.py:34
 #: risk_management/templates/risk_management/incidentreport_detail.html:18
 #: risk_management/templates/risk_management/incidentreport_list.html:50
 #: risk_management/templates/risk_management/riskzone_detail.html:30
 #: risk_management/templates/risk_management/riskzone_list.html:62
 #: sga/templates/list_company.html:42 sga/templates/list_company.html:45
 #: sga/templates/list_pictograms.html:38 sga/templates/list_pictograms.html:41
-#: sga/templates/personal_template.html:49 sga/views.py:475
+#: sga/templates/personal_template.html:49 sga/views.py:353
 msgid "Edit"
 msgstr "Editar"
 
@@ -390,25 +411,25 @@ msgid "Are you sure to delete the step"
 msgstr "¿Está seguro de que quiere eliminar este paso?"
 
 #: academic/templates/academic/detail.html:78
-#: academic/templates/academic/procedure_list.html:119
+#: academic/templates/academic/procedure_list.html:122
 #: academic/templates/academic/procedure_steps.html:88
 msgid "Are you sure to delete this observation?"
 msgstr "¿Está seguro de que quiere eliminar esta observación?"
 
 #: academic/templates/academic/detail.html:79
-#: academic/templates/academic/procedure_list.html:120
+#: academic/templates/academic/procedure_list.html:123
 #: academic/templates/academic/procedure_steps.html:89
 msgid "Are you sure to delete this object "
 msgstr "¿Está seguro de que quiere eliminar este objeto."
 
 #: academic/templates/academic/detail.html:80
-#: academic/templates/academic/procedure_list.html:121
+#: academic/templates/academic/procedure_list.html:124
 #: academic/templates/academic/procedure_steps.html:90
 msgid "has been deleted"
 msgstr "ha sido eliminado"
 
 #: academic/templates/academic/detail.html:81
-#: academic/templates/academic/procedure_list.html:122
+#: academic/templates/academic/procedure_list.html:125
 #: academic/templates/academic/procedure_steps.html:91
 msgid "Observation has been deleted"
 msgstr "La observación ha sido eliminada"
@@ -439,8 +460,8 @@ msgstr "Crear procedimiento"
 #: derb/templates/formBuilder/edit_view.html:40
 #: laboratory/templates/laboratory/complete_inform.html:70
 #: laboratory/templates/laboratory/edit.html:15
-#: laboratory/templates/laboratory/furniture_form.html:27
-#: laboratory/templates/laboratory/furniture_form.html:64
+#: laboratory/templates/laboratory/furniture_form.html:34
+#: laboratory/templates/laboratory/furniture_form.html:71
 #: laboratory/templates/laboratory/laboratory_form.html:12
 #: laboratory/templates/laboratory/object_form.html:10
 #: laboratory/templates/laboratory/objectfeatures_form.html:28
@@ -463,7 +484,7 @@ msgstr "Crear Nuevo Procedimiento"
 #: academic/templates/academic/procedure_list.html:27
 #: academic/templates/academic/procedure_steps.html:36
 #: academic/templates/academic/procedure_steps.html:60
-#: academic/templates/academic/substance/check_substances.html:28
+#: academic/templates/academic/substance/check_substances.html:112
 #: academic/templates/academic/substance/danger_indication.html:22
 #: academic/templates/academic/substance/list_substance.html:36
 #: academic/templates/academic/substance/warning_words.html:23
@@ -478,12 +499,12 @@ msgstr "Acciones"
 msgid "New Step"
 msgstr "Nuevo Paso"
 
-#: academic/templates/academic/procedure_list.html:43
+#: academic/templates/academic/procedure_list.html:45
 #: laboratory/templates/laboratory/my_reservations_list.html:19
 msgid "Reserve"
 msgstr "Reservar"
 
-#: academic/templates/academic/procedure_list.html:47
+#: academic/templates/academic/procedure_list.html:50
 #: academic/templates/academic/step_modal.html:68
 #: academic/templates/academic/substance/list_substance.html:48
 #: academic/templates/academic/substance/observations.html:96
@@ -493,33 +514,33 @@ msgstr "Reservar"
 msgid "Remove"
 msgstr "Eliminar"
 
-#: academic/templates/academic/procedure_list.html:60
+#: academic/templates/academic/procedure_list.html:63
 #: reservations_management/models.py:63
 msgid "Reservation"
 msgstr "Reservación"
 
-#: academic/templates/academic/procedure_list.html:61
-#: academic/templates/academic/procedure_list.html:78
-#: academic/templates/academic/procedure_list.html:90
-#: academic/templates/academic/procedure_list.html:100
+#: academic/templates/academic/procedure_list.html:64
+#: academic/templates/academic/procedure_list.html:81
+#: academic/templates/academic/procedure_list.html:93
+#: academic/templates/academic/procedure_list.html:103
 #: academic/templates/academic/step_modal.html:9
 #: academic/templates/academic/step_modal.html:20
 #: academic/templates/academic/step_modal.html:33
 #: academic/templates/academic/step_modal.html:44
 #: academic/templates/academic/step_modal.html:58
 #: academic/templates/academic/step_modal.html:67
-#: academic/templates/academic/substance/list_substance.html:77
+#: academic/templates/academic/substance/list_substance.html:73
 #: academic/templates/academic/substance/observations.html:95
 #: academic/templates/academic/substance/step_four.html:408
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:142
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:164
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:187
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:218
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:150
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:172
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:195
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:226
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:27
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:50
-#: laboratory/templates/laboratory/laboratoryroom_form.html:112
+#: laboratory/templates/laboratory/laboratoryroom_form.html:110
 #: laboratory/templates/laboratory/reservation_modal.html:35
-#: laboratory/templates/laboratory/reservation_modal.html:134
+#: laboratory/templates/laboratory/reservation_modal.html:137
 #: laboratory/templates/laboratory/shelf_form.html:17
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:26
 #: laboratory/templates/laboratory/shelfobject_form.html:18
@@ -528,34 +549,34 @@ msgstr "Reservación"
 msgid "Close"
 msgstr "Cerrar"
 
-#: academic/templates/academic/procedure_list.html:79
+#: academic/templates/academic/procedure_list.html:82
 #: academic/templates/academic/step_modal.html:21
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:143
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:165
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:188
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:219
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:151
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:173
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:196
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:227
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:28
 #: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:51
-#: laboratory/templates/laboratory/reservation_modal.html:135
+#: laboratory/templates/laboratory/reservation_modal.html:138
 #: laboratory/templates/laboratory/shelfobject_form.html:19
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: academic/templates/academic/procedure_list.html:89 sga/views.py:651
+#: academic/templates/academic/procedure_list.html:92 sga/views.py:541
 msgid "Error"
 msgstr "Error"
 
-#: academic/templates/academic/procedure_list.html:93
+#: academic/templates/academic/procedure_list.html:96
 msgid ""
 "The requested quantity of the material is not found in the inventory of the "
 "following materials:"
 msgstr "La cantidad no disponibles en los siguientes materiales:"
 
-#: academic/templates/academic/procedure_list.html:115
+#: academic/templates/academic/procedure_list.html:118
 msgid "Reserved"
 msgstr "Reservar"
 
-#: academic/templates/academic/procedure_list.html:118
+#: academic/templates/academic/procedure_list.html:121
 msgid "Are you sure to delete the procedure"
 msgstr "¿Está seguro de que quiere eliminar este procedimiento"
 
@@ -569,28 +590,28 @@ msgstr "Objetos"
 
 #: academic/templates/academic/procedure_steps.html:44
 #: academic/templates/academic/procedure_steps.html:67
-#: academic/templates/academic/substance/list_substance.html:78
+#: academic/templates/academic/substance/list_substance.html:74
 #: derb/templates/formBuilder/form_list.html:73
 #: derb/templates/formBuilder/form_list.html:94
-#: laboratory/api/serializers.py:77
-#: laboratory/templates/laboratory/furniture_form.html:33
-#: laboratory/templates/laboratory/laboratoryroom_form.html:86
+#: laboratory/api/serializers.py:79
+#: laboratory/templates/laboratory/furniture_form.html:40
+#: laboratory/templates/laboratory/laboratoryroom_form.html:84
 #: laboratory/templates/laboratory/objectfeatures_form.html:57
 #: laboratory/templates/laboratory/objectview_list.html:56
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:21
-#: msds/views.py:37
+#: msds/views.py:39
 #: risk_management/templates/risk_management/incidentreport_list.html:54
 #: risk_management/templates/risk_management/riskzone_list.html:67
-#: sga/templates/personal_template.html:53
-#: sga/templates/personal_template.html:115
+#: sga/templates/personal_template.html:55
+#: sga/templates/personal_template.html:117
 msgid "Delete"
 msgstr "Eliminar"
 
 #: academic/templates/academic/procedure_steps.html:49
 #: authentication/templates/auth/user_form.html:12
 #: derb/templates/formBuilder/form_list.html:90
-#: laboratory/templates/laboratory/laboratory_create.html:22
-#: laboratory/templates/laboratory/provider_add.html:22
+#: laboratory/templates/laboratory/laboratory_create.html:21
+#: laboratory/templates/laboratory/provider_add.html:23
 msgid "Create"
 msgstr "Crear"
 
@@ -598,7 +619,7 @@ msgstr "Crear"
 msgid "Crear"
 msgstr "Crear"
 
-#: academic/templates/academic/step_modal.html:8 laboratory/models.py:95
+#: academic/templates/academic/step_modal.html:8 laboratory/models.py:96
 #: laboratory/templates/laboratory/index.html:154
 #: presentation/templates/gentelella/app/report_menu.html:14
 #: presentation/templates/gentelella/app/report_menu.html:38
@@ -618,47 +639,36 @@ msgstr "¿Deseas eliminar el objecto?"
 msgid "List of Substances"
 msgstr "Listado de Sustancias"
 
+#: academic/templates/academic/substance/check_substances.html:24
+msgid "Show approved substances"
+msgstr "Mostrar sustancias aprobadas"
+
 #: academic/templates/academic/substance/check_substances.html:27
-#: sga/models.py:180
-msgid "Substances"
-msgstr "Sustancias"
+#: academic/templates/academic/substance/detail_substance.html:57
+#: academic/templates/academic/substance/detail_substance.html:62
+#: laboratory/sustance/views.py:139 laboratory/sustance/views.py:141
+#: laboratory/sustance/views.py:143
+#: laboratory/templates/laboratory/complete_inform.html:75
+#: laboratory/templates/laboratory/complete_inform.html:82
+#: laboratory/templates/laboratory/complete_inform.html:91
+#: laboratory/templates/laboratory/search.html:110
+#: reservations_management/templates/reservations_management/reservations_list.html:90
+#: sga/templates/donate_organilab.html:47 sga/templates/list_company.html:68
+msgid "Yes"
+msgstr "Si"
 
-#: academic/templates/academic/substance/check_substances.html:38
-#: academic/templates/academic/substance/check_substances.html:80
-msgid "Approve"
-msgstr "Aprobar"
-
-#: academic/templates/academic/substance/check_substances.html:39
-msgid "Detail"
-msgstr "Detalle"
-
-#: academic/templates/academic/substance/check_substances.html:41
-#: academic/templates/academic/substance/check_substances.html:59
-#: academic/templates/academic/substance/list_substance.html:50
-#: academic/templates/academic/substance/list_substance.html:89
-#: sga/templates/personal_template.html:50
-#: sga/templates/personal_template.html:65
+#: academic/templates/academic/substance/check_substances.html:44
+#: academic/templates/academic/substance/list_substance.html:85
+#: sga/templates/personal_template.html:51
+#: sga/templates/personal_template.html:67
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: academic/templates/academic/substance/check_substances.html:42
-#: academic/templates/academic/substance/list_substance.html:51
-#: sga/templates/personal_template.html:51
-msgid "Generate PNG"
-msgstr "Uso general"
-
-#: academic/templates/academic/substance/check_substances.html:43
-#: academic/templates/academic/substance/check_substances.html:45
-#: academic/templates/academic/substance/list_substance.html:52
-#: academic/templates/academic/substance/list_substance.html:54
-#: sga/templates/personal_template.html:52
-msgid "Generate PDF"
-msgstr "Uso general"
-
-#: academic/templates/academic/substance/check_substances.html:74
+#: academic/templates/academic/substance/check_substances.html:59
+#: academic/templates/academic/substance/check_substances.html:111
 #: academic/templates/academic/substance/pdf/section_eight.html:9
 #: academic/templates/academic/substance/pdf/section_three.html:4
-#: sga/models.py:179 sga/models.py:270 sga/models.py:487
+#: sga/models.py:182 sga/models.py:273 sga/models.py:474
 msgid "Substance"
 msgstr "Sustancia"
 
@@ -666,6 +676,24 @@ msgstr "Sustancia"
 #: laboratory/templates/laboratory/sustance/sustance_form.html:16
 msgid "Substance Management"
 msgstr "Administración de soluciones"
+
+#: academic/templates/academic/substance/create_sustance.html:46
+msgid "Did you find H code component?"
+msgstr "Encontró el componente de códigos H"
+
+#: academic/templates/academic/substance/create_sustance.html:47
+msgid "Create it here!"
+msgstr "Crear lo aquí!"
+
+#: academic/templates/academic/substance/create_sustance.html:53
+#: academic/templates/academic/substance/step_four.html:390
+#: academic/templates/academic/substance/step_two.html:31
+#: sga/templates/add_recipient_size.html:26 sga/templates/add_substance.html:23
+#: sga/templates/donate_organilab.html:22
+#: sga/templates/personal_template.html:89
+#: sga/templates/sgalabel/step_one.html:35
+msgid "Continue"
+msgstr "Continuar"
 
 #: academic/templates/academic/substance/danger_indication.html:15
 #: academic/templates/academic/substance/list_substance.html:27
@@ -682,26 +710,27 @@ msgstr "Administración de soluciones"
 #: risk_management/templates/risk_management/riskzone_detail.html:28
 #: risk_management/templates/risk_management/riskzone_list.html:25
 #: sga/templates/list_company.html:18 sga/templates/list_pictograms.html:18
-#: sga/views.py:447
+#: sga/views.py:328
 msgid "Add"
 msgstr "Agregar"
 
 #: academic/templates/academic/substance/danger_indication.html:19
-#: laboratory/models.py:61
+#: laboratory/models.py:64
 #: laboratory/templates/laboratory/organization_reactive_presence.html:50
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:54
 #: laboratory/templates/laboratory/search.html:52
+#: laboratory/templates/laboratory/shelfobject_detail.html:15
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:20
-#: laboratory/views/reports.py:170 laboratory/views/reports.py:268
-#: laboratory/views/reports.py:329 laboratory/views/reports.py:495
-#: laboratory/views/reports.py:980 sga/models.py:84 sga/models.py:101
+#: laboratory/views/reports.py:136 laboratory/views/reports.py:240
+#: laboratory/views/reports.py:304 laboratory/views/reports.py:474
+#: laboratory/views/reports.py:966 sga/models.py:88 sga/models.py:105
 msgid "Code"
 msgstr "Código"
 
 #: academic/templates/academic/substance/danger_indication.html:21
 #: academic/templates/academic/substance/sga_complements.html:3
 #: academic/templates/academic/substance/warning_words.html:14
-#: presentation/templates/partials/sga_complements.html:13 sga/models.py:57
+#: presentation/templates/partials/sga_complements.html:13 sga/models.py:58
 #: sga/templates/danger_indication_info.html:36
 #: sga/templates/editor/live.html:3
 msgid "Warning Words"
@@ -713,39 +742,27 @@ msgstr "Informacion sobre la sustancia"
 
 #: academic/templates/academic/substance/detail_substance.html:26
 #: academic/templates/academic/substance/pdf/section_one.html:16
-#: sga/models.py:150
+#: sga/models.py:154
 msgid "Brand"
 msgstr "Marca"
 
 #: academic/templates/academic/substance/detail_substance.html:46
 #: academic/templates/academic/substance/pdf/section_three.html:15
-#: sga/models.py:213
+#: sga/models.py:216
 msgid "Molecular Weight"
 msgstr "Formula molecular"
 
 #: academic/templates/academic/substance/detail_substance.html:51
 #: academic/templates/academic/substance/pdf/section_three.html:36
 #: academic/templates/academic/substance/pdf/section_three.html:95
-#: sga/models.py:214
+#: sga/models.py:217
 msgid "Concentration"
 msgstr "Concentración"
 
-#: academic/templates/academic/substance/detail_substance.html:57
-#: academic/templates/academic/substance/detail_substance.html:62
-#: laboratory/sustance/views.py:118 laboratory/sustance/views.py:120
-#: laboratory/sustance/views.py:122
-#: laboratory/templates/laboratory/complete_inform.html:75
-#: laboratory/templates/laboratory/complete_inform.html:82
-#: laboratory/templates/laboratory/complete_inform.html:91
-#: laboratory/templates/laboratory/search.html:110
-#: reservations_management/templates/reservations_management/reservations_list.html:88
-#: sga/templates/donate_organilab.html:47 sga/templates/list_company.html:68
-msgid "Yes"
-msgstr "Si"
-
 #: academic/templates/academic/substance/detail_substance.html:95
 #: laboratory/templates/laboratory/organization_reactive_presence.html:53
-#: laboratory/views/reports.py:983
+#: laboratory/templates/laboratory/shelfobject_detail.html:43
+#: laboratory/views/reports.py:969
 msgid "White Organ"
 msgstr "Organo blanco"
 
@@ -760,12 +777,12 @@ msgstr "Bioacumulable"
 #: academic/templates/academic/substance/pdf/section_three.html:78
 #: academic/templates/academic/substance/pdf/section_three.html:114
 #: academic/templates/academic/substance/pdf/section_three.html:138
-#: sga/models.py:211
+#: sga/models.py:214
 msgid "Number Index"
 msgstr "Numero indice"
 
 #: academic/templates/academic/substance/detail_substance.html:130
-#: sga/models.py:212
+#: sga/models.py:215
 msgid "Number CE"
 msgstr "Numero CE"
 
@@ -788,11 +805,11 @@ msgstr "Estado"
 msgid "Review"
 msgstr "Revisión"
 
-#: academic/templates/academic/substance/list_substance.html:70
+#: academic/templates/academic/substance/list_substance.html:66
 msgid "Delete Substance"
 msgstr "Eliminar sustancia"
 
-#: academic/templates/academic/substance/list_substance.html:74
+#: academic/templates/academic/substance/list_substance.html:70
 msgid "¿You want to remove the substance?"
 msgstr "¿Quieres eliminar la sustancia?"
 
@@ -907,7 +924,7 @@ msgid "Exposure controls"
 msgstr "Controles de la exposición"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:55
-#: sga/models.py:407
+#: sga/models.py:394
 msgid "Appropriate technical controls"
 msgstr "Controles técnicos apropiados"
 
@@ -1001,27 +1018,27 @@ msgid "no data available"
 msgstr "Sin datos disponibles"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:61
-#: sga/models.py:408
+#: sga/models.py:395
 msgid "Eye/face protection"
 msgstr "Protección de los ojos/ la cara"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:66
-#: sga/models.py:409
+#: sga/models.py:396
 msgid "Skin protection"
 msgstr "Protección de la piel"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:71
-#: sga/models.py:410
+#: sga/models.py:397
 msgid "Corporal protection"
 msgstr "Controles de exposición/protección individual"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:76
-#: sga/models.py:411
+#: sga/models.py:398
 msgid "Breath protection"
 msgstr "Protección respiratoria"
 
 #: academic/templates/academic/substance/pdf/section_eight.html:81
-#: sga/models.py:412
+#: sga/models.py:399
 msgid "Environmental exposure control"
 msgstr "Control de exposición ambiental"
 
@@ -1046,67 +1063,67 @@ msgid "Information on toxicological effects"
 msgstr "Información sobre los efectos toxicológicos"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:6
-#: sga/models.py:446
+#: sga/models.py:433
 msgid "Acute toxicity"
 msgstr "Toxicidad aguda"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:10
-#: sga/models.py:447
+#: sga/models.py:434
 msgid "Skin corrosion or irritation"
 msgstr "Corrosión o irritación cutáneas"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:14
-#: sga/models.py:448
+#: sga/models.py:435
 msgid "Serious eye damage or irritation"
 msgstr "Lesiones o irritación ocular graves"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:18
-#: sga/models.py:449
+#: sga/models.py:436
 msgid "Respiratory or skin sensitization"
 msgstr "Sanitización de respiratoria o de piel"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:22
-#: sga/models.py:450
+#: sga/models.py:437
 msgid "Germ cell mutagenicity"
 msgstr "Mutagenicidad en células germinales"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:26
-#: sga/models.py:451
+#: sga/models.py:438
 msgid "Carcinogenicity"
 msgstr "Carcinogenicidad"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:30
-#: sga/models.py:452
+#: sga/models.py:439
 msgid "Reproductive toxicity"
 msgstr "Toxicidad para la reproducción"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:34
-#: sga/models.py:453
+#: sga/models.py:440
 msgid "Specific target organ toxicity - single exposure"
 msgstr "Toxicidad específica en determinados órganos - exposición única"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:38
-#: sga/models.py:454
+#: sga/models.py:441
 msgid "Specific target organ toxicity - repeated exposure"
 msgstr "Toxicidad específica en determinados órganos - exposiciones repetidas"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:42
-#: sga/models.py:455
+#: sga/models.py:442
 msgid "Aspiration hazard"
 msgstr "Peligro de aspiración"
 
 #: academic/templates/academic/substance/pdf/section_eleven.html:46
-#: sga/models.py:456
+#: sga/models.py:443
 msgid "Additional Information"
 msgstr "Información Adicional"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:2
-#: academic/templates/academic/substance/step_four.html:329 sga/models.py:476
+#: academic/templates/academic/substance/step_four.html:329 sga/models.py:463
 msgid "Regulatory information"
 msgstr "Información reglamentaria"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:4
-#: sga/models.py:477
+#: sga/models.py:464
 msgid ""
 "Regulations and legislation on safety, health and the environment specific "
 "to the substance or mixture"
@@ -1115,7 +1132,7 @@ msgstr ""
 "específicas para la sustancia o la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_fifthteen.html:8
-#: sga/models.py:478
+#: sga/models.py:465
 msgid "Chemical Safety Assessment"
 msgstr "Evaluación de la seguridad química"
 
@@ -1128,27 +1145,27 @@ msgid "Extinguishing media"
 msgstr "Medios de extinción"
 
 #: academic/templates/academic/substance/pdf/section_five.html:6
-#: sga/models.py:384
+#: sga/models.py:371
 msgid "Suitable extinguishing media"
 msgstr "Medios de extinción apropiados"
 
 #: academic/templates/academic/substance/pdf/section_five.html:10
-#: sga/models.py:385
+#: sga/models.py:372
 msgid "Unsuitable extinguishing media"
 msgstr "Medios de extinción no apropiados"
 
 #: academic/templates/academic/substance/pdf/section_five.html:15
-#: sga/models.py:386
+#: sga/models.py:373
 msgid "Specific hazards arising from the substance or mixture"
 msgstr "Peligros específicos derivados de la sustancia o la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_five.html:20
-#: sga/models.py:387
+#: sga/models.py:374
 msgid "Hazardous Combustion Products"
 msgstr "Productos de combustión peligrosos"
 
 #: academic/templates/academic/substance/pdf/section_five.html:26
-#: sga/models.py:388
+#: sga/models.py:375
 msgid "Recommendations for firefighters"
 msgstr "Recomendaciones para el personal de lucha contra incendios"
 
@@ -1161,42 +1178,42 @@ msgid "Description of first aid"
 msgstr "Descripción de los primeros auxilios"
 
 #: academic/templates/academic/substance/pdf/section_four.html:7
-#: sga/models.py:374
+#: sga/models.py:361
 msgid "General recommendations"
 msgstr "Recomendaciones generales"
 
 #: academic/templates/academic/substance/pdf/section_four.html:12
-#: sga/models.py:375
+#: sga/models.py:362
 msgid "If inhaled"
 msgstr "Si es inhalado"
 
 #: academic/templates/academic/substance/pdf/section_four.html:17
-#: sga/models.py:376
+#: sga/models.py:363
 msgid "In case of skin contact"
 msgstr "En caso de contacto con la piel"
 
 #: academic/templates/academic/substance/pdf/section_four.html:22
-#: sga/models.py:377
+#: sga/models.py:364
 msgid "In case of contact with eyes"
 msgstr "En caso de contacto con los ojos"
 
 #: academic/templates/academic/substance/pdf/section_four.html:27
-#: sga/models.py:378
+#: sga/models.py:365
 msgid "if it is swallowed"
 msgstr "si es tragado"
 
 #: academic/templates/academic/substance/pdf/section_four.html:32
-#: sga/models.py:379
+#: sga/models.py:366
 msgid "Most important symptoms and effects, both acute and delayed"
 msgstr "Principales síntomas y efectos, agudos y retardados"
 
 #: academic/templates/academic/substance/pdf/section_four.html:37
-#: sga/models.py:380
+#: sga/models.py:367
 msgid "Other Causes"
 msgstr "Otros Peligros"
 
 #: academic/templates/academic/substance/pdf/section_four.html:43
-#: sga/models.py:381
+#: sga/models.py:368
 msgid ""
 "Indication of any medical attention and special treatment that should be "
 "provided immediately"
@@ -1210,32 +1227,32 @@ msgid "Transport information"
 msgstr "Información relativa al transporte"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:4
-#: sga/models.py:469
+#: sga/models.py:456
 msgid "ONU Number"
 msgstr "Número CAS"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:8
-#: sga/models.py:470
+#: sga/models.py:457
 msgid "United Nations proper shipping name"
 msgstr "Designación oficial de transporte de las Naciones Unidas"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:12
-#: sga/models.py:471
+#: sga/models.py:458
 msgid "Transport hazard class"
 msgstr "Clase(s) de peligro para el transporte"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:16
-#: sga/models.py:472
+#: sga/models.py:459
 msgid "Packaging group"
 msgstr "Grupo embalaje"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:20
-#: sga/models.py:473
+#: sga/models.py:460
 msgid "Environmental hazards"
 msgstr "Peligros para el medio ambiente"
 
 #: academic/templates/academic/substance/pdf/section_fourteen.html:24
-#: sga/models.py:474
+#: sga/models.py:461
 msgid "Special precautions for users"
 msgstr "Precauciones particulares para los usuarios"
 
@@ -1249,72 +1266,72 @@ msgid "Information on basic physical and chemical properties"
 msgstr "Información sobre propiedades físicas y químicas básicas"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:7
-#: sga/models.py:416
+#: sga/models.py:403
 msgid "Aspect"
 msgstr "Aspecto"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:11
-#: sga/models.py:417
+#: sga/models.py:404
 msgid "Smell"
 msgstr "Olor"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:15
-#: sga/models.py:418
+#: sga/models.py:405
 msgid "Olfactory threshold"
 msgstr "Umbral olfativo"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:19
-#: sga/models.py:419
+#: sga/models.py:406
 msgid "pH"
 msgstr "pH"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:23
-#: sga/models.py:420
+#: sga/models.py:407
 msgid "Melting point/ point of freezing"
 msgstr "Punto de fusión/ punto de congelación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:27
-#: sga/models.py:421
+#: sga/models.py:408
 msgid "Starting point of boiling and range boiling"
 msgstr "Punto inicial de ebullición e intervalo de ebullición"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:31
-#: sga/models.py:422
+#: sga/models.py:409
 msgid "Flashpoint"
 msgstr "Punto de inflamación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:35
-#: sga/models.py:423
+#: sga/models.py:410
 msgid "Evaporation rate"
 msgstr "Tasa de evaporación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:39
-#: sga/models.py:424
+#: sga/models.py:411
 msgid "Flammability (solid,gas)"
 msgstr "Inflamabilidad (sólido,gas)"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:43
-#: sga/models.py:425
+#: sga/models.py:412
 msgid "Inflammability top/bottom or explosive limits"
 msgstr "Inflamabilidad superior/inferior o límites explosivos"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:47
-#: sga/models.py:426
+#: sga/models.py:413
 msgid "Vapor pressure"
 msgstr "Presión osmótica"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:51
-#: sga/models.py:427
+#: sga/models.py:414
 msgid "Vapor density"
 msgstr "Densidad de vapor"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:55
-#: sga/models.py:428
+#: sga/models.py:415
 msgid "Relative density"
 msgstr "Administración de Reactivos"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:59
-#: sga/models.py:429
+#: sga/models.py:416
 msgid "Water solubility"
 msgstr "Solubilidad en agua"
 
@@ -1323,32 +1340,32 @@ msgid "Partition coefficient n-octanol/wate"
 msgstr "Coeficiente de partición: N-Octanol/Agua"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:67
-#: sga/models.py:431
+#: sga/models.py:418
 msgid "Auto-temperature inflammation"
 msgstr "Temperatura de auto-inflamación"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:71
-#: sga/models.py:432
+#: sga/models.py:419
 msgid "Temperature of decomposition"
 msgstr "Temperatura de descomposición"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:75
-#: sga/models.py:433
+#: sga/models.py:420
 msgid "Viscosity"
 msgstr "Viscosidad dinámica"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:79
-#: sga/models.py:434
+#: sga/models.py:421
 msgid "Explosive properties"
 msgstr "Propiedades de la solución"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:83
-#: sga/models.py:435
+#: sga/models.py:422
 msgid "Properties oxidising"
 msgstr "Propiedades comburentes"
 
 #: academic/templates/academic/substance/pdf/section_nine.html:87
-#: sga/models.py:436
+#: sga/models.py:423
 msgid "Other security information"
 msgstr "Otra información de seguridad"
 
@@ -1371,7 +1388,7 @@ msgid "Product name"
 msgstr "Nombre del producto"
 
 #: academic/templates/academic/substance/pdf/section_one.html:12
-#: sga/models.py:368
+#: sga/models.py:355
 msgid "Reference"
 msgstr "Referencia"
 
@@ -1391,32 +1408,33 @@ msgid "Company"
 msgstr "Compañía"
 
 #: academic/templates/academic/substance/pdf/section_one.html:44
-#: sga/models.py:353
+#: sga/models.py:340
 msgid "Direction"
 msgstr "Descripción"
 
 #: academic/templates/academic/substance/pdf/section_one.html:48
 #: msds/templates/regulation/regulations_document.html:16
-#: msds/templates/regulation/regulations_document.html:35 sga/models.py:352
+#: msds/templates/regulation/regulations_document.html:35 sga/models.py:339
 msgid "Country"
 msgstr "Cantidad"
 
 #: academic/templates/academic/substance/pdf/section_one.html:52
-#: sga/models.py:354
+#: sga/models.py:341
 msgid "Telephone number"
 msgstr "Teléfono de emergencia"
 
 #: academic/templates/academic/substance/pdf/section_one.html:60
-#: laboratory/models.py:423 laboratory/models.py:450
+#: laboratory/models.py:477 laboratory/models.py:507
 #: laboratory/templates/laboratory/provider_list.html:20
-#: laboratory/views/reports.py:802 sga/forms.py:157 sga/models.py:326
-#: sga/models.py:356 sga/templates/donate_organilab.html:38
+#: laboratory/views/reports.py:788 presentation/forms.py:19
+#: presentation/models.py:37 sga/models.py:343
+#: sga/templates/donate_organilab.html:38
 msgid "Email"
 msgstr "Correo electrónico"
 
 #: academic/templates/academic/substance/pdf/section_one.html:64
 #: academic/templates/academic/substance/pdf/section_one.html:67
-#: sga/models.py:358
+#: sga/models.py:345
 msgid "Emergency number"
 msgstr "Teléfono de emergencia"
 
@@ -1425,18 +1443,18 @@ msgid "SECTION 7: Handling and storage"
 msgstr "SECCIÓN 7: Manipulación y almacenamiento"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:4
-#: sga/models.py:397
+#: sga/models.py:384
 msgid "Precautions for safe handling"
 msgstr "Precauciones para una manipulación segura"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:8
-#: sga/models.py:398
+#: sga/models.py:385
 msgid "Conditions for safe storage, including possible incompatibilities"
 msgstr ""
 "Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
 
 #: academic/templates/academic/substance/pdf/section_seven.html:12
-#: sga/models.py:399
+#: sga/models.py:386
 msgid "Specific end uses"
 msgstr "Usos específicos finales"
 
@@ -1445,23 +1463,23 @@ msgid "SECTION 6: Accidental Release Measures"
 msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
 
 #: academic/templates/academic/substance/pdf/section_six.html:4
-#: sga/models.py:392
+#: sga/models.py:379
 msgid "Personnel who are not part of the emergency services"
 msgstr ""
 "Precauciones personales, equipo de protección y procedimientos de emergencia"
 
 #: academic/templates/academic/substance/pdf/section_six.html:9
-#: sga/models.py:393
+#: sga/models.py:380
 msgid "Environmental relative precautions"
 msgstr "Precauciones relativas al medio ambiente"
 
 #: academic/templates/academic/substance/pdf/section_six.html:14
-#: sga/models.py:394
+#: sga/models.py:381
 msgid "Methods and material for containment and cleaning up"
 msgstr "Métodos y material de contención y de limpieza"
 
 #: academic/templates/academic/substance/pdf/section_six.html:19
-#: sga/models.py:395
+#: sga/models.py:382
 msgid "Reference to other sections"
 msgstr "Referencia a otras secciones"
 
@@ -1471,12 +1489,12 @@ msgid "Other information"
 msgstr "Otra información"
 
 #: academic/templates/academic/substance/pdf/section_sixteen.html:4
-#: sga/models.py:480
+#: sga/models.py:467
 msgid "Full text of the H-Statements referred to in sections 2 and 3."
 msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
 
 #: academic/templates/academic/substance/pdf/section_sixteen.html:8
-#: sga/models.py:481
+#: sga/models.py:468
 msgid "The full text of the R-phrases referred to in points 2 and 3"
 msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
 
@@ -1490,32 +1508,32 @@ msgid "Stability and Reactivity"
 msgstr "Estabilidad y Reactividad"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:4
-#: sga/models.py:438
+#: sga/models.py:425
 msgid "Reactivity"
 msgstr "Reactividad"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:8
-#: sga/models.py:439
+#: sga/models.py:426
 msgid "Chemical stability"
 msgstr "Energía química potencial"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:12
-#: sga/models.py:440
+#: sga/models.py:427
 msgid "Possibility of hazardous reactions"
 msgstr "Posibilidad de reacciones peligrosas"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:16
-#: sga/models.py:441
+#: sga/models.py:428
 msgid "Conditions to avoid"
 msgstr "Condiciones que deben evitarse"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:20
-#: sga/models.py:442
+#: sga/models.py:429
 msgid "Incompatible materials"
 msgstr "Materiales incompatibles"
 
 #: academic/templates/academic/substance/pdf/section_ten.html:24
-#: sga/models.py:443
+#: sga/models.py:430
 msgid "Hazardous decomposition products"
 msgstr "Productos de descomposición peligrosos"
 
@@ -1529,13 +1547,13 @@ msgid "Waste treatment methods"
 msgstr "Métodos para el tratamiento de residuos"
 
 #: academic/templates/academic/substance/pdf/section_thirdteen.html:6
-#: msds/models.py:12 msds/templates/index_msds.html:20
-#: msds/templates/index_msds.html:28 sga/models.py:466
+#: msds/models.py:14 msds/templates/index_msds.html:20
+#: msds/templates/index_msds.html:28 sga/models.py:453
 msgid "Product"
 msgstr "Nombre del producto"
 
 #: academic/templates/academic/substance/pdf/section_thirdteen.html:10
-#: sga/models.py:467
+#: sga/models.py:454
 msgid "Contaminated packaging"
 msgstr "Envases contaminados"
 
@@ -1549,7 +1567,7 @@ msgstr "Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
 
 #: academic/templates/academic/substance/pdf/section_three.html:34
 #: academic/templates/academic/substance/pdf/section_three.html:93
-#: sga/models.py:141
+#: sga/models.py:145
 msgid "Component"
 msgstr "Componentes SGA"
 
@@ -1568,32 +1586,32 @@ msgid "Ecological Information"
 msgstr "Información Ecológica"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:4
-#: sga/models.py:458
+#: sga/models.py:445
 msgid "Toxicity"
 msgstr "Toxicidad"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:8
-#: sga/models.py:459
+#: sga/models.py:446
 msgid "Persistence and degradability"
 msgstr "Persistencia y degradabilidad"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:12
-#: sga/models.py:460
+#: sga/models.py:447
 msgid "Bioaccumulative potential"
 msgstr "Potencial de bioacumulación"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:16
-#: sga/models.py:461
+#: sga/models.py:448
 msgid "Soil mobility"
 msgstr "Movilidad en el suelo"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:20
-#: sga/models.py:462
+#: sga/models.py:449
 msgid "Results of PBT and vPvB assessment"
 msgstr "Resultados de la valoración PBT y mPmB"
 
 #: academic/templates/academic/substance/pdf/section_twelve.html:24
-#: sga/models.py:463
+#: sga/models.py:450
 msgid "Other adverse effects"
 msgstr "Otros efectos adversos"
 
@@ -1606,12 +1624,12 @@ msgid "Classification of the substance or mixture"
 msgstr "Clasificación de la sustancia o de la mezcla"
 
 #: academic/templates/academic/substance/pdf/section_two.html:7
-#: sga/models.py:371
+#: sga/models.py:358
 msgid "Classification according to Regulation (CE) 1272/2008"
 msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
 
 #: academic/templates/academic/substance/pdf/section_two.html:11
-#: sga/models.py:372
+#: sga/models.py:359
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
 msgstr ""
 "Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
@@ -1625,24 +1643,24 @@ msgid "Labeling in accordance with Regulation (EC) 1272/2008"
 msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
 
 #: academic/templates/academic/substance/pdf/section_two.html:19
-#: presentation/templates/partials/sga_complements.html:29 sga/models.py:76
-#: sga/models.py:106 sga/templates/danger_indication_info.html:23
+#: presentation/templates/partials/sga_complements.html:29 sga/models.py:80
+#: sga/models.py:110 sga/templates/danger_indication_info.html:23
 msgid "Pictograms"
 msgstr "Pictogramas"
 
 #: academic/templates/academic/substance/pdf/section_two.html:23
-#: sga/models.py:56 sga/models.py:66 sga/templates/editor/generic.html:6
+#: sga/models.py:57 sga/models.py:67 sga/templates/editor/generic.html:6
 #: sga/templates/editor/sga_live.html:4 sga/templates/list_pictograms.html:26
 msgid "Warning Word"
 msgstr "Crear palabra de advertencia"
 
 #: academic/templates/academic/substance/pdf/section_two.html:28
-#: sga/models.py:128 sga/models.py:343
+#: sga/models.py:132 sga/models.py:330
 msgid "Danger indication"
 msgstr "Crear indicación de peligro"
 
 #: academic/templates/academic/substance/pdf/section_two.html:38
-#: sga/models.py:115 sga/models.py:130 sga/models.py:345
+#: sga/models.py:119 sga/models.py:134 sga/models.py:332
 msgid "Prudence advice"
 msgstr "Crear consejo de prudencia"
 
@@ -1652,15 +1670,23 @@ msgid "Other dangers"
 msgstr "Otros Peligros"
 
 #: academic/templates/academic/substance/prudence_advice.html:13
-#: sga/models.py:96 sga/templates/danger_indication_info.html:51
+#: sga/models.py:100 sga/templates/danger_indication_info.html:51
 msgid "Prudence Advices"
 msgstr "Crear consejo de prudencia"
 
 #: academic/templates/academic/substance/sga_complements.html:13
-#: presentation/templates/partials/sga_complements.html:23 sga/models.py:95
+#: presentation/templates/partials/sga_complements.html:23 sga/models.py:99
 #: sga/templates/editor/generic.html:12 sga/templates/editor/sga_live.html:8
 msgid "Prudence Advice"
 msgstr "Crear consejo de prudencia"
+
+#: academic/templates/academic/substance/sga_components.html:34
+msgid "Important"
+msgstr "Importante"
+
+#: academic/templates/academic/substance/sga_components.html:34
+msgid "Changing de code field create new instance"
+msgstr "Cambiando el campo de código genera una nueva instancia"
 
 #: academic/templates/academic/substance/step_four.html:62
 msgid "First aid"
@@ -1681,15 +1707,6 @@ msgstr "Manipulación Almacenamiento"
 #: academic/templates/academic/substance/step_four.html:166
 msgid "Exposure controls/personal protection"
 msgstr "Controles de exposición/protección individual"
-
-#: academic/templates/academic/substance/step_four.html:390
-#: academic/templates/academic/substance/step_two.html:31
-#: sga/templates/add_recipient_size.html:26 sga/templates/add_substance.html:23
-#: sga/templates/donate_organilab.html:22
-#: sga/templates/personal_template.html:87
-#: sga/templates/sgalabel/step_one.html:36
-msgid "Continue"
-msgstr "Continuar"
 
 #: academic/templates/academic/substance/step_four.html:398
 msgid "Add Provider"
@@ -1734,7 +1751,7 @@ msgstr "Hojas de Seguridad"
 msgid "Weight"
 msgstr "Peso"
 
-#: academic/views.py:134
+#: academic/views.py:173
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
@@ -1742,76 +1759,76 @@ msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 msgid "Users"
 msgstr "Usuarios"
 
-#: auth_and_perms/forms.py:18 auth_and_perms/forms.py:23
+#: auth_and_perms/forms.py:22 auth_and_perms/forms.py:27
 #: auth_and_perms/models.py:46
 msgid "Rols"
 msgstr "Roles"
 
-#: auth_and_perms/forms.py:31
+#: auth_and_perms/forms.py:35
 msgid "Organization name"
 msgstr "Nombre de la Organización"
 
-#: auth_and_perms/forms.py:33
+#: auth_and_perms/forms.py:37
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:44
 msgid "Digital signature"
 msgstr "Firma digital"
 
-#: auth_and_perms/forms.py:36
+#: auth_and_perms/forms.py:40
 #: auth_and_perms/templates/auth_and_perms/create_user_organization.html:26
 msgid "Validation method"
 msgstr "Método de validación"
 
-#: auth_and_perms/forms.py:41 auth_and_perms/forms.py:42
+#: auth_and_perms/forms.py:45 auth_and_perms/forms.py:46
 msgid "new-password"
 msgstr "New password"
 
-#: auth_and_perms/forms.py:53 auth_and_perms/forms.py:73
+#: auth_and_perms/forms.py:57 auth_and_perms/forms.py:77
 msgid "First name"
 msgstr "Nombre"
 
-#: auth_and_perms/forms.py:54 auth_and_perms/forms.py:74
+#: auth_and_perms/forms.py:58 auth_and_perms/forms.py:78
 msgid "Last name"
 msgstr "Apellido:"
 
-#: auth_and_perms/forms.py:55 auth_and_perms/forms.py:75
+#: auth_and_perms/forms.py:59 auth_and_perms/forms.py:79
 msgid "Email address"
 msgstr "Dirección de correo electrónico"
 
-#: auth_and_perms/forms.py:56 auth_and_perms/forms.py:76
-#: auth_and_perms/models.py:15 authentication/forms.py:23
-#: laboratory/models.py:418 laboratory/models.py:449
+#: auth_and_perms/forms.py:60 auth_and_perms/forms.py:80
+#: auth_and_perms/models.py:15 authentication/forms.py:10
+#: laboratory/models.py:472 laboratory/models.py:506
 #: laboratory/templates/laboratory/provider_list.html:19
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
 #: laboratory/templates/pdf/base_organization_pdf.html:63
-#: laboratory/views/reports.py:77 laboratory/views/reports.py:802
-#: sga/models.py:225 sga/templates/list_company.html:26
+#: laboratory/views/reports.py:42 laboratory/views/reports.py:788
+#: sga/models.py:228 sga/templates/list_company.html:26
 msgid "Phone"
 msgstr "Teléfono"
 
-#: auth_and_perms/forms.py:57 auth_and_perms/forms.py:77
+#: auth_and_perms/forms.py:61 auth_and_perms/forms.py:81
 msgid "Identification"
 msgstr "Identificación"
 
-#: auth_and_perms/forms.py:58 auth_and_perms/forms.py:79
-#: auth_and_perms/models.py:18 authentication/forms.py:25
-#: laboratory/forms.py:144
+#: auth_and_perms/forms.py:62 auth_and_perms/forms.py:83
+#: auth_and_perms/models.py:18 authentication/forms.py:12
+#: laboratory/forms.py:170
 #: laboratory/templates/laboratory/organization_reactive_presence.html:49
-#: laboratory/views/reports.py:986
+#: laboratory/views/reports.py:972
 msgid "Job Position"
 msgstr "Puesto de trabajo"
 
-#: auth_and_perms/forms.py:78
+#: auth_and_perms/forms.py:82
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
 
-#: auth_and_perms/models.py:16 authentication/forms.py:24
-#: laboratory/views/reports.py:985
+#: auth_and_perms/models.py:16 authentication/forms.py:11
+#: laboratory/views/reports.py:971
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
 
-#: auth_and_perms/models.py:17 laboratory/models.py:434
-#: risk_management/incidents.py:110 risk_management/models.py:50
-#: risk_management/models.py:68
+#: auth_and_perms/models.py:17 laboratory/models.py:491
+#: risk_management/incidents.py:144 risk_management/models.py:52
+#: risk_management/models.py:70
 #: risk_management/templates/risk_management/incidentreport_pdf.html:21
 msgid "Laboratories"
 msgstr "Laboratorios"
@@ -1822,11 +1839,11 @@ msgstr "permisos"
 
 #: auth_and_perms/models.py:45 auth_and_perms/models.py:55
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:45
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:111
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:119
 msgid "Rol"
 msgstr "Rol"
 
-#: auth_and_perms/models.py:50 laboratory/views/reports.py:78
+#: auth_and_perms/models.py:50 laboratory/views/reports.py:43
 msgid "Profile"
 msgstr "Perfil"
 
@@ -1936,6 +1953,7 @@ msgstr ""
 #: presentation/templates/gentelella/registration/login.html:3
 #: presentation/templates/gentelella/registration/login.html:22
 #: presentation/templates/gentelella/registration/logout.html:20
+#: presentation/templates/index.html:43
 msgid "Login"
 msgstr "Inicio de sesión"
 
@@ -1952,13 +1970,14 @@ msgid "Add User"
 msgstr "Agregar Usuario"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:52
-#: authentication/models.py:14 laboratory/models.py:481
+#: laboratory/models.py:538
+#: laboratory/templates/laboratory/logentry_list.html:19
 #: laboratory/templates/laboratory/objectlogchange_list.html:32
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:17
-#: laboratory/views/reports.py:758 reservations_management/models.py:50
-#: reservations_management/models.py:62
+#: laboratory/views/reports.py:744 presentation/models.py:25
+#: reservations_management/models.py:51 reservations_management/models.py:62
 #: reservations_management/templates/reservations_management/reservations_list.html:68
-#: sga/models.py:227 sga/templates/list_company.html:28
+#: sga/models.py:230 sga/templates/list_company.html:28
 msgid "User"
 msgstr "Usuario"
 
@@ -1973,17 +1992,17 @@ msgid "Add Laboratory"
 msgstr "Agregar Laboratorio"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:65
-#: laboratory/forms.py:108 laboratory/models.py:433 laboratory/models.py:480
-#: laboratory/models.py:530 laboratory/templates/laboratory/index.html:99
+#: laboratory/forms.py:131 laboratory/models.py:490 laboratory/models.py:537
+#: laboratory/models.py:588 laboratory/templates/laboratory/index.html:99
 #: laboratory/templates/laboratory/index.html:145
 #: laboratory/templates/laboratory/objectlogchange_list.html:33
 #: laboratory/templates/laboratory/organization_reactive_presence.html:46
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:18
-#: laboratory/views/laboratory.py:84 laboratory/views/laboratory_utils.py:8
-#: laboratory/views/reports.py:329 laboratory/views/reports.py:759
+#: laboratory/views/laboratory.py:91 laboratory/views/laboratory_utils.py:8
+#: laboratory/views/reports.py:304 laboratory/views/reports.py:745
 #: presentation/templates/gentelella/app/report_menu.html:11
-#: presentation/templates/partials/laboratories_menu.html:5
-#: reservations_management/models.py:51
+#: reservations_management/models.py:70
+#: reservations_management/templates/reservations_management/reservations_list.html:70
 msgid "Laboratory"
 msgstr "Laboratorio"
 
@@ -1991,35 +2010,39 @@ msgstr "Laboratorio"
 msgid "Related Laboratory"
 msgstr "Agregar Laboratorio"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:117
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:81
+msgid "Log List"
+msgstr "Bitácoras"
+
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:125
 msgid "Add New Rol"
 msgstr "Agregar Nuevo Rol"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:118
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:126
 msgid "Copy Rols"
 msgstr "Roles"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:124
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:132
 msgid "Rol name"
 msgstr "Nombre del producto"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:129
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:137
 msgid "Copy permissions from other roles?"
 msgstr "¿Copiar permisos de otros roles?"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:157
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:165
 msgid "Create Organization"
 msgstr "Crear Organización"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:179
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:187
 msgid "Relate Organization with Permission objects"
 msgstr "Relaciona Organizaciones con objetos de permisos"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:201
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:209
 msgid "Change parent of organization"
 msgstr "Cambia padre en de la organización"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:208
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:216
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:59
 #: laboratory/templates/laboratory/report_object_list.html:64
 #: laboratory/templates/pdf/furniture_pdf.html:28
@@ -2028,11 +2051,11 @@ msgstr "Cambia padre en de la organización"
 msgid "Name:"
 msgstr "Nombre:"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:213
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:221
 msgid "Organization parent:"
 msgstr "Organización padre:"
 
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:214
+#: auth_and_perms/templates/auth_and_perms/list_organizations.html:222
 msgid "Select an organization to be parent of"
 msgstr "Seleccione una organización padre"
 
@@ -2060,19 +2083,52 @@ msgstr "Solo usar roles seleccionados"
 msgid "Manage Users"
 msgstr "Administrar Usuarios"
 
-#: auth_and_perms/views/organizationstructure.py:167
-#: auth_and_perms/views/organizationstructure.py:201
-#: auth_and_perms/views/organizationstructure.py:223
-#: auth_and_perms/views/organizationstructure.py:289
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:14
+#: presentation/templates/gentelella/app/administration_menu.html:12
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:16
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:17
+msgid "My laboratories"
+msgstr "Mis Laboratorios"
+
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:17
+#: laboratory/templates/laboratory/index.html:39
+#: laboratory/templates/laboratory/index.html:136
+#: presentation/templates/gentelella/app/report_menu.html:6
+msgid "Reports"
+msgstr "Reportes"
+
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:21
+msgid "Risk Zones"
+msgstr "Zonas de riesgo"
+
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:25
+#: laboratory/templates/laboratory/inform.html:11
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
+msgid "Informs"
+msgstr "Informes"
+
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:29
+msgid "MSDS"
+msgstr "MSDS"
+
+#: auth_and_perms/templates/auth_and_perms/select_organization.html:32
+#: presentation/templates/partials/sga_academic.html:6
+msgid "SGA"
+msgstr "SGA"
+
+#: auth_and_perms/views/organizationstructure.py:185
+#: auth_and_perms/views/organizationstructure.py:219
+#: auth_and_perms/views/organizationstructure.py:241
+#: auth_and_perms/views/organizationstructure.py:312
 msgid "Element saved successfully"
 msgstr "Elemento guardado exitosamente"
 
-#: auth_and_perms/views/organizationstructure.py:169
+#: auth_and_perms/views/organizationstructure.py:187
 msgid "Organization doesn't exists"
 msgstr "Organización no existe"
 
-#: auth_and_perms/views/organizationstructure.py:203
-#: auth_and_perms/views/organizationstructure.py:291
+#: auth_and_perms/views/organizationstructure.py:221
+#: auth_and_perms/views/organizationstructure.py:314
 msgid "Error, form is invalid"
 msgstr "Error el formulario es inválido"
 
@@ -2089,60 +2145,12 @@ msgstr ""
 "No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
 "inscribirse"
 
-#: authentication/models.py:8
-msgid "Explanation"
-msgstr "Explicación"
-
-#: authentication/models.py:10
-msgid "Related file"
-msgstr "Archivo relacionado"
-
-#: authentication/models.py:12
-msgid "Laboratory id"
-msgstr "Id de laboratorio"
-
-#: authentication/models.py:17
-msgid "Feedback entry"
-msgstr "Entrada de retroalimentación"
-
-#: authentication/models.py:18
-msgid "Feedback entries"
-msgstr "Entradas de retroalimentación"
-
-#: authentication/models.py:25 laboratory/views/reports.py:978
-msgid "First Name"
-msgstr "Nombre"
-
-#: authentication/models.py:26
-msgid "Business Email Address"
-msgstr "Correo de negocio"
-
-#: authentication/models.py:27
-msgid "Company Name"
-msgstr "Nombre de la empresa"
-
-#: authentication/models.py:28
-msgid "Country Name"
-msgstr "Ciudad"
-
-#: authentication/models.py:29
-msgid "Phone Number"
-msgstr "Teléfono"
-
-#: authentication/models.py:35
-msgid "Demo Request"
-msgstr "Solicitar una demostración"
-
-#: authentication/models.py:36
-msgid "Demo Requests"
-msgstr "Peticiones de demostración"
-
 #: authentication/templates/auth/change_user.html:22
 #: derb/templates/formBuilder/edit_view.html:32
-#: laboratory/templates/laboratory/laboratoryroom_form.html:34
-#: laboratory/templates/laboratory/laboratoryroom_form.html:81
+#: laboratory/templates/laboratory/laboratoryroom_form.html:32
+#: laboratory/templates/laboratory/laboratoryroom_form.html:79
 #: laboratory/templates/laboratory/provider_list.html:31
-#: laboratory/templates/laboratory/provider_update.html:22
+#: laboratory/templates/laboratory/provider_update.html:23
 msgid "Update"
 msgstr "Actualizar"
 
@@ -2179,7 +2187,7 @@ msgstr "Su contraseña no puede contener solo números."
 #: reservations_management/templates/reservations_management/product_modal.html:42
 #: sga/templates/add_recipient_size.html:25 sga/templates/add_substance.html:22
 #: sga/templates/donate_organilab.html:21
-#: sga/templates/personal_template.html:114
+#: sga/templates/personal_template.html:116
 #: sga/templates/sgalabel/step_two.html:40
 msgid "Cancel"
 msgstr "Cancelar"
@@ -2190,7 +2198,7 @@ msgstr "Nuevo Usuario"
 
 #: authentication/templates/feedback/feedbackentry_form.html:4
 #: authentication/templates/feedback/feedbackentry_form.html:9
-#: presentation/templates/gentelella/app/sidebar.html:49
+#: presentation/templates/gentelella/app/sidebar.html:52
 msgid "Feedback"
 msgstr "Retroalimentación"
 
@@ -2198,7 +2206,7 @@ msgstr "Retroalimentación"
 msgid "If you had some problem using Organilab, please let us know about it"
 msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
 
-#: authentication/templates/feedback/feedbackentry_form.html:16
+#: authentication/templates/feedback/feedbackentry_form.html:22
 #: authentication/templates/registration/request_a_demo.html:19
 msgid "Send"
 msgstr "Enviar"
@@ -2230,15 +2238,6 @@ msgstr "Demostración solicitada con éxito"
 #: authentication/templates/registration/request_demo_done.html:26
 msgid "Home"
 msgstr "Casa"
-
-#: authentication/views.py:34
-msgid "Thank you for your help. We will check your problem as soon as we can"
-msgstr ""
-"Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos."
-
-#: authentication/views.py:97
-msgid "We will contact you soon"
-msgstr "Los contactaremos pronto"
 
 #: derb/templates/formBuilder/edit_view.html:10
 msgid "Rename"
@@ -2332,20 +2331,20 @@ msgstr "El formulario fue eliminado."
 msgid "Deleted!"
 msgstr "Eliminado!"
 
-#: laboratory/admin.py:39
+#: laboratory/admin.py:40
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
-#: laboratory/api/serializers.py:57
+#: laboratory/api/serializers.py:58
 msgid "File not found"
 msgstr "Archivo no encontrado"
 
-#: laboratory/api/serializers.py:63
+#: laboratory/api/serializers.py:64
 #: laboratory/templates/laboratory/h_code_report.html:40
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:17
 #: laboratory/templates/laboratory/organization_reactive_presence.html:20
 #: laboratory/templates/laboratory/precursor_report.html:33
-#: laboratory/templates/laboratory/protocol/protocol_list.html:32
+#: laboratory/templates/laboratory/protocol/protocol_list.html:30
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:20
 #: laboratory/templates/laboratory/report_furniture_list.html:18
 #: laboratory/templates/laboratory/report_furniture_list.html:108
@@ -2354,66 +2353,75 @@ msgstr "Archivo no encontrado"
 #: laboratory/templates/laboratory/report_object_list.html:16
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:24
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:98
+#: laboratory/templates/laboratory/shelfobject_detail.html:56
 #: msds/templates/index_msds.html:21 msds/templates/index_msds.html:29
 #: msds/templates/msds/msdsobject/cruds/detail.html:19
 #: msds/templates/regulation/regulations_document.html:17
 #: msds/templates/regulation/regulations_document.html:27
-#: msds/templates/regulation/regulations_document.html:36 msds/views.py:27
+#: msds/templates/regulation/regulations_document.html:36 msds/views.py:29
 #: risk_management/templates/risk_management/incidentreport_detail.html:41
 #: risk_management/templates/risk_management/incidentreport_detail.html:84
 msgid "Download"
 msgstr "Descargar"
 
-#: laboratory/forms.py:19 laboratory/views/shelfobject.py:82
+#: laboratory/api/serializers.py:118
+msgid "No user found"
+msgstr "Usuario no encontrado"
+
+#: laboratory/forms.py:21 laboratory/views/shelfobject.py:96
 msgid "Search by name, code or CAS number"
 msgstr "Buscar por nombre, código o número de CAS"
 
-#: laboratory/forms.py:21 laboratory/views/reports.py:674
+#: laboratory/forms.py:23 laboratory/views/reports.py:658
 msgid "All labs"
 msgstr "Todos los laboratorios"
 
-#: laboratory/forms.py:74
+#: laboratory/forms.py:89
 msgid "Filter substances by H Code"
 msgstr "Filtre reactivos por código H"
 
-#: laboratory/forms.py:80
+#: laboratory/forms.py:95
 #: presentation/templates/gentelella/blocks/permissions_management.html:16
 msgid "Group"
 msgstr "Grupo"
 
-#: laboratory/forms.py:122
+#: laboratory/forms.py:102 laboratory/forms.py:103
+msgid "Entered date should be greater than current date and time"
+msgstr "Fecha ingresada es mayor a la fecha actual"
+
+#: laboratory/forms.py:148
 msgid "Bill"
 msgstr "Factura"
 
-#: laboratory/forms.py:124 msds/models.py:8 msds/templates/index_msds.html:19
-#: msds/templates/index_msds.html:27 sga/models.py:357 sga/models.py:370
+#: laboratory/forms.py:150 msds/models.py:10 msds/templates/index_msds.html:19
+#: msds/templates/index_msds.html:27 sga/models.py:344 sga/models.py:357
 msgid "Provider"
 msgstr "Proveedores"
 
-#: laboratory/forms.py:142 laboratory/views/reports.py:979
+#: laboratory/forms.py:168 laboratory/views/reports.py:965
 msgid "Last Name"
 msgstr "Apellidos"
 
-#: laboratory/forms.py:143
+#: laboratory/forms.py:169
 #: laboratory/templates/laboratory/organization_reactive_presence.html:48
 msgid "Id Card"
 msgstr "Tarjeta de identificación"
 
-#: laboratory/forms.py:149 laboratory/models.py:139 laboratory/models.py:212
+#: laboratory/forms.py:175 laboratory/models.py:142 laboratory/models.py:222
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:57
 #: laboratory/templates/laboratory/search.html:28
 #: laboratory/templates/laboratory/transfer_object_modal.html:19
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:23
-#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:169
-#: laboratory/views/reports.py:494
+#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:135
+#: laboratory/views/reports.py:473
 msgid "Shelf"
 msgstr "Estante"
 
-#: laboratory/forms.py:197
+#: laboratory/forms.py:223
 msgid "Select Furniture"
 msgstr "Seleccionar Mueble"
 
-#: laboratory/forms.py:215
+#: laboratory/forms.py:241
 msgid "Invalid format in shelf dataconfig "
 msgstr "Formato inválido en la configuración de datos del estante "
 
@@ -2423,348 +2431,373 @@ msgstr "Formato inválido en la configuración de datos del estante "
 msgid "Can %s"
 msgstr "Puede %s"
 
-#: laboratory/models.py:20
+#: laboratory/models.py:23
 msgid "CAS ID number"
 msgstr "Número CAS"
 
-#: laboratory/models.py:21
+#: laboratory/models.py:24
 msgid "URL"
 msgstr "URL"
 
-#: laboratory/models.py:24
+#: laboratory/models.py:27
 msgid "C&L Inventory"
 msgstr "Inventario C&L"
 
-#: laboratory/models.py:25
+#: laboratory/models.py:28
 msgid "C&L Inventory objects"
 msgstr "Objetos del inventario de C&L"
 
-#: laboratory/models.py:44
+#: laboratory/models.py:47
 msgid "Object feature"
 msgstr "Característica del objeto"
 
-#: laboratory/models.py:45 laboratory/models.py:68
+#: laboratory/models.py:48 laboratory/models.py:71
 #: laboratory/templates/laboratory/index.html:113
 msgid "Object features"
 msgstr "Características del objeto"
 
-#: laboratory/models.py:56
+#: laboratory/models.py:59
 #: laboratory/templates/laboratory/h_code_report.html:72
 #: laboratory/templates/laboratory/index.html:106
 #: laboratory/templates/pdf/hcode_pdf.html:10
 #: laboratory/views/laboratory_utils.py:8
-#: presentation/templates/gentelella/app/administration_menu.html:35
+#: presentation/templates/gentelella/app/administration_menu.html:36
 #: presentation/templates/gentelella/app/report_menu.html:41
 msgid "Reactive"
 msgstr "Reactivo"
 
-#: laboratory/models.py:57 laboratory/templates/laboratory/index.html:107
-#: presentation/templates/gentelella/app/administration_menu.html:41
+#: laboratory/models.py:60 laboratory/templates/laboratory/index.html:107
+#: presentation/templates/gentelella/app/administration_menu.html:42
 #: presentation/templates/gentelella/app/report_menu.html:46
 msgid "Material"
 msgstr "Materiales"
 
-#: laboratory/models.py:58 laboratory/templates/laboratory/index.html:108
-#: presentation/templates/gentelella/app/administration_menu.html:46
+#: laboratory/models.py:61 laboratory/templates/laboratory/index.html:108
+#: presentation/templates/gentelella/app/administration_menu.html:47
 #: presentation/templates/gentelella/app/report_menu.html:51
 msgid "Equipment"
 msgstr "Equipo"
 
-#: laboratory/models.py:63
+#: laboratory/models.py:66
+#: laboratory/templates/laboratory/shelfobject_detail.html:17
 msgid "Synonym"
 msgstr "Sinónimo"
 
-#: laboratory/models.py:63
+#: laboratory/models.py:66
 msgid "Comma separed name"
 msgstr "Nombres separados por comas"
 
-#: laboratory/models.py:64 laboratory/models.py:187 laboratory/models.py:226
+#: laboratory/models.py:67 laboratory/models.py:196 laboratory/models.py:236
 #: laboratory/templates/laboratory/search.html:53
-#: laboratory/views/reports.py:329
+#: laboratory/views/reports.py:304
 msgid "Type"
 msgstr "Tipo"
 
-#: laboratory/models.py:70
+#: laboratory/models.py:73
+#: laboratory/templates/laboratory/shelfobject_detail.html:28
 msgid "Model"
 msgstr "Modelo"
 
-#: laboratory/models.py:71
+#: laboratory/models.py:74
+#: laboratory/templates/laboratory/shelfobject_detail.html:29
 msgid "Serie"
 msgstr "Serie"
 
-#: laboratory/models.py:73
+#: laboratory/models.py:76
+#: laboratory/templates/laboratory/shelfobject_detail.html:30
 msgid "Plaque"
 msgstr "Placa"
 
-#: laboratory/models.py:134
+#: laboratory/models.py:133
+msgid "Sustance representation"
+msgstr "Representación de la sustancia"
+
+#: laboratory/models.py:137
 msgid "Sustance characteristic"
 msgstr "Características de sustancia"
 
-#: laboratory/models.py:135
+#: laboratory/models.py:138
 msgid "Sustance characteristics"
 msgstr "Características de sustancias"
 
-#: laboratory/models.py:141
+#: laboratory/models.py:144
 msgid "Equipment or reactive or sustance"
 msgstr "Equipo o reactivo o sustancia"
 
-#: laboratory/models.py:143 laboratory/templates/laboratory/shelfObject.html:4
+#: laboratory/models.py:146 laboratory/templates/laboratory/shelfObject.html:4
 #: laboratory/templates/laboratory/shelfObject.html:9
 msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
-#: laboratory/models.py:160
+#: laboratory/models.py:167
 #: laboratory/templates/laboratory/report_furniture_list.html:76
 msgid "Shelf object"
 msgstr "Estante del objeto"
 
-#: laboratory/models.py:161
+#: laboratory/models.py:168
 msgid "Shelf objects"
 msgstr "Estante de los objetos"
 
-#: laboratory/models.py:173 laboratory/templates/laboratory/search.html:27
+#: laboratory/models.py:182 laboratory/templates/laboratory/search.html:27
 msgid "Laboratory Room"
 msgstr "Sala de laboratorio"
 
-#: laboratory/models.py:174
+#: laboratory/models.py:183
 msgid "Laboratory Rooms"
 msgstr "Salas de laboratorio"
 
-#: laboratory/models.py:181 laboratory/models.py:325
+#: laboratory/models.py:190 laboratory/models.py:338
 #: laboratory/templates/laboratory/furniture_list.html:6
 #: laboratory/templates/laboratory/h_code_report.html:74
-#: laboratory/templates/laboratory/report_laboratoryroom_list.html:55
 #: laboratory/templates/laboratory/search.html:28
-#: laboratory/templates/pdf/hcode_pdf.html:12 laboratory/views/reports.py:168
+#: laboratory/templates/pdf/hcode_pdf.html:12 laboratory/views/reports.py:134
 msgid "Furniture"
 msgstr "Mueble"
 
-#: laboratory/models.py:184
+#: laboratory/models.py:193
 msgid "Container shelf"
 msgstr "Estante del contenedor"
 
-#: laboratory/models.py:213 laboratory/templates/laboratory/shelf_list.html:5
+#: laboratory/models.py:223 laboratory/templates/laboratory/shelf_list.html:5
 msgid "Shelves"
 msgstr "Estantería"
 
-#: laboratory/models.py:223
+#: laboratory/models.py:233
 msgid "Labroom"
 msgstr "Sala de Laboratorio"
 
-#: laboratory/models.py:229
+#: laboratory/models.py:239
 msgid "Data configuration"
 msgstr "Configuración de datos"
 
-#: laboratory/models.py:324
+#: laboratory/models.py:337
 #: laboratory/templates/laboratory/report_furniture_list.html:47
 msgid "Piece of furniture"
 msgstr "Pieza de mueble"
 
-#: laboratory/models.py:368 laboratory/models.py:395 laboratory/models.py:404
-#: laboratory/models.py:427
+#: laboratory/models.py:422 laboratory/models.py:449 laboratory/models.py:458
+#: laboratory/models.py:481 laboratory/models.py:657
 msgid "Organization"
 msgstr "Organización"
 
-#: laboratory/models.py:369
+#: laboratory/models.py:423
+#: presentation/templates/partials/organizations.html:5
+#: presentation/templates/partials/organizations.html:6
 msgid "Organizations"
 msgstr "Organizaciones"
 
-#: laboratory/models.py:371
+#: laboratory/models.py:425
 msgid "Can add organization user management"
 msgstr "Puede añadir la gestión de usuarios de la organización"
 
-#: laboratory/models.py:372
+#: laboratory/models.py:426
 msgid "Can change organization user management"
 msgstr "Puede cambiar la gestión de usuarios de la organización"
 
-#: laboratory/models.py:373
+#: laboratory/models.py:427
 msgid "Can delete organization user management"
 msgstr "Puede borrar la gestión de usuarios de la organización"
 
-#: laboratory/models.py:374
+#: laboratory/models.py:428
 msgid "Can view organization user management"
 msgstr "Puede observar la gestión de usuarios de la organización"
 
-#: laboratory/models.py:417 laboratory/views/reports.py:977
+#: laboratory/models.py:471 laboratory/views/reports.py:963
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
 
-#: laboratory/models.py:420
+#: laboratory/models.py:474
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:57
 #: laboratory/templates/pdf/base_organization_pdf.html:60
-#: laboratory/views/reports.py:77
+#: laboratory/views/reports.py:42
 msgid "Location"
 msgstr "Ubicación"
 
-#: laboratory/models.py:424 laboratory/views/reports.py:796
+#: laboratory/models.py:478 laboratory/views/reports.py:782
 msgid "Coordinator"
 msgstr "Coordinador"
 
-#: laboratory/models.py:430 laboratory/views/laboratory_utils.py:8
+#: laboratory/models.py:484 laboratory/views/laboratory_utils.py:8
 msgid "Rooms"
 msgstr "Salas"
 
-#: laboratory/models.py:436
+#: laboratory/models.py:493
 msgid "Can see available reports"
 msgstr "Puede ver los informes disponibles"
 
-#: laboratory/models.py:437
+#: laboratory/models.py:494
 msgid "Can download available reports"
 msgstr "Puede descargar los informes disponibles"
 
-#: laboratory/models.py:451
+#: laboratory/models.py:508
 msgid "legal identity"
 msgstr "Cédula Jurídica"
 
-#: laboratory/models.py:485
+#: laboratory/models.py:542
 msgid "Blocked List Notification"
 msgstr "Notificación de la lista de bloqueados"
 
-#: laboratory/models.py:486
+#: laboratory/models.py:543
 msgid "Bloked List Notifications"
 msgstr "Notificaciones de la lista de bloqueados"
 
-#: laboratory/models.py:496 reservations_management/models.py:17
-#: reservations_management/models.py:24
+#: laboratory/models.py:553 reservations_management/models.py:18
+#: reservations_management/models.py:25
 msgid "Requested"
 msgstr "Solicitado"
 
-#: laboratory/models.py:497 reservations_management/models.py:18
+#: laboratory/models.py:554 reservations_management/models.py:19
 msgid "Accepted"
 msgstr "Aceptado"
 
-#: laboratory/models.py:502
+#: laboratory/models.py:559
 msgid "Laboratory Send"
 msgstr "Laboratorio que envía"
 
-#: laboratory/models.py:503
+#: laboratory/models.py:560
 msgid "Laboratory Received"
 msgstr "Laboratorio que recibe"
 
-#: laboratory/models.py:513
+#: laboratory/models.py:571
 msgid "January"
 msgstr "Enero"
 
-#: laboratory/models.py:514
+#: laboratory/models.py:572
 msgid "February"
 msgstr "Febrero"
 
-#: laboratory/models.py:515
+#: laboratory/models.py:573
 msgid "March"
 msgstr "Buscar"
 
-#: laboratory/models.py:516
+#: laboratory/models.py:574
 msgid "April"
 msgstr "Abril"
 
-#: laboratory/models.py:517
+#: laboratory/models.py:575
 msgid "May"
 msgstr "Día"
 
-#: laboratory/models.py:518
+#: laboratory/models.py:576
 msgid "June"
 msgstr "Junio"
 
-#: laboratory/models.py:519
+#: laboratory/models.py:577
 msgid "July"
 msgstr "Julio"
 
-#: laboratory/models.py:520
+#: laboratory/models.py:578
 msgid "August"
 msgstr "Agosto"
 
-#: laboratory/models.py:521
+#: laboratory/models.py:579
 msgid "September"
 msgstr "Setiembre"
 
-#: laboratory/models.py:522
+#: laboratory/models.py:580
 msgid "October"
 msgstr "Octubre"
 
-#: laboratory/models.py:523
+#: laboratory/models.py:581
 msgid "November"
 msgstr "Noviembre"
 
-#: laboratory/models.py:524
+#: laboratory/models.py:582
 msgid "December"
 msgstr "Diciembre"
 
-#: laboratory/models.py:535
+#: laboratory/models.py:593
 msgid "Eraser"
 msgstr "Borrador"
 
-#: laboratory/models.py:536
+#: laboratory/models.py:594
 msgid "In Review"
 msgstr "En revisión"
 
-#: laboratory/models.py:537
+#: laboratory/models.py:595
 msgid "Finalized"
 msgstr "Finalizado"
 
-#: laboratory/models.py:543 laboratory/templates/laboratory/inform.html:29
-#: sga/forms.py:16
+#: laboratory/models.py:601 laboratory/templates/laboratory/inform.html:29
+#: sga/forms.py:17
 msgid "Template"
 msgstr "Plantilla"
 
-#: laboratory/models.py:561
+#: laboratory/models.py:619
 msgid "Comment"
 msgstr "Comentar"
 
-#: laboratory/models.py:562
+#: laboratory/models.py:620
 msgid "Inform"
 msgstr "Información"
 
-#: laboratory/models.py:569
+#: laboratory/models.py:627
+msgid "Log Entry"
+msgstr "Entrada de bitácora"
+
+#: laboratory/models.py:638
 msgid "Protocol PDF File"
 msgstr "Archivo del protocolo en PDF"
 
-#: laboratory/models.py:572
+#: laboratory/models.py:641
 msgid "short description"
 msgstr "Descripción corta"
 
-#: laboratory/models.py:583
+#: laboratory/models.py:652
 msgid "Protocol"
 msgstr "Protocolo"
 
-#: laboratory/models.py:584 laboratory/templates/laboratory/index.html:76
+#: laboratory/models.py:653 laboratory/templates/laboratory/index.html:76
 msgid "Protocols"
 msgstr "Protocolos"
 
-#: laboratory/sustance/views.py:46
+#: laboratory/models.py:666
+msgid "User Organization"
+msgstr "Usuario de la Organización"
+
+#: laboratory/models.py:667
+msgid "User Organizations"
+msgstr "Organizaciones del usuario"
+
+#: laboratory/reservation.py:46
+msgid "Product added successful"
+msgstr "Producto Agregado exitosamente"
+
+#: laboratory/sustance/views.py:58
 msgid "Sustance saved successfully"
 msgstr "Sustancia guardada satisfactoriamente"
 
-#: laboratory/sustance/views.py:50
+#: laboratory/sustance/views.py:62
 msgid "Pending information in form"
 msgstr "Información pendiente en el formulario"
 
-#: laboratory/sustance/views.py:117 laboratory/views/reports.py:336
+#: laboratory/sustance/views.py:138 laboratory/views/reports.py:311
 msgid "Is precursor?"
 msgstr "¿Es precursor?"
 
-#: laboratory/sustance/views.py:118 laboratory/sustance/views.py:120
-#: laboratory/sustance/views.py:122
+#: laboratory/sustance/views.py:139 laboratory/sustance/views.py:141
+#: laboratory/sustance/views.py:143
 #: laboratory/templates/laboratory/complete_inform.html:76
 #: laboratory/templates/laboratory/complete_inform.html:83
 #: laboratory/templates/laboratory/complete_inform.html:92
-#: reservations_management/templates/reservations_management/reservations_list.html:90
+#: reservations_management/templates/reservations_management/reservations_list.html:92
 #: sga/templates/donate_organilab.html:47
 msgid "No"
 msgstr "No"
 
-#: laboratory/sustance/views.py:120
+#: laboratory/sustance/views.py:141
 msgid "Is bioaccumulable?"
 msgstr "¿Es bioacumulable?"
 
-#: laboratory/sustance/views.py:122
+#: laboratory/sustance/views.py:143
 msgid "Is public?"
 msgstr "¿Es público?"
 
-#: laboratory/sustance/views.py:128
+#: laboratory/sustance/views.py:149
 msgid "Delete sustance"
 msgstr "Eliminar sustancias"
 
-#: laboratory/sustance/views.py:132
+#: laboratory/sustance/views.py:153
 msgid "Download security sheet"
 msgstr "Descargar hoja de seguridad"
 
@@ -2919,14 +2952,14 @@ msgstr "¿Deseas actualizar la observación?"
 msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 
-#: laboratory/templates/laboratory/dataconfig.html:9
-#: laboratory/templates/laboratory/furniture_form.html:82
+#: laboratory/templates/laboratory/dataconfig.html:10
+#: laboratory/templates/laboratory/furniture_form.html:87
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
 #: laboratory/templates/laboratory/edit.html:8
 #: laboratory/templates/laboratory/laboratory_form.html:7
-#: presentation/templates/gentelella/app/administration_menu.html:25
+#: presentation/templates/gentelella/app/administration_menu.html:26
 msgid "Laboratory Management"
 msgstr "Administración de laboratorio"
 
@@ -2960,26 +2993,30 @@ msgstr "¿Está seguro de que desea eliminar?"
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: laboratory/templates/laboratory/furniture_form.html:6
-#: laboratory/templates/laboratory/furniture_form.html:12
+#: laboratory/templates/laboratory/furniture_form.html:11
+#: laboratory/templates/laboratory/furniture_form.html:19
 msgid "Furniture management"
 msgstr "Administración de muebles"
 
-#: laboratory/templates/laboratory/furniture_form.html:48
-#: laboratory/templates/laboratory/furniture_form.html:56
+#: laboratory/templates/laboratory/furniture_form.html:55
+#: laboratory/templates/laboratory/furniture_form.html:63
 msgid "Row"
 msgstr "Fila"
 
-#: laboratory/templates/laboratory/furniture_form.html:51
-#: laboratory/templates/laboratory/furniture_form.html:59
+#: laboratory/templates/laboratory/furniture_form.html:58
+#: laboratory/templates/laboratory/furniture_form.html:66
 msgid "Column"
 msgstr "Columna"
 
-#: laboratory/templates/laboratory/furniture_form.html:93
+#: laboratory/templates/laboratory/furniture_form.html:98
 msgid "Create shelf"
 msgstr "Crear nuevo estante"
 
-#: laboratory/templates/laboratory/furniture_list.html:21
+#: laboratory/templates/laboratory/furniture_form.html:112
+msgid "Edit shelf"
+msgstr "Editar estante"
+
+#: laboratory/templates/laboratory/furniture_list.html:23
 #: laboratory/templates/laboratory/h_code_report.html:48
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:26
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:53
@@ -2994,7 +3031,7 @@ msgstr "Crear nuevo estante"
 #: laboratory/templates/laboratory/report_object_list.html:59
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:33
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:107
-#: laboratory/views/reports.py:678
+#: laboratory/views/reports.py:662
 #: risk_management/templates/risk_management/incidentreport_detail.html:49
 #: risk_management/templates/risk_management/incidentreport_detail.html:92
 msgid "PDF"
@@ -3002,8 +3039,8 @@ msgstr "PDF"
 
 #: laboratory/templates/laboratory/h_code_report.html:27
 #: laboratory/templates/laboratory/objectview_list.html:30
+#: laboratory/templates/laboratory/reports/report_danger_indication.html:29
 #: laboratory/templates/laboratory/search_widget.html:18
-#: sga/templates/index_organilab.html:29
 msgid "Search"
 msgstr "Búsqueda"
 
@@ -3077,6 +3114,7 @@ msgid "Room"
 msgstr "Sala"
 
 #: laboratory/templates/laboratory/h_code_report.html:75
+#: laboratory/templates/laboratory/shelfobject_detail.html:59
 #: laboratory/templates/pdf/hcode_pdf.html:13
 msgid "H Codes"
 msgstr "Código H"
@@ -3086,8 +3124,8 @@ msgstr "Código H"
 #: laboratory/templates/laboratory/shelfObject.html:3
 #: laboratory/templates/pdf/hcode_pdf.html:14
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:22
-#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:172
-#: laboratory/views/reports.py:268 laboratory/views/reports.py:497
+#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:138
+#: laboratory/views/reports.py:240 laboratory/views/reports.py:476
 msgid "Quantity"
 msgstr "Cantidad"
 
@@ -3103,7 +3141,6 @@ msgstr "Seleccione su laboratorio"
 #: laboratory/templates/laboratory/index.html:26
 #: laboratory/templates/laboratory/index.html:51
 #: laboratory/templates/laboratory/index.html:61
-#: presentation/templates/partials/laboratories_menu.html:10
 msgid "Laboratory view"
 msgstr "Vista de laboratorio"
 
@@ -3111,12 +3148,6 @@ msgstr "Vista de laboratorio"
 #: laboratory/templates/laboratory/index.html:89
 msgid "Laboratory administration"
 msgstr "Administración del laboratorio"
-
-#: laboratory/templates/laboratory/index.html:39
-#: laboratory/templates/laboratory/index.html:136
-#: presentation/templates/gentelella/app/report_menu.html:6
-msgid "Reports"
-msgstr "Reportes"
 
 #: laboratory/templates/laboratory/index.html:119
 msgid "Transfers"
@@ -3135,11 +3166,6 @@ msgstr "Muebles"
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-#: laboratory/templates/laboratory/inform.html:11
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
-msgid "Informs"
-msgstr "Informes"
-
 #: laboratory/templates/laboratory/inform.html:16
 #: laboratory/templates/laboratory/inform.html:19
 msgid "Templates of inform"
@@ -3150,7 +3176,6 @@ msgid "Create Inform"
 msgstr "Crear Informe"
 
 #: laboratory/templates/laboratory/lab_card.html:10
-#: presentation/templates/partials/laboratories_menu.html:21
 msgid "Edit laboratory"
 msgstr "Editar laboratorio"
 
@@ -3159,7 +3184,7 @@ msgstr "Editar laboratorio"
 msgid "Delete laboratory"
 msgstr "Eliminar el laboratorio"
 
-#: laboratory/templates/laboratory/laboratory_create.html:11
+#: laboratory/templates/laboratory/laboratory_create.html:12
 #: laboratory/templates/laboratory/select_lab.html:14
 msgid "Create laboratory"
 msgstr "Crear un laboratorio"
@@ -3197,32 +3222,32 @@ msgid "Delete laboratory room"
 msgstr "Eliminar sala de laboratorio"
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:15
-#: laboratory/templates/laboratory/laboratoryroom_form.html:22
+#: laboratory/templates/laboratory/laboratoryroom_form.html:21
 msgid "Laboratory room management"
 msgstr "Administración de sala de laboratorio"
 
-#: laboratory/templates/laboratory/laboratoryroom_form.html:36
+#: laboratory/templates/laboratory/laboratoryroom_form.html:34
 #: laboratory/templates/laboratory/objectlogchange_list.html:37
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:22
-#: laboratory/views/reports.py:763
+#: laboratory/views/reports.py:749
 msgid "New"
 msgstr "Nuevo"
 
-#: laboratory/templates/laboratory/laboratoryroom_form.html:68
-#: laboratory/templates/laboratory/laboratoryroom_form.html:104
-#: laboratory/templates/laboratory/laboratoryroom_form.html:113
+#: laboratory/templates/laboratory/laboratoryroom_form.html:66
+#: laboratory/templates/laboratory/laboratoryroom_form.html:102
+#: laboratory/templates/laboratory/laboratoryroom_form.html:111
 msgid "Create Furniture"
 msgstr "Crear Mueble"
 
-#: laboratory/templates/laboratory/laboratoryroom_list.html:19
+#: laboratory/templates/laboratory/laboratoryroom_list.html:20
 msgid "Laboratory rooms"
 msgstr "Salas de laboratorio"
 
-#: laboratory/templates/laboratory/laboratoryroom_list.html:67
+#: laboratory/templates/laboratory/laboratoryroom_list.html:68
 msgid "Please click over furniture items"
 msgstr "Por favor hacer clic sobre los muebles"
 
-#: laboratory/templates/laboratory/laboratoryroom_list.html:68
+#: laboratory/templates/laboratory/laboratoryroom_list.html:69
 msgid "Shelves will be displayed here"
 msgstr "Los muebles se mostrarán aquí"
 
@@ -3267,6 +3292,32 @@ msgstr "Todos los objetos"
 #: laboratory/templates/laboratory/report_object_list.html:122
 msgid "All objects in PDF"
 msgstr "Todos los objetos en PDF"
+
+#: laboratory/templates/laboratory/logentry_list.html:20
+#, fuzzy
+#| msgid "Inform"
+msgid "Info"
+msgstr "Información"
+
+#: laboratory/templates/laboratory/logentry_list.html:21
+#: laboratory/templates/laboratory/protocol/protocol_list.html:31
+#: laboratory/templates/laboratory/provider_list.html:21
+#: laboratory/templates/laboratory/reservation_modal.html:53
+#: laboratory/templates/laboratory/transfer_objects.html:30
+msgid "Action"
+msgstr "Acciones"
+
+#: laboratory/templates/laboratory/logentry_list.html:22
+msgid "Addiction"
+msgstr "Agregados"
+
+#: laboratory/templates/laboratory/logentry_list.html:23
+msgid "Modification"
+msgstr "Modificación"
+
+#: laboratory/templates/laboratory/logentry_list.html:24
+msgid "Deletion"
+msgstr "Eliminación"
 
 #: laboratory/templates/laboratory/my_reservation_delete.html:7
 msgid "Delete Selected Item"
@@ -3323,7 +3374,7 @@ msgstr "Eliminar características de objeto"
 
 #: laboratory/templates/laboratory/objectfeatures_form.html:9
 #: laboratory/templates/laboratory/objectfeatures_form.html:15
-#: presentation/templates/gentelella/app/administration_menu.html:55
+#: presentation/templates/gentelella/app/administration_menu.html:56
 msgid "Object features management"
 msgstr "Administración de características de objetos"
 
@@ -3344,19 +3395,19 @@ msgstr "Filtro"
 
 #: laboratory/templates/laboratory/objectlogchange_list.html:35
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:20
-#: laboratory/views/reports.py:761
+#: laboratory/views/reports.py:747
 msgid "Day"
 msgstr "Día"
 
 #: laboratory/templates/laboratory/objectlogchange_list.html:36
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:21
-#: laboratory/views/reports.py:762
+#: laboratory/views/reports.py:748
 msgid "Old"
 msgstr "Antiguo"
 
 #: laboratory/templates/laboratory/objectlogchange_list.html:38
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:23
-#: laboratory/views/reports.py:764
+#: laboratory/views/reports.py:750
 msgid "Difference"
 msgstr "Diferencia"
 
@@ -3364,7 +3415,7 @@ msgstr "Diferencia"
 #: laboratory/templates/laboratory/objectlogchange_list.html:55
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:25
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:40
-#: laboratory/views/reports.py:673
+#: laboratory/views/reports.py:657
 msgid "Precursor"
 msgstr "¿Es precursor?"
 
@@ -3391,7 +3442,7 @@ msgstr "Administración de Equipos"
 #: laboratory/templates/laboratory/objectview_form.html:13
 #: laboratory/templates/laboratory/objectview_list.html:8
 #: laboratory/templates/laboratory/objectview_list.html:16
-#: presentation/templates/gentelella/app/administration_menu.html:33
+#: presentation/templates/gentelella/app/administration_menu.html:34
 msgid "Object management"
 msgstr "Administración de objetos"
 
@@ -3413,7 +3464,7 @@ msgid "User exposition"
 msgstr "Exposición del usuario"
 
 #: laboratory/templates/laboratory/organization_reactive_presence.html:51
-#: laboratory/views/reports.py:981
+#: laboratory/views/reports.py:967
 msgid "Sustance"
 msgstr "Sustancia"
 
@@ -3422,7 +3473,7 @@ msgid "CAS ID Number"
 msgstr "Número ID CAS:"
 
 #: laboratory/templates/laboratory/organization_reactive_presence.html:54
-#: laboratory/views/reports.py:984
+#: laboratory/views/reports.py:970
 msgid "Carcinogenic"
 msgstr "Carcinógeno"
 
@@ -3453,7 +3504,7 @@ msgid "Consecutive"
 msgstr "Consecutivo"
 
 #: laboratory/templates/laboratory/precursor_report.html:24
-#: laboratory/views/reports.py:799
+#: laboratory/views/reports.py:785
 msgid "Month"
 msgstr "Mes"
 
@@ -3482,31 +3533,31 @@ msgstr "Enviar"
 msgid "Delete Protocol"
 msgstr "Borrar Protocolo"
 
-#: laboratory/templates/laboratory/protocol/protocol_list.html:10
-msgid "Search Protocol"
-msgstr "Buscar Protocolos"
-
-#: laboratory/templates/laboratory/protocol/protocol_list.html:15
+#: laboratory/templates/laboratory/protocol/protocol_list.html:13
 msgid "Upload your Protocol"
 msgstr "Subir su Protocolo"
 
-#: laboratory/templates/laboratory/protocol/protocol_list.html:31
-#: risk_management/incidents.py:101
+#: laboratory/templates/laboratory/protocol/protocol_list.html:17
+msgid "Search Protocol"
+msgstr "Buscar Protocolos"
+
+#: laboratory/templates/laboratory/protocol/protocol_list.html:29
+#: risk_management/incidents.py:135
 msgid "Short Description"
 msgstr "Descripción corta"
-
-#: laboratory/templates/laboratory/protocol/protocol_list.html:33
-#: laboratory/templates/laboratory/provider_list.html:21
-#: laboratory/templates/laboratory/reservation_modal.html:52
-#: laboratory/templates/laboratory/transfer_objects.html:30
-msgid "Action"
-msgstr "Acciones"
 
 #: laboratory/templates/laboratory/protocol/update.html:12
 msgid "Update your Protocol"
 msgstr "Editar sus protocolos"
 
-#: laboratory/templates/laboratory/provider_add.html:11
+#: laboratory/templates/laboratory/provider_add.html:8
+#: laboratory/templates/laboratory/provider_update.html:8
+#: laboratory/templates/laboratory/sustance/sustance_form.html:10
+#: sga/templates/add_company.html:19 sga/templates/sgalabel/step_two.html:37
+msgid "Back"
+msgstr "Atrás"
+
+#: laboratory/templates/laboratory/provider_add.html:12
 msgid "Create Provider"
 msgstr "Crear Proveedor"
 
@@ -3518,7 +3569,7 @@ msgstr "Administración de sala de laboratorio"
 msgid "Providers List"
 msgstr "Listado de Proveedores"
 
-#: laboratory/templates/laboratory/provider_update.html:11
+#: laboratory/templates/laboratory/provider_update.html:12
 msgid "Update Provider"
 msgstr "Editar Proveedor"
 
@@ -3694,13 +3745,13 @@ msgstr "Perfiles"
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:59
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:14
-#: laboratory/views/reports.py:78
+#: laboratory/views/reports.py:43
 msgid "Phones"
 msgstr "Teléfonos"
 
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:60
 #: laboratory/templates/pdf/organizationlaboratory_pdf.html:15
-#: laboratory/views/reports.py:78
+#: laboratory/views/reports.py:43
 msgid "Emails"
 msgstr "Correos electrónicos"
 
@@ -3712,11 +3763,31 @@ msgid ""
 "registered"
 msgstr "Aún no ha asignado laboratorios, o no hay laboratorios registrados"
 
-#: laboratory/templates/laboratory/reports/toxicity_exposition.html:13
+#: laboratory/templates/laboratory/reports/report_danger_indication.html:10
+#: sga/templates/danger_indication_info.html:4
+msgid "SGA Search"
+msgstr "Buscador SGA"
+
+#: laboratory/templates/laboratory/reports/report_danger_indication.html:15
+msgid "SGA Information Searcher"
+msgstr "Buscador de información del SGA"
+
+#: laboratory/templates/laboratory/reports/report_danger_indication.html:16
+msgid "Enter in the following searcher the danger indication codes (H-Codes)."
+msgstr ""
+"Introduzca en el siguiente buscador los códigos de indicación de peligro "
+"(Códigos H)."
+
+#: laboratory/templates/laboratory/reports/report_danger_indication.html:37
+#: presentation/templates/index.html:31
+msgid "Donate"
+msgstr "Donar"
+
+#: laboratory/templates/laboratory/reports/report_index.html:13
 msgid "Reactive presence"
 msgstr "Objetos reactivos precursores"
 
-#: laboratory/templates/laboratory/reports/toxicity_exposition.html:13
+#: laboratory/templates/laboratory/reports/report_index.html:13
 msgid "Exposition report"
 msgstr "Reporte de exposición"
 
@@ -3725,18 +3796,18 @@ msgid "Reservations"
 msgstr "Mis reservaciones"
 
 #: laboratory/templates/laboratory/reservation_modal.html:45
-#: laboratory/views/shelfobject.py:289 laboratory/views/shelfobject.py:325
+#: laboratory/views/shelfobject.py:321 laboratory/views/shelfobject.py:359
 msgid "Complete the fields"
 msgstr "Complete los campos"
 
-#: laboratory/templates/laboratory/reservation_modal.html:62
+#: laboratory/templates/laboratory/reservation_modal.html:63
 #: reservations_management/models.py:65
 #: reservations_management/templates/reservations_management/manage_reservation.html:81
 msgid "Amount Required"
 msgstr "Cantidad requerida"
 
 #: laboratory/templates/laboratory/search.html:42
-#: laboratory/templates/laboratory/shelfObject_list.html:29
+#: laboratory/templates/laboratory/shelfObject_list.html:33
 msgid "Reserve/Add/Transfer/Substract"
 msgstr "Reservar/Añador/Transferir/Substraer"
 
@@ -3768,7 +3839,7 @@ msgstr "Seleccione su laboratorio"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: laboratory/templates/laboratory/shelf_details.html:11
+#: laboratory/templates/laboratory/shelf_details.html:23
 msgid "Position:"
 msgstr "Posición:"
 
@@ -3781,7 +3852,7 @@ msgid "Update Object"
 msgstr "Editar Objeto"
 
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:32
-#: sga/templates/personal_template.html:101
+#: sga/templates/personal_template.html:103
 msgid "Are you sure?"
 msgstr "¿Está seguro?"
 
@@ -3789,10 +3860,45 @@ msgstr "¿Está seguro?"
 msgid "Are you sure that do you want delete this object"
 msgstr "¿Está seguro de que quiere borrar este objeto?"
 
-#: laboratory/templates/laboratory/sustance/sustance_form.html:10
-#: sga/templates/add_company.html:19 sga/templates/sgalabel/step_two.html:37
-msgid "Back"
-msgstr "Atrás"
+#: laboratory/templates/laboratory/shelfobject_detail.html:20
+msgid "Features"
+msgstr "Características"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:35
+msgid "Cas Number"
+msgstr "Número CAS"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:36
+msgid "Is Precursor"
+msgstr "¿Es precursor?"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:38
+msgid "Precursor Type"
+msgstr "Tipo de precursor"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:40
+msgid "IARC"
+msgstr "IARC"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:41
+msgid "IMDG"
+msgstr "IMDG"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:51
+msgid "Bio Accumulable"
+msgstr "Bioacumulable"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:53
+msgid "Molecular Formula"
+msgstr "Fórmula molecular"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:55
+msgid "Security Sheet"
+msgstr "Hojas de seguridad"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:88
+msgid "Sustance Representation"
+msgstr "Representación de la sustancia"
 
 #: laboratory/templates/laboratory/transfer_object_modal.html:7
 msgid "Select the Shelf"
@@ -3877,11 +3983,27 @@ msgstr "No hay Objetos"
 msgid "%(value)s is not a valid molecular formula"
 msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
 
-#: laboratory/views/laboratory.py:180
+#: laboratory/views/furniture.py:185
+msgid "ERROR"
+msgstr "ERROR"
+
+#: laboratory/views/furniture.py:186
+msgid "Data is not valid"
+msgstr "Dato no es válido"
+
+#: laboratory/views/furniture.py:189
+msgid "New furniture type"
+msgstr "Nuevo tipo mueble"
+
+#: laboratory/views/furniture.py:191
+msgid "New Container type"
+msgstr "Nuevo estante contenedor"
+
+#: laboratory/views/laboratory.py:183
 msgid "Laboratory was created successfully"
 msgstr "Substraído exitosamente"
 
-#: laboratory/views/laboratory.py:199
+#: laboratory/views/laboratory.py:202
 msgid ""
 "Sorry, there is not available laboratory, please contact the administrator "
 "and request a laboratory enrollment"
@@ -3893,194 +4015,194 @@ msgstr ""
 msgid "H code"
 msgstr "Códigos H"
 
-#: laboratory/views/objects.py:167
-msgid "Available only on this laboratories if it is private"
-msgstr "Sólo está disponible en este laboratorio si es privado"
-
-#: laboratory/views/organizations.py:28
+#: laboratory/views/organizations.py:32
 msgid "Filter Organization"
 msgstr "Filtrar Organización"
 
-#: laboratory/views/reports.py:173 laboratory/views/reports.py:499
+#: laboratory/views/reports.py:139 laboratory/views/reports.py:478
 msgid "Units"
 msgstr "Unidades"
 
-#: laboratory/views/reports.py:174
+#: laboratory/views/reports.py:140
 msgid "Object type"
 msgstr "Tipo de objeto"
 
-#: laboratory/views/reports.py:175
+#: laboratory/views/reports.py:141
 msgid "CAS ID"
 msgstr "IDENTIFICACIÓN CAS"
 
-#: laboratory/views/reports.py:176
+#: laboratory/views/reports.py:142
 msgid "IMDG code"
 msgstr "Código IMDG"
 
-#: laboratory/views/reports.py:269
+#: laboratory/views/reports.py:241
 msgid "Limit quantity"
 msgstr "Cantidad límite"
 
-#: laboratory/views/reports.py:269
+#: laboratory/views/reports.py:241
 msgid "Mesurement units"
 msgstr "Unidades de medida"
 
-#: laboratory/views/reports.py:329
+#: laboratory/views/reports.py:304
 msgid "Quantity total"
 msgstr "Cantidad total"
 
-#: laboratory/views/reports.py:329
+#: laboratory/views/reports.py:304
 msgid "Measurement units"
 msgstr "Unidades de medida"
 
-#: laboratory/views/reports.py:335
+#: laboratory/views/reports.py:310
 msgid "CAS id number"
 msgstr "Número de identificación CAS"
 
-#: laboratory/views/reports.py:337
+#: laboratory/views/reports.py:312
 msgid "IMDG type"
 msgstr "Tipo IMDG"
 
-#: laboratory/views/reports.py:498
+#: laboratory/views/reports.py:477
 msgid "Limit Quantity"
 msgstr "Cantidad límite"
 
-#: laboratory/views/reports.py:672
+#: laboratory/views/reports.py:656
 msgid "Period"
 msgstr "Periodo"
 
-#: laboratory/views/reports.py:675
+#: laboratory/views/reports.py:659
 msgid "Resume"
 msgstr "Resumen"
 
-#: laboratory/views/reports.py:677
+#: laboratory/views/reports.py:661
 msgid "On screen"
 msgstr "En pantalla"
 
-#: laboratory/views/reports.py:682
+#: laboratory/views/reports.py:666
 msgid "Format"
 msgstr "Formato"
 
-#: laboratory/views/reports.py:752
+#: laboratory/views/reports.py:738
 msgid ""
 "When resume date, we use last object for fill User, Laboratory, and Day "
 msgstr ""
 "Cuando se reanuda la fecha, usamos el último objeto para rellenar Usuario, "
 "Laboratorio, y Día "
 
-#: laboratory/views/reports.py:796
+#: laboratory/views/reports.py:782
 msgid "#Consecutivo"
 msgstr "Consecutivo"
 
-#: laboratory/views/reports.py:799
+#: laboratory/views/reports.py:785
 msgid "Laboratorio o centro de trabajo"
 msgstr "Laboratorio o centro de trabajo"
 
-#: laboratory/views/reports.py:804
+#: laboratory/views/reports.py:790
 msgid "Nombre de la sustancia o producto"
 msgstr "Nombre de la sustancia o producto"
 
-#: laboratory/views/reports.py:805
+#: laboratory/views/reports.py:791
 msgid "Unid"
 msgstr "Unidad"
 
-#: laboratory/views/reports.py:806
+#: laboratory/views/reports.py:792
 msgid "Saldo final de reporte anterior"
 msgstr "Saldo final de reporte anterior"
 
-#: laboratory/views/reports.py:807
+#: laboratory/views/reports.py:793
 msgid "Ingresos durante el mes"
 msgstr "Saldo final de reporte anterior"
 
-#: laboratory/views/reports.py:808
+#: laboratory/views/reports.py:794
 msgid "Numero de factura"
 msgstr "Numero de factura"
 
-#: laboratory/views/reports.py:809
+#: laboratory/views/reports.py:795
 msgid "Proveedor"
 msgstr "Proveedores"
 
-#: laboratory/views/reports.py:810
+#: laboratory/views/reports.py:796
 msgid "Total de existencias"
 msgstr "Total de existencias"
 
-#: laboratory/views/reports.py:811
+#: laboratory/views/reports.py:797
 msgid "Gasto durante el mes"
 msgstr "No hay piezas de mueble"
 
-#: laboratory/views/reports.py:812
+#: laboratory/views/reports.py:798
 msgid "Saldo al final del mes reportado en este informe"
 msgstr "Saldo al final del mes reportado en este informe"
 
-#: laboratory/views/reports.py:813
+#: laboratory/views/reports.py:799
 msgid "Razon de gasto o despacho"
 msgstr "Razon de gasto o despacho"
 
-#: laboratory/views/reports.py:814
+#: laboratory/views/reports.py:800
 msgid "Asunto"
 msgstr "Asunto"
 
-#: laboratory/views/reports.py:982
+#: laboratory/views/reports.py:964
+msgid "First Name"
+msgstr "Nombre"
+
+#: laboratory/views/reports.py:968
 msgid "CAS"
 msgstr "CAS"
 
-#: laboratory/views/shelfobject.py:81
+#: laboratory/views/shelfobject.py:95
 msgid "Reactive/Material/Equipment"
 msgstr "Reactivo/Material/Equipo"
 
-#: laboratory/views/shelfobject.py:282 laboratory/views/shelfobject.py:294
+#: laboratory/views/shelfobject.py:314 laboratory/views/shelfobject.py:326
 msgid "Added successfully"
 msgstr "Agregado exitosamente"
 
-#: laboratory/views/shelfobject.py:316
+#: laboratory/views/shelfobject.py:350
 msgid "The amount to be subtracted is more than the shelf has"
 msgstr "La cantidad a sustraer es más que el estante tiene"
 
-#: laboratory/views/shelfobject.py:328
+#: laboratory/views/shelfobject.py:362
 msgid "Sustracted successfully"
 msgstr "Substraído exitosamente"
 
-#: laboratory/views/shelfobject.py:341
+#: laboratory/views/shelfobject.py:375
 msgid "Only can accept whole numbers or decimal numbers with ."
 msgstr "Solo se pueden aceptar números enteros o números decimales con ."
 
-#: laboratory/views/shelfobject.py:352
+#: laboratory/views/shelfobject.py:390
 msgid "The amount sending is less that the amount we have in the Shelf"
 msgstr ""
 "La cantidad de envío es inferior a la cantidad que existe en la estantería"
 
-#: laboratory/views/shelfobject.py:353 laboratory/views/shelfobject.py:430
+#: laboratory/views/shelfobject.py:391 laboratory/views/shelfobject.py:476
 msgid "Transfer done successfully"
 msgstr "Transferencia realizada con éxito"
 
-#: laboratory/views/shelfobject.py:391
+#: laboratory/views/shelfobject.py:429
 msgid "Need to create a Shelf"
 msgstr "Cree un estante"
 
-#: laboratory/views/shelfobject.py:429
+#: laboratory/views/shelfobject.py:475
 msgid "The amount sends is more than the laboratory have"
 msgstr "La cantidad a sustraer es más de lo que el laboratorio tiene"
 
-#: msds/models.py:9
+#: msds/models.py:11
 msgid "MSDS File"
 msgstr "Archivo MSDS"
 
-#: msds/models.py:16 msds/models.py:17
+#: msds/models.py:18 msds/models.py:19
 msgid "MSDS Object"
 msgstr "Objeto MSDS"
 
-#: msds/models.py:47
+#: msds/models.py:49
 msgid "Regulation File"
 msgstr "Archivo de regulación"
 
-#: msds/models.py:56
+#: msds/models.py:58
 msgid "Regulation document"
 msgstr "Documento regulatorio"
 
-#: msds/models.py:57 msds/templates/regulation/regulations_document.html:9
-#: presentation/templates/gentelella/app/sidebar.html:42
-#: presentation/templates/gentelella/app/sidebar.html:43
-#: presentation/templates/tutorial.html:12
+#: msds/models.py:59 msds/templates/regulation/regulations_document.html:9
+#: presentation/templates/gentelella/app/sidebar.html:45
+#: presentation/templates/gentelella/app/sidebar.html:46
+#: presentation/templates/tutorial.html:14
 msgid "Regulation documents"
 msgstr "Documentos y reglamentos"
 
@@ -4092,8 +4214,8 @@ msgstr "Buscar MSDS"
 msgid "Upload your MSDS"
 msgstr "Subir sus MSDS"
 
-#: msds/templates/msds/msdsobject/cruds/create.html:11
-#: msds/templates/msds/msdsobject/cruds/update.html:12
+#: msds/templates/msds/msdsobject/cruds/create.html:10
+#: msds/templates/msds/msdsobject/cruds/update.html:10
 msgid "Add new MSDS"
 msgstr "Añadir nuevo MSDS"
 
@@ -4109,29 +4231,71 @@ msgstr "por "
 msgid "Download all"
 msgstr "Descargar"
 
-#: msds/views.py:118
+#: msds/views.py:121
 msgid "Your MSDS was uploaded successfully"
 msgstr "Su MSDS fue subido satisfactoriamente"
 
-#: msds/views.py:130
+#: msds/views.py:147
 msgid "Your MSDS was updated successfully"
 msgstr "Su MSDS fue editado satisfactoriamente"
 
-#: msds/views.py:143
+#: msds/views.py:165
 msgid "Your MSDS was delete successfully"
 msgstr "Su MSDS fue eliminado satisfactoriamente"
 
-#: presentation/templates/gentelella/app/administration_menu.html:6
+#: presentation/forms.py:17
+msgid "*Type the amount in dollars"
+msgstr "*Tipo de cantidad en dolares"
+
+#: presentation/forms.py:21 presentation/models.py:40
+msgid "Add me to the donators list"
+msgstr "Agregarme a la lista de donantes"
+
+#: presentation/models.py:19
+msgid "Explanation"
+msgstr "Explicación"
+
+#: presentation/models.py:21
+msgid "Related file"
+msgstr "Archivo relacionado"
+
+#: presentation/models.py:23
+msgid "Laboratory id"
+msgstr "Id de laboratorio"
+
+#: presentation/models.py:28
+msgid "Feedback entry"
+msgstr "Entrada de retroalimentación"
+
+#: presentation/models.py:29
+msgid "Feedback entries"
+msgstr "Entradas de retroalimentación"
+
+#: presentation/models.py:39
+msgid "Details"
+msgstr "Detalles"
+
+#: presentation/models.py:41
+msgid "Is paid?"
+msgstr "¿Es pago?"
+
+#: presentation/models.py:42
+msgid "Donation date"
+msgstr "Fecha de donación"
+
+#: presentation/models.py:45
+msgid "Donation"
+msgstr "Donación"
+
+#: presentation/models.py:46
+msgid "Donations"
+msgstr "Donaciones"
+
+#: presentation/templates/gentelella/app/administration_menu.html:7
 msgid "Administration"
 msgstr "Administración"
 
-#: presentation/templates/gentelella/app/administration_menu.html:11
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:16
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:17
-msgid "My laboratories"
-msgstr "Mis Laboratorios"
-
-#: presentation/templates/gentelella/app/administration_menu.html:17
+#: presentation/templates/gentelella/app/administration_menu.html:18
 msgid "View laboratory"
 msgstr "Ver laboratorio"
 
@@ -4156,19 +4320,19 @@ msgstr "icono de perfil"
 msgid "Welcome,"
 msgstr "Bienvenido/a"
 
-#: presentation/templates/gentelella/app/sidebar.html:35
+#: presentation/templates/gentelella/app/sidebar.html:38
 msgid "blog entries"
 msgstr "Entradas de retroalimentación"
 
-#: presentation/templates/gentelella/app/sidebar.html:36
+#: presentation/templates/gentelella/app/sidebar.html:39
 msgid "Blog"
 msgstr "Blog"
 
-#: presentation/templates/gentelella/app/top_navigation.html:22
+#: presentation/templates/gentelella/app/top_navigation.html:23
 msgid "Tutorials"
 msgstr "Tutoriales"
 
-#: presentation/templates/gentelella/app/top_navigation.html:26
+#: presentation/templates/gentelella/app/top_navigation.html:29
 #: presentation/templates/gentelella/registration/login.html:46
 #: presentation/templates/gentelella/registration/password_reset_complete.html:15
 msgid "Log in"
@@ -4362,6 +4526,18 @@ msgid "You are now registered. Activation email sent."
 msgstr ""
 "Usted está registrado actualmente. Un correo de activación fue enviado."
 
+#: presentation/templates/index.html:8 presentation/templates/index.html:13
+msgid "Welcome to Organilab"
+msgstr "Bienvenido a Organilab"
+
+#: presentation/templates/index.html:27
+msgid "Sponsor"
+msgstr "Patrocinadores"
+
+#: presentation/templates/index.html:44
+msgid "Register"
+msgstr "Registrarse"
+
 #: presentation/templates/partials/auth_and_perms.html:6
 msgid "Org and perms"
 msgstr "Organizaciones y permisos"
@@ -4372,18 +4548,18 @@ msgid "Manage Organizations"
 msgstr "Administración de Organizaciones"
 
 #: presentation/templates/partials/derb_menu.html:7
-msgid "Report Management"
-msgstr "Administrar Reportes"
+msgid "Reports and Informs"
+msgstr "Reportes e informes"
 
 #: presentation/templates/partials/derb_menu.html:13
 #: presentation/templates/partials/derb_menu.html:15
+#: presentation/templates/partials/derb_menu.html:19
 msgid "Report List"
 msgstr "Listado de Reportes"
 
 #: presentation/templates/partials/derb_menu.html:21
-#: presentation/templates/partials/derb_menu.html:23
-msgid "Report Reactive presence"
-msgstr "Reporte de presencia de reactivos"
+msgid "Inform List"
+msgstr "Informes"
 
 #: presentation/templates/partials/reservations_menu.html:6
 msgid "Manage Reservations"
@@ -4412,26 +4588,22 @@ msgstr "Reservaciones Denegadas"
 msgid "Closed Reservations"
 msgstr "Reservaciones Cerradas"
 
-#: presentation/templates/partials/riskmanagement_menu.html:7
+#: presentation/templates/partials/riskmanagement_menu.html:8
 msgid "Risk Management"
 msgstr "Manejo de Riesgo"
 
-#: presentation/templates/partials/riskmanagement_menu.html:13
-#: risk_management/models.py:60
+#: presentation/templates/partials/riskmanagement_menu.html:14
+#: risk_management/models.py:62
 msgid "Risk zones"
 msgstr "Zonas de riesgo"
 
-#: presentation/templates/partials/riskmanagement_menu.html:16
+#: presentation/templates/partials/riskmanagement_menu.html:17
 msgid "Report View"
 msgstr "Vista de reporte"
 
-#: presentation/templates/partials/riskmanagement_menu.html:17
+#: presentation/templates/partials/riskmanagement_menu.html:18
 msgid "H code Reports"
 msgstr "Reporte códigos H"
-
-#: presentation/templates/partials/sga_academic.html:6
-msgid "SGA"
-msgstr "SGA"
 
 #: presentation/templates/partials/sga_academic.html:18
 msgid "My Substances"
@@ -4461,55 +4633,69 @@ msgstr "MSDS: Hojas de seguridad"
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
 
-#: presentation/templates/tutorial.html:11
+#: presentation/templates/tutorial.html:12
 msgid "MSDS Files"
 msgstr "Archivo MSDS"
 
-#: reservations_management/models.py:19 reservations_management/models.py:26
+#: presentation/views.py:36 sga/templates/donate_organilab.html:4
+msgid "Donate Organilab"
+msgstr "Donar a Organilab"
+
+#: presentation/views.py:55
+msgid ""
+"Your donation was completed successfully, thank you for support this project!"
+msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
+
+#: presentation/views.py:82
+msgid "Thank you for your help. We will check your problem as soon as we can"
+msgstr ""
+"Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos."
+
+#: reservations_management/models.py:20 reservations_management/models.py:27
 msgid "Denied"
 msgstr "Rechazado"
 
-#: reservations_management/models.py:20
+#: reservations_management/models.py:21
 msgid "Closed"
 msgstr "Cerrado"
 
-#: reservations_management/models.py:25
+#: reservations_management/models.py:26
 msgid "Borrowed"
 msgstr "Prestado"
 
-#: reservations_management/models.py:27
+#: reservations_management/models.py:28
 msgid "Selected"
 msgstr "Seleccionado"
 
-#: reservations_management/models.py:28
+#: reservations_management/models.py:29
 msgid "Returned"
 msgstr "Devuelto"
 
-#: reservations_management/models.py:39
+#: reservations_management/models.py:40
 msgid "Monday"
 msgstr "Lunes"
 
-#: reservations_management/models.py:40
+#: reservations_management/models.py:41
 msgid "Tuesday"
 msgstr "Martes"
 
-#: reservations_management/models.py:41
+#: reservations_management/models.py:42
 msgid "Wednesday"
 msgstr "Miércoles"
 
-#: reservations_management/models.py:42
+#: reservations_management/models.py:43
 msgid "Thursday"
 msgstr "Jueves"
 
-#: reservations_management/models.py:43
+#: reservations_management/models.py:44
 msgid "Friday"
 msgstr "Viernes"
 
-#: reservations_management/models.py:44
+#: reservations_management/models.py:45
 msgid "Saturday"
 msgstr "Sábado"
 
-#: reservations_management/models.py:45
+#: reservations_management/models.py:46
 msgid "Sunday"
 msgstr "Domingo"
 
@@ -4532,7 +4718,7 @@ msgid "Amount Returned"
 msgstr "Cantidad devuelta"
 
 #: reservations_management/templates/reservations_management/manage_reservation.html:12
-#: reservations_management/templates/reservations_management/reservations_list.html:71
+#: reservations_management/templates/reservations_management/reservations_list.html:72
 msgid "Manage Reservation"
 msgstr "Administrar reservaciones"
 
@@ -4573,141 +4759,141 @@ msgstr "Administración de producto"
 msgid "Reservations List"
 msgstr "Lista de reservaciones"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:70
+#: reservations_management/templates/reservations_management/reservations_list.html:71
 msgid "Massive Reservation"
 msgstr "Reservación masiva"
 
-#: reservations_management/templates/reservations_management/reservations_list.html:95
+#: reservations_management/templates/reservations_management/reservations_list.html:97
 msgid "Manage"
 msgstr "Administrar"
 
-#: risk_management/incidents.py:99
+#: risk_management/incidents.py:133
 msgid "Identificador"
 msgstr "Identificador"
 
-#: risk_management/incidents.py:100
+#: risk_management/incidents.py:134
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
-#: risk_management/incidents.py:102
+#: risk_management/incidents.py:136
 msgid "Incident Date"
 msgstr "Fecha del incidente"
 
-#: risk_management/incidents.py:103
+#: risk_management/incidents.py:137
 msgid "Causes"
 msgstr "Causas"
 
-#: risk_management/incidents.py:104
+#: risk_management/incidents.py:138
 msgid "Infraestructure impact"
 msgstr "Impacto a la infraestructura"
 
-#: risk_management/incidents.py:105
+#: risk_management/incidents.py:139
 msgid "People impact"
 msgstr "Impacto a las personas"
 
-#: risk_management/incidents.py:106
+#: risk_management/incidents.py:140
 msgid "Environment impact"
 msgstr "Impacto ambiental"
 
-#: risk_management/incidents.py:107
+#: risk_management/incidents.py:141
 msgid "Result of plans"
 msgstr "Resultado de la ejecución de planes de seguridad"
 
-#: risk_management/incidents.py:108
+#: risk_management/incidents.py:142
 msgid "Mitigation actions"
 msgstr "Acciones de mitigación"
 
-#: risk_management/incidents.py:109
+#: risk_management/incidents.py:143
 msgid "Recomendations"
 msgstr "Recomandaciones"
 
-#: risk_management/incidents.py:128
+#: risk_management/incidents.py:162
 msgid "Incidents"
 msgstr "Incidentes"
 
-#: risk_management/models.py:22
+#: risk_management/models.py:24
 msgid "Opertation"
 msgstr "Operación"
 
-#: risk_management/models.py:23
+#: risk_management/models.py:25
 msgid "left_value opertation X ej.  left_value > 100"
 msgstr "left_value operación  X ej.  left_value > 100"
 
-#: risk_management/models.py:23
+#: risk_management/models.py:25
 msgid "Comparative value"
 msgstr "Valor comparativo"
 
-#: risk_management/models.py:24
+#: risk_management/models.py:26
 msgid "Use only if =<x>=, <x>, <x>= or =<x>  "
 msgstr "Use solo cuando:  =<x>=, <x>, <x>= or =<x>  "
 
-#: risk_management/models.py:25
+#: risk_management/models.py:27
 msgid "Set priority if true"
 msgstr "Poner prioridad si Verdadero"
 
-#: risk_management/models.py:25
+#: risk_management/models.py:27
 msgid "Value result if operation is True"
 msgstr "Valor resultante si operación es Verdadera"
 
-#: risk_management/models.py:37
+#: risk_management/models.py:39
 msgid "Priority calculate operators"
 msgstr "Prioridad de operaciones"
 
-#: risk_management/models.py:51
+#: risk_management/models.py:53
 msgid "Number of workers (aprox)"
 msgstr "Número de trabajadores (aprox)"
 
-#: risk_management/models.py:52
+#: risk_management/models.py:54
 msgid "Zone Type"
 msgstr "Tipo de Zona"
 
-#: risk_management/models.py:53
+#: risk_management/models.py:55
 msgid "Priority"
 msgstr "Prioridad"
 
-#: risk_management/models.py:59
+#: risk_management/models.py:61
 msgid "Risk zone"
 msgstr "Zona de riesgo"
 
-#: risk_management/models.py:65
+#: risk_management/models.py:67
 msgid "Descipción corta"
 msgstr "Descipción corta"
 
-#: risk_management/models.py:66
+#: risk_management/models.py:68
 msgid "Descipción corta de evento, max 500 caracteres"
 msgstr "Descipción corta de evento, max 500 caracteres"
 
-#: risk_management/models.py:67
+#: risk_management/models.py:69
 #: risk_management/templates/risk_management/incidentreport_pdf.html:19
 msgid "Fecha del incidente"
 msgstr "Fecha del incidente"
 
-#: risk_management/models.py:71
+#: risk_management/models.py:73
 #: risk_management/templates/risk_management/incidentreport_pdf.html:29
 msgid "Causas del accidente"
 msgstr "Causas del accidente"
 
-#: risk_management/models.py:74
+#: risk_management/models.py:76
 #: risk_management/templates/risk_management/incidentreport_pdf.html:31
 msgid "Impacto a la infraestructura"
 msgstr "Impacto a la infraestructura"
 
-#: risk_management/models.py:75 risk_management/models.py:79
-#: risk_management/models.py:83
+#: risk_management/models.py:77 risk_management/models.py:81
+#: risk_management/models.py:85
 msgid "Indicando las consecuencias a corto, mediano y largo plazo."
 msgstr "Indicando las consecuencias a corto, mediano y largo plazo."
 
-#: risk_management/models.py:78
+#: risk_management/models.py:80
 #: risk_management/templates/risk_management/incidentreport_pdf.html:33
 msgid "Impacto a las personas (empleados, visitantes y comunidad afectada)"
 msgstr "Impacto a las personas (empleados, visitantes y comunidad afectada)"
 
-#: risk_management/models.py:82
+#: risk_management/models.py:84
 #: risk_management/templates/risk_management/incidentreport_pdf.html:35
 msgid "Impacto ambiental"
 msgstr "Impacto ambiental"
 
-#: risk_management/models.py:86
+#: risk_management/models.py:88
 #: risk_management/templates/risk_management/incidentreport_pdf.html:37
 msgid ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
@@ -4716,18 +4902,18 @@ msgstr ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
 "Respuesta ante Accidentes Químicos."
 
-#: risk_management/models.py:90
+#: risk_management/models.py:92
 #: risk_management/templates/risk_management/incidentreport_pdf.html:39
 msgid ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 msgstr ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 
-#: risk_management/models.py:94
+#: risk_management/models.py:96
 msgid "Recomendaciones"
 msgstr "Recomendaciones"
 
-#: risk_management/models.py:95
+#: risk_management/models.py:97
 #: risk_management/templates/risk_management/incidentreport_pdf.html:41
 msgid ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
@@ -4736,7 +4922,7 @@ msgstr ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
 "cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 
-#: risk_management/models.py:99
+#: risk_management/models.py:101
 msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
@@ -4788,7 +4974,7 @@ msgstr "Crear Reporte de incidentes"
 msgid "Risk Zone Management"
 msgstr "Administración de zonas de riesgo"
 
-#: risk_management/views:128
+#: risk_management/views.py:128
 msgid "There is an error in the form"
 msgstr "Existe un error en el formulario"
 
@@ -4796,244 +4982,216 @@ msgstr "Existe un error en el formulario"
 msgid "Add a new zonetype"
 msgstr "Ingrese un tipo de zona"
 
-#: sga/admin.py:18
-msgid "Download Label"
-msgstr "Descargar etiquetas"
-
-#: sga/forms.py:155
-msgid "*Type the amount in dollars"
-msgstr "*Tipo de cantidad en dolares"
-
-#: sga/forms.py:159 sga/models.py:329
-msgid "Add me to the donators list"
-msgstr "Agregarme a la lista de donantes"
-
-#: sga/forms.py:232
+#: sga/forms.py:220
 msgid "Select Provider"
 msgstr "Seleccione Proveedor"
 
-#: sga/models.py:12
+#: sga/models.py:13
 msgid "Type of danger"
 msgstr "Tipo de peligro"
 
-#: sga/models.py:13
+#: sga/models.py:14
 msgid "Danger class"
 msgstr "Clase de peligro"
 
-#: sga/models.py:14
+#: sga/models.py:15
 msgid "Danger Category"
 msgstr "Categoría de peligo"
 
-#: sga/models.py:19
+#: sga/models.py:20
 msgid "Danger type"
 msgstr "Clasificación de peligro"
 
-#: sga/models.py:40
+#: sga/models.py:41
 msgid "Warning Class"
 msgstr "Clase de peligro"
 
-#: sga/models.py:41
+#: sga/models.py:42
 msgid "Warning Classes"
 msgstr "Clases de peligro"
 
-#: sga/models.py:50
+#: sga/models.py:51
 msgid "Weigth"
 msgstr "Peso"
 
-#: sga/models.py:75 sga/models.py:347
+#: sga/models.py:79 sga/models.py:334
 msgid "Pictogram"
 msgstr "Pictograma"
 
-#: sga/models.py:88
+#: sga/models.py:92
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
 
-#: sga/models.py:104
+#: sga/models.py:108
 msgid "Warning words"
 msgstr "Palabras de advertencia"
 
-#: sga/models.py:108
+#: sga/models.py:112
 msgid "Warning class"
 msgstr "Clase de peligro"
 
-#: sga/models.py:113
+#: sga/models.py:117
 msgid "Warning category"
 msgstr "Categorías de peligro"
 
-#: sga/models.py:123
+#: sga/models.py:127
 msgid "Indication of Danger"
 msgstr "Indicaciones de peligro"
 
-#: sga/models.py:155
+#: sga/models.py:159
 msgid "Danger indications"
 msgstr "Indicación de peligro"
 
-#: sga/models.py:191
+#: sga/models.py:183
+msgid "Substances"
+msgstr "Sustancias"
+
+#: sga/models.py:194
 msgid "White organ"
 msgstr "Organo blanco"
 
-#: sga/models.py:192
+#: sga/models.py:195
 msgid "Bioaccumulable"
 msgstr "Bioacumulable"
 
-#: sga/models.py:217
+#: sga/models.py:220
 msgid "Substance characteristic SGA"
 msgstr "Característica de sustancia SGA"
 
-#: sga/models.py:218
+#: sga/models.py:221
 msgid "Substance characteristics SGA"
 msgstr "Características de sustancia SGA"
 
-#: sga/models.py:226 sga/templates/list_company.html:27
+#: sga/models.py:229 sga/templates/list_company.html:27
 msgid "Address"
 msgstr "Dirección"
 
-#: sga/models.py:230 sga/templates/editor/generic.html:34
+#: sga/models.py:233 sga/templates/editor/generic.html:34
 #: sga/templates/list_company.html:29
 msgid "Commercial Information"
 msgstr "Información Comercial"
 
-#: sga/models.py:235 sga/models.py:273
+#: sga/models.py:238 sga/models.py:276
 msgid "Builder Information"
 msgstr "Información del fabricante"
 
-#: sga/models.py:236
+#: sga/models.py:239
 msgid "Information of Builders"
 msgstr "Información de los fabricantes"
 
-#: sga/models.py:244
+#: sga/models.py:247
 msgid "Milimeters"
 msgstr "Milímetros"
 
-#: sga/models.py:245
+#: sga/models.py:248
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: sga/models.py:246
+#: sga/models.py:249
 msgid "inch"
 msgstr "inches"
 
-#: sga/models.py:249
+#: sga/models.py:252
 msgid "Height"
 msgstr "Alto"
 
-#: sga/models.py:251
+#: sga/models.py:254
 msgid "Height Unit"
 msgstr "Unidad de altura"
 
-#: sga/models.py:253
+#: sga/models.py:256
 msgid "Width"
 msgstr "Ancho"
 
-#: sga/models.py:255
+#: sga/models.py:258
 msgid "Width Unit"
 msgstr "Unidad de anchura"
 
-#: sga/models.py:264 sga/models.py:289
+#: sga/models.py:267 sga/models.py:292
 msgid "Recipient Size"
 msgstr "Tamaño de recipiente"
 
-#: sga/models.py:265
+#: sga/models.py:268
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
-#: sga/models.py:276 sga/models.py:291
+#: sga/models.py:279 sga/models.py:294
 msgid "Share with community"
 msgstr "Comparte con la comunidad"
 
-#: sga/models.py:282 sga/models.py:309
+#: sga/models.py:285 sga/models.py:312
 msgid "Label"
 msgstr "Etiqueta"
 
-#: sga/models.py:283
+#: sga/models.py:286
 msgid "Labels"
 msgstr "Etiquetas"
 
-#: sga/models.py:300 sga/models.py:307
+#: sga/models.py:303 sga/models.py:310
 msgid "Template SGA"
 msgstr "Plantilla SGA"
 
-#: sga/models.py:301
+#: sga/models.py:304
 msgid "Templates SGA"
 msgstr "Plantillas SGA"
 
-#: sga/models.py:310
+#: sga/models.py:313
 msgid "Barcode"
 msgstr "Código de barras"
 
-#: sga/models.py:311
+#: sga/models.py:314
 msgid "Logo"
 msgstr "Logotipo"
 
-#: sga/models.py:320
+#: sga/models.py:323
 msgid "Personal Template SGA"
 msgstr "Plantilla SGA"
 
-#: sga/models.py:321
+#: sga/models.py:324
 msgid "Personal Templates SGA"
 msgstr "Plantillas SGA"
 
-#: sga/models.py:328
-msgid "Details"
-msgstr "Detalles"
-
-#: sga/models.py:330
-msgid "Is paid?"
-msgstr "¿Es pago?"
-
-#: sga/models.py:331
-msgid "Donation date"
-msgstr "Fecha de donación"
-
-#: sga/models.py:334
-msgid "Donation"
-msgstr "Donación"
-
-#: sga/models.py:335
-msgid "Donations"
-msgstr "Donaciones"
-
-#: sga/models.py:346 sga/templates/editor/sga_live.html:20
+#: sga/models.py:333 sga/templates/editor/sga_live.html:20
 msgid "Other Dangers"
 msgstr "Otros peligros"
 
-#: sga/models.py:348
+#: sga/models.py:335
 msgid "WarningWord"
 msgstr "Palabra de advertencia"
 
-#: sga/models.py:365
+#: sga/models.py:352
 msgid "No. Registro"
 msgstr "No. Registro"
 
-#: sga/models.py:366
+#: sga/models.py:353
 msgid "REACH No."
 msgstr "REACH No."
 
-#: sga/models.py:367
+#: sga/models.py:354
 msgid "Identified uses"
 msgstr "Usos específicos finales"
 
-#: sga/models.py:413
+#: sga/models.py:400
 msgid "Annotation"
 msgstr "Anotacion"
 
-#: sga/models.py:414
+#: sga/models.py:401
 msgid "Font"
 msgstr "Fuente"
 
-#: sga/models.py:430
+#: sga/models.py:417
 msgid "Partition coefficient n-octanol/water"
 msgstr "Coeficiente de reparto n-octanol/agua"
 
-#: sga/models.py:482
+#: sga/models.py:469
 msgid "Otro datos"
 msgstr "Otro datos"
 
-#: sga/models.py:488
+#: sga/models.py:475
 msgid "Note"
 msgstr "Nota"
 
-#: sga/models.py:491 sga/models.py:492
+#: sga/models.py:478 sga/models.py:479
 msgid "Review Substance"
 msgstr "Crear  Sustancia"
 
@@ -5044,11 +5202,6 @@ msgstr "Crear Nuevo Recipiente"
 #: sga/templates/add_substance.html:9
 msgid "Create New Substance"
 msgstr "Crear Nueva Sustancia"
-
-#: sga/templates/danger_indication_info.html:4
-#: sga/templates/index_organilab.html:10
-msgid "SGA Search"
-msgstr "Buscador SGA"
 
 #: sga/templates/danger_indication_info.html:9
 msgid "Danger Indication Information"
@@ -5085,10 +5238,6 @@ msgstr ""
 #: sga/templates/danger_indication_info.html:74
 msgid "Go to form"
 msgstr "Ir al formulario"
-
-#: sga/templates/donate_organilab.html:4 sga/views.py:314
-msgid "Donate Organilab"
-msgstr "Donar a Organilab"
 
 #: sga/templates/donate_organilab.html:9
 msgid "Thank for support this project making your donation."
@@ -5160,20 +5309,6 @@ msgstr "Información Comercial"
 #: sga/templates/editor/sga_live.html:39
 msgid "Graphics"
 msgstr "Gráficos"
-
-#: sga/templates/index_organilab.html:15
-msgid "SGA Information Searcher"
-msgstr "Buscador de información del SGA"
-
-#: sga/templates/index_organilab.html:16
-msgid "Enter in the following searcher the danger indication codes (H-Codes)."
-msgstr ""
-"Introduzca en el siguiente buscador los códigos de indicación de peligro "
-"(Códigos H)."
-
-#: sga/templates/index_organilab.html:37
-msgid "Donate"
-msgstr "Donar"
 
 #: sga/templates/index_sga.html:11 sga/templates/index_sga.html:24
 msgid "GHS Label Creator"
@@ -5255,7 +5390,7 @@ msgstr "Eliminar Compañía"
 msgid "Do you want to remove the company?"
 msgstr "¿Deseas eliminar la companía "
 
-#: sga/templates/list_company.html:67 sga/views.py:649
+#: sga/templates/list_company.html:67 sga/views.py:539
 msgid "The company is removed successfully"
 msgstr "Se elimino correctamente la compañía"
 
@@ -5276,11 +5411,15 @@ msgid "List of SGA Labels"
 msgstr "Listado de Etiquetas SGA"
 
 #: sga/templates/personal_template.html:34
-#: sga/templates/personal_template.html:79
+#: sga/templates/personal_template.html:81
 msgid "New SGA Label"
 msgstr "Nueva etiqueta SGA"
 
-#: sga/templates/personal_template.html:104
+#: sga/templates/personal_template.html:52
+msgid "Generate PNG"
+msgstr "Uso general"
+
+#: sga/templates/personal_template.html:106
 msgid "This action is irreversible"
 msgstr "Esta acción es irreversible"
 
@@ -5312,50 +5451,78 @@ msgstr "Ir al editor"
 msgid "Go to your labels"
 msgstr "Ir a tus etiquetas"
 
-#: sga/views.py:131
+#: sga/views.py:72
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
-#: sga/views.py:333
-msgid ""
-"Your donation was completed successfully, thank you for support this project!"
-msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
-
-#: sga/views.py:358
+#: sga/views.py:248
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
 
-#: sga/views.py:360
+#: sga/views.py:250
 msgid "Error, user is not creator label"
 msgstr "Error, usuario no es el creador de la etiqueta"
 
-#: sga/views.py:378
+#: sga/views.py:268
 msgid "The substance saved successfully"
 msgstr "La sustancias fue guardada con éxito"
 
-#: sga/views.py:391
+#: sga/views.py:281
 msgid "The Recipient size saved successfully"
 msgstr "El recipiente fue guardado con éxito"
 
-#: sga/views.py:446
+#: sga/views.py:327
 msgid "Create pictogram"
 msgstr "Crear pictograma"
 
-#: sga/views.py:474
+#: sga/views.py:352
 msgid "Update pictogram"
 msgstr "Actualizar pictograma"
 
-#: sga/views.py:495
+#: sga/views.py:374
 msgid "Form is invalid"
 msgstr "El formulario es inválido"
 
-#: sga/views.py:620
+#: sga/views.py:506
 msgid "Create Company"
 msgstr "Crear Compañía"
 
-#: sga/views.py:638
+#: sga/views.py:525
 msgid "Edit Company"
 msgstr "Editar Compañía"
+
+#~ msgid "Business Email Address"
+#~ msgstr "Correo de negocio"
+
+#~ msgid "Company Name"
+#~ msgstr "Nombre de la empresa"
+
+#~ msgid "Country Name"
+#~ msgstr "Ciudad"
+
+#~ msgid "Phone Number"
+#~ msgstr "Teléfono"
+
+#~ msgid "Demo Request"
+#~ msgstr "Solicitar una demostración"
+
+#~ msgid "Demo Requests"
+#~ msgstr "Peticiones de demostración"
+
+#~ msgid "We will contact you soon"
+#~ msgstr "Los contactaremos pronto"
+
+#~ msgid "Available only on this laboratories if it is private"
+#~ msgstr "Sólo está disponible en este laboratorio si es privado"
+
+#~ msgid "Report Management"
+#~ msgstr "Administrar Reportes"
+
+#~ msgid "Report Reactive presence"
+#~ msgstr "Reporte de presencia de reactivos"
+
+#~ msgid "Download Label"
+#~ msgstr "Descargar etiquetas"
 
 #, fuzzy
 #~| msgid "Shelf object"
@@ -5490,9 +5657,6 @@ msgstr "Editar Compañía"
 #~ msgid "Radioactive material"
 #~ msgstr "Material radioactivo"
 
-#~ msgid "Corrosive substances"
-#~ msgstr "Sustancias corrosivas"
-
 #~ msgid "Miscellaneous dangerous substances and articles"
 #~ msgstr "Sustancias y artículos peligrosos diversos"
 
@@ -5567,9 +5731,6 @@ msgstr "Editar Compañía"
 
 #~ msgid "Create users"
 #~ msgstr "Crear usuarios"
-
-#~ msgid "Not user found"
-#~ msgstr "Usuario no encontrado"
 
 #~ msgid "You need to select!"
 #~ msgstr "¡Tiene que seleccionar!"
