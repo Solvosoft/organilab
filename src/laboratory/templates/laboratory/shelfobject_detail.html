@@ -1,0 +1,97 @@
+{% load i18n %}
+{% load humanformat %}
+
+<div class="modal-header">
+          <h4 class="modal-title"> {{ object.object.code }}
+        {{ object.object.name }}
+        {{ object.quantity }}
+            {{ object.get_measurement_unit_display }}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+
+<table class="table table-striped">
+    <tbody>
+<tr><td>{% trans 'Code' %}</td><td>{{object.object.code|default:"" }} </td></tr>
+<tr><td>{% trans 'Name' %}</td><td>{{object.object.name|default:"" }} </td></tr>
+<tr><td>{% trans 'Synonym' %}</td><td>{{object.object.synonym|default:""}} </td></tr>
+<tr><td>{% trans 'Description' %}</td><td>{{object.object.description|default:""}} </td></tr>
+{% if object.object.features.exists %}
+<tr><td>{% trans 'Features' %}</td><td>
+    <ul class="shelfobjectfeatures">
+        {% for features in object.object.features.all %}
+        <li> {{features  }} </li>
+        {% endfor %}
+    </ul>
+</td></tr>
+{% endif %}
+<tr><td>{% trans 'Model' %}</td><td>{{object.object.model|default:"" }} </td></tr>
+<tr><td>{% trans 'Serie' %}</td><td>{{object.object.serie|default:"" }} </td></tr>
+<tr><td>{% trans 'Plaque' %}</td><td>{{object.object.plaque|default:"" }} </td></tr>
+
+{% with sustancecharacteristics=object.object.sustancecharacteristics %}
+
+{% if sustancecharacteristics %}
+<tr><td>{% trans 'Cas Number' %}</td><td>{{sustancecharacteristics.cas_id_number|default:""}} </td></tr>
+<tr><td>{% trans 'Is Precursor' %}</td><td>{{sustancecharacteristics.is_precursor|yesno}} </td></tr>
+{% if sustancecharacteristics.is_precursor %}
+    <tr><td>{% trans 'Precursor Type' %}</td><td>{{sustancecharacteristics.precursor_type}} </td></tr>
+{% endif %}
+<tr><td>{% trans 'IARC' %}</td><td>{{sustancecharacteristics.iarc|default:""}} </td></tr>
+<tr><td>{% trans 'IMDG' %}</td><td>{{sustancecharacteristics.imdg|default:""}} </td></tr>
+{% if sustancecharacteristics.white_organ.exists %}
+<tr><td>{% trans 'White Organ' %}</td><td>
+<ul>
+    {% for  white_organ in sustancecharacteristics.white_organ.all %}
+    <li>{{white_organ }} </li>
+    {% endfor %}
+</ul>
+</td></tr>
+{% endif %}
+<tr><td>{% trans 'Bio Accumulable' %}</td><td>{{sustancecharacteristics.bioaccumulable|yesno }} </td></tr>
+<tr><td>{% trans 'Is Seveso list III?' %}</td><td>{{sustancecharacteristics.seveso_list|yesno }} </td></tr>
+<tr><td>{% trans 'Molecular Formula' %}</td><td>{{sustancecharacteristics.molecular_formula|default:""}} </td></tr>
+{% if sustancecharacteristics.security_sheet %}
+<tr><td>{% trans 'Security Sheet' %}</td><td>
+    <a href="{{sustancecharacteristics.security_sheet.url}}" target="_blank"> {% trans 'Download' %} </a>
+</td></tr>
+{%endif %}
+<tr><td>{% trans 'H Codes' %}</td><td>
+    <ul class="shelfobjecthcode">
+{% for di in sustancecharacteristics.h_code.all %}
+        <li>{{di}}</li>
+{% endfor%}
+    </ul>
+</td></tr>
+<tr><td>{% trans 'UE codes' %}</td><td>
+    <ul class="shelfobjectue_code">
+{% for di in sustancecharacteristics.ue_code.all %}
+        <li>{{di}}</li>
+{% endfor%}
+    </ul>
+</td></tr>
+<tr><td>{% trans 'NFPA codes' %}</td><td>
+    <ul class="shelfobjectnfpa">
+{% for di in sustancecharacteristics.nfpa.all %}
+        <li>{{di}}</li>
+{% endfor%}
+    </ul>
+</td></tr>
+<tr><td>{% trans 'Storage class' %}</td><td>
+    <ul class="shelfobjectstorage_class">
+{% for di in sustancecharacteristics.storage_class.all %}
+        <li>{{di}}</li>
+{% endfor%}
+    </ul>
+</td></tr>
+  {% if sustancecharacteristics.img_representation %}
+<tr><td>{% trans 'Sustance Representation' %}</td><td>
+    <img href="{{sustancecharacteristics.img_representation.url}}" width="200px" height="200px" />
+</td></tr>
+  {%endif %}
+{% endif %}
+{% endwith %}
+    </tbody>
+</table>
+
+</div>

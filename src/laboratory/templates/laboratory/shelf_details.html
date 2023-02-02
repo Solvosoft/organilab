@@ -1,18 +1,27 @@
 {% load i18n laboratory %}
 
-<li id="shelf_{{data.pk}}" data-id="{{data.pk}}" class="list-group-item">
-	{% if perms.laboratory.delete_shelf %}
-		<a id="close" class="close" aria-label="Close"  
-		href="{% url 'laboratory:shelf_delete' lab_pk=laboratory data.pk crow ccol org_pk %}"
-		data-ajax="true" ><span aria-hidden="true">&times;</span></a>
-	{% endif %}
+<li id="shelf_{{data.pk}}" style="color: {{data.color}};" data-id="{{data.pk}}" class="shelfitem list-group-item">
 
-	{{data.get_type_display}} 
+
+	<div class="float-end">
+                <ul class="list-group list-group-horizontal">
+					<li class="list-group-item ui-state-disabled">{% if perms.laboratory.change_shelf %}
+		<a data-ajax="true" data-success="processResponse"
+		href="{% url 'laboratory:shelf_edit' lab_pk=laboratory pk=data.pk row=crow col=ccol org_pk=org_pk %}?furniture={{data.furniture.pk}}">
+			<i class="fa fa-edit"></i>
+		</a>
+						{% endif %}</li>
+	<li class="list-group-item ui-state-disabled">
+	{% if perms.laboratory.delete_shelf %}
+		<a href="{% url 'laboratory:shelf_delete' lab_pk=laboratory pk=data.pk row=crow col=ccol org_pk=org_pk %}"
+		data-ajax="true" > <i class="fa fa-minus text-danger"></i> </a>
+	{% endif %}
+	</li>
+				</ul>
+	</div>
+	{{data.type}}
 	<p>{% trans 'Position:' %} {{data.name}}</p>
 
-	{% if perms.laboratory.change_shelf %}
-		<a class="btn btn-xs btn-warning" data-ajax="true" data-success="processResponse"
-		href="{% url 'laboratory:shelf_edit' laboratory data.pk crow ccol org_pk %}?furniture={{data.furniture.pk}}"> {% trans 'Edit' %}</a>
-	{% endif %}
+
 
 </li>	

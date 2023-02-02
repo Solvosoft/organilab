@@ -66,11 +66,14 @@ def login_with_bccr(request):
             try:
                 if int(data['id_solicitud']) > 0:
                     app = AuthorizedApplication.objects.all().first()
+                    url  = app.notification_url+str(data['id_solicitud'])
                     headers = {"Authorization": "Token %s" % (app.token),
                                'Content-type': 'application/json', "charset": "utf-8",
                                'Accept': 'application/json'}
-                    response = requests.post(app.notification_url+str(data['id_solicitud']), headers=headers)
+                    response = requests.post(url, headers=headers)
                     response.raise_for_status()
+                    print(url, " --> ", str(response.status_code))
+                    print(response.content)
             except Exception as e:
                 print(e)
 

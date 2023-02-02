@@ -1505,6 +1505,29 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_organizationstructure'
         }
     ],
+    'furniture_management': [
+        {
+            'name': 'Add Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.add_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'Change Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.change_furniture'
+        },
+        {
+            'name': 'Delete Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.delete_furniture'
+        },
+
+    ],
     'furniture_create': [
         {
             'name': 'Add Furniture',
@@ -1846,6 +1869,28 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
         }
+    ],
+    'shelf_management': [
+        {
+            'name': 'Add Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.add_shelf'
+        },
+        {
+            'name': 'View Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.view_shelf'
+        },
+        {
+            'name': 'Delete Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.delete_shelf'
+        },
+        {
+            'name': 'Change Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.change_shelf'
+        },
     ],
     'shelf_create': [
         {

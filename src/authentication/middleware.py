@@ -42,7 +42,7 @@ class ProfileMiddleware:
         if hasattr(user, 'profile'):
             profile = user.profile
         else:
-            raise Http404()
+            raise Http404("User has not profile")
 
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk']:
             lab_pk = view_kwargs['lab_pk']

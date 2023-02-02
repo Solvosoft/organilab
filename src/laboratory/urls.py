@@ -74,6 +74,7 @@ shelf_object_urls = [
     path('list/', shelfobject.list_shelfobject, name="list_shelfobject"),
     path('create/', shelfobject.ShelfObjectCreate.as_view(), name="shelfobject_create"),
     path('delete/<int:pk>/', shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
+    path('detail/<int:pk>/', shelfobject.ShelfObjectDetail.as_view(), name="shelfobject_detail"),
     path('edit/<int:pk>/', shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
@@ -177,6 +178,11 @@ lab_protocols_urls = [
     # path('regulations/download/all', download_all_regulations, name="download_all_regulations")
 ]
 
+catalogs_urls = [
+    path('furniture/furniture_type', furniture.add_catalog,kwargs={'key': "furniture_type"}, name='add_furniture_type_catalog'),
+    path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
+]
+
 """APIS"""
 router = DefaultRouter()
 
@@ -204,6 +210,8 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('<int:org_pk>/', include(reports_all_lab)),
+    path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
+
 
 ]  + edit_objects

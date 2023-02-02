@@ -1,0 +1,33 @@
+
+
+#shelf .card-body {
+    padding: 0!important;
+}
+
+#shelf td {
+ padding: 0!important;
+ border-right: 5px solid #2A3F54;
+}
+
+#shelf tr {
+    border-bottom: 10px solid #2A3F54;
+}
+
+.whitebg{
+    background-color: #fff;
+    padding-left: 0.8em;
+}
+
+.shelfobjectcontainer {
+    padding: 0.2em 0.1em;
+}
+
+.listshelfobject{
+    opacity: 0.8;
+}
+
+#shelf li {
+    border-radius: unset !important;
+    padding: 5px;
+    margin: 0px 5px;
+}
