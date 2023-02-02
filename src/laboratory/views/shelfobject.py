@@ -30,7 +30,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure
-from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
 
@@ -89,7 +89,9 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
 
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#object_create"
+            }),
             label=_("Reactive/Material/Equipment"),
             help_text=_("Search by name, code or CAS number")
         )
@@ -279,6 +281,13 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
+
+
+@method_decorator(permission_required('laboratory.view_shelfobject'), name='dispatch')
+class ShelfObjectDetail(AJAXMixin, DetailView):
+    model = ShelfObject
+
+
 @permission_required('laboratory.change_shelfobject')
 def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
@@ -368,10 +377,12 @@ def transfer_object(request, pk):
     if amount <= obj.quantity:
         lab_send = Laboratory.objects.filter(pk=pk).first()
         lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
+        mark_as_discard = request.POST.get('mark_as_discard', '')
         transfer = TranferObject.objects.create(object=obj,
                                      laboratory_send=lab_send,
                                      laboratory_received=lab_received,
-                                     quantity=amount
+                                     quantity=amount,
+                                     mark_as_discard= mark_as_discard.lower() in ['on', 'true', '1']
                                      )
         changed_data = ['object', 'laboratory_send', 'laboratory_received', 'quantity']
         organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
@@ -423,6 +434,8 @@ def objects_transfer(request,pk):
         if lab_received_obj is not None:
              old = lab_received_obj.quantity
              lab_received_obj.quantity += data.quantity
+             if data.mark_as_discard:
+                 lab_received_obj.marked_as_discard = True
              lab_received_obj.save()
 
              log_object_change(request.user, data.laboratory_received.pk, lab_received_obj, old,
@@ -437,6 +450,8 @@ def objects_transfer(request,pk):
                                            quantity=data.quantity,
                                            limit_quantity=0,
                                            measurement_unit=lab_send_obj.measurement_unit)
+            if data.mark_as_discard:
+                new_object.marked_as_discard = True
             new_object.save()
             log_object_change(request.user, data.laboratory_received.pk, lab_send_obj, 0,
                               data.quantity,

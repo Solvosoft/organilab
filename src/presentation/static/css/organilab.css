@@ -129,9 +129,7 @@ img {
     margin-top: 5%;
 }
 
-#furniture_size a{
-    background: #169F85;
-}
+
 
 .btedit span {
     font-color: #169F85!important;
@@ -169,4 +167,12 @@ img {
     width: auto!important;
     color: #ECF0F1 !important;
 
+}
+
+.furnituredescriptor i {
+    font-size: 1.3em;
+}
+
+.furnituredescriptor {
+    display: inline;
 }

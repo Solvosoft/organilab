@@ -114,7 +114,7 @@ class UserTOTPDevice(models.Model):
         Este código va ser una cadena representada por el ID_USER y el ID_TOTPDevice
     """
     code = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     totp_device = models.ForeignKey(TOTPDevice, on_delete=models.DO_NOTHING)
 
 

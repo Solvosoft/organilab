@@ -191,3 +191,8 @@ function update_limit(element,pk,amount){
             },
         });
 }
+
+function displayShelfobjectFunction(data) {
+	$("#shelfdetailmodalbody").html(data);
+	activemodal = $("#shelfdetailmodal").modal('show');
+}
