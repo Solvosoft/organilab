@@ -430,6 +430,54 @@
     }
   },
   {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Cuarto 1"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Cuarto 1",
+      "type": 2
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "caja",
+      "type": 1
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 13,
+      "quantity": 900,
+      "limit_quantity": 1,
+      "measurement_unit": 64
+
+    }
+  },  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 75,
+      "quantity": 900,
+      "limit_quantity": 1,
+      "measurement_unit": 64
+
+    }
+  },
+  {
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
@@ -441,7 +489,7 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": []
+      "rooms": [1]
     }
   },
 {
@@ -517,3 +565,4 @@
   }
 }
 ]
+
