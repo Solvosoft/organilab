@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 17:38-0600\n"
+"POT-Creation-Date: 2023-02-02 17:56-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -151,6 +151,7 @@ msgstr "Observaciones del procedimiento"
 #: laboratory/models.py:66 laboratory/models.py:178 laboratory/models.py:192
 #: laboratory/models.py:235 laboratory/models.py:412 laboratory/models.py:506
 #: laboratory/models.py:601 laboratory/models.py:639
+#: laboratory/templates/informs/informscheduler_detail.html:39
 #: laboratory/templates/laboratory/inform.html:28
 #: laboratory/templates/laboratory/organization_reactive_presence.html:47
 #: laboratory/templates/laboratory/protocol/protocol_list.html:28
@@ -488,6 +489,7 @@ msgstr "Crear Nuevo Procedimiento"
 #: academic/templates/academic/substance/danger_indication.html:22
 #: academic/templates/academic/substance/list_substance.html:36
 #: academic/templates/academic/substance/warning_words.html:23
+#: laboratory/templates/informs/informscheduler_detail.html:43
 #: laboratory/templates/laboratory/inform.html:31
 #: laboratory/templates/laboratory/sustance/list.html:33
 #: sga/templates/list_company.html:30 sga/templates/list_pictograms.html:28
@@ -2301,6 +2303,7 @@ msgid "My Forms"
 msgstr "Mis Formularios"
 
 #: derb/templates/formBuilder/form_list.html:51
+#: laboratory/templates/informs/informscheduler_detail.html:42
 #: laboratory/templates/laboratory/my_reservations_list.html:28
 #: laboratory/templates/laboratory/transfer_objects.html:29
 #: reservations_management/models.py:52 reservations_management/models.py:69
@@ -2957,27 +2960,43 @@ msgstr "Mostrar periodo de informe"
 msgid "Period Run"
 msgstr "Periodo de ejecución"
 
+#: laboratory/templates/informs/informscheduler_detail.html:40
+msgid "Start Application Date"
+msgstr "Fecha de inicio de aplicación"
+
+#: laboratory/templates/informs/informscheduler_detail.html:41
+msgid "Close Application Date"
+msgstr "Fecha de cierre del informe"
+
 #: laboratory/templates/informs/informscheduler_edit.html:12
 msgid "Edit Period Scheduler"
 msgstr "Editar agendador de periodo"
 
-#: laboratory/templates/informs/informscheduler_edit.html:26
+#: laboratory/templates/informs/informscheduler_edit.html:28
 msgid "Warning"
 msgstr "Advertencia"
 
-#: laboratory/templates/informs/informscheduler_edit.html:34
+#: laboratory/templates/informs/informscheduler_edit.html:36
+msgid "References date"
+msgstr "Fecha de referencia"
+
+#: laboratory/templates/informs/informscheduler_edit.html:38
 msgid "Start date reference"
 msgstr "Fecha de inicio de referencia"
 
-#: laboratory/templates/informs/informscheduler_edit.html:35
+#: laboratory/templates/informs/informscheduler_edit.html:39
 msgid "Close date reference"
 msgstr "Referencia de fecha de cierre"
 
-#: laboratory/templates/informs/informscheduler_edit.html:41
+#: laboratory/templates/informs/informscheduler_edit.html:43
+msgid "Last execution date"
+msgstr "Última fecha de ejecición"
+
+#: laboratory/templates/informs/informscheduler_edit.html:45
 msgid "Last start date"
 msgstr "Última fecha de inicio"
 
-#: laboratory/templates/informs/informscheduler_edit.html:42
+#: laboratory/templates/informs/informscheduler_edit.html:46
 msgid "Last close date"
 msgstr "Última fecha de cierre"
 
@@ -3001,7 +3020,7 @@ msgstr "Listado de Observaciones"
 #: laboratory/templates/laboratory/complete_inform.html:22
 #: laboratory/templates/laboratory/complete_inform.html:29
 msgid "Send for review"
-msgstr "Enviar a Revisión."
+msgstr "Enviar a Revisión"
 
 #: laboratory/templates/laboratory/complete_inform.html:25
 msgid "Finalize"

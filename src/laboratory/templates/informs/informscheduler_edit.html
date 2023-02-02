@@ -23,25 +23,44 @@
       </form>
       </div>
     <div class=" col-md-4">
-      <h1>{% trans 'Warning' %}</h1>
-      <p>
+
+      <div class="card border-success mb-3" >
+      <div class="card-header">{% trans 'Warning' %}</div>
+      <div class="card-body text-success">
+      <p class="card-text">
         Los cambios solo se aplican a los nuevos informes, los ya creados mantendrán la información anterior a la modificación.
        <br> Los días se contarán a partir de la última ejecución.
         <br> Si activo es <span>NO</span>, no se crearán nuevos informes.
-
-      </p>
-      <p>
-       {% trans 'Start date reference' %}: {{form.instance.start_application_date}}
-       <br>  {% trans 'Close date reference' %}: {{form.instance.close_application_date}}
       </p>
 
-      <p>
-        {% with last_exc=form.instance.last_execution %}
+      <h5 class="card-title">{% trans 'References date' %}</h5>
+      <p class="card-text">
+       <strong>{% trans 'Start date reference' %}:</strong> {{form.instance.start_application_date}} <br>
+       <strong>{% trans 'Close date reference' %}:</strong> {{form.instance.close_application_date}}
+      </p>
+                  {% with last_exc=form.instance.last_execution %}
         {% if last_exc %}
-               {% trans 'Last start date' %}: {{last_exc.start_application_date}}
-       <br>  {% trans 'Last close date' %}: {{last_exc.close_application_date}}
+      <h5 class="card-title">{% trans 'Last execution date' %}</h5>
+      <p class="card-text">
+          <strong>{% trans 'Last start date' %}:</strong> {{last_exc.start_application_date}} <br>
+          <strong>{% trans 'Last close date' %}:</strong> {{last_exc.close_application_date}}
+      </p>
         {% endif %}
         {% endwith %}
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   </div>
 {% endblock%}

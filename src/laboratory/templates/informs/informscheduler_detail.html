@@ -36,11 +36,11 @@
 <script>
     datatableelement=createDataTable('#informperiod', '{% url "laboratory:api-informs-detail" org_pk %}', {
      columns: [
-            {data: "name", name: "name", title: "Name", type: "string", visible: true},
-            {data: "start_application_date", name: "start_application_date", title: "Start Application Date", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
-            {data: "close_application_date", name: "close_application_date", title: "Close Application Date", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
-            {data: "status", name: "status", title: "Status", type: "string", visible: true },
-            {data: "action", name: "action", title: "Actions", type: "string", visible: true }
+            {data: "name", name: "name", title: "{% trans 'Name' %}", type: "string", visible: true},
+            {data: "start_application_date", name: "start_application_date", title: "{% trans 'Start Application Date' %}", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
+            {data: "close_application_date", name: "close_application_date", title: "{% trans 'Close Application Date' %}", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
+            {data: "status", name: "status", title: "{% trans 'Status' %}", type: "string", visible: true },
+            {data: "action", name: "action", title: "{% trans 'Actions' %}", type: "string", visible: true }
         ],
         ajax: {
             url: "{% url "laboratory:api-informs-detail" org_pk  %}",
