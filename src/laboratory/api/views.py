@@ -9,12 +9,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
-from rest_framework import status, viewsets
-from django.http import Http404
+from rest_framework import status, viewsets, mixins
+from django.db.models import Value, DateField
 
 from laboratory.api import serializers
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory
+    LabOrgLogEntry, Laboratory, InformsPeriod
 from laboratory.utils import get_laboratories_from_organization
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
@@ -200,5 +200,40 @@ class LogEntryViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
         response = {'data': data, 'recordsTotal': LogEntry.objects.count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+
+class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.InformDataTableSerializer
+    queryset = Inform.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['name', 'creation_date', ]  # for the global search
+    filterset_class = serializers.InformFilterSet
+    ordering_fields = ['creation_date']
+    ordering = ('-creation_date',)  # default order
+
+    def get_queryset(self):
+        period = self.request.GET.get('period', None)
+        if not period:
+            return self.queryset.none()
+        period = get_object_or_404(InformsPeriod, pk=period)
+        queryset = super().get_queryset().filter(pk__in=period.informs.values_list('pk', flat=True),
+                                                 organization=self.organization)
+        queryset=queryset.annotate(
+            start_application_date=Value(period.start_application_date, DateField()),
+            close_application_date=Value(period.close_application_date, DateField())
+        )
+        return queryset
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': Inform.objects.count(),
+                    'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)

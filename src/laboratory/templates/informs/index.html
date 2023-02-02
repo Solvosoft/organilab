@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+ {% load i18n static %}
+{% load urlname_tags %}
+{% block title %}
+ {% trans 'Inform Management' %}
+{% endblock %}
+{% block pre_head %}
+        {% define_urlname_action 'form_list' %}
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+     <div class="col">
+    <div class="card" style="min-width: 18rem;">
+ <span class="card-img-top text-center text-success" style="font-size: 3em"> <i class="fa fa-book p-2" aria-hidden="true"></i>
+      {% if perms.laboratory.add_informscheduler %}
+    <br>
+        <a class="btn btn-outline-success" href="{% url 'derb:form_list' org_pk %}">
+            {% trans 'List of inform templates' %}
+        </a>
+        {% endif %}
+</span>
+      <div class="card-header text-center">
+        {% trans 'Your laboratories' %}
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for lab in labs%}
+          <li class="list-group-item"><a href="{% url 'laboratory:get_informs' org_pk=org_pk lab_pk=lab.pk %}">{{lab}}</a></li>
+          {% endfor%}
+      </ul>
+    </div>
+</div>
+
+
+
+    <div class="col">
+    <div class="card" style="min-width: 18rem;">
+     <span class="card-img-top text-center text-success" style="font-size: 3em"> <i class="fa fa-clock-o p-2" aria-hidden="true"></i>
+      {% if perms.laboratory.add_informscheduler %}
+         <br>
+        <a class="btn btn-outline-success" href="{% url 'laboratory:add_period_scheduler' org_pk=org_pk %}">
+            {% trans 'Create new inform period' %}
+        </a>
+        {% endif %}
+</span>
+        <div class="card-header text-center">
+        {% trans 'Period Inform Scheduler' %}
+      </div>
+      <ul class="list-group list-group-flush">
+          {% for scheduler in schedulers %}
+            <li class="list-group-item">
+                <a href="{% url 'laboratory:detail_period_scheduler' org_pk=org_pk pk=scheduler.pk %}">
+                {{scheduler}}</a>
+
+                    <a class="float-end badge bg-secondary" href="{% url 'laboratory:edit_period_scheduler' org_pk=org_pk pk=scheduler.pk %}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+
+            </li>
+          {% endfor %}
+      </ul>
+    </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

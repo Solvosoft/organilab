@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+ {% load i18n static %}
+{% load gtsettings timejs %}
+
+{% load urlname_tags %}
+
+{% block title %}
+ {% trans 'Inform Period Display' %}
+{% endblock %}
+{% block pre_head %}
+        {% define_true "use_datatables" as use_datatables %}
+        {% define_urlname_action 'form_list' %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="">
+        <div class="row g-2 align-items-center">
+        <div class="col-auto">
+                 <label class="col-form-label">{% trans 'Period Run' %}:</label>
+        </div> <div class="col-auto">
+    <select class="form-select form-control" style="min-width: 30em;" name="period" id="period" autocomplete="off">
+        {% for period in object.informsperiod_set.all %}
+        <option value="{{period.pk}}" {% if not forloop.counter0 %}selected{% endif %}>{{period}}</option>
+        {% endfor %}
+    </select></div></div>
+    </div>
+</div>
+<div class="row mt-2">
+  <table id="informperiod" class="table"></table>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    datatableelement=createDataTable('#informperiod', '{% url "laboratory:api-informs-detail" org_pk %}', {
+     columns: [
+            {data: "name", name: "name", title: "Name", type: "string", visible: true},
+            {data: "start_application_date", name: "start_application_date", title: "Start Application Date", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
+            {data: "close_application_date", name: "close_application_date", title: "Close Application Date", type: "date", visible: true , "dateformat":  "{% get_date_format %}" },
+            {data: "status", name: "status", title: "Status", type: "string", visible: true },
+            {data: "action", name: "action", title: "Actions", type: "string", visible: true }
+        ],
+        ajax: {
+            url: "{% url "laboratory:api-informs-detail" org_pk  %}",
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                var data = formatDataTableParams(dataTableParams, settings);
+                data['period']=$("#period").val();
+                return data;
+            }
+        }
+    }, addfilter=false);
+
+    $("#period").on('change', function(){
+        datatableelement.ajax.reload();
+    });
+</script>
+
+{% endblock %}
