@@ -95,7 +95,7 @@ class AcademicTest(TestCase):
         pos_procedures= Procedure.objects.all().count()
 
         self.assertEqual(json.loads(response.content)['data'],True)
-        self.assertNotEquals(pre_procedures,pos_procedures)
+        self.assertTrue(pre_procedures>pos_procedures)
         self.assertEqual(response.status_code,200)
 
     def test_delete_procedure_fail(self):
@@ -192,6 +192,7 @@ class AcademicTest(TestCase):
 
         response = self.client.get(reverse('academic:update_step', kwargs=url), follow=True)
         self.assertEqual(response.status_code, 404)
+
     def test_delete_step(self):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.filter(procedure=self.procedure).latest('pk')
@@ -216,7 +217,6 @@ class AcademicTest(TestCase):
         obs=ProcedureObservations.objects.filter(step=step)
 
         self.assertTrue(obs.count()==1)
-        #self.assertEqual(json.loads(response.content)['data'], '[{"description": "First observation", "id": 1}]')
         self.assertEqual(response.status_code,200)
 
     def test_delete_procedureobservation(self):
@@ -248,3 +248,47 @@ class AcademicTest(TestCase):
         response = self.client.post(reverse('academic:remove_observation', kwargs=url), data)
 
         self.assertEqual(response.status_code,404)
+
+    def test_add_object(self):
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.get(pk=17)
+        url['pk'] = step.pk
+        data = {
+               'unit':64,
+               'object':75,
+               'quantity':8
+         }
+
+
+        response = self.client.post(reverse('academic:add_object', kwargs=url), data)
+        self.assertEqual(response.status_code,200)
+
+    def test_remove_object(self):
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.get(pk=17)
+        url['pk'] = step.pk
+        data = {
+               'pk':12,
+         }
+
+
+        response = self.client.post(reverse('academic:remove_object', kwargs=url), data)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(json.loads(response.content)['data'],'[]')
+
+    def test_procedure_reservation(self):
+        from datetime import datetime
+        initial_date = datetime(2023, 1, 17, 11, 2, 5)
+        final_date = datetime(2023, 1, 22, 11, 2, 5)
+        data = {
+               'procedure':self.procedure.pk,
+               'initial_date':initial_date,
+                'final_date': final_date
+
+
+         }
+
+        response = self.client.post(reverse('academic:generate_reservation', kwargs=self.url_attr), data)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(json.loads(response.content)['errors'],'[]')
+        self.assertTrue(json.loads(response.content)['state']==True)
