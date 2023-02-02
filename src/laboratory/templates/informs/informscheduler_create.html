@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'form_list' %}
+{% endblock %}
+{% block content %}
+
+  <div class="row">
+    <div class="offset-md-2 col-md-8">
+      <div class="page-header text-center" align="center">
+        <h3 class="heading-1"><span>{% trans 'Create Period Scheduler' %}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <form method="POST" action="" class="form-horizontal"> {% csrf_token %}
+        <div class="body">
+          {{ form.as_horizontal }}
+        </div>
+        <button type="submit" name="action"   class="save btn btn-success">{% trans 'Create' %}</button>
+      </form>
+  </div>
+{% endblock%}
+

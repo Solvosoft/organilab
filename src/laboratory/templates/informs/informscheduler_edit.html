@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'form_list' %}
+{% endblock %}
+{% block content %}
+
+  <div class="row">
+    <div class="offset-md-1 col-md-8">
+      <div class="page-header text-center" align="center">
+        <h3 class="heading-1"><span>{% trans 'Edit Period Scheduler' %}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class=" col-md-8">
+      <form method="POST" action="" class="form-horizontal"> {% csrf_token %}
+        <div class="body">
+          {{ form.as_horizontal }}
+        </div>
+        <button type="submit" name="action"   class="save btn btn-success">{% trans 'Update' %}</button>
+      </form>
+      </div>
+    <div class=" col-md-4">
+      <h1>{% trans 'Warning' %}</h1>
+      <p>
+        Los cambios solo se aplican a los nuevos informes, los ya creados mantendrán la información anterior a la modificación.
+       <br> Los días se contarán a partir de la última ejecución.
+        <br> Si activo es <span>NO</span>, no se crearán nuevos informes.
+
+      </p>
+      <p>
+       {% trans 'Start date reference' %}: {{form.instance.start_application_date}}
+       <br>  {% trans 'Close date reference' %}: {{form.instance.close_application_date}}
+      </p>
+
+      <p>
+        {% with last_exc=form.instance.last_execution %}
+        {% if last_exc %}
+               {% trans 'Last start date' %}: {{last_exc.start_application_date}}
+       <br>  {% trans 'Last close date' %}: {{last_exc.close_application_date}}
+        {% endif %}
+        {% endwith %}
+    </div>
+  </div>
+{% endblock%}
+
