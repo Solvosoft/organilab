@@ -14,12 +14,28 @@
     </div>
   </div>
   <div class="row">
+    <div class="col">
       <form method="POST" action="" class="form-horizontal"> {% csrf_token %}
         <div class="body">
           {{ form.as_horizontal }}
         </div>
         <button type="submit" name="action"   class="save btn btn-success">{% trans 'Create' %}</button>
       </form>
+    </div>
+    <div class="col">
+      <div class="card border-success mb-3" >
+      <div class="card-header">{% trans 'About Inform periods' %}</div>
+      <div class="card-body text-success">
+        <h5 class="card-title">{% trans 'Start application date' %}</h5>
+        <p class="card-text">{% trans 'Corresponds to the date of the first report, additionally it is the date since the cycle begins to count.' %}</p>
+        <h5 class="card-title">{% trans 'Close application date' %}</h5>
+        <p class="card-text">{% trans 'It is used to define the date where the period of filling of a report is terminated, the difference between the start and closed date of the first execution is maintained in the subsequent cycles.' %}</p>
+        <h5 class="card-title">{% trans 'Active' %}</h5>
+        <p class="card-text">{% trans 'Define if new period have to be created in the next run' %}</p>
+
+      </div>
+    </div>
+    </div>
   </div>
 {% endblock%}
 
