@@ -43,6 +43,21 @@ class LaboratoryRoomViewTest(BaseSetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
 
+    def test_labroom_building_report(self):
+        data = {
+            "format": "pdf"
+        }
+        url = reverse("laboratory:report_building", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_object_list_report(self):
+        data = {"type_id": "1"}
+        url = reverse("laboratory:reports_objects_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
 
 class LaboratoryViewTest(BaseSetUpTest):
 
@@ -50,7 +65,6 @@ class LaboratoryViewTest(BaseSetUpTest):
         url = reverse("laboratory:mylabs", kwargs={"org_pk": self.org.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-
 
     def test_create_laboratory(self):
         data = {
@@ -65,7 +79,6 @@ class LaboratoryViewTest(BaseSetUpTest):
         success_url = reverse("auth_and_perms:organizationManager")
         self.assertRedirects(response, success_url)
         self.assertIn("KSA Lab", list(Laboratory.objects.values_list("name", flat=True)))
-
 
     def test_update_laboratory(self):
         url = reverse("laboratory:laboratory_update", kwargs={"org_pk": self.org.pk, "pk": 1})
@@ -85,9 +98,13 @@ class LaboratoryViewTest(BaseSetUpTest):
         self.assertRedirects(response_post, success_url)
         self.assertIn("Organización X", list(Laboratory.objects.values_list("name", flat=True)))
 
-
     def test_check_laboratory_index(self):
         url = reverse("laboratory:labindex", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.lab.name, response)
+
+    def test_get_reservations_list(self):
+        url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
