@@ -467,7 +467,7 @@
     }
   },  {
     "model": "laboratory.shelfobject",
-    "pk": 1,
+    "pk": 2,
     "fields": {
       "shelf": 1,
       "object": 75,
