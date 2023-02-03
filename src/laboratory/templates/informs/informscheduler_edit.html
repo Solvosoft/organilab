@@ -5,7 +5,6 @@
     {% define_urlname_action 'form_list' %}
 {% endblock %}
 {% block content %}
-
   <div class="row">
     <div class="offset-md-1 col-md-8">
       <div class="page-header text-center" align="center">
@@ -23,7 +22,6 @@
       </form>
       </div>
     <div class=" col-md-4">
-
       <div class="card border-success mb-3" >
       <div class="card-header">{% trans 'Warning' %}</div>
       <div class="card-body text-success">
@@ -32,7 +30,6 @@
        <br> Los días se contarán a partir de la última ejecución.
         <br> Si activo es <span>NO</span>, no se crearán nuevos informes.
       </p>
-
       <h5 class="card-title">{% trans 'References date' %}</h5>
       <p class="card-text">
        <strong>{% trans 'Start date reference' %}:</strong> {{form.instance.start_application_date}} <br>
@@ -49,18 +46,6 @@
         {% endwith %}
       </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
   </div>
 {% endblock%}
