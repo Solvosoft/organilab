@@ -46,16 +46,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk  %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk  %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk  %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' laboratory  object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>
@@ -89,16 +89,16 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=pdf">{% trans "PDF" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=ods">{% trans "Ods" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=ods">{% trans "Ods" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xls">{% trans "Xls" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xls">{% trans "Xls" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' lab.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 							</li>
 						</ul>
 					</div>
