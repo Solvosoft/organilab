@@ -440,6 +440,28 @@
     }
   },
   {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization Testing",
+      "position": 1,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": null,
+      "name": "Org MK",
+      "position": 1,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
@@ -685,6 +707,90 @@
       "container_shelf": null,
       "type": 74,
       "color": "#73879C"
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "status": 0,
+      "comments": null,
+      "is_massive": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "BAL998",
+      "name": "Balón Fondo Plano 500 mL",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "BAL998",
+      "name": "Balón Fondo Plano 700 mL",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:16.765Z",
+      "last_update": "2023-01-10T22:48:16.817Z",
+      "created_by": 1,
+      "shelf_object": 1,
+      "user": 1,
+      "reservation": 1,
+      "is_returnable": false,
+      "amount_required": 445.0,
+      "amount_returned": 0.0,
+      "initial_date": "2020-12-19T04:59:00Z",
+      "final_date": "2021-01-09T04:59:00Z",
+      "status": 0,
+      "laboratory": 1
     }
   }
 ]
