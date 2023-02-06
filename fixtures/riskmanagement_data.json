@@ -698,5 +698,74 @@
             1
         ]
     }
+},
+{
+    "model": "risk_management.incidentreport",
+    "pk": 2,
+    "fields": {
+        "organization": null,
+        "last_update": "2023-01-26T15:44:13.983Z",
+        "created_by": null,
+        "creation_date": "2020-10-16T00:04:40.469Z",
+        "short_description": "x",
+        "incident_date": "2020-10-16",
+        "causes": "x",
+        "infraestructure_impact": "x",
+        "people_impact": "x",
+        "environment_impact": "x",
+        "result_of_plans": "x",
+        "mitigation_actions": "x",
+        "recomendations": "x",
+        "notification_copy": "",
+        "laboratories": [
+            1
+        ]
+    }
+},
+{
+    "model": "risk_management.incidentreport",
+    "pk": 3,
+    "fields": {
+        "organization": null,
+        "last_update": "2023-01-26T15:44:13.983Z",
+        "created_by": null,
+        "creation_date": "2020-10-16T16:37:07.888Z",
+        "short_description": "Algo ocurrió hoy",
+        "incident_date": "2020-11-01",
+        "causes": "Algo",
+        "infraestructure_impact": "Algo",
+        "people_impact": "Algo",
+        "environment_impact": "Algo",
+        "result_of_plans": "Algo",
+        "mitigation_actions": "Algo",
+        "recomendations": "Algo",
+        "notification_copy": "",
+        "laboratories": [
+            1
+        ]
+    }
+},
+{
+    "model": "risk_management.incidentreport",
+    "pk": 4,
+    "fields": {
+        "organization": null,
+        "last_update": "2023-01-26T15:44:13.983Z",
+        "created_by": null,
+        "creation_date": "2020-12-22T19:18:57.556Z",
+        "short_description": "demo",
+        "incident_date": "2020-12-22",
+        "causes": "testtaest",
+        "infraestructure_impact": "test",
+        "people_impact": "dfkafk",
+        "environment_impact": "fjakd",
+        "result_of_plans": "jfaksd",
+        "mitigation_actions": "djasdk",
+        "recomendations": "dfjasdkfs",
+        "notification_copy": "",
+        "laboratories": [
+            1
+        ]
+    }
 }
 ]
