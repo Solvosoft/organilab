@@ -8,7 +8,7 @@ import json
 from risk_management.models import *
 
 
-class RiskManagementTest(TestCase):
+class IncidentReportTest(TestCase):
     fixtures = ["object.json","riskmanagement_data.json"]
 
     def setUp(self):
