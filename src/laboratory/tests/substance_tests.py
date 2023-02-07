@@ -1,5 +1,5 @@
 from django.urls import reverse
-from laboratory.test.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseSetUpTest
 
 
 class SubstanceViewTest(BaseSetUpTest):

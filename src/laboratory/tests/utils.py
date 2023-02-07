@@ -7,7 +7,7 @@ from django.test import TestCase
 from laboratory.models import OrganizationStructure, Laboratory
 import base64
 
-from laboratory.test.file_b64 import FILE_B64
+from laboratory.tests.file_b64 import FILE_B64
 
 
 def get_file_bytes():
@@ -25,7 +25,7 @@ class BaseSetUpTest(TestCase):
         fbytes = get_file_bytes()
         self.chfile = ChunkedUpload.objects.create(
             file=ContentFile(fbytes, name="A file"),
-            filename="test.pdf",
+            filename="tests.pdf",
             offset=len(fbytes),
             completed_on=now(),
             user=self.user
