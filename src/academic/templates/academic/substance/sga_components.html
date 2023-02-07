@@ -13,7 +13,7 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-    <div class="col-sm-8 offset-md-2">
+    <div class="col-sm-7 offset-md-1">
         <a class="btn btn-danger" href="{{view_url}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
         <div class="card-body">
             <div class="card-title">
@@ -28,6 +28,12 @@
                 </button>
             </form>
         </div>
+    </div>
+    <div class="col-sm-4">
+        <h2 class="text-center">
+            <span class="text-danger">{% trans 'Important' %}: </span><br> {% trans 'Changing de code field create new instance' %}
+        </h2>
+
     </div>
 </div>
 {% endblock %}

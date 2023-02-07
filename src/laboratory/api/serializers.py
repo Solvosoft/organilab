@@ -2,9 +2,9 @@ from django.contrib.admin.models import LogEntry
 from django.urls import reverse
 from rest_framework import serializers
 
-from laboratory.models import CommentInform
+from laboratory.models import CommentInform, Inform
 from reservations_management.models import ReservedProducts, Reservations
-from organilab.settings import DATETIME_INPUT_FORMATS
+from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
 from django.utils.translation import gettext_lazy as _
 
@@ -130,9 +130,49 @@ class LogEntrySerializer(serializers.ModelSerializer):
         model = LogEntry
         fields = '__all__'
 
+
 class LogEntryDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=LogEntrySerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
+class InformSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+    start_application_date = serializers.DateField()
+    close_application_date = serializers.DateField()
+    action = serializers.SerializerMethodField()
+
+    def get_status(self, obj):
+        return obj.get_status_display()
+
+    def get_action(self, obj):
+        if obj and self.context['request'].user.has_perm('laboratory.add_inform'):
+            return """
+                    <a href="%s"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    """%(
+                reverse('laboratory:complete_inform', kwargs={
+                    'org_pk': self.context['view'].kwargs['pk'],
+                    'lab_pk': obj.object_id,
+                    'pk': obj.pk
+                })
+            )
+        return ""
+
+    class Meta:
+        model = Inform
+        fields = ['name', 'start_application_date', 'close_application_date', 'status', 'action']
+
+
+class InformDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=InformSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class InformFilterSet(FilterSet):
+    class Meta:
+        model = Inform
+        fields = {'name': ['icontains'], 'status': ['exact']}

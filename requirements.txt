@@ -29,7 +29,7 @@ future==0.18.3
 django-fontawesome==1.0
 django-tagging==0.5.0
 django-picklefield==2.1.1
-django-celery-beat==2.3.0
+django-celery-beat==2.4.0
 django-celery-results==2.4.0
 celery==5.2.3
 django-paypal==2.0

@@ -14,6 +14,7 @@ from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
+from organilab.settings import DATE_INPUT_FORMATS
 from presentation.models import AbstractOrganizationRef
 from . import catalog
 
@@ -604,6 +605,7 @@ class Inform(AbstractOrganizationRef):
     context_object = GenericForeignKey('content_type', 'object_id')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Eraser')
     schema = models.JSONField(default=dict)
+
     def __str__(self):
         return self.name
 
@@ -665,3 +667,42 @@ class UserOrganization(models.Model):
         ordering = ('pk',)
         verbose_name = _('User Organization')
         verbose_name_plural = _('User Organizations')
+
+
+class InformScheduler(AbstractOrganizationRef):
+    name = models.CharField(max_length=512)
+    start_application_date = models.DateField()
+    close_application_date = models.DateField()
+
+    period_on_days = models.IntegerField(default=365)
+    inform_template = models.ForeignKey('derb.CustomForm', verbose_name=_("Inform template"),  on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def last_execution(self):
+        return self.informsperiod_set.order_by('start_application_date').last()
+
+
+class InformsPeriod(models.Model):
+    scheduler = models.ForeignKey(InformScheduler, on_delete=models.SET_NULL, null=True)
+    organization = models.ForeignKey(OrganizationStructure, verbose_name=_("Organization"),
+                                     on_delete=models.CASCADE)
+
+    inform_template = models.ForeignKey('derb.CustomForm', verbose_name=_("Inform template"),
+                                        on_delete=models.CASCADE)
+    informs = models.ManyToManyField(Inform, blank=True)
+    creation_date = models.DateField(auto_now_add=True)
+    start_application_date = models.DateField()
+    close_application_date = models.DateField()
+
+    def __str__(self):
+        return "%s %s to %s"%(
+                self.inform_template.name,
+                self.start_application_date,
+                self.close_application_date)
+
+    class Meta:
+        ordering = ['-start_application_date']

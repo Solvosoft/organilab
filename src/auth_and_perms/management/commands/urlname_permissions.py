@@ -1180,6 +1180,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Report Template',
             'category': 'Report Template',
             'permission': 'derb.view_customform'
+        },
+        {
+            'name': 'Add Period Inform Scheduler',
+            'category': 'Report Template',
+            'permission': 'laboratory.add_informscheduler'
         }
     ],
     'report_reactive_presence': [
