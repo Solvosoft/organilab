@@ -51,6 +51,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
+    path('async_notifications/', include('async_notifications.urls')),
 
 ]
 

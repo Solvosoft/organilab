@@ -10,7 +10,7 @@ from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet
+    LogEntryViewSet, InformViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
@@ -18,6 +18,7 @@ from laboratory.sustance.views import create_edit_sustance, sustance_list, Susta
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
+from laboratory.views import inform_period
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
@@ -183,6 +184,14 @@ catalogs_urls = [
     path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
 ]
 
+informs_period_urls=[
+    path('index/', inform_period.get_inform_index, name="inform_index" ),
+    path('add/', inform_period.InformSchedulerAdd.as_view(), name="add_period_scheduler" ),
+    path('edit/<int:pk>/', inform_period.InformSchedulerEdit.as_view(), name="edit_period_scheduler" ),
+    path('detail/<int:pk>/', inform_period.InformSchedulerDetail.as_view(), name="detail_period_scheduler" ),
+
+]
+
 """APIS"""
 router = DefaultRouter()
 
@@ -190,10 +199,12 @@ router.register('api_inform', CommentAPI, basename='api-inform')
 router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
+router.register('api_informs', InformViewSet, basename='api-informs')
 
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
+    path('inform_manager/<int:org_pk>/', include(informs_period_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     path('lab/<int:org_pk>/<int:lab_pk>/search/', SearchObject.as_view(), name="search"),

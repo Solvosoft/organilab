@@ -1,7 +1,7 @@
 from django.db import models
 
 from presentation.models import AbstractOrganizationRef
-
+from django.utils.translation import gettext_lazy as _
 
 class CustomForm(AbstractOrganizationRef):
     STATUS_CHOICES = (
@@ -74,3 +74,5 @@ class Validator(models.Model):
 class Action(models.Model):
     condition = models.JSONField(blank=True, null=True)
     conditional_field = models.ForeignKey(CustomFormField, on_delete=models.CASCADE, related_name="variable_fields")
+
+

@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from laboratory.models import Inform
-from laboratory.test.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseSetUpTest
 
 
 class InformViewTest(BaseSetUpTest):
