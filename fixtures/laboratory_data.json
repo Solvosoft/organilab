@@ -671,7 +671,7 @@
       "name": "Mueble 1",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[[[],[2],[3],[]],[[1],[],[],[]]]",
+      "dataconfig": "[[[],[2],[3],[]],[[1],[],[4],[]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -704,6 +704,17 @@
     "fields": {
       "furniture": 1,
       "name": "Tercer Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 1,
+      "name": "Cuarto Estante",
       "container_shelf": null,
       "type": 74,
       "color": "#73879C"
