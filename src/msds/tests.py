@@ -89,6 +89,6 @@ class MsdsTest(TestCase):
 
     def test_get_regulations(self):
 
-        response = self.client.get(reverse('regulation_docs', kwargs=self.url_attr))
+        response = self.client.get(reverse('regulation_docs'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['object_list'].count()==15)
