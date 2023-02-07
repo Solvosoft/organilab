@@ -6,7 +6,7 @@ from tree_queries.models import TreeNode
 from presentation.models import AbstractOrganizationRef
 from sga.managers import OrganilabContextQueryset
 from laboratory import catalog
-
+from django.conf import settings
 
 class WarningClass(TreeNode):
     TYPE = (
@@ -68,6 +68,9 @@ class Pictogram(models.Model):
     image = models.ImageField(upload_to="sga/pictograms/", null=True, blank=True)
     id_pictogram = models.IntegerField(default=1)
 
+    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

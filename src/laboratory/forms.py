@@ -6,10 +6,11 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from derb.models import CustomForm as DerbCustomForm
-from laboratory.models import OrganizationStructure, CommentInform, Catalog
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -297,4 +298,45 @@ class CatalogForm(GTForm, forms.ModelForm):
         widgets = {
             'key': genwidgets.HiddenInput,
             'description': genwidgets.TextInput
+        }
+
+
+class InformSchedulerForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['inform_template'].widget.extra_url_kwargs['pk']=org_pk
+
+    class Meta:
+        model =InformScheduler
+        fields = ['organization', 'name', 'start_application_date', 'close_application_date',
+                  'period_on_days', 'inform_template', 'active']
+        widgets ={
+            'organization': genwidgets.HiddenInput,
+            'name': genwidgets.TextInput,
+            'start_application_date': genwidgets.DateInput,
+            'close_application_date': genwidgets.DateInput,
+            'period_on_days': genwidgets.NumberInput,
+            'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
+            'active': genwidgets.YesNoInput
+        }
+
+
+class InformSchedulerFormEdit(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['inform_template'].widget.extra_url_kwargs['pk']=org_pk
+
+    class Meta:
+        model =InformScheduler
+        fields = ['organization', 'name', 'period_on_days', 'inform_template', 'active']
+        widgets ={
+            'organization': genwidgets.HiddenInput,
+            'name': genwidgets.TextInput,
+            'period_on_days': genwidgets.NumberInput,
+            'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
+            'active': genwidgets.YesNoInput
         }

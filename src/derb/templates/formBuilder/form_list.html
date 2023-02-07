@@ -14,19 +14,25 @@
 {% block title %}{% trans 'Report Template List' %}{% endblock %}
 
 {% block content %}
+        <div class="float-end">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
 
+        {% if perms.derb.add_customform %}
+                <button title="Create form"
+                        type="button"
+                        class="btn btn-outline-primary create_btn" >{% trans 'Create Form' %}</button>
+        {% endif %}
+            </div>
+        </div>
 <div class="card-title titles">
     <div class="row" >
-        <div class="col-md-9" >
+
+        <div class="col-md-6" >
             <h1 >
                 {% trans 'My Forms' %}
             </h1>
         </div>
-        <div class="col-md-3 align-self-center">
-            <button title="Create form"
-                    type="button"
-                    class="btn btn-sm btn-primary create_btn" >{% trans 'Create Form' %}</button>
-        </div>
+
     </div>
 </div>
 <br>
@@ -34,9 +40,6 @@
 <div align="center">
     <div id="forms" style="width: 90%;">
         {% csrf_token %}
-        <script>
-                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                </script>
         <table class="table table-hover table" id="form_table">
             <thead>
             <tr>

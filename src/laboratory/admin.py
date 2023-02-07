@@ -1,6 +1,10 @@
 from django.contrib import admin
+from django.utils.decorators import method_decorator
+
 from laboratory import models
 from django.utils.translation import gettext_lazy as _
+
+from laboratory.task_utils import create_informsperiods
 
 
 class Object_Admin(admin.ModelAdmin):
@@ -12,6 +16,21 @@ class OrganizationStrutureAdmin(admin.ModelAdmin):
     search_fields = ["name", 'laboratories']
     list_display = ["name", 'laboratories']
     mptt_level_indent = 20
+
+@admin.action(description='Run new informs utilities')
+def create_informs(admin, request, queryset):
+    for instance in queryset:
+        create_informsperiods(instance)
+
+
+class PeriodScheduledAdmin(admin.TabularInline):
+    model = models.InformsPeriod
+
+class InformSchedulerAdmin(admin.ModelAdmin):
+    search_fields = ["name",]
+    list_display = ["name",]
+    actions = [create_informs]
+    inlines = [PeriodScheduledAdmin]
 
 
 admin.site.register(models.Laboratory)
@@ -35,6 +54,7 @@ admin.site.register(models.PrecursorReport)
 
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
+admin.site.register(models.InformScheduler, InformSchedulerAdmin)
 
 
 admin.site.site_header = _('Organilab Administration site')

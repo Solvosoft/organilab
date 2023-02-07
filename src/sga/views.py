@@ -15,8 +15,9 @@ from django.template import Library
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.models import ChunkedUpload
-
+from django.contrib.admin.models import CHANGE, ADDITION
 from laboratory.models import OrganizationStructure
+from laboratory.utils import organilab_logentry
 from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, \
     BuilderInformationForm, \
     LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
@@ -312,56 +313,41 @@ def get_pictograms(request,org_pk):
 @login_required
 @permission_required('sga.add_pictogram')
 def add_pictogram(request, *args, **kwargs):
-    org_pk = int(kwargs.get('org_pk'))
+    organization= get_object_or_404(OrganizationStructure, pk=kwargs.get('org_pk'))
+    org_pk =  organization.pk
     if request.method=='POST':
         form = PictogramForm(request.POST)
-
         if form.is_valid():
-            instance = form.save(commit=False)
-            upload_id = form.cleaned_data['image_upload']
-            last_id=Pictogram.objects.all().aggregate(largest=Max('id_pictogram'))['largest']
-            if last_id==None:
-                last_id=0
-            if upload_id:
-                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
-                instance.image = tmpupload.get_uploaded_file()
-            instance.id_pictogram=last_id+1
-            instance.save()
-
+            instance = form.save()
+            organilab_logentry(request.user, instance, ADDITION, relobj=organization)
             return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
     context= {
         'url': reverse('sga:add_pictograms', kwargs={'org_pk': org_pk}),
-        'form': PictogramForm(),
+        'form': PictogramForm(initial={'upload_by': request.user.pk}),
         'title': _('Create pictogram'),
         'button_text': _('Add'),
         'org_pk': org_pk
     }
     return render(request, 'add_pictograms.html', context=context)
+
 @login_required
 @permission_required('sga.change_pictogram')
 def update_pictogram(request, *args, **kwargs):
-    id_pictogram= int(kwargs.get('id_pictogram'))
-    org_pk= int(kwargs.get('org_pk'))
-    instance = get_object_or_404(Pictogram,id_pictogram=id_pictogram)
-    form = None
-    if instance:
-        form = PictogramForm(instance=instance)
+    id_pictogram= kwargs.get('id_pictogram')
+    organization= get_object_or_404(OrganizationStructure, pk=kwargs.get('org_pk'))
+    org_pk =  organization.pk
+    instance = get_object_or_404(Pictogram, pk=id_pictogram)
+    form = PictogramForm(instance=instance, initial={
+        'upload_by': instance.upload_by.pk if instance.upload_by else request.user.pk})
 
-        if request.method=='POST':
-            form = PictogramForm(request.POST, instance=instance)
-
-            if form.is_valid():
-                instance = form.save(commit=False)
-                upload_id = form.cleaned_data['image_upload']
-
-                if upload_id:
-                    tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
-                    instance.image = tmpupload.get_uploaded_file()
-
-                instance.save()
-                return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
+    if request.method=='POST':
+        form = PictogramForm(request.POST, instance=instance, )
+        if form.is_valid():
+            instance = form.save( )
+            organilab_logentry(request.user, instance, CHANGE, relobj=organization)
+            return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
     context= {
-        'url': reverse('sga:update_pictogram',kwargs={'id_pictogram':id_pictogram}),
+        'url': reverse('sga:update_pictogram',kwargs={'org_pk': org_pk, 'id_pictogram': id_pictogram}),
         'form': form,
         'title': _('Update pictogram'),
         'button_text': _('Edit'),
