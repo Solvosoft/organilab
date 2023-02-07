@@ -433,7 +433,9 @@
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
-      "name": "Cuarto 1"
+      "name": "Cuarto 1",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -442,7 +444,12 @@
     "fields": {
       "labroom": 1,
       "name": "Cuarto 1",
-      "type": 2
+      "type": 2,
+      "color": "#73879C",
+      "dataconfig": "[[[],[],[],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+
     }
   },
   {
@@ -451,7 +458,9 @@
     "fields": {
       "furniture": 1,
       "name": "caja",
-      "type": 1
+      "type": 1,
+      "color": "#73879C"
+
     }
   },
   {
@@ -462,7 +471,9 @@
       "object": 13,
       "quantity": 900,
       "limit_quantity": 1,
-      "measurement_unit": 64
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
 
     }
   },  {
@@ -473,7 +484,9 @@
       "object": 75,
       "quantity": 900,
       "limit_quantity": 1,
-      "measurement_unit": 64
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
 
     }
   },
@@ -489,7 +502,9 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1]
+      "rooms": [1],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
 {
