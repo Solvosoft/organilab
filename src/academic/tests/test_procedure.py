@@ -290,5 +290,5 @@ class AcademicTest(TestCase):
 
         response = self.client.post(reverse('academic:generate_reservation', kwargs=self.url_attr), data)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(json.loads(response.content)['errors'],'[]')
+        self.assertEqual(json.loads(response.content)['errors'],[])
         self.assertTrue(json.loads(response.content)['state']==True)
