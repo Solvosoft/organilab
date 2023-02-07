@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from laboratory.models import LaboratoryRoom, Laboratory
-from laboratory.test.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseSetUpTest
 
 
 class LaboratoryRoomViewTest(BaseSetUpTest):
@@ -113,7 +113,7 @@ class LaboratoryViewTest(BaseSetUpTest):
 
     def test_fake_reservation_list(self):
         """
-            Fake test
+            Fake tests
         """
         url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
