@@ -1,5 +1,4 @@
 [
-
   {
     "model": "auth.user",
     "pk": 1,
@@ -418,6 +417,17 @@
       ]
     }
   },
+    {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Principal technician",
+      "laboratories": [1]
+    }
+  },
   {
     "model": "laboratory.organizationstructure",
     "pk": 1,
@@ -433,61 +443,9 @@
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
-      "name": "Cuarto 1",
+      "name": "Sala de inventario",
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
-    "model": "laboratory.furniture",
-    "pk": 1,
-    "fields": {
-      "labroom": 1,
-      "name": "Cuarto 1",
-      "type": 2,
-      "color": "#73879C",
-      "dataconfig": "[[[],[],[],[]],[[],[],[],[]]]",
-      "creation_date": "2023-01-31T19:33:49.008Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
-
-    }
-  },
-  {
-    "model": "laboratory.shelf",
-    "pk": 1,
-    "fields": {
-      "furniture": 1,
-      "name": "caja",
-      "type": 1,
-      "color": "#73879C"
-
-    }
-  },
-  {
-    "model": "laboratory.shelfobject",
-    "pk": 1,
-    "fields": {
-      "shelf": 1,
-      "object": 13,
-      "quantity": 900,
-      "limit_quantity": 1,
-      "measurement_unit": 64,
-      "creation_date": "2023-01-31T19:33:49.008Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
-
-    }
-  },  {
-    "model": "laboratory.shelfobject",
-    "pk": 2,
-    "fields": {
-      "shelf": 1,
-      "object": 75,
-      "quantity": 900,
-      "limit_quantity": 1,
-      "measurement_unit": 64,
-      "creation_date": "2023-01-31T19:33:49.008Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
-
     }
   },
   {
@@ -507,77 +465,16 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
-{
-  "model": "academic.procedure",
-  "pk": 10,
-  "fields": {
-    "title": "Decantación",
-    "description": "<p>La decantaci&oacute;n es una t&eacute;cnica que permite separar un s&oacute;lido mezclado heterog&eacute;neamente con un l&iacute;quido en el que es insoluble o bien dos l&iacute;quidos inmiscibles (que no se pueden mezclar homog&eacute;neamente) con densidades diferente.</p>",
-    "content_type": null,
-    "object_id": null
+  {
+    "model": "presentation.feedbackentry",
+    "pk": 1,
+    "fields": {
+      "title": "Falla",
+      "explanation": "2023-01-10T22:49:30.603Z",
+      "related_file": "2018-07-09T19:45:29Z",
+      "laboratory_id": 1,
+      "user": 1
+    }
   }
-},
-{
-  "model": "academic.procedurestep",
-  "pk": 17,
-  "fields": {
-    "procedure": 10,
-    "title": "01.\tDecantación un Liquido",
-    "description": "<p>Para separar l&iacute;quidos que no son solubles, como por ejemplo&nbsp;agua&nbsp;y&nbsp;aceite, es necesario introducir la&nbsp;mezcla&nbsp;en un recipiente llamado embudo de decantaci&oacute;n&nbsp;y dejar que repose hasta que los l&iacute;quidos se separan en dos capas.&nbsp;Despu&eacute;s, se abre la llave y se deja salir el l&iacute;quido de la capa inferior poco a poco, y cerramos la llave cuando falte poco para que salga el otro l&iacute;quido.&nbsp;Para no contaminar los componentes de la mezcla al separarlos, no es conveniente aprovechar ni el final del primer l&iacute;quido ni el comienzo del segundo. Finalmente, hay que coger otro recipiente y recoger el segundo l&iacute;quido.</p>"
-  }
-},
-{
-  "model": "academic.procedurestep",
-  "pk": 20,
-  "fields": {
-    "procedure": 10,
-    "title": "02.\t¿Cómo se usa el Embudo de Decantación?",
-    "description": "<ul>\r\n\t<li>Se vierte la mezcla en el embudo de decantaci&oacute;n, asegur&aacute;ndonos antes de que la llave de la parte inferior est&aacute; cerrada (en posici&oacute;n horizontal), para que la mezcla no salga mientras la vertemos.</li>\r\n\t<li>Se deja reposar hasta que ambos l&iacute;quidos se separan bien.</li>\r\n\t<li>Se coloca un vaso de precipitados debajo del embudo y se abre la llave. Empezar&aacute; a salir el l&iacute;quido m&aacute;s denso (es decir, el que est&aacute; en la parte inferior de la mezcla).</li>\r\n\t<li>Cerramos la llave en cuanto haya pasado todo este primer l&iacute;quido.</li>\r\n\t<li>El l&iacute;quido menos denso seguir&aacute; en el embudo. Para recuperarlo, conviene sacarlo por la parte superior de este; as&iacute; evitaremos contaminarlo con los restos de la otra sustancia que hayan podido quedar en la llave.</li>\r\n</ul>"
-  }
-},
-{
-  "model": "academic.procedurestep",
-  "pk": 24,
-  "fields": {
-    "procedure": 10,
-    "title": "03.\tDecantación un Solido",
-    "description": "<p>Si el s&oacute;lido es bastante denso y grueso, tal vez se depositar&aacute; en el fondo del recipiente.&nbsp;As&iacute; pues, inclinado el recipiente, se puede separar el l&iacute;quido o sobrenadante, derram&aacute;ndose en otro recipiente sin que se caiga el s&oacute;lido o sedimento.</p>"
-  }
-},
-{
-  "model": "academic.procedurestep",
-  "pk": 25,
-  "fields": {
-    "procedure": 10,
-    "title": null,
-    "description": null
-  }
-},
-{
-  "model": "academic.procedurerequiredobject",
-  "pk": 12,
-  "fields": {
-    "step": 17,
-    "object": 75,
-    "quantity": 1.0,
-    "measurement_unit": 64
-  }
-},
-{
-  "model": "academic.procedureobservations",
-  "pk": 1,
-  "fields": {
-    "step": 17,
-    "description": "Cleaning"
-  }
-},
-{
-  "model": "academic.procedureobservations",
-  "pk": 2,
-  "fields": {
-    "step": 17,
-    "description": "Eating"
-  }
-}
-]
 
+]
