@@ -2,7 +2,7 @@
 {% load i18n static laboratory %}
 {% load urlname_tags %}
 {% block pre_head %}
-
+    {% define_urlname_action 'organizationManager' %}
 {% endblock %}
 {% block content %}
 {% for node in nodes %}
@@ -21,7 +21,7 @@
  {% trans 'Risk Zones' %}</a>
             {% endif %}
             {% if perms.derb.view_customform %}
-            <a class="btn btn-info btn-sm" href="{% url 'derb:form_list' node.0.pk %}">
+            <a class="btn btn-info btn-sm" href="{% url 'laboratory:inform_index' node.0.pk %}">
                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Informs' %}</a>
             {% endif %}
             {% if perms.msds.view_msdsobject %}

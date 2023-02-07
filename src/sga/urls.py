@@ -34,14 +34,14 @@ urlpatterns = [
 
     re_path(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
     re_path(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
-    re_path(r'add_recipient_size', views.create_recipient, name='add_recipient_size'),
-    re_path(r'get_pictograms', views.get_pictograms, name='pictograms_list'),
-    re_path(r'add_pictogram', views.add_pictogram, name='add_pictograms'),
-    re_path(r'update_pictogram/(?P<id_pictogram>\w+)', views.update_pictogram, name='update_pictogram'),
-    re_path(r'company/list/', views.get_companies, name='get_companies'),
-    re_path(r'company/add/', views.create_company, name='add_company'),
-    re_path(r'company/edit/(?P<pk>\d+)$', views.edit_company, name='edit_company'),
-    re_path(r'company/remove/(?P<pk>\d+)$', views.remove_company, name='remove_company'),
+    path('add_recipient_size/', views.create_recipient, name='add_recipient_size'),
+    path('get_pictograms/', views.get_pictograms, name='pictograms_list'),
+    path('add_pictogram/', views.add_pictogram, name='add_pictograms'),
+    path('update_pictogram/<str:id_pictogram>/', views.update_pictogram, name='update_pictogram'),
+    path('company/list/', views.get_companies, name='get_companies'),
+    path('company/add/', views.create_company, name='add_company'),
+    path('company/edit/<int:pk>/', views.edit_company, name='edit_company'),
+    path('company/remove/<int:pk>/', views.remove_company, name='remove_company'),
 
 
     path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
