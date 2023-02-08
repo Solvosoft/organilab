@@ -8,7 +8,7 @@ from sga.models import WarningWord, DangerIndication, PrudenceAdvice, Provider
 
 
 class SGAAcademicTest(TestCase):
-    fixtures = ["initialdata.json","substances.json"]
+    fixtures = ["substances.json"]
 
     def setUp(self):
         self.client = Client()

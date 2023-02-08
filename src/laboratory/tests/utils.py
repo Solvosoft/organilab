@@ -15,7 +15,7 @@ def get_file_bytes():
 
 
 class BaseSetUpTest(TestCase):
-    fixtures = ["../fixtures/initialdata.json", "../fixtures/laboratory_data.json"]
+    fixtures = ["../fixtures/laboratory_data.json"]
 
     def setUp(self):
         self.user = get_user_model().objects.filter(username="german").first()

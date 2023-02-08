@@ -1,8 +1,6 @@
 from .settings import *
 
-INSTALLED_APPS = INSTALLED_APPS+[
-    'organilab_test'
-]
+INSTALLED_APPS.append('organilab_test')
 
 
 from logging import Filter

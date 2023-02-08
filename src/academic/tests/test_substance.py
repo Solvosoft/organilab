@@ -11,7 +11,7 @@ from django.contrib.messages import get_messages
 
 
 class SGAAcademicTest(TestCase):
-    fixtures = ["initialdata.json","substances.json"]
+    fixtures = ["substances.json"]
 
     def setUp(self):
         self.client = Client()
