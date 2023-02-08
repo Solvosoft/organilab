@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import Protocol
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class ProtocolViewTest(BaseSetUpTest):
+class ProtocolViewTest(BaseLaboratorySetUpTest):
 
     def test_get_protocol_list(self):
         url = reverse("laboratory:protocol_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})

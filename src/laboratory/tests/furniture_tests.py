@@ -1,9 +1,9 @@
 from django.urls import reverse
 
 from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
-class FurnitureViewTest(BaseSetUpTest):
+class FurnitureViewTest(BaseLaboratorySetUpTest):
 
     def test_get_furniture_list(self):
         url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -75,7 +75,7 @@ class FurnitureViewTest(BaseSetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ShelfViewTest(BaseSetUpTest):
+class ShelfViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelf_list(self):
         data = {
@@ -133,7 +133,7 @@ class ShelfViewTest(BaseSetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ShelfObjectViewTest(BaseSetUpTest):
+class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelfobject_list(self):
         url = reverse("laboratory:list_shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -215,7 +215,7 @@ class ShelfObjectViewTest(BaseSetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ObjectViewTest(BaseSetUpTest):
+class ObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_object_report(self):
         data = {

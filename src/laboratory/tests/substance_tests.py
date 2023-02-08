@@ -1,8 +1,8 @@
 from django.urls import reverse
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class SubstanceViewTest(BaseSetUpTest):
+class SubstanceViewTest(BaseLaboratorySetUpTest):
 
     def test_get_substance_list(self):
         url = reverse("laboratory:sustance_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})

@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import Inform
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class InformViewTest(BaseSetUpTest):
+class InformViewTest(BaseLaboratorySetUpTest):
 
     def test_get_inform_list(self):
         url = reverse("laboratory:get_informs", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})

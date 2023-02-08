@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import Provider
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class ProviderViewTest(BaseSetUpTest):
+class ProviderViewTest(BaseLaboratorySetUpTest):
 
 
     def test_get_provider_list(self):
