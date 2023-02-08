@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom
+from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom, ObjectFeatures
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 class FurnitureViewTest(BaseLaboratorySetUpTest):
@@ -133,6 +133,18 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_shelfs(self):
+        url = reverse("laboratory:get_shelfs", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_object(self):
+        url = reverse("laboratory:edit_object", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+
+
 class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelfobject_list(self):
@@ -177,11 +189,6 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
-    def test_transfer_objects(self):
-        url = reverse("laboratory:transfer_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-
     def test_get_shelfobject_limit(self):
         shelf_object = ShelfObject.objects.first()
         url = reverse("laboratory:get_shelfobject_limit", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelf_object.pk})
@@ -214,6 +221,48 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:reports_limited_shelf_objects_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_object_detail(self):
+        url = reverse("laboratory:get_object_detail", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
+
+    def test_update_objectfeature(self):
+        objfeature = ObjectFeatures.objects.first()
+        url = reverse("laboratory:object_feature_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk})
+
+        response_get = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response_get.status_code, 200)
+        self.assertContains(response_get, "")
+
+        data = {
+            "name": "",
+            "description": ""
+        }
+        response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertRedirects(response_post, success_url)
+
+    def test_create_objectfeature(self):
+        data = {
+            "name": "",
+            "description": "",
+        }
+        url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data)
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertRedirects(response, success_url)
+        self.assertIn("", list(ObjectFeatures.objects.values_list("name", flat=True)))
+
+    def test_delete_objectfeature(self):
+        objfeature = ObjectFeatures.objects.first()
+        url = reverse("laboratory:object_feature_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk})
+        response = self.client.post(url)
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, success_url)
 
 class ObjectViewTest(BaseLaboratorySetUpTest):
 
@@ -254,4 +303,21 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         }
         url = reverse("laboratory:precursor_report", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+class TransferObjectViewTest(BaseLaboratorySetUpTest):
+
+    def test_transfer_objects(self):
+        url = reverse("laboratory:transfer_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_transfer(self):
+        url = reverse("laboratory:update_transfer", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_transfer(self):
+        url = reverse("laboratory:delete_transfer", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)

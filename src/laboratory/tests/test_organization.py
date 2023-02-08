@@ -37,9 +37,9 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
 
     def test_get_reports_list(self):
         url = reverse("laboratory:reports", kwargs={"org_pk": self.org.pk, })
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-#
+
     def test_get_logentry_list(self):
         url = reverse("laboratory:logentry_list", kwargs={"org_pk": self.org.pk, })
         response = self.client.get(url)
@@ -64,7 +64,7 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "password": "edu4060cal",
             "password_confirm": "edu4060cal"
         }
-        response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
         self.assertRedirects(response_post, success_url)
 
@@ -82,5 +82,6 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "email": "orgadmin@gmail.com"
         }
         response_post = self.client.post(url, data=data)
-        self.assertEqual(response_post.status_code, 200)
-        self.assertEqual(self.user.first_name, "Admin")
+        self.assertRedirects(response_post, url)
+        user_updated = User.objects.get(username="admin")
+        self.assertEqual(user_updated.first_name, "Admin")
