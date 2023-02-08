@@ -92,3 +92,14 @@ class MsdsTest(TestCase):
         response = self.client.get(reverse('regulation_docs'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['object_list'].count()==15)
+
+    """
+    In development don't have the regulation files in media only try test in production
+    def test_download_regulations(self):
+
+        response = self.client.get(reverse('download_all_regulations'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.has_header('content-type'))
+        self.assertEqual(response['content-type'], 'application/force-download')
+        self.assertTrue(response.has_header('content-disposition'))
+        self.assertContains(response['content-disposition'],'attachment; filename="regulations.zip"')"""
