@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import LaboratoryRoom, Laboratory
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class LaboratoryRoomViewTest(BaseSetUpTest):
+class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
 
     def test_get_laboratoryroom_list(self):
         url = reverse("laboratory:rooms_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -59,7 +59,7 @@ class LaboratoryRoomViewTest(BaseSetUpTest):
         self.assertEqual(response.status_code, 200)
 
 
-class LaboratoryViewTest(BaseSetUpTest):
+class LaboratoryViewTest(BaseLaboratorySetUpTest):
 
     def test_get_laboratory_list(self):
         url = reverse("laboratory:mylabs", kwargs={"org_pk": self.org.pk})
