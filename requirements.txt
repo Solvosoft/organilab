@@ -1,4 +1,4 @@
-async-notifications==0.1.28
+async-notifications==0.2
 Django>=4.0
 django-datatables-view==1.20.0
 django-excel==0.0.10
