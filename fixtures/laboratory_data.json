@@ -491,6 +491,30 @@
     }
   },
   {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "users": [2]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "users": [1]
+    }
+  },
+  {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
