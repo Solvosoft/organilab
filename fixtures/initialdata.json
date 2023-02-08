@@ -3611,7 +3611,9 @@
     "fields": {
         "warning_word": 2,
         "image": "sga/pictograms/GHS-pictogram-explos_XmtBAYW.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3620,7 +3622,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-flamme_zRyo5cq.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3629,7 +3633,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-rondflam_9X73EAC.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3638,7 +3644,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-bottle_ga4e0EI.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3647,7 +3655,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-acid_vTtXGjR.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3656,7 +3666,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-skull_ITaZxx8.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3665,7 +3677,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-exclam_DWLFbYi.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3674,7 +3688,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-silhouette_YyEM2mT.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {
@@ -3683,7 +3699,9 @@
     "fields": {
         "warning_word": null,
         "image": "sga/pictograms/GHS-pictogram-pollu_eD2Eyu3.svg",
-        "id_pictogram": 1
+        "id_pictogram": 1,
+        "creation_date": "2023-01-24T17:04:24.094Z",
+        "last_update": "2023-01-24T17:04:24.094Z"
     }
 },
 {

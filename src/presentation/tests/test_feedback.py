@@ -9,7 +9,7 @@ from presentation.models import *
 
 
 class FeedbackTest(TestCase):
-    fixtures = ["initialdata.json","feedback.json"]
+    fixtures = ["feedback.json"]
 
     def setUp(self):
         self.client = Client()
