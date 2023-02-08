@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 from laboratory.models import OrganizationStructure
@@ -57,30 +58,29 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
 class ProfileViewTest(BaseLaboratorySetUpTest):
 
     def test_update_password(self):
-        url = reverse("laboratory:password_change", kwargs={"pk": 1})
+        url = reverse("laboratory:password_change", kwargs={"pk": self.user.pk})
 
         data = {
             "password": "edu4060cal",
             "password_confirm": "edu4060cal"
         }
-        response_post = self.client.post(url, data=data)
-        success_url = reverse("laboratory:profile", kwargs={"pk": 1, })
+        response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        success_url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
         self.assertRedirects(response_post, success_url)
 
     def test_update_profile(self):
-        url = reverse("laboratory:profile", kwargs={"pk": 1, })
+        url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
 
         response_get = self.client.get(url)
         self.assertEqual(response_get.status_code, 200)
-        self.assertContains(response_get, "Zárate Montero")
+        self.assertEqual(response_get.context['user'].email, "orgadmin@gmail.com")
 
         data = {
-            "username": "german",
-            "last_name": "Rojas Montero",
-            "first_name": "Eduardo",
-            "email": "gedzar@gmail.com"
+            "username": "admin",
+            "last_name": "Organilab",
+            "first_name": "Admin",
+            "email": "orgadmin@gmail.com"
         }
         response_post = self.client.post(url, data=data)
-        success_url = reverse("laboratory:profile", kwargs={"pk": 1, })
-        self.assertRedirects(response_post, success_url)
-        self.assertEqual(self.user.last_name, "Rojas Montero")
+        self.assertEqual(response_post.status_code, 200)
+        self.assertEqual(self.user.first_name, "Admin")

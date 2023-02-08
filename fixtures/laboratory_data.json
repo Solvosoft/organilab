@@ -3,13 +3,13 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$320000$f85Ke2ZXlAnDIGR2e1Qn6Q$o8w7pDEOEHtdKGzRBAK4EQh+xiITzvjoPI1wb+6D2VE=",
+      "password": "adminpass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": true,
-      "username": "german",
-      "first_name": "German",
-      "last_name": "Zárate Montero",
-      "email": "gedzar@gmail.com",
+      "username": "admin",
+      "first_name": "Organilab",
+      "last_name": "Admin",
+      "email": "orgadmin@gmail.com",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -418,13 +418,42 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "renatapass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "renatafg",
+      "first_name": "Renata",
+      "last_name": "Figueroa",
+      "email": "renatafg@protonmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
       "user": 1,
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
-      "job_position": "Principal technician",
+      "job_position": "Administrator",
+      "laboratories": [1, 2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "1-1111-1111",
+      "job_position": "Profesional Technician",
       "laboratories": [1, 2]
     }
   },
@@ -433,7 +462,7 @@
     "pk": 1,
     "fields": {
       "parent": null,
-      "name": "Estudiantes Obsevadores",
+      "name": "Investigadores SA",
       "position": 1,
       "level": 1,
       "rol": []
@@ -492,9 +521,9 @@
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
-      "name": "Organiza tan",
+      "name": "Vick Lab",
       "phone_number": "85794954",
-      "location": "Heredia",
+      "location": "San Antonio",
       "geolocation": "9.895804362670006,-84.1552734375",
       "email": "",
       "coordinator": "",
@@ -511,7 +540,7 @@
     "fields": {
       "name": "Lab Ultra",
       "phone_number": "22305678",
-      "location": "Cartago",
+      "location": "Upala",
       "geolocation": "9.895804362670006,-84.1552734375",
       "email": "",
       "coordinator": "",
@@ -738,12 +767,12 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
       "created_by": 1,
-      "code": "BAL998",
-      "name": "Balón Fondo Plano 500 mL",
+      "code": "TA1000",
+      "name": "Tanque 1000 mL",
       "synonym": null,
       "type": "0",
       "is_public": true,
-      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "description": "",
       "model": "",
       "serie": "",
       "plaque": "",
@@ -758,12 +787,12 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
       "created_by": 1,
-      "code": "BAL998",
-      "name": "Balón Fondo Plano 700 mL",
+      "code": "CA777",
+      "name": "Cal 100 gr",
       "synonym": null,
       "type": "0",
       "is_public": true,
-      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "description": "",
       "model": "",
       "serie": "",
       "plaque": "",

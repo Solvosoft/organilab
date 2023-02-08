@@ -32,7 +32,7 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
     fixtures = ["laboratory_data.json"]
 
     def setUp(self):
-        self.user = get_user_model().objects.filter(username="german").first()
+        self.user = get_user_model().objects.filter(username="admin").first()
         self.org = OrganizationStructure.objects.first()
         self.lab = Laboratory.objects.first()
         self.client.force_login(self.user)
