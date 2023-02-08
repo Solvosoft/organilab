@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView
-
+from django.utils.translation import gettext_lazy as _
 from authentication.forms import PasswordChangeForm, EditUserForm
 
 
@@ -44,7 +44,7 @@ class ChangeUser(UpdateView):
 @sensitive_post_parameters('password', 'password_confirm')
 @require_http_methods(["POST"])
 def password_change(request, pk):
-    if str(request.user.pk) == pk:
+    if request.user.pk == pk:
         user = request.user
         form = PasswordChangeForm(request.POST)
         if form.is_valid():
@@ -54,11 +54,10 @@ def password_change(request, pk):
                 user.set_password(password)
                 user.save()
                 login(request, user)
-                messages.success(request, "Contraseña cambiada exitosamente.")
+                messages.success(request, _("Password was changed successfully"))
             else:
-                messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
+                messages.error(request, _("Error trying to change your password: Passwords should match"))
         else:
-            messages.error(request,
-                           "Error al intentar cambiar su contraseña: Asegurese de llenar los campos y que el formato sea correcto.")
+            messages.error(request, _("Error trying to change your password: Check fields are filled and correct format"))
         return redirect('laboratory:profile', pk=pk)
-    return HttpResponseNotFound('Usuario intentando actualizar un dato que no le pertenece')
+    return HttpResponseNotFound(_("User is trying to update data doesn't belong to him"))
