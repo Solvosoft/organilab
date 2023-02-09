@@ -44,14 +44,24 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:logentry_list", kwargs={"org_pk": self.org.pk, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-#
+
     def test_organization_building_report(self):
         url = reverse("laboratory:reports_organization_building", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-#
+
     def test_organization_report(self):
         url = reverse("laboratory:reports_organization", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_logentry_list(self):
+        url = reverse("laboratory:api-logentry-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_logentry_detail(self):
+        url = reverse("laboratory:api-logentry-detail", kwargs={"pk": 1, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 

@@ -48,3 +48,13 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:protocol_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+
+    def test_api_protocol_list(self):
+        url = reverse("laboratory:api-protocol-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_protocol_detail(self):
+        url = reverse("laboratory:api-protocol-detail", kwargs={"pk": 1, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

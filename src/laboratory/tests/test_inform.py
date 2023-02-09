@@ -42,3 +42,47 @@ class InformViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:get_informs", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, success_url)
+
+    def test_api_informs_list(self):
+        url = reverse("laboratory:api-informs-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_informs_detail(self):
+        url = reverse("laboratory:api-informs-detail", kwargs={"pk": 1, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+class CommentInformViewTest(BaseLaboratorySetUpTest):
+
+    def test_api_inform_list(self):
+        url = reverse("laboratory:api-inform-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_inform_detail(self):
+        url = reverse("laboratory:api-inform-detail", kwargs={"pk": 1, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+class InformSchedulerViewTest(BaseLaboratorySetUpTest):
+
+    def test_inform_index(self):
+        url = reverse("laboratory:inform_index", kwargs={"org_pk": self.org.pk, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_period_scheduler(self):
+        url = reverse("laboratory:add_period_scheduler", kwargs={"org_pk": self.org.pk, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_period_scheduler(self):
+        url = reverse("laboratory:edit_period_scheduler", kwargs={"org_pk": self.org.pk, "pk": 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_period_scheduler(self):
+        url = reverse("laboratory:detail_period_scheduler", kwargs={"org_pk": self.org.pk, "pk": 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
