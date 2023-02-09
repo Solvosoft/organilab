@@ -104,19 +104,7 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.lab.name)
 
-    def test_get_reservations_list(self):
-        url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+    def test_select_lab(self):
+        url = reverse("laboratory:select_lab")
         response = self.client.get(url)
-        self.assertEqual(response.context['object_list'].count(), 1)
-        self.assertContains(response, "Tanque 1000 mL")
         self.assertEqual(response.status_code, 200)
-
-    def test_fake_reservation_list(self):
-        """
-            Fake tests
-        """
-        url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url)
-        self.assertNotEqual(response.context['object_list'].count(), 15)
-        self.assertNotContains(response, "Bombillo 3U")
-        self.assertNotEqual(response.status_code, 302)

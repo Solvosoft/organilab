@@ -133,6 +133,7 @@ edit_objects = [
     path('delete_transfer/<int:pk>/', shelfobject.delete_transfer, name="delete_transfer"),
 
 ]
+
 reports_all_lab = [
     path('reports/hcode', laboratory.HCodeReports.as_view(), name='h_code_reports'),
     path('reports/download/hcode', reports.report_h_code, name='download_h_code_reports'),
@@ -155,7 +156,7 @@ organization_urls = [
     path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
     path('profile/<int:pk>/password', password_change, name='password_change'),
     path('logentry/<int:org_pk>', get_logentry_from_organization, name='logentry_list'),
-    path('reports/<org_pk>/', reports.report_index, name='reports'),
+    path('reports/<int:org_pk>/', reports.report_index, name='reports'),
 ]
 
 provider_urls = [
@@ -163,12 +164,14 @@ provider_urls = [
     path('update_provider/<int:pk>/', ProviderUpdate.as_view(), name="update_lab_provider"),
     path('list/', ProviderList.as_view(), name="list_provider"),
 ]
+
 informs_urls = [
     path('get_list/', get_informs, name="get_informs"),
     path('add_informs/<str:content_type>/<str:model>/', create_informs, name="add_informs"),
     path('complete_inform/<int:pk>/', complete_inform, name="complete_inform"),
     path('remove_inform/<int:pk>/', remove_inform, name="remove_inform"),
 ]
+
 lab_protocols_urls = [
     path('list', protocol_list, name='protocol_list'),
     path('create', ProtocolCreateView.as_view(), name='protocol_create'),

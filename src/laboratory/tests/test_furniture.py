@@ -143,8 +143,6 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
-
-
 class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelfobject_list(self):
@@ -224,6 +222,11 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_get_object_detail(self):
         url = reverse("laboratory:get_object_detail", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_lab_id(self):
+        url = reverse("laboratory:get_lab_id")
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
@@ -320,4 +323,21 @@ class TransferObjectViewTest(BaseLaboratorySetUpTest):
     def test_delete_transfer(self):
         url = reverse("laboratory:delete_transfer", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+class SustanceCharacteristicsViewTest(BaseLaboratorySetUpTest):
+
+    def test_organizationreactivepresence(self):
+        url = reverse("laboratory:organizationreactivepresence")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_download_h_code_reports(self):
+        url = reverse("laboratory:download_h_code_reports")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_h_code_reports(self):
+        url = reverse("laboratory:h_code_reports")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
