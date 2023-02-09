@@ -804,6 +804,14 @@
     }
   },
   {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
+    }
+  },
+  {
     "model": "laboratory.object",
     "pk": 2,
     "fields": {
@@ -820,7 +828,7 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": []
+      "features": [1]
     }
   },
   {
@@ -829,6 +837,20 @@
     "fields": {
       "shelf": 1,
       "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
@@ -855,6 +877,114 @@
       "final_date": "2021-01-09T04:59:00Z",
       "status": 0,
       "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 1,
+    "fields": {
+      "object": 1,
+      "laboratory_send": 1,
+      "laboratory_received": 2,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 2,
+    "fields": {
+      "object": 2,
+      "laboratory_send": 2,
+      "laboratory_received": 1,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "name": "Benka SA",
+      "phone_number": "(605)2222-2222",
+      "email": "benka@gmail.com",
+      "legal_identity": "3-34534-453532",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "Jako company",
+      "phone_number": "(609)4534-3432",
+      "email": "jakocm@hotmail.com",
+      "legal_identity": "5-843849-4395348",
+      "laboratory": 2
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de reactivos",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de equipo",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
     }
   }
 ]

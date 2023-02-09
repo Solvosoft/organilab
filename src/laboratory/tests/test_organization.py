@@ -62,7 +62,7 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
 
     def test_api_logentry_detail(self):
         url = reverse("laboratory:api-logentry-detail", kwargs={"pk": 1, })
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
 class ProfileViewTest(BaseLaboratorySetUpTest):

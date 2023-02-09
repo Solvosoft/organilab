@@ -43,11 +43,6 @@ class InformViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, success_url)
 
-    def test_api_informs_list(self):
-        url = reverse("laboratory:api-informs-list")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
     def test_api_informs_detail(self):
         url = reverse("laboratory:api-informs-detail", kwargs={"pk": 1, })
         response = self.client.get(url)

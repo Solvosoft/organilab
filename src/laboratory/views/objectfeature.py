@@ -25,7 +25,7 @@ class FeatureCreateView(CreateView):
     form_class = ObjectFeaturesForm
 
     def get_context_data(self, **kwargs):
-        paginator = Paginator(ObjectFeatures.objects.all().distinct(), 10)
+        paginator = Paginator(ObjectFeatures.objects.all().distinct().order_by('name'), 10)
         page = self.request.GET.get('page')
 
         context = super(FeatureCreateView, self).get_context_data(**kwargs)
