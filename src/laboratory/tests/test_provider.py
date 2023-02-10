@@ -14,7 +14,8 @@ class ProviderViewTest(BaseLaboratorySetUpTest):
 
 
     def test_get_provider_detail(self):
-        url = reverse("laboratory:update_lab_provider", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": 1})
+        provider = Provider.objects.first()
+        url = reverse("laboratory:update_lab_provider", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": provider.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Karine Products")

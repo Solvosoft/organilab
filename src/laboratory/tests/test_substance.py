@@ -1,5 +1,6 @@
 from django.urls import reverse
 from laboratory.tests.utils import BaseLaboratorySetUpTest
+from sga.models import ReviewSubstance
 
 
 class SubstanceViewTest(BaseLaboratorySetUpTest):
@@ -39,6 +40,11 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
 
     def test_api_reviewsubstance_detail(self):
-        url = reverse("laboratory:api-reviewsubstance-detail", kwargs={"pk": 1, })
-        response = self.client.get(url)
+        review_subtance = ReviewSubstance.objects.first()
+        data = {
+            "org_pk": self.org.pk,
+            "showapprove": "True",
+        }
+        url = reverse("laboratory:api-reviewsubstance-detail", kwargs={"pk": review_subtance.pk, })
+        response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)

@@ -84,7 +84,7 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:laboratory_update", kwargs={"org_pk": self.org.pk, "pk": 1})
         response_get = self.client.get(url)
         self.assertEqual(response_get.status_code, 200)
-        self.assertContains(response_get, "Organiza tan")
+        self.assertContains(response_get, "Vick Lab")
 
         data = {
             "name": "Organización X",
