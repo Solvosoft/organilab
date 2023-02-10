@@ -51,8 +51,12 @@ class InformViewTest(BaseLaboratorySetUpTest):
 class CommentInformViewTest(BaseLaboratorySetUpTest):
 
     def test_api_inform_list(self):
+        inform = Inform.objects.first()
+        data = {
+            "inform": inform.pk
+        }
         url = reverse("laboratory:api-inform-list")
-        response = self.client.get(url)
+        response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
     def test_api_inform_detail(self):

@@ -609,6 +609,28 @@
     }
   },
   {
+    "model": "laboratory.provider",
+    "pk": 4,
+    "fields": {
+      "name": "Benka SA",
+      "phone_number": "(605)2222-2222",
+      "email": "benka@gmail.com",
+      "legal_identity": "3-34534-453532",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 5,
+    "fields": {
+      "name": "Jako company",
+      "phone_number": "(609)4534-3432",
+      "email": "jakocm@hotmail.com",
+      "legal_identity": "5-843849-4395348",
+      "laboratory": 2
+    }
+  },
+  {
     "model": "laboratory.protocol",
     "pk": 1,
     "fields": {
@@ -880,6 +902,26 @@
     }
   },
   {
+    "model": "reservations_management.reservedproducts",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "creation_date": "2023-01-10T22:48:16.765Z",
+      "last_update": "2023-01-10T22:48:16.817Z",
+      "created_by": 1,
+      "shelf_object": 1,
+      "user": 1,
+      "reservation": 1,
+      "is_returnable": false,
+      "amount_required": 445.0,
+      "amount_returned": 0.0,
+      "initial_date": "2020-12-19T04:59:00Z",
+      "final_date": "2021-01-09T04:59:00Z",
+      "status": 0,
+      "laboratory": 1
+    }
+  },
+  {
     "model": "laboratory.tranferobject",
     "pk": 1,
     "fields": {
@@ -905,28 +947,6 @@
       "state": true,
       "status": 0,
       "mark_as_discard": false
-    }
-  },
-  {
-    "model": "laboratory.provider",
-    "pk": 1,
-    "fields": {
-      "name": "Benka SA",
-      "phone_number": "(605)2222-2222",
-      "email": "benka@gmail.com",
-      "legal_identity": "3-34534-453532",
-      "laboratory": 1
-    }
-  },
-  {
-    "model": "laboratory.provider",
-    "pk": 2,
-    "fields": {
-      "name": "Jako company",
-      "phone_number": "(609)4534-3432",
-      "email": "jakocm@hotmail.com",
-      "legal_identity": "5-843849-4395348",
-      "laboratory": 2
     }
   },
   {
@@ -985,6 +1005,63 @@
       "period_on_days": 365,
       "inform_template": 1,
       "active": true
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Cal",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "creator": 1,
+      "description": null,
+      "organilab_context": "laboratory",
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "NaClO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/Hipoclorito_de_sodio_MSDS.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 1,
+    "fields": {
+      "substance": 1,
+      "note": null,
+      "is_approved": true
     }
   }
 ]
