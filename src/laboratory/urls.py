@@ -192,6 +192,11 @@ informs_period_urls=[
 
 ]
 
+user_register_qr = [
+    path('get_pdf_qr/', laboratory.get_pdf_register_user_qr, name="get_pdf_register_user_qr")
+]
+
+
 """APIS"""
 router = DefaultRouter()
 
@@ -223,6 +228,6 @@ urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
-
+    path('register_user/<int:org_pk>/<int:rel_obj_pk>/', include(user_register_qr)),
 
 ]  + edit_objects
