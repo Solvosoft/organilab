@@ -706,3 +706,20 @@ class InformsPeriod(models.Model):
 
     class Meta:
         ordering = ['-start_application_date']
+
+
+class RegisterUserQR(models.Model):
+    activate_user = models.BooleanField(default=True, verbose_name=_('Activate user'))
+    url = models.TextField(verbose_name=_("Url"))
+    register_user_qr = models.FileField(_('Register user QR'), upload_to='register_user_qr/')
+    role = models.ForeignKey('auth_and_perms.Rol', on_delete=models.DO_NOTHING, verbose_name=_('Role'))
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
+    organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
+
+    def __str__(self):
+        return f"{self.url}"
