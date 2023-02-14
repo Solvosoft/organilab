@@ -4,7 +4,11 @@ from django.db.models.query_utils import Q
 
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry, \
-    UserOrganization
+    UserOrganization, RegisterUserQR
+
+from django_otp.plugins.otp_totp.models import TOTPDevice
+import qrcode
+import qrcode.image.svg
 
 
 def check_group_has_perm(group,codename):
@@ -234,3 +238,29 @@ def get_pk_org_ancestors_decendants(user, org_pk):
         if org.ancestors():
             pks += list(org.ancestors().values_list('pk', flat=True))
     return pks
+
+
+def generate_QR_img(url):
+    img = qrcode.make(url, image_factory=qrcode.image.svg.SvgImage)
+    return img
+
+
+def get_url_qr(org_pk, app_label, model_name, object_id):
+    url = None
+
+    content_type = ContentType.objects.filter(
+        app_label=app_label,
+        model=model_name
+    ).first()
+
+    obj = RegisterUserQR.objects.filter(
+        organization_creator=org_pk,
+        content_type=content_type,
+        object_id=object_id
+    )
+
+    if obj.exists():
+        obj = obj.first()
+        url = obj.register_user_qr.url
+
+    return url

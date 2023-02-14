@@ -1,23 +1,28 @@
 # encoding: utf-8
+from celery.utils.time import timezone
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.template.loader import get_template
 from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
+from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm
-from laboratory.models import Laboratory, OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR
+from laboratory.utils import organilab_logentry, get_url_qr
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -271,3 +276,33 @@ class HCodeReports(ListView):
         context['params'] = self.get_filter_params()
         context['org_pk'] = self.org
         return context
+
+
+def get_pdf_register_user_qr(request, org_pk, rel_obj_pk):
+    template = get_template('pdf/qr_pdf.html')
+
+    lab = get_object_or_404(Laboratory, pk=rel_obj_pk)
+    url_qr = get_url_qr(org_pk, "laboratory", "laboratory", rel_obj_pk)
+
+    if url_qr:
+
+        context = {
+            'user': request.user,
+            'datetime': now(),
+            'title': _("Register User"),
+            'rel_obj_title': _("Laboratory"),
+            'rel_obj_msg': _("Use following QR code to register user in laboratory"),
+            'rel_obj': lab,
+            'rel_obj_name': lab.name,
+            'url_qr': url_qr,
+        }
+
+        html = template.render(context=context)
+        page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
+        response = HttpResponse(page, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="register_user.pdf"'
+        return response
+
+    else:
+        messages.error(request, _('Error, QR code is not defined.'))
+        return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': rel_obj_pk}))

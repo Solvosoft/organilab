@@ -1,0 +1,41 @@
+{% load i18n %}
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            @page {
+                margin: 2cm 2cm; padding-left: 1.5cm;
+                size: a4 portrait;
+
+                @bottom-right{
+                    content: "{% trans 'Page' %} " counter(page) " {% trans "of" %} " counter(pages);
+                }
+
+                @bottom-left{
+                    content: "{% trans "User:" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
+                }
+
+                @top-right{
+                    content: "{% trans "Date:" %} {{ datetime }}";
+                }
+            }
+
+            body {
+                text-align: left;
+                font-family: "Arial", "sans-serif";
+                font-size: 1.5em;
+            }
+            th, td{
+                text-align: left;
+            }
+            {% block extra_css %}{% endblock %}
+        </style>
+    </head>
+    <body>
+        <!-- HTML Content -->
+        <div>
+            {% block pdf_content %}{% endblock %}
+        </div>
+    </body>
+</html>
