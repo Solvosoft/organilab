@@ -1,13 +1,17 @@
-{% extends 'pdf/new_base_pdf.html' %}
+{% extends 'pdf/qr_base_pdf.html' %}
 {% load i18n %}
 {% block pdf_content %}
 <table>
-    <tr>
-        <th style="text-align:center"><h2>{{title}}</h2></th>
-    </tr>
-    <tr>
-        <th><h4>{{rel_obj_title}}: {{rel_obj_name}}</h4></th>
-    </tr>
+    <thead>
+        <tr>
+            <th>
+                <h2 style="margin-left: 34%;">{{title}}</h2>
+            </th>
+        </tr>
+        <tr>
+            <th><h4>{{rel_obj_title}}: {{rel_obj_name}}</h4></th>
+        </tr>
+    </thead>
 </table>
 <table>
     <tr>{{rel_obj_msg }} {{rel_obj_name}}</tr>
