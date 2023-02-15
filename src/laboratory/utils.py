@@ -1,14 +1,12 @@
+import qrcode
+import qrcode.image.svg
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry, \
-    UserOrganization, RegisterUserQR
-
-from django_otp.plugins.otp_totp.models import TOTPDevice
-import qrcode
-import qrcode.image.svg
+from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
+    UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
 
 def check_group_has_perm(group,codename):
@@ -245,22 +243,39 @@ def generate_QR_img(url):
     return img
 
 
-def get_url_qr(org_pk, app_label, model_name, object_id):
-    url = None
+def get_obj_qr(org_pk, app_label, model_name, object_id):
+    obj = None
 
     content_type = ContentType.objects.filter(
         app_label=app_label,
         model=model_name
     ).first()
 
-    obj = RegisterUserQR.objects.filter(
+    obj_qr = RegisterUserQR.objects.filter(
         organization_creator=org_pk,
         content_type=content_type,
         object_id=object_id
     )
 
-    if obj.exists():
-        obj = obj.first()
-        url = obj.register_user_qr.url
+    if obj_qr.exists():
+        obj = obj_qr.first()
 
-    return url
+    return obj
+
+
+def get_organizations_register_user(org_id, lab_id):
+    organization = OrganizationStructure.objects.get(pk=org_id)
+    org_base_list = list(organization.descendants(include_self=True))
+
+    org_list_by_lab = OrganizationStructureRelations.objects.filter(
+        organization__in=org_base_list,
+        content_type=ContentType.objects.filter(
+            app_label='laboratory',
+            model='laboratory'
+        ).first(),
+        object_id=lab_id
+    )
+
+    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True))
+
+    return org_list

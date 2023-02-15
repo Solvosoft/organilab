@@ -10,11 +10,11 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from derb.models import CustomForm as DerbCustomForm
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
-from .utils import get_pk_org_ancestors_decendants
+from .utils import get_pk_org_ancestors_decendants, get_organizations_register_user
 
 
 class ObjectSearchForm(GTForm, forms.Form):
@@ -339,4 +339,34 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
             'period_on_days': genwidgets.NumberInput,
             'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
             'active': genwidgets.YesNoInput
+        }
+
+
+class RegisterUserQRForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        lab_pk = kwargs.pop('lab_pk', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['organization_register'].label = _("Organization")
+        org_queryset = OrganizationStructure.objects.none()
+
+        if org_pk and lab_pk:
+            org_pk_list =  get_organizations_register_user(org_pk, lab_pk)
+            org_queryset = OrganizationStructure.objects.filter(pk__in=org_pk_list)
+
+        self.fields['organization_register'].queryset = org_queryset
+
+    class Meta:
+        model = RegisterUserQR
+        fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id', 'content_type']
+        widgets = {
+            'activate_user': genwidgets.YesNoInput,
+            'role': genwidgets.Select,
+            'organization_register': genwidgets.Select,
+            'organization_creator': genwidgets.HiddenInput,
+            'object_id': genwidgets.HiddenInput,
+            'content_type': genwidgets.HiddenInput,
+            'url': genwidgets.HiddenInput
         }

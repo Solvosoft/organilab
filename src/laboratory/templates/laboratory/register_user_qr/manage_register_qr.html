@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% block pre_head %}
+{% endblock %}
+{% block title %}{% trans 'Manage QR Code' %}{% endblock %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class='{% if obj %}col-md-6{% else %}col-md-6 offset-md-3{% endif %}'>
+                <h2 class="text-center" style="margin-bottom: 10%;"> {% trans 'Manage QR Code' %} </h2>
+                {{ form.as_horizontal }}
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success text-center" value="{% trans 'Save' %}"/>
+                </div>
+            </div>
+            {% if obj %}
+                <div class='col-md-6'>
+                    <img src="{{obj.register_user_qr.url}}" alt="" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
+                </div>
+            {% endif %}
+        </div>
+    </form>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+		<script></script>
+{% endblock %}

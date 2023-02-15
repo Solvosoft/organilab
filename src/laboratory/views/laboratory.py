@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse_lazy, path
 from django.urls.base import reverse
@@ -20,9 +20,10 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned
-from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm
+from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
+    RegisterUserQRForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR
-from laboratory.utils import organilab_logentry, get_url_qr
+from laboratory.utils import organilab_logentry, get_obj_qr
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -277,14 +278,14 @@ class HCodeReports(ListView):
         context['org_pk'] = self.org
         return context
 
-
-def get_pdf_register_user_qr(request, org_pk, rel_obj_pk):
+@permission_required('laboratory.view_registeruserqr')
+def get_pdf_register_user_qr(request, org_pk, lab_pk):
     template = get_template('pdf/qr_pdf.html')
 
-    lab = get_object_or_404(Laboratory, pk=rel_obj_pk)
-    url_qr = get_url_qr(org_pk, "laboratory", "laboratory", rel_obj_pk)
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    obj_qr = get_obj_qr(org_pk, "laboratory", "laboratory", lab_pk)
 
-    if url_qr:
+    if obj_qr:
 
         context = {
             'user': request.user,
@@ -294,15 +295,83 @@ def get_pdf_register_user_qr(request, org_pk, rel_obj_pk):
             'rel_obj_msg': _("Use following QR code to register user in laboratory"),
             'rel_obj': lab,
             'rel_obj_name': lab.name,
-            'url_qr': url_qr,
+            'obj_qr': obj_qr,
         }
 
         html = template.render(context=context)
         page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
         response = HttpResponse(page, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="register_user.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="register_user_qr.pdf"'
         return response
 
     else:
-        messages.error(request, _('Error, QR code is not defined.'))
-        return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': rel_obj_pk}))
+        messages.info(request, _('Configure QR register code'))
+        return redirect(reverse('laboratory:manage_register_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+
+
+@method_decorator(permission_required('laboratory.view_registeruserqr'), name='dispatch')
+class RegisterUserQRList(ListView):
+    model = RegisterUserQR
+    template_name = 'laboratory/register_user_qr/register_user_qr_list.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        content_type = ContentType.objects.filter(
+            app_label='laboratory',
+            model='laboratory'
+        ).first()
+
+        organization = OrganizationStructure.objects.get(pk=self.org)
+        org_base_list = list(organization.descendants(include_self=True))
+
+        if self.org and self.lab:
+            queryset = queryset.filter(organization_creator__in=org_base_list,
+                                       content_type=content_type,
+                                       object_id=self.lab
+                                       )
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+
+@permission_required('laboratory.add_registeruserqr')
+def manage_register_qr(request, org_pk, lab_pk):
+    obj = get_obj_qr(org_pk, 'laboratory', 'laboratory', lab_pk)
+
+    if request.method == "POST":
+        form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk)
+        organization_register = form.cleaned_data['organization_register']
+        instance = form.save()
+        instance.url = reverse('auth_and_perms:add_user', kwargs={'pk': organization_register.pk})
+        instance.save()
+    else:
+
+        if obj:
+            form = RegisterUserQRForm(instance=obj, org_pk=org_pk, lab_pk=lab_pk)
+        else:
+            content_type = ContentType.objects.filter(
+                app_label='laboratory',
+                model='laboratory'
+            ).first()
+
+            initial_form = {
+                'organization_creator': org_pk,
+                'object_id': lab_pk,
+                'content_type': content_type.pk,
+            }
+
+            form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk)
+
+    context = {
+        'form': form,
+        'obj': obj
+    }
+
+    return render(request, 'laboratory/register_user_qr/manage_register_qr.html', context=context)
+
