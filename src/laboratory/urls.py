@@ -193,7 +193,9 @@ informs_period_urls=[
 ]
 
 user_register_qr = [
-    path('get_pdf_qr/', laboratory.get_pdf_register_user_qr, name="get_pdf_register_user_qr")
+    path('get_pdf_qr/', laboratory.get_pdf_register_user_qr, name="get_pdf_register_user_qr"),
+    path('register_qr_list/', laboratory.RegisterUserQRList.as_view(), name="register_qr_list"),
+    path('manage_register_qr/', laboratory.manage_register_qr, name="manage_register_qr"),
 ]
 
 
@@ -228,6 +230,6 @@ urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
-    path('register_user/<int:org_pk>/<int:rel_obj_pk>/', include(user_register_qr)),
+    path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
 
 ]  + edit_objects
