@@ -709,6 +709,9 @@ class InformsPeriod(models.Model):
 
 
 class RegisterUserQR(models.Model):
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name=_("Created by"))
     activate_user = models.BooleanField(default=True, verbose_name=_('Activate user'))
     url = models.TextField(verbose_name=_("Url"))
     register_user_qr = models.FileField(_('Register user QR'), upload_to='register_user_qr/')
