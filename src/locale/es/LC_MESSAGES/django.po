@@ -4300,6 +4300,14 @@ msgstr "Cree un estante"
 msgid "The amount sends is more than the laboratory have"
 msgstr "La cantidad a sustraer es más de lo que el laboratorio tiene"
 
+#: laboratory/views/shelfobject.py:140
+msgid "The quantity is much larger than the shelf limit"
+msgstr "La cantidad es mucho mayor al limite del estante."
+
+#: laboratory/views/shelfobject.py:143
+msgid "The measurent unit is different of there shelf has"
+msgstr "La unidad de medida es diferente de la que tiene el estante."
+
 #: msds/models.py:11
 msgid "MSDS File"
 msgstr "Archivo MSDS"
