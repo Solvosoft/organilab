@@ -2,12 +2,17 @@ import qrcode
 import qrcode.image.svg
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
+from django.http import HttpResponse
+from django.utils.timezone import now
+from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
-
+import base64
+import io
 
 def check_group_has_perm(group,codename):
     if codename:
@@ -238,9 +243,13 @@ def get_pk_org_ancestors_decendants(user, org_pk):
     return pks
 
 
-def generate_QR_img(url):
+def generate_QR_img_file(url, user, file_name, extension_file):
     img = qrcode.make(url, image_factory=qrcode.image.svg.SvgImage)
-    return img
+    file = io.BytesIO()
+    img.save(file)
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name + extension_file)
+    return content, file
 
 
 def get_obj_qr(org_pk, app_label, model_name, object_id):
@@ -263,16 +272,25 @@ def get_obj_qr(org_pk, app_label, model_name, object_id):
     return obj
 
 
-def get_organizations_register_user(org_id, lab_id):
-    organization = OrganizationStructure.objects.get(pk=org_id)
-    org_base_list = list(organization.descendants(include_self=True))
+def get_organizations_register_user(organization, lab_id):
+    content_type = ContentType.objects.filter(
+        app_label='laboratory',
+        model='laboratory'
+    ).first()
+    #rel_lab = OrganizationStructureRelations.objects.filter(
+     #   organization=self.org,
+      #  content_type=content_type).values_list('object_id', flat=True)
+
+    #filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
+
+    #queryset = super().get_queryset()
+    #queryset = queryset.filter(filters).distinct()
+
+    org_base_list = list(organization.descendants(include_self=True).values_list('pk', flat=True))
 
     org_list_by_lab = OrganizationStructureRelations.objects.filter(
         organization__in=org_base_list,
-        content_type=ContentType.objects.filter(
-            app_label='laboratory',
-            model='laboratory'
-        ).first(),
+        content_type=content_type,
         object_id=lab_id
     )
 

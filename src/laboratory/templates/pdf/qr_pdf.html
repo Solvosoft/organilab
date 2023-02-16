@@ -3,14 +3,14 @@
 {% block pdf_content %}
 <table>
     <thead>
-        <tr>
-            <th>
-                <h2 style="margin-left: 34%;">{{title}}</h2>
-            </th>
-        </tr>
-        <tr>
-            <th><h4>{{rel_obj_title}}: {{rel_obj_name}}</h4></th>
-        </tr>
+    <tr>
+        <th>
+            <h2 style="margin-left: 34%;">{{title}}</h2>
+        </th>
+    </tr>
+    <tr>
+        <th><h4>{{rel_obj_title}}: {{rel_obj_name}}</h4></th>
+    </tr>
     </thead>
 </table>
 <table>
@@ -18,11 +18,14 @@
     <br>
     <br>
 </table>
+{% if obj_qr.register_user_qr %}
 <table>
     <br>
     <br>
     <tr>
-        <img src="{{obj_qr.register_user_qr.url}}" alt="" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
+        <img src="{{obj_qr.register_user_qr.url}}" alt=""
+             style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
     </tr>
 </table>
+{% endif %}
 {% endblock %}

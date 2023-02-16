@@ -20,7 +20,7 @@ from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views import inform_period
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, RegisterUserQRDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
@@ -195,7 +195,8 @@ informs_period_urls=[
 user_register_qr = [
     path('get_pdf_qr/', laboratory.get_pdf_register_user_qr, name="get_pdf_register_user_qr"),
     path('register_qr_list/', laboratory.RegisterUserQRList.as_view(), name="register_qr_list"),
-    path('manage_register_qr/', laboratory.manage_register_qr, name="manage_register_qr"),
+    path('manage_register_qr/<int:pk>/', laboratory.manage_register_qr, name="manage_register_qr"),
+    path('manage_register_qr/<int:pk>/delete', RegisterUserQRDeleteView.as_view(), name="delete_register_qr"),
 ]
 
 

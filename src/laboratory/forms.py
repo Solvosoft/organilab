@@ -8,13 +8,13 @@ from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, Rol
 from derb.models import CustomForm as DerbCustomForm
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
-from .utils import get_pk_org_ancestors_decendants, get_organizations_register_user
+from .utils import get_pk_org_ancestors_decendants, get_organizations_register_user, get_rols_from_organization
 
 
 class ObjectSearchForm(GTForm, forms.Form):
@@ -349,18 +349,27 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
         lab_pk = kwargs.pop('lab_pk', None)
         super().__init__(*args, **kwargs)
 
+        self.fields['url'].required = False
         self.fields['organization_register'].label = _("Organization")
         org_queryset = OrganizationStructure.objects.none()
+        role_queryset = OrganizationStructure.objects.none()
 
         if org_pk and lab_pk:
-            org_pk_list =  get_organizations_register_user(org_pk, lab_pk)
+            organization = OrganizationStructure.objects.get(pk=org_pk)
+
+            org_pk_list =  get_organizations_register_user(organization, lab_pk)
             org_queryset = OrganizationStructure.objects.filter(pk__in=org_pk_list)
 
+            role_pk_list = get_rols_from_organization(organization.pk, org=organization, rolfilters={'rol__isnull': False})
+            role_queryset = Rol.objects.filter(pk__in=set(role_pk_list))
+
+        self.fields['role'].queryset = role_queryset
         self.fields['organization_register'].queryset = org_queryset
 
     class Meta:
         model = RegisterUserQR
-        fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id', 'content_type']
+        fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id',
+                  'content_type', 'created_by']
         widgets = {
             'activate_user': genwidgets.YesNoInput,
             'role': genwidgets.Select,
@@ -368,5 +377,6 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
             'organization_creator': genwidgets.HiddenInput,
             'object_id': genwidgets.HiddenInput,
             'content_type': genwidgets.HiddenInput,
-            'url': genwidgets.HiddenInput
+            'url': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput
         }

@@ -1,11 +1,11 @@
 # encoding: utf-8
-from celery.utils.time import timezone
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
@@ -22,8 +22,8 @@ from auth_and_perms.models import Profile
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
     RegisterUserQRForm
-from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR
-from laboratory.utils import organilab_logentry, get_obj_qr
+from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations
+from laboratory import utils
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -48,7 +48,7 @@ class LaboratoryEdit(UpdateView):
 
     def form_valid(self,form):
         laboratory = form.save()
-        organilab_logentry(self.request.user, laboratory, CHANGE, changed_data=form.changed_data,
+        utils.organilab_logentry(self.request.user, laboratory, CHANGE, changed_data=form.changed_data,
                            relobj=self.object)
         return super(LaboratoryEdit, self).form_valid(form)
 
@@ -170,7 +170,7 @@ class CreateLaboratoryFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
-        organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data,
+        utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data,
                            relobj=self.object)
 
         user = self.request.user
@@ -219,8 +219,18 @@ class LaboratoryListView(ListView):
     ordering = ['name']
 
     def get_queryset(self):
+        content_type = ContentType.objects.filter(
+            app_label='laboratory',
+            model='laboratory'
+        ).first()
+        rel_lab = OrganizationStructureRelations.objects.filter(
+            organization=self.org,
+            content_type=content_type).values_list('object_id', flat=True)
+
+        filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
+
         queryset = super().get_queryset()
-        queryset = queryset.filter(organization__pk=self.org, profile__user=self.request.user)
+        queryset = queryset.filter(filters).distinct()
         q = self.request.GET.get('search_fil', '')
         if q != "":
             queryset = queryset.filter(name__icontains=q) 
@@ -244,7 +254,7 @@ class LaboratoryDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
+        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
@@ -283,7 +293,7 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk):
     template = get_template('pdf/qr_pdf.html')
 
     lab = get_object_or_404(Laboratory, pk=lab_pk)
-    obj_qr = get_obj_qr(org_pk, "laboratory", "laboratory", lab_pk)
+    obj_qr = utils.get_obj_qr(org_pk, "laboratory", "laboratory", lab_pk)
 
     if obj_qr:
 
@@ -334,22 +344,34 @@ class RegisterUserQRList(ListView):
             queryset = queryset.none()
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
 
 
 @permission_required('laboratory.add_registeruserqr')
-def manage_register_qr(request, org_pk, lab_pk):
-    obj = get_obj_qr(org_pk, 'laboratory', 'laboratory', lab_pk)
+def manage_register_qr(request, org_pk, lab_pk, pk=None):
+
+    obj = None
+    user = request.user
+    schema = request.scheme + "://"
+    domain = schema + request.get_host()
+
+    if pk:
+        obj = get_object_or_404(RegisterUserQR, pk=pk)
 
     if request.method == "POST":
         form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk)
-        organization_register = form.cleaned_data['organization_register']
-        instance = form.save()
-        instance.url = reverse('auth_and_perms:add_user', kwargs={'pk': organization_register.pk})
-        instance.save()
+        if form.is_valid():
+            organization_register = form.cleaned_data['organization_register']
+            instance = form.save()
+            url = domain + reverse('auth_and_perms:add_user', kwargs={'pk': organization_register.pk})
+            instance.url = url
+            img, file = utils.generate_QR_img_file(url, user, extension_file=".svg", file_name="qrcode")
+            instance.register_user_qr = img
+            instance.save()
+            file.close()
+            messages.success(request, _("Element saved successfully"))
+            return redirect(reverse('laboratory:register_qr_list', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+        else:
+            messages.error(request, _("Error, form is invalid"))
     else:
 
         if obj:
@@ -361,17 +383,35 @@ def manage_register_qr(request, org_pk, lab_pk):
             ).first()
 
             initial_form = {
+                'created_by': user,
                 'organization_creator': org_pk,
                 'object_id': lab_pk,
-                'content_type': content_type.pk,
+                'content_type': content_type.pk
             }
 
             form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk)
 
     context = {
         'form': form,
-        'obj': obj
+        'obj': obj,
+        'org_pk': org_pk,
+        'laboratory': lab_pk,
+        'datetime': now()
     }
 
     return render(request, 'laboratory/register_user_qr/manage_register_qr.html', context=context)
 
+
+@method_decorator(permission_required('laboratory.delete_registeruserqr'), name='dispatch')
+class RegisterUserQRDeleteView(DeleteView):
+    model = RegisterUserQR
+    template_name = "laboratory/register_user_qr/confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse('laboratory:register_qr_list', kwargs={'org_pk': self.org, 'lab_pk': self.lab})
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        utils.organilab_logentry(self.request.user, self.object, DELETION, 'register user QR')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
