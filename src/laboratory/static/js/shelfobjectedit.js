@@ -1,7 +1,9 @@
+const float_regex= /^[+-]?\d+(\.\d+)?$/;
+
 function processResponseshelfobjectCreate(dat) {
-	$('#shelfobjectCreate').html(dat);
-	// clean the form
-	$("#object_create").modal('show');
+    $('#shelfobjectCreate').html(dat);
+    // clean the form
+    $("#object_create").modal('show');
 }
 
 function processResponseshelfobjectDelete(dat) {
@@ -29,6 +31,7 @@ function function_name_furniture(argument) {
 			$('#furnitures').html(dat);
 
 		}
+
 	});
 }
 
@@ -140,7 +143,6 @@ function edit_object_limit(element){
     });
  }
 function send_limit_message(element,pk,amount){
-   const float_regex= /^[+-]?\d+(\.\d+)?$/;
 
     Swal.fire({
                 title: msgs['limit'],
@@ -196,3 +198,11 @@ function displayShelfobjectFunction(data) {
 	$("#shelfdetailmodalbody").html(data);
 	activemodal = $("#shelfdetailmodal").modal('show');
 }
+
+
+$(document).on('keyup','#id_quantity',function(e){
+    if(!float_regex.test(this.value) && e.key!='.'){
+        this.value = this.value.slice(0,-1)
+    }
+
+});
