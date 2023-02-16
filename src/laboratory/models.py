@@ -13,7 +13,7 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-
+from django.db.models import Sum
 from organilab.settings import DATE_INPUT_FORMATS
 from presentation.models import AbstractOrganizationRef
 from . import catalog
@@ -148,6 +148,8 @@ class ShelfObject(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     marked_as_discard = models.BooleanField(default=False)
+    laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
+    course_name = models.CharField(null=True, blank=True, verbose_name=_('Course name'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -197,6 +199,13 @@ class Shelf(models.Model):
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
+    discard = models.BooleanField(default=False,verbose_name=_('Discard'))
+    quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
+    measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    description= models.TextField(null=True,blank=True, default="")
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -225,6 +234,10 @@ class Shelf(models.Model):
 
     def get_shelf(self):
         return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
+
+
+    def get_total_refuse(self):
+        return ShelfObject.objects.filter(shelf=self).aggregate(amount = Sum('quantity', default=0))['amount']
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
