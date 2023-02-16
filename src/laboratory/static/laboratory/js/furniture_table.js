@@ -126,12 +126,8 @@ function delete_shelf(id, url){
 }
 function show_refuse_elements(){
      if($('#id_shelf--discard').is(':checked')){
-        $('#id_shelf--quantity').parent().parent().show();
-        $('#id_shelf--measurement_unit').parent().parent().show();
         $('#id_shelf--description').parent().parent().show();
      }else{
-        $('#id_shelf--quantity').parent().parent().hide();
-        $('#id_shelf--measurement_unit').parent().parent().hide();
         $('#id_shelf--description').parent().parent().hide();
 
       }
