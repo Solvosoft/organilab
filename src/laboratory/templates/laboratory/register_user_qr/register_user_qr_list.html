@@ -3,6 +3,7 @@
 {% load gtsettings %}
 {% load urlname_tags %}
 {% block pre_head %}
+	{% define_urlname_action 'manage_register_user_qrcode' %}
 {% endblock %}
 
 {% block title %}{% trans 'Register User QR Code List' %}{% endblock %}
@@ -12,9 +13,8 @@
             <div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
 
         {% if perms.laboratory.add_registeruserqr %}
-                <button title="Create form"
-                        type="button"
-                        class="btn btn-outline-primary create_btn" >{% trans 'Add Register User' %}</button>
+                <a title="{% trans 'Add Register User' %}" href="{% url 'laboratory:manage_register_qr' org_pk laboratory 0 %}"
+                        class="btn btn-outline-primary" >{% trans 'Add Register User' %}</a>
         {% endif %}
             </div>
         </div>
@@ -73,9 +73,9 @@
                 </td>
 
                 <td style="width: 120px">
-                    <a title="{% trans 'Download' %}" class="btn btn-sm btn-outline-info preview_btn" href="{% url 'laboratory:get_pdf_register_user_qr' org_pk laboratory %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" data-url="{% url 'laboratory:manage_register_qr' org_pk laboratory %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" data-url=""><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Download' %}" class="btn btn-sm btn-outline-info" href="{% url 'laboratory:get_pdf_register_user_qr' org_pk laboratory %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning" href="{% url 'laboratory:manage_register_qr' org_pk laboratory obj.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger" href="{% url 'laboratory:delete_register_qr' org_pk laboratory obj.pk %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                 </td>
             </tr>
@@ -90,32 +90,5 @@
 
 {% block js %}
 <script>
-const translations = {
-    create_title: "{% trans 'Create Form' %}",
-    btn_create: "{% trans 'Create' %}",
-    btn_cancel: "{% trans 'Cancel' %}",
-    create_text: "{% trans 'Name' %}",
-    delete_title: "{% trans 'Do you want to delete the form' %}",
-    btn_delete: "{% trans 'Delete' %}",
-    delete_text: "{% trans 'This action cannot be undone' %}",
-    delete_error_text: "{% trans 'The form could not be deleted.' %}",
-    delete_success_text: "{% trans 'The form has been deleted.' %}",
-    delete_success_title: "{% trans 'Deleted!' %}",
-}
-</script>
-<script src="{% static 'js/list.js' %}"></script>
-<script>
-window.urls = {
-    editview: "{% url 'derb:edit_view' org_pk %}",
-    formlist: "{% url 'derb:form_list' org_pk %}",
-    create: "{% url 'derb:create_form' org_pk %}"
-}
-
-</script>
-<script>
-        $(document).ready(loadDataTable);
-        $('body').on('click', '.delete_btn', deleteForm);
-        $('body').on('click', '.create_btn', createForm);
-        $('body').on('click', '.edit_btn', editForm);
 </script>
 {% endblock %}
