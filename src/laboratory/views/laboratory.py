@@ -289,34 +289,29 @@ class HCodeReports(ListView):
         return context
 
 @permission_required('laboratory.view_registeruserqr')
-def get_pdf_register_user_qr(request, org_pk, lab_pk):
+def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
     template = get_template('pdf/qr_pdf.html')
 
     lab = get_object_or_404(Laboratory, pk=lab_pk)
-    obj_qr = utils.get_obj_qr(org_pk, "laboratory", "laboratory", lab_pk)
+    obj_qr = get_object_or_404(RegisterUserQR, pk=pk)
 
-    if obj_qr:
+    context = {
+        'user': request.user,
+        'datetime': now(),
+        'title': _("Register User"),
+        'rel_obj_title': _("Laboratory"),
+        'rel_obj_msg': _("Use following QR code to register user in laboratory"),
+        'rel_obj': lab,
+        'rel_obj_name': lab.name,
+        'obj_qr': obj_qr,
+        'org_pk': org_pk
+    }
 
-        context = {
-            'user': request.user,
-            'datetime': now(),
-            'title': _("Register User"),
-            'rel_obj_title': _("Laboratory"),
-            'rel_obj_msg': _("Use following QR code to register user in laboratory"),
-            'rel_obj': lab,
-            'rel_obj_name': lab.name,
-            'obj_qr': obj_qr,
-        }
-
-        html = template.render(context=context)
-        page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
-        response = HttpResponse(page, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="register_user_qr.pdf"'
-        return response
-
-    else:
-        messages.info(request, _('Configure QR register code'))
-        return redirect(reverse('laboratory:manage_register_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+    html = template.render(context=context)
+    page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
+    response = HttpResponse(page, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="register_user_qr.pdf"'
+    return response
 
 
 @method_decorator(permission_required('laboratory.view_registeruserqr'), name='dispatch')
@@ -339,7 +334,7 @@ class RegisterUserQRList(ListView):
             queryset = queryset.filter(organization_creator__in=org_base_list,
                                        content_type=content_type,
                                        object_id=self.lab
-                                       )
+                                       ).order_by('creation_date', 'last_update', 'organization_register__name')
         else:
             queryset = queryset.none()
         return queryset
@@ -353,12 +348,16 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
     user = request.user
     schema = request.scheme + "://"
     domain = schema + request.get_host()
+    action = ADDITION
+    new_obj = True
 
     if pk:
         obj = get_object_or_404(RegisterUserQR, pk=pk)
+        action = CHANGE
+        new_obj = False
 
     if request.method == "POST":
-        form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk)
+        form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
         if form.is_valid():
             organization_register = form.cleaned_data['organization_register']
             instance = form.save()
@@ -369,13 +368,15 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
             instance.save()
             file.close()
             messages.success(request, _("Element saved successfully"))
-            return redirect(reverse('laboratory:register_qr_list', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+            utils.organilab_logentry(request.user, instance, action, 'register user QR', changed_data=form.changed_data,
+                           relobj=lab_pk)
+            return redirect(reverse('laboratory:list_register_user_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
         else:
             messages.error(request, _("Error, form is invalid"))
     else:
 
         if obj:
-            form = RegisterUserQRForm(instance=obj, org_pk=org_pk, lab_pk=lab_pk)
+            form = RegisterUserQRForm(instance=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
         else:
             content_type = ContentType.objects.filter(
                 app_label='laboratory',
@@ -389,14 +390,13 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
                 'content_type': content_type.pk
             }
 
-            form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk)
+            form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
 
     context = {
         'form': form,
         'obj': obj,
         'org_pk': org_pk,
-        'laboratory': lab_pk,
-        'datetime': now()
+        'laboratory': lab_pk
     }
 
     return render(request, 'laboratory/register_user_qr/manage_register_qr.html', context=context)
@@ -415,3 +415,14 @@ class RegisterUserQRDeleteView(DeleteView):
         utils.organilab_logentry(self.request.user, self.object, DELETION, 'register user QR')
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
+
+def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
+    register_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    return render(request, 'laboratory/register_user_qr/logentry_list.html', context={
+        'org_pk': org_pk,
+        'laboratory': lab_pk,
+        'object_id': pk,
+        'app_label': register_qr._meta.app_label,
+        'model_name': register_qr._meta.model_name,
+    })
