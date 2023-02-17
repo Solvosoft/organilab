@@ -13,7 +13,7 @@
             <div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
 
         {% if perms.laboratory.add_registeruserqr %}
-                <a title="{% trans 'Add Register User' %}" href="{% url 'laboratory:manage_register_qr' org_pk laboratory 0 %}"
+                <a title="{% trans 'Add Register User' %}" href="{% url 'laboratory:manage_register_user_qr' org_pk laboratory 0 %}"
                         class="btn btn-outline-primary" >{% trans 'Add Register User' %}</a>
         {% endif %}
             </div>
@@ -73,9 +73,10 @@
                 </td>
 
                 <td style="width: 120px">
-                    <a title="{% trans 'Download' %}" class="btn btn-sm btn-outline-info" href="{% url 'laboratory:get_pdf_register_user_qr' org_pk laboratory %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning" href="{% url 'laboratory:manage_register_qr' org_pk laboratory obj.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger" href="{% url 'laboratory:delete_register_qr' org_pk laboratory obj.pk %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Log List' %}" class="btn btn-sm btn-outline-success" href="{% url 'laboratory:logentry_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-file-text-o"></i></a>
+                    <a title="{% trans 'Download' %}" class="btn btn-sm btn-outline-info" href="{% url 'laboratory:download_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning" href="{% url 'laboratory:manage_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger" href="{% url 'laboratory:delete_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
                 </td>
             </tr>
