@@ -1,18 +1,18 @@
+import io
+
 import qrcode
 import qrcode.image.svg
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
-from django.http import HttpResponse
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
-import base64
-import io
+
 
 def check_group_has_perm(group,codename):
     if codename:
@@ -279,21 +279,13 @@ def get_obj_qr(org_pk, app_label, model_name, object_id):
     return obj
 
 
-def get_organizations_register_user(organization, lab_id):
+def get_organizations_register_user_base(organization, lab_id):
     content_type = ContentType.objects.filter(
         app_label='laboratory',
         model='laboratory'
     ).first()
-    #rel_lab = OrganizationStructureRelations.objects.filter(
-     #   organization=self.org,
-      #  content_type=content_type).values_list('object_id', flat=True)
 
-    #filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
-
-    #queryset = super().get_queryset()
-    #queryset = queryset.filter(filters).distinct()
-
-    org_base_list = list(organization.descendants(include_self=True).values_list('pk', flat=True))
+    org_base_list = list(organization.descendants().values_list('pk', flat=True))
 
     org_list_by_lab = OrganizationStructureRelations.objects.filter(
         organization__in=org_base_list,
@@ -301,6 +293,26 @@ def get_organizations_register_user(organization, lab_id):
         object_id=lab_id
     )
 
-    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True))
+    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True)) + [organization.pk]
 
     return org_list
+
+
+def get_exclude_org_register_user(lab_id, query_org):
+    content_type = ContentType.objects.filter(
+        app_label='laboratory',
+        model='laboratory'
+    ).first()
+
+    exclude_org = RegisterUserQR.objects.filter(
+        organization_register__in=query_org,
+        content_type=content_type,
+        object_id=lab_id
+    )
+    return list(exclude_org.values_list('organization_register__pk', flat=True))
+
+
+def get_organizations_register_user(organization, lab_id):
+    org_base = get_organizations_register_user_base(organization, lab_id)
+    org_exclude = get_exclude_org_register_user(lab_id, org_base)
+    return OrganizationStructure.objects.filter(pk__in=org_base).exclude(pk__in=org_exclude).distinct()
