@@ -259,26 +259,6 @@ def generate_QR_img_file(url, user, file_name, extension_file):
     return obj.get_uploaded_file(), file
 
 
-def get_obj_qr(org_pk, app_label, model_name, object_id):
-    obj = None
-
-    content_type = ContentType.objects.filter(
-        app_label=app_label,
-        model=model_name
-    ).first()
-
-    obj_qr = RegisterUserQR.objects.filter(
-        organization_creator=org_pk,
-        content_type=content_type,
-        object_id=object_id
-    )
-
-    if obj_qr.exists():
-        obj = obj_qr.first()
-
-    return obj
-
-
 def get_organizations_register_user_base(organization, lab_id):
     content_type = ContentType.objects.filter(
         app_label='laboratory',
@@ -298,7 +278,7 @@ def get_organizations_register_user_base(organization, lab_id):
     return org_list
 
 
-def get_exclude_org_register_user(lab_id, query_org):
+def get_exclude_org_register_user(lab_pk, query_org, org_register_pk=None):
     content_type = ContentType.objects.filter(
         app_label='laboratory',
         model='laboratory'
@@ -307,12 +287,38 @@ def get_exclude_org_register_user(lab_id, query_org):
     exclude_org = RegisterUserQR.objects.filter(
         organization_register__in=query_org,
         content_type=content_type,
-        object_id=lab_id
+        object_id=lab_pk
     )
+
+    if org_register_pk:
+        exclude_org = exclude_org.exclude(organization_register=org_register_pk)
     return list(exclude_org.values_list('organization_register__pk', flat=True))
 
 
-def get_organizations_register_user(organization, lab_id):
+def get_organizations_register_user(organization, lab_id, org_register_pk=None):
     org_base = get_organizations_register_user_base(organization, lab_id)
-    org_exclude = get_exclude_org_register_user(lab_id, org_base)
+    org_exclude = get_exclude_org_register_user(lab_id, org_base, org_register_pk=org_register_pk)
     return OrganizationStructure.objects.filter(pk__in=org_base).exclude(pk__in=org_exclude).distinct()
+
+
+def get_logentries_org_management(self, org):
+    if not org:
+        return self.queryset.none()
+    else:
+        org = OrganizationStructure.objects.filter(pk=org).first()
+        if not org:
+            return self.queryset.none()
+    laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk', flat=True))
+
+    log_entries = LabOrgLogEntry.objects.filter(
+        Q(content_type__app_label='laboratory',
+          content_type__model='laboratory',
+          object_id__in=laboratories
+          ) | Q(
+            content_type__app_label='laboratory',
+            content_type__model='organizationstructure',
+            object_id=org.pk
+        )
+    ).values_list('log_entry', flat=True)
+
+    return log_entries

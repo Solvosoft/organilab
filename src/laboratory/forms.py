@@ -347,6 +347,7 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         lab_pk = kwargs.pop('lab_pk', None)
+        new_obj = kwargs.pop('new_obj', False)
         super().__init__(*args, **kwargs)
 
         self.fields['url'].required = False
@@ -356,7 +357,11 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
 
         if org_pk and lab_pk:
             organization = OrganizationStructure.objects.get(pk=org_pk)
-            org_queryset = utils.get_organizations_register_user(organization, lab_pk)
+            if not new_obj:
+                org_queryset = utils.get_organizations_register_user(organization, lab_pk,
+                                                                     self.instance.organization_register.pk)
+            else:
+                org_queryset = utils.get_organizations_register_user(organization, lab_pk)
 
             role_pk_list = utils.get_rols_from_organization(organization.pk, org=organization, rolfilters={'rol__isnull': False})
             role_queryset = Rol.objects.filter(pk__in=set(role_pk_list))
