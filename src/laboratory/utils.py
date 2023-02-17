@@ -248,8 +248,15 @@ def generate_QR_img_file(url, user, file_name, extension_file):
     file = io.BytesIO()
     img.save(file)
     file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name + extension_file)
-    return content, file
+    content = ContentFile(file.getvalue(), name=file_name)
+    obj = ChunkedUpload.objects.create(
+        file=content,
+        filename=file_name+extension_file,
+        offset=len(file.getvalue()),
+        completed_on=now(),
+        user=user
+    )
+    return obj.get_uploaded_file(), file
 
 
 def get_obj_qr(org_pk, app_label, model_name, object_id):
