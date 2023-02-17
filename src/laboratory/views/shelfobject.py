@@ -388,8 +388,8 @@ def add_object(request, pk):
             shelf = object.shelf
             if shelf.discard:
                 total = shelf.get_total_refuse()
-                new_total = total+new
-                if total>=new_total:
+                new_total = total+amount
+                if shelf.quantity>=new_total:
 
                     object.save()
                     log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
@@ -405,7 +405,7 @@ def add_object(request, pk):
                     }
                     return JsonResponse(response)
                 else:
-                    return JsonResponse({'status': False, 'msg': _('The quantity is much larger than what the shelf has')})
+                    return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit')})
 
             else:
                 object.save()
