@@ -2,10 +2,10 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
@@ -18,12 +18,15 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, ProfilePermission
+from auth_and_perms.utils import send_email
+from laboratory import utils
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
-    RegisterUserQRForm
-from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations
-from laboratory import utils
+    RegisterUserQRForm, RegisterForm, LoginForm
+from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations, \
+    UserOrganization
+from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -359,9 +362,9 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
     if request.method == "POST":
         form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
         if form.is_valid():
-            organization_register = form.cleaned_data['organization_register']
             instance = form.save()
-            url = domain + reverse('auth_and_perms:add_user', kwargs={'pk': organization_register.pk})
+            url = domain + reverse('laboratory:login_register_user_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk,
+                                                                                'pk': instance.pk})
             instance.url = url
             img, file = utils.generate_QR_img_file(url, user, extension_file=".svg", file_name="qrcode")
             instance.register_user_qr = img
@@ -408,7 +411,7 @@ class RegisterUserQRDeleteView(DeleteView):
     template_name = "laboratory/register_user_qr/confirm_delete.html"
 
     def get_success_url(self):
-        return reverse('laboratory:register_qr_list', kwargs={'org_pk': self.org, 'lab_pk': self.lab})
+        return reverse('laboratory:list_register_user_qr', kwargs={'org_pk': self.org, 'lab_pk': self.lab})
 
     def form_valid(self, form):
         success_url = self.get_success_url()
@@ -426,3 +429,61 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
         'app_label': register_qr._meta.app_label,
         'model_name': register_qr._meta.model_name,
     })
+
+def login_register_user_qr(request, org_pk, lab_pk, pk):
+    login_form = LoginForm()
+    register_form = RegisterForm()
+    return render(request, 'laboratory/register_user_qr/login_register_user.html', context={
+        'pk': pk,
+        'org_pk': org_pk,
+        'lab_pk': lab_pk,
+        'login_form': login_form,
+        'register_form': register_form,
+    })
+
+def create_user_qr(request, org_pk, lab_pk, pk):
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    content_type = ContentType.objects.filter(
+                app_label='laboratory',
+                model='organizationstructure'
+            ).first()
+
+    if request.method == "POST":
+
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = form.cleaned_data['email']
+            password = User.objects.make_random_password()
+            user.password = password
+            user.save()
+            UserOrganization.objects.create(organization=org, user=user)
+            profile = Profile(
+                user=user,
+                id_card=form.cleaned_data['id_card'],
+                job_position=_("Student")
+            )
+            profile.save()
+            profile.laboratories.add(lab)
+            pp = ProfilePermission.objects.create(
+                profile=profile,
+                content_type=content_type,
+                object_id=org_pk
+            )
+            pp.save()
+            pp.rol.add(user_qr.role)
+            send_email(request, user)
+            organilab_logentry(user, user, ADDITION, 'user',
+                               changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
+                               relobj=org_pk)
+            organilab_logentry(user, profile, ADDITION, 'profile',
+                               changed_data=['user', 'phone_number', 'id_card', 'job_position'],
+                               relobj=org_pk)
+            login(request, user)
+            return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab': lab_pk}))
+
+    else:
+        messages.error(request, _("Error, register form is invalid"))
