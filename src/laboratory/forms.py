@@ -1,5 +1,7 @@
 from django import forms
-from django.contrib.auth.models import Group
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.models import Group, User
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.forms import ModelForm
 from django.urls import reverse_lazy
@@ -383,3 +385,52 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
             'url': genwidgets.HiddenInput,
             'created_by': genwidgets.HiddenInput
         }
+
+
+class RegisterForm(GTForm, forms.ModelForm):
+    id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
+    phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
+
+    field_order = ['first_name', 'last_name', 'email', 'phone_number', 'id_card']
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'id_card', 'phone_number']
+        widgets = {
+            'first_name': genwidgets.TextInput,
+            'last_name': genwidgets.TextInput,
+            'email': genwidgets.EmailMaskInput
+        }
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if email:
+            user_obj = User.objects.filter(email=email)
+
+            if user_obj.exists():
+                raise ValidationError(_("Email address is already exists."))
+            else:
+                return email
+
+class LoginForm(GTForm, forms.Form):
+    username = UsernameField(widget=genwidgets.TextInput(attrs={"autofocus": True}), label=_("Username"),)
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=genwidgets.PasswordInput(attrs={"autocomplete": "current-password"}),
+    )
+
+    error_messages = {
+        "invalid_login": _(
+            "Please enter a correct %(username)s and password. Note that both "
+            "fields may be case-sensitive."
+        ),
+        "inactive": _("This account is inactive."),
+    }
