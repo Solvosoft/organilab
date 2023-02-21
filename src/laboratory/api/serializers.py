@@ -2,7 +2,7 @@ from django.contrib.admin.models import LogEntry
 from django.urls import reverse
 from rest_framework import serializers
 
-from laboratory.models import CommentInform, Inform
+from laboratory.models import CommentInform, Inform, ShelfObject
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -176,3 +176,17 @@ class InformFilterSet(FilterSet):
     class Meta:
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
+
+
+class ShelfObjectSerialize(serializers.ModelSerializer):
+    object_name = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
+
+    def get_object_name(self, obj):
+        return obj.object.name
+
+    def get_unit(self, obj):
+        return obj.get_measurement_unit_display()
+    class Meta:
+        model = ShelfObject
+        fields = ['object_name', 'unit','quantity']

@@ -10,10 +10,10 @@ from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.reservation import ShelfObjectReservation
-from laboratory.search import SearchObject
+from laboratory.search import SearchObject, SearchDisposalObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
@@ -200,7 +200,6 @@ router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
-
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
@@ -208,6 +207,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     path('lab/<int:org_pk>/<int:lab_pk>/search/', SearchObject.as_view(), name="search"),
+    path('lab/<int:org_pk>/search/disposal/', SearchDisposalObject.as_view(), name="disposal_substance"),
     path('lab/<int:org_pk>/<int:lab_pk>/rooms/', include(lab_rooms_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/furniture/', include(lab_furniture_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/objects/', include(objviews.get_urls())),
@@ -220,6 +220,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
+    path('org/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
