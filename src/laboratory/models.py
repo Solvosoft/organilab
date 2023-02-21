@@ -247,6 +247,9 @@ class Shelf(models.Model):
             result=0
         return result
 
+    def get_measurement_unit_display(self):
+        return str(self.measurement_unit)
+
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 

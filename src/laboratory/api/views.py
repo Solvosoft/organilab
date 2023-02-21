@@ -250,3 +250,16 @@ class ShelfObjectAPI(APIView):
         solicitud = self.get_object(request.GET['shelf'])
         serializer = ShelfObjectSerialize(solicitud, many=True)
         return Response(serializer.data)
+
+class ShelfObjectGraphicAPI(APIView):
+    def get(self, request):
+        queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
+        labels = []
+        data = []
+        if queryset:
+            self.show_chart = True
+            for obj in queryset:
+               data.append(obj.quantity)
+               labels.append(obj.object.name)
+
+        return Response({'labels':labels,'data':data})
