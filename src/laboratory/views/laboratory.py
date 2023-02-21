@@ -20,6 +20,7 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile, ProfilePermission
 from auth_and_perms.utils import send_email
+from authentication.forms import PasswordChangeForm
 from laboratory import utils
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
@@ -431,59 +432,104 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     })
 
 def login_register_user_qr(request, org_pk, lab_pk, pk):
-    login_form = LoginForm()
-    register_form = RegisterForm()
+
     return render(request, 'laboratory/register_user_qr/login_register_user.html', context={
         'pk': pk,
         'org_pk': org_pk,
         'lab_pk': lab_pk,
-        'login_form': login_form,
-        'register_form': register_form,
+        'login_form': LoginForm(),
+        'password_form': PasswordChangeForm(),
+        'register_form': RegisterForm(),
+        'next': reverse('laboratory:redirect_user_to_labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
     })
 
-def create_user_qr(request, org_pk, lab_pk, pk):
-    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+
+def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
+    login(request, user)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
     content_type = ContentType.objects.filter(
-                app_label='laboratory',
-                model='organizationstructure'
-            ).first()
+        app_label='laboratory',
+        model='laboratory'
+    ).first()
+
+    profile = user.profile
+
+    if not profile and id_card:
+        profile = Profile.objects.create(
+            user=user,
+            id_card=id_card,
+            job_position=_("Student")
+        )
+        organilab_logentry(user, profile, ADDITION, 'profile',
+                           changed_data=['user', 'phone_number', 'id_card', 'job_position'],
+                           relobj=org_pk)
+
+    profile.laboratories.add(lab)
+
+    pp = ProfilePermission.objects.filter(
+        profile=profile,
+        content_type=content_type,
+        object_id=lab_pk
+    )
+
+    if not pp.exists():
+
+        pp = ProfilePermission.objects.create(
+            profile=profile,
+            content_type=content_type,
+            object_id=lab_pk
+        )
+        pp.save()
+        organilab_logentry(user, pp, ADDITION, 'profile permission',
+                           changed_data=['profile', 'content_type', 'object_id'], relobj=org_pk)
+    else:
+        pp = pp.first()
+        organilab_logentry(user, pp, CHANGE, 'profile permission',
+                           changed_data=['rol'], relobj=org_pk)
+    pp.rol.add(role)
+
+    user_org = UserOrganization.objects.filter(organization=org, user=user)
+
+    if not user_org.exists():
+        user_org = UserOrganization.objects.create(organization=org, user=user)
+        organilab_logentry(user, user_org, ADDITION, 'user organization',
+                           changed_data=['organization', 'user'], relobj=org_pk)
+
+    return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+
+
+def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
+    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    return add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, id_card=None)
+
+
+def create_user_qr(request, org_pk, lab_pk, pk):
+    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
 
     if request.method == "POST":
 
-        form = RegisterForm(request.POST)
+        register_form = RegisterForm(request.POST)
+        password_form = PasswordChangeForm(request.POST)
 
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = form.cleaned_data['email']
-            password = User.objects.make_random_password()
-            user.password = password
-            user.save()
-            UserOrganization.objects.create(organization=org, user=user)
-            profile = Profile(
-                user=user,
-                id_card=form.cleaned_data['id_card'],
-                job_position=_("Student")
-            )
-            profile.save()
-            profile.laboratories.add(lab)
-            pp = ProfilePermission.objects.create(
-                profile=profile,
-                content_type=content_type,
-                object_id=org_pk
-            )
-            pp.save()
-            pp.rol.add(user_qr.role)
-            send_email(request, user)
-            organilab_logentry(user, user, ADDITION, 'user',
-                               changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
-                               relobj=org_pk)
-            organilab_logentry(user, profile, ADDITION, 'profile',
-                               changed_data=['user', 'phone_number', 'id_card', 'job_position'],
-                               relobj=org_pk)
-            login(request, user)
-            return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab': lab_pk}))
+        if register_form.is_valid() and password_form.is_valid():
+            password = password_form.cleaned_data['password']
+            password_confirm = password_form.cleaned_data['password_confirm']
+            if password == password_confirm:
+                user = register_form.save(commit=False)
+                user.username = register_form.cleaned_data['email']
+                user.set_password(password)
+                if not user_qr.activate_user:
+                    user.is_active = False
+                user.save()
 
+                organilab_logentry(user, user, ADDITION, 'user',
+                                   changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
+                                   relobj=org_pk)
+
+                id_card = register_form.cleaned_data['id_card']
+                add_user_to_rel_obj(request, user, org_pk, lab_pk, user_qr.role, id_card)
+            else:
+                messages.error(request, _("Error trying to change your password: Passwords should match"))
     else:
         messages.error(request, _("Error, register form is invalid"))
