@@ -1,51 +1,82 @@
-{% extends 'base.html' %}
-{% load static i18n %}
+{% extends "base.html" %}
+{% load i18n static %}
 {% block title %}{% trans 'Register User' %}{% endblock %}
 {% block content_block_wrap %}{% endblock %}
 {% block body_class %}login{% endblock body_class %}
 {% block body %}
-<div class="container">
+<div class="container" style="padding-top: 3%;">
     <div class="row">
-        <div class='col-md-6'>
-            <form action="{% url 'laboratory:create_user_qr' org_pk lab_pk %}" method="POST">
-                {% csrf_token %}
-                <h2 class="text-center" style="margin-bottom: 10%;"> {% trans 'Register User' %} </h2>
-                {{ register_form.as_horizontal }}
-                <div class="form-group">
-                    <input type="submit" class="btn btn-success text-center" value="{% trans 'Save' %}"/>
+        <div class='col-md-8'>
+            <div class="card">
+                <div class="card-body">
+                    <form action="{% url 'laboratory:create_user_qr' org_pk lab_pk pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <h2 class="text-center" style="margin-bottom: 10%;"> {% trans 'Register User' %} </h2>
+                            <div class='col-md-6'>
+                                {{ register_form.as_horizontal }}
+                            </div>
+                            <div class='col-md-6'>
+                                {{ password_form.as_horizontal }}
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        {% trans 'Your password may not closely resemble your other personal information.' %}<br>
+                                        {% trans 'Your password must contain at least 8 characters.' %}<br>
+                                        {% trans 'Your password cannot be a commonly used password.' %}<br>
+                                        {% trans 'Your password cannot be completely numeric.' %}<br>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-9 offset-md-3" style="margin-left: 27%;">
+                                    <input type="submit" class="btn btn-success text-center float-end"
+                                           value="{% trans 'Register' %}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class='col-md-6'>
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-                <h2 class="text-center" style="margin-bottom: 10%;"> {% trans 'Login' %} </h2>
-                <div>
-                    {% if login_form.errors %}
-                    <p class="text-warning">{% trans "Your username and password didn't match. Please try again." %}</p>
-                    {% endif %}
+        <div class='col-md-4'>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <input type="hidden" name="next" value="{{ next }}">
+                            <h2 class="text-center" style="margin-bottom: 10%;"> {% trans 'Login' %} </h2>
+                            <div>
+                                {% if login_form.errors %}
+                                <p class="text-warning">{% trans "Your username and password didn't match. Please try again." %}</p>
+                                {% endif %}
 
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                        <p>{% blocktrans %}Your account doesn't have access to this page. To proceed,
-                        please login with an account that has access.{% endblocktrans %}</p>
-                        {% else %}
-                        <p class="text-warning">{% trans "Please login to see this page." %}</p>
-                        {% endif %}
-                    {% endif %}
+                                {% if next %}
+                                {% if user.is_authenticated %}
+                                <p>{% blocktrans %}Your account doesn't have access to this page. To proceed, please login with an account that has access.{% endblocktrans %}</p>
+                                {% else %}
+                                <p class="text-warning">{% trans "Please login to see this page." %}</p>
+                                {% endif %}
+                                {% endif %}
 
+                            </div>
+                            {{login_form.as_horizontal}}
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-3" style="margin-left: 27%;">
+                                    <input type="submit" class="btn btn-success text-center float-end"
+                                           value="{% trans 'Log in' %}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                {{login_form.as_horizontal}}
-                <div class="form-group">
-                    <input type="submit" class="btn btn-success text-center" value="{% trans 'Log in' %}"/>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <footer class="vertical-bottom footer_nosidebar" style="top: 90%;">
-          {% include "gentelella/app/footer.html" %}
+        {% include "gentelella/app/footer.html" %}
     </footer>
 </div>
 {% endblock %}

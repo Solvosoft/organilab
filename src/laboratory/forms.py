@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -387,7 +387,7 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
         }
 
 
-class RegisterForm(GTForm, forms.ModelForm):
+class RegisterForm(forms.ModelForm, GTForm):
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
 
