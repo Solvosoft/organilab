@@ -14,11 +14,11 @@ from django.db.models import Value, DateField
 
 from laboratory.api import serializers
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory, InformsPeriod
+    LabOrgLogEntry, Laboratory, InformsPeriod, ShelfObject
 from laboratory.utils import get_laboratories_from_organization
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -237,3 +237,16 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
+
+
+class ShelfObjectAPI(APIView):
+    def get_object(self, pk):
+        try:
+            return ShelfObject.objects.filter(shelf__pk=pk)
+        except ShelfObject.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request):
+        solicitud = self.get_object(request.GET['shelf'])
+        serializer = ShelfObjectSerialize(solicitud, many=True)
+        return Response(serializer.data)

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load i18n static laboratory gtsettings shelf_objects %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+{% block title %}{% trans 'Disposal' %}{% endblock %}
+{% block content %}
+<div class="container">
+    <div align="center">
+      <h3 class="heading-1" ><span> {% trans 'List of disposal substance' %}</span></h3>
+            {% for object in object_list %}
+            {% get_shelfs object as shelfs %}
+                <div class="card">
+                <div class="card-header"><strong>{% trans 'Laboratory' %}:</strong> {{object.name}}</div>
+                <div class="card-body">
+                    <div class="row  g-2">
+                        {% for shelf in shelfs %}
+                            <div class="col-sm-4">
+                                <p><strong>{% trans 'Shelf' %}:</strong> {{shelf.name}}</p>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{shelf.get_total_refuse}}" style="width: {{shelf.get_refuse_porcentage}}%" aria-valuemin="0" aria-valuemax="{{shelf.quantity}}"></div>
+                                    <small class="justify-content-center d-flex position-absolute w-100 text-white fw-bold">{{shelf.get_refuse_porcentage}}%</small>
+                                </div>
+                                {% get_shelf_objects shelf as shelf_objectss %}
+                                    <a data-shelf="{{shelf.pk}}" class="btn btn-danger shelf_graphic" data-bs-toggle="modal" data-bs-target="#modal_substance">
+                                        <i class="fa fa-line-chart text-white" aria-hidden="true"></i>
+                                    </a>
+                                    <a title="{% trans 'Substance' %}" data-shelf="{{shelf.pk}}" class="btn btn-success shelf_button" data-bs-toggle="modal" data-bs-target="#modal_substance">
+                                        <i class="fa fa-flask" aria-hidden="true"></i>
+                                    </a>
+                                <div class="collapse multi-collapse" id="shelfobject_{{shelf.pk}}">
+                                    <div class="card">
+                                        <div class="card-body">
+                                        {% for s_object in shelf_objectss %}
+                                            <p class="card-text">{{s_object.object.name}} - {{s_object.quantity}}</p>
+                                            <hr>
+                                        {% empty %}
+                                            <p>{% trans 'Dont have substances' %}</p>
+                                        {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                </div>
+        <br>
+        {% endfor %}
+    </div>
+</div>
+<div class="modal fade" id="modal_substance" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table id="table_substance" class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>{% trans 'Substance' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+            </tr>
+            </thead>
+            <tbody id="tbody_substance"></tbody>
+            <tfoot id="foot"></tfoot>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block js %}
+  <script>
+    $(document).ready(function() {
+      $('#inform').DataTable();
+      });
+     $('.shelf_button').click(e=>{
+        shelf=e.currentTarget.dataset.shelf
+         $.ajax({
+            url: '{% url "laboratory:api_shelfobject" %}'+'?shelf='+shelf,
+            type: 'GET',
+            success: function(data) {
+                let rows=""
+
+                let table = document.querySelector('#tbody_substance');
+                table.innerHTML="";
+                data.forEach(e=>
+                    rows+=`<tr><td>${e.object_name}</td><td>${e.quantity}(${e.unit})</td></tr>`
+                );
+                table.innerHTML=rows;
+                const total = data.reduce((accumulator, currentValue) => accumulator + currentValue.quantity,0);
+                document.querySelector('#foot').innerHTML=`<tr><td>Total</td><td>${total}</td></tr>`;
+            }
+            });
+     })
+  </script>
+{% endblock %}
