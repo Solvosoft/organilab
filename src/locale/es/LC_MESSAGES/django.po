@@ -4041,6 +4041,14 @@ msgstr "Laboratorio que recibe"
 msgid "add"
 msgstr "Agregar"
 
+#: laboratory/templates/laboratory/disposal_substance.html:11
+msgid "List of disposal substance"
+msgstr "Lista de sustancias de desecho"
+
+#: laboratory/templates/laboratory/disposal_substance.html:35
+msgid "Dont have substances"
+msgstr "No hay sustancias"
+
 #: laboratory/templates/pdf/base_organization_pdf.html:51
 #: laboratory/templates/pdf/base_pdf.html:47
 msgid "Date:"
