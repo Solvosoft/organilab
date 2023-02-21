@@ -239,6 +239,14 @@ class Shelf(models.Model):
     def get_total_refuse(self):
         return ShelfObject.objects.filter(shelf=self).aggregate(amount = Sum('quantity', default=0))['amount']
 
+    def get_refuse_porcentage(self):
+        result=0
+        try:
+            result=(self.get_total_refuse()/self.quantity)*100
+        except ZeroDivisionError:
+            result=0
+        return result
+
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
