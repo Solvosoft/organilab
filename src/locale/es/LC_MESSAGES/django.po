@@ -4049,6 +4049,14 @@ msgstr "Listado de sustancias desechadas por Estante"
 msgid "Dont have substances"
 msgstr "No hay sustancias"
 
+#: laboratory/templates/laboratory/profile_detail.html:29
+msgid "Laboratories that works"
+msgstr "Laboratorios que trabaja"
+
+#: laboratory/templates/laboratory/profile_detail.html:39
+msgid "Organizations that works"
+msgstr "Organizaciones que trabaja"
+
 #: laboratory/templates/laboratory/disposal_substance.html:35
 msgid "Limit material of  the shelf"
 msgstr "Cantidad limite de materiales del estante"
