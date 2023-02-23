@@ -246,9 +246,9 @@ class ShelfObjectAPI(APIView):
         except ShelfObject.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request):
+    def get(self, request, org_pk):
         solicitud = self.get_object(request.GET['shelf'])
-        serializer = ShelfObjectSerialize(solicitud, many=True)
+        serializer = ShelfObjectSerialize(solicitud,context={'org_pk':org_pk}, many=True)
         return Response(serializer.data)
 
 class ShelfObjectGraphicAPI(APIView):
