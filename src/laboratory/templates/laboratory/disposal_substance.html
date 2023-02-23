@@ -3,44 +3,56 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'disposal_substance' %}
+    {% define_urlname_action 'profile_detail' %}
+    {% define_urlname_action 'api_shelfobject' %}
+    {% define_urlname_action 'api_shelfobject_graphic' %}
+
 {% endblock %}
 {% block title %}{% trans 'Disposal' %}{% endblock %}
 {% block content %}
 <div class="container">
     <div align="center">
       <h3 class="heading-1" ><span> {% trans 'List of discarded substances by shelf' %}</span></h3>
-            {% for object in object_list %}
+        {% for object in object_list %}
+            {% get_lab_porcentage object.pk as labs %}
             {% get_shelfs object as shelfs %}
                 <div class="card">
-                <div class="card-header">
-                    <h2 class="float-start"><strong>{% trans 'Laboratory' %}:</strong> {{object.name}}</h2><a class="float-end close_div" data-bs-toggle="collapse" href="#lab_{{object.pk}}" role="button"><i class="fa fa-chevron-down" aria-hidden="true"></i></a></div>
-                <div class="card-body collapse show" id="lab_{{object.pk}}">
-                    <div class="row  g-2">
-                        {% for shelf in shelfs %}
-                            <div class="col-sm-4">
-                                <p class="fw-bold">{{shelf.name}} ({{shelf.quantity}} {{shelf.get_measurement_unit_display}})</p>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{shelf.get_total_refuse}}" style="width: {{shelf.get_refuse_porcentage}}%" aria-valuemin="0" aria-valuemax="{{shelf.quantity}}"></div>
-                                    <small class="justify-content-center d-flex position-absolute w-100 text-white fw-bold">{{shelf.get_refuse_porcentage}}%</small>
-                                </div>
-                                {% get_shelf_objects shelf as shelf_objectss %}
-                                    <a data-shelf="{{shelf.pk}}" data-shelfname="{% trans 'Shelf' %} {{shelf.name}}"class="btn btn-danger shelf_graphic" data-bs-toggle="modal" data-bs-target="#modal_graphic">
-                                        <i class="fa fa-line-chart text-white" aria-hidden="true"></i>
-                                    </a>
-                                    <a title="{% trans 'Substance' %}" data-shelfname="{% trans 'Shelf' %}: {{shelf.name}}" data-shelf="{{shelf.pk}}" data-quantity="{{shelf.quantity}}" data-unit="{{shelf.measurement_unit}}" class="btn btn-success shelf_button" data-bs-toggle="modal" data-bs-target="#modal_substance">
-                                        <i class="fa fa-flask" aria-hidden="true"></i>
-                                    </a>
-                            </div>
-                        {% endfor %}
+                    <div class="card-header">
+                        <h2 class="float-start"><strong>{% trans 'Laboratory' %}:</strong> {{object.name}}</h2>
+                        <a class="float-end close_div" data-bs-toggle="collapse" href="#lab_{{object.pk}}" role="button"><i class="fa fa-chevron-down" aria-hidden="true"></i></a></div>
+                    <br>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{labs|floatformat}}" style="width: {{labs}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                        <small class="justify-content-center d-flex position-absolute w-100 fw-bold {% if labs < 60 %} text-dark {% else %} text-white {% endif %}">{{labs|floatformat}}%</small>
                     </div>
-                </div>
+                    <div class="card-body collapse show" id="lab_{{object.pk}}">
+                        <div class="row  g-2">
+                            {% for shelf in shelfs %}
+                                <div class="col-sm-4">
+                                    <p class="fw-bold">{{shelf.name}} ({{shelf.quantity}} {{shelf.get_measurement_unit_display}})</p>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{shelf.get_total_refuse|floatformat}}" style="width: {{shelf.get_refuse_porcentage}}%" aria-valuemin="0" aria-valuemax="{{shelf.quantity}}"></div>
+                                        <small class="justify-content-center d-flex position-absolute w-100 text-white fw-bold">{{shelf.get_refuse_porcentage|floatformat}}%</small>
+                                    </div>
+                                    {% get_shelf_objects shelf as shelf_objectss %}
+                                        <a data-shelf="{{shelf.pk}}" data-shelfname="{% trans 'Shelf' %} {{shelf.name}}"class="btn btn-danger shelf_graphic" data-bs-toggle="modal" data-bs-target="#modal_graphic">
+                                            <i class="fa fa-line-chart text-white" aria-hidden="true"></i>
+                                        </a>
+                                        <a title="{% trans 'Substance' %}" data-shelfname="{% trans 'Shelf' %}: {{shelf.name}}" data-shelf="{{shelf.pk}}" data-quantity="{{shelf.quantity}}" data-unit="{{shelf.measurement_unit}}" class="btn btn-success shelf_button" data-bs-toggle="modal" data-bs-target="#modal_substance">
+                                            <i class="fa fa-flask" aria-hidden="true"></i>
+                                        </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
         <br>
         {% endfor %}
     </div>
 </div>
 <div class="modal fade" id="modal_substance" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="shelf_title"></h5>
@@ -55,6 +67,9 @@
             <tr>
                 <th>{% trans 'Substance' %}</th>
                 <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Creator' %}</th>
+                <th>{% trans 'Profile' %} {% trans 'Creator' %}</th>
             </tr>
             </thead>
             <tbody id="tbody_substance"></tbody>
@@ -85,7 +100,7 @@
 <script>
         const limit = "{% trans 'Limit material of  the shelf' %}";
         const shelfurl= {
-                            list:'{% url "laboratory:api_shelfobject" %}',
+                            list:'{% url "laboratory:api_shelfobject" org_pk=org_pk %}',
                             graphic: '{% url "laboratory:api_shelfobject_graphic" %}'
         }
 </script>
