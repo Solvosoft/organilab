@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'manage_register_user_qrcode' %}
+{% endblock %}
 {% block title %}{% trans 'Delete Register User QR' %}{% endblock %}
 
 {% block content %}
