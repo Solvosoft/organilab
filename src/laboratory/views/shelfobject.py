@@ -29,7 +29,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
@@ -517,7 +517,20 @@ class ListTransferObjects(ListView):
 
 @login_required()
 def get_shelf_list(request):
-    shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
+    lab = int(request.POST['lab'])
+    furniture = Furniture.objects.filter(labroom__laboratory__id=lab).first()
+    shelfs = []
+    data = None
+    if furniture:
+        replacements = [('[', ''), (']', '')]
+        dataconfig =furniture.dataconfig
+        for simbol,config in replacements:
+            if simbol in dataconfig:
+                dataconfig = dataconfig.replace(simbol,"")
+        data = dataconfig.split(',')
+
+        if '' not in data:
+            shelfs = Shelf.objects.filter(pk__in=data)
     transfer_detail = TranferObject.objects.filter(pk=int(request.POST.get('id'))).first()
     aux = []
     for shelf in shelfs:
