@@ -152,6 +152,7 @@ class ShelfObject(models.Model):
     course_name = models.CharField(null=True, blank=True, verbose_name=_('Course name'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'), on_delete=models.CASCADE)
 
     @staticmethod
     def get_units(unit):
@@ -199,7 +200,7 @@ class Shelf(models.Model):
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
-    discard = models.BooleanField(default=False,verbose_name=_('Discard'))
+    discard = models.BooleanField(default=False,verbose_name=_('Disposal'))
     quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
@@ -244,7 +245,7 @@ class Shelf(models.Model):
         try:
             result=(self.get_total_refuse()/self.quantity)*100
         except ZeroDivisionError:
-            result=0
+            result=100
         return result
 
     def get_measurement_unit_display(self):
