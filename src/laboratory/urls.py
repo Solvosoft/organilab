@@ -7,7 +7,7 @@ from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ReviewSubstanceViewSet
-from authentication.users import ChangeUser, password_change
+from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI
@@ -220,11 +220,11 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
-    path('org/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
+    path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
-
+    path('profile/info/<org_pk>/<int:pk>', get_profile, name='profile_detail'),
 
 ]  + edit_objects
