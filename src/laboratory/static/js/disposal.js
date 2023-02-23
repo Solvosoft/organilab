@@ -17,7 +17,7 @@ $('.shelf_button').click(e=>{
                 let table = document.querySelector('#tbody_substance');
                 table.innerHTML="";
                 data.forEach(e=>
-                    rows+=`<tr><td>${e.object_name}</td><td>${e.quantity} ${e.unit}</td></tr>`
+                    rows+=`<tr><td>${e.object_name}</td><td>${e.quantity} ${e.unit}</td><td>${e.last_update}</td><td>${e.creator}</td><td>${e.action}</td></tr>`
                 );
                 table.innerHTML=rows;
                 const total = data.reduce((accumulator, currentValue) => accumulator + currentValue.quantity,0);
@@ -100,7 +100,8 @@ document.getElementById('graphic_download').addEventListener('click', function(e
 
      });
 $('.close_div').click((e)=> {
-    let icon = $(this).find('i');
+    let icon = $(e).find('i');
+    console.log(icon)
       icon.toggleClass('fa-chevron-up fa-chevron-down');
 
      });
