@@ -99,7 +99,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name']
+        exclude =['laboratory_name','course_name','creator']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -144,6 +144,7 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","quantity","measurement_unit","laboratory_name","course_name","marked_as_discard",'limit_quantity']
+        exclude = ['creator']
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
@@ -162,6 +163,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
+        exclude =['creator']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -197,7 +199,9 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
+        self.object.creator= self.request.user
+        self.object.save()
         log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True)
         organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
 
