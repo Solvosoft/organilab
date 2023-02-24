@@ -20,7 +20,7 @@
       <button class="accordion-button"  data-bs-toggle="collapse" data-bs-target="#collapse{{object.pk}}" aria-expanded="true" aria-controls="collapseOne">
 		<div class="row w-100">
 			<div class="col-md-1">
-				<a target='_blank' href="{% url 'laboratory:rooms_list' lab_pk=object.shelf.furniture.labroom.laboratory_set.first.pk org_pk=org_pk %}#labroom={{object.shelf.furniture.labroom.pk}}&furniture={{object.shelf.furniture.pk}}&shelf={{object.shelf.pk}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+				<a target='_blank' href="{% url 'laboratory:rooms_list' lab_pk=object.shelf.furniture.labroom.laboratory_set.first.pk org_pk=org_pk %}#labroom={{object.shelf.furniture.labroom.pk}}&furniture={{object.shelf.furniture.pk}}&shelf={{object.shelf.pk}}&shelfobject={{object.pk}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
 			</div>
 			<div class="col-md-11">
                 <div class="row">

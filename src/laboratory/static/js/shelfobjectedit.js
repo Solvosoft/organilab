@@ -76,6 +76,7 @@ function get_url_parameters(){
 	      if(tmp[0]=='labroom') obj['labroom']=tmp[1];
 	      if(tmp[0]=='furniture') obj['furniture']=tmp[1];
 	      if(tmp[0]=='shelf') obj['shelf']=tmp[1];
+	      if(tmp[0]=='shelfobject') obj['shelfobject']=tmp[1];
 	    }
 	  }
 
@@ -109,6 +110,14 @@ function wait_shelf(){
  }
 }
 
+function wait_shelfobject(){
+ if( $("#shelfobject_view_"+obj.shelfobject).length ==0){
+    setTimeout(wait_shelfobject, 1000);
+ }else{
+   $("#shelfobject_view_"+obj.shelfobject).click();
+ }
+}
+
 function load_self_from_uls(){
 	obj = get_url_parameters();
 	if (obj !== undefined){
@@ -118,7 +127,7 @@ function load_self_from_uls(){
 		$('#room_'+obj.labroom).attr('aria-selected',true);
 		wait_furniture();
 		wait_shelf();
-
+		wait_shelfobject();
 
 	}
 }
