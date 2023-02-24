@@ -7,11 +7,13 @@ Created on 26/12/2016
 
 import json
 
+import cairosvg
 from django import forms
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
@@ -133,10 +135,12 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        url = reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        schema = self.request.scheme + "://"
+        domain = schema + self.request.get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
         url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
               (self.object.shelf.furniture.labroom.pk, self.object.shelf.furniture.pk, self.object.shelf.pk, self.object.pk)
-        self.object.url = url
+        self.object.shelf_object_url = url
         img, file = utils.generate_QR_img_file(url, self.request.user, extension_file=".svg", file_name="qrcode")
         self.object.shelf_object_qr = img
         self.object.save()
@@ -520,3 +524,15 @@ def edit_limit_object(request, *args, **kwargs):
         'amount': shelf_object.limit_quantity
     }
     return JsonResponse(context)
+
+
+@login_required
+def download_shelfobject_qr(request, org_pk, lab_pk, pk):
+    shelfobject = get_object_or_404(ShelfObject, pk=pk)
+    try:
+        file = shelfobject.shelf_object_qr
+        response = HttpResponse(file, content_type='application/png')
+    except IOError:
+        return HttpResponseNotFound()
+    response['Content-Disposition'] = 'attachment; filename=shelfobject.png'
+    return response

@@ -80,6 +80,7 @@ shelf_object_urls = [
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     path('get_shelfobject_limit/<int:pk>/', shelfobject.edit_limit_object, name="get_shelfobject_limit"),
+    path('download_shelfobject_qr/<int:pk>/', shelfobject.download_shelfobject_qr, name="download_shelfobject_qr"),
 ]
 
 lab_reports_urls = [
