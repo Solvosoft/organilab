@@ -151,6 +151,9 @@ class ShelfObject(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
+    shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
+    shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
+
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):

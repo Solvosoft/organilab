@@ -10,6 +10,12 @@
 </div>
 <div class="modal-body">
 
+    {% if object.shelf_object_qr %}
+        <div class="form-group row">
+            <img src="{{object.shelf_object_qr.url}}" alt="" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
+        </div>
+    {% endif %}
+
 <table class="table table-striped">
     <tbody>
 <tr><td>{% trans 'Code' %}</td><td>{{object.object.code|default:"" }} </td></tr>
