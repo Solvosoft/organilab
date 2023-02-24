@@ -10,10 +10,8 @@ import json
 from django import forms
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
@@ -27,12 +25,12 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
+from laboratory import utils
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
 from ..logsustances import log_object_change, log_object_add_change
-from ..utils import organilab_logentry
 
 
 @login_required
@@ -98,7 +96,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = "__all__"
+        exclude = ['shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -135,8 +133,18 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        url = reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
+              (self.object.shelf.furniture.labroom.pk, self.object.shelf.furniture.pk, self.object.shelf.pk, self.object.pk)
+        self.object.url = url
+        img, file = utils.generate_QR_img_file(url, self.request.user, extension_file=".svg", file_name="qrcode")
+        self.object.shelf_object_qr = img
+        self.object.save()
+        file.close()
+
+
         log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True)
-        organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
+        utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
 
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
@@ -171,7 +179,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
         log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', 0,"Edit", create=False)
-        organilab_logentry(self.request.user, self.object, CHANGE,  changed_data=form.changed_data, relobj=self.lab)
+        utils.organilab_logentry(self.request.user, self.object, CHANGE,  changed_data=form.changed_data, relobj=self.lab)
 
         row = form.cleaned_data['row']
         col = form.cleaned_data['col']
@@ -277,7 +285,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
+        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
@@ -307,7 +315,7 @@ def add_object(request, pk):
             object.save()
             log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
                                   request.POST.get('bill'), create=False)
-            organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+            utils.organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
             response = {
                 'status': True,
@@ -342,7 +350,7 @@ def subtract_object(request, pk):
             object.quantity = new
             object.save()
             log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
-            organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+            utils.organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
         else:
             response = {
@@ -385,7 +393,7 @@ def transfer_object(request, pk):
                                      mark_as_discard= mark_as_discard.lower() in ['on', 'true', '1']
                                      )
         changed_data = ['object', 'laboratory_send', 'laboratory_received', 'quantity']
-        organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
+        utils.organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
     else:
         return JsonResponse({'status': False, 'msg': _('The amount sending is less that the amount we have in the Shelf')})
     return JsonResponse({'status': True, 'msg': _('Transfer done successfully')})
@@ -460,7 +468,7 @@ def objects_transfer(request,pk):
                               1, "Transfer", create=False)
 
             changed_data = ['shelf', 'object', 'quantity', 'limit_quantity', 'measurement_unit']
-            organilab_logentry(request.user, new_object, ADDITION,  changed_data=changed_data,
+            utils.organilab_logentry(request.user, new_object, ADDITION,  changed_data=changed_data,
                                relobj=[data.laboratory_received, data.laboratory_send])
 
         old = lab_send_obj.quantity
@@ -483,7 +491,7 @@ def delete_transfer(request,pk):
     try:
         transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
         transfer.delete()
-        organilab_logentry(request.user, transfer, DELETION, relobj=[transfer.laboratory_send, transfer.laboratory_received ])
+        utils.organilab_logentry(request.user, transfer, DELETION, relobj=[transfer.laboratory_send, transfer.laboratory_received ])
     except TranferObject.DoesNotExist:
         return JsonResponse({'data': False})
     return JsonResponse({'data': True})

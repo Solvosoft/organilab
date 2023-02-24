@@ -1,9 +1,16 @@
+import io
+
+import qrcode
+import qrcode.image.svg
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
+from django.utils.timezone import now
+from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry, \
+from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization
 
 
@@ -234,3 +241,19 @@ def get_pk_org_ancestors_decendants(user, org_pk):
         if org.ancestors():
             pks += list(org.ancestors().values_list('pk', flat=True))
     return pks
+
+
+def generate_QR_img_file(url, user, file_name, extension_file):
+    img = qrcode.make(url, image_factory=qrcode.image.svg.SvgImage)
+    file = io.BytesIO()
+    img.save(file)
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    obj = ChunkedUpload.objects.create(
+        file=content,
+        filename=file_name+extension_file,
+        offset=len(file.getvalue()),
+        completed_on=now(),
+        user=user
+    )
+    return obj.get_uploaded_file(), file
