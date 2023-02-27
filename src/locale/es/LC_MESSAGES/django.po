@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 17:56-0600\n"
+"POT-Creation-Date: 2023-02-14 17:09-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: academic/api/serializers.py:62
 #: academic/templates/academic/substance/check_substances.html:66
@@ -456,7 +456,6 @@ msgstr "Crear procedimiento"
 #: academic/templates/academic/step_modal.html:45
 #: academic/templates/academic/substance/sga_components.html:27
 #: academic/templates/academic/substance/step_three.html:49
-#: authentication/templates/auth/change_user.html:57
 #: derb/templates/formBuilder/edit_view.html:16
 #: derb/templates/formBuilder/edit_view.html:40
 #: laboratory/templates/laboratory/complete_inform.html:70
@@ -534,12 +533,6 @@ msgstr "Reservación"
 #: academic/templates/academic/substance/list_substance.html:73
 #: academic/templates/academic/substance/observations.html:95
 #: academic/templates/academic/substance/step_four.html:408
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:150
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:172
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:195
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:226
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:27
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:50
 #: laboratory/templates/laboratory/laboratoryroom_form.html:110
 #: laboratory/templates/laboratory/reservation_modal.html:35
 #: laboratory/templates/laboratory/reservation_modal.html:137
@@ -553,12 +546,6 @@ msgstr "Cerrar"
 
 #: academic/templates/academic/procedure_list.html:82
 #: academic/templates/academic/step_modal.html:21
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:151
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:173
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:196
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:227
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:28
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:51
 #: laboratory/templates/laboratory/reservation_modal.html:138
 #: laboratory/templates/laboratory/shelfobject_form.html:19
 msgid "Save changes"
@@ -610,7 +597,6 @@ msgid "Delete"
 msgstr "Eliminar"
 
 #: academic/templates/academic/procedure_steps.html:49
-#: authentication/templates/auth/user_form.html:12
 #: derb/templates/formBuilder/form_list.html:93
 #: laboratory/templates/informs/informscheduler_create.html:22
 #: laboratory/templates/laboratory/laboratory_create.html:21
@@ -623,7 +609,7 @@ msgid "Crear"
 msgstr "Crear"
 
 #: academic/templates/academic/step_modal.html:8 laboratory/models.py:97
-#: laboratory/templates/laboratory/index.html:154
+#: laboratory/templates/laboratory/index.html:160
 #: presentation/templates/gentelella/app/report_menu.html:14
 #: presentation/templates/gentelella/app/report_menu.html:38
 msgid "Objects"
@@ -705,7 +691,6 @@ msgstr "Continuar"
 #: academic/templates/academic/substance/step_four.html:46
 #: academic/templates/academic/substance/step_four.html:407
 #: academic/templates/academic/substance/warning_words.html:16
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:44
 #: laboratory/templates/laboratory/inform.html:66
 #: laboratory/templates/laboratory/objectview_list.html:36
 #: laboratory/templates/laboratory/provider_list.html:13
@@ -855,6 +840,7 @@ msgstr "Fecha de impresión"
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:53
 #: laboratory/templates/pdf/base_organization_pdf.html:77
 #: laboratory/templates/pdf/base_pdf.html:61
+#: laboratory/templates/pdf/new_base_pdf.html:12
 #: risk_management/templates/risk_management/incidentreport_list.html:69
 #: risk_management/templates/risk_management/riskzone_list.html:84
 msgid "Page"
@@ -866,6 +852,7 @@ msgstr "Página"
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:53
 #: laboratory/templates/pdf/base_organization_pdf.html:77
 #: laboratory/templates/pdf/base_pdf.html:61
+#: laboratory/templates/pdf/new_base_pdf.html:12
 msgid "of"
 msgstr "de"
 
@@ -1758,399 +1745,21 @@ msgstr "Peso"
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
-#: auth_and_perms/forms.py:13
-msgid "Users"
-msgstr "Usuarios"
+#: derb/templates/formBuilder/edit_view.html:10
+msgid "Rename"
+msgstr "Renombrar"
+
+#: derb/templates/formBuilder/edit_view.html:24
+#: derb/templates/formBuilder/preview_form.html:18
+msgid "Return to Form List"
+msgstr "Regresar al listado"
+
+#: derb/templates/formBuilder/edit_view.html:31
+msgid "Update Form Name"
+msgstr "Actualizar nombre del formulario"
 
-#: auth_and_perms/forms.py:22 auth_and_perms/forms.py:27
-#: auth_and_perms/models.py:46
-msgid "Rols"
-msgstr "Roles"
-
-#: auth_and_perms/forms.py:35
-msgid "Organization name"
-msgstr "Nombre de la Organización"
-
-#: auth_and_perms/forms.py:37
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:44
-msgid "Digital signature"
-msgstr "Firma digital"
-
-#: auth_and_perms/forms.py:40
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:26
-msgid "Validation method"
-msgstr "Método de validación"
-
-#: auth_and_perms/forms.py:45 auth_and_perms/forms.py:46
-msgid "new-password"
-msgstr "New password"
-
-#: auth_and_perms/forms.py:57 auth_and_perms/forms.py:77
-msgid "First name"
-msgstr "Nombre"
-
-#: auth_and_perms/forms.py:58 auth_and_perms/forms.py:78
-msgid "Last name"
-msgstr "Apellido:"
-
-#: auth_and_perms/forms.py:59 auth_and_perms/forms.py:79
-msgid "Email address"
-msgstr "Dirección de correo electrónico"
-
-#: auth_and_perms/forms.py:60 auth_and_perms/forms.py:80
-#: auth_and_perms/models.py:15 authentication/forms.py:10
-#: laboratory/models.py:473 laboratory/models.py:507
-#: laboratory/templates/laboratory/provider_list.html:19
-#: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
-#: laboratory/templates/pdf/base_organization_pdf.html:63
-#: laboratory/views/reports.py:42 laboratory/views/reports.py:788
-#: sga/models.py:228 sga/templates/list_company.html:26
-msgid "Phone"
-msgstr "Teléfono"
-
-#: auth_and_perms/forms.py:61 auth_and_perms/forms.py:81
-msgid "Identification"
-msgstr "Identificación"
-
-#: auth_and_perms/forms.py:62 auth_and_perms/forms.py:83
-#: auth_and_perms/models.py:18 authentication/forms.py:12
-#: laboratory/forms.py:171
-#: laboratory/templates/laboratory/organization_reactive_presence.html:49
-#: laboratory/views/reports.py:972
-msgid "Job Position"
-msgstr "Puesto de trabajo"
-
-#: auth_and_perms/forms.py:82
-msgid "It will used to login when you want to login with digital signature"
-msgstr "Este campo será usado cuando se autentique con firma digital"
-
-#: auth_and_perms/models.py:16 authentication/forms.py:11
-#: laboratory/views/reports.py:971
-msgid "ID Card"
-msgstr "Tarjeta de identificación"
-
-#: auth_and_perms/models.py:17 laboratory/models.py:492
-#: risk_management/incidents.py:144 risk_management/models.py:52
-#: risk_management/models.py:70
-#: risk_management/templates/risk_management/incidentreport_pdf.html:21
-msgid "Laboratories"
-msgstr "Laboratorios"
-
-#: auth_and_perms/models.py:37
-msgid "permissions"
-msgstr "permisos"
-
-#: auth_and_perms/models.py:45 auth_and_perms/models.py:55
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:45
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:119
-msgid "Rol"
-msgstr "Rol"
-
-#: auth_and_perms/models.py:50 laboratory/views/reports.py:43
-msgid "Profile"
-msgstr "Perfil"
-
-#: auth_and_perms/models.py:61
-msgid "Profile Rol"
-msgstr "Rol de perfil"
-
-#: auth_and_perms/models.py:62
-msgid "Profile Rols"
-msgstr "Roles de perfil"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:3
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:3
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:3
-#: auth_and_perms/templates/auth_and_perms/create_user_success.html:3
-msgid "Register with new organization"
-msgstr "Registrar con nueva organización"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:7
-msgid "Register you as organization administrator"
-msgstr "Registrarse como administrador de organización"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:20
-msgid "Create user"
-msgstr "Crear usuario"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:29
-msgid ""
-"We need to validate that you are not a robot or spamer, so you need to "
-"configure a Two-Factor Authentication"
-msgstr ""
-"Necesitamos validar que no sos un robot spammer, por eso necesitamos "
-"configurar un método de 2 pasos de autenticación"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:32
-msgid ""
-"You need an OTP generator to login on the platform, you can use a free app "
-"called FreeOTP:"
-msgstr ""
-"Usted necesita un generador de OTP para registrarse en la plataforma, por "
-"favor use una aplicación llamada FreeOTP"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization.html:45
-msgid ""
-"For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
-"Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
-"Organilab"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:7
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:7
-msgid "Configure your profile"
-msgstr "Configure su perfil"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:20
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:23
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:20
-msgid "Validate user"
-msgstr "Validar usuario"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:35
-msgid "How use Digital Signature"
-msgstr "Cómo usar Firma digital"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:39
-msgid ""
-"If you don't have Digital signature, please request on your favorite bank"
-msgstr ""
-"Si usted no tiene firma digital, por favor solicítela en su banco favorito"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:43
-msgid "Configure your machine using this link"
-msgstr "Configure su máquina usando este enlace"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:46
-msgid "Download and install Gaudi"
-msgstr "Descargar e instalar Gaudi"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_digital_signature.html:47
-msgid "Connect you card on computer and wait for connect success popup "
-msgstr ""
-"Conecte su tarjeta a la computadora y espere hasta el emergente de conexión "
-"satisfactoria"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:26
-msgid "Your OTP Seed"
-msgstr "Su semilla OTP"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_organization_totp.html:29
-msgid "This image will not available in the future, please save it"
-msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_success.html:10
-msgid "Profile create successfully"
-msgstr "Elemento guardado exitosamente"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_success.html:14
-msgid ""
-"Your organization was created successfully, please login with your "
-"credentials"
-msgstr ""
-"Su organización fue creada con éxito, por favor autentifiques con sus "
-"credenciales"
-
-#: auth_and_perms/templates/auth_and_perms/create_user_success.html:17
-#: laboratory/templates/laboratory/index.html:171
-#: presentation/templates/gentelella/registration/login.html:3
-#: presentation/templates/gentelella/registration/login.html:22
-#: presentation/templates/gentelella/registration/logout.html:20
-#: presentation/templates/index.html:43
-msgid "Login"
-msgstr "Inicio de sesión"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:23
-msgid "Add organization"
-msgstr "Agregar Organización"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:43
-msgid "Add new rol"
-msgstr "Agregar Nuevo Rol"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:51
-msgid "Add User"
-msgstr "Agregar Usuario"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:52
-#: laboratory/models.py:539
-#: laboratory/templates/laboratory/logentry_list.html:19
-#: laboratory/templates/laboratory/objectlogchange_list.html:32
-#: laboratory/templates/laboratory/reports/logobject_pdf.html:17
-#: laboratory/views/reports.py:744 presentation/models.py:25
-#: reservations_management/models.py:51 reservations_management/models.py:62
-#: reservations_management/templates/reservations_management/reservations_list.html:68
-#: sga/models.py:230 sga/templates/list_company.html:28
-msgid "User"
-msgstr "Usuario"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:54
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:58
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:66
-msgid "Related Users"
-msgstr "Usuario relacionado"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:64
-msgid "Add Laboratory"
-msgstr "Agregar Laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:65
-#: laboratory/forms.py:132 laboratory/models.py:491 laboratory/models.py:538
-#: laboratory/models.py:589 laboratory/templates/laboratory/index.html:99
-#: laboratory/templates/laboratory/index.html:145
-#: laboratory/templates/laboratory/objectlogchange_list.html:33
-#: laboratory/templates/laboratory/organization_reactive_presence.html:46
-#: laboratory/templates/laboratory/reports/logobject_pdf.html:18
-#: laboratory/views/laboratory.py:91 laboratory/views/laboratory_utils.py:8
-#: laboratory/views/reports.py:304 laboratory/views/reports.py:745
-#: presentation/templates/gentelella/app/report_menu.html:11
-#: reservations_management/models.py:70
-#: reservations_management/templates/reservations_management/reservations_list.html:70
-msgid "Laboratory"
-msgstr "Laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:69
-msgid "Related Laboratory"
-msgstr "Agregar Laboratorio"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:81
-msgid "Log List"
-msgstr "Bitácoras"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:125
-msgid "Add New Rol"
-msgstr "Agregar Nuevo Rol"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:126
-msgid "Copy Rols"
-msgstr "Roles"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:132
-msgid "Rol name"
-msgstr "Nombre del producto"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:137
-msgid "Copy permissions from other roles?"
-msgstr "¿Copiar permisos de otros roles?"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:165
-msgid "Create Organization"
-msgstr "Crear Organización"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:187
-msgid "Relate Organization with Permission objects"
-msgstr "Relaciona Organizaciones con objetos de permisos"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:209
-msgid "Change parent of organization"
-msgstr "Cambia padre en de la organización"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:216
-#: laboratory/templates/laboratory/reactive_precursor_objects_list.html:59
-#: laboratory/templates/laboratory/report_object_list.html:64
-#: laboratory/templates/pdf/furniture_pdf.html:28
-#: laboratory/templates/pdf/object_pdf.html:16
-#: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:17
-msgid "Name:"
-msgstr "Nombre:"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:221
-msgid "Organization parent:"
-msgstr "Organización padre:"
-
-#: auth_and_perms/templates/auth_and_perms/list_organizations.html:222
-msgid "Select an organization to be parent of"
-msgstr "Seleccione una organización padre"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:14
-msgid "Manage Rol"
-msgstr "Administrar perfil"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:20
-msgid "How to deal with permission merge"
-msgstr "Como manejar las mezclas de permisos"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:21
-msgid "Append"
-msgstr "Agregar"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:22
-msgid "Sustract"
-msgstr "Eliminar"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:23
-msgid "Only rols selected"
-msgstr "Solo usar roles seleccionados"
-
-#: auth_and_perms/templates/auth_and_perms/organization_permission_table.html:43
-msgid "Manage Users"
-msgstr "Administrar Usuarios"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:14
-#: presentation/templates/gentelella/app/administration_menu.html:12
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:16
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:17
-msgid "My laboratories"
-msgstr "Mis Laboratorios"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:17
-#: laboratory/templates/laboratory/index.html:39
-#: laboratory/templates/laboratory/index.html:136
-#: presentation/templates/gentelella/app/report_menu.html:6
-msgid "Reports"
-msgstr "Reportes"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:21
-msgid "Risk Zones"
-msgstr "Zonas de riesgo"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:25
-#: laboratory/templates/laboratory/inform.html:11
-#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
-msgid "Informs"
-msgstr "Informes"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:29
-msgid "MSDS"
-msgstr "MSDS"
-
-#: auth_and_perms/templates/auth_and_perms/select_organization.html:32
-#: presentation/templates/partials/sga_academic.html:6
-msgid "SGA"
-msgstr "SGA"
-
-#: auth_and_perms/views/organizationstructure.py:185
-#: auth_and_perms/views/organizationstructure.py:219
-#: auth_and_perms/views/organizationstructure.py:241
-#: auth_and_perms/views/organizationstructure.py:312
-msgid "Element saved successfully"
-msgstr "Elemento guardado exitosamente"
-
-#: auth_and_perms/views/organizationstructure.py:187
-msgid "Organization doesn't exists"
-msgstr "Organización no existe"
-
-#: auth_and_perms/views/organizationstructure.py:221
-#: auth_and_perms/views/organizationstructure.py:314
-msgid "Error, form is invalid"
-msgstr "Error el formulario es inválido"
-
-#: auth_and_perms/views/user_org_creation.py:55
-msgid "Organization Management"
-msgstr "Administración de Organización"
-
-#: auth_and_perms/views/user_org_creation.py:92
-#: auth_and_perms/views/user_org_creation.py:122
-msgid ""
-"You have no creation process, maybe it was expired, please try to register "
-"again"
-msgstr ""
-"No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
-"inscribirse"
-
-#: authentication/templates/auth/change_user.html:22
 #: derb/templates/formBuilder/edit_view.html:32
-#: laboratory/templates/informs/informscheduler_edit.html:22
+#: laboratory/templates/informs/informscheduler_edit.html:21
 #: laboratory/templates/laboratory/laboratoryroom_form.html:32
 #: laboratory/templates/laboratory/laboratoryroom_form.html:79
 #: laboratory/templates/laboratory/provider_list.html:31
@@ -2158,28 +1767,6 @@ msgstr ""
 msgid "Update"
 msgstr "Actualizar"
 
-#: authentication/templates/auth/change_user.html:25
-#: authentication/templates/auth/change_user.html:38
-msgid "Change password"
-msgstr "Cambiar contraseña"
-
-#: authentication/templates/auth/change_user.html:46
-msgid "Your password may not closely resemble your other personal information."
-msgstr "Su contraseña no debe ser información personal o derivada de esta"
-
-#: authentication/templates/auth/change_user.html:47
-msgid "Your password must contain at least 8 characters."
-msgstr "Su contraseña debe contener al menos 8 caractéres"
-
-#: authentication/templates/auth/change_user.html:48
-msgid "Your password cannot be a commonly used password."
-msgstr "Su contraseña no debe ser muy común."
-
-#: authentication/templates/auth/change_user.html:49
-msgid "Your password cannot be completely numeric."
-msgstr "Su contraseña no puede contener solo números."
-
-#: authentication/templates/auth/change_user.html:56
 #: derb/templates/formBuilder/edit_view.html:33
 #: derb/templates/formBuilder/form_list.html:94
 #: laboratory/templates/laboratory/complete_inform.html:69
@@ -2195,66 +1782,6 @@ msgstr "Su contraseña no puede contener solo números."
 #: sga/templates/sgalabel/step_two.html:40
 msgid "Cancel"
 msgstr "Cancelar"
-
-#: authentication/templates/auth/user_form.html:8
-msgid "New User"
-msgstr "Nuevo Usuario"
-
-#: authentication/templates/feedback/feedbackentry_form.html:4
-#: authentication/templates/feedback/feedbackentry_form.html:9
-#: presentation/templates/gentelella/app/sidebar.html:52
-msgid "Feedback"
-msgstr "Retroalimentación"
-
-#: authentication/templates/feedback/feedbackentry_form.html:10
-msgid "If you had some problem using Organilab, please let us know about it"
-msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
-
-#: authentication/templates/feedback/feedbackentry_form.html:22
-#: authentication/templates/registration/request_a_demo.html:19
-msgid "Send"
-msgstr "Enviar"
-
-#: authentication/templates/registration/request_a_demo.html:5
-msgid "Request a demostration"
-msgstr "Solicita una demostración"
-
-#: authentication/templates/registration/request_a_demo.html:13
-msgid "Requesting a demonstration"
-msgstr "Solicitar una demostración"
-
-#: authentication/templates/registration/request_a_demo.html:14
-msgid ""
-"Hey, thanks for you interest in Organilab, we work hard to have a great "
-"software."
-msgstr ""
-"Hola, gracias por su interés en Organilab, trabajamos duro para tener un "
-"gran software."
-
-#: authentication/templates/registration/request_demo_done.html:4
-msgid "Thank you"
-msgstr "Gracias"
-
-#: authentication/templates/registration/request_demo_done.html:15
-msgid "Demonstration Requested Successfully"
-msgstr "Demostración solicitada con éxito"
-
-#: authentication/templates/registration/request_demo_done.html:26
-msgid "Home"
-msgstr "Casa"
-
-#: derb/templates/formBuilder/edit_view.html:10
-msgid "Rename"
-msgstr "Renombrar"
-
-#: derb/templates/formBuilder/edit_view.html:24
-#: derb/templates/formBuilder/preview_form.html:18
-msgid "Return to Form List"
-msgstr "Regresar al listado"
-
-#: derb/templates/formBuilder/edit_view.html:31
-msgid "Update Form Name"
-msgstr "Actualizar nombre del formulario"
 
 #: derb/templates/formBuilder/edit_view.html:35
 msgid "The form could not be updated."
@@ -2336,7 +1863,7 @@ msgstr "El formulario fue eliminado."
 msgid "Deleted!"
 msgstr "Eliminado!"
 
-#: laboratory/admin.py:60
+#: laboratory/admin.py:61
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
@@ -2394,6 +1921,21 @@ msgstr "Grupo"
 msgid "Entered date should be greater than current date and time"
 msgstr "Fecha ingresada es mayor a la fecha actual"
 
+#: laboratory/forms.py:132 laboratory/models.py:491 laboratory/models.py:538
+#: laboratory/models.py:589 laboratory/templates/laboratory/index.html:105
+#: laboratory/templates/laboratory/index.html:151
+#: laboratory/templates/laboratory/objectlogchange_list.html:33
+#: laboratory/templates/laboratory/organization_reactive_presence.html:46
+#: laboratory/templates/laboratory/reports/logobject_pdf.html:18
+#: laboratory/views/laboratory.py:96 laboratory/views/laboratory.py:293
+#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:304
+#: laboratory/views/reports.py:745
+#: presentation/templates/gentelella/app/report_menu.html:11
+#: reservations_management/models.py:70
+#: reservations_management/templates/reservations_management/reservations_list.html:70
+msgid "Laboratory"
+msgstr "Laboratorio"
+
 #: laboratory/forms.py:149
 msgid "Bill"
 msgstr "Factura"
@@ -2411,6 +1953,12 @@ msgstr "Apellidos"
 #: laboratory/templates/laboratory/organization_reactive_presence.html:48
 msgid "Id Card"
 msgstr "Tarjeta de identificación"
+
+#: laboratory/forms.py:171
+#: laboratory/templates/laboratory/organization_reactive_presence.html:49
+#: laboratory/views/reports.py:972
+msgid "Job Position"
+msgstr "Puesto de trabajo"
 
 #: laboratory/forms.py:176 laboratory/models.py:143 laboratory/models.py:223
 #: laboratory/templates/laboratory/report_laboratoryroom_list.html:57
@@ -2457,13 +2005,13 @@ msgid "Object feature"
 msgstr "Característica del objeto"
 
 #: laboratory/models.py:49 laboratory/models.py:72
-#: laboratory/templates/laboratory/index.html:113
+#: laboratory/templates/laboratory/index.html:119
 msgid "Object features"
 msgstr "Características del objeto"
 
 #: laboratory/models.py:60
 #: laboratory/templates/laboratory/h_code_report.html:72
-#: laboratory/templates/laboratory/index.html:106
+#: laboratory/templates/laboratory/index.html:112
 #: laboratory/templates/pdf/hcode_pdf.html:10
 #: laboratory/views/laboratory_utils.py:8
 #: presentation/templates/gentelella/app/administration_menu.html:36
@@ -2471,13 +2019,13 @@ msgstr "Características del objeto"
 msgid "Reactive"
 msgstr "Reactivo"
 
-#: laboratory/models.py:61 laboratory/templates/laboratory/index.html:107
+#: laboratory/models.py:61 laboratory/templates/laboratory/index.html:113
 #: presentation/templates/gentelella/app/administration_menu.html:42
 #: presentation/templates/gentelella/app/report_menu.html:46
 msgid "Material"
 msgstr "Materiales"
 
-#: laboratory/models.py:62 laboratory/templates/laboratory/index.html:108
+#: laboratory/models.py:62 laboratory/templates/laboratory/index.html:114
 #: presentation/templates/gentelella/app/administration_menu.html:47
 #: presentation/templates/gentelella/app/report_menu.html:51
 msgid "Equipment"
@@ -2611,6 +2159,15 @@ msgstr "Puede observar la gestión de usuarios de la organización"
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
 
+#: laboratory/models.py:473 laboratory/models.py:507
+#: laboratory/templates/laboratory/provider_list.html:19
+#: laboratory/templates/laboratory/report_organizationlaboratory_list.html:56
+#: laboratory/templates/pdf/base_organization_pdf.html:63
+#: laboratory/views/reports.py:42 laboratory/views/reports.py:788
+#: sga/models.py:228 sga/templates/list_company.html:26
+msgid "Phone"
+msgstr "Teléfono"
+
 #: laboratory/models.py:475
 #: laboratory/templates/laboratory/report_organizationlaboratory_list.html:57
 #: laboratory/templates/pdf/base_organization_pdf.html:60
@@ -2626,6 +2183,12 @@ msgstr "Coordinador"
 msgid "Rooms"
 msgstr "Salas"
 
+#: laboratory/models.py:492 risk_management/incidents.py:144
+#: risk_management/models.py:52 risk_management/models.py:70
+#: risk_management/templates/risk_management/incidentreport_pdf.html:21
+msgid "Laboratories"
+msgstr "Laboratorios"
+
 #: laboratory/models.py:494
 msgid "Can see available reports"
 msgstr "Puede ver los informes disponibles"
@@ -2637,6 +2200,17 @@ msgstr "Puede descargar los informes disponibles"
 #: laboratory/models.py:509
 msgid "legal identity"
 msgstr "Cédula Jurídica"
+
+#: laboratory/models.py:539
+#: laboratory/templates/laboratory/logentry_list.html:19
+#: laboratory/templates/laboratory/objectlogchange_list.html:32
+#: laboratory/templates/laboratory/reports/logobject_pdf.html:17
+#: laboratory/views/reports.py:744 presentation/models.py:25
+#: reservations_management/models.py:51 reservations_management/models.py:62
+#: reservations_management/templates/reservations_management/reservations_list.html:68
+#: sga/models.py:230 sga/templates/list_company.html:28
+msgid "User"
+msgstr "Usuario"
 
 #: laboratory/models.py:543
 msgid "Blocked List Notification"
@@ -2767,6 +2341,22 @@ msgstr "Organizaciones del usuario"
 #: laboratory/models.py:678 laboratory/models.py:694
 msgid "Inform template"
 msgstr "Plantilla de Informe"
+
+#: laboratory/models.py:712
+msgid "Activate user"
+msgstr "Activar usuario"
+
+#: laboratory/models.py:713
+msgid "Url"
+msgstr "Url"
+
+#: laboratory/models.py:714
+msgid "Register user QR"
+msgstr "QR registro de usuario"
+
+#: laboratory/models.py:715
+msgid "Role"
+msgstr "Rol"
 
 #: laboratory/reservation.py:46
 msgid "Product added successful"
@@ -2968,35 +2558,35 @@ msgstr "Fecha de inicio de aplicación"
 msgid "Close Application Date"
 msgstr "Fecha de cierre del informe"
 
-#: laboratory/templates/informs/informscheduler_edit.html:12
+#: laboratory/templates/informs/informscheduler_edit.html:11
 msgid "Edit Period Scheduler"
 msgstr "Editar agendador de periodo"
 
-#: laboratory/templates/informs/informscheduler_edit.html:28
+#: laboratory/templates/informs/informscheduler_edit.html:26
 msgid "Warning"
 msgstr "Advertencia"
 
-#: laboratory/templates/informs/informscheduler_edit.html:36
+#: laboratory/templates/informs/informscheduler_edit.html:33
 msgid "References date"
 msgstr "Fecha de referencia"
 
-#: laboratory/templates/informs/informscheduler_edit.html:38
+#: laboratory/templates/informs/informscheduler_edit.html:35
 msgid "Start date reference"
 msgstr "Fecha de inicio de referencia"
 
-#: laboratory/templates/informs/informscheduler_edit.html:39
+#: laboratory/templates/informs/informscheduler_edit.html:36
 msgid "Close date reference"
 msgstr "Referencia de fecha de cierre"
 
-#: laboratory/templates/informs/informscheduler_edit.html:43
+#: laboratory/templates/informs/informscheduler_edit.html:40
 msgid "Last execution date"
 msgstr "Última fecha de ejecición"
 
-#: laboratory/templates/informs/informscheduler_edit.html:45
+#: laboratory/templates/informs/informscheduler_edit.html:42
 msgid "Last start date"
 msgstr "Última fecha de inicio"
 
-#: laboratory/templates/informs/informscheduler_edit.html:46
+#: laboratory/templates/informs/informscheduler_edit.html:43
 msgid "Last close date"
 msgstr "Última fecha de cierre"
 
@@ -3264,26 +2854,49 @@ msgid "Laboratory view"
 msgstr "Vista de laboratorio"
 
 #: laboratory/templates/laboratory/index.html:33
-#: laboratory/templates/laboratory/index.html:89
+#: laboratory/templates/laboratory/index.html:95
 msgid "Laboratory administration"
 msgstr "Administración del laboratorio"
 
-#: laboratory/templates/laboratory/index.html:119
+#: laboratory/templates/laboratory/index.html:39
+#: laboratory/templates/laboratory/index.html:142
+#: presentation/templates/gentelella/app/report_menu.html:6
+msgid "Reports"
+msgstr "Reportes"
+
+#: laboratory/templates/laboratory/index.html:83
+msgid "Register user"
+msgstr "Registrar usuario"
+
+#: laboratory/templates/laboratory/index.html:125
 msgid "Transfers"
 msgstr "Transferencias"
 
-#: laboratory/templates/laboratory/index.html:125
+#: laboratory/templates/laboratory/index.html:131
 msgid "Providers"
 msgstr "Proveedores"
 
-#: laboratory/templates/laboratory/index.html:150
+#: laboratory/templates/laboratory/index.html:156
 #: presentation/templates/gentelella/app/report_menu.html:31
 msgid "Furnitures"
 msgstr "Muebles"
 
-#: laboratory/templates/laboratory/index.html:167
+#: laboratory/templates/laboratory/index.html:173
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
+
+#: laboratory/templates/laboratory/index.html:177
+#: presentation/templates/gentelella/registration/login.html:3
+#: presentation/templates/gentelella/registration/login.html:22
+#: presentation/templates/gentelella/registration/logout.html:20
+#: presentation/templates/index.html:43
+msgid "Login"
+msgstr "Inicio de sesión"
+
+#: laboratory/templates/laboratory/inform.html:11
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:32
+msgid "Informs"
+msgstr "Informes"
 
 #: laboratory/templates/laboratory/inform.html:16
 #: laboratory/templates/laboratory/inform.html:19
@@ -3694,6 +3307,14 @@ msgstr "Editar Proveedor"
 msgid "Not found? include all laboratories"
 msgstr "¿No existe? Incluya todos los laboratorios"
 
+#: laboratory/templates/laboratory/reactive_precursor_objects_list.html:59
+#: laboratory/templates/laboratory/report_object_list.html:64
+#: laboratory/templates/pdf/furniture_pdf.html:28
+#: laboratory/templates/pdf/object_pdf.html:16
+#: laboratory/templates/pdf/reactive_precursor_objects_pdf.html:17
+msgid "Name:"
+msgstr "Nombre:"
+
 #: laboratory/templates/laboratory/reactive_precursor_objects_list.html:60
 #: laboratory/templates/laboratory/report_furniture_list.html:59
 #: laboratory/templates/laboratory/report_furniture_list.html:70
@@ -4043,11 +3664,13 @@ msgstr "Agregar"
 
 #: laboratory/templates/pdf/base_organization_pdf.html:51
 #: laboratory/templates/pdf/base_pdf.html:47
+#: laboratory/templates/pdf/new_base_pdf.html:20
 msgid "Date:"
 msgstr "Fecha:"
 
 #: laboratory/templates/pdf/base_organization_pdf.html:74
 #: laboratory/templates/pdf/base_pdf.html:58
+#: laboratory/templates/pdf/new_base_pdf.html:16
 msgid "User:"
 msgstr "Usuario:"
 
@@ -4116,11 +3739,11 @@ msgstr "Nuevo tipo mueble"
 msgid "New Container type"
 msgstr "Nuevo estante contenedor"
 
-#: laboratory/views/laboratory.py:183
+#: laboratory/views/laboratory.py:188
 msgid "Laboratory was created successfully"
 msgstr "Substraído exitosamente"
 
-#: laboratory/views/laboratory.py:202
+#: laboratory/views/laboratory.py:207
 msgid ""
 "Sorry, there is not available laboratory, please contact the administrator "
 "and request a laboratory enrollment"
@@ -4128,13 +3751,30 @@ msgstr ""
 "Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
 "administrador y solicite que lo asigne a algún laboratorio"
 
+#: laboratory/views/laboratory.py:292
+msgid "Register User"
+msgstr "Registrar Usuario"
+
+#: laboratory/views/laboratory.py:294
+msgid "Use following QR code to register user in laboratory"
+msgstr "Use el siguiente código QR para registrar un usuario en el laboratorio"
+
+#: laboratory/views/laboratory.py:307
+msgid "Error, QR code is not defined."
+msgstr ""
+
 #: laboratory/views/laboratory_utils.py:8
+#, fuzzy
 msgid "H code"
 msgstr "Códigos H"
 
 #: laboratory/views/organizations.py:32
 msgid "Filter Organization"
 msgstr "Filtrar Organización"
+
+#: laboratory/views/reports.py:43
+msgid "Profile"
+msgstr "Perfil"
 
 #: laboratory/views/reports.py:139 laboratory/views/reports.py:478
 msgid "Units"
@@ -4262,6 +3902,10 @@ msgstr "Nombre"
 #: laboratory/views/reports.py:968
 msgid "CAS"
 msgstr "CAS"
+
+#: laboratory/views/reports.py:971
+msgid "ID Card"
+msgstr "Tarjeta de identificación"
 
 #: laboratory/views/shelfobject.py:95
 msgid "Reactive/Material/Equipment"
@@ -4412,6 +4056,12 @@ msgstr "Donaciones"
 msgid "Administration"
 msgstr "Administración"
 
+#: presentation/templates/gentelella/app/administration_menu.html:12
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:16
+#: presentation/templates/gentelella/app/top_navigation_user_authenticated.html:17
+msgid "My laboratories"
+msgstr "Mis Laboratorios"
+
 #: presentation/templates/gentelella/app/administration_menu.html:18
 msgid "View laboratory"
 msgstr "Ver laboratorio"
@@ -4444,6 +4094,10 @@ msgstr "Entradas de retroalimentación"
 #: presentation/templates/gentelella/app/sidebar.html:39
 msgid "Blog"
 msgstr "Blog"
+
+#: presentation/templates/gentelella/app/sidebar.html:52
+msgid "Feedback"
+msgstr "Retroalimentación"
 
 #: presentation/templates/gentelella/app/top_navigation.html:23
 msgid "Tutorials"
@@ -4721,6 +4375,10 @@ msgstr "Vista de reporte"
 #: presentation/templates/partials/riskmanagement_menu.html:18
 msgid "H code Reports"
 msgstr "Reporte códigos H"
+
+#: presentation/templates/partials/sga_academic.html:6
+msgid "SGA"
+msgstr "SGA"
 
 #: presentation/templates/partials/sga_academic.html:18
 msgid "My Substances"
@@ -5608,6 +5266,257 @@ msgstr "Crear Compañía"
 msgid "Edit Company"
 msgstr "Editar Compañía"
 
+#~ msgid "Users"
+#~ msgstr "Usuarios"
+
+#~ msgid "Rols"
+#~ msgstr "Roles"
+
+#~ msgid "Organization name"
+#~ msgstr "Nombre de la Organización"
+
+#~ msgid "Digital signature"
+#~ msgstr "Firma digital"
+
+#~ msgid "Validation method"
+#~ msgstr "Método de validación"
+
+#~ msgid "new-password"
+#~ msgstr "New password"
+
+#~ msgid "First name"
+#~ msgstr "Nombre"
+
+#~ msgid "Last name"
+#~ msgstr "Apellido:"
+
+#~ msgid "Email address"
+#~ msgstr "Dirección de correo electrónico"
+
+#~ msgid "Identification"
+#~ msgstr "Identificación"
+
+#~ msgid "It will used to login when you want to login with digital signature"
+#~ msgstr "Este campo será usado cuando se autentique con firma digital"
+
+#~ msgid "permissions"
+#~ msgstr "permisos"
+
+#~ msgid "Rol"
+#~ msgstr "Rol"
+
+#~ msgid "Profile Rol"
+#~ msgstr "Rol de perfil"
+
+#~ msgid "Profile Rols"
+#~ msgstr "Roles de perfil"
+
+#~ msgid "Register with new organization"
+#~ msgstr "Registrar con nueva organización"
+
+#~ msgid "Register you as organization administrator"
+#~ msgstr "Registrarse como administrador de organización"
+
+#~ msgid "Create user"
+#~ msgstr "Crear usuario"
+
+#~ msgid ""
+#~ "We need to validate that you are not a robot or spamer, so you need to "
+#~ "configure a Two-Factor Authentication"
+#~ msgstr ""
+#~ "Necesitamos validar que no sos un robot spammer, por eso necesitamos "
+#~ "configurar un método de 2 pasos de autenticación"
+
+#~ msgid ""
+#~ "You need an OTP generator to login on the platform, you can use a free "
+#~ "app called FreeOTP:"
+#~ msgstr ""
+#~ "Usted necesita un generador de OTP para registrarse en la plataforma, por "
+#~ "favor use una aplicación llamada FreeOTP"
+
+#~ msgid ""
+#~ "For Costa Rica citicen, use your digital signature to login on organilab"
+#~ msgstr ""
+#~ "Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
+#~ "Organilab"
+
+#~ msgid "Configure your profile"
+#~ msgstr "Configure su perfil"
+
+#~ msgid "How use Digital Signature"
+#~ msgstr "Cómo usar Firma digital"
+
+#~ msgid ""
+#~ "If you don't have Digital signature, please request on your favorite bank"
+#~ msgstr ""
+#~ "Si usted no tiene firma digital, por favor solicítela en su banco favorito"
+
+#~ msgid "Configure your machine using this link"
+#~ msgstr "Configure su máquina usando este enlace"
+
+#~ msgid "Download and install Gaudi"
+#~ msgstr "Descargar e instalar Gaudi"
+
+#~ msgid "Connect you card on computer and wait for connect success popup "
+#~ msgstr ""
+#~ "Conecte su tarjeta a la computadora y espere hasta el emergente de "
+#~ "conexión satisfactoria"
+
+#~ msgid "Your OTP Seed"
+#~ msgstr "Su semilla OTP"
+
+#~ msgid "This image will not available in the future, please save it"
+#~ msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
+
+#~ msgid "Profile create successfully"
+#~ msgstr "Elemento guardado exitosamente"
+
+#~ msgid ""
+#~ "Your organization was created successfully, please login with your "
+#~ "credentials"
+#~ msgstr ""
+#~ "Su organización fue creada con éxito, por favor autentifiques con sus "
+#~ "credenciales"
+
+#~ msgid "Add organization"
+#~ msgstr "Agregar Organización"
+
+#~ msgid "Add new rol"
+#~ msgstr "Agregar Nuevo Rol"
+
+#~ msgid "Add User"
+#~ msgstr "Agregar Usuario"
+
+#~ msgid "Related Users"
+#~ msgstr "Usuario relacionado"
+
+#~ msgid "Add Laboratory"
+#~ msgstr "Agregar Laboratorio"
+
+#~ msgid "Related Laboratory"
+#~ msgstr "Agregar Laboratorio"
+
+#~ msgid "Log List"
+#~ msgstr "Bitácoras"
+
+#~ msgid "Add New Rol"
+#~ msgstr "Agregar Nuevo Rol"
+
+#~ msgid "Copy Rols"
+#~ msgstr "Roles"
+
+#~ msgid "Rol name"
+#~ msgstr "Nombre del producto"
+
+#~ msgid "Copy permissions from other roles?"
+#~ msgstr "¿Copiar permisos de otros roles?"
+
+#~ msgid "Create Organization"
+#~ msgstr "Crear Organización"
+
+#~ msgid "Relate Organization with Permission objects"
+#~ msgstr "Relaciona Organizaciones con objetos de permisos"
+
+#~ msgid "Change parent of organization"
+#~ msgstr "Cambia padre en de la organización"
+
+#~ msgid "Organization parent:"
+#~ msgstr "Organización padre:"
+
+#~ msgid "Select an organization to be parent of"
+#~ msgstr "Seleccione una organización padre"
+
+#~ msgid "Manage Rol"
+#~ msgstr "Administrar perfil"
+
+#~ msgid "How to deal with permission merge"
+#~ msgstr "Como manejar las mezclas de permisos"
+
+#~ msgid "Append"
+#~ msgstr "Agregar"
+
+#~ msgid "Sustract"
+#~ msgstr "Eliminar"
+
+#~ msgid "Only rols selected"
+#~ msgstr "Solo usar roles seleccionados"
+
+#~ msgid "Manage Users"
+#~ msgstr "Administrar Usuarios"
+
+#~ msgid "Risk Zones"
+#~ msgstr "Zonas de riesgo"
+
+#~ msgid "MSDS"
+#~ msgstr "MSDS"
+
+#~ msgid "Element saved successfully"
+#~ msgstr "Elemento guardado exitosamente"
+
+#~ msgid "Organization doesn't exists"
+#~ msgstr "Organización no existe"
+
+#~ msgid "Error, form is invalid"
+#~ msgstr "Error el formulario es inválido"
+
+#~ msgid "Organization Management"
+#~ msgstr "Administración de Organización"
+
+#~ msgid ""
+#~ "You have no creation process, maybe it was expired, please try to "
+#~ "register again"
+#~ msgstr ""
+#~ "No tiene un proceso de creación activo, o está expirado, por favor vuelva "
+#~ "a inscribirse"
+
+#~ msgid "Change password"
+#~ msgstr "Cambiar contraseña"
+
+#~ msgid ""
+#~ "Your password may not closely resemble your other personal information."
+#~ msgstr "Su contraseña no debe ser información personal o derivada de esta"
+
+#~ msgid "Your password must contain at least 8 characters."
+#~ msgstr "Su contraseña debe contener al menos 8 caractéres"
+
+#~ msgid "Your password cannot be a commonly used password."
+#~ msgstr "Su contraseña no debe ser muy común."
+
+#~ msgid "Your password cannot be completely numeric."
+#~ msgstr "Su contraseña no puede contener solo números."
+
+#~ msgid "New User"
+#~ msgstr "Nuevo Usuario"
+
+#~ msgid "If you had some problem using Organilab, please let us know about it"
+#~ msgstr ""
+#~ "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+
+#~ msgid "Send"
+#~ msgstr "Enviar"
+
+#~ msgid "Request a demostration"
+#~ msgstr "Solicita una demostración"
+
+#~ msgid "Requesting a demonstration"
+#~ msgstr "Solicitar una demostración"
+
+#~ msgid ""
+#~ "Hey, thanks for you interest in Organilab, we work hard to have a great "
+#~ "software."
+#~ msgstr ""
+#~ "Hola, gracias por su interés en Organilab, trabajamos duro para tener un "
+#~ "gran software."
+
+#~ msgid "Thank you"
+#~ msgstr "Gracias"
+
+#~ msgid "Demonstration Requested Successfully"
+#~ msgstr "Demostración solicitada con éxito"
+
+#~ msgid "Home"
+#~ msgstr "Casa"
+
 #~ msgid "Business Email Address"
 #~ msgstr "Correo de negocio"
 
@@ -5740,9 +5649,6 @@ msgstr "Editar Compañía"
 
 #~ msgid "Manage Profile"
 #~ msgstr "Administración de producto"
-
-#~ msgid "Roles"
-#~ msgstr "Roles"
 
 #~ msgid "Profile Management"
 #~ msgstr "Gestión de perfiles"

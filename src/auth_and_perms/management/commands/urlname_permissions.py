@@ -2712,4 +2712,26 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_tranferobject'
         },
     ],
+    'manage_register_user_qrcode': [
+        {
+            'name': 'Add Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.add_registeruserqr'
+        },
+        {
+            'name': 'Edit Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.change_registeruserqr'
+        },
+        {
+            'name': 'View Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.view_registeruserqr'
+        },
+        {
+            'name': 'Delete Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.delete_registeruserqr'
+        },
+    ],
 }
