@@ -78,6 +78,12 @@
                 </li>
               {% endif %}
 
+              <li class="list-group-item">
+                  <a href="{% url 'laboratory:list_register_user_qr' org_pk=org_pk lab_pk=laboratory %}">
+                    <strong>{% trans 'Register user' %}</strong>
+                  </a>
+                </li>
+
             </ul>
           </div>
         </div>

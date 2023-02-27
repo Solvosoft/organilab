@@ -1,20 +1,22 @@
 from django import forms
-from django.contrib.auth.models import Group
+from django.contrib.auth.forms import UsernameField
+from django.contrib.auth.models import Group, User
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.forms import ModelForm
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from djgentelella.forms.forms import CustomForm, GTForm
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, Rol
 from derb.models import CustomForm as DerbCustomForm
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler
+from laboratory import utils
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
-from .utils import get_pk_org_ancestors_decendants
 
 
 class ObjectSearchForm(GTForm, forms.Form):
@@ -34,7 +36,7 @@ class ObjectSearchForm(GTForm, forms.Form):
 
         super(ObjectSearchForm, self).__init__(*args, **kwargs)
         if org:
-            org=get_pk_org_ancestors_decendants(user, org)
+            org=utils.get_pk_org_ancestors_decendants(user, org)
             self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__organizationusermanagement__users=user).distinct()
 
 class UserAccessForm(forms.Form):
@@ -138,7 +140,7 @@ class TransferObjectForm(GTForm):
         org = kwargs.pop('org')
         super(TransferObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users.profile.pk).first()
-        orgs= get_pk_org_ancestors_decendants(users,org)
+        orgs= utils.get_pk_org_ancestors_decendants(users,org)
 
         self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
 
@@ -340,3 +342,95 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
             'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
             'active': genwidgets.YesNoInput
         }
+
+
+class RegisterUserQRForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        lab_pk = kwargs.pop('lab_pk', None)
+        new_obj = kwargs.pop('new_obj', False)
+        super().__init__(*args, **kwargs)
+
+        self.fields['url'].required = False
+        self.fields['organization_register'].label = _("Organization")
+        org_queryset = OrganizationStructure.objects.none()
+        role_queryset = OrganizationStructure.objects.none()
+
+        if org_pk and lab_pk:
+            organization = OrganizationStructure.objects.get(pk=org_pk)
+            if not new_obj:
+                org_queryset = utils.get_organizations_register_user(organization, lab_pk,
+                                                                     self.instance.organization_register.pk)
+            else:
+                org_queryset = utils.get_organizations_register_user(organization, lab_pk)
+
+            role_pk_list = utils.get_rols_from_organization(organization.pk, org=organization, rolfilters={'rol__isnull': False})
+            role_queryset = Rol.objects.filter(pk__in=set(role_pk_list))
+
+        self.fields['role'].queryset = role_queryset
+        self.fields['organization_register'].queryset = org_queryset
+
+    class Meta:
+        model = RegisterUserQR
+        fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id',
+                  'content_type', 'created_by']
+        widgets = {
+            'activate_user': genwidgets.YesNoInput,
+            'role': genwidgets.Select,
+            'organization_register': genwidgets.Select,
+            'organization_creator': genwidgets.HiddenInput,
+            'object_id': genwidgets.HiddenInput,
+            'content_type': genwidgets.HiddenInput,
+            'url': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput
+        }
+
+
+class RegisterForm(forms.ModelForm, GTForm):
+    id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
+    phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
+
+    field_order = ['first_name', 'last_name', 'email', 'phone_number', 'id_card']
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'id_card', 'phone_number']
+        widgets = {
+            'first_name': genwidgets.TextInput,
+            'last_name': genwidgets.TextInput,
+            'email': genwidgets.EmailMaskInput
+        }
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if email:
+            user_obj = User.objects.filter(email=email)
+
+            if user_obj.exists():
+                raise ValidationError(_("Email address is already exists."))
+            else:
+                return email
+
+class LoginForm(GTForm, forms.Form):
+    username = UsernameField(widget=genwidgets.TextInput(attrs={"autofocus": True}), label=_("Username"),)
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=genwidgets.PasswordInput(attrs={"autocomplete": "current-password"}),
+    )
+
+    error_messages = {
+        "invalid_login": _(
+            "Please enter a correct %(username)s and password. Note that both "
+            "fields may be case-sensitive."
+        ),
+        "inactive": _("This account is inactive."),
+    }

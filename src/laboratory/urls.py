@@ -3,29 +3,29 @@ Created on 1/8/2016
 '''
 
 from django.conf.urls import include
-from django.urls import path, re_path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ReviewSubstanceViewSet
-from authentication.users import ChangeUser, password_change
+from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI
 from laboratory.functions import return_laboratory_of_shelf_id
+from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
-from laboratory.search import SearchObject
+from laboratory.search import SearchObject, SearchDisposalObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views import inform_period
+from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
-from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
@@ -80,6 +80,7 @@ shelf_object_urls = [
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     path('get_shelfobject_limit/<int:pk>/', shelfobject.edit_limit_object, name="get_shelfobject_limit"),
+    path('download_shelfobject_qr/<int:pk>/', shelfobject.download_shelfobject_qr, name="download_shelfobject_qr"),
 ]
 
 lab_reports_urls = [
@@ -192,6 +193,18 @@ informs_period_urls=[
 
 ]
 
+user_register_qr = [
+    path('list/', laboratory.RegisterUserQRList.as_view(), name="list_register_user_qr"),
+    path('manage/<int:pk>/', laboratory.manage_register_qr, name="manage_register_user_qr"),
+    path('delete/<int:pk>/', laboratory.RegisterUserQRDeleteView.as_view(), name="delete_register_user_qr"),
+    path('download/<int:pk>/', laboratory.get_pdf_register_user_qr, name="download_register_user_qr"),
+    path('logentry/<int:pk>/', laboratory.get_logentry_from_registeruserqr, name='logentry_register_user_qr'),
+    path('login/<int:pk>/', laboratory.login_register_user_qr, name='login_register_user_qr'),
+    path('create_user_qr/<int:pk>/', laboratory.create_user_qr, name='create_user_qr'),
+    path('redirect_user_to_labindex/<int:pk>/', laboratory.redirect_user_to_labindex, name='redirect_user_to_labindex'),
+]
+
+
 """APIS"""
 router = DefaultRouter()
 
@@ -200,7 +213,6 @@ router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
-
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
@@ -208,6 +220,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
     path('lab/<int:org_pk>/<int:lab_pk>/search/', SearchObject.as_view(), name="search"),
+    path('lab/<int:org_pk>/search/disposal/', SearchDisposalObject.as_view(), name="disposal_substance"),
     path('lab/<int:org_pk>/<int:lab_pk>/rooms/', include(lab_rooms_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/furniture/', include(lab_furniture_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/objects/', include(objviews.get_urls())),
@@ -220,9 +233,13 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
+    path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
+    path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
+    path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
+    path('profile/info/<org_pk>/<int:pk>', get_profile, name='profile_detail'),
 
 
 ]  + edit_objects

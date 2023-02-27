@@ -1,4 +1,5 @@
 from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -14,11 +15,12 @@ from django.db.models import Value, DateField
 
 from laboratory.api import serializers
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory, InformsPeriod
-from laboratory.utils import get_laboratories_from_organization
+    LabOrgLogEntry, Laboratory, InformsPeriod, ShelfObject
+from laboratory.utils import get_laboratories_from_organization, get_logentries_org_management
+
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -103,6 +105,7 @@ class CommentAPI(viewsets.ModelViewSet):
 
             template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform__pk=int(request.GET.get('inform'))).order_by('pk'), 'user':request.user},request)
             return Response({'data':template})
+
     def update(self, request, pk=None):
         comment=None
         if pk:
@@ -175,26 +178,30 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     ordering = ('pk', )
 
     def get_queryset(self):
+        filters = {}
         org = self.request.GET.get('org', None)
-        if not org:
-            return self.queryset.none()
-        else:
-            org = OrganizationStructure.objects.filter(pk=org).first()
-            if not org:
-                return self.queryset.none()
-        laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk' , flat=True))
+        object_id = self.request.GET.get('object_id', None)
+        app_label = self.request.GET.get('app_label', None)
+        model_name = self.request.GET.get('model_name', None)
+        queryset = self.queryset.none()
 
-        log_entries = LabOrgLogEntry.objects.filter(
-            Q(content_type__app_label='laboratory',
-              content_type__model='laboratory',
-              object_id__in=laboratories
-            ) | Q(
-              content_type__app_label='laboratory',
-              content_type__model='organizationstructure',
-              object_id=org.pk
-            )
-        ).values_list('log_entry', flat=True)
-        return LogEntry.objects.filter(pk__in=log_entries)
+        if not object_id:
+            log_entries = get_logentries_org_management(self, org)
+            filters.update({'pk__in': log_entries})
+        elif object_id:
+            contenttype = ContentType.objects.filter(
+                app_label=app_label,
+                model=model_name
+            ).first()
+            filters.update({
+                'object_id': object_id,
+                'content_type': contenttype,
+            })
+
+        if filters:
+            queryset = self.queryset.filter(**filters).distinct()
+
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -237,3 +244,29 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
+
+
+class ShelfObjectAPI(APIView):
+    def get_object(self, pk):
+        try:
+            return ShelfObject.objects.filter(shelf__pk=pk)
+        except ShelfObject.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, org_pk):
+        solicitud = self.get_object(request.GET['shelf'])
+        serializer = ShelfObjectSerialize(solicitud,context={'org_pk':org_pk}, many=True)
+        return Response(serializer.data)
+
+class ShelfObjectGraphicAPI(APIView):
+    def get(self, request):
+        queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
+        labels = []
+        data = []
+        if queryset:
+            self.show_chart = True
+            for obj in queryset:
+               data.append(obj.quantity)
+               labels.append(obj.object.name)
+
+        return Response({'labels':labels,'data':data})

@@ -1,7 +1,9 @@
+const float_regex= /^[+-]?\d+(\.\d+)?$/;
+
 function processResponseshelfobjectCreate(dat) {
-	$('#shelfobjectCreate').html(dat);
-	// clean the form
-	$("#object_create").modal('show');
+    $('#shelfobjectCreate').html(dat);
+    // clean the form
+    $("#object_create").modal('show');
 }
 
 function processResponseshelfobjectDelete(dat) {
@@ -29,6 +31,7 @@ function function_name_furniture(argument) {
 			$('#furnitures').html(dat);
 
 		}
+
 	});
 }
 
@@ -76,6 +79,7 @@ function get_url_parameters(){
 	      if(tmp[0]=='labroom') obj['labroom']=tmp[1];
 	      if(tmp[0]=='furniture') obj['furniture']=tmp[1];
 	      if(tmp[0]=='shelf') obj['shelf']=tmp[1];
+	      if(tmp[0]=='shelfobject') obj['shelfobject']=tmp[1];
 	    }
 	  }
 
@@ -109,6 +113,14 @@ function wait_shelf(){
  }
 }
 
+function wait_shelfobject(){
+ if( $("#shelfobject_view_"+obj.shelfobject).length ==0){
+    setTimeout(wait_shelfobject, 1000);
+ }else{
+   $("#shelfobject_view_"+obj.shelfobject).click();
+ }
+}
+
 function load_self_from_uls(){
 	obj = get_url_parameters();
 	if (obj !== undefined){
@@ -118,7 +130,7 @@ function load_self_from_uls(){
 		$('#room_'+obj.labroom).attr('aria-selected',true);
 		wait_furniture();
 		wait_shelf();
-
+		wait_shelfobject();
 
 	}
 }
@@ -140,7 +152,6 @@ function edit_object_limit(element){
     });
  }
 function send_limit_message(element,pk,amount){
-   const float_regex= /^[+-]?\d+(\.\d+)?$/;
 
     Swal.fire({
                 title: msgs['limit'],
@@ -196,3 +207,11 @@ function displayShelfobjectFunction(data) {
 	$("#shelfdetailmodalbody").html(data);
 	activemodal = $("#shelfdetailmodal").modal('show');
 }
+
+
+$(document).on('keyup','#id_quantity',function(e){
+    if(!float_regex.test(this.value) && e.key!='.'){
+        this.value = this.value.slice(0,-1)
+    }
+
+});
