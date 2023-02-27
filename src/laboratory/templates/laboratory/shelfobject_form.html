@@ -2,6 +2,7 @@
  {% load static %}
 
  {% if perms.laboratory.add_shelfobject or perms.laboratory.change_shelfobject %}
+ 	<div id="msg" class="text-center text-danger font-weight-bold" style="font-size: 16px; "></div>
 	 <form data-ajax-submit="" onsubmit="return false;" method="post"
 			{% if insearch %}
 				action="{% url 'laboratory:shelfobject_searchupdate' lab_pk=laboratory pk=form.instance.pk org_pk=org_pk %}"
