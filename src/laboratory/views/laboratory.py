@@ -453,9 +453,9 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
         model='laboratory'
     ).first()
 
-    profile = user.profile
+    has_profile = utils.check_has_profile(user)
 
-    if not profile and id_card:
+    if not has_profile and id_card:
         profile = Profile.objects.create(
             user=user,
             id_card=id_card,
@@ -464,6 +464,8 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
         organilab_logentry(user, profile, ADDITION, 'profile',
                            changed_data=['user', 'phone_number', 'id_card', 'job_position'],
                            relobj=org_pk)
+    else:
+        profile = user.profile
 
     profile.laboratories.add(lab)
 
@@ -496,12 +498,11 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
         organilab_logentry(user, user_org, ADDITION, 'user organization',
                            changed_data=['organization', 'user'], relobj=org_pk)
 
-    return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
-
 
 def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
-    return add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, id_card=None)
+    add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, id_card=None)
+    return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
 
 
 def create_user_qr(request, org_pk, lab_pk, pk):
@@ -529,6 +530,7 @@ def create_user_qr(request, org_pk, lab_pk, pk):
 
                 id_card = register_form.cleaned_data['id_card']
                 add_user_to_rel_obj(request, user, org_pk, lab_pk, user_qr.role, id_card)
+                return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
             else:
                 messages.error(request, _("Error trying to change your password: Passwords should match"))
     else:
