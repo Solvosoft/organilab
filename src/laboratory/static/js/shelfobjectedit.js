@@ -16,10 +16,6 @@ function processResponseshelfobjectCreate(dat) {
                 }
         }
     }
-                console.log("-----------")
-
-                    console.log(options.value)
-
 
     $("#object_create").modal('show');
 }
