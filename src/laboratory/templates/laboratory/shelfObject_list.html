@@ -29,7 +29,7 @@
         <a class="float-end"
            data-bs-toggle="modal"
            data-bs-target="#modal_reservation"
-           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}')">
+           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">
             <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
         </a>
         {% endif %}

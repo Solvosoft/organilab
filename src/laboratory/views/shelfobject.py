@@ -30,9 +30,12 @@ from djgentelella.widgets.selects import AutocompleteSelect
 from laboratory import utils
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject
+
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
 from ..logsustances import log_object_change, log_object_add_change
+from ..utils import organilab_logentry
+from django.core.exceptions import ValidationError
 
 
 @login_required
@@ -98,13 +101,61 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        exclude = ['shelf_object_url', 'shelf_object_qr']
+        fields = "__all__"
+        exclude =['laboratory_name','course_name','creator', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select,
 
+        }
+class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(ShelfObjectRefuseForm, self).__init__(*args, **kwargs)
+
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#object_create"
+            }),
+            label=_("Reactive/Material/Equipment"),
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['marked_as_discard'].initial=True
+        self.fields['limit_quantity'].initial=0
+
+    def clean(self):
+        cleaned_data = super().clean()
+        quantity = cleaned_data.get("quantity")
+        shelf = cleaned_data.get("shelf")
+        measurement_unit = cleaned_data.get("measurement_unit")
+        if shelf.measurement_unit == measurement_unit:
+            total = shelf.get_total_refuse()
+            new_total =total+quantity
+            if shelf.quantity>=new_total:
+                return cleaned_data
+            else:
+                raise ValidationError(_("The quantity is much larger than the shelf limit"))
+        else:
+            raise ValidationError(_("The measurent unit is different of there shelf has"))
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","quantity","measurement_unit","laboratory_name","course_name","marked_as_discard",'limit_quantity']
+        exclude = ['creator']
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'limit_quantity': forms.HiddenInput,
+            'quantity': core.TextInput,
+            'measurement_unit': core.Select,
+            'laboratory_name': core.TextInput,
+            'course_name': core.TextInput,
+            'marked_as_discard': core.HiddenInput
         }
 
 
@@ -115,11 +166,28 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
+        exclude =['creator']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select
+        }
+
+class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
+    col = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    row = forms.IntegerField(widget=forms.HiddenInput, required=False)
+
+    class Meta:
+        model = ShelfObject
+        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit','laboratory_name','course_name']
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'quantity': core.TextInput,
+            'limit_quantity': core.TextInput,
+            'measurement_unit': core.Select,
+            'laboratory_name': core.TextInput,
+            'course_name': core.TextInput
         }
 
 
@@ -134,7 +202,9 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
+        self.object.creator= self.request.user
+        self.object.save()
         schema = self.request.scheme + "://"
         domain = schema + self.request.get_host()
         url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
@@ -145,7 +215,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         self.object.shelf_object_qr = img
         self.object.save()
         file.close()
-
 
         log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True)
         utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
@@ -162,12 +231,30 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
-        kwargs['initial']['shelf'] = self.request.GET.get('shelf')
+        shelf=self.request.GET.get('shelf')
+        kwargs['initial']['shelf'] = shelf
         kwargs['initial']['row'] = self.request.GET.get('row')
         kwargs['initial']['col'] = self.request.GET.get('col')
         kwargs['org_pk'] = self.org
         return kwargs
 
+    def get_form_class(self):
+        shelf=None
+        if self.request.method == 'GET' and 'shelf' in self.request.GET:
+            shelf = get_object_or_404(Shelf,pk=int(self.request.GET['shelf']))
+        else:
+            shelf = get_object_or_404(Shelf,pk=int(self.request.POST['shelf']))
+
+        if shelf.discard:
+            return ShelfObjectRefuseForm
+        return self.form_class
+    def form_invalid(self, form):
+        msg = form.errors["__all__"][0]
+        return {
+            'inner-fragments': {
+                '#msg': msg
+            },
+        }
 
 @method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
@@ -316,19 +403,43 @@ def add_object(request, pk):
             old = object.quantity
             new = old + amount
             object.quantity = new
-            object.save()
-            log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
-                                  request.POST.get('bill'), create=False)
-            utils.organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
-            response = {
-                'status': True,
-                'msg': _('Added successfully'),
-                'object': {'object':object.__str__(),
-                           'amount': object.quantity,
-                           'unit':object.measurement_unit.description}
-            }
-            return JsonResponse(response)
+            shelf = object.shelf
+            if shelf.discard:
+                total = shelf.get_total_refuse()
+                new_total = total+amount
+                if shelf.quantity>=new_total:
+                    object.save()
+                    log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
+                                          request.POST.get('bill'), create=False)
+                    organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+
+                    response = {
+                        'status': True,
+                        'msg': _('Added successfully'),
+                        'object': {'object':object.__str__(),
+                                   'amount': object.quantity,
+                                   'unit':object.measurement_unit.description}
+                    }
+                    return JsonResponse(response)
+                else:
+                    return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit')})
+
+            else:
+                object.save()
+                log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
+                                      request.POST.get('bill'), create=False)
+                organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+
+                response = {
+                    'status': True,
+                    'msg': _('Added successfully'),
+                    'object': {'object': object.__str__(),
+                               'amount': object.quantity,
+                               'unit': object.measurement_unit.description}
+                }
+                return JsonResponse(response)
+
         else:
             return JsonResponse({'status': False,'msg':_('Complete the fields')})
     elif action == 4:
@@ -420,7 +531,20 @@ class ListTransferObjects(ListView):
 
 @login_required()
 def get_shelf_list(request):
-    shelfs = Shelf.objects.filter(furniture__labroom__laboratory__id=int(request.POST.get('lab')))
+    lab = int(request.POST['lab'])
+    furniture = Furniture.objects.filter(labroom__laboratory__id=lab).first()
+    shelfs = []
+    data = None
+    if furniture:
+        replacements = [('[', ''), (']', '')]
+        dataconfig =furniture.dataconfig
+        for simbol,config in replacements:
+            if simbol in dataconfig:
+                dataconfig = dataconfig.replace(simbol,"")
+        data = dataconfig.split(',')
+
+        if '' not in data:
+            shelfs = Shelf.objects.filter(pk__in=data)
     transfer_detail = TranferObject.objects.filter(pk=int(request.POST.get('id'))).first()
     aux = []
     for shelf in shelfs:

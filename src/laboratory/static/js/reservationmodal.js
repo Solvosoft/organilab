@@ -3,6 +3,35 @@ var user_id
 var object_id
 var object_element
 const reservation_url=document.api_modal;
+var discard
+const refuse_select_options= [
+               {
+                 'value':2,
+                  'text': select_options_trans['add']
+                },
+                {
+                  'value':3,
+                  'text': select_options_trans['transfer']
+                 }
+                ]
+const normal_select_options= [
+            {
+               'value':1,
+               'text': select_options_trans['reserved']
+            },
+            {
+               'value':2,
+               'text': select_options_trans['add']
+            },
+            {
+               'value':3,
+               'text': select_options_trans['transfer']
+            },
+            {
+               'value':4,
+               'text': select_options_trans['substract']
+            }
+        ]
 
 /* Function called when the reservation button is clicked.
 It gets the shelfObject.pk and user id and saves it as a js variables.
@@ -12,14 +41,16 @@ function initialize_modal(shelf_obj_pk, user_pk) {
     shelf_object_id = shelf_obj_pk;
     user_id = user_pk;
 }
-function initialize_reservation_modal(element,shelf_obj_pk,object_pk, user_pk,units) {
+function initialize_reservation_modal(element,shelf_obj_pk,object_pk, user_pk,units,refuse) {
     $('#alert_message').css('display', 'none');
     shelf_object_id = shelf_obj_pk;
     object_id= object_pk;
     user_id = user_pk;
     $('.unit').text(units);
     object_element=element
+    discard=refuse;
     get_detail()
+    set_select()
     }
 
 /* Function that appends an input field to the form 
@@ -193,4 +224,26 @@ function get_detail(){
         $('#obj').text(obj)
         }
        });
+}
+
+function set_select(){
+    let select = document.querySelector('#option')
+    select.innerHTML="";
+    if((String(discard).toLowerCase() == "true")){
+        for (const element of refuse_select_options) {
+            let option = document.createElement('option');
+            option.value=element.value;
+            option.textContent=element.text;
+            select.appendChild(option);
+         }
+    }else{
+          for (const element of normal_select_options) {
+            let option = document.createElement('option');
+            option.value=element.value;
+            option.textContent=element.text;
+            select.appendChild(option);
+         }
+
+    }
+    choose_action();
 }

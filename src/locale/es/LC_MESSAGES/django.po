@@ -3662,6 +3662,26 @@ msgstr "Laboratorio que recibe"
 msgid "add"
 msgstr "Agregar"
 
+#: laboratory/templates/laboratory/disposal_substance.html:11
+msgid "List of discarded substances by shelf"
+msgstr "Listado de sustancias desechadas por Estante"
+
+#: laboratory/templates/laboratory/disposal_substance.html:35
+msgid "Dont have substances"
+msgstr "No hay sustancias"
+
+#: laboratory/templates/laboratory/profile_detail.html:29
+msgid "Laboratories that works"
+msgstr "Laboratorios que trabaja"
+
+#: laboratory/templates/laboratory/profile_detail.html:39
+msgid "Organizations that works"
+msgstr "Organizaciones que trabaja"
+
+#: laboratory/templates/laboratory/disposal_substance.html:35
+msgid "Limit material of  the shelf"
+msgstr "Cantidad limite de materiales del estante"
+
 #: laboratory/templates/pdf/base_organization_pdf.html:51
 #: laboratory/templates/pdf/base_pdf.html:47
 #: laboratory/templates/pdf/new_base_pdf.html:20
@@ -3943,6 +3963,14 @@ msgstr "Cree un estante"
 #: laboratory/views/shelfobject.py:475
 msgid "The amount sends is more than the laboratory have"
 msgstr "La cantidad a sustraer es más de lo que el laboratorio tiene"
+
+#: laboratory/views/shelfobject.py:140
+msgid "The quantity is much larger than the shelf limit"
+msgstr "La cantidad es mucho mayor al limite del estante."
+
+#: laboratory/views/shelfobject.py:143
+msgid "The measurent unit is different of there shelf has"
+msgstr "La unidad de medida es diferente de la que tiene el estante."
 
 #: msds/models.py:11
 msgid "MSDS File"

@@ -1,14 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseNotFound
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView
+from django.shortcuts import get_object_or_404
+from auth_and_perms.models import Profile
 
 from authentication.forms import PasswordChangeForm, EditUserForm
 
@@ -39,6 +41,16 @@ class ChangeUser(UpdateView):
         instance = form.save()
         return super(ChangeUser, self).form_valid(form)
 
+@login_required
+@permission_required("auth_and_perms.view_profile")
+def get_profile(request, *args, **kwargs):
+    org=kwargs.get('org_pk')
+    profile = get_object_or_404(Profile, user__pk=kwargs.get('pk'))
+    context={
+        'org_pk':org,
+        'profile':profile
+    }
+    return render(request,'laboratory/profile_detail.html', context=context)
 
 @permission_required("auth.change_user")
 @sensitive_post_parameters('password', 'password_confirm')
