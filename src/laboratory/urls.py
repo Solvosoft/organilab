@@ -3,7 +3,7 @@ Created on 1/8/2016
 '''
 
 from django.conf.urls import include
-from django.urls import path, re_path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ReviewSubstanceViewSet
@@ -12,20 +12,20 @@ from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
+from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
 from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
-from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views import inform_period
+from laboratory.views import labroom, shelfobject, laboratory, organizations
 from laboratory.views.informs import get_informs, create_informs, complete_inform, remove_inform
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
 from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
-from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
@@ -193,6 +193,18 @@ informs_period_urls=[
 
 ]
 
+user_register_qr = [
+    path('list/', laboratory.RegisterUserQRList.as_view(), name="list_register_user_qr"),
+    path('manage/<int:pk>/', laboratory.manage_register_qr, name="manage_register_user_qr"),
+    path('delete/<int:pk>/', laboratory.RegisterUserQRDeleteView.as_view(), name="delete_register_user_qr"),
+    path('download/<int:pk>/', laboratory.get_pdf_register_user_qr, name="download_register_user_qr"),
+    path('logentry/<int:pk>/', laboratory.get_logentry_from_registeruserqr, name='logentry_register_user_qr'),
+    path('login/<int:pk>/', laboratory.login_register_user_qr, name='login_register_user_qr'),
+    path('create_user_qr/<int:pk>/', laboratory.create_user_qr, name='create_user_qr'),
+    path('redirect_user_to_labindex/<int:pk>/', laboratory.redirect_user_to_labindex, name='redirect_user_to_labindex'),
+]
+
+
 """APIS"""
 router = DefaultRouter()
 
@@ -224,6 +236,6 @@ urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
-
+    path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
 
 ]  + edit_objects
