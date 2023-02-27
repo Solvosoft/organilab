@@ -527,6 +527,7 @@ def edit_limit_object(request, *args, **kwargs):
 
 
 @login_required
+@permission_required('laboratory.view_shelfobject')
 def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject, pk=pk)
     try:
