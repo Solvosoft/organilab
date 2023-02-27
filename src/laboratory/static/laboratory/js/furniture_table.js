@@ -69,9 +69,12 @@ function closeModal(){
 
 function processResponse(data) {
 	$("#modal_shelf--type_id").remove();
+	$("#id_shelf--description").remove()
 	$("#shelfmodalbody").html(data);
 	gt_find_initialize($("#shelfmodalbody"));
 	activemodal = $("#createshelfmodal").modal('show');
+	show_refuse_elements();
+
 }
 
 
@@ -121,6 +124,21 @@ function delete_shelf(id, url){
       }
     })
 }
+function show_refuse_elements(){
+     if($('#id_shelf--discard').is(':checked')){
+        $('#id_shelf--description').parent().parent().show();
+     }else{
+        $('#id_shelf--description').parent().parent().hide();
+
+      }
+}
+
+
+
 
 save_form();
 do_sortable();
+
+$(document).on('ifChanged','#id_shelf--discard', function(event){
+    show_refuse_elements('#id_shelf--discard');
+});

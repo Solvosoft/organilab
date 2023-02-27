@@ -70,3 +70,21 @@ class SearchObject(ListView):
         context['modal_form_reservation'] = ReservationModalForm()
 
         return context
+
+@method_decorator(login_required, name='dispatch')
+class SearchDisposalObject(ListView):
+    model = ShelfObject
+    search_fields = ['object__code', 'object__name', 'object__description']
+    template_name = "laboratory/disposal_substance.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        labs = Laboratory.objects.filter(profile__user=user.pk,organization=self.org,
+                                         rooms__furniture__shelf__discard=True).distinct()
+
+        return labs
+
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+
+        return context

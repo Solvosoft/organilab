@@ -15,11 +15,12 @@ from django.db.models import Value, DateField
 
 from laboratory.api import serializers
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory, InformsPeriod
+    LabOrgLogEntry, Laboratory, InformsPeriod, ShelfObject
 from laboratory.utils import get_laboratories_from_organization, get_logentries_org_management
+
 from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -104,6 +105,7 @@ class CommentAPI(viewsets.ModelViewSet):
 
             template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform__pk=int(request.GET.get('inform'))).order_by('pk'), 'user':request.user},request)
             return Response({'data':template})
+
     def update(self, request, pk=None):
         comment=None
         if pk:
@@ -242,3 +244,29 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
+
+
+class ShelfObjectAPI(APIView):
+    def get_object(self, pk):
+        try:
+            return ShelfObject.objects.filter(shelf__pk=pk)
+        except ShelfObject.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, org_pk):
+        solicitud = self.get_object(request.GET['shelf'])
+        serializer = ShelfObjectSerialize(solicitud,context={'org_pk':org_pk}, many=True)
+        return Response(serializer.data)
+
+class ShelfObjectGraphicAPI(APIView):
+    def get(self, request):
+        queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
+        labels = []
+        data = []
+        if queryset:
+            self.show_chart = True
+            for obj in queryset:
+               data.append(obj.quantity)
+               labels.append(obj.object.name)
+
+        return Response({'labels':labels,'data':data})

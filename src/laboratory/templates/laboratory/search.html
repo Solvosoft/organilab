@@ -40,7 +40,7 @@
                     <a data-bs-toggle="modal"
                        data-bs-target="#modal_reservation"
                        title="{% trans 'Reserve/Add/Transfer/Substract' %}"
-                       style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}')"
+                       style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}','{{object.shelf.discard}}')"
                        class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i> {% trans "Edit" %}
                     </a>
                   {% endif %}
@@ -111,6 +111,7 @@
             error: "{% trans 'Enter whole numbers or with decimals' %}"
     };
     const view_search = true;
+
 </script>
 <script src="{% static 'js/shelfobjectedit.js' %}"></script>
 <script src="{% static 'js/reservationmodal.js' %}"></script>

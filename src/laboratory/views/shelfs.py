@@ -17,6 +17,7 @@ from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets import wysiwyg
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
@@ -83,12 +84,16 @@ class ShelfForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'furniture', 'color']
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
         widgets = {
             'name': genwidgets.TextInput,
             'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
             'furniture': forms.HiddenInput(),
             'color':  genwidgets.ColorInput,
+            'discard': genwidgets.CheckboxInput,
+            'quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'description': wysiwyg.TextareaWysiwyg
         }
 
 

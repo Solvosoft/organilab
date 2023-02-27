@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+	{% define_urlname_action 'profile_detail' %}
+{% endblock %}
+{% block title %}{% trans 'Profile' %}{% endblock %}
+
+{% block content %}
+<style>
+	#profile p {
+		font-size:14px;
+		padding:1px;
+	}
+</style>
+	<div id="profile" class="row">
+		<div class="col-sm-10 offset-sm-1">
+			<div class="page-header text-center">
+				<h1>{% trans 'Information' %} {{profile.user.get_full_name}}</h1>
+			</div>
+			<br>
+			<div><p><label class="fw-bold">{% trans 'ID Card' %}:</label> {{profile.id_card}}.</p></div>
+			<div><p><label class="fw-bold">{% trans 'Phone' %}:</label> {{profile.phone_number}}.</p></div>
+			<div><p><label class="fw-bold">{% trans 'Email' %}:</label> {{profile.user.email}}.</p></div>
+			<div><p><label class="fw-bold">{% trans 'Job Position' %}:</label> {{profile.job_position}}</p></div>
+			<div class="row p-4 g-5">
+				<div class="col-sm-6">
+					<div class="fw-bold"><p>{% trans 'Laboratories that works' %}:</p></div>
+			<div>
+				<ul class="list-group list-group-flush">
+				{% for lab in profile.laboratories.all %}
+					<li class="list-group-item">{{lab}} <strong>({{lab.organization}})</strong></li>
+					{% endfor %}
+				</ul>
+			</div>
+				</div>
+				<div class="col-sm-6">
+			<div class="fw-bold"><p>{% trans 'Organizations that works' %}:</p></div>
+			<div>
+				<ul class="list-group list-group-flush">
+				{% for orga in profile.user.organizationusermanagement_set.all %}
+					<li class="list-group-item">{{orga}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+			</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{
