@@ -323,3 +323,7 @@ def get_logentries_org_management(self, org):
 
     return log_entries
 
+
+def check_has_profile(user):
+    obj = Profile.objects.filter(user=user)
+    return obj.exists()
