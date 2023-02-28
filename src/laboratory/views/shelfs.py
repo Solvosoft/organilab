@@ -21,10 +21,12 @@ from djgentelella.widgets import wysiwyg
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from laboratory.models import Furniture, Shelf
+from laboratory.models import Furniture, Shelf, ShelfObject
 from laboratory.shelf_utils import get_dataconfig
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
 def get_shelves(furniture):
@@ -82,6 +84,40 @@ class ShelfForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
+
+    def clean(self):
+        cleaned_data = super().clean()
+        shelf_objects = ShelfObject.objects.filter(shelf=self.instance)
+        quantity = cleaned_data.get("quantity")
+        measurement_unit = cleaned_data.get("measurement_unit")
+        errors=_("The shelf need a measurement unit")
+
+        units = shelf_objects.values_list('measurement_unit', flat=True)
+
+        if quantity>0 and measurement_unit!=None:
+            if measurement_unit in units and len(units)==1:
+                if quantity>= self.instance.get_total_refuse():
+                    return cleaned_data
+                else:
+                    errors = _("The shelf need a measurement unit")
+            else:
+                errors = _("The shelf need a measurement unit")
+
+        elif measurement_unit != None and quantity==0:
+            if measurement_unit in units and len(units)==1:
+                return cleaned_data
+            else:
+                errors = _("The shelf need a measurement unit")
+
+        elif measurement_unit == None and quantity == 0:
+            if measurement_unit in units and len(units)==1:
+                return cleaned_data
+            else:
+                errors = _("The shelf need a measurement unit")
+
+        raise ValidationError(errors)
+
+
     class Meta:
         model = Shelf
         fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
@@ -95,6 +131,7 @@ class ShelfForm(forms.ModelForm, GTForm):
             'measurement_unit': genwidgets.Select,
             'description': wysiwyg.TextareaWysiwyg
         }
+
 
 
 @method_decorator(has_lab_assigned(), name="dispatch")
