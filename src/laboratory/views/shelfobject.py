@@ -89,7 +89,10 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(ShelfObjectForm, self).__init__(*args, **kwargs)
-
+        initial = kwargs.get('initial')
+        shelf = Shelf.objects.filter(pk=initial['shelf']).first()
+        if shelf:
+            self.fields['measurement_unit'].initial=shelf.measurement_unit
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
@@ -117,7 +120,10 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(ShelfObjectRefuseForm, self).__init__(*args, **kwargs)
-
+        initial = kwargs.get('initial')
+        shelf = Shelf.objects.filter(pk=initial['shelf']).first()
+        if shelf:
+            self.fields['measurement_unit'].initial = shelf.measurement_unit
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
@@ -146,14 +152,13 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","quantity","measurement_unit","laboratory_name","course_name","marked_as_discard",'limit_quantity']
-        exclude = ['creator']
+        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity']
+        exclude = ['creator',"laboratory_name"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
             'quantity': core.TextInput,
             'measurement_unit': core.Select,
-            'laboratory_name': core.TextInput,
             'course_name': core.TextInput,
             'marked_as_discard': core.HiddenInput
         }
@@ -180,13 +185,13 @@ class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit','laboratory_name','course_name']
+        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit','course_name']
+        exclude = ['laboratory_name']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select,
-            'laboratory_name': core.TextInput,
             'course_name': core.TextInput
         }
 
