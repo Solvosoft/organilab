@@ -98,6 +98,19 @@ class ShelfForm(forms.ModelForm, GTForm):
             'description': wysiwyg.TextareaWysiwyg
         }
 
+    def clean_measurement_unit(self):
+        discard= self.cleaned_data['discard']
+        unit = self.cleaned_data['measurement_unit']
+        if discard:
+            if unit!=None:
+                return unit
+            else:
+                raise ValidationError(_("Need add the measurement unit"))
+        else:
+            return unit
+        return unit
+
+
 
 
 @method_decorator(has_lab_assigned(), name="dispatch")
