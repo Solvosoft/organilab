@@ -2,7 +2,21 @@ const float_regex= /^[+-]?\d+(\.\d+)?$/;
 
 function processResponseshelfobjectCreate(dat) {
     $('#shelfobjectCreate').html(dat);
-    // clean the form
+
+    let options = document.getElementById("id_measurement_unit");
+    for(var i=0; i<options.options.length; i++){
+        let option = options.options[i]
+        if(options.value!=""){
+
+            if(option.value!=options.value){
+                console.log(option.value)
+                option.setAttribute('disabled',true)
+                }else{
+                option.setAttribute('selected',true)
+                }
+        }
+    }
+
     $("#object_create").modal('show');
 }
 

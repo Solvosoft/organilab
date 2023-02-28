@@ -21,10 +21,12 @@ from djgentelella.widgets import wysiwyg
 from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from laboratory.models import Furniture, Shelf
+from laboratory.models import Furniture, Shelf, ShelfObject
 from laboratory.shelf_utils import get_dataconfig
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
 def get_shelves(furniture):
@@ -95,6 +97,7 @@ class ShelfForm(forms.ModelForm, GTForm):
             'measurement_unit': genwidgets.Select,
             'description': wysiwyg.TextareaWysiwyg
         }
+
 
 
 @method_decorator(has_lab_assigned(), name="dispatch")
