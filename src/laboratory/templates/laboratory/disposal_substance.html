@@ -33,7 +33,7 @@
                                     <p class="fw-bold">{{shelf.name}} ({{shelf.quantity}} {{shelf.get_measurement_unit_display}})</p>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{shelf.get_total_refuse|floatformat}}" style="width: {{shelf.get_refuse_porcentage}}%" aria-valuemin="0" aria-valuemax="{{shelf.quantity}}"></div>
-                                        <small class="justify-content-center d-flex position-absolute w-100 text-white fw-bold">{{shelf.get_refuse_porcentage|floatformat}}%</small>
+                                        <small class="justify-content-center d-flex position-absolute w-100 fw-bold {% if shelf.get_refuse_porcentage < 60 %} text-dark {% else %} text-white {% endif %}">{{shelf.get_refuse_porcentage|floatformat}}%</small>
                                     </div>
                                     {% get_shelf_objects shelf as shelf_objectss %}
                                         <a data-shelf="{{shelf.pk}}" data-shelfname="{% trans 'Shelf' %} {{shelf.name}}"class="btn btn-danger shelf_graphic" data-bs-toggle="modal" data-bs-target="#modal_graphic">
