@@ -418,6 +418,7 @@ class RegisterUserQRDeleteView(DeleteView):
         success_url = self.get_success_url()
         utils.organilab_logentry(self.request.user, self.object, DELETION, 'register user QR')
         self.object.delete()
+        messages.success(self.request, _("Element was deleted successfully"))
         return HttpResponseRedirect(success_url)
 
 
