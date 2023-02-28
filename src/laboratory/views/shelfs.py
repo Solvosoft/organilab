@@ -84,46 +84,6 @@ class ShelfForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
-
-    def clean(self):
-        cleaned_data = super().clean()
-        shelf_objects = ShelfObject.objects.filter(shelf=self.instance)
-        # si no tiene shelf_objects se puede modificar sin problemas
-        if not shelf_objects.count():
-            return cleaned_data
-
-
-        # Este caso revisarlo porque no hace lo que debe hacer
-        quantity = cleaned_data.get("quantity")
-        measurement_unit = cleaned_data.get("measurement_unit")
-        errors=_("The shelf need a measurement unit")
-
-        units = shelf_objects.values_list('measurement_unit', flat=True)
-
-        if quantity>0 and measurement_unit!=None:
-            if measurement_unit in units and len(units)>=1:
-                if quantity>= self.instance.get_total_refuse():
-                    return cleaned_data
-                else:
-                    errors = _("The shelf need a measurement unit")
-            else:
-                errors = _("The shelf need a measurement unit")
-
-        elif measurement_unit != None and quantity==0:
-            if measurement_unit in units and len(units)==1:
-                return cleaned_data
-            else:
-                errors = _("The shelf need a measurement unit")
-
-        elif measurement_unit == None and quantity == 0:
-            if measurement_unit in units and len(units)==1:
-                return cleaned_data
-            else:
-                errors = _("The shelf need a measurement unit")
-
-        raise ValidationError(errors)
-
-
     class Meta:
         model = Shelf
         fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
