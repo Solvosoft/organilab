@@ -88,6 +88,12 @@ class ShelfForm(forms.ModelForm, GTForm):
     def clean(self):
         cleaned_data = super().clean()
         shelf_objects = ShelfObject.objects.filter(shelf=self.instance)
+        # si no tiene shelf_objects se puede modificar sin problemas
+        if not shelf_objects.count():
+            return cleaned_data
+
+
+        # Este caso revisarlo porque no hace lo que debe hacer
         quantity = cleaned_data.get("quantity")
         measurement_unit = cleaned_data.get("measurement_unit")
         errors=_("The shelf need a measurement unit")
@@ -95,7 +101,7 @@ class ShelfForm(forms.ModelForm, GTForm):
         units = shelf_objects.values_list('measurement_unit', flat=True)
 
         if quantity>0 and measurement_unit!=None:
-            if measurement_unit in units and len(units)==1:
+            if measurement_unit in units and len(units)>=1:
                 if quantity>= self.instance.get_total_refuse():
                     return cleaned_data
                 else:
