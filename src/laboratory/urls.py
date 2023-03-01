@@ -88,7 +88,7 @@ lab_reports_urls = [
     path('laboratory/', reports.report_labroom_building, name='report_building'),
     path('furniture/', reports.report_furniture,  name='reports_furniture'),
     path('objects/', reports.report_objects, name='reports_objects'),
-    path('shelf_objects/', reports.report_shelf_objects, name='reports_shelf_objects'),
+    path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
     path('limited_shelf_objects/', reports.report_limited_shelf_objects,
          name='reports_limited_shelf_objects'),
     path('reactive_precursor_objects/', reports.report_reactive_precursor_objects,
