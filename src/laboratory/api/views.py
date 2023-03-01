@@ -1,26 +1,25 @@
 from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.db.models import Value, DateField
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets, mixins
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BaseAuthentication
-from rest_framework import status, viewsets, mixins
-from django.db.models import Value, DateField
+from rest_framework.views import APIView
 
 from laboratory.api import serializers
-from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory, InformsPeriod, ShelfObject
-from laboratory.utils import get_laboratories_from_organization, get_logentries_org_management
-
-from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
+    LogEntryUserDataTableSerializer
+from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
+    Laboratory, InformsPeriod, ShelfObject
+from laboratory.utils import get_logentries_org_management
+from reservations_management.models import ReservedProducts
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -180,22 +179,22 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         filters = {}
         org = self.request.GET.get('org', None)
-        object_id = self.request.GET.get('object_id', None)
-        app_label = self.request.GET.get('app_label', None)
-        model_name = self.request.GET.get('model_name', None)
+        url = self.request.GET.get('url', None)
         queryset = self.queryset.none()
 
-        if not object_id:
+        if not url:
             log_entries = get_logentries_org_management(self, org)
             filters.update({'pk__in': log_entries})
-        elif object_id:
-            contenttype = ContentType.objects.filter(
-                app_label=app_label,
-                model=model_name
-            ).first()
+        else:
+            self.serializer_class = LogEntryUserDataTableSerializer
+
+            queryset = LogEntry.objects.filter(
+                Q(change_message__icontains="Login") | Q(change_message__icontains="Register")
+            )
+
             filters.update({
-                'object_id': object_id,
-                'content_type': contenttype,
+                'action_flag__in': [1, 2],
+                'change_message__icontains': url
             })
 
         if filters:

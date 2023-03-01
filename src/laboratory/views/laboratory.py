@@ -429,9 +429,7 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     return render(request, 'laboratory/register_user_qr/logentry_list.html', context={
         'org_pk': org_pk,
         'laboratory': lab_pk,
-        'object_id': pk,
-        'app_label': register_qr._meta.app_label,
-        'model_name': register_qr._meta.model_name,
+        'url': register_qr.url,
     })
 
 def login_register_user_qr(request, org_pk, lab_pk, pk):
@@ -447,7 +445,7 @@ def login_register_user_qr(request, org_pk, lab_pk, pk):
     })
 
 
-def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
+def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, url, id_card=None):
     login(request, user)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
@@ -467,6 +465,9 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
         organilab_logentry(user, profile, ADDITION, 'profile',
                            changed_data=['user', 'phone_number', 'id_card', 'job_position'],
                            relobj=org_pk)
+
+        # Register Log - relobj(USER) - action(ADDITION)
+        organilab_logentry(user, user, ADDITION, 'user', changed_data=['Register', url], relobj=org)
     else:
         profile = user.profile
 
@@ -501,10 +502,13 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, id_card=None):
         organilab_logentry(user, user_org, ADDITION, 'user organization',
                            changed_data=['organization', 'user'], relobj=org_pk)
 
+    #Login Log - relobj(USER) - action(CHANGE)
+    organilab_logentry(user, user, CHANGE, 'user', changed_data=['Login', url], relobj=org)
+
 
 def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
-    add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, id_card=None)
+    add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, user_qr.url, id_card=None)
     return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
 
 
@@ -526,13 +530,16 @@ def create_user_qr(request, org_pk, lab_pk, pk):
                 if not user_qr.activate_user:
                     user.is_active = False
                 user.save()
+                organilab_logentry(user, user, ADDITION, 'user',
+                                   changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
+                                   relobj=org_pk)
 
                 organilab_logentry(user, user, ADDITION, 'user',
                                    changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
                                    relobj=org_pk)
 
                 id_card = register_form.cleaned_data['id_card']
-                add_user_to_rel_obj(request, user, org_pk, lab_pk, user_qr.role, id_card)
+                add_user_to_rel_obj(request, user, org_pk, lab_pk, user_qr.role, user_qr.url, id_card)
                 return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
             else:
                 messages.error(request, _("Error trying to change your password: Passwords should match"))
