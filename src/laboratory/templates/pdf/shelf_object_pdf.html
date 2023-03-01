@@ -1,37 +1,218 @@
-{% extends 'pdf/base_pdf.html' %}
+{% extends 'pdf/qr_base_pdf.html' %}
 {% load i18n %}
+{% load humanformat %}
 {% block extra_css %}
 .bold{
-  font-weight:bold;
+font-weight:bold;
 }
+
+.thead {
+font-weight: normal;
+}
+
+table.infoshelfobject tr{
+font-size: 12pt;
+}
+
+table thead.tborder th{
+    boder-bottom-color: black;
+    border-bottom: solid 0.07em;
+}
+
+table.infoshelfobject {
+    width: 100%;
+}
+
 {% endblock %}
 {% block pdf_content %}
-  {% for obj in object_list %}
-    <h2>{{ obj }}</h2>
-    <ul>
-    <li><label class="bold">{% trans "Shelf:" %}</label> {{ obj.shelf }}</li>
-    <li><label class="bold">{% trans "Object:" %}</label>
-      {{ obj.object }}
-    </li>
-    <li>
-      <label class="bold">{% trans "Quantity:" %}</label>
-      {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
-    </li>
-    <li>
-      <label class="bold">{% trans "Limit quantity:" %}</label> 
-      {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}
-    </li>
-      {% if obj.object.h_code.exists %}
-    <li>
-      <p>{% trans "Danger indication:" %}</p>
-      <ul>
-      {% for code in obj.object.h_code.all %}
-        <li>{{code}} </li>
-      {% endfor %}
-      </ul>
-    </li>
-      {% endif %}
-  {% empty %}
-    {% trans "No Objects Elements" %}
-  {% endfor %}
+{% for obj in object_list %}
+<table class="ttitle">
+    <tbody>
+    <tr>
+        <td>
+            <h3 style="margin-left: 34%;">{{obj.object.name}} {{obj.quantity}} / {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</h3>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="infoshelfobject">
+    <tbody>
+    <tr>
+        <th colspan="2">
+            <table>
+                <thead class="tborder">
+                 <tr>
+                    <th class="bold">{% trans "Shelf" %}:</th>
+                    <th class="thead">{{ obj.shelf }}</th>
+                </tr>
+                  <tr>
+                    <th class="bold">{% trans "Quantity" %}:</th>
+                    <th class="thead">{{ obj.quantity }} {{ obj.get_measurement_unit_display }}</th>
+                </tr>
+                 <tr>
+                    <th class="bold">{% trans "Limit Quantity" %}:</th>
+                    <th class="thead">{{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Code" %}:</th>
+                    <th class="thead">{{ obj.object.code }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Name" %}:</th>
+                    <th class="thead">{{ obj.object.name }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Synonym" %}:</th>
+                    <th class="thead">{{ obj.object.synonym|default_if_none:"" }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Model" %}:</th>
+                    <th class="thead">{{ obj.object.model|default_if_none:"" }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Serie" %}:</th>
+                    <th class="thead">{{ obj.object.serie|default_if_none:"" }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Plaque" %}:</th>
+                    <th class="thead">{{ obj.object.plaque|default_if_none:"" }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "Description" %}:</th>
+                    <th class="thead">{{ obj.object.description|default_if_none:"" }}</th>
+                </tr>
+                </thead>
+            </table>
+        </th>
+        <th colspan="2">
+            {% if obj.shelf_object_qr %}
+            <img src="{{domain}}{{obj.shelf_object_qr.url}}" alt=""
+                 style="width: 350px;">
+            {% endif %}
+        </th>
+
+    </tr>
+    </tbody>
+</table>
+
+{% if obj.object.sustancecharacteristics %}
+<table class="infoshelfobject">
+    <tbody>
+        <tr style="padding-top: 0; margin-top: 0;">
+        <td colspan="2">
+            <table style="width: 60px;">
+                <thead class="tborder">
+                 <tr>
+                    <th class="bold">{% trans "Is precursor?" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.is_precursor|yesnotext }}</th>
+                </tr>
+                {% if obj.object.sustancecharacteristics.is_precursor %}
+                <tr>
+                    <th class="bold">{% trans "Precursor Type" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.precursor_type }}</th>
+                </tr>
+                {% endif %}
+                 <tr>
+                    <th class="bold">{% trans "Bioaccumulable" %}:</th>
+                    <th class="thead">{{obj.object.sustancecharacteristics.bioaccumulable|yesnotext }}</th>
+                </tr>
+
+
+                 <tr>
+                    <th class="bold">{% trans "CAS Number" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.cas_id_number|default_if_none:"" }}</th>
+                </tr>
+
+
+                 <tr>
+                    <th class="bold">{% trans "Is Seveso list III?" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.seveso_list|yesnotext }}</th>
+                </tr>
+                 <tr>
+                    <th class="bold">{% trans "IMDG" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.imdg|default_if_none:"" }}</th>
+                </tr>
+
+
+                 <tr>
+                    <th class="bold">{% trans "Storage Classes" %}:</th>
+                    <th class="thead">
+                        {% for stoclass in obj.object.sustancecharacteristics.storage_class.all %}
+                        <div>* {{ stoclass }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "NFPA Codes" %}:</th>
+                    <th class="thead">
+                        {% for nfpa in obj.object.sustancecharacteristics.nfpa.all %}
+                        <div>* {{ nfpa }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "White Organ" %}:</th>
+                    <th class="thead">
+                        {% for worgan in obj.object.sustancecharacteristics.white_organ.all %}
+                        <div>* {{ worgan }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+
+
+                </thead>
+            </table>
+        </td>
+        <td colspan="2">
+            <table style="width: 60px;">
+                <thead class="tborder">
+                 <tr>
+                    <th class="bold">{% trans "Features" %}:</th>
+                    <th class="thead">
+                        {% for feature in obj.object.features.all %}
+                        <div>* {{ feature }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "IARC" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.iarc|default_if_none:"" }}</th>
+                </tr>
+                <tr>
+                    <th class="bold">{% trans "H Codes" %}:</th>
+                    <th class="thead">
+                        {% for hcode in obj.object.sustancecharacteristics.h_code.all %}
+                        <div>* {{ hcode }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+
+                <tr>
+                    <th class="bold">{% trans "UE Codes" %}:</th>
+                    <th class="thead">
+                        {% for uecode in obj.object.sustancecharacteristics.ue_code.all %}
+                        <div>* {{ uecode }}</div>
+                        {% endfor %}
+                    </th>
+                </tr>
+
+ <tr>
+                    <th class="bold">{% trans "Molecular formula" %}:</th>
+                    <th class="thead">{{ obj.object.sustancecharacteristics.molecular_formula|default_if_none:"" }}</th>
+                </tr>
+
+
+                </thead>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+{% endif %}
+
+
+{% empty %}
+{% trans "No Objects Elements" %}
+{% endfor %}
 {% endblock %}

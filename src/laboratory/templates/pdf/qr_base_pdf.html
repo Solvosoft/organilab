@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 <html>
     <head>
@@ -17,7 +18,22 @@
                 }
 
                 @top-right{
-                    content: "{% trans "Date:" %} {{ datetime }}";
+                    content: "{{ datetime }}";
+                    width: 5.5cm;
+                }
+
+                @top-center {
+                    content:  string(title);
+                    width: 5.8cm;
+                }
+
+                @top-left {
+                    content: "";
+                    background: url({% static 'img/logo_organilab.png' %}) no-repeat 0 0;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    width: 3cm;
+                    height: 1.4cm;
                 }
             }
 
@@ -25,13 +41,33 @@
                 font-family: "Arial", "sans-serif";
                 font-size: 1.5em;
             }
+
+            .qr_obj {
+              width: 60%;
+              display: block;
+              margin-left: auto;
+              margin-right: auto;
+            }
+
+             #topcenter {
+               width: 0;
+               height: 0;
+               visibility: hidden;
+               string-set: title content();
+            }
+
+            #topleft {
+               width: 0;
+               height: 0;
+               visibility: hidden;
+               string-set: logo content();
+            }
+
             {% block extra_css %}{% endblock %}
         </style>
     </head>
     <body>
-        <!-- HTML Content -->
-        <div>
+        <div id="topcenter" style="border: black solid">{{title}}</div>
             {% block pdf_content %}{% endblock %}
-        </div>
     </body>
 </html>
