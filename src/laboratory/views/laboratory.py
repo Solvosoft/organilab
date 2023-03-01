@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth import login
@@ -308,13 +309,14 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
         'rel_obj': lab,
         'rel_obj_name': lab.name,
         'obj_qr': obj_qr,
-        'org_pk': org_pk
+        'org_pk': org_pk,
+        'domain': "file://%s"%( str(settings.MEDIA_ROOT).replace("/media/", ''),)
     }
 
     html = template.render(context=context)
     page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
     response = HttpResponse(page, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="register_user_qr.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="register_user_qr_%s%s%s.pdf"'%(org_pk, lab_pk, pk)
     return response
 
 

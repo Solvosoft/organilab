@@ -116,6 +116,8 @@ class LogEntrySerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         if not obj:
             return _("No user found")
+        if not obj.user:
+            return _("No user found")
 
         name = obj.user.get_full_name()
         if not name:

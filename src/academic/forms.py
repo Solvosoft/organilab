@@ -40,7 +40,7 @@ class ObjectForm(GTForm, forms.Form):
 
 
 class StepForm(GTForm, forms.Form):
-    title = forms.CharField(widget=genwidgets.TextInput, label=_('title'))
+    title = forms.CharField(widget=genwidgets.TextInput, label=_('Title'))
     description = forms.CharField(widget=TextareaWysiwyg,
                                   label=_('Description'))
 
