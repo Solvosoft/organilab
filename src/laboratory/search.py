@@ -6,7 +6,7 @@ Free as freedom will be 26/8/2016
 @author: luisza
 ''' 
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 
@@ -72,6 +72,7 @@ class SearchObject(ListView):
         return context
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('laboratory.can_manage_disposal'), name='dispatch')
 class SearchDisposalObject(ListView):
     model = ShelfObject
     search_fields = ['object__code', 'object__name', 'object__description']
