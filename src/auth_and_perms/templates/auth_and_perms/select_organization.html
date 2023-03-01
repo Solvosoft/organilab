@@ -31,7 +31,7 @@
             {% if perms.sga.view_substance%}
             <a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' node.0.pk 'laboratory' %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
             {% endif %}
-            {% if perms.laboratory.view_shelf %}
+            {% if perms.shelf.can_manage_disposal %}
                 <a class="btn btn-dark btn-sm" href="{% url 'laboratory:disposal_substance' node.0.pk %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'Disposal' %}</a>
             {% endif %}
         </div>
