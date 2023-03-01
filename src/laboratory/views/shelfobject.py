@@ -29,7 +29,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.decorators import has_lab_assigned
-from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm
+from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -395,71 +395,80 @@ class ShelfObjectDetail(AJAXMixin, DetailView):
 @permission_required('laboratory.change_shelfobject')
 def add_object(request, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
-    action = int(request.POST.get('options'))
-    form = AddObjectForm(request.POST, lab=request.POST.get('lab'))
+    elements_form=ShelfObjectOptions(request.POST)
+    if elements_form.is_valid():
+        action = elements_form.cleaned_data['options']
+        lab = elements_form.cleaned_data['lab']
+        form = AddObjectForm(request.POST, lab=lab.pk)
+        org = lab.organization
+        if action == 2:
+            if form.is_valid():
+                try:
+                    amount = float(form.cleaned_data['amount'])
+                except ValueError:
+                    return JsonResponse({'msg': False})
+                shelfobject = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object']).first()
+                old = shelfobject.quantity
+                new = old + amount
+                shelfobject.quantity = new
 
-    if action == 2:
-        if form.is_valid():
-            try:
-                amount = float(request.POST.get('amount'))
-            except ValueError:
-                return JsonResponse({'msg': False})
-            object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
-            old = object.quantity
-            new = old + amount
-            object.quantity = new
+                shelf = shelfobject.shelf
+                if shelf.discard:
+                    total = shelf.get_total_refuse()
+                    new_total = total+amount
+                    if shelf.quantity>=new_total:
+                        shelfobject.save()
+                        log_object_add_change(request.user, pk, shelfobject, old, new, "Add", form.cleaned_data['provider'],
+                                              form.cleaned_data['bill'], create=False)
+                        organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
-            shelf = object.shelf
-            if shelf.discard:
-                total = shelf.get_total_refuse()
-                new_total = total+amount
-                if shelf.quantity>=new_total:
-                    object.save()
-                    log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
+                        template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                                    context={'shelfobject':shelfobject, 'laboratory':request.POST['lab'], 'org_pk':org.pk},
+                                                    request=request)
+                        response = {
+                            'status': True,
+                            'template':template,
+                            'msg': _('Added successfully'),
+                            'object': {'object':shelfobject.__str__(),
+                                       'amount': shelfobject.quantity,
+                                       'unit': shelfobject.measurement_unit.description}
+                        }
+                        return JsonResponse(response)
+                    else:
+                        return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit')})
+
+                else:
+                    shelfobject.save()
+                    log_object_add_change(request.user, pk, shelfobject, old, new, "Add", request.POST.get('provider'),
                                           request.POST.get('bill'), create=False)
-                    organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+                    organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=form.changed_data)
 
                     response = {
                         'status': True,
                         'msg': _('Added successfully'),
-                        'object': {'object':object.__str__(),
-                                   'amount': object.quantity,
-                                   'unit':object.measurement_unit.description}
+                        'object': {'object': shelfobject.__str__(),
+                                   'amount': shelfobject.quantity,
+                                   'unit': shelfobject.measurement_unit.description}
                     }
                     return JsonResponse(response)
-                else:
-                    return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit')})
 
             else:
-                object.save()
-                log_object_add_change(request.user, pk, object, old, new, "Add", request.POST.get('provider'),
-                                      request.POST.get('bill'), create=False)
-                organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
-
-                response = {
-                    'status': True,
-                    'msg': _('Added successfully'),
-                    'object': {'object': object.__str__(),
-                               'amount': object.quantity,
-                               'unit': object.measurement_unit.description}
-                }
-                return JsonResponse(response)
-
+                return JsonResponse({'status': False,'msg':_('Complete the fields')})
+        elif action == 4:
+            return subtract_object(request, pk, elements_form)
         else:
-            return JsonResponse({'status': False,'msg':_('Complete the fields')})
-    elif action == 4:
-        return subtract_object(request, pk)
-    else:
-        return transfer_object(request, pk)
+            return transfer_object(request, pk, elements_form)
     return JsonResponse({'status': True, 'msg': _('Added successfully')})
 
 add_object.lab_pk_field= 'pk'
 
 @permission_required('laboratory.change_shelfobject')
-def subtract_object(request, pk):
-    object = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
-    old = object.quantity
+def subtract_object(request, pk, elements_form):
+    shelfobject = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object']).first()
+    old = shelfobject.quantity
     form = SubtractObjectForm(request.POST)
+
+
     if form.is_valid():
         try:
             amount = float(form.cleaned_data['discount'])
@@ -467,41 +476,69 @@ def subtract_object(request, pk):
             return JsonResponse({'msg': False})
         if old >= amount:
             new = old - amount
-            object.quantity = new
-            object.save()
-            log_object_change(request.user, pk, object, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
-            utils.organilab_logentry(request.user, object, CHANGE, 'shelfobject', changed_data=form.changed_data)
+            shelfobject.quantity = new
+            shelfobject.save()
+            log_object_change(request.user, pk, shelfobject, old, new, form.cleaned_data['description'], 2, "Substract", create=False)
+            utils.organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=form.changed_data)
+            template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                        context={'shelfobject': shelfobject,
+                                                 'laboratory': elements_form.cleaned_data['lab'].pk,
+                                                 'org_pk': elements_form.cleaned_data['lab'].organization.pk},
+                                        request=request)
+
 
         else:
+            template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                        context={'shelfobject': shelfobject,
+                                                 'laboratory': elements_form.cleaned_data['lab'].pk,
+                                                 'org_pk': elements_form.cleaned_data['lab'].organization.pk},
+                                        request=request)
             response = {
+                'template':template,
                 'status': False,
                 'msg': _('The amount to be subtracted is more than the shelf has'),
-                'object': {'object': object.__str__(),
-                           'amount': object.quantity,
-                           'unit': object.measurement_unit.description}
+                'object': {'object': shelfobject.__str__(),
+                           'amount': shelfobject.quantity,
+                           'unit': shelfobject.measurement_unit.description}
 
             }
 
             return JsonResponse(response)
     else:
-        return JsonResponse({'status': False, 'msg': _('Complete the fields')})
+        template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                    context={'shelfobject': shelfobject,
+                                             'laboratory': elements_form.cleaned_data['lab'].pk,
+                                             'org_pk': elements_form.cleaned_data['lab'].organization.pk},
+                                    request=request)
+        return JsonResponse({'status': False, 'template':template, 'msg': _('Complete the fields')})
+    template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                context={'shelfobject': shelfobject, 'laboratory': elements_form.cleaned_data['lab'].pk,
+                                         'org_pk': elements_form.cleaned_data['lab'].organization.pk},
+                                request=request)
     response = {
+
+        'template':template,
         'status': True,
         'msg': _('Sustracted successfully'),
-        'object': {'object': object.__str__(),
-                   'amount': object.quantity,
-                   'unit': object.measurement_unit.description}
+        'object': {'object': shelfobject.__str__(),
+                   'amount': shelfobject.quantity,
+                   'unit': shelfobject.measurement_unit.description}
     }
     return JsonResponse(response)
 
 
 @permission_required('laboratory.add_tranferobject')
-def transfer_object(request, pk):
+def transfer_object(request, pk, elements_form):
+
     try:
         amount = float(request.POST.get('amount_send'))
     except ValueError:
         return JsonResponse({'status': False, 'msg': _('Only can accept whole numbers or decimal numbers with .')})
-    obj = ShelfObject.objects.filter(pk=request.POST.get('shelf_object')).first()
+    obj = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object'].pk).first()
+    template = render_to_string(template_name="laboratory/components/shelfobject.html",
+                                context={'shelfobject': obj, 'laboratory': elements_form.cleaned_data['lab'].pk,
+                                         'org_pk': elements_form.cleaned_data['lab'].organization.pk},
+                                request=request)
     if amount <= obj.quantity:
         lab_send = Laboratory.objects.filter(pk=pk).first()
         lab_received = Laboratory.objects.filter(pk=request.POST.get('laboratory')).first()
@@ -515,8 +552,8 @@ def transfer_object(request, pk):
         changed_data = ['object', 'laboratory_send', 'laboratory_received', 'quantity']
         utils.organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
     else:
-        return JsonResponse({'status': False, 'msg': _('The amount sending is less that the amount we have in the Shelf')})
-    return JsonResponse({'status': True, 'msg': _('Transfer done successfully')})
+        return JsonResponse({'status': False,'template':template,'msg': _('The amount sending is less that the amount we have in the Shelf')})
+    return JsonResponse({'status': True, 'template': template, 'msg': _('Transfer done successfully')})
 
 
 @csrf_exempt
