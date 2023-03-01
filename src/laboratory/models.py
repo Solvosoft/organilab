@@ -258,6 +258,9 @@ class Shelf(models.Model):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
 
+    class Meta:
+        permissions = [('can_manage_disposal', 'Can manage disposal')]
+
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
     name = models.CharField(_('Name'), max_length=255)
