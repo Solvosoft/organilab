@@ -8,29 +8,15 @@
 				<table class="table table-bordered">
 					{% for row in object_list %}
 						<tr>
-							{% for col in row%}
+							{% for col in row %}
 								<td >
-									{% if col%}
+									{% if col %}
 										{% for data in col %}
-									<div style="background-color: {{data.color }};" class="shelfobjectcontainer" >
-											<div class="whitebg">
-											{% if perms.laboratory.add_shelfobject %}
-												<a data-ajax="true" data-success="processResponseshelfobjectCreate" href="{% url 'laboratory:shelfobject_create' org_pk=org_pk lab_pk=laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}">
-													<i class="fa fa-plus" aria-hidden="true"></i>
-												</a>
+											{% if data.discard == True and perms.laboratory.can_manage_disposal %}
+													{% include 'laboratory/components/shelf_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 data=data %}
+											{% else %}
+													{% include 'laboratory/components/shelf_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 data=data %}
 											{% endif %}
-											<a id="shelf_view_{{data.pk}}" role="button" data-bs-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample">
-												<i class="fa fa-eye" aria-hidden="true"></i>
-											</a>
-											<span > {{data.name}} </span>
-											</div>
-											<div class="collapse" id="body_{{data.pk}}">
-												<div class="listshelfobject" id="row_{{forloop.parentloop.parentloop.counter0}}_col_{{forloop.parentloop.counter0}}_shelf_{{data.pk}}">
-													{% include 'laboratory/shelfObject_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 %}
-												</div>
-											</div> 
-
-										</div>
 										{% endfor %}
 									{% endif %}
 								</td>
