@@ -4529,9 +4529,25 @@ msgstr "Transferencia realizada con éxito"
 msgid "Need to create a Shelf"
 msgstr "Cree un estante"
 
-#: laboratory/views/shelfobject.py:616
-msgid "The amount sends is more than the laboratory have"
-msgstr "La cantidad a sustraer es más de lo que el laboratorio tiene"
+#: laboratory/views/shelfobject.py:119
+msgid "Need add the same measurement unit that the shelf has"
+msgstr "Necesita agregar la misma unidad de medida que posse el estante"
+
+#: laboratory/views/shelfobject.py:119
+msgid "The quantity is more than the shelf has"
+msgstr "La cantidad es mayor a la que posee el estante"
+
+#: laboratory/views/shelfs.py:109
+msgid "Need add the measurement unit"
+msgstr "Need add the measurement unit"
+
+#: laboratory/views/shelfs.py:140
+msgid "The shelf have objects need to removed them, before changes the measurement unit"
+msgstr "El estante tiene objetos que deben quitarse antes de cambiar la unidad de medida"
+
+#: laboratory/views/shelfs.py:160
+msgid "The quantity is less than the amount to the sum the objects"
+msgstr "La cantidad es menor que la cantidad a la suma de los objetos"
 
 #: msds/models.py:11
 msgid "MSDS File"
