@@ -295,6 +295,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
         response.render()
         return {
             'inner-fragments': {
-                '#shelfmodalbody': response.content
+                '#shelfmodalbody': response.content,
+                "#modalclose": "<script>refresh_description();</script>",
             }
         }
