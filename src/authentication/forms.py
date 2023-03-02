@@ -1,9 +1,10 @@
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as djgenwidgets
-
+from django.core.exceptions import ValidationError
 
 
 class CreateUserForm(forms.ModelForm, GTForm):
@@ -38,5 +39,20 @@ class EditUserForm(forms.ModelForm, GTForm):
 class PasswordChangeForm(GTForm, forms.Form):
     password = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)
     password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput, required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean_password_confirm(self):
+        password = self.cleaned_data.get("password")
+        password_confirm = self.cleaned_data.get("password_confirm")
+        if password and password_confirm:
+            if password != password_confirm:
+                raise ValidationError(_("The two password fields didn’t match."),
+                    code="password_mismatch",
+                )
+        password_validation.validate_password(password_confirm, user=self.user)
+        return password_confirm
 
 

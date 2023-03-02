@@ -200,7 +200,7 @@ user_register_qr = [
     path('download/<int:pk>/', laboratory.get_pdf_register_user_qr, name="download_register_user_qr"),
     path('logentry/<int:pk>/', laboratory.get_logentry_from_registeruserqr, name='logentry_register_user_qr'),
     path('login/<int:pk>/', laboratory.login_register_user_qr, name='login_register_user_qr'),
-    path('create_user_qr/<int:pk>/', laboratory.create_user_qr, name='create_user_qr'),
+    path('create_user_qr/<int:pk>/<int:user>', laboratory.create_user_qr, name='create_user_qr'),
     path('redirect_user_to_labindex/<int:pk>/', laboratory.redirect_user_to_labindex, name='redirect_user_to_labindex'),
 ]
 
