@@ -137,7 +137,7 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         change_unit = unit != self.instance.measurement_unit
 
         if shelfobjects>0 and change_unit:
-            raise ValidationError(_("The shelf has objects need to remove them, before changes the measurement unit"))
+            raise ValidationError(_("The shelf have objects need to removed them, before changes the measurement unit"))
         if discard:
             if unit != None:
                 return unit
@@ -152,16 +152,17 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
     def clean_quantity(self):
         discard = self.cleaned_data['discard']
         quantity = self.cleaned_data['quantity']
-        amount = quantity <= self.instance.quantity and quantity>= self.instance.get_total_refuse()  #get_total_refuse return the amount that the shelf have about shelfobjects
+        amount = quantity >= self.instance.get_total_refuse() #get_total_refuse return the amount that the shelf have about shelfobjects
         if discard:
-            if amount and quantity>0:
+            if amount and quantity > 0:
                 return quantity
             else:
-                raise ValidationError(_('The quantity is less than the amount to the sum the objects'))
-        elif amount:
+                self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
+
+        if amount or quantity==0:
             return quantity
         else:
-            raise ValidationError(_('The quantity is less than the amount to the sum the objects'))
+            self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
 
         return quantity
 
