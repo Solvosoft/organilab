@@ -11,6 +11,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile, Rol
+from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
@@ -371,10 +372,15 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
         self.fields['role'].queryset = role_queryset
         self.fields['organization_register'].queryset = org_queryset
 
+        if new_obj:
+            self.fields['code'].help_text = _("Once registration process conclude this code won't be editable.")
+        else:
+            self.fields['code'].disabled = True
+
     class Meta:
         model = RegisterUserQR
         fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id',
-                  'content_type', 'created_by']
+                  'content_type', 'created_by', 'code']
         widgets = {
             'activate_user': genwidgets.YesNoInput,
             'role': genwidgets.Select,
@@ -383,8 +389,20 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
             'object_id': genwidgets.HiddenInput,
             'content_type': genwidgets.HiddenInput,
             'url': genwidgets.HiddenInput,
-            'created_by': genwidgets.HiddenInput
+            'created_by': genwidgets.HiddenInput,
+            'code': genwidgets.TextInput
         }
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+
+        if code:
+            qr_obj = RegisterUserQR.objects.filter(code=code)
+
+            if qr_obj.exists():
+                raise ValidationError(_("This code is already exists."))
+            else:
+                return code
 
 
 class RegisterForm(forms.ModelForm, GTForm):
@@ -392,6 +410,7 @@ class RegisterForm(forms.ModelForm, GTForm):
     phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
 
     def __init__(self, *args, **kwargs):
+        self.obj = kwargs.pop('obj', None)
         super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
@@ -410,9 +429,12 @@ class RegisterForm(forms.ModelForm, GTForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
+        exclude_pk = []
 
         if email:
-            user_obj = User.objects.filter(email=email)
+            if self.obj:
+                exclude = exclude_pk.append(self.obj)
+            user_obj = User.objects.filter(email=email).exclude(pk__in=exclude_pk)
 
             if user_obj.exists():
                 raise ValidationError(_("Email address is already exists."))
@@ -434,3 +456,19 @@ class LoginForm(GTForm, forms.Form):
         ),
         "inactive": _("This account is inactive."),
     }
+
+class PasswordCodeForm(PasswordChangeForm):
+    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4)
+
+    def __init__(self, *args, **kwargs):
+        self.code = kwargs.pop('code', None)
+        self.user = kwargs.pop('user', None)
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+
+        if code != self.code:
+            raise ValidationError(_("Code didn't match."))
+        else:
+            return code
