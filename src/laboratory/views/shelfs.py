@@ -100,15 +100,71 @@ class ShelfForm(forms.ModelForm, GTForm):
 
     def clean_measurement_unit(self):
         discard= self.cleaned_data['discard']
+        quantity = self.cleaned_data['quantity']
         unit = self.cleaned_data['measurement_unit']
         if discard:
-            if unit!=None:
+            if unit != None and quantity>0:
                 return unit
             else:
                 raise ValidationError(_("Need add the measurement unit"))
         else:
             return unit
+
         return unit
+
+class ShelfUpdateForm(forms.ModelForm, GTForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = Shelf
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
+        widgets = {
+            'name': genwidgets.TextInput,
+            'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'furniture': forms.HiddenInput(),
+            'color':  genwidgets.ColorInput,
+            'discard': genwidgets.CheckboxInput,
+            'quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'description': wysiwyg.TextareaWysiwyg
+        }
+
+    def clean_measurement_unit(self):
+        discard = self.cleaned_data['discard']
+        unit = self.cleaned_data['measurement_unit']
+        shelfobjects = self.instance.get_objects().count()
+        change_unit = unit != self.instance.measurement_unit
+
+        if shelfobjects>0 and change_unit:
+            raise ValidationError(_("The shelf has objects need to remove them, before changes the measurement unit"))
+        if discard:
+            if unit != None:
+                return unit
+            else:
+                raise ValidationError(_("Need add the measurement unit"))
+        else:
+            return unit
+
+        return unit
+
+
+    def clean_quantity(self):
+        discard = self.cleaned_data['discard']
+        quantity = self.cleaned_data['quantity']
+        amount = quantity <= self.instance.quantity and quantity>= self.instance.get_total_refuse()  #get_total_refuse return the amount that the shelf have about shelfobjects
+        if discard:
+            if amount and quantity>0:
+                return quantity
+            else:
+                raise ValidationError(_('The quantity is less than the amount to the sum the objects'))
+        elif amount:
+            return quantity
+        else:
+            raise ValidationError(_('The quantity is less than the amount to the sum the objects'))
+
+        return quantity
+
 
 
 
@@ -178,7 +234,7 @@ class ShelfCreate(AJAXMixin, CreateView):
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"
-    form_class = ShelfForm
+    form_class = ShelfUpdateForm
 
     def get_prefix(self):
         return "shelf-"
