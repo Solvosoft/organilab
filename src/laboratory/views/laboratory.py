@@ -20,12 +20,10 @@ from django.views.generic.edit import FormView
 from weasyprint import HTML
 
 from auth_and_perms.models import Profile, ProfilePermission
-from auth_and_perms.utils import send_email
-from authentication.forms import PasswordChangeForm
 from laboratory import utils
 from laboratory.decorators import has_lab_assigned
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
-    RegisterUserQRForm, RegisterForm, LoginForm
+    RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations, \
     UserOrganization
 from laboratory.utils import organilab_logentry
@@ -433,14 +431,15 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     })
 
 def login_register_user_qr(request, org_pk, lab_pk, pk):
-
+    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
     return render(request, 'laboratory/register_user_qr/login_register_user.html', context={
         'pk': pk,
         'org_pk': org_pk,
         'lab_pk': lab_pk,
         'login_form': LoginForm(),
-        'password_form': PasswordChangeForm(),
-        'register_form': RegisterForm(),
+        'password_form': PasswordCodeForm(user=None, code=user_qr.code),
+        'register_form': RegisterForm(obj=None),
+        'instance': 0,
         'next': reverse('laboratory:redirect_user_to_labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
     })
 
@@ -512,36 +511,46 @@ def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
     return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
 
 
-def create_user_qr(request, org_pk, lab_pk, pk):
+def create_user_qr(request, org_pk, lab_pk, pk, user=None):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    password_form = PasswordCodeForm(user=None, code=user_qr.code)
+    register_form = RegisterForm(obj=None)
+    instance, obj = None, None
 
     if request.method == "POST":
+        if user:
+            instance = get_object_or_404(User, pk=user)
+            obj = instance.pk
+        register_form = RegisterForm(request.POST, instance=instance, obj=obj)
 
-        register_form = RegisterForm(request.POST)
-        password_form = PasswordChangeForm(request.POST)
-
-        if register_form.is_valid() and password_form.is_valid():
-            password = password_form.cleaned_data['password']
-            password_confirm = password_form.cleaned_data['password_confirm']
-            if password == password_confirm:
-                user = register_form.save(commit=False)
-                user.username = register_form.cleaned_data['email']
-                user.set_password(password)
-                if not user_qr.activate_user:
-                    user.is_active = False
-                user.save()
-                organilab_logentry(user, user, ADDITION, 'user',
-                                   changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
-                                   relobj=org_pk)
-
-                organilab_logentry(user, user, ADDITION, 'user',
+        if register_form.is_valid():
+            instance = register_form.save(commit=False)
+            instance.username = register_form.cleaned_data['email']
+            if not user_qr.activate_user:
+                instance.is_active = False
+            instance.save()
+            if not user:
+                organilab_logentry(instance, instance, ADDITION, 'user',
                                    changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
                                    relobj=org_pk)
 
                 id_card = register_form.cleaned_data['id_card']
-                add_user_to_rel_obj(request, user, org_pk, lab_pk, user_qr.role, user_qr.url, id_card)
+                add_user_to_rel_obj(request, instance, org_pk, lab_pk, user_qr.role, user_qr.url, id_card)
+
+            password_form = PasswordCodeForm(request.POST, user=instance, code=user_qr.code)
+            if password_form.is_valid():
+                instance.set_password(password_form.cleaned_data['password'])
+                instance.save()
+                login(request, instance)
                 return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
-            else:
-                messages.error(request, _("Error trying to change your password: Passwords should match"))
-    else:
-        messages.error(request, _("Error, register form is invalid"))
+
+    return render(request, 'laboratory/register_user_qr/login_register_user.html', context={
+        'pk': pk,
+        'org_pk': org_pk,
+        'lab_pk': lab_pk,
+        'login_form': LoginForm(),
+        'password_form': password_form,
+        'register_form': register_form,
+        'instance': instance.pk,
+        'next': reverse('laboratory:redirect_user_to_labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
+    })
