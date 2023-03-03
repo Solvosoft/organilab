@@ -752,5 +752,7 @@ class RegisterUserQR(models.Model):
     organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
     organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
 
+    code = models.CharField(max_length=4, unique=True, null=True)
+
     def __str__(self):
         return f"{self.url}"
