@@ -106,9 +106,8 @@ class ShelfForm(forms.ModelForm, GTForm):
             if unit != None and quantity>0:
                 return unit
             else:
-                raise ValidationError(_("Need add the measurement unit"))
-        else:
-            return unit
+                raise ValidationError(_("Need add the measurement unit or quantity is 0"))
+
 
         return unit
 

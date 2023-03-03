@@ -1,4 +1,6 @@
 # encoding: utf-8
+import uuid
+
 from django import forms
 from django.conf import settings
 from django.contrib import messages
@@ -391,7 +393,8 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
                 'created_by': user,
                 'organization_creator': org_pk,
                 'object_id': lab_pk,
-                'content_type': content_type.pk
+                'content_type': content_type.pk,
+                'code': str(uuid.uuid4())[-4:]
             }
 
             form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
@@ -551,6 +554,6 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
         'login_form': LoginForm(),
         'password_form': password_form,
         'register_form': register_form,
-        'instance': instance.pk,
+        'instance': instance.pk if instance else 0,
         'next': reverse('laboratory:redirect_user_to_labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
     })
