@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 continue
 
             schema = "http%s://"%("" if  settings.DEBUG else "s", )
-            domain = schema + ("localhost:8000" if settings.DEBUG else Site.objects.all().first().domain)
+            domain = schema +  Site.objects.all().first().domain
             url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org.pk, "lab_pk": laboratory.pk})
             url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
                   (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk,
