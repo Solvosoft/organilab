@@ -67,6 +67,22 @@ function closeModal(){
 	$("#createshelfmodal").modal("hide");
 }
 
+function refresh_description(){
+
+    try {
+        const editor = tinymce.get('id_shelf--description')
+        tinymce.remove(editor);
+
+    } catch (e) {
+         console.log(e)
+    };
+
+    setTimeout(function () {
+        show_refuse_elements();
+        gt_find_initialize($("#shelfmodalbody"));
+    }, 500);
+
+}
 function processResponse(data) {
 	$("#modal_shelf--type_id").remove();
 	$("#id_shelf--description").remove()
