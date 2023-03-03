@@ -129,7 +129,7 @@ lab_features_urls = [
 edit_objects = [
     path('edit_object/<int:pk>/', shelfobject.add_object,  name="edit_object"),
     path('get_object_detail', shelfobject.send_detail, name="get_object_detail"),
-    path('update_transfer/<int:pk>/', shelfobject.objects_transfer, name="update_transfer"),
+    path('update_transfer/<int:org_pk>/<int:lab_pk>/<int:transfer_pk>/<int:shelf_pk>', shelfobject.objects_transfer, name="update_transfer"),
     path('shelfs_list/', shelfobject.get_shelf_list, name="get_shelfs"),
     path('delete_transfer/<int:pk>/', shelfobject.delete_transfer, name="delete_transfer"),
 
