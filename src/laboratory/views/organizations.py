@@ -134,6 +134,10 @@ class OrganizationCreateView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        if self.object.parent:
+            self.object.position=self.object.parent.position+1
+            self.object.save()
+
         orguserman=OrganizationUserManagement.objects.create(
             organization=self.object
         )
