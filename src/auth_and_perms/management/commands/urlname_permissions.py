@@ -1025,7 +1025,17 @@ URLNAME_PERMISSIONS = {
             'name': 'Manage Disposal',
             'category': 'Shelf',
             'permission': 'laboratory.can_manage_disposal'
-        }
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+            'name': 'Add Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_add_disposal'
+        },
     ],
     'addusersorganization': [
         {
@@ -2744,11 +2754,33 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.delete_registeruserqr'
         },
     ],
-    'disposal':[
+    'manage_disposal':[
         {
             'name': 'Manage Disposal',
             'category': 'Shelf',
             'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+            'name': 'Add Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_add_disposal'
+        },
+    ],
+    'view_disposal':[
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
         },
         {
         'name': 'View Profile',
