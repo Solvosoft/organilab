@@ -459,7 +459,7 @@ class LoginForm(GTForm, forms.Form):
 
 
 class PasswordCodeForm(PasswordChangeForm):
-    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4)
+    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4, label=_("Code"))
 
     def __init__(self, *args, **kwargs):
         self.code = kwargs.pop('code', None)
