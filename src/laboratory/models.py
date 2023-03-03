@@ -259,7 +259,9 @@ class Shelf(models.Model):
 
 
     class Meta:
-        permissions = [('can_manage_disposal', 'Can manage disposal')]
+        permissions = [('can_manage_disposal', 'Can manage disposal'),
+                       ('can_add_disposal', 'Can add disposal'),
+                       ('can_view_disposal', 'Can view disposal')]
 
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))

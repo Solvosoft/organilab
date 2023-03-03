@@ -20,7 +20,6 @@ from laboratory.decorators import has_lab_assigned
 from ..utils import organilab_logentry
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom

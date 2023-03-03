@@ -179,23 +179,27 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         filters = {}
         org = self.request.GET.get('org', None)
-        url = self.request.GET.get('url', None)
+        qr_obj = self.request.GET.get('qr_obj', None)
         queryset = self.queryset.none()
 
-        if not url:
+        if not qr_obj:
             log_entries = get_logentries_org_management(self, org)
             filters.update({'pk__in': log_entries})
         else:
-            self.serializer_class = LogEntryUserDataTableSerializer
+            if qr_obj.isnumeric():
+                self.serializer_class = LogEntryUserDataTableSerializer
+                qr_obj = int(qr_obj)
+                detail = [
+                    "[{'changed': {'fields': ['Login', %d]}}]" %(qr_obj),
+                    "[{'added': {'fields': ['Register', %d]}}]" %(qr_obj)
+                ]
 
-            queryset = LogEntry.objects.filter(
-                Q(change_message__icontains="Login") | Q(change_message__icontains="Register")
-            )
-
-            filters.update({
-                'action_flag__in': [1, 2],
-                'change_message__icontains': url
-            })
+                filters.update({
+                    'action_flag__in': [1, 2],
+                    'content_type__app_label': 'auth',
+                    'content_type__model': 'user',
+                    'change_message__in': detail
+                })
 
         if filters:
             queryset = self.queryset.filter(**filters).distinct()
