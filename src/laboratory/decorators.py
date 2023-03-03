@@ -58,6 +58,6 @@ def has_lab_assigned(lab_pk='lab_pk'):
                 else:
                     return redirect(reverse('permission_denied'))
             else:
-                return redirect(reverse('login'))
+                return redirect(reverse('login')+"next=")
         return wrap
     return decorator

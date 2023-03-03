@@ -14,6 +14,19 @@
 </style>
 {% endblock %}
 
+{% block js %}
+<script>
+$(document).ready(function(){
+    if(document.location.hash){
+        let valnext=$('input[name="next"]').val();
+        $('input[name="next"]').val(
+            valnext+document.location.hash );
+    }
+});
+</script>
+
+{% endblock %}
+
 {% block body %}
 <div class="navbar  login_title">
         <a href="/" class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
