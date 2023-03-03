@@ -457,8 +457,9 @@ class LoginForm(GTForm, forms.Form):
         "inactive": _("This account is inactive."),
     }
 
+
 class PasswordCodeForm(PasswordChangeForm):
-    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4)
+    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4, label=_("Code"))
 
     def __init__(self, *args, **kwargs):
         self.code = kwargs.pop('code', None)
@@ -472,3 +473,9 @@ class PasswordCodeForm(PasswordChangeForm):
             raise ValidationError(_("Code didn't match."))
         else:
             return code
+
+class ShelfObjectOptions(GTForm, forms.Form):
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    options = forms.IntegerField(required=True)
+    shelf_object = forms.IntegerField(required=True)
+

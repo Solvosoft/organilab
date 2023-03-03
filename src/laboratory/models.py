@@ -248,15 +248,18 @@ class Shelf(models.Model):
         try:
             result=(self.get_total_refuse()/self.quantity)*100
         except ZeroDivisionError:
-            result=100
+            result=0
         return result
 
     def get_measurement_unit_display(self):
-        return str(self.measurement_unit)
+        return str(self.measurement_unit) if self.measurement_unit else _('Unknown')
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
+
+    class Meta:
+        permissions = [('can_manage_disposal', 'Can manage disposal')]
 
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
@@ -752,7 +755,7 @@ class RegisterUserQR(models.Model):
     organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
     organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
 
-    code = models.CharField(max_length=4, unique=True, null=True)
+    code = models.CharField(max_length=4, unique=True, null=True, verbose_name=_("Code"))
 
     def __str__(self):
         return f"{self.url}"

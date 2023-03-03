@@ -21,6 +21,7 @@ from laboratory.forms import AddOrganizationForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
     OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import ListView, DeleteView
 
 
 def getLevelClass(level):
@@ -193,6 +194,26 @@ def assign_rol_permissions(user, rols):
     perms = list(rols.values_list('permissions', flat=True))
     user.user_permissions.add(*perms)
 
+
+@method_decorator(permission_required("auth_and_perms.change_rol"), name="dispatch")
+class ListRolByOrganization(ListView):
+    model = Rol
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        return queryset
+
+
+@method_decorator(permission_required("auth_and_perms.delete_rol"), name="dispatch")
+class DeleteRolByOrganization(DeleteView):
+    model = Rol
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        return queryset
+
+    def get_success_url(self):
+        return reverse('auth_and_perms:list_rol_by_org', args=[self.org])
 
 def add_rol_by_laboratory(request):
     cc_lab = ContentType.objects.get(app_label='laboratory', model="laboratory")
