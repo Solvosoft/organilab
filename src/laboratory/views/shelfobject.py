@@ -626,22 +626,28 @@ def get_shelf_list(request):
     aux = []
     unit = None
     msg= None
+
     if form.is_valid():
         lab = form.cleaned_data['lab'].pk
         furnitures = Furniture.objects.filter(labroom__laboratory__id=lab)
+
         transfer_detail = TranferObject.objects.filter(pk=form.cleaned_data['id']).first()
+
         if furnitures and transfer_detail:
             msg = transfer_detail.get_object_detail()
             unit = transfer_detail.object.measurement_unit
+
             for furniture in furnitures:
                 replacements = [('[', ''), (']', '')]
-                dataconfig =furniture.dataconfig
+                dataconfig = furniture.dataconfig
+
                 for simbol,config in replacements:
+
                     if simbol in dataconfig:
                         dataconfig = dataconfig.replace(simbol,"")
-                data = dataconfig.split(',')
 
-                if '' not in data:
+                data = [x for x in dataconfig.split(',') if x != '']
+                if len(data)>0:
                     for shelf in Shelf.objects.filter(pk__in=data):
                         if unit == shelf.measurement_unit or shelf.measurement_unit==None:
                             aux.append({'id': shelf.pk, 'shelf': shelf.get_shelf()})
