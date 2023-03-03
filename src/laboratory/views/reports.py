@@ -9,6 +9,7 @@ from datetime import datetime, date
 
 import django_excel
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.db.models.aggregates import Sum, Min
@@ -202,32 +203,33 @@ def report_labroom_building(request, *args, **kwargs):
 
 @has_lab_assigned()
 @permission_required('laboratory.do_report')
-def report_shelf_objects(request, *args, **kwargs):
-    var = request.GET.get('pk')
-    org = kwargs.get('org_pk')
+def report_shelf_objects(request, org_pk, lab_pk, pk):
 
-    if var is None:
-        if 'lab_pk' in kwargs:
+    if not pk:
+        if lab_pk:
             shelf_objects = ShelfObject.objects.filter(
-                shelf__furniture__labroom__laboratory__pk=kwargs.get('lab_pk'))
+                shelf__furniture__labroom__laboratory__pk=lab_pk)
         else:
             shelf_objects = ShelfObject.objects.all()
     else:
-        shelf_objects = ShelfObject.objects.filter(pk=var)
+        shelf_objects = ShelfObject.objects.filter(pk=pk)
 
     context = {
+        'user': request.user,
+        'title': "Shelf Object Report",
         'verbose_name': "Organilab Shelf Objects Report",
         'object_list': shelf_objects,
         'datetime': timezone.now(),
         'request': request,
-        'org_pk': org,
-        'laboratory': kwargs.get('lab_pk')
+        'org_pk': org_pk,
+        'laboratory': lab_pk,
+        'domain': "file://%s" % (str(settings.MEDIA_ROOT).replace("/media/", ''),)
     }
 
     template = get_template('pdf/shelf_object_pdf.html')
 
     html = template.render(context=context)
-    page = HTML(string=html, encoding='utf-8').write_pdf()
+    page = HTML(string=html, encoding='utf-8', base_url=request.build_absolute_uri()).write_pdf()
 
     response = HttpResponse(page, content_type='application/pdf')
 

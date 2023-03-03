@@ -2,8 +2,8 @@
 {% load i18n static laboratory%}
 {% load urlname_tags %}
 {% block pre_head %}
-    {% define_urlname_action 'profile' %}
-    {% define_urlname_action 'password_change' %}
+{% define_urlname_action 'profile' %}
+{% define_urlname_action 'password_change' %}
 {% endblock %}
 {% block content %}
 
@@ -29,8 +29,7 @@
             </div>
         </div>
     </form>
-    <form action="{% url 'laboratory:password_change' user.pk %}" method="POST">
-        {% csrf_token %}
+
         <div id="changepasswordmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -39,7 +38,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
+                        <form action="{% url 'laboratory:password_change' user.pk %}" method="POST" id="passform">
+                        {% csrf_token %}
                         {{ password_form.as_horizontal }}
                         <div class="form-group row">
                             <div class="col-sm-12">
@@ -50,17 +50,60 @@
 
                             </div>
                         </div>
-
+                    </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="submit" class="btn btn-primary" id="save_password">{% trans 'Save' %}</button>
+                        <button type="button" class="btn btn-primary" id="save_password"
+                                data-url="{% url 'laboratory:profile' user.pk %}">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
 
         </div>
-    </form>
+
 
 </div>
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+
+    function load_errors(error_list, obj){
+        ul_obj = "<ul class='errorlist pass'>";
+        error_list.forEach((item)=>{
+            ul_obj += "<li>"+item+"</li>";
+        });
+        ul_obj += "</ul>"
+        $(obj).after(ul_obj);
+        return ul_obj;
+    }
+
+   $("#save_password").click(()=>{
+        var error_list = "<ul class='errorlist pass'>";
+        $.ajax({
+            url: $("#passform").attr('action'),
+            method: "POST",
+            data: $('#passform').serialize(),
+            headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+            dataType: 'json'
+            }).done(function(data){
+                $('ul.pass').remove();
+                if(data.result){
+                    window.location = $("#save_password").data('url');
+                }else if(data.errors){
+                    if(data.errors.password){
+                        load_errors(data.errors.password, "#id_password");
+                    }
+                    if(data.errors.password_confirm){
+                         load_errors(data.errors.password_confirm, "#id_password_confirm");
+                    }
+                }
+        });
+   });
+
+</script>
 {% endblock %}

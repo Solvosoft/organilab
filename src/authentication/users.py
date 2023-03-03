@@ -11,8 +11,9 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView
 from django.shortcuts import get_object_or_404
 from auth_and_perms.models import Profile
-
+from django.utils.translation import gettext_lazy as _
 from authentication.forms import PasswordChangeForm, EditUserForm
+from django.http import JsonResponse
 
 
 @method_decorator(permission_required("auth.change_user"), name="dispatch")
@@ -34,7 +35,7 @@ class ChangeUser(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChangeUser, self).get_context_data()
-        context['password_form'] = PasswordChangeForm()
+        context['password_form'] = PasswordChangeForm(user=self.object)
         return context
 
     def form_valid(self, form):
@@ -56,21 +57,19 @@ def get_profile(request, *args, **kwargs):
 @sensitive_post_parameters('password', 'password_confirm')
 @require_http_methods(["POST"])
 def password_change(request, pk):
-    if str(request.user.pk) == pk:
+    response = {}
+    if request.user.pk == pk:
         user = request.user
-        form = PasswordChangeForm(request.POST)
+        form = PasswordChangeForm(request.POST, user=request.user)
         if form.is_valid():
             password = form.cleaned_data['password']
-            password_confirm = form.cleaned_data['password_confirm']
-            if password == password_confirm:
-                user.set_password(password)
-                user.save()
-                login(request, user)
-                messages.success(request, "Contraseña cambiada exitosamente.")
-            else:
-                messages.error(request, "Error al intentar cambiar su contraseña: Las contraseñas deben coincidir.")
+            user.set_password(password)
+            user.save()
+            login(request, user)
+            messages.success(request, _("Password was changed successfully"))
+            response['result'] = "ok"
         else:
-            messages.error(request,
-                           "Error al intentar cambiar su contraseña: Asegurese de llenar los campos y que el formato sea correcto.")
-        return redirect('laboratory:profile', pk=pk)
-    return HttpResponseNotFound('Usuario intentando actualizar un dato que no le pertenece')
+            response['errors'] = form.errors
+        return JsonResponse(response)
+    else:
+        return HttpResponseNotFound(_("User is trying to update data doesn't belong to him"))
