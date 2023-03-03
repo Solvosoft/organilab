@@ -479,3 +479,7 @@ class ShelfObjectOptions(GTForm, forms.Form):
     options = forms.IntegerField(required=True)
     shelf_object = forms.IntegerField(required=True)
 
+class ShelfObjectListForm(GTForm, forms.Form):
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    id = forms.IntegerField(required=True)
+
