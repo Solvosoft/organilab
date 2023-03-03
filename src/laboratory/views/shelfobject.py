@@ -431,7 +431,7 @@ def add_object(request, pk):
                 try:
                     amount = float(form.cleaned_data['amount'])
                 except ValueError:
-                    return JsonResponse({'msg': False})
+                    return JsonResponse({'msg': _('The quantity field only accept numbers not letter'), 'status':False})
                 old = shelfobject.quantity
                 new = old + amount
                 shelfobject.quantity = new
