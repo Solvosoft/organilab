@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
 {% load urlname_tags %}
+{% load gtpermissions %}
 {% block pre_head %}
 	{% define_urlname_action 'edit_object' %}
 	{% define_urlname_action 'get_object_detail' %}
@@ -8,8 +9,11 @@
 	{% define_urlname_action 'get_shelfobject_limit' %}
 	{% define_urlname_action 'date_validator' %}
 	{% define_urlname_action 'search' %}
+	{% define_urlname_action 'manage_disposal' %}
 {% endblock %}
 {% block content %}
+{% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_add_disposal' as admin_add_disposal_perm %}
+
 <input type="hidden" id="edit_url" value="{% url 'laboratory:edit_object' pk=laboratory %}">
 <input type="hidden" id="detail_url" value="{% url 'laboratory:get_object_detail' %}">
 {% include 'laboratory/search_widget.html' %}
@@ -36,7 +40,16 @@
       <div class="accordion-body card-body">
           <div class="row">
               <div class="col-md-4">
-                  {% if perms.reservations_management.add_reservedproducts %}
+                  {% if object.shelf.discard %}
+                    {% if admin_add_disposal_perm %}
+                        <a data-bs-toggle="modal"
+                           data-bs-target="#modal_reservation"
+                           title="{% trans 'Reserve/Add/Transfer/Substract' %}"
+                           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{object.pk}},{{ object.object.pk}},{{request.user.id}},'{{object.get_measurement_unit_display}}','{{object.shelf.discard}}')"
+                           class="btn btn-success"><i class="fa fa-book" aria-hidden="true"></i> {% trans "Edit" %}
+                        </a>
+                    {% endif %}
+                  {% elif perms.reservations_management.add_reservedproducts %}
                     <a data-bs-toggle="modal"
                        data-bs-target="#modal_reservation"
                        title="{% trans 'Reserve/Add/Transfer/Substract' %}"
