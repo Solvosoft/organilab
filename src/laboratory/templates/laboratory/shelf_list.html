@@ -1,5 +1,6 @@
 {% load i18n laboratory %}
-
+{% load gtpermissions %}
+{% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_add_disposal' 'laboratory.can_view_disposal' as anyperm %}
 {% if perms.laboratory.view_shelfobject %}
 	<div class="card" style="margin-top:3.3rem">
 		<div class="card-header">{% trans 'Shelves' %}</div>
@@ -12,8 +13,10 @@
 								<td >
 									{% if col %}
 										{% for data in col %}
-											{% if data.discard == True and perms.laboratory.can_manage_disposal %}
-													{% include 'laboratory/components/shelf_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 data=data %}
+											{% if data.discard %}
+													{% if anyperm %}
+														{% include 'laboratory/components/shelf_list_discard.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 data=data anyperm=anyperm %}
+													{% endif %}
 											{% else %}
 													{% include 'laboratory/components/shelf_list.html' with col=forloop.parentloop.counter0 row=forloop.parentloop.parentloop.counter0 data=data %}
 											{% endif %}
