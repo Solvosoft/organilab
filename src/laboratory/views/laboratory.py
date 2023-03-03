@@ -363,10 +363,11 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
         new_obj = False
 
     if request.method == "POST":
-        form = RegisterUserQRForm(request.POST, instance=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
+        form = RegisterUserQRForm(request.POST, instance=obj, obj=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
         if form.is_valid():
+            organization_register = form.cleaned_data['organization_register']
             instance = form.save()
-            url = domain + reverse('laboratory:login_register_user_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk,
+            url = domain + reverse('laboratory:login_register_user_qr', kwargs={'org_pk': organization_register.pk, 'lab_pk': lab_pk,
                                                                                 'pk': instance.pk})
             instance.url = url
             img, file = utils.generate_QR_img_file(url, user, extension_file=".svg", file_name="qrcode")
@@ -382,7 +383,7 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
     else:
 
         if obj:
-            form = RegisterUserQRForm(instance=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
+            form = RegisterUserQRForm(instance=obj, obj=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
         else:
             content_type = ContentType.objects.filter(
                 app_label='laboratory',
@@ -397,7 +398,7 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
                 'code': str(uuid.uuid4())[-4:]
             }
 
-            form = RegisterUserQRForm(initial=initial_form, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
+            form = RegisterUserQRForm(initial=initial_form, obj=obj, org_pk=org_pk, lab_pk=lab_pk, new_obj=new_obj)
 
     context = {
         'form': form,
@@ -430,7 +431,7 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     return render(request, 'laboratory/register_user_qr/logentry_list.html', context={
         'org_pk': org_pk,
         'laboratory': lab_pk,
-        'url': register_qr.url,
+        'qr_obj': register_qr.pk,
     })
 
 def login_register_user_qr(request, org_pk, lab_pk, pk):
@@ -447,7 +448,7 @@ def login_register_user_qr(request, org_pk, lab_pk, pk):
     })
 
 
-def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, url, id_card=None):
+def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
     login(request, user)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
@@ -469,7 +470,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, url, id_card=None):
                            relobj=org_pk)
 
         # Register Log - relobj(USER) - action(ADDITION)
-        organilab_logentry(user, user, ADDITION, 'user', changed_data=['Register', url], relobj=org)
+        organilab_logentry(user, user, ADDITION, 'user', changed_data=['Register', qr_obj.pk], relobj=org)
     else:
         profile = user.profile
 
@@ -495,7 +496,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, url, id_card=None):
         pp = pp.first()
         organilab_logentry(user, pp, CHANGE, 'profile permission',
                            changed_data=['rol'], relobj=org_pk)
-    pp.rol.add(role)
+    pp.rol.add(qr_obj.role)
 
     user_org = UserOrganization.objects.filter(organization=org, user=user)
 
@@ -505,12 +506,12 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, role, url, id_card=None):
                            changed_data=['organization', 'user'], relobj=org_pk)
 
     #Login Log - relobj(USER) - action(CHANGE)
-    organilab_logentry(user, user, CHANGE, 'user', changed_data=['Login', url], relobj=org)
+    organilab_logentry(user, user, CHANGE, 'user', changed_data=['Login', qr_obj.pk], relobj=org)
 
 
 def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
-    add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr.role, user_qr.url, id_card=None)
+    add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr, id_card=None)
     return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
 
 
@@ -538,7 +539,7 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                                    relobj=org_pk)
 
                 id_card = register_form.cleaned_data['id_card']
-                add_user_to_rel_obj(request, instance, org_pk, lab_pk, user_qr.role, user_qr.url, id_card)
+                add_user_to_rel_obj(request, instance, org_pk, lab_pk, user_qr, id_card)
 
             password_form = PasswordCodeForm(request.POST, user=instance, code=user_qr.code)
             if password_form.is_valid():

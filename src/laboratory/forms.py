@@ -348,6 +348,7 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
 class RegisterUserQRForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+        self.obj = kwargs.pop('obj', None)
         org_pk = kwargs.pop('org_pk', None)
         lab_pk = kwargs.pop('lab_pk', None)
         new_obj = kwargs.pop('new_obj', False)
@@ -398,6 +399,8 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
 
         if code:
             qr_obj = RegisterUserQR.objects.filter(code=code)
+            if self.obj:
+                qr_obj = qr_obj.exclude(pk=self.obj.pk)
 
             if qr_obj.exists():
                 raise ValidationError(_("This code is already exists."))
@@ -429,12 +432,11 @@ class RegisterForm(forms.ModelForm, GTForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        exclude_pk = []
 
         if email:
+            user_obj = User.objects.filter(email=email)
             if self.obj:
-                exclude = exclude_pk.append(self.obj)
-            user_obj = User.objects.filter(email=email).exclude(pk__in=exclude_pk)
+                user_obj = user_obj.exclude(pk=self.obj)
 
             if user_obj.exists():
                 raise ValidationError(_("Email address is already exists."))
