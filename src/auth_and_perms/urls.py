@@ -30,6 +30,8 @@ urlpatterns = [
     path('organization/manage/addusersorganization/<int:pk>/',  orgstruct.add_users_organization, name='addusersorganization'),
     path('organization/manage/users/add/<int:pk>/', orgstruct.AddUser.as_view(), name="add_user"),
     path('organization/manage/rols/add/', orgstruct.add_rol_by_laboratory, name="add_rol_by_laboratory"),
+    path('organization/manage/rols/list/<int:org_pk>/', orgstruct.ListRolByOrganization.as_view(), name="list_rol_by_org"),
+    path('organization/manage/rols/del/<int:org_pk>/<int:pk>', orgstruct.DeleteRolByOrganization.as_view(), name="del_rol_by_org"),
     path('organization/manage/rols/copy/<int:pk>/', orgstruct.copy_rols, name="copy_rols"),
     path('organization/manage/relorgcont/add/', orgstruct.add_contenttype_to_org, name="add_contenttype_to_org"),
     path('digitalsignature/notify', SignDataRequestViewSet.as_view({'post': 'create'}))

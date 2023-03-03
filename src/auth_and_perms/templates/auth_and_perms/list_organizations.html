@@ -34,7 +34,7 @@
                     >{{node.0.node}}</h4>
                 </div>
                 <div id="collapse{{node.0.node.pk}}" class="collapse">
-                    <div class="role">
+                    <div class="role table-responsive">
                         {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
                     </div>
                     <div class="row">
@@ -82,6 +82,13 @@
                             <i class="fa fa-file-text-o"></i></a>
                     </li>
                     {% endif %}
+                    {% if perms.auth_and_perms.change_rol %}
+                    <li class="list-group-item">
+                        <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.node.pk %}"  title="{% trans 'Rol List' %}">
+                            <i class="fa fa-list-alt"></i></a>
+                    </li>
+                    {% endif %}
+
 
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
@@ -142,8 +149,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="copy_rol_container">
+                        <div id="copy_rol_container"><label>{% trans 'Select roles to copy' %} </label>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
