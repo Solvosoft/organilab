@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'copy_rols' %}
+{% endblock %}
+{% block title %}{% trans 'Delete Organization Rol' %}{% endblock %}
+
+{% block content %}
+<div class="container">
+<form action="" method="post">{% csrf_token %}
+<p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+    <h3 class="text-center text-info">{% trans 'Current permissions' %}</h3>
+<div class="row  m-2">
+{% for perm in object.permissions.all %}
+  <div class="col-4 border border-primary">   {{perm.name }}</div>
+{% endfor %}
+</div>
+<input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+</form>
+
+</div>
+{% endblock%}
