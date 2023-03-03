@@ -580,7 +580,7 @@ def transfer_object(request, pk, elements_form):
         amount = float(request.POST.get('amount_send'))
     except ValueError:
         return JsonResponse({'status': False, 'msg': _('Only can accept whole numbers or decimal numbers with .')})
-    obj = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object'].pk).first()
+    obj = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object']).first()
     template = render_to_string(template_name="laboratory/components/shelfobject.html",
                                 context={'shelfobject': obj, 'laboratory': elements_form.cleaned_data['lab'].pk,
                                          'org_pk': elements_form.cleaned_data['lab'].organization.pk},
