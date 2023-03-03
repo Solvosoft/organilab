@@ -16,7 +16,7 @@ from laboratory.models import LaboratoryRoom, Laboratory
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-from laboratory.decorators import has_lab_assigned
+
 from ..utils import organilab_logentry
 
 
@@ -41,7 +41,7 @@ class LaboratoryRoomsList(ListView):
         return context
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
@@ -69,7 +69,7 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -89,7 +89,7 @@ class LabroomUpdate(UpdateView):
         return super(LabroomUpdate, self).form_valid(form)
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
@@ -106,7 +106,7 @@ class LaboratoryRoomDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom

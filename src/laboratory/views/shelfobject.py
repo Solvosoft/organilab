@@ -29,7 +29,6 @@ from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
-from laboratory.decorators import has_lab_assigned
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
@@ -218,7 +217,6 @@ class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
         }
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.add_shelfobject'), name='dispatch')
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
@@ -283,7 +281,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
                 '#shelfobjectCreate': response.content
             }
         }
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -318,7 +315,6 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         return kwargs
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -368,7 +364,6 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         }
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.delete_shelfobject'), name='dispatch')
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject

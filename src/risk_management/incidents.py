@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from weasyprint import HTML
 
-from laboratory.decorators import has_lab_assigned
+
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from laboratory.views import djgeneric
@@ -18,7 +18,6 @@ from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
 class IncidentReportList(djgeneric.ListView):
     model = IncidentReport
@@ -50,7 +49,6 @@ class IncidentReportList(djgeneric.ListView):
             context['pgparams'] = '?'
         return context
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.add_incidentreport'), name="dispatch")
 class IncidentReportCreate(djgeneric.CreateView):
     model = IncidentReport
@@ -81,7 +79,6 @@ class IncidentReportCreate(djgeneric.CreateView):
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
         return success_url
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.change_incidentreport'), name="dispatch")
 class IncidentReportEdit(djgeneric.UpdateView):
     model = IncidentReport
@@ -106,7 +103,6 @@ class IncidentReportEdit(djgeneric.UpdateView):
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
         return success_url
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.delete_incidentreport'), name="dispatch")
 class IncidentReportDelete(djgeneric.DeleteView):
     model = IncidentReport
@@ -121,7 +117,6 @@ class IncidentReportDelete(djgeneric.DeleteView):
         success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
         return success_url
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
 class IncidentReportDetail(djgeneric.DetailView):
     model = IncidentReport
@@ -165,7 +160,7 @@ _('Laboratories'),
 
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_incidentreport(request, *args, **kwargs):
     var = request.GET.get('pk', '')
