@@ -1020,6 +1020,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Organization Structure Relations',
             'category': 'Organization Structure Relations',
             'permission': 'laboratory.view_organizationstructurerelations'
+        },
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
         }
     ],
     'addusersorganization': [
@@ -1608,6 +1613,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
         }
     ],
     'get_object_detail': [
@@ -2733,5 +2743,24 @@ URLNAME_PERMISSIONS = {
             'category': 'Register User QR Code',
             'permission': 'laboratory.delete_registeruserqr'
         },
+    ],
+    'disposal':[
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+        'name': 'View Profile',
+        'category': 'Profile',
+        'permission': 'auth_and_perms.view_profile'
+        },
+    ],
+    'profile_detail':[
+        {
+        'name': 'View Profile',
+        'category': 'Profile',
+        'permission': 'auth_and_perms.view_profile'
+    }
     ],
 }

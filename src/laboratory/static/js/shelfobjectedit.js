@@ -7,9 +7,7 @@ function processResponseshelfobjectCreate(dat) {
     for(var i=0; i<options.options.length; i++){
         let option = options.options[i]
         if(options.value!=""){
-
             if(option.value!=options.value){
-                console.log(option.value)
                 option.setAttribute('disabled',true)
                 }else{
                 option.setAttribute('selected',true)
