@@ -73,7 +73,6 @@ msgstr "Cantidad"
 msgid "Unit"
 msgstr "Unidad"
 
-
 #: academic/forms.py:49
 #: laboratory/templates/laboratory/reservation_modal.html:71
 #: reservations_management/models.py:67
@@ -2050,11 +2049,11 @@ msgstr "Agregar Nuevo Rol"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:126
 msgid "Copy Rols"
-msgstr "Roles"
+msgstr "Copiar Roles"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:132
 msgid "Rol name"
-msgstr "Nombre del producto"
+msgstr "Nombre del role"
 
 #: auth_and_perms/templates/auth_and_perms/list_organizations.html:137
 msgid "Copy permissions from other roles?"
