@@ -6,8 +6,10 @@ Created on 26/12/2016
 '''
 
 import json
+from base64 import b64decode
 
 import cairosvg
+import base64
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
@@ -751,8 +753,8 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject, pk=pk)
     try:
         file = shelfobject.shelf_object_qr
-        response = HttpResponse(file, content_type='application/png')
+        response = HttpResponse(file, content_type='image/svg')
     except IOError:
         return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=shelfobject.png'
+    response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
