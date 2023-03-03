@@ -148,6 +148,13 @@
 {% endblock %}
 
 {% block js %}
+  <script>
+    const translations_shelf_modal = {
+      title:"{% trans 'Do you want to delete this shelf?' %}",
+      yes:"{% trans 'Yes, delete it' %}",
+      cancel:"{% trans 'Cancel' %}"
+    };
+  </script>
   <script src="{% static 'js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}"></script>
 {% endblock %}
