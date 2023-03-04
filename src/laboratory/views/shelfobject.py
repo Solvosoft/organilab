@@ -32,7 +32,8 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.decorators import has_lab_assigned
-from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions
+from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
+    ShelfObjectListForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -433,7 +434,7 @@ def add_object(request, pk):
                 try:
                     amount = float(form.cleaned_data['amount'])
                 except ValueError:
-                    return JsonResponse({'msg': False})
+                    return JsonResponse({'msg': _('The quantity field only accept numbers not letter'), 'status':False})
                 old = shelfobject.quantity
                 new = old + amount
                 shelfobject.quantity = new
@@ -622,26 +623,40 @@ class ListTransferObjects(ListView):
 
 @login_required()
 def get_shelf_list(request):
-    lab = int(request.POST['lab'])
-    furniture = Furniture.objects.filter(labroom__laboratory__id=lab).first()
-    shelfs = []
+    form = ShelfObjectListForm(request.POST)
     data = None
-    if furniture:
-        replacements = [('[', ''), (']', '')]
-        dataconfig =furniture.dataconfig
-        for simbol,config in replacements:
-            if simbol in dataconfig:
-                dataconfig = dataconfig.replace(simbol,"")
-        data = dataconfig.split(',')
-
-        if '' not in data:
-            shelfs = Shelf.objects.filter(pk__in=data)
-    transfer_detail = TranferObject.objects.filter(pk=int(request.POST.get('id'))).first()
     aux = []
-    for shelf in shelfs:
-        aux.append({'id': shelf.pk, 'shelf': shelf.get_shelf()})
+    unit = None
+    msg= None
+
+    if form.is_valid():
+        lab = form.cleaned_data['lab'].pk
+        furnitures = Furniture.objects.filter(labroom__laboratory__id=lab)
+
+        transfer_detail = TranferObject.objects.filter(pk=form.cleaned_data['id']).first()
+
+        if furnitures and transfer_detail:
+            msg = transfer_detail.get_object_detail()
+            unit = transfer_detail.object.measurement_unit
+
+            for furniture in furnitures:
+                replacements = [('[', ''), (']', '')]
+                dataconfig = furniture.dataconfig
+
+                for simbol,config in replacements:
+
+                    if simbol in dataconfig:
+                        dataconfig = dataconfig.replace(simbol,"")
+
+                data = [x for x in dataconfig.split(',') if x != '']
+                if len(data)>0:
+                    for shelf in Shelf.objects.filter(pk__in=data):
+                        if unit == shelf.measurement_unit or shelf.measurement_unit==None:
+                            aux.append({'id': shelf.pk, 'shelf': shelf.get_shelf()})
+        else:
+            msg=form.errors
     data = json.dumps(aux)
-    return JsonResponse({'data': data, 'msg': transfer_detail.get_object_detail()})
+    return JsonResponse({'data': data, 'msg': msg})
 
 
 @permission_required('laboratory.add_tranferobject')

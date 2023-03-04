@@ -207,7 +207,7 @@ class Shelf(models.Model):
     quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-    description= models.TextField(null=True,blank=True, default="")
+    description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
