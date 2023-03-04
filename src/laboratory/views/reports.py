@@ -26,7 +26,7 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
 
 from auth_and_perms.models import Profile
-from laboratory.decorators import has_lab_assigned
+
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, SustanceCharacteristics, PrecursorReport
@@ -69,7 +69,7 @@ def make_book_organization_laboratory(objects):
     return dev
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_organization_building(request, *args, **kwargs):
     var = request.GET.get('organization')
@@ -162,7 +162,7 @@ def make_book_laboratory(rooms):
     return content
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_labroom_building(request, *args, **kwargs):
     org=None
@@ -201,7 +201,7 @@ def report_labroom_building(request, *args, **kwargs):
     return response
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_shelf_objects(request, org_pk, lab_pk, pk):
 
@@ -253,7 +253,7 @@ def make_book_limited_reached(objects):
     return dev
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_limited_shelf_objects(request, *args, **kwargs):
     def get_limited_shelf_objects(query):
@@ -348,7 +348,7 @@ def make_book_objects(objects, summary=False, type_id=None, lab_pk=None):
                                            ])
     return content
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_objects(request, *args, **kwargs):
     var = request.GET.get('pk')
@@ -420,7 +420,7 @@ def report_objects(request, *args, **kwargs):
     return response
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_reactive_precursor_objects(request, *args, **kwargs):
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
@@ -496,7 +496,7 @@ def make_book_furniture_objects(furnitures):
     return content
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.do_report')
 def report_furniture(request, *args, **kwargs):
     var = request.GET.get('pk')
@@ -568,7 +568,6 @@ def report_h_code(request, *args, **kwargs):
     return response
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
@@ -603,7 +602,6 @@ class ObjectList(ListView):
         return context
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
@@ -622,7 +620,6 @@ class LimitedShelfObjectList(ListView):
         return context
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
@@ -667,7 +664,6 @@ class FilterForm(GTForm, forms.Form):
         ('ods', 'ODS')
     ), required=False,label=_('Format'))
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LogObjectView(ReportListView):
     model = ObjectLogChange
@@ -765,7 +761,6 @@ class LogObjectView(ReportListView):
                          ])
         return book
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class PrecursorsView(ReportListView):
     model = PrecursorReport

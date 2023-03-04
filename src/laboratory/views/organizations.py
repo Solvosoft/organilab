@@ -20,7 +20,7 @@ from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
 from auth_and_perms.models import Profile
-from laboratory.decorators import has_lab_assigned
+
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, UserOrganization
 from .djgeneric import ListView
 from ..forms import AddOrganizationForm
@@ -42,7 +42,7 @@ class OrganizationSelectableForm(GTForm, forms.Form):
             )
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReportView(ListView):
     model = Laboratory
