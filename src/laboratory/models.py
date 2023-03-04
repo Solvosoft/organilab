@@ -384,8 +384,12 @@ class Furniture(models.Model):
 
 class OrganizationStructureManager(models.Manager):
 
-    def filter_user(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+    def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
+        if org_pk:
+            organizations = OrganizationStructure.objects.filter(pk=org_pk, organizationusermanagement__users=user)
+        else:
+            organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+
         pks = []
         for org in organizations:
             if descendants:
@@ -444,7 +448,7 @@ class OrganizationStructureManager(models.Manager):
     def filter_labs_by_user(self, user, org_pk=None):
         contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
 
-        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True)
+        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True, org_pk=org_pk)
         labs_related = set(OrganizationStructureRelations.objects.filter(
             organization__in = orgs,
             content_type = contenttype,
