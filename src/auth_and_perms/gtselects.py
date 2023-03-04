@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -121,21 +121,11 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     fields = ['name']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = GPaginatorMoreElements
 
     def get_queryset(self):
-        super().get_queryset()
-        ancestors = self.organization.ancestors()
-        descendants = self.organization.descendants()
-        orgs = [] + list(ancestors) + list(descendants)
-        labs_organization = list(self.organization.laboratory_set.all().values_list('pk', flat=True))
-        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
-        labs_related = list(self.organization.organizationstructurerelations_set.filter(content_type=contenttype).values_list('object_id', flat=True))
-        exclude_labs = labs_organization + labs_related
-
-        labs_pk = []
-        for organization in orgs:
-            labs_pk += list(organization.laboratory_set.all().values_list('pk', flat=True))
-        return Laboratory.objects.filter(pk__in=set(labs_pk)).exclude(pk__in=exclude_labs)
+        labs = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.organization.pk)
+        return labs
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)

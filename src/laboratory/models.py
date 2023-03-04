@@ -441,6 +441,19 @@ class OrganizationStructureManager(models.Manager):
 
         return OrganizationStructure.objects.none()
 
+    def filter_labs_by_user(self, user, org_pk=None):
+        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
+
+        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True)
+        labs_related = set(OrganizationStructureRelations.objects.filter(
+            organization__in = orgs,
+            content_type = contenttype,
+        ).values_list('object_id', flat=True))
+        labs_in_orgs = set(orgs.exclude(laboratory=None).values_list('laboratory', flat=True))
+
+        pks = labs_related.union(labs_in_orgs)
+        return contenttype.model_class().objects.filter(pk__in=pks)
+
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
     position = models.IntegerField(default=0)
