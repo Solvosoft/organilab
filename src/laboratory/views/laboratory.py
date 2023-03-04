@@ -23,7 +23,7 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile, ProfilePermission
 from laboratory import utils
-from laboratory.decorators import has_lab_assigned
+
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations, \
@@ -33,7 +33,6 @@ from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteV
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
 
-@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
 class LaboratoryEdit(UpdateView):
     model = Laboratory
@@ -242,7 +241,6 @@ class LaboratoryListView(ListView):
         return queryset   
 
 
-@method_decorator(has_lab_assigned(lab_pk='pk'), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory

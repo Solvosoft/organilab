@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from laboratory.forms import InformForm, CommentForm
 from laboratory.models import Inform
-from laboratory.decorators import has_lab_assigned
+
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.http import JsonResponse
@@ -40,7 +40,7 @@ def remove_inform(request, *args, **kwargs):
     return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk': kwargs.get('lab_pk'),'org_pk':kwargs.get('org_pk')}))
 
 
-@has_lab_assigned()
+
 @permission_required('laboratory.add_inform')
 def create_informs(request, *args, **kwargs):
     org = kwargs.get('org_pk')
@@ -81,7 +81,7 @@ def update_inform_data(item,data):
             for child in row:
                 update_inform_data(child,data)
 
-@has_lab_assigned()
+
 @permission_required('laboratory.change_inform')
 def complete_inform(request, *args, **kwargs):
     inform = Inform.objects.get(pk=kwargs.get('pk'))

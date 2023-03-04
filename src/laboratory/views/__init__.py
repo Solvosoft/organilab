@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 import json
 
-from laboratory.decorators import has_lab_assigned
 
 
-@has_lab_assigned()
+
+
 @login_required
 def lab_index(request, org_pk, lab_pk):
     return render(request, 'laboratory/index.html',

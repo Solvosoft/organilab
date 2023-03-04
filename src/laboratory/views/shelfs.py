@@ -18,7 +18,6 @@ from django.utils.decorators import method_decorator
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import wysiwyg
-from laboratory.decorators import has_lab_assigned
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from laboratory.models import Furniture, Shelf, ShelfObject
@@ -63,7 +62,6 @@ def list_shelf(request, org_pk, lab_pk):
     return x
 
 @ajax
-@has_lab_assigned()
 @permission_required('laboratory.delete_shelf')
 def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     if request.method == 'POST':
@@ -169,7 +167,6 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
 
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.add_shelf'), name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
@@ -229,7 +226,6 @@ class ShelfCreate(AJAXMixin, CreateView):
         }
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelf'), name='dispatch')
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
