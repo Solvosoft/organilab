@@ -34,6 +34,7 @@ class ProfileMiddleware:
         profile_in = None
         user = request.user
         lab_pk=None
+        org_pk=None
         if not user.is_authenticated or not user.is_active:
             return
         if user.is_superuser:
@@ -44,6 +45,8 @@ class ProfileMiddleware:
         else:
             raise Http404("User has not profile")
 
+        if 'org_pk' in view_kwargs and view_kwargs['org_pk']:
+            org_pk = view_kwargs['org_pk']
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk']:
             lab_pk = view_kwargs['lab_pk']
         elif 'lab_pk' in request.GET and request.GET['lab_pk']:
@@ -65,7 +68,12 @@ class ProfileMiddleware:
                                                           content_type= ContentType.objects.get(app_label='laboratory',
                                                                                                 model="laboratory"),
                                                           object_id=lab_pk).first()
-        else:
+        if not profile_in and  org_pk:
+            profile_in = ProfilePermission.objects.filter(profile=user.profile,
+                                                          content_type=ContentType.objects.get(app_label='laboratory',
+                                                                                                model="organizationstructure"),
+                                                          object_id=org_pk).first()
+        if not profile_in:
             profile_in = ProfilePermission.objects.filter(profile=profile, object_id=profile.pk,
                                                          content_type=ContentType.objects.filter(
                                                          app_label=profile._meta.app_label,
