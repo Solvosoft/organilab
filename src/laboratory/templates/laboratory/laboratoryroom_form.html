@@ -44,7 +44,10 @@
 					<li class="row list-group-item">
 						<div class="col-md-10">
 							<div class="row">
-								<div class="col-md-4">{{ object }} </div>
+								<div class="col-md-4">
+									{% get_qr_svg_img object width='40px' %}
+									{{ object }}
+								</div>
 								<div class="col-md-4"></div>
 								<div class="col-md-4" style="font-size: 1.5em">
 									<div class="btn-group" role="group" aria-label="...">

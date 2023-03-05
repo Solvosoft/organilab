@@ -22,6 +22,7 @@ from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from laboratory.models import Furniture, Shelf, ShelfObject
 from laboratory.shelf_utils import get_dataconfig
+from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
 from django.core.exceptions import ValidationError
@@ -46,6 +47,7 @@ def list_shelf_render(request, org_pk, lab_pk):
             'object_list': shelf,
             'laboratory': lab_pk,
             'request': request,
+            'furniture': furniture[0],
             'org_pk':org_pk
         }, request=request)
 
@@ -183,6 +185,14 @@ class ShelfCreate(AJAXMixin, CreateView):
         kwargs['initial']['row'] = self.request.GET.get('row')
         return kwargs
 
+    def generate_qr(self):
+        schema = self.request.scheme + "://"
+        domain = schema + self.request.get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = url + "#labroom=%d&furniture=%d&shelf=%d" % (self.object.furniture.labroom.pk,
+                                                           self.object.furniture.pk, self.object.pk)
+        build_qr_instance(url, self.object)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         furniture = form.cleaned_data['furniture']
@@ -197,6 +207,7 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
+        self.generate_qr()
         organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
                            relobj=self.lab)
 

@@ -29,18 +29,20 @@
 	        <div id="furniture_form" class="col-md-4 col-md-offset-2">
 	          {{ form.as_horizontal }}
 	        </div>
+
 	        <div id="save_button1" class="col-md-1">
 	          <button class="btn btn-success" type="submit">
 	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
 	          </button>
 	        </div>
-              <div class="col-md-1">
+            <div class="col-md-1">
                 {% if perms.laboratory.delete_furniture and object %}
                   <a href="{% url 'laboratory:furniture_delete' org_pk laboratory object.pk %}" class="btn btn-danger">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
                   </a>
                 {% endif %}
               </div>
+            <div class="col-md-4 m-auto"> {% get_qr_svg_img furniture %} </div>
 	      </div>
       {% endif %}
       {% if form.instance.pk %}
@@ -81,7 +83,7 @@
   </div>
 
   <div style="display: none;" id="addshelfproto">
-    <a style="margin-left: 19px;" class="btn btn-success" data-ajax="true" data-success="processResponse"
+    <a  class="btn btn-success bg-success mx-1" data-ajax="true" data-success="processResponse"
        href="{% url 'laboratory:shelf_create' org_pk laboratory %}?row=ROW&col=COL&furniture={{ form.instance.pk }}">
       <span class="fa fa-plus" aria-hidden="true"></span>
       {% trans 'Add Shelf' %}

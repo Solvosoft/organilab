@@ -9,10 +9,12 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.models import LaboratoryRoom, Laboratory
+from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
@@ -56,13 +58,23 @@ class LabroomCreate(CreateView):
         context['furniture_form'] = FurnitureCreateForm
         return context
 
+    def generate_qr(self):
+        schema = self.request.scheme + "://"
+        domain = schema + self.request.get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = url + "#labroom=%d" % self.object.pk
+        build_qr_instance(url, self.object)
+
     def form_valid(self,form):
-        room = form.save()
+        self.object = form.save()
         lab = get_object_or_404(Laboratory, pk=self.lab)
-        lab.rooms.add(room)
+        lab.rooms.add(self.object)
         lab.save()
-        organilab_logentry(self.request.user, room, ADDITION, changed_data=form.changed_data,
+        self.generate_qr()
+
+        organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
                            relobj=self.lab)
+
         return super(LabroomCreate, self).form_valid(form)
 
     def get_success_url(self):
