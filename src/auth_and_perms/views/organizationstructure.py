@@ -17,7 +17,7 @@ from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
-from laboratory.forms import AddOrganizationForm
+from laboratory.forms import AddOrganizationForm, RelOrganizationForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
     OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
@@ -81,6 +81,7 @@ def organization_manage_view(request):
              'adduserform': AddUserForm(),
              'addrolform': AddProfileRolForm(),
              'addorgform': AddOrganizationForm(),
+             'relorgform': RelOrganizationForm()
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 

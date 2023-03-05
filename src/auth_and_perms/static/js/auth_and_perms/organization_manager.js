@@ -237,8 +237,9 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
     var select = $("#relOrganizationmodal select");
     var organizationinput = $('#relOrganizationmodal input[name="organization"]');
     organizationinput.val(this.dataset.org)
-
-        $.ajax({
+    $(select).val(null).trigger('change');
+/**
+    $.ajax({
       type: "GET",
       url: url,
       data: document.contextroletable,
@@ -248,9 +249,9 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
       dataType: 'json'
     });
     $(select).select2({theme: 'bootstrap-5',  dropdownParent: $("#relOrganizationmodal")});
+    **/
     $("#relOrganizationmodal").modal('show');
 });
-
 
 $(".rolbtnadd").on('click', function(){
     var orgpk = $(this).data('id');

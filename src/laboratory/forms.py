@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
@@ -97,6 +97,7 @@ class OrganizationUserManagementForm(GTForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
     group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True,
                                    label=_("Group"))
+
 
 
 class ReservationModalForm(GTForm, ModelForm):
@@ -293,6 +294,17 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
             'parent': genwidgets.HiddenInput
         }
 
+class RelOrganizationForm(GTForm):
+    contentyperelobj = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.all(),
+        widget=AutocompleteSelectMultiple(url='relorgbase', attrs={
+            'data-s2filter-organization': '#relorg_organization'
+        }),
+        label=_("Laboratories to be related to this organization")
+    )
+
+class RelOrganizationPKIntForm(GTForm):
+    organization = forms.IntegerField(required=True)
 
 class CatalogForm(GTForm, forms.ModelForm):
     class Meta:
