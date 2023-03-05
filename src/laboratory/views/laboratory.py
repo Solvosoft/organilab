@@ -223,22 +223,16 @@ class LaboratoryListView(ListView):
     ordering = ['name']
 
     def get_queryset(self):
-        content_type = ContentType.objects.filter(
-            app_label='laboratory',
-            model='laboratory'
-        ).first()
-        rel_lab = OrganizationStructureRelations.objects.filter(
-            organization=self.org,
-            content_type=content_type).values_list('object_id', flat=True)
+        queryset=OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.org)
+        rel_lab = OrganizationStructureRelations.objects.filter(organization=self.org,
+            content_type__app_label='laboratory', content_type__model='laboratory').values_list('object_id', flat=True)
 
         filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
-
-        queryset = super().get_queryset()
         queryset = queryset.filter(filters).distinct()
         q = self.request.GET.get('search_fil', '')
         if q != "":
             queryset = queryset.filter(name__icontains=q) 
-        return queryset   
+        return queryset.order_by(*self.ordering)
 
 
 @method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
