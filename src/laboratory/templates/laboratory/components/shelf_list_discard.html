@@ -1,8 +1,10 @@
 {% load gtpermissions %}
+{% load laboratory %}
 {% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_add_disposal' as admin_add_disposal_perm %}
 
 <div style="background-color: {{data.color }};" class="shelfobjectcontainer" >
     <div class="whitebg">
+        {% get_qr_svg_img data width="16px" organization=org_pk %}
         {% if admin_add_disposal_perm %}
                 <a data-ajax="true" data-success="processResponseshelfobjectCreate" href="{% url 'laboratory:shelfobject_create' org_pk=org_pk lab_pk=laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
