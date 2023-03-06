@@ -1020,7 +1020,22 @@ URLNAME_PERMISSIONS = {
             'name': 'View Organization Structure Relations',
             'category': 'Organization Structure Relations',
             'permission': 'laboratory.view_organizationstructurerelations'
-        }
+        },
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+            'name': 'Add Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_add_disposal'
+        },
     ],
     'addusersorganization': [
         {
@@ -1608,6 +1623,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
         }
     ],
     'get_object_detail': [
@@ -2711,5 +2731,68 @@ URLNAME_PERMISSIONS = {
             'category': 'Transfer',
             'permission': 'laboratory.add_tranferobject'
         },
+    ],
+    'manage_register_user_qrcode': [
+        {
+            'name': 'Add Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.add_registeruserqr'
+        },
+        {
+            'name': 'Edit Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.change_registeruserqr'
+        },
+        {
+            'name': 'View Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.view_registeruserqr'
+        },
+        {
+            'name': 'Delete Register User QR Code',
+            'category': 'Register User QR Code',
+            'permission': 'laboratory.delete_registeruserqr'
+        },
+    ],
+    'manage_disposal':[
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+            'name': 'Add Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_add_disposal'
+        },
+    ],
+    'view_disposal':[
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+        'name': 'View Profile',
+        'category': 'Profile',
+        'permission': 'auth_and_perms.view_profile'
+        },
+    ],
+    'profile_detail':[
+        {
+        'name': 'View Profile',
+        'category': 'Profile',
+        'permission': 'auth_and_perms.view_profile'
+    }
     ],
 }

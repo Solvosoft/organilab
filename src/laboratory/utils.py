@@ -1,10 +1,17 @@
+import io
+
+import qrcode
+import qrcode.image.svg
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
+from django.utils.timezone import now
+from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, LabOrgLogEntry, \
-    UserOrganization
+from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
+    UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
 
 def check_group_has_perm(group,codename):
@@ -234,3 +241,90 @@ def get_pk_org_ancestors_decendants(user, org_pk):
         if org.ancestors():
             pks += list(org.ancestors().values_list('pk', flat=True))
     return pks
+
+
+def generate_QR_img_file(url, user, file_name, extension_file):
+    img = qrcode.make(url, image_factory=qrcode.image.svg.SvgImage)
+    file = io.BytesIO()
+    img.save(file)
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    obj = ChunkedUpload.objects.create(
+        file=content,
+        filename=file_name+extension_file,
+        offset=len(file.getvalue()),
+        completed_on=now(),
+        user=user
+    )
+    return obj.get_uploaded_file(), file
+
+
+def get_organizations_register_user_base(organization, lab_id):
+    lab = Laboratory.objects.get(pk=lab_id)
+    content_type = ContentType.objects.filter(
+        app_label='laboratory',
+        model='laboratory'
+    ).first()
+
+    org_base_list = list(organization.descendants().values_list('pk', flat=True))
+
+    org_list_by_lab = OrganizationStructureRelations.objects.filter(
+        organization__in=org_base_list,
+        content_type=content_type,
+        object_id=lab_id
+    )
+
+    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True)) + [organization.pk, lab.organization.pk]
+
+    return org_list
+
+
+def get_exclude_org_register_user(lab_pk, query_org, org_register_pk=None):
+    content_type = ContentType.objects.filter(
+        app_label='laboratory',
+        model='laboratory'
+    ).first()
+
+    exclude_org = RegisterUserQR.objects.filter(
+        organization_register__in=query_org,
+        content_type=content_type,
+        object_id=lab_pk
+    )
+
+    if org_register_pk:
+        exclude_org = exclude_org.exclude(organization_register=org_register_pk)
+    return list(exclude_org.values_list('organization_register__pk', flat=True))
+
+
+def get_organizations_register_user(organization, lab_id, org_register_pk=None):
+    org_base = get_organizations_register_user_base(organization, lab_id)
+    org_exclude = get_exclude_org_register_user(lab_id, org_base, org_register_pk=org_register_pk)
+    return OrganizationStructure.objects.filter(pk__in=org_base).exclude(pk__in=org_exclude).distinct()
+
+
+def get_logentries_org_management(self, org):
+    if not org:
+        return self.queryset.none()
+    else:
+        org = OrganizationStructure.objects.filter(pk=org).first()
+        if not org:
+            return self.queryset.none()
+    laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk', flat=True))
+
+    log_entries = LabOrgLogEntry.objects.filter(
+        Q(content_type__app_label='laboratory',
+          content_type__model='laboratory',
+          object_id__in=laboratories
+          ) | Q(
+            content_type__app_label='laboratory',
+            content_type__model='organizationstructure',
+            object_id=org.pk
+        )
+    ).values_list('log_entry', flat=True)
+
+    return log_entries
+
+
+def check_has_profile(user):
+    obj = Profile.objects.filter(user=user)
+    return obj.exists()

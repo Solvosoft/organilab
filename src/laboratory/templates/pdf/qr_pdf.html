@@ -1,0 +1,33 @@
+{% extends 'pdf/qr_base_pdf.html' %}
+{% load i18n %}
+{% block pdf_content %}
+<table>
+    <thead>
+    <tr>
+        <th>
+            <h2 style="margin-left: 34%;">{{title}}</h2>
+        </th>
+    </tr>
+    <tr>
+        <th><h4>{{rel_obj_title}}: {{rel_obj_name}}</h4></th>
+    </tr>
+    </thead>
+</table>
+<table>
+    <tr>{{rel_obj_msg }} {{rel_obj_name}}</tr>
+    <br>
+    <br>
+</table>
+{% if obj_qr.register_user_qr %}
+
+{% if obj_qr.code %}
+<div class="qr_obj"> {% trans 'Code' %}: <span style="color: red;">{{ obj_qr.code}} </span></div>
+{% endif %}
+<table>
+
+    <tr>
+        <img class="qr_obj" src="{{domain}}{{obj_qr.register_user_qr.url}}" alt="">
+    </tr>
+</table>
+{% endif %}
+{% endblock %}

@@ -2,6 +2,9 @@ from .settings import *
 
 INSTALLED_APPS.append('organilab_test')
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
 
 from logging import Filter
 

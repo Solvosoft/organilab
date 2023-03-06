@@ -13,7 +13,7 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-
+from django.db.models import Sum, Q
 from organilab.settings import DATE_INPUT_FORMATS
 from presentation.models import AbstractOrganizationRef
 from . import catalog
@@ -148,8 +148,14 @@ class ShelfObject(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     marked_as_discard = models.BooleanField(default=False)
+    laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
+    course_name = models.CharField(null=True, blank=True, verbose_name=_('Course name'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'), on_delete=models.CASCADE)
+
+    shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
+    shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
 
     @staticmethod
     def get_units(unit):
@@ -197,6 +203,13 @@ class Shelf(models.Model):
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
+    discard = models.BooleanField(default=False,verbose_name=_('Disposal'))
+    quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
+    measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -226,9 +239,29 @@ class Shelf(models.Model):
     def get_shelf(self):
         return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
+
+    def get_total_refuse(self):
+        return ShelfObject.objects.filter(shelf=self).aggregate(amount = Sum('quantity', default=0))['amount']
+
+    def get_refuse_porcentage(self):
+        result=0
+        try:
+            result=(self.get_total_refuse()/self.quantity)*100
+        except ZeroDivisionError:
+            result=0
+        return result
+
+    def get_measurement_unit_display(self):
+        return str(self.measurement_unit) if self.measurement_unit else _('Unknown')
+
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
+
+    class Meta:
+        permissions = [('can_manage_disposal', 'Can manage disposal'),
+                       ('can_add_disposal', 'Can add disposal'),
+                       ('can_view_disposal', 'Can view disposal')]
 
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
@@ -351,8 +384,14 @@ class Furniture(models.Model):
 
 class OrganizationStructureManager(models.Manager):
 
-    def filter_user(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+    def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(
+            organizationusermanagement__users=user)
+        if org_pk:
+            organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
+        else:
+            organizations = OrganizationStructure.objects.filter(qparams)
+
         pks = []
         for org in organizations:
             if descendants:
@@ -367,10 +406,15 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
     def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+        # TODO: we have problems detecting user organizations
+        # user.userorganization_set.all()
+
+
+        organizations = OrganizationStructure.objects.filter(
+            Q(organizationusermanagement__users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
@@ -391,7 +435,7 @@ class OrganizationStructureManager(models.Manager):
         organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user,organizationusermanagement__organization=org)
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
@@ -407,6 +451,19 @@ class OrganizationStructureManager(models.Manager):
             return OrganizationStructure.objects.filter(pk__in=pks)
 
         return OrganizationStructure.objects.none()
+
+    def filter_labs_by_user(self, user, org_pk=None):
+        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
+
+        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True, org_pk=org_pk)
+        labs_related = set(OrganizationStructureRelations.objects.filter(
+            organization__in = orgs,
+            content_type = contenttype,
+        ).values_list('object_id', flat=True))
+        labs_in_orgs = set(orgs.exclude(laboratory=None).values_list('laboratory', flat=True))
+
+        pks = labs_related.union(labs_in_orgs)
+        return contenttype.model_class().objects.filter(pk__in=pks)
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
@@ -706,3 +763,25 @@ class InformsPeriod(models.Model):
 
     class Meta:
         ordering = ['-start_application_date']
+
+
+class RegisterUserQR(models.Model):
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name=_("Created by"))
+    activate_user = models.BooleanField(default=True, verbose_name=_('Activate user'))
+    url = models.TextField(verbose_name=_("Url"))
+    register_user_qr = models.FileField(_('Register user QR'), upload_to='register_user_qr/')
+    role = models.ForeignKey('auth_and_perms.Rol', on_delete=models.DO_NOTHING, verbose_name=_('Role'))
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
+    organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
+
+    code = models.CharField(max_length=4, unique=True, null=True, verbose_name=_("Code"))
+
+    def __str__(self):
+        return f"{self.url}"

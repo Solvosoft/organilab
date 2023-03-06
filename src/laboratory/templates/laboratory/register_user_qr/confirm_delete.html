@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'manage_register_user_qrcode' %}
+{% endblock %}
+{% block title %}{% trans 'Delete Register User QR' %}{% endblock %}
+
+{% block content %}
+
+<form action="" method="post">{% csrf_token %}
+<p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+<input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+</form>
+<br> <br>
+
+{% endblock%}

@@ -2,7 +2,7 @@ from django.contrib.admin.models import LogEntry
 from django.urls import reverse
 from rest_framework import serializers
 
-from laboratory.models import CommentInform, Inform
+from laboratory.models import CommentInform, Inform, ShelfObject
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -108,6 +108,39 @@ class LogEntryFilterSet(FilterSet):
         }
 
 
+class LogEntryUserSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    action_flag = serializers.SerializerMethodField()
+    action_time = serializers.DateTimeField(format=DATETIME_INPUT_FORMATS[0])
+
+    def get_user(self, obj):
+        if not obj:
+            return _("No user found")
+        if not obj.user:
+            return _("No user found")
+
+        name = obj.user.get_full_name()
+        if not name:
+            name = obj.username
+        return name
+
+    def get_action_flag(self, obj):
+        if obj.action_flag in [1, 2]:
+            return _("Register") if obj.action_flag is 1 else ("Login")
+        return ''
+
+
+    class Meta:
+        model = LogEntry
+        fields = '__all__'
+
+class LogEntryUserDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LogEntryUserSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
 class LogEntrySerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     action_flag = serializers.SerializerMethodField()
@@ -115,6 +148,8 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         if not obj:
+            return _("No user found")
+        if not obj.user:
             return _("No user found")
 
         name = obj.user.get_full_name()
@@ -176,3 +211,44 @@ class InformFilterSet(FilterSet):
     class Meta:
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
+
+
+class ShelfObjectSerialize(serializers.ModelSerializer):
+    object_name = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
+    last_update = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+    action = serializers.SerializerMethodField()
+
+    def get_object_name(self, obj):
+        return obj.object.name
+
+    def get_unit(self, obj):
+        return obj.get_measurement_unit_display()
+
+    def get_last_update(self, obj):
+            return obj.last_update.date()
+    def get_creator(self, obj):
+        if obj.creator:
+            return str(obj.creator)
+        else:
+            return _('Unknown')
+    def get_action(self, obj):
+        if obj:
+            org_pk = self.context['org_pk']
+            if obj.creator:
+                return """
+                        <a href="%s" class="btn btn-secondary" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                        """%(
+                    reverse('laboratory:profile_detail', kwargs={
+                        'org_pk': org_pk,
+                        'pk': obj.creator.pk
+                    })
+                )
+            else:
+                return ""
+        return ""
+
+    class Meta:
+        model = ShelfObject
+        fields = ['object_name', 'unit','quantity','last_update','creator','action']

@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from djgentelella.views.select2autocomplete import BaseSelect2View
 from djgentelella.groute import register_lookups
@@ -41,8 +42,11 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
         return queryset
 
     def retrieve(self, request, pk, **kwargs):
-        if bool(eval(pk)):
-            self.org_pk = pk
+        try:
+            self.org_pk=int(pk)
+        except Exception as e:
+            raise Http404("Not organization found")
+
         return self.list(request, pk, **kwargs)
 
 
