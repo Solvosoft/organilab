@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, OrganizationAPI
 from auth_and_perms.views import organizationstructure as orgstruct
@@ -18,7 +18,7 @@ routes.register('profilepermissionrol', UpdateRolOrganizationProfilePermission, 
 app_name='auth_and_perms'
 
 urlpatterns = [
-    path('organizations', select_organization_by_user, name='select_organization_by_user'),
+    path('organizations/', select_organization_by_user, name='select_organization_by_user'),
     path('api/', include(routes.urls)),
     path('login_bccr', fva_rest_authentication.login_with_bccr, name="login_with_bccr"),
     path('create_profile_by_digital_signature/<int:pk>', user_org_creation.create_profile_by_digital_signature, name="create_profile_by_digital_signature"),

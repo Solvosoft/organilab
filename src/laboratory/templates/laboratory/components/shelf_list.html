@@ -1,7 +1,7 @@
 {% load laboratory %}
 <div style="background-color: {{data.color }};" class="shelfobjectcontainer" >
     <div class="whitebg">
-        {% get_qr_svg_img data width="16px" %}
+        {% get_qr_svg_img data width="16px" organization=org_pk %}
         {% if perms.laboratory.add_shelfobject %}
             <a data-ajax="true" data-success="processResponseshelfobjectCreate" href="{% url 'laboratory:shelfobject_create' org_pk=org_pk lab_pk=laboratory %}?shelf={{data.pk}}&row={{forloop.parentloop.parentloop.counter0}}&col={{forloop.parentloop.counter0}}">
                 <i class="fa fa-plus" aria-hidden="true"></i>

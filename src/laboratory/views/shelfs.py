@@ -191,7 +191,7 @@ class ShelfCreate(AJAXMixin, CreateView):
         url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
         url = url + "#labroom=%d&furniture=%d&shelf=%d" % (self.object.furniture.labroom.pk,
                                                            self.object.furniture.pk, self.object.pk)
-        build_qr_instance(url, self.object)
+        build_qr_instance(url, self.object, self.org)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

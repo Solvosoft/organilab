@@ -60,6 +60,7 @@ lab_shelf_urls = [
 lab_rooms_urls = [
     path('', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
     path('create', labroom.LabroomCreate.as_view(), name='rooms_create'),
+    path('rebuild_laboratory_qr', labroom.rebuild_laboratory_qr, name='rebuild_laboratory_qr'),
     path('<int:pk>/delete', labroom.LaboratoryRoomDelete.as_view(), name='rooms_delete'),
     path('<int:pk>/edit', labroom.LabroomUpdate.as_view(), name='rooms_update'),
 ]

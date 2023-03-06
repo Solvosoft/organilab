@@ -130,7 +130,7 @@ def show_reserve_button(procedure):
 
 @register.simple_tag()
 def get_qr_svg_img(object, **kwargs):
-    qr = get_qr_by_instance(object)
+    qr = get_qr_by_instance(object, kwargs['organization'])
     if qr:
         return mark_safe("""
         <a class="imgqr" href="data:image/svg+xml;base64,%s" target="_blank" download="%s.svg">
