@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
@@ -21,7 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
-from auth_and_perms.models import Profile, ProfilePermission
+from auth_and_perms.models import Profile, ProfilePermission, Rol
 from laboratory import utils
 
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
@@ -214,13 +215,41 @@ class CreateLaboratoryView(CreateView):
             return redirect(self.success_url)
 
 
-@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
-class LaboratoryListView(ListView):
+
+class LaboratoryListView(UserPassesTestMixin, ListView):
     model = Laboratory
     template_name= 'laboratory/laboratory_list.html'
     success_url = '/'
     paginate_by = 15
     ordering = ['name']
+
+    def test_func(self):
+        app_label = 'laboratory'
+        codename = 'view_laboratory'
+        org_pk = self.kwargs['org_pk']
+        labs = set(Laboratory.objects.filter(
+            Q(organization=org_pk) | Q(pk__in=
+                                       OrganizationStructureRelations.objects.filter(
+                                           organization=org_pk,
+                                           content_type__app_label='laboratory',
+                                           content_type__model="laboratory",
+                                       ).values_list('object_id', flat=True)
+                                       )
+        ).values_list('pk', flat=True))
+
+        profile_in = ProfilePermission.objects.filter(profile=self.request.user.profile,
+                                                      content_type__app_label='laboratory',
+                                                      content_type__model="laboratory",
+                                                      object_id__in=labs)
+
+        rols = profile_in.values_list('rol', flat=True)
+        rolsquery = Rol.objects.filter(
+            pk__in=rols,
+            permissions__content_type__app_label=app_label,
+            permissions__codename=codename
+        )
+
+        return rolsquery.exists()
 
     def get_queryset(self):
         queryset=OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.org)

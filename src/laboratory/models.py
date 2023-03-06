@@ -13,7 +13,7 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from organilab.settings import DATE_INPUT_FORMATS
 from presentation.models import AbstractOrganizationRef
 from . import catalog
@@ -385,10 +385,12 @@ class Furniture(models.Model):
 class OrganizationStructureManager(models.Manager):
 
     def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(
+            organizationusermanagement__users=user)
         if org_pk:
-            organizations = OrganizationStructure.objects.filter(pk=org_pk, organizationusermanagement__users=user)
+            organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
         else:
-            organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+            organizations = OrganizationStructure.objects.filter(qparams)
 
         pks = []
         for org in organizations:
@@ -404,10 +406,15 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
     def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+        # TODO: we have problems detecting user organizations
+        # user.userorganization_set.all()
+
+
+        organizations = OrganizationStructure.objects.filter(
+            Q(organizationusermanagement__users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
@@ -428,7 +435,7 @@ class OrganizationStructureManager(models.Manager):
         organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user,organizationusermanagement__organization=org)
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
