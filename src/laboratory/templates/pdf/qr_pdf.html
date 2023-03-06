@@ -19,12 +19,14 @@
     <br>
 </table>
 {% if obj_qr.register_user_qr %}
+
+{% if obj_qr.code %}
+<div class="qr_obj"> {% trans 'Code' %}: <span style="color: red;">{{ obj_qr.code}} </span></div>
+{% endif %}
 <table>
-    <br>
-    <br>
+
     <tr>
-        <img src="{{obj_qr.register_user_qr.url}}" alt=""
-             style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
+        <img class="qr_obj" src="{{domain}}{{obj_qr.register_user_qr.url}}" alt="">
     </tr>
 </table>
 {% endif %}

@@ -42,7 +42,8 @@
                 <td>{% if laboratory|to_int == obj.laboratory_received.pk and obj.status == 0 %}
                         <button data-bs-toggle="modal" class="btn btn-success"
                                 data-bs-target="#add_tranfer_object"
-                                aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}})">
+                                aria-label="{% trans 'add' %}" type="button" onclick="init_add_object({{obj.id}},{{obj.object.pk}},'{{obj.object.object.name}}',{{obj.laboratory_received.pk}}, this)"
+                                data-url="{% url 'laboratory:update_transfer' org_pk laboratory obj.pk 0 %}">
                             <i class="fa fa-check-circle" aria-hidden="true"></i>
                         </button>
                     {% endif %}
@@ -62,7 +63,6 @@
 {% block js %}
 {{block.super}}
 <script>
-     document.update_shelf = '{% url "laboratory:update_transfer" laboratory %}';
      document.get_shelfs = '{% url "laboratory:get_shelfs" %}';
      document.remove_transfer = '{% url "laboratory:delete_transfer" laboratory %}';
      (function(){

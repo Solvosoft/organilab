@@ -1,4 +1,7 @@
 {% load laboratory i18n %}
+{% load static %}
+{% load gtpermissions %}
+{% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_add_disposal' as admin_add_disposal_perm %}
 <ul class="list-group">
     {% if perms.laboratory.view_shelfobject %}
     {% for shelfobject in data.shelfobject_set.all %}
@@ -11,21 +14,40 @@
         {{ shelfobject.object.name }}
         {{ shelfobject.quantity }}
         {{ shelfobject.get_measurement_unit_display }}</label>
-        {% if perms.laboratory.delete_shelfobject %}
+        {% if data.discard %}
+            {% if perms.laboratory.can_manage_disposal %}
+                <a class="float-end" data-ajax="true"
+                   data-success="processResponseshelfobjectDelete"
+                   href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
+                   style="margin-left: 10px; color:red">
+                   <i class="fa fa-close" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        {% elif perms.laboratory.delete_shelfobject %}
         <a class="float-end" data-ajax="true"
            data-success="processResponseshelfobjectDelete"
            href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ data.pk }}&row={{ row }}&col={{ col }}"
            style="margin-left: 10px; color:red">
-           <i class="fa fa-close" aria-hidden="true"></i> </a>
+           <i class="fa fa-close" aria-hidden="true"></i>
+        </a>
         {% endif %}
 
         {% if perms.laboratory.do_report %}
-        <a class="float-end" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?pk={{ shelfobject.pk }}"
+        <a class="float-end" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory org_pk=org_pk pk=shelfobject.pk %}"
            style="margin-right: 10px;">
            <i class="fa fa-download" aria-hidden="true"></i>
         </a>
         {% endif %}
-        {% if perms.reservations_management.add_reservedproducts %}
+        {% if data.discard %}
+            {% if admin_add_disposal_perm %}
+                <a class="float-end"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modal_reservation"
+                   style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">
+                    <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
+                </a>
+            {% endif %}
+        {% elif perms.reservations_management.add_reservedproducts %}
         <a class="float-end"
            data-bs-toggle="modal"
            data-bs-target="#modal_reservation"

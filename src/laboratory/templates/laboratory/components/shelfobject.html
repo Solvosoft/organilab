@@ -1,0 +1,9 @@
+{% if shelfobject.marked_as_discard %} <i class="fa fa-trash text-danger" aria-hidden="true"></i>{% endif %}
+  <a id="shelfobject_view_{{shelfobject.pk}}" href="{% url 'laboratory:shelfobject_detail' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk  %}"
+     data-ajax="true" data-success="displayShelfobjectFunction" >
+    <i class="fa fa-eye text-success" aria-hidden="true"></i>
+  </a>
+  {{ shelfobject.object.code }}
+  {{ shelfobject.object.name }}
+  {{ shelfobject.quantity }}
+  {{ shelfobject.get_measurement_unit_display }}

@@ -122,9 +122,9 @@ function add_reservation() {
                     url: document.api_modal,
                     type: 'POST',
                     data: data,
-                    success: function({status,msg,object}) {
+                    success: function({status,msg,object,template}) {
                       if(status){
-                          message(msg,'success', object);
+                          message(msg,'success', object=object,template=template);
                        }else{
                           message(msg,'error');
                        }
@@ -132,7 +132,7 @@ function add_reservation() {
                 });
         }
     }
-function message(msg,icon,object=undefined){
+function message(msg,icon,object=undefined, template=undefined){
     clear_inputs();
     const reservation_modal = document.querySelector('#modal_reservation');
     const modal = bootstrap.Modal.getInstance(reservation_modal);
@@ -143,7 +143,7 @@ function message(msg,icon,object=undefined){
     icon
     )
     if(option!=3 && object!=undefined && view_search==false){
-        object_element.parentElement.children[0].textContent=object.object
+        object_element.parentElement.children[0].innerHTML=template
    }
     if(option!=3 && object!=undefined && view_search){
         const amount_div = document.querySelector('#o'+shelf_object_id)

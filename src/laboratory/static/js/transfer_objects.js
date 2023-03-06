@@ -1,6 +1,8 @@
-function init_add_object(id, object, object_name,lab_received){
+function init_add_object(id, object, object_name,lab_received, element){
     $('#transfer_obj').val(id)
     get_shelfs({'lab':lab_received,'id':id})
+    var url = $(element).data('url');
+    $("#savebtn").attr('data-url', url);
 }
 
 function get_shelfs(lab){
@@ -30,22 +32,32 @@ function get_form_data(form) {
     }
     return formAttributes;
 }
+function replaceLast(obj, search, replace) {
+    return obj.replace(new RegExp(search+"([^"+search+"]*)$"), replace+"");
+}
 
-function send_form(){
-    form_modal = $('#transfer_form');
-    data = get_form_data(form_modal);
+function send_form(element){
+    var id = $('#shelf_list').val();
+    var url = $(element).data('url');
+    if(id){
+            url = replaceLast(url, '0', id);
+        }
     $.ajax({
-            url: document.update_shelf,
-            type: 'POST',
-            data: data,
-            success: function({status,msg}) {
-                if(status){
-                location.reload()
-                }else{
-                   error_message('#alert_message',msg)
-                }
-                            }
-            });
+    url: url,
+    type: 'POST',
+    headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+        },
+    dataType: 'json',
+    success: function({status,msg}) {
+        if(status){
+        location.reload()
+        }else{
+           error_message('#alert_message',msg)
+        }
+    }
+    });
 
 }
 function error_message(id,msg){

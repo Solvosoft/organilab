@@ -60,6 +60,7 @@ lab_shelf_urls = [
 lab_rooms_urls = [
     path('', labroom.LaboratoryRoomsList.as_view(), name='rooms_list'),
     path('create', labroom.LabroomCreate.as_view(), name='rooms_create'),
+    path('rebuild_laboratory_qr', labroom.rebuild_laboratory_qr, name='rebuild_laboratory_qr'),
     path('<int:pk>/delete', labroom.LaboratoryRoomDelete.as_view(), name='rooms_delete'),
     path('<int:pk>/edit', labroom.LabroomUpdate.as_view(), name='rooms_update'),
 ]
@@ -88,7 +89,7 @@ lab_reports_urls = [
     path('laboratory/', reports.report_labroom_building, name='report_building'),
     path('furniture/', reports.report_furniture,  name='reports_furniture'),
     path('objects/', reports.report_objects, name='reports_objects'),
-    path('shelf_objects/', reports.report_shelf_objects, name='reports_shelf_objects'),
+    path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
     path('limited_shelf_objects/', reports.report_limited_shelf_objects,
          name='reports_limited_shelf_objects'),
     path('reactive_precursor_objects/', reports.report_reactive_precursor_objects,
@@ -129,7 +130,7 @@ lab_features_urls = [
 edit_objects = [
     path('edit_object/<int:pk>/', shelfobject.add_object,  name="edit_object"),
     path('get_object_detail', shelfobject.send_detail, name="get_object_detail"),
-    path('update_transfer/<int:pk>/', shelfobject.objects_transfer, name="update_transfer"),
+    path('update_transfer/<int:org_pk>/<int:lab_pk>/<int:transfer_pk>/<int:shelf_pk>', shelfobject.objects_transfer, name="update_transfer"),
     path('shelfs_list/', shelfobject.get_shelf_list, name="get_shelfs"),
     path('delete_transfer/<int:pk>/', shelfobject.delete_transfer, name="delete_transfer"),
 
@@ -200,7 +201,7 @@ user_register_qr = [
     path('download/<int:pk>/', laboratory.get_pdf_register_user_qr, name="download_register_user_qr"),
     path('logentry/<int:pk>/', laboratory.get_logentry_from_registeruserqr, name='logentry_register_user_qr'),
     path('login/<int:pk>/', laboratory.login_register_user_qr, name='login_register_user_qr'),
-    path('create_user_qr/<int:pk>/', laboratory.create_user_qr, name='create_user_qr'),
+    path('create_user_qr/<int:pk>/<int:user>', laboratory.create_user_qr, name='create_user_qr'),
     path('redirect_user_to_labindex/<int:pk>/', laboratory.redirect_user_to_labindex, name='redirect_user_to_labindex'),
 ]
 
