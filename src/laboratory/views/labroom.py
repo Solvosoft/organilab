@@ -8,19 +8,20 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from laboratory.models import LaboratoryRoom, Laboratory
+from presentation.utils import build_qr_instance, update_qr_instance
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-from laboratory.decorators import has_lab_assigned
+
 from ..utils import organilab_logentry
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
@@ -42,7 +43,7 @@ class LaboratoryRoomsList(ListView):
         return context
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
@@ -57,20 +58,30 @@ class LabroomCreate(CreateView):
         context['furniture_form'] = FurnitureCreateForm
         return context
 
+    def generate_qr(self):
+        schema = self.request.scheme + "://"
+        domain = schema + self.request.get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = url + "#labroom=%d" % self.object.pk
+        build_qr_instance(url, self.object, self.org)
+
     def form_valid(self,form):
-        room = form.save()
+        self.object = form.save()
         lab = get_object_or_404(Laboratory, pk=self.lab)
-        lab.rooms.add(room)
+        lab.rooms.add(self.object)
         lab.save()
-        organilab_logentry(self.request.user, room, ADDITION, changed_data=form.changed_data,
+        self.generate_qr()
+
+        organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
                            relobj=self.lab)
+
         return super(LabroomCreate, self).form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -90,7 +101,6 @@ class LabroomUpdate(UpdateView):
         return super(LabroomUpdate, self).form_valid(form)
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
@@ -107,7 +117,7 @@ class LaboratoryRoomDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-@method_decorator(has_lab_assigned(), name='dispatch')
+
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
@@ -116,3 +126,23 @@ class LaboratoryRoomReportView(ListView):
     def get_queryset(self):
         lab = get_object_or_404(Laboratory, pk=self.lab)
         return lab.rooms.all()
+
+
+@permission_required('laboratory.change_laboratoryroom')
+def rebuild_laboratory_qr(request, org_pk, lab_pk):
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    schema =  request.scheme + "://"
+    domain = schema + request.get_host()
+    baseurl = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
+
+    for labroom in lab.rooms.all():
+        labroom_url="#labroom=%d"%labroom.pk
+        update_qr_instance(baseurl+labroom_url, labroom, org_pk)
+        for furniture in labroom.furniture_set.all():
+            furnitureurl="&furniture=%d"%furniture.pk
+            update_qr_instance(baseurl + labroom_url+furnitureurl, furniture, org_pk)
+            for shelf in furniture.shelf_set.all():
+                shelfurl="&shelf=%d" % shelf.pk
+                update_qr_instance(baseurl + labroom_url + furnitureurl + shelfurl, shelf, org_pk)
+
+    return redirect(reverse('laboratory:rooms_create', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))

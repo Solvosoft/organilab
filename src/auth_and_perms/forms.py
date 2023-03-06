@@ -44,12 +44,13 @@ class CreationUserOrganization(UserCreationForm, GTForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget=genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
         self.fields['password2'].widget=genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
+        self.fields['username'].label = _("Email")
 
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields
         widgets = {
-            'username': genwidgets.TextInput
+            'username': genwidgets.EmailInput
 
         }
 #from django_otp.views import LoginView

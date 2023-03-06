@@ -17,13 +17,16 @@ from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from laboratory.decorators import has_lab_assigned
+from djgentelella.widgets import wysiwyg
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from laboratory.models import Furniture, Shelf
+from laboratory.models import Furniture, Shelf, ShelfObject
 from laboratory.shelf_utils import get_dataconfig
+from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
 def get_shelves(furniture):
@@ -44,6 +47,7 @@ def list_shelf_render(request, org_pk, lab_pk):
             'object_list': shelf,
             'laboratory': lab_pk,
             'request': request,
+            'furniture': furniture[0],
             'org_pk':org_pk
         }, request=request)
 
@@ -60,7 +64,6 @@ def list_shelf(request, org_pk, lab_pk):
     return x
 
 @ajax
-@has_lab_assigned()
 @permission_required('laboratory.delete_shelf')
 def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     if request.method == 'POST':
@@ -83,16 +86,89 @@ class ShelfForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'furniture', 'color']
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
         widgets = {
             'name': genwidgets.TextInput,
             'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
             'furniture': forms.HiddenInput(),
             'color':  genwidgets.ColorInput,
+            'discard': genwidgets.CheckboxInput,
+            'quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'description': wysiwyg.TextareaWysiwyg
         }
 
+    def clean_measurement_unit(self):
+        discard= self.cleaned_data['discard']
+        quantity = self.cleaned_data['quantity']
+        unit = self.cleaned_data['measurement_unit']
+        if discard:
+            if unit != None and quantity>0:
+                return unit
+            else:
+                raise ValidationError(_("Need add the measurement unit or quantity is 0"))
 
-@method_decorator(has_lab_assigned(), name="dispatch")
+
+        return unit
+
+class ShelfUpdateForm(forms.ModelForm, GTForm):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = Shelf
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
+        widgets = {
+            'name': genwidgets.TextInput,
+            'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'furniture': forms.HiddenInput(),
+            'color':  genwidgets.ColorInput,
+            'discard': genwidgets.CheckboxInput,
+            'quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'description': wysiwyg.TextareaWysiwyg
+        }
+
+    def clean_measurement_unit(self):
+        discard = self.cleaned_data['discard']
+        unit = self.cleaned_data['measurement_unit']
+        shelfobjects = self.instance.get_objects().count()
+        change_unit = unit != self.instance.measurement_unit
+
+        if shelfobjects>0 and change_unit:
+            raise ValidationError(_("The shelf have objects need to removed them, before changes the measurement unit"))
+        if discard:
+            if unit != None:
+                return unit
+            else:
+                raise ValidationError(_("Need add the measurement unit"))
+        else:
+            return unit
+
+        return unit
+
+
+    def clean_quantity(self):
+        discard = self.cleaned_data['discard']
+        quantity = self.cleaned_data['quantity']
+        amount = quantity >= self.instance.get_total_refuse() #get_total_refuse return the amount that the shelf have about shelfobjects
+        if discard:
+            if amount and quantity > 0:
+                return quantity
+            else:
+                self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
+
+        if amount or quantity==0:
+            return quantity
+        else:
+            self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
+
+        return quantity
+
+
+
+
+
 @method_decorator(permission_required('laboratory.add_shelf'), name='dispatch')
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
@@ -109,6 +185,14 @@ class ShelfCreate(AJAXMixin, CreateView):
         kwargs['initial']['row'] = self.request.GET.get('row')
         return kwargs
 
+    def generate_qr(self):
+        schema = self.request.scheme + "://"
+        domain = schema + self.request.get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = url + "#labroom=%d&furniture=%d&shelf=%d" % (self.object.furniture.labroom.pk,
+                                                           self.object.furniture.pk, self.object.pk)
+        build_qr_instance(url, self.object, self.org)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         furniture = form.cleaned_data['furniture']
@@ -123,6 +207,7 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
+        self.generate_qr()
         organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
                            relobj=self.lab)
 
@@ -152,12 +237,11 @@ class ShelfCreate(AJAXMixin, CreateView):
         }
 
 
-@method_decorator(has_lab_assigned(), name="dispatch")
 @method_decorator(permission_required('laboratory.change_shelf'), name='dispatch')
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"
-    form_class = ShelfForm
+    form_class = ShelfUpdateForm
 
     def get_prefix(self):
         return "shelf-"
@@ -217,6 +301,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
         response.render()
         return {
             'inner-fragments': {
-                '#shelfmodalbody': response.content
+                '#shelfmodalbody': response.content,
+                "#modalclose": "<script>refresh_description();</script>",
             }
         }

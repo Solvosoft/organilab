@@ -1,24 +1,25 @@
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
+from django.db.models import Value, DateField
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets, mixins
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BaseAuthentication
-from rest_framework import status, viewsets, mixins
-from django.db.models import Value, DateField
+from rest_framework.views import APIView
 
 from laboratory.api import serializers
-from laboratory.models import CommentInform, Inform, Protocol, OrganizationUserManagement, OrganizationStructure, \
-    LabOrgLogEntry, Laboratory, InformsPeriod
-from laboratory.utils import get_laboratories_from_organization
-from reservations_management.models import ReservedProducts, Reservations
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
+    LogEntryUserDataTableSerializer
+from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
+    Laboratory, InformsPeriod, ShelfObject
+from laboratory.utils import get_logentries_org_management
+from reservations_management.models import ReservedProducts
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -103,6 +104,7 @@ class CommentAPI(viewsets.ModelViewSet):
 
             template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform__pk=int(request.GET.get('inform'))).order_by('pk'), 'user':request.user},request)
             return Response({'data':template})
+
     def update(self, request, pk=None):
         comment=None
         if pk:
@@ -175,26 +177,34 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     ordering = ('pk', )
 
     def get_queryset(self):
+        filters = {}
         org = self.request.GET.get('org', None)
-        if not org:
-            return self.queryset.none()
-        else:
-            org = OrganizationStructure.objects.filter(pk=org).first()
-            if not org:
-                return self.queryset.none()
-        laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk' , flat=True))
+        qr_obj = self.request.GET.get('qr_obj', None)
+        queryset = self.queryset.none()
 
-        log_entries = LabOrgLogEntry.objects.filter(
-            Q(content_type__app_label='laboratory',
-              content_type__model='laboratory',
-              object_id__in=laboratories
-            ) | Q(
-              content_type__app_label='laboratory',
-              content_type__model='organizationstructure',
-              object_id=org.pk
-            )
-        ).values_list('log_entry', flat=True)
-        return LogEntry.objects.filter(pk__in=log_entries)
+        if not qr_obj:
+            log_entries = get_logentries_org_management(self, org)
+            filters.update({'pk__in': log_entries})
+        else:
+            if qr_obj.isnumeric():
+                self.serializer_class = LogEntryUserDataTableSerializer
+                qr_obj = int(qr_obj)
+                detail = [
+                    "[{'changed': {'fields': ['Login', %d]}}]" %(qr_obj),
+                    "[{'added': {'fields': ['Register', %d]}}]" %(qr_obj)
+                ]
+
+                filters.update({
+                    'action_flag__in': [1, 2],
+                    'content_type__app_label': 'auth',
+                    'content_type__model': 'user',
+                    'change_message__in': detail
+                })
+
+        if filters:
+            queryset = self.queryset.filter(**filters).distinct()
+
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -237,3 +247,29 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
+
+
+class ShelfObjectAPI(APIView):
+    def get_object(self, pk):
+        try:
+            return ShelfObject.objects.filter(shelf__pk=pk)
+        except ShelfObject.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, org_pk):
+        solicitud = self.get_object(request.GET['shelf'])
+        serializer = ShelfObjectSerialize(solicitud,context={'org_pk':org_pk}, many=True)
+        return Response(serializer.data)
+
+class ShelfObjectGraphicAPI(APIView):
+    def get(self, request):
+        queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
+        labels = []
+        data = []
+        if queryset:
+            self.show_chart = True
+            for obj in queryset:
+               data.append(obj.quantity)
+               labels.append(obj.object.name)
+
+        return Response({'labels':labels,'data':data})

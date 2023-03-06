@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% define_urlname_action 'manage_register_user_qrcode' %}
+{% endblock %}
+{% block content %}
+
+<table id="logEntryTable" class="display table"></table>
+
+{% endblock %}
+{% block js %}
+<script>
+
+function get_columns_logentry(){
+    var columns = [
+        {data: "action_time", name: "action_time", title: "{% trans 'Date' %}", type: "date", visible: true},
+        {data: "user", name: "user", title: "{% trans 'User' %}", type: "string", visible: true},
+        {data: "action_flag", name: "action_flag", title: "{% trans 'Action' %}", type: "select",  choices: [
+        [1, "{% trans "Register" %}"],
+        [2, "{% trans "Login" %}"]
+        ], visible: true},
+    ];
+    return columns;
+}
+
+$(document).ready(function() {
+   document.protocolTable=createDataTable("#logEntryTable", "{% url 'laboratory:api-logentry-list' %}", {
+          'columns': get_columns_logentry(),
+          ajax: {
+            url: "{% url 'laboratory:api-logentry-list' %}",
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                var data = formatDataTableParams(dataTableParams, settings);
+                data['qr_obj']="{{qr_obj}}";
+                return data;
+            }
+        }
+    }, addfilter=true);
+} );
+</script>
+{% endblock %}

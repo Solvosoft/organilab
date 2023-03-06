@@ -20,6 +20,13 @@ function add_rol_org(url, data){
       success: function( data ) {
            window.location.reload();
       },
+      error: function( jqXHR, textStatus, errorThrown ){
+        Swal.fire({
+          icon: 'error',
+          title: 'Name',
+          text: jqXHR.responseJSON.name[0],
+        })
+      },
       dataType: 'json'
     });
 }
@@ -230,8 +237,9 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
     var select = $("#relOrganizationmodal select");
     var organizationinput = $('#relOrganizationmodal input[name="organization"]');
     organizationinput.val(this.dataset.org)
-
-        $.ajax({
+    $(select).val(null).trigger('change');
+/**
+    $.ajax({
       type: "GET",
       url: url,
       data: document.contextroletable,
@@ -241,9 +249,9 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
       dataType: 'json'
     });
     $(select).select2({theme: 'bootstrap-5',  dropdownParent: $("#relOrganizationmodal")});
+    **/
     $("#relOrganizationmodal").modal('show');
 });
-
 
 $(".rolbtnadd").on('click', function(){
     var orgpk = $(this).data('id');
@@ -261,43 +269,61 @@ $("#addrolmodal").on('hidden.bs.modal', function () {
     $("#addrolmodal select").val(null).trigger('change');
 })
 
+function setactiveTabButton(element){
+    let btnteam = $(element).closest('.btn-toggle').find(".btn");
+    btnteam.removeClass('btn-primary')
+    btnteam.removeClass("active");
+    btnteam.addClass('btn-default');
+    element.addClass('btn-primary')
+    element.addClass("active");
+}
 
-$("#btn_add_rol").on('click', function(){
-    $("#addrolmodal select").val(null).trigger('change');
-    $("#add_rol_container").show();
-    $("#copy_rol_container").hide();
-    var rolsS2 = $("#addrolmodal #selectroldiv");
-    $("#add_rol_container").append(rolsS2);
-    $("#addrolmodal form").attr('action', $(this).data('url'));
-    $("#addrolmodal input[name='relate_rols']").parent().show();
-    if($("input[name='relate_rols']")[0].checked){
-        $("#addrolmodal div#rolS2container").show();
+$("#btn_add_rol").on('click', function(e){
+    if(!$(this).hasClass('active')){
+        $("#addrolmodal select").val(null).trigger('change');
+        $("#add_rol_container").show();
+        $("#copy_rol_container").hide();
+        var rolsS2 = $("#addrolmodal #selectroldiv");
+        $("#add_rol_container").append(rolsS2);
+        $("#addrolmodal form").attr('action', $(this).data('url'));
+        $("#addrolmodal input[name='relate_rols']").parent().show();
+        if($("input[name='relate_rols']")[0].checked){
+            $("#addrolmodal div#rolS2container").show();
+        }else{
+            $("#addrolmodal div#rolS2container").hide();
+        }
+        setactiveTabButton($(this));
     }else{
-        $("#addrolmodal div#rolS2container").hide();
+        e.preventDefault()
     }
 });
 
 
-$("#btn_copy_rol").on('click', function(){
-    $("#addrolmodal select").val(null).trigger('change');
-    $("#add_rol_container").hide();
-    $("#copy_rol_container").show();
-    var rolsS2 = $("#addrolmodal #selectroldiv");
-    $("#copy_rol_container").append(rolsS2);
-    $("#addrolmodal form").attr('action', $(this).data('url'));
-    $("#addrolmodal input[name='relate_rols']").parent().hide();
-    $("#addrolmodal div#rolS2container").show();
+$("#btn_copy_rol").on('click', function(e){
+    if(!$(this).hasClass('active')){
+        $("#addrolmodal select").val(null).trigger('change');
+        $("#add_rol_container").hide();
+        $("#copy_rol_container").show();
+        var rolsS2 = $("#addrolmodal #selectroldiv");
+        $("#copy_rol_container").append(rolsS2);
+        $("#addrolmodal form").attr('action', $(this).data('url'));
+        $("#addrolmodal input[name='relate_rols']").parent().hide();
+        $("#addrolmodal div#rolS2container").show();
+        setactiveTabButton($(this));
+    }else{
+        e.preventDefault()
+    }
 });
 
-
+/**
 $('.btn-toggle').click(function() {
-$(this).find('.btn').toggleClass('active');
+    $(this).find('.btn').toggleClass('active');
   if ($(this).find('.btn-primary').length>0) {
       $(this).find('.btn').toggleClass('btn-primary');
     }
   $(this).find('.btn').toggleClass('btn-default');
  });
-
+**/
 
 $(document).ready(function(){
     $("#copy_rol_container").hide();
@@ -318,6 +344,7 @@ $("input[name='relate_rols']").on('change', function(event){
  $("#addrolmodal").on('show.bs.modal', function (e) {
     var selectusers = $("#addrolmodal select");
     var url = $(selectusers).data('url');
+    $("#btn_add_rol").click();
 
     $.ajax({
       type: "GET",

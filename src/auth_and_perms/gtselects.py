@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
@@ -9,7 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.forms import  RelOrganizationPKIntForm
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -121,31 +123,31 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     fields = ['name']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = GPaginatorMoreElements
+    order_by = ['name']
+    organization = None
 
     def get_queryset(self):
-        super().get_queryset()
-        ancestors = self.organization.ancestors()
-        descendants = self.organization.descendants()
-        orgs = [] + list(ancestors) + list(descendants)
-        labs_organization = list(self.organization.laboratory_set.all().values_list('pk', flat=True))
-        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
-        labs_related = list(self.organization.organizationstructurerelations_set.filter(content_type=contenttype).values_list('object_id', flat=True))
-        exclude_labs = labs_organization + labs_related
-
-        labs_pk = []
-        for organization in orgs:
-            labs_pk += list(organization.laboratory_set.all().values_list('pk', flat=True))
-        return Laboratory.objects.filter(pk__in=set(labs_pk)).exclude(pk__in=exclude_labs)
+        labs = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.organization.pk)
+        # it's required than exclude labs that are part of the organization to prevent repeat labs
+        exclude_labs = OrganizationStructureRelations.objects.filter(
+            organization=self.organization.pk,
+            content_type__app_label='laboratory', content_type__model='laboratory'
+        ).values_list('object_id', flat=True)
+        return labs.exclude(pk__in=exclude_labs).order_by(*self.order_by)
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        if not args:
-            raise
         if self.organization is None:
-            raise
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+
+        if self.organization is None:
+            raise Http404("Organization not found")
         return super().list(request, *args, **kwargs)
 
 

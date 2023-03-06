@@ -67,11 +67,30 @@ function closeModal(){
 	$("#createshelfmodal").modal("hide");
 }
 
+function refresh_description(){
+
+    try {
+        const editor = tinymce.get('id_shelf--description')
+        tinymce.remove(editor);
+
+    } catch (e) {
+         console.log(e)
+    };
+
+    setTimeout(function () {
+        show_refuse_elements();
+        gt_find_initialize($("#shelfmodalbody"));
+    }, 500);
+
+}
 function processResponse(data) {
 	$("#modal_shelf--type_id").remove();
+	$("#id_shelf--description").remove()
 	$("#shelfmodalbody").html(data);
 	gt_find_initialize($("#shelfmodalbody"));
 	activemodal = $("#createshelfmodal").modal('show');
+	show_refuse_elements();
+
 }
 
 
@@ -108,11 +127,11 @@ function delete_shelf(id, url){
     var delete_url = url;
 
     Swal.fire({
-      title: 'Do you want to delete this shelf?',
+      title: translations_shelf_modal['title'],
       showDenyButton: false,
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: translations_shelf_modal['yes'],
+      cancelButtonText: translations_shelf_modal['cancel'],
     }).then((result) => {
       if (result.isConfirmed) {
             ajaxPost(delete_url, {}, function(response){
@@ -121,6 +140,21 @@ function delete_shelf(id, url){
       }
     })
 }
+function show_refuse_elements(){
+     if($('#id_shelf--discard').is(':checked')){
+        $('#id_shelf--description').parent().parent().show();
+     }else{
+        $('#id_shelf--description').parent().parent().hide();
+
+      }
+}
+
+
+
 
 save_form();
 do_sortable();
+
+$(document).on('ifChanged','#id_shelf--discard', function(event){
+    show_refuse_elements('#id_shelf--discard');
+});

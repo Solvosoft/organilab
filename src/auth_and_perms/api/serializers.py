@@ -6,6 +6,8 @@ from laboratory.models import OrganizationStructure
 
 
 class RolSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True)
+
     class Meta:
         model = Rol
         fields = ["name", "permissions"]

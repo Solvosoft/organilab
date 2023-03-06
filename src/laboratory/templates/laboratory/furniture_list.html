@@ -15,7 +15,9 @@
           <span class="furnituredescriptor" ><i style="color: {{furniture.color}}" class="fa fa-folder" aria-hidden="true"></i>
  </span>
           {{ furniture.name }}
+
         </a>
+
         {% if perms.laboratory.do_report %} 
         <a class="float-end"
            href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}?pk={{ furniture.pk }}">
@@ -23,6 +25,7 @@
           {% trans "PDF" %}
         </a>
         {% endif %}
+
       </li>
     {% endfor %}
     </ul>

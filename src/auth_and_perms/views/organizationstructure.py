@@ -15,11 +15,13 @@ from django.views.generic import CreateView
 from django.conf import settings
 from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
+from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
-from laboratory.forms import AddOrganizationForm
+from laboratory.forms import AddOrganizationForm, RelOrganizationForm
 from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
     OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import ListView, DeleteView
 
 
 def getLevelClass(level):
@@ -79,6 +81,7 @@ def organization_manage_view(request):
              'adduserform': AddUserForm(),
              'addrolform': AddProfileRolForm(),
              'addorgform': AddOrganizationForm(),
+             'relorgform': RelOrganizationForm()
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 
@@ -193,6 +196,26 @@ def assign_rol_permissions(user, rols):
     user.user_permissions.add(*perms)
 
 
+@method_decorator(permission_required("auth_and_perms.change_rol"), name="dispatch")
+class ListRolByOrganization(ListView):
+    model = Rol
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        return queryset
+
+
+@method_decorator(permission_required("auth_and_perms.delete_rol"), name="dispatch")
+class DeleteRolByOrganization(DeleteView):
+    model = Rol
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        return queryset
+
+    def get_success_url(self):
+        return reverse('auth_and_perms:list_rol_by_org', args=[self.org])
+
 def add_rol_by_laboratory(request):
     cc_lab = ContentType.objects.get(app_label='laboratory', model="laboratory")
     cc_org = ContentType.objects.get(app_label='laboratory', model="organizationstructure")
@@ -241,22 +264,6 @@ class AddUser(CreateView):
         messages.success(self.request, _("Element saved successfully"))
         return reverse('auth_and_perms:organizationManager')
 
-    def send_email(self, user):
-        schema = self.request.scheme + "://"
-        context = {
-            'user': user,
-            'domain': schema + self.request.get_host()
-        }
-        send_mail(subject="Nuevo usuario creado en la plataforma",
-                  message="Por favor use un visor de html",
-                  recipient_list=[user.email],
-                  from_email=settings.DEFAULT_FROM_EMAIL,
-                  html_message=render_to_string(
-                      'gentelella/registration/new_user.html',
-                      context=context
-                  )
-                  )
-
     def form_valid(self, form):
         response = super().form_valid(form)
         password = User.objects.make_random_password()
@@ -271,8 +278,8 @@ class AddUser(CreateView):
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
-        self.send_email(user)
-        organilab_logentry(user, user, ADDITION, 'user', changed_data=['user', 'phone_number', 'id_card', 'job_position'],
+        send_email(self.request, user)
+        organilab_logentry(user, user, ADDITION, 'user', changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
                            relobj=self.organization)
         organilab_logentry(user, profile, ADDITION, 'profile',
                            changed_data=['user', 'phone_number', 'id_card', 'job_position'],
