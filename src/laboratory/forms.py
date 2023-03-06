@@ -8,9 +8,10 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile, Rol
+from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
@@ -96,6 +97,7 @@ class OrganizationUserManagementForm(GTForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
     group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True,
                                    label=_("Group"))
+
 
 
 class ReservationModalForm(GTForm, ModelForm):
@@ -292,6 +294,17 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
             'parent': genwidgets.HiddenInput
         }
 
+class RelOrganizationForm(GTForm):
+    contentyperelobj = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.all(),
+        widget=AutocompleteSelectMultiple(url='relorgbase', attrs={
+            'data-s2filter-organization': '#relorg_organization'
+        }),
+        label=_("Laboratories to be related to this organization")
+    )
+
+class RelOrganizationPKIntForm(GTForm):
+    organization = forms.IntegerField(required=True)
 
 class CatalogForm(GTForm, forms.ModelForm):
     class Meta:
@@ -347,6 +360,7 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
 class RegisterUserQRForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+        self.obj = kwargs.pop('obj', None)
         org_pk = kwargs.pop('org_pk', None)
         lab_pk = kwargs.pop('lab_pk', None)
         new_obj = kwargs.pop('new_obj', False)
@@ -371,10 +385,15 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
         self.fields['role'].queryset = role_queryset
         self.fields['organization_register'].queryset = org_queryset
 
+        if new_obj:
+            self.fields['code'].help_text = _("Once registration process conclude this code won't be editable.")
+        else:
+            self.fields['code'].disabled = True
+
     class Meta:
         model = RegisterUserQR
         fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id',
-                  'content_type', 'created_by']
+                  'content_type', 'created_by', 'code']
         widgets = {
             'activate_user': genwidgets.YesNoInput,
             'role': genwidgets.Select,
@@ -383,8 +402,22 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
             'object_id': genwidgets.HiddenInput,
             'content_type': genwidgets.HiddenInput,
             'url': genwidgets.HiddenInput,
-            'created_by': genwidgets.HiddenInput
+            'created_by': genwidgets.HiddenInput,
+            'code': genwidgets.TextInput
         }
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+
+        if code:
+            qr_obj = RegisterUserQR.objects.filter(code=code)
+            if self.obj:
+                qr_obj = qr_obj.exclude(pk=self.obj.pk)
+
+            if qr_obj.exists():
+                raise ValidationError(_("This code is already exists."))
+            else:
+                return code
 
 
 class RegisterForm(forms.ModelForm, GTForm):
@@ -392,6 +425,7 @@ class RegisterForm(forms.ModelForm, GTForm):
     phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
 
     def __init__(self, *args, **kwargs):
+        self.obj = kwargs.pop('obj', None)
         super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
@@ -413,6 +447,8 @@ class RegisterForm(forms.ModelForm, GTForm):
 
         if email:
             user_obj = User.objects.filter(email=email)
+            if self.obj:
+                user_obj = user_obj.exclude(pk=self.obj)
 
             if user_obj.exists():
                 raise ValidationError(_("Email address is already exists."))
@@ -434,3 +470,30 @@ class LoginForm(GTForm, forms.Form):
         ),
         "inactive": _("This account is inactive."),
     }
+
+
+class PasswordCodeForm(PasswordChangeForm):
+    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4, label=_("Code"))
+
+    def __init__(self, *args, **kwargs):
+        self.code = kwargs.pop('code', None)
+        self.user = kwargs.pop('user', None)
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+
+        if code != self.code:
+            raise ValidationError(_("Code didn't match."))
+        else:
+            return code
+
+class ShelfObjectOptions(GTForm, forms.Form):
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    options = forms.IntegerField(required=True)
+    shelf_object = forms.IntegerField(required=True)
+
+class ShelfObjectListForm(GTForm, forms.Form):
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    id = forms.IntegerField(required=True)
+

@@ -108,6 +108,39 @@ class LogEntryFilterSet(FilterSet):
         }
 
 
+class LogEntryUserSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    action_flag = serializers.SerializerMethodField()
+    action_time = serializers.DateTimeField(format=DATETIME_INPUT_FORMATS[0])
+
+    def get_user(self, obj):
+        if not obj:
+            return _("No user found")
+        if not obj.user:
+            return _("No user found")
+
+        name = obj.user.get_full_name()
+        if not name:
+            name = obj.username
+        return name
+
+    def get_action_flag(self, obj):
+        if obj.action_flag in [1, 2]:
+            return _("Register") if obj.action_flag is 1 else ("Login")
+        return ''
+
+
+    class Meta:
+        model = LogEntry
+        fields = '__all__'
+
+class LogEntryUserDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LogEntryUserSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
 class LogEntrySerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     action_flag = serializers.SerializerMethodField()
@@ -115,6 +148,8 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         if not obj:
+            return _("No user found")
+        if not obj.user:
             return _("No user found")
 
         name = obj.user.get_full_name()

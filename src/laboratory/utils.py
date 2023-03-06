@@ -260,6 +260,7 @@ def generate_QR_img_file(url, user, file_name, extension_file):
 
 
 def get_organizations_register_user_base(organization, lab_id):
+    lab = Laboratory.objects.get(pk=lab_id)
     content_type = ContentType.objects.filter(
         app_label='laboratory',
         model='laboratory'
@@ -273,7 +274,7 @@ def get_organizations_register_user_base(organization, lab_id):
         object_id=lab_id
     )
 
-    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True)) + [organization.pk]
+    org_list = list(org_list_by_lab.values_list('organization__pk', flat=True)) + [organization.pk, lab.organization.pk]
 
     return org_list
 
@@ -323,3 +324,7 @@ def get_logentries_org_management(self, org):
 
     return log_entries
 
+
+def check_has_profile(user):
+    obj = Profile.objects.filter(user=user)
+    return obj.exists()

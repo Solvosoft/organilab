@@ -13,7 +13,7 @@ from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from organilab.settings import DATE_INPUT_FORMATS
 from presentation.models import AbstractOrganizationRef
 from . import catalog
@@ -207,7 +207,7 @@ class Shelf(models.Model):
     quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-    description= models.TextField(null=True,blank=True, default="")
+    description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -248,15 +248,20 @@ class Shelf(models.Model):
         try:
             result=(self.get_total_refuse()/self.quantity)*100
         except ZeroDivisionError:
-            result=100
+            result=0
         return result
 
     def get_measurement_unit_display(self):
-        return str(self.measurement_unit)
+        return str(self.measurement_unit) if self.measurement_unit else _('Unknown')
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
+
+    class Meta:
+        permissions = [('can_manage_disposal', 'Can manage disposal'),
+                       ('can_add_disposal', 'Can add disposal'),
+                       ('can_view_disposal', 'Can view disposal')]
 
 class Furniture(models.Model):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
@@ -379,8 +384,14 @@ class Furniture(models.Model):
 
 class OrganizationStructureManager(models.Manager):
 
-    def filter_user(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+    def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(
+            organizationusermanagement__users=user)
+        if org_pk:
+            organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
+        else:
+            organizations = OrganizationStructure.objects.filter(qparams)
+
         pks = []
         for org in organizations:
             if descendants:
@@ -395,10 +406,15 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
     def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user)
+        # TODO: we have problems detecting user organizations
+        # user.userorganization_set.all()
+
+
+        organizations = OrganizationStructure.objects.filter(
+            Q(organizationusermanagement__users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
@@ -419,7 +435,7 @@ class OrganizationStructureManager(models.Manager):
         organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user,organizationusermanagement__organization=org)
         pks = []
         for org in organizations:
-
+            pks.append(org.pk)
             if descendants:
                 for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
                     if sons.pk not in pks:
@@ -435,6 +451,19 @@ class OrganizationStructureManager(models.Manager):
             return OrganizationStructure.objects.filter(pk__in=pks)
 
         return OrganizationStructure.objects.none()
+
+    def filter_labs_by_user(self, user, org_pk=None):
+        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
+
+        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True, org_pk=org_pk)
+        labs_related = set(OrganizationStructureRelations.objects.filter(
+            organization__in = orgs,
+            content_type = contenttype,
+        ).values_list('object_id', flat=True))
+        labs_in_orgs = set(orgs.exclude(laboratory=None).values_list('laboratory', flat=True))
+
+        pks = labs_related.union(labs_in_orgs)
+        return contenttype.model_class().objects.filter(pk__in=pks)
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
@@ -751,6 +780,8 @@ class RegisterUserQR(models.Model):
 
     organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
     organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
+
+    code = models.CharField(max_length=4, unique=True, null=True, verbose_name=_("Code"))
 
     def __str__(self):
         return f"{self.url}"

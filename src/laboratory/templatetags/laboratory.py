@@ -4,6 +4,7 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django import template
+from django.utils.safestring import mark_safe
 
 from academic.models import ProcedureStep, ProcedureRequiredObject
 from laboratory.forms import ObjectSearchForm
@@ -11,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile, \
     get_user_laboratories
 from laboratory.models import Laboratory
+from presentation.utils import get_qr_by_instance
 
 register = template.Library()
 
@@ -125,3 +127,14 @@ def show_reserve_button(procedure):
     if items.exists():
         show_reserve_btn = True
     return show_reserve_btn
+
+@register.simple_tag()
+def get_qr_svg_img(object, **kwargs):
+    qr = get_qr_by_instance(object, kwargs['organization'])
+    if qr:
+        return mark_safe("""
+        <a class="imgqr" href="data:image/svg+xml;base64,%s" target="_blank" download="%s.svg">
+        <img alt="" src="data:image/svg+xml;base64,%s" %s /></a>
+        """%(qr.b64_image, str(object), qr.b64_image, " ".join([ '%s="%s"'%(key, value) for key, value in kwargs.items()])))
+
+    return ""
