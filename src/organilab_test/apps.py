@@ -12,7 +12,7 @@ def load_initialdata(    app_config,
     **kwargs):
     if app_config.__class__.__name__=='LaboratoryConfig':
         print("Load initial data")
-        call_command('loaddata', 'initialdata.json')
+        call_command('loaddata', 'initial_data.json')
 
 
 class OrganilabTestConfig(AppConfig):
