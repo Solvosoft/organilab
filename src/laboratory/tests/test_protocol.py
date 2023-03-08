@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from laboratory.models import Protocol
 from laboratory.tests.utils import BaseLaboratorySetUpTest
-
+import json
 
 class ProtocolViewTest(BaseLaboratorySetUpTest):
 
@@ -58,3 +58,21 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:api-protocol-detail", kwargs={"pk": 1, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        correct_response = {
+            "data": [
+                {
+                    "name": "Lavado de manos",
+                    "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+                    "file": {
+                        "url": "/media/protocols/test.pdf",
+                        "class": "btn btn-sm btn-outline-success",
+                        "display_name": "<i class='fa fa-download' aria-hidden='true'></i> Descargar"
+                    },
+                    "action": "" #REVISAR REQUEST
+                }
+            ],
+            "draw": 1,
+            "recordsFiltered": 1,
+            "recordsTotal": 1
+        }
+        self.assertEqual(json.loads(response.content), correct_response)

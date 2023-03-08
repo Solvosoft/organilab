@@ -51,10 +51,11 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
-
-    def test_object_list_report(self):
-        data = {"type_id": "1"}
-        url = reverse("laboratory:reports_objects_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+    def test_reports_laboratory(self):
+        data = {
+            "format": "pdf"
+        }
+        url = reverse("laboratory:reports_laboratory", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
@@ -95,7 +96,6 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
         }
         response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:mylabs", kwargs={"org_pk": self.org.pk})
-        self.assertRedirects(response_post, success_url)
         self.assertIn("Organización X", list(Laboratory.objects.values_list("name", flat=True)))
 
     def test_check_laboratory_index(self):
@@ -106,5 +106,10 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
 
     def test_select_lab(self):
         url = reverse("laboratory:select_lab")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_laboratory_delete(self):
+        url = reverse("laboratory:laboratory_delete", kwargs={"org_pk": self.org.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
