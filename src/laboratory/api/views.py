@@ -17,7 +17,7 @@ from laboratory.api.serializers import ReservedProductsSerializer, ReservationSe
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
-    Laboratory, InformsPeriod, ShelfObject
+    Laboratory, InformsPeriod, ShelfObject, Shelf
 from laboratory.utils import get_logentries_org_management
 from reservations_management.models import ReservedProducts
 
@@ -273,3 +273,11 @@ class ShelfObjectGraphicAPI(APIView):
                labels.append(obj.object.name)
 
         return Response({'labels':labels,'data':data})
+
+class ShelfList(APIView):
+    def post(self, request):
+        data = None
+        if 'shelfs[]' in request.data:
+            shelfs = Shelf.objects.filter(pk__in=request.data.getlist('shelfs[]'))
+            data = render_to_string(template_name="laboratory/components/shelfdetail.html", context={'shelfs':shelfs}, request=request)
+        return Response({'data':data})
