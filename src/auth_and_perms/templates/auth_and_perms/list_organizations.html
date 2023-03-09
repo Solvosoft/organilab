@@ -2,6 +2,7 @@
 {% load i18n static laboratory %}
 {% load user_rol_tags %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'organizationManager' %}
     {% define_urlname_action 'addusersorganization' %}
@@ -14,7 +15,7 @@
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'css/permission_table_style.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'css/permission_table_style.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
 {% endblock css %}
 
 {% block content %}
@@ -246,6 +247,6 @@
 {% block js %}
 {{block.super}}
 
-<script src="{% static 'js/auth_and_perms/organization_manager.js' %}"></script>
+<script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock%}
