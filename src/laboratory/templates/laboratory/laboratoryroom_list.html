@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n shelf_position static laboratory %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'rooms_list' %}
 	{% define_urlname_action 'furniture_list' %}
@@ -91,7 +92,7 @@
 {% endblock %}
 
 {% block css %}
-<link href="{% static 'laboratory/css/laboratory.css' %}" rel="stylesheet" >
+<link href="{% static 'laboratory/css/laboratory.css' %}?v={% get_organilab_version %}" rel="stylesheet" >
 {% endblock %}
 {% block js %}
     <script>
@@ -103,8 +104,8 @@
         const view_search = false;
 
     </script>
-    <script src="{% static 'js/shelfobjectedit.js' %}"></script>
-    <script src="{% static 'js/reservationmodal.js' %}"></script>
+    <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
+    <script src="{% static 'js/reservationmodal.js' %}?v={% get_organilab_version %}"></script>
 
     <script>
         (function () {

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings label_tags %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'security_leaf_pdf' %}
@@ -124,7 +125,7 @@ function replaceLast(obj, search, replace) {
 <script>
     document.url_get_preview = "{% url 'sga:get_preview' org_pk organilabcontext 0 %}";
 </script>
-<script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}
