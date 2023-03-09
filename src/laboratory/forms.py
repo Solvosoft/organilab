@@ -245,6 +245,7 @@ class FurnitureForm(forms.ModelForm, GTForm):
             r'^[\[\],\s"\d]*$',
             message=_("Invalid format in shelf dataconfig "),
             code='invalid_format')])
+    shelfs = forms.CharField(required=False,widget=forms.HiddenInput)
 
     class Meta:
         model = Furniture
