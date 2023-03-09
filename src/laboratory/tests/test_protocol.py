@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import Protocol
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
+import json
 
-
-class ProtocolViewTest(BaseSetUpTest):
+class ProtocolViewTest(BaseLaboratorySetUpTest):
 
     def test_get_protocol_list(self):
         url = reverse("laboratory:protocol_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -48,3 +48,31 @@ class ProtocolViewTest(BaseSetUpTest):
         success_url = reverse("laboratory:protocol_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+
+    def test_api_protocol_list(self):
+        url = reverse("laboratory:api-protocol-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_protocol_detail(self):
+        url = reverse("laboratory:api-protocol-detail", kwargs={"pk": 1, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        correct_response = {
+            "data": [
+                {
+                    "name": "Lavado de manos",
+                    "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+                    "file": {
+                        "url": "/media/protocols/test.pdf",
+                        "class": "btn btn-sm btn-outline-success",
+                        "display_name": "<i class='fa fa-download' aria-hidden='true'></i> Descargar"
+                    },
+                    "action": "" #REVISAR REQUEST
+                }
+            ],
+            "draw": 1,
+            "recordsFiltered": 1,
+            "recordsTotal": 1
+        }
+        self.assertEqual(json.loads(response.content), correct_response)

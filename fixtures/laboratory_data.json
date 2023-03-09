@@ -3,13 +3,13 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$320000$f85Ke2ZXlAnDIGR2e1Qn6Q$o8w7pDEOEHtdKGzRBAK4EQh+xiITzvjoPI1wb+6D2VE=",
+      "password": "adminpass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": true,
-      "username": "german",
-      "first_name": "German",
-      "last_name": "Zárate Montero",
-      "email": "gedzar@gmail.com",
+      "username": "admin",
+      "first_name": "Organilab",
+      "last_name": "Admin",
+      "email": "orgadmin@gmail.com",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -418,13 +418,42 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "renatapass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "renatafg",
+      "first_name": "Renata",
+      "last_name": "Figueroa",
+      "email": "renatafg@protonmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
       "user": 1,
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
-      "job_position": "Principal technician",
+      "job_position": "Administrator",
+      "laboratories": [1, 2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "1-1111-1111",
+      "job_position": "Profesional Technician",
       "laboratories": [1, 2]
     }
   },
@@ -433,7 +462,7 @@
     "pk": 1,
     "fields": {
       "parent": null,
-      "name": "Estudiantes Obsevadores",
+      "name": "Investigadores SA",
       "position": 1,
       "level": 1,
       "rol": []
@@ -459,6 +488,30 @@
       "position": 1,
       "level": 1,
       "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "users": [2]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "users": [1]
     }
   },
   {
@@ -492,9 +545,9 @@
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
-      "name": "Organiza tan",
+      "name": "Vick Lab",
       "phone_number": "85794954",
-      "location": "Heredia",
+      "location": "San Antonio",
       "geolocation": "9.895804362670006,-84.1552734375",
       "email": "",
       "coordinator": "",
@@ -511,7 +564,7 @@
     "fields": {
       "name": "Lab Ultra",
       "phone_number": "22305678",
-      "location": "Cartago",
+      "location": "Upala",
       "geolocation": "9.895804362670006,-84.1552734375",
       "email": "",
       "coordinator": "",
@@ -552,6 +605,28 @@
       "phone_number": "(506)2209-8765",
       "email": "alcomasa@cr.com",
       "legal_identity": "3-435-24432214",
+      "laboratory": 2
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 4,
+    "fields": {
+      "name": "Benka SA",
+      "phone_number": "(605)2222-2222",
+      "email": "benka@gmail.com",
+      "legal_identity": "3-34534-453532",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 5,
+    "fields": {
+      "name": "Jako company",
+      "phone_number": "(609)4534-3432",
+      "email": "jakocm@hotmail.com",
+      "legal_identity": "5-843849-4395348",
       "laboratory": 2
     }
   },
@@ -684,7 +759,9 @@
       "name": "Primer Estante",
       "container_shelf": null,
       "type": 75,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -695,7 +772,9 @@
       "name": "Segundo Estante",
       "container_shelf": null,
       "type": 75,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -706,7 +785,9 @@
       "name": "Tercer Estante",
       "container_shelf": null,
       "type": 74,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -717,7 +798,9 @@
       "name": "Cuarto Estante",
       "container_shelf": null,
       "type": 74,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -738,16 +821,24 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
       "created_by": 1,
-      "code": "BAL998",
-      "name": "Balón Fondo Plano 500 mL",
+      "code": "TA1000",
+      "name": "Tanque 1000 mL",
       "synonym": null,
       "type": "0",
       "is_public": true,
-      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "description": "",
       "model": "",
       "serie": "",
       "plaque": "",
       "features": []
+    }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
     }
   },
   {
@@ -758,16 +849,16 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
       "created_by": 1,
-      "code": "BAL998",
-      "name": "Balón Fondo Plano 700 mL",
+      "code": "CA777",
+      "name": "Cal 100 gr",
       "synonym": null,
       "type": "0",
       "is_public": true,
-      "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+      "description": "",
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": []
+      "features": [1]
     }
   },
   {
@@ -776,6 +867,20 @@
     "fields": {
       "shelf": 1,
       "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
@@ -802,6 +907,169 @@
       "final_date": "2021-01-09T04:59:00Z",
       "status": 0,
       "laboratory": 1
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "creation_date": "2023-01-10T22:48:16.765Z",
+      "last_update": "2023-01-10T22:48:16.817Z",
+      "created_by": 1,
+      "shelf_object": 1,
+      "user": 1,
+      "reservation": 1,
+      "is_returnable": false,
+      "amount_required": 445.0,
+      "amount_returned": 0.0,
+      "initial_date": "2020-12-19T04:59:00Z",
+      "final_date": "2021-01-09T04:59:00Z",
+      "status": 0,
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 1,
+    "fields": {
+      "object": 1,
+      "laboratory_send": 1,
+      "laboratory_received": 2,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 2,
+    "fields": {
+      "object": 2,
+      "laboratory_send": 2,
+      "laboratory_received": 1,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de reactivos",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de equipo",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Cal",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "creator": 1,
+      "description": null,
+      "organilab_context": "laboratory",
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "NaClO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/Hipoclorito_de_sodio_MSDS.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 1,
+    "fields": {
+      "substance": 1,
+      "note": null,
+      "is_approved": true
     }
   }
 ]
