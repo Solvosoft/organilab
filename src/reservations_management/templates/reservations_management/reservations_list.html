@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load i18n static urlname_tags gtsettings label_tags %}
+{% load organilab_tags %}
 
 {% block pre_head %}
     {% define_true  "use_datatables" %}
@@ -139,7 +140,7 @@
     $("#table_of_reservations").DataTable();
  })(jQuery);
 </script>
-<script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
+<script src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

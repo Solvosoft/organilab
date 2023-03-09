@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'add_observation_substanceobservation' %}
     {% define_urlname_action 'update_observation' %}
@@ -41,6 +42,6 @@
 
 {% block js %}
 {{block.super}}
-<script type="text/javascript" src="{% static 'js/observations.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/observations.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}

@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% load gtsettings %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_true "use_datatables" as use_datatables %}
     {% define_urlname_action 'form_list' %}
@@ -101,7 +102,7 @@ const translations = {
     delete_success_title: "{% trans 'Deleted!' %}",
 }
 </script>
-<script src="{% static 'js/list.js' %}"></script>
+<script src="{% static 'js/list.js' %}?v={% get_organilab_version %}"></script>
 <script>
 window.urls = {
     editview: "{% url 'derb:edit_view' org_pk %}",

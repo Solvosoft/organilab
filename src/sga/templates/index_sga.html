@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load organilab_tags %}
 
 {# CSS #}
 {% block css %}
-<link href="{% static 'sga/css/index_sga.css' %}" rel="stylesheet">
-<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}" rel="stylesheet"/>
+<link href="{% static 'sga/css/index_sga.css' %}?v={% get_organilab_version %}" rel="stylesheet">
+<link href="{% static 'sga/css/paper-bootstrap-wizard.css' %}?v={% get_organilab_version %}" rel="stylesheet"/>
 {% endblock css %}
 
 {% block title %}{% trans 'GHS Label Creator' %}{% endblock title %}
