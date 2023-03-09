@@ -1,0 +1,16 @@
+{% load laboratory i18n %}
+<div class="container">
+    {% for shelf in shelfs %}
+    <div class="p-3">
+    <label class="fw-bold">{% trans 'Shelf' %} {{shelf.name}}</label>
+    <ul class="list-group">
+        {% for shelfobject in shelf.shelfobject_set.all %}
+        <li class="list-group-item align-middle clearfix"><span class="float-start">{{shelfobject.object.name}}</span> <span class="float-end  bg-light text-dark p-1">{{shelfobject.quantity}} {{shelfobject.measurement_unit}}</span></li>
+         {% empty %}
+        <li class="list-group-item text-center fw-bold text-danger">{% trans 'The shelf dont have shelfobjects' %}</li>
+        {% endfor %}
+
+    </ul>
+        </div>
+    {% endfor %}
+</div>
