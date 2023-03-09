@@ -3,11 +3,12 @@ from __future__ import absolute_import, unicode_literals
 from celery import Celery
 from django.utils import timezone
 
-from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod
+from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod, Furniture
 from async_notifications.utils import send_email_from_template
 from datetime import date
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods
+import re
 
 app = Celery()
 
@@ -60,8 +61,9 @@ def add_consecutive(lab):
     return consecutive
 
 
-@app.task
-def create_informs_based_on_period():
-    informschedulerquery = InformScheduler.objects.filter(active=True)
-    for informscheduler in informschedulerquery:
-        create_informsperiods(informscheduler)
+@app.task()
+def remove_shelf_not_furniture():
+    furnitures = Furniture.objects.all()
+    for furniture in furnitures:
+        obj_pks= re.findall(r'\d+', furniture.dataconfig)
+        furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
