@@ -72,7 +72,7 @@ def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
         furniture = get_object_or_404(Furniture, pk=shelf.furniture.pk)
         dataconfig = furniture.dataconfig
         obj_pks= re.findall(r'\d+', furniture.dataconfig)
-        if shelf.pk in obj_pks:
+        if str(shelf.pk) in obj_pks:
             furniture.dataconfig = dataconfig.replace(str(shelf.pk), "")
             furniture.save()
         shelf.delete()
