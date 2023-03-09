@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load laboratory static i18n %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% load gtpermissions %}
 {% block pre_head %}
 	{% define_urlname_action 'edit_object' %}
@@ -126,8 +127,8 @@
     const view_search = true;
 
 </script>
-<script src="{% static 'js/shelfobjectedit.js' %}"></script>
-<script src="{% static 'js/reservationmodal.js' %}"></script>
+<script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/reservationmodal.js' %}?v={% get_organilab_version %}"></script>
 <script>
 
 </script>

@@ -219,11 +219,3 @@ function displayShelfobjectFunction(data) {
 	$("#shelfdetailmodalbody").html(data);
 	activemodal = $("#shelfdetailmodal").modal('show');
 }
-
-
-$(document).on('keyup','#id_quantity',function(e){
-    if(!float_regex.test(this.value) && e.key!='.'){
-        this.value = this.value.slice(0,-1)
-    }
-
-});
