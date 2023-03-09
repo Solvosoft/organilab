@@ -23,7 +23,7 @@ from django.utils.decorators import method_decorator
 from django_ajax.decorators import ajax
 
 
-from laboratory.models import Furniture, Laboratory, LaboratoryRoom
+from laboratory.models import Furniture, Laboratory, LaboratoryRoom, Shelf
 from laboratory.shelf_utils import get_dataconfig
 from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 from django.utils.translation import gettext_lazy as _
@@ -128,7 +128,12 @@ class FurnitureUpdateView(UpdateView):
 
 
     def form_valid(self, form):
+        shelfs=form.cleaned_data['shelfs']
+        if shelfs:
+            shelfs = eval(form.cleaned_data['shelfs'])
+            Shelf.objects.filter(pk__in = shelfs).delete()
         self.object = form.save()
+
         organilab_logentry(self.request.user, self.object, CHANGE, 'furniture', changed_data=form.changed_data,
                            relobj=self.lab)
         return redirect(self.get_success_url())

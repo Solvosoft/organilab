@@ -10,6 +10,7 @@ from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -27,7 +28,7 @@ from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
+import re
 
 def get_shelves(furniture):
     if type(furniture) == QuerySet:
@@ -68,6 +69,12 @@ def list_shelf(request, org_pk, lab_pk):
 def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     if request.method == 'POST':
         shelf = get_object_or_404(Shelf, pk=pk)
+        furniture = get_object_or_404(Furniture, pk=shelf.furniture.pk)
+        dataconfig = furniture.dataconfig
+        obj_pks= re.findall(r'\d+', furniture.dataconfig)
+        if shelf.pk in obj_pks:
+            furniture.dataconfig = dataconfig.replace(str(shelf.pk), "")
+            furniture.save()
         shelf.delete()
         organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
         return {'result': "OK"}
@@ -305,3 +312,14 @@ class ShelfEdit(AJAXMixin, UpdateView):
                 "#modalclose": "<script>refresh_description();</script>",
             }
         }
+
+class RemoveShelfForm(forms.Form):
+    shelfs=forms.ModelMultipleChoiceField(queryset=Shelf.objects.all())
+def remove_shelfs(request):
+    form = RemoveShelfForm(request.POST)
+    if form.is_valid():
+        for shelf in form.cleaned_data['shelfs']:
+            print(shelf)
+        return JsonResponse({'msg':'Remove',"status":True})
+    else:
+        return JsonResponse({'msg':'Error',"status":False})
