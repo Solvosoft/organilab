@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
@@ -64,5 +65,5 @@
         document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
         document.lab_pk = {{laboratory}};
     </script>
-    <script type="text/javascript" src="{% static 'js/my_reservations.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/my_reservations.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

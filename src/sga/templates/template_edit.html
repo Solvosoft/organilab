@@ -10,14 +10,15 @@
 {% load i18n %}
 {% load static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'edit_personal' %}
     {% define_urlname_action 'get_recipient_size' %}
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
-<link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'sga/css/label_template.css' %}?v={% get_organilab_version %}" rel="stylesheet">
+<link href="{% static 'editor/svgedit.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block js %}
 <script>
@@ -46,10 +47,10 @@ document.clean_canvas_editor = true;
 <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
 window.SvgCanvas=SvgCanvas;
 </script>
-<script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
-<script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
-<script src="{% static 'sga/js/codigosPH.js' %}"></script>
-<script src="{% static 'js/jquery-ui.min.js' %}"> </script>
+<script src="{% static 'sga/sga-bundle.js' %}?v={% get_organilab_version %}" type="module"> </script>
+<script src="{% static 'sga/js/canvas_editor.js' %}?v={% get_organilab_version %}"> </script>
+<script src="{% static 'sga/js/codigosPH.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}?v={% get_organilab_version %}"> </script>
 {% endblock %}
 
 

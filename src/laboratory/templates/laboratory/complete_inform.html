@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'complete_inform' %}
 {% endblock %}
@@ -38,7 +39,7 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'formio/formio.full.min.js' %}"></script>
+<script src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
 <script type="text/javascript">
 const urls ={
     edit:"{% url 'laboratory:complete_inform' org_pk=org_pk lab_pk=laboratory pk=inform.pk %}",
@@ -106,7 +107,7 @@ $('#observation').click(()=>{
 })
 
 </script>
-<script src="{% static 'js/formio.js'%}"></script>
+<script src="{% static 'js/formio.js'%}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
 

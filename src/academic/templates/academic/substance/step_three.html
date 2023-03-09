@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'step_one' %}
     {% define_urlname_action 'step_two' %}
@@ -14,7 +15,7 @@
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'editor/svgedit.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block js %}
 {{block.super}}
@@ -30,8 +31,8 @@
     <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
     window.SvgCanvas=SvgCanvas;
     </script>
-    <script src="{% static 'sga/sga-bundle.js' %}" type="module"> </script>
-    <script src="{% static 'sga/js/canvas_editor.js' %}"> </script>
+    <script src="{% static 'sga/sga-bundle.js' %}?v={% get_organilab_version %}" type="module"> </script>
+    <script src="{% static 'sga/js/canvas_editor.js' %}?v={% get_organilab_version %}"> </script>
 {{form.media}}
 {% endblock %}
 

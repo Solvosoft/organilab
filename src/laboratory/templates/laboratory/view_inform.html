@@ -22,7 +22,7 @@
 
 {% block js %}
     <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}?v={% get_organilab_version %}"></script>
     <script type="text/javascript">
         var schema = {{ schema | safe }};
 

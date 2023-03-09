@@ -2,6 +2,7 @@
 {% load static i18n gtsettings %}
 {% load i18n laboratory %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block title %}{% trans 'My Transfers' %}{% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
@@ -72,5 +73,5 @@
         dropdownParent: $('#add_tranfer_object')
     })
 </script>
-<script src="{% static 'js/transfer_objects.js' %}"></script>
+<script src="{% static 'js/transfer_objects.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
