@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings label_tags %}
 {% load urlname_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'add_company' %}
@@ -68,7 +70,7 @@ const messages= {
     yes: "{% trans 'Yes' %}"
 }
 </script>
-<script src="{% static 'sga/js/functions.js'%}"></script>
+<script src="{% static 'sga/js/functions.js'%}?v={% get_organilab_version %}"></script>
 
 
 

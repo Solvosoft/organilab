@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
 {% endblock %}
 
 {# CSS #}
 {% block css %}
-<link href="{% static 'editor/svgedit.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'editor/svgedit.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
 {% endblock css %}
 {% block content %}
 <div class="container">
@@ -66,6 +67,6 @@ window.SvgCanvas=SvgCanvas;
     document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
 </script>
 
-<script src="{% static 'sga/sga-bundle.js' %}" type="module"></script>
-<script src="{% static 'sga/js/canvas_editor.js' %}"></script>
+<script src="{% static 'sga/sga-bundle.js' %}?v={% get_organilab_version %}" type="module"></script>
+<script src="{% static 'sga/js/canvas_editor.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
