@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
@@ -15,18 +16,24 @@ def get_file_bytes():
 
 
 class BaseSetUpTest(TestCase):
-    fixtures = ["../fixtures/laboratory_data.json"]
 
     def setUp(self):
-        self.user = get_user_model().objects.filter(username="german").first()
-        self.org = OrganizationStructure.objects.first()
-        self.lab = Laboratory.objects.first()
-        self.client.force_login(self.user)
         fbytes = get_file_bytes()
         self.chfile = ChunkedUpload.objects.create(
             file=ContentFile(fbytes, name="A file"),
             filename="tests.pdf",
             offset=len(fbytes),
             completed_on=now(),
-            user=self.user
+            user=User.objects.first()
         )
+
+
+class BaseLaboratorySetUpTest(BaseSetUpTest):
+    fixtures = ["laboratory_data.json"]
+
+    def setUp(self):
+        self.user = get_user_model().objects.filter(username="admin").first()
+        self.org = OrganizationStructure.objects.first()
+        self.lab = Laboratory.objects.first()
+        self.client.force_login(self.user)
+        super().setUp()

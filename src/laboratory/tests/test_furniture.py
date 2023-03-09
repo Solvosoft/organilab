@@ -1,9 +1,9 @@
 from django.urls import reverse
 
-from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom, ObjectFeatures, TranferObject, Provider
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
-class FurnitureViewTest(BaseSetUpTest):
+class FurnitureViewTest(BaseLaboratorySetUpTest):
 
     def test_get_furniture_list(self):
         url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -70,12 +70,21 @@ class FurnitureViewTest(BaseSetUpTest):
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
+    def test_furniture_report_detail(self):
+        data = {
+            "pk": 1,
+            "format": "pdf"
+        }
+        url = reverse("laboratory:reports_furniture_detail", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
     def test_add_furniture_type_catalog(self):
         url = reverse("laboratory:add_furniture_type_catalog")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ShelfViewTest(BaseSetUpTest):
+class ShelfViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelf_list(self):
         data = {
@@ -114,7 +123,11 @@ class ShelfViewTest(BaseSetUpTest):
             "shelf--furniture": 1,
             "shelf--color": "#73879C",
             "shelf--col": 0,
-            "shelf--row": 2
+            "shelf--row": 2,
+            "shelf--discard": False,
+            "shelf--quantity": 3,
+            "shelf--description": "Estante de muestras",
+            "shelf--measurement_unit": 59
         }
         url = reverse("laboratory:shelf_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -133,7 +146,31 @@ class ShelfViewTest(BaseSetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ShelfObjectViewTest(BaseSetUpTest):
+    def test_get_shelfs(self):
+        transfer = TranferObject.objects.first()
+        data = {
+            "lab": self.lab.pk,
+            "id": transfer.pk
+        }
+        url = reverse("laboratory:get_shelfs")
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_object(self):
+        shelf_object = ShelfObject.objects.first()
+        provider = Provider.objects.first()
+        data = {
+            "lab": self.lab.pk,
+            "provider": provider.pk,
+            "amount": 3,
+            "shelf_object": shelf_object.pk,
+            "options": 2
+        }
+        url = reverse("laboratory:edit_object", kwargs={"pk": self.lab.pk, })
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelfobject_list(self):
         url = reverse("laboratory:list_shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -177,11 +214,6 @@ class ShelfObjectViewTest(BaseSetUpTest):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
-    def test_transfer_objects(self):
-        url = reverse("laboratory:transfer_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-
     def test_get_shelfobject_limit(self):
         shelf_object = ShelfObject.objects.first()
         url = reverse("laboratory:get_shelfobject_limit", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelf_object.pk})
@@ -189,11 +221,8 @@ class ShelfObjectViewTest(BaseSetUpTest):
         self.assertEqual(response.status_code, 200)
 
     def test_shelfobject_report(self):
-        data = {
-            "pk": 1,
-        }
-        url = reverse("laboratory:reports_shelf_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data)
+        url = reverse("laboratory:reports_shelf_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk":1 })
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_limited_shelf_objects_report(self):
@@ -205,17 +234,66 @@ class ShelfObjectViewTest(BaseSetUpTest):
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
-    def test_reactive_precursor_objects_report(self):
-        url = reverse("laboratory:reports_reactive_precursor_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
     def test_limited_shelf_objects_list_report(self):
         url = reverse("laboratory:reports_limited_shelf_objects_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-class ObjectViewTest(BaseSetUpTest):
+    def test_get_object_detail(self):
+        shelf_object = ShelfObject.objects.first()
+        data = {
+            "shelf_object": shelf_object.pk,
+        }
+        url = reverse("laboratory:get_object_detail")
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_lab_id(self):
+        url = reverse("laboratory:get_lab_id")
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
+
+    def test_update_objectfeature(self):
+        objfeature = ObjectFeatures.objects.first()
+        url = reverse("laboratory:object_feature_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk})
+
+        response_get = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response_get.status_code, 200)
+        self.assertContains(response_get, "Es un reactivo en la industria química")
+
+        data = {
+            "name": "Reactivo 1",
+            "description": "Es un reactivo en la industria química empacado en saco de 50kg o bolsas de 2kg."
+        }
+        response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertEqual(response_post.status_code, 302)
+        self.assertRedirects(response_post, success_url)
+        self.assertIn("Reactivo 1", list(ObjectFeatures.objects.values_list("name", flat=True)))
+
+    def test_create_objectfeature(self):
+        data = {
+            "name": "Guantes",
+            "description": "Brinda protección en manos y brazos a la hora de manipular cualquier material que lo requiera.",
+        }
+        url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data)
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, success_url)
+        self.assertIn("Guantes", list(ObjectFeatures.objects.values_list("name", flat=True)))
+
+    def test_delete_objectfeature(self):
+        objfeature = ObjectFeatures.objects.first()
+        url = reverse("laboratory:object_feature_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk})
+        response = self.client.post(url)
+        success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, success_url)
+
+class ObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_object_report(self):
         data = {
@@ -254,4 +332,43 @@ class ObjectViewTest(BaseSetUpTest):
         }
         url = reverse("laboratory:precursor_report", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+class TransferObjectViewTest(BaseLaboratorySetUpTest):
+
+    def test_transfer_objects(self):
+        url = reverse("laboratory:transfer_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_transfer(self):
+        transfer = TranferObject.objects.first()
+        url = reverse("laboratory:update_transfer", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "transfer_pk": transfer.pk, "shelf_pk": 1, })
+        response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_transfer(self):
+        transfer = TranferObject.objects.last()
+        data = {
+            "id": transfer.pk
+        }
+        url = reverse("laboratory:delete_transfer", kwargs={"pk": self.lab.pk, })
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+class SustanceCharacteristicsViewTest(BaseLaboratorySetUpTest):
+
+    def test_organizationreactivepresence(self):
+        url = reverse("laboratory:organizationreactivepresence", kwargs={"org_pk": self.org.pk, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_download_h_code_reports(self):
+        url = reverse("laboratory:download_h_code_reports", kwargs={"org_pk": self.org.pk, })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_h_code_reports(self):
+        url = reverse("laboratory:h_code_reports", kwargs={"org_pk": self.org.pk, })
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

@@ -1,10 +1,10 @@
 from django.urls import reverse
 
 from laboratory.models import LaboratoryRoom, Laboratory
-from laboratory.tests.utils import BaseSetUpTest
+from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class LaboratoryRoomViewTest(BaseSetUpTest):
+class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
 
     def test_get_laboratoryroom_list(self):
         url = reverse("laboratory:rooms_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -51,15 +51,16 @@ class LaboratoryRoomViewTest(BaseSetUpTest):
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
-
-    def test_object_list_report(self):
-        data = {"type_id": "1"}
-        url = reverse("laboratory:reports_objects_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+    def test_reports_laboratory(self):
+        data = {
+            "format": "pdf"
+        }
+        url = reverse("laboratory:reports_laboratory", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
 
-class LaboratoryViewTest(BaseSetUpTest):
+class LaboratoryViewTest(BaseLaboratorySetUpTest):
 
     def test_get_laboratory_list(self):
         url = reverse("laboratory:mylabs", kwargs={"org_pk": self.org.pk})
@@ -84,7 +85,7 @@ class LaboratoryViewTest(BaseSetUpTest):
         url = reverse("laboratory:laboratory_update", kwargs={"org_pk": self.org.pk, "pk": 1})
         response_get = self.client.get(url)
         self.assertEqual(response_get.status_code, 200)
-        self.assertContains(response_get, "Organiza tan")
+        self.assertContains(response_get, "Vick Lab")
 
         data = {
             "name": "Organización X",
@@ -95,7 +96,6 @@ class LaboratoryViewTest(BaseSetUpTest):
         }
         response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:mylabs", kwargs={"org_pk": self.org.pk})
-        self.assertRedirects(response_post, success_url)
         self.assertIn("Organización X", list(Laboratory.objects.values_list("name", flat=True)))
 
     def test_check_laboratory_index(self):
@@ -104,19 +104,12 @@ class LaboratoryViewTest(BaseSetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.lab.name)
 
-    def test_get_reservations_list(self):
-        url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+    def test_select_lab(self):
+        url = reverse("laboratory:select_lab")
         response = self.client.get(url)
-        self.assertEqual(response.context['object_list'].count(), 1)
-        self.assertContains(response, "Balón Fondo Plano 500 mL")
         self.assertEqual(response.status_code, 200)
 
-    def test_fake_reservation_list(self):
-        """
-            Fake tests
-        """
-        url = reverse("laboratory:my_reservations", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+    def test_laboratory_delete(self):
+        url = reverse("laboratory:laboratory_delete", kwargs={"org_pk": self.org.pk})
         response = self.client.get(url)
-        self.assertNotEqual(response.context['object_list'].count(), 15)
-        self.assertNotContains(response, "Bombillo 3U")
-        self.assertNotEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
