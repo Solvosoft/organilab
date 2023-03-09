@@ -3345,6 +3345,10 @@ msgstr "¿Quieres eliminar este estante?"
 msgid "Yes, delete it"
 msgstr "Si, eliminarlo"
 
+#: laboratory/templates/laboratory/furniture_form.html:154
+msgid "Do you want to remove this shelfs?"
+msgstr "¿Deseas eliminar estos estantes"
+
 #: laboratory/templates/laboratory/furniture_list.html:23
 #: laboratory/templates/laboratory/h_code_report.html:48
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:26
