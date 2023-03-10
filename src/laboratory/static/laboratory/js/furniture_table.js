@@ -198,18 +198,18 @@ function send_shelf_request(action_click){
             url: shelfs_url,
             type: "POST",
             dataType: "json",
-            data: {'shelfs':pks},
+            contentType: 'application/json',
+            data: JSON.stringify({'shelfs': pks}),
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: ({data}) => {
                 shelfs_pk = shelfs_pk.concat(pks);
                 pks = [];
-             $("#wbody").empty();
-            $("#wbody").html(data);
-            $("#remove_shelf").attr('onClick', action_click);
-            $("#warningobjects").modal('show');
+                $("#wbody").empty();
+                $("#wbody").html(data);
+                $("#remove_shelf").attr('onClick', action_click);
+                $("#warningobjects").modal('show');
             },
         });
 }

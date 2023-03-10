@@ -126,7 +126,7 @@ class LogEntryUserSerializer(serializers.ModelSerializer):
 
     def get_action_flag(self, obj):
         if obj.action_flag in [1, 2]:
-            return _("Register") if obj.action_flag is 1 else ("Login")
+            return _("Register") if obj.action_flag == 1 else ("Login")
         return ''
 
 
@@ -252,3 +252,7 @@ class ShelfObjectSerialize(serializers.ModelSerializer):
     class Meta:
         model = ShelfObject
         fields = ['object_name', 'unit','quantity','last_update','creator','action']
+
+
+class ShelfPkList(serializers.Serializer):
+    shelfs=serializers.ListField(child=serializers.IntegerField(), allow_null=False, allow_empty=False)

@@ -1,8 +1,10 @@
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.db.models import Value, DateField
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -274,10 +276,12 @@ class ShelfObjectGraphicAPI(APIView):
 
         return Response({'labels':labels,'data':data})
 
+
+@method_decorator(permission_required('laboratory.delete_shelf'), name='dispatch')
 class ShelfList(APIView):
     def post(self, request):
-        data = None
-        if 'shelfs[]' in request.data:
-            shelfs = Shelf.objects.filter(pk__in=request.data.getlist('shelfs[]'))
+        serializer = serializers.ShelfPkList(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            shelfs = Shelf.objects.filter(pk__in=serializer.data['shelfs'])
             data = render_to_string(template_name="laboratory/components/shelfdetail.html", context={'shelfs':shelfs}, request=request)
         return Response({'data':data})
