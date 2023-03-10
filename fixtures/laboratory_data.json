@@ -769,6 +769,26 @@
     }
   },
   {
+    "model": "laboratory.inform",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Reactivos mensuales despachados",
+      "custom_form": 2,
+      "content_type": 1,
+      "object_id": 1,
+      "status": "In Review",
+      "schema": {
+        "name": "Reactivos mensuales despachados",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
     "model": "laboratory.commentinform",
     "pk": 1,
     "fields": {

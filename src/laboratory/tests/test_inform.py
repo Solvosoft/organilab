@@ -38,11 +38,13 @@ class InformViewTest(BaseLaboratorySetUpTest):
         self.assertIn("Uso de instrumentos de laboratorio", list(Inform.objects.values_list("name", flat=True)))
 
     def test_delete_inform(self):
-        url = reverse("laboratory:remove_inform", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": 1})
+        inform = Inform.objects.get(name="Reactivos mensuales despachados")
+        url = reverse("laboratory:remove_inform", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": inform.pk})
         response = self.client.post(url, follow=True)
         success_url = reverse("laboratory:get_informs", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, success_url)
+        self.assertNotIn("Reactivos mensuales despachados", list(Inform.objects.values_list("name", flat=True)))
 
     def test_api_informs_detail(self):
         inform_list = Inform.objects.filter(organization=self.org)
