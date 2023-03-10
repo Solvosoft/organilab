@@ -36,6 +36,7 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
         response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertRedirects(response_post, success_url)
+        self.assertIn("Sala de inventario químico", list(LaboratoryRoom.objects.values_list("name", flat=True)))
 
 
     def test_delete_laboratoryroom(self):
