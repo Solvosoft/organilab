@@ -10,7 +10,6 @@
 
 {% endblock %}
 {% block content %}
-{% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_view_disposal' as disposal_perms %}
 
 
 {% for node in nodes %}
@@ -21,6 +20,9 @@
 {% has_perm_in_org node.0.pk 'derb.view_customform' as can_inform %}
 {% has_perm_in_org node.0.pk 'msds.view_msdsobject' as can_msds %}
 {% has_perm_in_org node.0.pk 'sga.view_substance' as can_sustance %}
+
+{% organization_any_permission_required node.0.pk 'laboratory.can_manage_disposal' 'laboratory.can_view_disposal' as disposal_perms %}
+
 
 <div class="row">
     <div class="{{node.1.0}}">
