@@ -132,3 +132,16 @@ def has_perm_in_org(context, org_pk,  permission):
     )
 
     return rolsquery.exists()
+
+@register.simple_tag(takes_context=True)
+def organization_any_permission_required(context, *args, **kwargs):
+
+    perms = list(args)
+    user = context['request'].user
+    org = perms.pop(0)
+    for perm in perms:
+        has_perm = has_perm_in_org(context, org, perm)
+        if has_perm:
+            return True
+
+    return False
