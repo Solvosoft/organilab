@@ -4658,6 +4658,14 @@ msgstr "Necesita agregar una unidad de medida o la cantidad es 0"
 msgid "The quantity is less than the amount to the sum the objects"
 msgstr "La cantidad es menor que la cantidad a la suma de los objetos"
 
+#: laboratory/views/shelfs.py:107
+msgid "The quantity need to be greater than 0"
+msgstr "La cantidad debe ser mayor que 0"
+
+#: laboratory/views/shelfs.py:114
+msgid "When a shelf if discard you need to add a measurement unit"
+msgstr "Cuando se descarta un estante, debe agregar una unidad de medida"
+
 #: msds/models.py:11
 msgid "MSDS File"
 msgstr "Archivo MSDS"
