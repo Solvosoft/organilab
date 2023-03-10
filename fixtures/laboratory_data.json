@@ -553,7 +553,7 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1],
+      "rooms": [1, 2],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -666,7 +666,20 @@
     "fields": {
       "name": "Control de plagas",
       "file": "protocols/test.pdf",
-      "short_description": "",
+      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 3,
+    "fields": {
+      "name": "Manipulación de instrumentos de laboratorio",
+      "file": "protocols/test.pdf",
+      "short_description": "Esterilización y uso de instrumentos de laboratorio.",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
