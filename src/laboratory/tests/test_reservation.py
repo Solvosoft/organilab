@@ -59,11 +59,14 @@ class ReservedProductViewTest(BaseLaboratorySetUpTest):
 
         data = {
             "reservation": reservation,
-            "status": 3
+            "status": 3,
         }
         url = reverse("laboratory:api_reservation_update", kwargs={"pk": reserved_products.pk, })
         response = self.client.put(url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+        content_obj = json.loads(response.content)
+        self.assertEqual(content_obj['status'], data['status'])
+        self.assertEqual(content_obj['reservation'], data['reservation'])
 
     def test_api_reservation_delete(self):
         reserved_products = ReservedProducts.objects.last()
@@ -95,3 +98,5 @@ class ReservedProductViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:api_reservation_detail", kwargs={"pk": reserved_products.pk, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        content_obj = json.loads(response.content)
+        self.assertEqual(content_obj['user'], reserved_products.user.pk)

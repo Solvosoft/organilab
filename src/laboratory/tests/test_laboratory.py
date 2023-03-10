@@ -119,5 +119,6 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
     def test_laboratory_delete(self):
         lab = Laboratory.objects.get(name="DS Cosme")
         url = reverse("laboratory:laboratory_delete", kwargs={"org_pk": self.org.pk, "pk": lab.pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn("DS Cosme", list(Laboratory.objects.values_list("name", flat=True)))
