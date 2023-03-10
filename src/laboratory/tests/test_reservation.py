@@ -1,9 +1,11 @@
 from django.urls import reverse
+from django.utils.timezone import now
 
 from laboratory.models import ShelfObject
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 from reservations_management.models import Reservations, ReservedProducts
 import json
+from dateutil.relativedelta import relativedelta
 
 class ReservationViewTest(BaseLaboratorySetUpTest):
 
@@ -72,9 +74,21 @@ class ReservedProductViewTest(BaseLaboratorySetUpTest):
         self.assertNotIn(pk, list(ReservedProducts.objects.all().values_list('pk', flat=True)))
 
     def test_api_reservation_create(self):
+        data = {
+            "initial_date": now().strftime("%m/%d/%Y %H:%M %p") ,
+            "final_date": (now() + relativedelta(days=+5)).strftime("%m/%d/%Y %H:%M %p") ,
+            "shelf_object": 1,
+            "user": 1,
+            "reservation": 2,
+            "amount_required": 2,
+            "status": 3,
+            "lab": self.lab.pk
+        }
         url = reverse("laboratory:api_reservation_create")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 201)
+        content_obj = json.loads(response.content)
+        self.assertEqual(content_obj['laboratory'], self.lab.pk)
 
     def test_api_reservation_detail(self):
         reserved_products = ReservedProducts.objects.first()

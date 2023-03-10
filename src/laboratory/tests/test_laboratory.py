@@ -110,6 +110,7 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
 
     def test_laboratory_delete(self):
-        url = reverse("laboratory:laboratory_delete", kwargs={"org_pk": self.org.pk})
+        lab = Laboratory.objects.get(name="DS Cosme")
+        url = reverse("laboratory:laboratory_delete", kwargs={"org_pk": self.org.pk, "pk": lab.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
