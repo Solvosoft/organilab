@@ -35,5 +35,6 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
         self.user = get_user_model().objects.filter(username="admin").first()
         self.org = OrganizationStructure.objects.first()
         self.lab = Laboratory.objects.first()
+        self.labroom = self.lab.rooms.first()
         self.client.force_login(self.user)
         super().setUp()
