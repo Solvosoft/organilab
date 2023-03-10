@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load urlname_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
 {% define_urlname_action 'step_one' %}
 {% define_urlname_action 'step_two' %}
@@ -59,5 +61,5 @@
 
 </script>
 
-<script src="{% static 'sga/js/sgalabel.js' %}"></script>
+<script src="{% static 'sga/js/sgalabel.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

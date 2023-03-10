@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'msds_msdsobject_detail' %}
 {% endblock %}
@@ -30,6 +31,6 @@
 
 {% block js %}
 {{ block.super }}
-<script src="{% static 'vendors/pdfobject/pdfobject.min.js' %}"></script>
+<script src="{% static 'vendors/pdfobject/pdfobject.min.js' %}?v={% get_organilab_version %}"></script>
 <script>PDFObject.embed("{{object.file.url}}", "#pdffile");</script>
 {% endblock %}
