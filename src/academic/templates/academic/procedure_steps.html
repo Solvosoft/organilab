@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n static%}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'procedure_step' %}
     {% define_urlname_action 'save_object' %}
@@ -93,7 +94,7 @@
         }
 
     </script>
-    <script src="{% static 'js/procedures.js'%}"></script>
+    <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

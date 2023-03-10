@@ -3,6 +3,8 @@
 
 {% load static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
     {% define_urlname_action 'increase_stock' %}
     {% define_urlname_action 'manage_reservation' %}
@@ -101,7 +103,7 @@
 
 {% block js %}
 {{ block.super }}
-<script src="{% static 'reservations_management/js/reservations_management.js' %}"></script>
+<script src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n %}
+{% load organilab_tags %}
+
 {% block extra_css %}
- <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}">
+ <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}?v={% get_organilab_version %}">
 {% endblock %}
 
 {% block content %}
@@ -43,9 +45,9 @@ const translations_form = {
     return_success_text: "{% trans 'The form name has been saved!' %}",
 }
 </script>
-    <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}?v={% get_organilab_version %}"></script>
+    <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}?v={% get_organilab_version %}"></script>
 
 <script>
     window.urls = {
@@ -65,12 +67,9 @@ const translations_form = {
         }
 
     </script>
-    <script src="{% static 'js/edit_view.js' %}"></script>
-    <script src="{% static 'formio/FormioController.js' %}"></script>
-    <script>
-$( window ).on( "load", function() {
-});
-    </script>
+    <script src="{% static 'js/edit_view.js' %}?v={% get_organilab_version %}"></script>
+    <script src="{% static 'formio/FormioController.js' %}?v={% get_organilab_version %}"></script>
+
     {% endblock %}
 
 </html>

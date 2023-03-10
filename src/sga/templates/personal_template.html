@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
     {% define_urlname_action 'add_personal' %}
     {% define_urlname_action 'edit_personal' %}
@@ -11,7 +13,7 @@
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'sga/css/label_template.css' %}" rel="stylesheet">
+<link href="{% static 'sga/css/label_template.css' %}?v={% get_organilab_version %}" rel="stylesheet">
 {% endblock css %}
 {% block js %}
 <script>
@@ -19,7 +21,7 @@
     document.url_delete_sgalabel = "{% url 'sga:delete_sgalabel' org_pk organilabcontext 0 %}";
 </script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
 
 
