@@ -1,7 +1,8 @@
 from django.urls import reverse
 
-from laboratory.models import Inform
+from laboratory.models import Inform, CommentInform
 from laboratory.tests.utils import BaseLaboratorySetUpTest
+import json
 
 
 class InformViewTest(BaseLaboratorySetUpTest):
@@ -44,9 +45,12 @@ class InformViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
 
     def test_api_informs_detail(self):
-        url = reverse("laboratory:api-informs-detail", kwargs={"pk": 1, })
+        inform_list = Inform.objects.filter(organization=self.org)
+        url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        content_obj = json.loads(response.content)
+        self.assertEqual(content_obj['recordsTotal'], inform_list.count())
 
 class CommentInformViewTest(BaseLaboratorySetUpTest):
 
@@ -60,9 +64,12 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
 
     def test_api_inform_detail(self):
-        url = reverse("laboratory:api-inform-detail", kwargs={"pk": 1, })
+        comment = CommentInform.objects.first()
+        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        content_obj = json.loads(response.content)
+        self.assertEqual(content_obj['id'], comment.pk)
 
 class InformSchedulerViewTest(BaseLaboratorySetUpTest):
 
