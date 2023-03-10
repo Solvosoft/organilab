@@ -111,7 +111,7 @@ class ShelfForm(forms.ModelForm, GTForm):
         unit = self.cleaned_data['measurement_unit']
 
         if unit == None and discard:
-            self.add_error('measurement_unit', 'When shelf if discard you need to add a measurement unit')
+            self.add_error('measurement_unit', 'When a shelf if discard you need to add a measurement unit')
 
         return  unit
 
