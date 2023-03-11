@@ -103,6 +103,8 @@ def get_organization_table(org):
 
 @register.simple_tag(takes_context=True)
 def has_perm_in_org(context, org_pk,  permission):
+    if context['request'].user.is_superuser:
+        return True
     app_label, codename = permission.split(".")
     profile_in = ProfilePermission.objects.filter(profile=context['request'].user.profile,
                                                   content_type__app_label='laboratory',
