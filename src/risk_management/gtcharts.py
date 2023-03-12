@@ -1,15 +1,16 @@
 from random import randint
-
-from django.db.models import Count, Sum
+from rest_framework import permissions
+from django.db.models import Count, Sum, Q
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from djgentelella.chartjs import VerticalBarChart, HorizontalBarChart, \
     StackedBarChart, LineChart, PieChart, DoughnutChart, ScatterChart
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
-from laboratory.models import Laboratory, SustanceCharacteristics
+from laboratory.models import Laboratory, SustanceCharacteristics, ShelfObject, Catalog
 from risk_management.models import RiskZone
 from sga.models import DangerIndication
 
@@ -27,6 +28,7 @@ default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182
 
 
 class BaseChart:
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     colors = default_colors
 
     def get_color(self):
@@ -35,10 +37,16 @@ class BaseChart:
         color = 'rgb(' + color_list + ')'
         return color
 
+class LaboratoryPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.has_perms(view.django_permissions_list)
 
 
 @register_lookups(prefix="dangerIndication", basename="dangerindicationchart")
 class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
 
     def get_title(self):
         return {'display': True,
@@ -88,5 +96,266 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
              'borderColor': self.get_color(),
              'borderWidth': 1,
              'data': self.data
+             }
+                ]
+
+
+@register_lookups(prefix="white_organ", basename="whiteorganchart")
+class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
+
+    def get_title(self):
+        return {'display': True,
+                'text': _('Sustances per White Organ')
+                }
+
+    def list(self, request):
+        raise Http404("Not found")
+
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+
+    def get_labels(self):
+        self.catalogs = Catalog.objects.filter(key = "white_organ").values('pk', 'description')
+        self.aggrateparams = {}
+        labels = []
+        for catalog in self.catalogs:
+            labels.append(catalog['description'])
+            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
+                object__sustancecharacteristics__white_organ= catalog['pk']
+            ))
+        return labels
+
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        data = []
+        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
+        for catalog in self.catalogs:
+            data.append(dataset['c%d'%catalog['pk']])
+        #
+        return [
+
+            {'label': _('Count elements by White Organ'),
+             'backgroundColor': self.get_color(),
+             'borderColor': self.get_color(),
+             'borderWidth': 1,
+             'data': data
+             }
+                ]
+
+
+@register_lookups(prefix="precursor_type", basename="precursortypechart")
+class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
+
+    def get_title(self):
+        return {'display': True,
+                'text': _('Sustances per Percursor Type')
+                }
+
+    def list(self, request):
+        raise Http404("Not found")
+
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+
+    def get_labels(self):
+        self.catalogs = Catalog.objects.filter(key = "Precursor").values('pk', 'description')
+        self.aggrateparams = {}
+        labels = []
+        for catalog in self.catalogs:
+            labels.append(catalog['description'])
+            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
+                object__sustancecharacteristics__precursor_type= catalog['pk']
+            ))
+        return labels
+
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        data = []
+        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
+        for catalog in self.catalogs:
+            data.append(dataset['c%d'%catalog['pk']])
+        #
+        return [
+
+            {'label': _('Count elements by Precursor Type'),
+             'backgroundColor': self.get_color(),
+             'borderColor': self.get_color(),
+             'borderWidth': 1,
+             'data': data
+             }
+                ]
+
+@register_lookups(prefix="nfpa", basename="nfpachart")
+class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
+
+    def get_title(self):
+        return {'display': True,
+                'text': _('Sustances per NFPA')
+                }
+
+    def list(self, request):
+        raise Http404("Not found")
+
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+
+    def get_labels(self):
+        self.catalogs = Catalog.objects.filter(key = "nfpa").values('pk', 'description')
+        self.aggrateparams = {}
+        labels = []
+        for catalog in self.catalogs:
+            labels.append(catalog['description'])
+            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
+                object__sustancecharacteristics__precursor_type= catalog['pk']
+            ))
+        return labels
+
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        data = []
+        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
+        for catalog in self.catalogs:
+            data.append(dataset['c%d'%catalog['pk']])
+        #
+        return [
+
+            {'label': _('Count elements by NFPA'),
+             'backgroundColor': self.get_color(),
+             'borderColor': self.get_color(),
+             'borderWidth': 1,
+             'data': data
+             }
+                ]
+
+
+
+@register_lookups(prefix="ue_code", basename="uecodechart")
+class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
+
+    def get_title(self):
+        return {'display': True,
+                'text': _('Sustances per UE Code')
+                }
+
+    def list(self, request):
+        raise Http404("Not found")
+
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+
+    def get_labels(self):
+        self.catalogs = Catalog.objects.filter(key = "ue_code").values('pk', 'description')
+        self.aggrateparams = {}
+        labels = []
+        for catalog in self.catalogs:
+            labels.append(catalog['description'])
+            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
+                object__sustancecharacteristics__ue_code= catalog['pk']
+            ))
+        return labels
+
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        data = []
+        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
+        for catalog in self.catalogs:
+            data.append(dataset['c%d'%catalog['pk']])
+        #
+        return [
+
+            {'label': _('Count elements by UE Code'),
+             'backgroundColor': self.get_color(),
+             'borderColor': self.get_color(),
+             'borderWidth': 1,
+             'data': data
+             }
+                ]
+
+
+
+@register_lookups(prefix="storage_class", basename="storageclasschart")
+class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ['risk_management.view_riskzone']
+
+    def get_title(self):
+        return {'display': True,
+                'text': _('Sustances per Storage Class')
+                }
+
+    def list(self, request):
+        raise Http404("Not found")
+
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+
+    def get_labels(self):
+        self.catalogs = Catalog.objects.filter(key = "storage_class").values('pk', 'description')
+        self.aggrateparams = {}
+        labels = []
+        for catalog in self.catalogs:
+            labels.append(catalog['description'])
+            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
+                object__sustancecharacteristics__storage_class= catalog['pk']
+            ))
+        return labels
+
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        data = []
+        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
+        for catalog in self.catalogs:
+            data.append(dataset['c%d'%catalog['pk']])
+        #
+        return [
+
+            {'label': _('Count elements by Storage Class'),
+             'backgroundColor': self.get_color(),
+             'borderColor': self.get_color(),
+             'borderWidth': 1,
+             'data': data
              }
                 ]
