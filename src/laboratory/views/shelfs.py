@@ -105,18 +105,24 @@ class ShelfForm(forms.ModelForm, GTForm):
             'description': wysiwyg.TextareaWysiwyg
         }
 
-    def clean_measurement_unit(self):
+    def clean(self):
         discard= self.cleaned_data['discard']
         quantity = self.cleaned_data['quantity']
         unit = self.cleaned_data['measurement_unit']
         if discard:
-            if unit != None and quantity>0:
-                return unit
-            else:
-                raise ValidationError(_("Need add the measurement unit or quantity is 0"))
+            if unit != None and quantity<=0:
+                self.add_error('quantity',_("The quantity need to be greater than 0"))
+
+    def clean_measurement_unit(self):
+        discard = self.cleaned_data['discard']
+        unit = self.cleaned_data['measurement_unit']
+
+        if unit == None and discard:
+            self.add_error('measurement_unit', 'When a shelf if discard you need to add a measurement unit')
+
+        return  unit
 
 
-        return unit
 
 class ShelfUpdateForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
@@ -143,12 +149,12 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         change_unit = unit != self.instance.measurement_unit
 
         if shelfobjects>0 and change_unit:
-            raise ValidationError(_("The shelf have objects need to removed them, before changes the measurement unit"))
+            self.add_error('measurement_unit',_("The shelf have objects need to removed them, before changes the measurement unit"))
         if discard:
             if unit != None:
                 return unit
             else:
-                raise ValidationError(_("Need add the measurement unit"))
+                self.add_error('measurement_unit',_("Need add the measurement unit"))
         else:
             return unit
 
@@ -239,7 +245,8 @@ class ShelfCreate(AJAXMixin, CreateView):
         response.render()
         return {
             'inner-fragments': {
-                '#shelfmodalbody': response.content
+                '#shelfmodalbody': response.content,
+                "#modalclose": "<script>refresh_description();</script>",
             }
         }
 
