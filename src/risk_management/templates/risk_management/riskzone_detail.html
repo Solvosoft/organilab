@@ -37,6 +37,7 @@
         <div class="clearfix"></div>
     </div>
 </div>
+
 <div class="row">
     <div class="offset-md-1 col-md-10">
         <ul class="list-group">
@@ -55,13 +56,83 @@
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="container">
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <h1 class="text-center">{% trans 'Stats' %}</h1>
+</div>
+<div class="row">
+    <div class="offset-md-1 col-md-10">
+        <ul class="list-group">
+            {% for lab in object.laboratories.all %}
+                <li class="list-group-item">
+                    <div class="float-start p-2 m-0">
+                        <a href="{% url 'laboratory:labindex' org_pk lab.pk %}" title="{{ lab.name }}">
+                            {{ lab.name }}
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+ <ul class="nav nav-pills"  role="tablist">
+  <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pills-{{lab.pk}}-di" data-bs-toggle="pill" data-bs-target="#dangerindication_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-di" aria-selected="true">
+              {% trans 'Danger Indication' %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-{{lab.pk}}-wo" data-bs-toggle="pill" data-bs-target="#whiteorgan_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-wo" >
+              {% trans 'White Organ' %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-{{lab.pk}}-pt" data-bs-toggle="pill" data-bs-target="#precursortype_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-pt" >
+              {% trans 'Precursor Type' %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-{{lab.pk}}-sc" data-bs-toggle="pill" data-bs-target="#storageclass_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-sc" >
+              {% trans 'Storage Class' %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-{{lab.pk}}-eucode" data-bs-toggle="pill" data-bs-target="#uecode_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-eucode" >
+              {% trans 'EU Code' %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-{{lab.pk}}-nfpa" data-bs-toggle="pill" data-bs-target="#nfpa_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-nfpa" >
+              {% trans 'NFPA' %}</button>
+  </li>
+                    </ul>
+
+<div class="tab-content" id="{{lab.pk}}pills-tabContent">
+
+                    <div id="dangerindication_{{lab.pk}}" class="tab-pane fade show active">
                                                 {% url "dangerindicationchart-detail" lab.pk as graph_url %}
 
 {% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
                     </div>
+                    <div id="whiteorgan_{{lab.pk}}" class="tab-pane fade">
+                                                {% url "whiteorganchart-detail" lab.pk as graph_url %}
 
-                    <div class="clearfix"></div>
+{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+                    </div>
+                    <div id="precursortype_{{lab.pk}}" class="tab-pane fade">
+                    {% url "precursortypechart-detail" lab.pk as graph_url %}
+{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+                    </div>
+                    <div id="storageclass_{{lab.pk}}" class="tab-pane fade">
+                        {% url "storageclasschart-detail" lab.pk as graph_url %}
+{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+                    </div>
+
+                    <div id="uecode_{{lab.pk}}" class="tab-pane fade">
+                    {% url "uecodechart-detail" lab.pk as graph_url %}
+{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+                    </div>
+                    <div id="nfpa_{{lab.pk}}" class="tab-pane fade">
+                                                {% url "nfpachart-detail" lab.pk as graph_url %}
+{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+                    </div>
+</div>
                 </li>
             {% endfor %}
         </ul>
