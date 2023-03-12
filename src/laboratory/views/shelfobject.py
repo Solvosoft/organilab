@@ -119,7 +119,10 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
                 self.add_error('quantity', _("The quantity is more than the shelf has"))
 
         else:
-            self.add_error('measurement_unit',_("Need add the same measurement unit that the shelf has"))
+            self.add_error('measurement_unit',
+                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
+                            'measurement_unit': shelf.measurement_unit
+                        })
 
         return unit
 
@@ -171,7 +174,10 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
             else:
                 self.add_error('quantity',_("The quantity is much larger than the shelf limit"))
         else:
-            self.add_error('measurement_unit', _("The measurent unit is different of there shelf has"))
+            self.add_error('measurement_unit',
+                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
+                               'measurement_unit': shelf.measurement_unit
+                           })
         return cleaned_data
 
     class Meta:
@@ -232,6 +238,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.creator= self.request.user
+        self.object.in_where_laboratory_id= self.lab
         self.object.save()
         schema = self.request.scheme + "://"
         domain = schema + self.request.get_host()
@@ -269,13 +276,14 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     def get_form_class(self):
         shelf=None
         if self.request.method == 'GET' and 'shelf' in self.request.GET:
-            shelf = get_object_or_404(Shelf,pk=int(self.request.GET['shelf']))
+            shelf = get_object_or_404(Shelf, pk=int(self.request.GET['shelf']))
         else:
-            shelf = get_object_or_404(Shelf,pk=int(self.request.POST['shelf']))
+            shelf = get_object_or_404(Shelf, pk=int(self.request.POST['shelf']))
 
         if shelf.discard:
             return ShelfObjectRefuseForm
         return self.form_class
+
     def form_invalid(self, form):
         response = CreateView.form_invalid(self, form)
         response.render()
@@ -669,6 +677,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
              lab_received_obj.quantity += transfer.quantity
              if transfer.mark_as_discard:
                  lab_received_obj.marked_as_discard = True
+             lab_received_obj.in_where_laboratory_id = lab_pk
              lab_received_obj.save()
 
              log_object_change(request.user, transfer.laboratory_received.pk, lab_received_obj, old,
@@ -681,6 +690,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                                            object=obj,
                                            quantity=transfer.quantity,
                                            limit_quantity=0,
+                                           in_where_laboratory_id=lab_pk,
                                            measurement_unit=lab_send_obj.measurement_unit)
 
             schema = request.scheme + "://"
