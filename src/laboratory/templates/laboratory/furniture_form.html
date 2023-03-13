@@ -174,7 +174,6 @@
       cancel:"{% trans 'Cancel' %}"
     };
     const shelfs_url= "{% url 'laboratory:get_shelfs_list' %}";
-    const remove_shelfs_url= "{% url 'laboratory:remove_shelfs_list' lab_pk=laboratory org_pk=org_pk %}";
   </script>
   <script src="{% static 'js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}?v={% get_organilab_version %}"></script>
