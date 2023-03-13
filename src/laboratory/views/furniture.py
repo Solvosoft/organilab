@@ -130,7 +130,7 @@ class FurnitureUpdateView(UpdateView):
     def form_valid(self, form):
         shelfs=form.cleaned_data['shelfs']
         if shelfs:
-            Shelf.objects.filter(pk__in = form.cleaned_data['shelfs']).delete()
+            Shelf.objects.filter(pk__in = shelfs).delete()
         self.object = form.save()
 
         organilab_logentry(self.request.user, self.object, CHANGE, 'furniture', changed_data=form.changed_data,
