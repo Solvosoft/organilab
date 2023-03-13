@@ -3345,6 +3345,10 @@ msgstr "¿Quieres eliminar este estante?"
 msgid "Yes, delete it"
 msgstr "Si, eliminarlo"
 
+#: laboratory/templates/laboratory/furniture_form.html:154
+msgid "Do you want to remove this shelfs?"
+msgstr "¿Deseas eliminar estos estantes"
+
 #: laboratory/templates/laboratory/furniture_list.html:23
 #: laboratory/templates/laboratory/h_code_report.html:48
 #: laboratory/templates/laboratory/limited_shelfobject_report_list.html:26
@@ -4657,6 +4661,14 @@ msgstr "Necesita agregar una unidad de medida o la cantidad es 0"
 #: laboratory/views/shelfs.py:157 laboratory/views/shelfs.py:162
 msgid "The quantity is less than the amount to the sum the objects"
 msgstr "La cantidad es menor que la cantidad a la suma de los objetos"
+
+#: laboratory/views/shelfs.py:107
+msgid "The quantity need to be greater than 0"
+msgstr "La cantidad debe ser mayor que 0"
+
+#: laboratory/views/shelfs.py:114
+msgid "When a shelf if discard you need to add a measurement unit"
+msgstr "Cuando se descarta un estante, debe agregar una unidad de medida"
 
 #: msds/models.py:11
 msgid "MSDS File"

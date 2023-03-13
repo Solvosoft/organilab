@@ -1,3 +1,5 @@
+var pks = [];
+var shelfs_pk= []
 
 function do_sortable(){
 	  $("ul.sortableself").sortable({group: 'nested',
@@ -47,21 +49,6 @@ function addColumn() {
 }
 
 
-function deleteRows() {
-	$('#mytab tr').last().remove();
-	document.numberRow--;
-	do_sortable();
-}
-
-// delete table columns with index greater then 0
-function deleteColumns() {
-	$('#mytab tr').each(function(i, e){
-		$(e).find("td:last").remove();
-			
-		});
-		document.numberCol--;
-		do_sortable();
-}
 
 function closeModal(){
 	$("#createshelfmodal").modal("hide");
@@ -80,7 +67,7 @@ function refresh_description(){
     setTimeout(function () {
         show_refuse_elements();
         gt_find_initialize($("#shelfmodalbody"));
-    }, 500);
+    }, 1000);
 
 }
 function processResponse(data) {
@@ -150,7 +137,82 @@ function show_refuse_elements(){
 }
 
 
+function removeShelf(){
+    $('#id_shelfs').val(JSON.stringify(shelfs_pk))
+    pks=[]
+	$("#wbody").empty()
+	$("#warningobjects").modal('hide')
 
+}
+function cancelRemoveShelfs(){
+    pks=[]
+    $("#wbody").empty()
+
+}
+
+function deleteColumn(){
+	$('#mytab tr').each(function(i, e){
+		$(e).find("td:last").remove();
+
+		});
+		document.numberCol--;
+		do_sortable();
+        removeShelf()
+
+}
+
+function deleteRow() {
+	$('#mytab tr').last().remove();
+	document.numberRow--;
+	do_sortable();
+	removeShelf()
+}
+
+function deleteRows() {
+	  $('#mytab tr:last').find(".shelfitem").each(function(x, o){
+    	pks.push(o.dataset.id)
+    	})
+    	if(pks.length>0){
+        send_shelf_request('deleteRow();')
+        }else{
+        deleteRow()
+        }
+}
+
+function deleteColumns() {
+
+	$('#mytab tr').each(function(i, e){
+	    $($(e).find("td:last .shelfitem")).each(function(x, o){pks.push(o.dataset.id)});
+	 });
+
+    if(pks.length>0){
+        send_shelf_request('deleteColumn();')
+    }else{
+        deleteColumn()
+    }
+
+}
+
+function send_shelf_request(action_click){
+    $.ajax({
+            url: shelfs_url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify({'shelfs': pks}),
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            success: ({data}) => {
+                shelfs_pk = shelfs_pk.concat(pks);
+                pks = [];
+                $("#wbody").empty();
+                $("#wbody").html(data);
+                $("#remove_shelf").attr('onClick', action_click);
+                $("#warningobjects").modal('show');
+            },
+        });
+}
 
 save_form();
 do_sortable();

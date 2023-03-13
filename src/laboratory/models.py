@@ -147,6 +147,7 @@ class ShelfObject(models.Model):
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
     marked_as_discard = models.BooleanField(default=False)
     laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
     course_name = models.CharField(null=True, blank=True, verbose_name=_('Course name'), max_length=30)
@@ -252,7 +253,7 @@ class Shelf(models.Model):
         return result
 
     def get_measurement_unit_display(self):
-        return str(self.measurement_unit) if self.measurement_unit else _('Unknown')
+        return str(self.measurement_unit) if self.measurement_unit else ""
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
