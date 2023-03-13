@@ -127,3 +127,28 @@ class FurnitureDataconfigTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(shelfs.count() == 0)
         self.assertTrue(post_furniture.shelf_set.all().count()==4)
+
+
+    def test_delete_shelf_in_furniture_without_pks(self):
+
+        pre_furniture = Furniture.objects.get(pk=1)
+        pre_furniture.dataconfig = "[[[],[2],[],[3]],[[1],[],[],[4]]]"
+        pre_furniture.save()
+
+        data = {
+            "name": "Mueble Aéreo",
+            "type": 75,
+            "labroom": 1,
+            "dataconfig": "[[[],[2],[],[3]],[[1],[],[],[4]]]",
+            "color": "#73879C",
+            "shelfs": ''
+        }
+
+        url = reverse("laboratory:furniture_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": pre_furniture.pk})
+        response = self.client.post(url, data=data)
+        shelfs = Shelf.objects.filter(pk__in=[2,3,4,1])
+        post_furniture = Furniture.objects.get(pk=pre_furniture.pk)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(shelfs.count() == 4)
+        self.assertTrue(post_furniture.shelf_set.all().count()==4)
