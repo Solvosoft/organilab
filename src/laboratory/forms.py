@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
@@ -246,6 +248,13 @@ class FurnitureForm(forms.ModelForm, GTForm):
             message=_("Invalid format in shelf dataconfig "),
             code='invalid_format')])
     shelfs = forms.CharField(required=False,widget=forms.HiddenInput)
+
+    def clean_shelfs(self):
+        value = self.cleaned_data['shelfs']
+        shelfs = []
+        if value:
+            shelfs = re.findall(r'\d+', self.cleaned_data['shelfs'])
+        return shelfs
 
     class Meta:
         model = Furniture

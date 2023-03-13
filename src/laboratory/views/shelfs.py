@@ -69,12 +69,8 @@ def list_shelf(request, org_pk, lab_pk):
 def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
     if request.method == 'POST':
         shelf = get_object_or_404(Shelf, pk=pk)
-        furniture = get_object_or_404(Furniture, pk=shelf.furniture.pk)
-        dataconfig = furniture.dataconfig
-        obj_pks= re.findall(r'\d+', furniture.dataconfig)
-        if str(shelf.pk) in obj_pks:
-            furniture.dataconfig = dataconfig.replace(str(shelf.pk), "")
-            furniture.save()
+        furniture = shelf.furniture
+        furniture.remove_shelf_dataconfig(pk)
         shelf.delete()
         organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
         return {'result': "OK"}
@@ -322,11 +318,3 @@ class ShelfEdit(AJAXMixin, UpdateView):
 
 class RemoveShelfForm(forms.Form):
     shelfs=forms.ModelMultipleChoiceField(queryset=Shelf.objects.all())
-def remove_shelfs(request):
-    form = RemoveShelfForm(request.POST)
-    if form.is_valid():
-        for shelf in form.cleaned_data['shelfs']:
-            print(shelf)
-        return JsonResponse({'msg':'Remove',"status":True})
-    else:
-        return JsonResponse({'msg':'Error',"status":False})

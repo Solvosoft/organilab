@@ -12,18 +12,18 @@
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     {% endif %}
-                {% if anyperm %}
+        {% if anyperm %}
                     <a id="shelf_view_{{data.pk}}" role="button" data-bs-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-eye" aria-hidden="true"></i>
                     </a>
                     <span> {{data.name}}</span>
-                    </div>
+            </div>
 
                     <span class="float-end fw-bold" style="font-size:9px;">{{data.get_measurement_unit_display }} </span>
-                    </div>
+        </div>
                     {{data.description | safe }}
         {% else %}
-        </div>
+            </div>
         </div>
 
         {% endif %}
