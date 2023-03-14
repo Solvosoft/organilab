@@ -521,7 +521,9 @@
       "name": "Primer Estante",
       "container_shelf": null,
       "type": 75,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -532,7 +534,9 @@
       "name": "Segundo Estante",
       "container_shelf": null,
       "type": 75,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
   {
@@ -543,7 +547,9 @@
       "name": "Tercer Estante",
       "container_shelf": null,
       "type": 72,
-      "color": "#73879C"
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
     {
