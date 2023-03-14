@@ -97,60 +97,6 @@ class LaboratoryView(object):
             path('delete/<int:pk>/', self.delete, name='laboratory_delete'),
         ]
 
-
-class SelectLaboratoryForm(forms.Form):
-    laboratory = forms.ModelChoiceField(label=_('Laboratory'),
-                                        queryset=Laboratory.objects.none(), empty_label=None)
-
-    def __init__(self, *args, **kwargs):
-        lab_queryset = kwargs.pop('lab_queryset')
-        super(SelectLaboratoryForm, self).__init__(*args, **kwargs)
-        self.fields['laboratory'].queryset = lab_queryset
-
-
-@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
-class SelectLaboratoryView(FormView):
-    template_name = 'laboratory/select_lab.html'
-    form_class = SelectLaboratoryForm
-    number_of_labs = 0
-    success_url = '/'
-    lab_pk_field = 'pk'
-
-    def get_laboratories(self, user):
-        organizations = OrganizationStructure.os_manager.filter_user(user)
-        # user have perm on that organization ?  else Use assigned user with
-        # direct relationship
-        if not organizations:
-            organizations = []
-        labs = Laboratory.objects.filter(Q(profile__user=user) |
-                                         Q(organization__in=organizations)
-                                         ).distinct()
-        return labs
-
-    def get_form_kwargs(self):
-        kwargs = super(SelectLaboratoryView, self).get_form_kwargs()
-        user = self.request.user
-        kwargs['lab_queryset'] = self.get_laboratories(user)
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(SelectLaboratoryView, self).get_context_data(**kwargs)
-        context['number_of_labs'] = self.number_of_labs
-        return context
-
-    def form_valid(self, form):
-        lab_pk = form.cleaned_data.get('laboratory').pk
-        return redirect('laboratory:labindex', lab_pk)
-
-    def get(self, request, *args, **kwargs):
-        labs = self.get_laboratories(request.user)
-        self.number_of_labs = labs.count()
-        if self.number_of_labs == 1:
-            lab_pk = labs.first().pk
-            return redirect('laboratory:labindex', lab_pk)
-        return FormView.get(self, request, *args, **kwargs)
-
-
 @method_decorator(permission_required('laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create.html'
