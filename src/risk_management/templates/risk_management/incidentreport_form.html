@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="offset-md-1 col-md-3">
-        <a href="{% url 'riskmanagement:incident_list' org_pk laboratory %}"> << {% trans 'Laboratory incidents' %}</a>
+        <a class="btn btn-danger" href="{% url 'riskmanagement:incident_list' org_pk laboratory %}"> <i class="fa fa-chevron-circle-left" aria-hidden="true"></i> {% trans 'Laboratory incidents' %}</a>
     </div>
 
 </div>
@@ -25,7 +25,6 @@
 
 <div class="offset-md-2 col-md-8">
   <br>
-    {{ form.errors }}
     <form class="form" action="" method="post">
 
       {% csrf_token %}
