@@ -4,6 +4,7 @@ from django.urls import reverse
 from laboratory.models import OrganizationStructure
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
+
 class OrganizationViewTest(BaseLaboratorySetUpTest):
 
     def test_update_organization(self):
@@ -72,7 +73,8 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
         response_post = self.client.post(url, data=data)
         self.assertEqual(response_post.status_code, 200)
         user_updated = User.objects.get(username="admin")
-        self.assertEqual(user_updated.password, data['password_confirm'])
+        check_pass = user_updated.check_password(data['password_confirm'])
+        self.assertEqual(True, check_pass)
 
     def test_update_profile(self):
         url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })

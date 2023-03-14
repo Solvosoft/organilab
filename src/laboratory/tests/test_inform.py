@@ -64,18 +64,18 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:api-inform-list")
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(json.loads(response.content)['data'], "Control de plagas")
+        self.assertIn("Describir porque sucedieron los hechos.", json.loads(response.content)['data'])
 
     def test_add_comment_to_inform(self):
         inform = Inform.objects.last()
         data = {
             "inform": inform.pk,
-            "comment": "Revisar fecha de ingreso y salida del inform #"+ inform.pk
+            "comment": "Revisar fecha de ingreso y salida del informe #"+ str(inform.pk)
         }
         url = reverse("laboratory:api-inform-list")
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(json.loads(response.content)['data'], "Revisar fecha de ingreso y salida del inform #"+ inform.pk)
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(data['comment'], json.loads(response.content)['data'])
 
     def test_get_comment(self):
         comment = CommentInform.objects.first()
