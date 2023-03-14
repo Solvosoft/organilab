@@ -70,8 +70,9 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "password_confirm": "edu4060cal"
         }
         response_post = self.client.post(url, data=data)
-        success_url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
         self.assertEqual(response_post.status_code, 200)
+        user_updated = User.objects.get(username="admin")
+        self.assertEqual(user_updated.password, data['password_confirm'])
 
     def test_update_profile(self):
         url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
@@ -90,3 +91,11 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response_post, url)
         user_updated = User.objects.get(username="admin")
         self.assertEqual(user_updated.first_name, "Admin")
+
+    def test_profile_detail(self):
+        profile = self.user.profile
+        url = reverse("laboratory:profile_detail", kwargs={"org_pk": self.org.pk, "pk": self.user.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['profile'].job_position, profile.job_position)
+        self.assertNotEqual(response.status_code, 302)

@@ -799,6 +799,46 @@
     }
   },
   {
+    "model": "laboratory.commentinform",
+    "pk": 2,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 3,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 4,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Fecha y hora no concuerdan con el horario laboral.",
+      "inform": 3
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 5,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Encargado es requerido",
+      "inform": 3
+    }
+  },
+  {
     "model": "laboratory.furniture",
     "pk": 1,
     "fields": {
