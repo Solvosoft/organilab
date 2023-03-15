@@ -58,5 +58,4 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:api-protocol-list")
         response = self.client.get(url, data={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 200)
-        #response_text = json.loads(response.content)['data']
-        self.assertContains(response, "Control de plagas")
+        self.assertIn("Control de plagas", json.loads(response.content)['data'])
