@@ -183,6 +183,7 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
             "object": 1,
             "shelf": 1,
             "quantity": 5,
+            "in_where_laboratory": self.lab.pk,
             "limit_quantity": 4,
             "measurement_unit": 63,
             "row": 0,
