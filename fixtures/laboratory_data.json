@@ -553,7 +553,7 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1],
+      "rooms": [1, 2],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -563,6 +563,23 @@
     "pk": 2,
     "fields": {
       "name": "Lab Ultra",
+      "phone_number": "22305678",
+      "location": "Upala",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "rooms": [3],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "DS Cosme",
       "phone_number": "22305678",
       "location": "Upala",
       "geolocation": "9.895804362670006,-84.1552734375",
@@ -649,7 +666,20 @@
     "fields": {
       "name": "Control de plagas",
       "file": "protocols/test.pdf",
-      "short_description": "",
+      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 3,
+    "fields": {
+      "name": "Manipulación de instrumentos de laboratorio",
+      "file": "protocols/test.pdf",
+      "short_description": "Esterilización y uso de instrumentos de laboratorio.",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
@@ -739,6 +769,76 @@
     }
   },
   {
+    "model": "laboratory.inform",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Reactivos mensuales despachados",
+      "custom_form": 2,
+      "content_type": 1,
+      "object_id": 1,
+      "status": "In Review",
+      "schema": {
+        "name": "Reactivos mensuales despachados",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 1,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Describir porque sucedieron los hechos.",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 2,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 3,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 4,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Fecha y hora no concuerdan con el horario laboral.",
+      "inform": 3
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 5,
+    "fields": {
+      "creator": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Encargado es requerido",
+      "inform": 3
+    }
+  },
+  {
     "model": "laboratory.furniture",
     "pk": 1,
     "fields": {
@@ -806,6 +906,16 @@
   {
     "model": "reservations_management.reservations",
     "pk": 1,
+    "fields": {
+      "user": 1,
+      "status": 0,
+      "comments": null,
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 2,
     "fields": {
       "user": 1,
       "status": 0,
@@ -1070,6 +1180,16 @@
       "substance": 1,
       "note": null,
       "is_approved": true
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": 1,
+      "object_id": 1,
+      "rol": [1, 2]
     }
   }
 ]

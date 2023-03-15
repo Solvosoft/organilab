@@ -32,9 +32,9 @@ objviews = ObjectView()
 
 organization_urls_org_pk = [
     path('my_reservations/<int:lab_pk>', MyReservationView.as_view(), name="my_reservations"),
-    path('labindex/<int:lab_pk>', views.lab_index, name='labindex'),  # Todo: remove this ?
+    path('labindex/<int:lab_pk>', views.lab_index, name='labindex'),
     path('laboratory/<int:pk>/edit/', laboratory.LaboratoryEdit.as_view(), name='laboratory_update'),
-    path('create_lab/', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'), #THIS URL REQUIRES REVIEW FROM TEMPLATE 'laboratory/select_lab.html'
+    path('create_lab/', laboratory.CreateLaboratoryFormView.as_view(), name='create_lab'),
     path('my_labs/', LaboratoryListView.as_view(), name="mylabs"),
 ]
 
@@ -44,7 +44,6 @@ urlpatterns = [
     path('rp/api/reservedProducts/<int:pk>/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     path('rp/api/reservedProducts/<int:pk>/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     path('r/api/reservation/', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
-    path('select', laboratory.SelectLaboratoryView.as_view(), name='select_lab'),
     path('reserve_object/<int:modelpk>', ShelfObjectReservation.as_view(), name="object_reservation"), #THIS URL IS NOT USED
     path('validators', validate_duplicate_initial_date, name="date_validator"),
     path('returnLabId', return_laboratory_of_shelf_id, name="get_lab_id"),

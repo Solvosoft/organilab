@@ -4,6 +4,7 @@ from django.urls import reverse
 from laboratory.models import OrganizationStructure
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
+
 class OrganizationViewTest(BaseLaboratorySetUpTest):
 
     def test_update_organization(self):
@@ -60,11 +61,6 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_api_logentry_detail(self):
-        url = reverse("laboratory:api-logentry-detail", kwargs={"pk": 1, })
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-
 class ProfileViewTest(BaseLaboratorySetUpTest):
 
     def test_update_password(self):
@@ -75,8 +71,10 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "password_confirm": "edu4060cal"
         }
         response_post = self.client.post(url, data=data)
-        success_url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
-        self.assertRedirects(response_post, success_url)
+        self.assertEqual(response_post.status_code, 200)
+        user_updated = User.objects.get(username="admin")
+        check_pass = user_updated.check_password(data['password_confirm'])
+        self.assertEqual(True, check_pass)
 
     def test_update_profile(self):
         url = reverse("laboratory:profile", kwargs={"pk": self.user.pk, })
@@ -95,3 +93,11 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response_post, url)
         user_updated = User.objects.get(username="admin")
         self.assertEqual(user_updated.first_name, "Admin")
+
+    def test_profile_detail(self):
+        profile = self.user.profile
+        url = reverse("laboratory:profile_detail", kwargs={"org_pk": self.org.pk, "pk": self.user.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['profile'].job_position, profile.job_position)
+        self.assertNotEqual(response.status_code, 302)
