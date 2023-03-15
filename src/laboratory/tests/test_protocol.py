@@ -54,8 +54,14 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
         self.assertNotIn("Manipulación de instrumentos de laboratorio", list(Protocol.objects.values_list("name", flat=True)))
 
-    def test_api_protocol_list(self):
+    def test_api_protocol_list_set_limit(self):
+        url = reverse("laboratory:api-protocol-list")
+        response = self.client.get(url, data={"org_pk": self.org.pk, "lab_pk": self.lab.pk, 'offset': 0, 'limit': 10})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Control de plagas")
+
+    def test_api_protocol_list_default_limit(self):
         url = reverse("laboratory:api-protocol-list")
         response = self.client.get(url, data={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Control de plagas", json.loads(response.content)['data'])
+        self.assertIn("Control de plagas", response.content.decode())
