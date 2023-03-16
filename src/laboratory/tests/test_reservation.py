@@ -46,12 +46,15 @@ class ReservedProductViewTest(BaseLaboratorySetUpTest):
         shelf_object = ShelfObject.objects.first()
         data = {
             "user": self.user.pk,
-            "status": 1,
-            "obj": shelf_object.pk
+            "status": 0,
+            "obj": shelf_object.pk,
+            "initial_date": now().strftime("%m/%d/%Y %I:%M %p")
         }
         url = reverse("laboratory:date_validator")
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['is_valid'], True)
+        self.assertNotEqual(json.loads(response.content)['is_valid'], False)
 
     def test_api_reservation_update(self):
         reserved_products = ReservedProducts.objects.first()
