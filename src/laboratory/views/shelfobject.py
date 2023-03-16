@@ -130,7 +130,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name','creator', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','course_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,

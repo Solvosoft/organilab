@@ -50,7 +50,7 @@
 	      {% if perms.laboratory.do_report %}
 		      <a class="btn btn-sm btn-danger float-end"
 		         title="{{ obj.name }}"
-		         href="{% url 'laboratory:reports_objects' laboratory %}?pk={{ obj.pk }}">
+		         href="{% url 'laboratory:reports_objects' org_pk laboratory %}?pk={{ obj.pk }}">
 		       <i class="fa fa-download" aria-hidden="true"></i>
 		        {% trans "PDF" %}</a>
 	       {% endif %}
