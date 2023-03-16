@@ -436,28 +436,6 @@
     }
   },
   {
-    "model": "auth_and_perms.profile",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "phone_number": "8888-8888",
-      "id_card": "0-0000-0000",
-      "job_position": "Administrator",
-      "laboratories": [1, 2]
-    }
-  },
-  {
-    "model": "auth_and_perms.profile",
-    "pk": 2,
-    "fields": {
-      "user": 2,
-      "phone_number": "7777-7777",
-      "id_card": "1-1111-1111",
-      "job_position": "Profesional Technician",
-      "laboratories": [1, 2]
-    }
-  },
-  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -474,8 +452,8 @@
     "fields": {
       "parent": null,
       "name": "Organization Testing",
-      "position": 1,
-      "level": 1,
+      "position": 3,
+      "level": 3,
       "rol": []
     }
   },
@@ -485,8 +463,19 @@
     "fields": {
       "parent": null,
       "name": "Org MK",
-      "position": 1,
-      "level": 1,
+      "position": 3,
+      "level": 3,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": null,
+      "name": "Chec Org",
+      "position": 4,
+      "level": 4,
       "rol": []
     }
   },
@@ -514,6 +503,7 @@
       "users": [1]
     }
   },
+
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
@@ -590,6 +580,28 @@
       "rooms": [3],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+    {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [1, 2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "1-1111-1111",
+      "job_position": "Profesional Technician",
+      "laboratories": [1, 2]
     }
   },
   {
@@ -861,7 +873,8 @@
       "type": 75,
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
     }
   },
   {
@@ -874,7 +887,8 @@
       "type": 75,
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
+      "last_update": "2023-01-31T19:33:49.035Z",
+       "discard": false
     }
   },
   {
@@ -887,7 +901,8 @@
       "type": 74,
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
+      "last_update": "2023-01-31T19:33:49.035Z",
+       "discard": false
     }
   },
   {
@@ -900,7 +915,36 @@
       "type": 74,
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
-      "last_update": "2023-01-31T19:33:49.035Z"
+      "last_update": "2023-01-31T19:33:49.035Z",
+       "discard": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 5,
+    "fields": {
+      "furniture": 1,
+      "name": "Quinto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+       "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 5,
+    "fields": {
+      "furniture": 1,
+      "name": "Sexto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
     }
   },
   {
@@ -1188,6 +1232,50 @@
     }
   },
   {
+    "model": "sga.substance",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Sulfuro de calcio",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "creator": 1,
+      "description": null,
+      "organilab_context": "laboratory",
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 3,
+    "fields": {
+      "organization": 2,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Dicloro",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "creator": 1,
+      "description": null,
+      "organilab_context": "laboratory",
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
     "model": "laboratory.sustancecharacteristics",
     "pk": 1,
     "fields": {
@@ -1218,6 +1306,24 @@
     "pk": 1,
     "fields": {
       "substance": 1,
+      "note": null,
+      "is_approved": true
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 2,
+    "fields": {
+      "substance": 2,
+      "note": null,
+      "is_approved": false
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 3,
+    "fields": {
+      "substance": 3,
       "note": null,
       "is_approved": true
     }
