@@ -14,9 +14,11 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
             "name": "Org BM",
             "parent": 1,
         }
-        response_post = self.client.post(url, data=data)
+        response = self.client.post(url, data=data)
         success_url = reverse("auth_and_perms:organizationManager")
-        self.assertRedirects(response_post, success_url)
+        self.assertRedirects(response, success_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("Org BM", list(OrganizationStructure.objects.values_list("name", flat=True)))
 
     def test_create_organization(self):
         data = {
@@ -27,14 +29,18 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
         response = self.client.post(url, data=data)
         success_url = reverse("auth_and_perms:organizationManager")
         self.assertRedirects(response, success_url)
+        self.assertEqual(response.status_code, 302)
         self.assertIn("SKO Company", list(OrganizationStructure.objects.values_list("name", flat=True)))
 
     def test_delete_organization(self):
-        url = reverse("laboratory:delete_organization", kwargs={"pk": 2, })
+        total_org = OrganizationStructure.objects.all().count()
+        org = OrganizationStructure.objects.last()
+        url = reverse("laboratory:delete_organization", kwargs={"pk": org.pk, })
         response = self.client.post(url)
         success_url = reverse("auth_and_perms:organizationManager")
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+        self.assertEqual(total_org-1, OrganizationStructure.objects.all().count())
 
     def test_get_reports_list(self):
         url = reverse("laboratory:reports", kwargs={"org_pk": self.org.pk, })
