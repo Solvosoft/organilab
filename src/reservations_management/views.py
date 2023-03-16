@@ -1,25 +1,18 @@
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from django.shortcuts import redirect
+from django.contrib.admin.models import CHANGE
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
-from laboratory.views.djgeneric import ListView, UpdateView
-from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-from laboratory.decorators import user_group_perms
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
-
-from .models import Reservations, ReservedProducts
+from laboratory.views.djgeneric import ListView, UpdateView
 from .forms import ReservationsForm, ProductForm
+from .models import Reservations, ReservedProducts
 
 
-# Create your views here.
-
-
-@method_decorator(user_group_perms(perm='laboratory.add_objectfeatures'), name='dispatch')
-class ReservationsListView(LoginRequiredMixin, ListView):
+class ReservationsListView(PermissionRequiredMixin, ListView):
     model = Reservations
     paginate_by = 10
+    permission_required = 'laboratory.add_objectfeatures'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,11 +25,11 @@ class ReservationsListView(LoginRequiredMixin, ListView):
         return context
 
 
-@method_decorator(user_group_perms(perm='laboratory.add_objectfeatures'), name='dispatch')
-class ManageReservationView(LoginRequiredMixin, UpdateView):
+class ManageReservationView(PermissionRequiredMixin, UpdateView):
     template_name = 'reservations_management/manage_reservation.html'
     form_class = ReservationsForm
     model = Reservations
+    permission_required = 'laboratory.add_objectfeatures'
 
     def get_success_url(self, **kwargs):
         new_status = self.object.status
