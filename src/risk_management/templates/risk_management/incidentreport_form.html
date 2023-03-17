@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="offset-md-1 col-md-3">
-        <a class="btn btn-danger" href="{% url 'riskmanagement:incident_list' org_pk laboratory %}"> <i class="fa fa-chevron-circle-left" aria-hidden="true"></i> {% trans 'Laboratory incidents' %}</a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'riskmanagement:incident_list' org_pk laboratory %}"> <i class="fa fa-chevron-circle-left" aria-hidden="true"></i> {% trans 'Laboratory incidents' %}</a>
     </div>
 
 </div>
@@ -26,16 +26,15 @@
 <div class="offset-md-2 col-md-8">
   <br>
     <form class="form" action="" method="post">
-
       {% csrf_token %}
-	      <div class="row">
-	          {{ form.as_horizontal }}
-	        <div id="save_button1" class="col-md-1">
-	          <button class="btn btn-success" type="submit">
-	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
-	          </button>
-	        </div>
-	      </div>
+      {{ form.as_horizontal }}
+      <div class="form-group row justify-content-end">
+          <div class="col-sm-9">
+              <button class="btn btn-sm btn-outline-success float-end" type="submit">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}
+              </button>
+          </div>
+      </div>
     </form>
 </div>
 <div class="clearfix">  </div>

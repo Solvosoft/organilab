@@ -7,6 +7,28 @@
     {% define_urlname_action 'incident_detail' %}
     {% define_urlname_action 'incident_update' %}
 {% endblock %}
+{% block extra_css %}
+<style>
+    .btn-group {
+        float: right;
+    }
+    #btn_manage_obj{
+    	width:100px;
+    	float: right;
+    	margin-right: 0;
+    }
+    .page-header {
+    	padding: 15px;
+    }
+    .list-group {
+    	margin: 0px 16px;
+    }
+    #btnsearch {
+        height: 38px;
+        margin-right: 0;
+    }
+</style>
+{% endblock%}
 {% block content %}
   {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
@@ -14,69 +36,75 @@
 
 <div class="row">
 <div class="offset-md-2 col-md-8">
-        <div class="page-header" align="center">
-          <h3 class="heading-1" center=""><span>{% trans 'Incidents Management'  %}
-                  {% if perm_add_riskzone %}
-          <a class="btn btn-success" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}"> <i class="fa fa-plus"></i> </a>
-        {% endif %}</span></h3>
-
-        </div>
+    <div class="page-header" align="center">
+        <h3 class="heading-1" center="">{% trans 'Incidents Management'  %}</h3>
+    </div>
 </div>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="offset-md-9 col-md-3">
-            <form metod="get" action="">
-                <div class="input-group">
-                    <input class="form-control" name="q" value="{{q}}" placeholder="Search..." type="text">
-                    <button type="submit" class="btn btn-secondary input-group-btn">
-                        <i class="fa fa-search"></i>
-                    </button>
+<div class="row">
+    <div class="container-fluid">
+        <form metod="get" action="">
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                        <input class="form-control" name="q" value="{{q}}" placeholder="Search..." type="text">
+                        <button id="btnsearch" type="submit" class="btn btn-secondary input-group-btn">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    </div>
                 </div>
+                {% if perm_add_riskzone %}
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-9">
+                        <a id="btn_manage_obj" class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}">
+                    <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
+                    </div>
+                </div>
+            {% endif %}
             </form>
-        </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <ul class="list-group">
-                {% for object in object_list %}
-                <li class="row list-group-item">
-                    <div class="col-md-9">
-                        <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
-                        <a href="{% url 'riskmanagement:incident_detail' org_pk laboratory object.pk %}">{{ object }}</a></div>
-                    <div class="col-md-3">
+        <ul class="list-group">
+            {% for object in object_list %}
+            <li class="row list-group-item">
+                <div class="col-md-9">
+                    <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
+                    <a href="{% url 'riskmanagement:incident_detail' org_pk laboratory object.pk %}">{{ object }}</a></div>
+                <div class="col-md-3">
+                    <div class="btn-group btn-group-sm" role="group">
                         {% if perm_change_riskzone %}
-                        <a class="btn btn-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}">
-                            <i class="fa fa-pencil"></i> {% trans 'Edit' %}</a>
+                        <a class="btn btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}">
+                            <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
                         {% endif %}
                         {% if perm_change_riskzone %}
-                        <a class="btn btn-danger" href="{% url 'riskmanagement:incident_delete' org_pk laboratory object.pk %}">
+                        <a class="btn btn-outline-danger" href="{% url 'riskmanagement:incident_delete' org_pk laboratory object.pk %}">
                             <i class="fa fa-trash"></i> {% trans 'Delete' %}</a>
                         {% endif %}
                     </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% if is_paginated %}
+        <nav aria-label="...">
+            <ul class="pager">
+                {% if page_obj.has_previous %}
+                <li>
+                    <a href="{{pgparams}}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
                 </li>
-                {% endfor %}
+                {% endif %}
+                <li>
+                    {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
+                </li>
+                {% if page_obj.has_next %}
+                <li>
+                    <a href="{{pgparams}}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+                </li>
+                {% endif %}
             </ul>
-            {% if is_paginated %}
-            <nav aria-label="...">
-                <ul class="pager">
-                    {% if page_obj.has_previous %}
-                    <li>
-                        <a href="{{pgparams}}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
-                    </li>
-                    {% endif %}
-                    <li>
-                        {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
-                    </li>
-                    {% if page_obj.has_next %}
-                    <li>
-                        <a href="{{pgparams}}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            {% endif %}
-        </div>
+        </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
