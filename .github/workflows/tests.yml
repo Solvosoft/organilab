@@ -5,7 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        max-parallel: 4
         python-version: ["3.9", "3.10"]
     env:
       PYTHON_VERSION: ${{matrix.python-version}}
