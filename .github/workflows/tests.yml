@@ -41,6 +41,10 @@ jobs:
           pip install -r requirements.txt
           pip install -r test_requirements.txt
 
+      - name: Coverage Badge
+        uses: we-cli/coverage-badge-action@v1.0.1
+
+
       - name: Test with tox
         run: tox
         env:
