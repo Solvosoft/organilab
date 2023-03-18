@@ -13,7 +13,7 @@
   {% if perm_del_riskzone %}
 	<form action="" method="post">{% csrf_token %}
 	    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
-	    <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
+	    <input class="btn btn-sm btn-outline-danger" type="submit" value="{% trans 'Confirm' %}" />
 	</form>
 	<br> <br>
   {% else %} 
