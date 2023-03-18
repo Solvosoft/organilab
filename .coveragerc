@@ -13,4 +13,4 @@ skip_empty = True
 skip_covered = True
 
 [json]
-output = coverage.json
+output = ./coverage/coverage-summary.json
