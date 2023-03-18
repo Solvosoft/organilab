@@ -9,6 +9,7 @@
     {% define_urlname_action 'riskzone_update' %}
 {% endblock %}
 {% block extra_css %}
+{{block.super}}
 <style>
     .btn-group {
         float: right;
@@ -46,7 +47,7 @@
             <div class="form-group row justify-content-end">
                 <div class="col-sm-9">
                     <div class="input-group custom-search-form">
-                        <input class="form-control input-group" name="q" value="{{q}}" placeholder="Search..." type="text">
+                        <input class="form-control input-group" name="q" value="{{q}}" placeholder="{% trans 'Search...' %}" type="text">
                         <span class="input-group-btn">
                             <button id="btnsearch" type="submit" class="btn btn-sm btn-outline-secondary">
                                 <i class="fa fa-search"></i>
