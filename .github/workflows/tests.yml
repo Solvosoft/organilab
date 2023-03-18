@@ -57,7 +57,7 @@ jobs:
 
       - name: Change to pg_pages
         if: ${{ (steps.verify-changed-files.outputs.files_changed == 'true') && (github.ref == 'refs/heads/master') }}
-        run: git fetch origin && git checkout gh-pages
+        run: git fetch origin gh-pages && mv coverage.svg coveragebk.svg && git checkout gh-pages && coveragebk.svg coverage.svg
 
       - name: Commit files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
