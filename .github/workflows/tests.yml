@@ -41,6 +41,11 @@ jobs:
           pip install -r requirements.txt
           pip install -r test_requirements.txt
 
+      - name: Test with tox
+        run: tox
+        env:
+          TOXENV: py${{matrix.python-version}}
+
       - name: Coverage Badge
         uses: tj-actions/coverage-badge-py@v2
 
@@ -66,7 +71,3 @@ jobs:
           branch: ${{ github.ref }}
 
 
-      - name: Test with tox
-        run: tox
-        env:
-          TOXENV: py${{matrix.python-version}}
