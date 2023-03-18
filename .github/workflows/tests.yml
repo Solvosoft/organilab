@@ -55,6 +55,11 @@ jobs:
         with:
           files: coverage.svg
 
+      - uses: actions/checkout@v3
+        if: ${{ (steps.verify-changed-files.outputs.files_changed == 'true') && (github.ref == 'refs/heads/master') }}
+        with:
+          ref: gh-pages
+
       - name: Commit files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
@@ -63,11 +68,17 @@ jobs:
           git add coverage.svg
           git commit -m "Updated coverage.svg"
 
-      - name: Push changes
+      - name: Push changes on gh-pages
         if: ${{ (steps.verify-changed-files.outputs.files_changed == 'true') && (github.ref == 'refs/heads/master') }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.github_token }}
           branch: gh-pages
 
+      - name: Push changes on local branch
+        if: ${{ (steps.verify-changed-files.outputs.files_changed == 'true') && (github.ref != 'refs/heads/master') }}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          branch: ${{ github.ref }}
 
