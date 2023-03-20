@@ -26,9 +26,9 @@
 			<form class="form-horizontal " action="" method="post">{% csrf_token %}
 				{{ form.as_horizontal }}
 				<div class="form-group row justify-content-end">
-					<div class="col-sm-9">
-						<button id="btn_manage_obj" type="submit"
-								class="btn btn-sm {% if form.instance.pk %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+					<div class="col-md-9">
+						<button type="submit"
+								class="btn btn-sm {% if form.instance.pk %}btn-outline-warning{% else %}btn-outline-success{% endif %} float-end me-0">
 							{% if form.instance.pk %}
 								<span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Update' %}
 							{% else %}
@@ -39,11 +39,10 @@
 				</div>
 			</form>
 		{% endif %}
-	</div>
-	<div class="row">
-		<ul class="list-group">
+		<div class="row">
+		<ul class="list-group list-group-vertical ms-1">
 			{% for object in object_list %}
-				<li class="row list-group-item">
+				<li class="list-group-item">
 					<div class="col-md-9">
 						<div class="row">
 							<div class="col-md-4">
@@ -51,7 +50,7 @@
 								{{ object }}
 							</div>
 							<div class="col-md-4"></div>
-							<div class="col-md-4" style="font-size: 1.5em">
+							<div class="col-md-4">
 								<div class="btn-group" role="group" aria-label="...">
 									<div id="f{{object.pk}}" class="hidden">
 										<ul class="list-group">
@@ -78,7 +77,7 @@
 						</div>
 					</div>
 					<div class="col-md-3">
-						<div class="btn-group" role="group">
+						<div class="btn-group float-end" role="group">
 							{% if perms.laboratory.change_laboratoryroom %}
 								<a href="{% url 'laboratory:rooms_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" class="btn btn-sm btn-outline-warning">
 									<i class="fa fa-edit" aria-hidden="true"> </i> {% trans 'Update' %}
@@ -95,6 +94,8 @@
 			{% endfor %}
 		</ul>
 	</div>
+	</div>
+
 	{% else %} 
 		{% include 'laboratory/action_denied.html' %} 
 	{% endif %}

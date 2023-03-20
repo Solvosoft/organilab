@@ -19,41 +19,42 @@
     </div>
 </div>
 </div>
-<div class="row">
+<div class="row mt-3">
     <div class="container-fluid">
         <form metod="get" action="">
                 <div class="form-group row justify-content-end">
-                    <div class="col-sm-9">
-                        <div class="input-group">
+                    <div class="col-md-9">
+                        <div class="input-group input-group-sm">
                         <input class="form-control" name="q" value="{{q}}" placeholder="{% trans 'Search...' %}" type="text">
-                        <button id="btnsearch" type="submit" class="btn btn-secondary input-group-btn">
+                         <span class="input-group-btn">
+                            <button id="btnsearch" type="submit" class="btn btn-md btn-outline-secondary">
                             <i class="fa fa-search"></i>
-                        </button>
+                            </button>
+                         </span>
                     </div>
                     </div>
                 </div>
                 {% if perm_add_riskzone %}
                 <div class="form-group row justify-content-end">
-                    <div class="col-sm-9">
+                    <div class="col-md-9">
                         <a id="btn_manage_obj" class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}">
                     <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
                     </div>
                 </div>
             {% endif %}
             </form>
-    </div>
-    <div class="row">
-        <ul class="list-group">
+        <div class="row">
+        <ul class="list-group list-group-vertical ms-1">
             {% for object in object_list %}
-            <li class="row list-group-item">
+            <li class="list-group-item">
                 <div class="col-md-9">
                     <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
                     <a href="{% url 'riskmanagement:incident_detail' org_pk laboratory object.pk %}">{{ object }}</a></div>
                 <div class="col-md-3">
-                    <div class="btn-group btn-group-sm" role="group">
+                    <div class="btn-group btn-group-sm float-end" role="group">
                         {% if perm_change_riskzone %}
                         <a class="btn btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}">
-                            <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
+                            <i class="fa fa-edit"></i> {% trans 'Update' %}</a>
                         {% endif %}
                         {% if perm_change_riskzone %}
                         <a class="btn btn-outline-danger" href="{% url 'riskmanagement:incident_delete' org_pk laboratory object.pk %}">
@@ -83,6 +84,7 @@
             </ul>
         </nav>
         {% endif %}
+    </div>
     </div>
 </div>
 {% endblock %}
