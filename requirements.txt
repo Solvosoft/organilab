@@ -34,7 +34,7 @@ django-celery-results==2.4.0
 celery==5.2.3
 django-paypal==2.0
 weasyprint==56.1
-CairoSVG==2.5.2
+CairoSVG==2.7.0
 pyfva==0.0.43
 django-otp==1.1.4
 python-barcode==0.14.0
