@@ -9,13 +9,13 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </a>
         {% endif %}
-        <a id="shelf_view_{{data.pk}}" role="button" data-bs-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapseExample">
+        <a id="shelf_view_{{data.pk}}" role="button" data-bs-toggle="collapse" href="#body_{{data.pk}}" aria-expanded="false" aria-controls="collapse{{data.pk}}">
             <i class="fa fa-eye" aria-hidden="true"></i>
         </a>
 
           <span title="{{data.name}}"> {{data.name}}</span>
             </div>
-            <span class="float-end fw-bold" style="font-size:8px;">{{data.get_measurement_unit_display }} </span>
+            <span class="float-end fw-bold fc-eight" >{{data.get_measurement_unit_display }} </span>
             </div>
             {% if data.description %}
                 {{data.description | safe }}
