@@ -1,2 +1,4 @@
 tox==4.3.5
 coverage==7.0.5
+pylint-django
+pylint
