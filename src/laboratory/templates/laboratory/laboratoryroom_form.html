@@ -13,24 +13,6 @@
 	{% endif %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory room management' %}{% endblock %}
-{% block extra_css %}
-<style>
-    .btn-group {
-        float: right;
-    }
-    #btn_manage_obj {
-    	width:100px;
-    	float: right;
-    	margin-right: 0;
-    }
-    .page-header {
-    	padding: 15px;
-    }
-    .list-group {
-    	margin: 0px 16px;
-    }
-</style>
-{% endblock%}
 {% block content %}
 	{% if perms.laboratory.view_laboratoryroom or perms.laboratory.add_laboratoryroom or  perms.laboratory.change_laboratoryroom or perms.laboratory.delete_laboratoryroom %}
 <div class="row">

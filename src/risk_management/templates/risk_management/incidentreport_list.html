@@ -7,28 +7,6 @@
     {% define_urlname_action 'incident_detail' %}
     {% define_urlname_action 'incident_update' %}
 {% endblock %}
-{% block extra_css %}
-<style>
-    .btn-group {
-        float: right;
-    }
-    #btn_manage_obj{
-    	width:100px;
-    	float: right;
-    	margin-right: 0;
-    }
-    .page-header {
-    	padding: 15px;
-    }
-    .list-group {
-    	margin: 0px 16px;
-    }
-    #btnsearch {
-        height: 38px;
-        margin-right: 0;
-    }
-</style>
-{% endblock%}
 {% block content %}
   {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
