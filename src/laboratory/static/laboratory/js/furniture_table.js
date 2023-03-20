@@ -139,12 +139,14 @@ function show_refuse_elements(){
 
 function removeShelf(){
     $('#id_shelfs').val(JSON.stringify(shelfs_pk))
-    pks=[]
 	$("#wbody").empty()
 	$("#warningobjects").modal('hide')
+	pks=[]
+
 
 }
 function cancelRemoveShelfs(){
+    shelfs_pk = shelfs_pk.filter(e => !pks.includes(e))
     pks=[]
     $("#wbody").empty()
 
@@ -158,6 +160,7 @@ function deleteColumn(){
 		document.numberCol--;
 		do_sortable();
         removeShelf()
+
 
 }
 
@@ -204,8 +207,7 @@ function send_shelf_request(action_click){
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: ({data}) => {
-                shelfs_pk = shelfs_pk.concat(pks);
-                pks = [];
+                shelfs_pk = Array.from(new Set([...shelfs_pk, ...pks]));
                 $("#wbody").empty();
                 $("#wbody").html(data);
                 $("#remove_shelf").attr('onClick', action_click);
@@ -219,4 +221,8 @@ do_sortable();
 
 $(document).on('ifChanged','#id_shelf--discard', function(event){
     show_refuse_elements('#id_shelf--discard');
+});
+
+$(document).on('click','#cancel_modal', function(event){
+    cancelRemoveShelfs()
 });
