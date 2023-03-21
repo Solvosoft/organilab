@@ -62,6 +62,10 @@ Compile translations
 	$ django-admin makemessages --all
 	$ django-admin compilemessages --locale es
 
+Compile JS translations
+
+    django-admin makemessages -d djangojs -l es --ignore *.min.js
+
 ## Run with composer in development environment
 
 Create your image organilab
