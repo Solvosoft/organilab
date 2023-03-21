@@ -34,6 +34,7 @@ from reservations_management.urls import urlpatterns as reservation_management_u
 from risk_management import urls as risk_urls
 from sga import urls as sga_urls
 from derb import urls as derb_urls
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = urls_djgentelela + auth_urls + [
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
@@ -52,6 +53,7 @@ urlpatterns = urls_djgentelela + auth_urls + [
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
     path('async_notifications/', include('async_notifications.urls')),
+    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 
 ]
 
