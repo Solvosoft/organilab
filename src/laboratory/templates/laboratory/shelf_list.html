@@ -2,7 +2,7 @@
 {% load gtpermissions %}
 {% any_permission_required 'laboratory.can_manage_disposal' 'laboratory.can_add_disposal' 'laboratory.can_view_disposal' as anyperm %}
 {% if perms.laboratory.view_shelfobject %}
-	<div class="card" style="margin-top:3.3rem">
+	<div class="card card-margin-top">
 		<div class="card-header">{% trans 'Shelves' %}    <div class="float-end">   {% get_qr_svg_img furniture width="32px" organization=org_pk %}</div></div>
 		<div class="card-body">
 			<div class="table-responsive">
