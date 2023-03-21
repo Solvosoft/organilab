@@ -8,6 +8,7 @@
 {% block extra_css %}
   <link href="{% static 'css/organilab.css' %}?v={% get_organilab_version %}" rel="stylesheet">
   <link href="{% static 'css/themify-icons.css' %}?v={% get_organilab_version %}" rel="stylesheet">
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}?v={% get_organilab_version %}"></script>
   {% block css %}{% endblock %}
 
 {% endblock %}
@@ -32,5 +33,4 @@
   <script src="{% static 'js/organilab.js' %}?v={% get_organilab_version %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-
 {% endblock %}
