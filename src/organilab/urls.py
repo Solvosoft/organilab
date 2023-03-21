@@ -75,7 +75,7 @@ if settings.DEBUG:
 else:
     urlpatterns += [
         re_path('^media/(?P<path>.*)', media_access, name='media'),
-        path("jsi18n/", cache_page(86400, key_prefix='jsi18n-%s' % get_organilab_version()), (JavaScriptCatalog.as_view()), name="javascript-catalog")
+        path("jsi18n/", cache_page(86400, key_prefix='jsi18n-%s' % get_organilab_version())(JavaScriptCatalog.as_view()), name="javascript-catalog")
     ]
 
 
