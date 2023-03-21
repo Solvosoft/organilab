@@ -46,12 +46,13 @@
       <ul class="list-group list-group-vertical ms-1">
         {% for object in object_list %}
           <li class="list-group-item">
-            <div class="col-md-9 mb-2">
+              <div class="row">
+                <div class="col-md-9 mb-2">
                 <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
                 <a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
             </div>
 
-            <div class="col-md-3">
+                <div class="col-md-3">
                 <div class="btn-group btn-group-sm float-end" role="group">
              {% if perm_change_riskzone %}
               <a class="btn btn-outline-warning"
@@ -65,6 +66,7 @@
              {% endif %}
             </div>
             </div>
+              </div>
           </li>
         {% endfor %}
       </ul>
