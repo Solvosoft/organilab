@@ -1,5 +1,6 @@
 [run]
 source = src
+omit = src/*/migrations/*,src/*/templates/*,src/*/static/*
 
 [report]
 #fail_under = 100
@@ -10,3 +11,6 @@ skip_covered = True
 directory = htmlcov
 skip_empty = True
 skip_covered = True
+
+[json]
+output = ./coverage/coverage-summary.json

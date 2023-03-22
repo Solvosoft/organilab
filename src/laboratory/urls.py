@@ -10,7 +10,7 @@ from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -54,6 +54,7 @@ lab_shelf_urls = [
     path('create/', shelfs.ShelfCreate.as_view(), name="shelf_create"),
     path('delete/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfDelete, name="shelf_delete"),
     path('edit/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfEdit.as_view(), name="shelf_edit")
+
 ]
 
 lab_rooms_urls = [
@@ -238,6 +239,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
+    path('org/api/shels/list',  ShelfList.as_view(), name='get_shelfs_list'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
