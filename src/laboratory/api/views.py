@@ -1,8 +1,10 @@
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.db.models import Value, DateField
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -17,7 +19,7 @@ from laboratory.api.serializers import ReservedProductsSerializer, ReservationSe
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
-    Laboratory, InformsPeriod, ShelfObject
+    Laboratory, InformsPeriod, ShelfObject, Shelf
 from laboratory.utils import get_logentries_org_management
 from reservations_management.models import ReservedProducts
 
@@ -273,3 +275,13 @@ class ShelfObjectGraphicAPI(APIView):
                labels.append(obj.object.name)
 
         return Response({'labels':labels,'data':data})
+
+
+@method_decorator(permission_required('laboratory.delete_shelf'), name='dispatch')
+class ShelfList(APIView):
+    def post(self, request):
+        serializer = serializers.ShelfPkList(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            shelfs = Shelf.objects.filter(pk__in=serializer.data['shelfs'])
+            data = render_to_string(template_name="laboratory/components/shelfdetail.html", context={'shelfs':shelfs}, request=request)
+        return Response({'data':data})
