@@ -59,17 +59,26 @@ document.contextroletable={
     user: null
 }
 
+function deleteuserlab(elementid){
+console.log("bingoooo deleteuserlab")
+}
+function modifyuserrol(elementid){
+    console.log("bingoooo modifyuserrol")
+}
 
+function applyasrole(elementid, profile){
+    var element=$("#rol_"+elementid)[0]
 
-$(".applyasrole").on('click', function(e){
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
     document.contextroletable.user=null;
     document.contextroletable.as_role=true;
-    document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
-    document.contextroletable.profile= e.target.dataset.profile
-    $("#modal"+e.target.dataset.org).modal('show');
-});
+    document.contextroletable.contenttypeobj=Object.assign({}, element.dataset);
+    document.contextroletable.profile=profile;
+    $("#modal"+element.dataset.org).modal('show');
+}
+
+//$(".applyasrole").on('click', applyasrole);
 $(".applybycontenttype").on('click', function(e){
     document.contextroletable.as_conttentype=true;
     document.contextroletable.as_user=false;
@@ -215,7 +224,8 @@ $(".btnsaverole").on('click', function(e){
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
       success: function( data ) {
-           window.location.reload();
+           datatableuserpermelement.ajax.reload();
+           $(".modal").modal('hide');
       },
       dataType: 'json'
     });

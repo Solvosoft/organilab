@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import FilterSet
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
@@ -53,6 +54,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class ProfileFilterSet(FilterSet):
+
+
+    def filter_queryset(self, queryset):
+        search = self.request.GET.get('search', '')
+        if search:
+            queryset= queryset.filter(
+                Q(user__first_name__icontains=search)|Q(user__last_name__icontains=search)|Q(user__username__icontains=search)
+            )
+        return queryset
+
     class Meta:
         model = Profile
         fields = {'user': ['exact']}
@@ -72,7 +83,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         return str(obj)
 
     def get_action(self, obj):
-        return "eliminar, agregar role"
+        return """
+        <i class="fa fa-user-md"   onclick="modifyuserrol(%s)" aria-hidden="true"></i>
+        <i class="fa fa-trash mr-2" onclick="deleteuserlab(%s)" aria-hidden="true"></i>
+        """%(obj.pk, obj.pk)
 
     class Meta:
         model = Profile
