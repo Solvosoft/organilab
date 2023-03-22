@@ -503,7 +503,6 @@
       "users": [1]
     }
   },
-
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
@@ -582,7 +581,7 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
-    {
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -920,10 +919,23 @@
     }
   },
   {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 2",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[6],[]],[[],[],[5],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
     "model": "laboratory.shelf",
     "pk": 5,
     "fields": {
-      "furniture": 1,
+      "furniture": 2,
       "name": "Quinto Estante",
       "container_shelf": null,
       "type": 74,
@@ -935,10 +947,65 @@
   },
   {
     "model": "laboratory.shelf",
-    "pk": 5,
+    "pk": 6,
     "fields": {
-      "furniture": 1,
+      "furniture": 2,
       "name": "Sexto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 3,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 3",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[7]],[[8],[9],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 7,
+    "fields": {
+      "furniture": 3,
+      "name": "Séptimo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+       "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 8,
+    "fields": {
+      "furniture": 3,
+      "name": "Octavo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 9,
+    "fields": {
+      "furniture": 3,
+      "name": "Noveno Estante",
       "container_shelf": null,
       "type": 74,
       "color": "#73879C",
