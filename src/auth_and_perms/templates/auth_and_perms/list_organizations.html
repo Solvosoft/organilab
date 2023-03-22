@@ -130,11 +130,19 @@
 </div>
     <div class="col">
         <div class="container" >
+            <h5 class="text-center mb-5">{% trans 'Rol by laboratory' %}
+                <br><small class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</small></h5>
             <div class="row">
                 {{labform.as_horizontal}}
             </div>
             <div class="role table-responsive">
             <table   id="userpermelement" class="compact nowrap w-100"> </table>
+            </div>
+            <hr class="m-5">
+            <h5 class="text-center mb-5 title">{% trans 'Rol in all organization' %}
+                <br><small class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</small></h5>
+            <div class="role table-responsive">
+            <table   id="orpermelement" class="compact nowrap w-100"> </table>
             </div>
         </div>
     </div>
@@ -270,7 +278,7 @@
 {{block.super}}
 <script>
     prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}"
-    datatableelement=createDataTable('#userpermelement', prolabor_api_url, {
+    datatableuserpermelement=createDataTable('#userpermelement', prolabor_api_url, {
      columns: [
             {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
             {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
@@ -287,17 +295,39 @@
         }
     }
     }, addfilter=false);
+
+
+    datatableorpermelement=createDataTable('#orpermelement', prolabor_api_url, {
+     columns: [
+            {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
+            {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
+            {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
+          ],
+     ajax: {
+        url: prolabor_api_url,
+        type: 'GET',
+        data: function(dataTableParams, settings) {
+            var data= formatDataTableParams(dataTableParams, settings);
+            data['organization'] = $('.nodeorg:checked').val();
+            data['laboratory'] = $('#id_laboratories').val();
+            return data;
+        }
+    }
+    }, addfilter=false);
+
+
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 <script>
     $('input[name="nodes"]').on('ifChecked', function(e){
             $("#id_laboratories").val(null).trigger('change');
-            datatableelement.ajax.reload();
+            datatableuserpermelement.ajax.reload();
+            datatableorpermelement.ajax.reload();
 
 
     });
     $('#id_laboratories').on('select2:select', function (e) {
-        datatableelement.ajax.reload();
+        datatableuserpermelement.ajax.reload();
     });
 </script>
 {% endblock%}

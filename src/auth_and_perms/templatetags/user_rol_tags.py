@@ -33,8 +33,8 @@ def get_roles(user, lab, org):
                 org.pk, user, lab._meta.app_label,  lab._meta.model_name, lab.pk
             )
             roles.append(
-                """<span class="applyasrole" data-roleid="%d" style="border-radius: 50px; background: %s; padding: 10px;" title="%s" %s>%s</span>"""%(
-                    rol.pk,
+                """<span class="applyasrole" onclick="applyasrole(%s, %s)" id="rol_%d" style="color: %s;" title="%s" %s>%s</span>"""%(
+                    rol.pk, user, rol.pk,
                     rol.color.replace('[', '').replace(']', '').replace("'", '').strip(),
                     rol.name,
                     datatext,

@@ -227,7 +227,7 @@ class UserLaboratoryOrganization(mixins.ListModelMixin,
     queryset = Profile.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['user',  ]  # for the global search
+    search_fields = ['user__first_name',  'user__last_name']  # for the global search
     filterset_class = ProfileFilterSet
     ordering_fields = ['user', ]
     ordering = ('-user',)  # default order

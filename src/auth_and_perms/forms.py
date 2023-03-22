@@ -93,7 +93,7 @@ class AddProfileDigitalSignatureForm(GTForm):
 class LaboratoryOfOrganizationForm(GTForm):
     laboratories = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all(),
                                                   widget=AutocompleteSelect(
-                                                    'relorgbase', attrs={
+                                                    'laborgbase', attrs={
                                                      'data-s2filter-organization': '.nodeorg:checked'})
                                                   )
 
