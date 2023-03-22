@@ -1,12 +1,17 @@
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
-    OrganizationSerializer
+    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer
+from auth_and_perms.forms import LaboratoryAndOrganizationForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
 from laboratory.models import OrganizationStructure, Laboratory
@@ -212,3 +217,43 @@ class OrganizationAPI(mixins.ListModelMixin,
 
     def get_queryset(self):
         return get_organizations_by_user(self.request.user)
+
+
+class UserLaboratoryOrganization(mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileRolDataTableSerializer
+    queryset = Profile.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['user',  ]  # for the global search
+    filterset_class = ProfileFilterSet
+    ordering_fields = ['user', ]
+    ordering = ('-user',)  # default order
+
+    def get_queryset(self):
+        profiles = get_profile_by_organization(self.organization.pk)
+        return profiles.filter(
+            profilepermission__content_type__app_label=self.laboratory._meta.app_label,
+            profilepermission__content_type__model=self.laboratory._meta.model_name,
+            profilepermission__object_id=self.laboratory.pk)
+
+    def list(self, request, *args, **kwargs):
+        form = LaboratoryAndOrganizationForm(request.GET)
+        if form.is_valid():
+            self.organization = form.cleaned_data['organization']
+            self.laboratory = form.cleaned_data['laboratory']
+
+            queryset = self.get_queryset()
+            total = queryset.count()
+            queryset = self.filter_queryset(queryset)
+            data = self.paginate_queryset(queryset)
+        else:
+            data = Profile.objects.none()
+            queryset = data
+            total = 0
+        response = {'data': data, 'recordsTotal': total,
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)

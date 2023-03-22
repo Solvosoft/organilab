@@ -1,8 +1,4 @@
 {% load i18n %}
-{% load user_rol_tags %}
-<table class="table table{{object.pk}}">
-    {% get_organization_table object %}
-</table>
 
 <div class="modal fade addprofilerol"   id="modal{{object.pk}}" data-id="{{object.pk}}" tabindex="-1"
      aria-labelledby="rolModalLabel" aria-hidden="true">

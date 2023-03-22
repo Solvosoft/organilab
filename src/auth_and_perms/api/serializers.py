@@ -1,7 +1,9 @@
+from django_filters import FilterSet
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
 
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
+from auth_and_perms.templatetags.user_rol_tags import get_roles
 from laboratory.models import OrganizationStructure
 
 
@@ -49,3 +51,36 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = OrganizationStructure
         fields = ['name', 'parent']
 
+
+class ProfileFilterSet(FilterSet):
+    class Meta:
+        model = Profile
+        fields = {'user': ['exact']}
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    rols = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+    action = serializers.SerializerMethodField()
+
+    def get_rols(self, obj):
+        rol= get_roles(obj.pk, self.context['view'].laboratory, self.context['view'].organization)
+
+        return rol
+
+    def get_user(self, obj):
+        return str(obj)
+
+    def get_action(self, obj):
+        return "eliminar, agregar role"
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'rols', 'action']
+
+
+class ProfileRolDataTableSerializer(serializers.Serializer):
+        data = serializers.ListField(child=ProfileSerializer(), required=True)
+        draw = serializers.IntegerField(required=True)
+        recordsFiltered = serializers.IntegerField(required=True)
+        recordsTotal = serializers.IntegerField(required=True)
