@@ -3,6 +3,8 @@
 {% load user_rol_tags %}
 {% load urlname_tags %}
 {% load organilab_tags %}
+{% load gtsettings timejs %}
+
 {% block pre_head %}
     {% define_urlname_action 'organizationManager' %}
     {% define_urlname_action 'addusersorganization' %}
@@ -12,6 +14,7 @@
     {% define_urlname_action 'update_organization' %}
     {% define_urlname_action 'create_organization' %}
     {% define_urlname_action 'delete_organization' %}
+    {% define_true  "use_datatables" %}
 {% endblock %}
 {# CSS #}
 {% block css %}
@@ -20,24 +23,29 @@
 
 {% block content %}
 <div class="row">
+<div class="col">
+<div class="row">
     <div class="card w-25 p-2 bg-purple text-center">
         <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
     </div>
 </div>
+
 {% for node in nodes %}
 <div class="row">
     <div class="{{node.1}}">
         <div class="bs-callout bs-callout-{{node.2}}">
             <div class="row" id="rols">
                 <div class="row">
+                    <div class="col-11">
                     <h4 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.node.pk}}" class="w-100"
                         role="button" aria-expanded="false" aria-controls="collapse{{node.0.node.pk}}"
                     >{{node.0.node}}</h4>
+                    </div>
+                    <div class="col-1">
+                        <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.node.pk}}" {% if not forloop0 %} selected {% endif %}/>
+                    </div>
                 </div>
                 <div id="collapse{{node.0.node.pk}}" class="collapse">
-                    <div class="role table-responsive">
-                        {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
-                    </div>
                     <div class="row">
                         <ul>
                             {% if perms.auth_and_perms.add_rol %}
@@ -76,7 +84,9 @@
 
             <div class="float-end">
                 <ul class="list-group list-group-horizontal">
-
+                    <div class="role ">
+                        {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
+                    </div>
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
                         <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.node.pk %}"  title="{% trans 'Log List' %}">
@@ -117,6 +127,18 @@
 
 {% endfor %}
 
+</div>
+    <div class="col">
+        <div class="container" >
+            <div class="row">
+                {{labform.as_horizontal}}
+            </div>
+            <div class="role table-responsive">
+            <table   id="userpermelement" class="compact nowrap w-100"> </table>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -246,7 +268,36 @@
 
 {% block js %}
 {{block.super}}
-
+<script>
+    prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}"
+    datatableelement=createDataTable('#userpermelement', prolabor_api_url, {
+     columns: [
+            {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
+            {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
+            {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
+          ],
+     ajax: {
+        url: prolabor_api_url,
+        type: 'GET',
+        data: function(dataTableParams, settings) {
+            var data= formatDataTableParams(dataTableParams, settings);
+            data['organization'] = $('.nodeorg:checked').val();
+            data['laboratory'] = $('#id_laboratories').val();
+            return data;
+        }
+    }
+    }, addfilter=false);
+</script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
+<script>
+    $('input[name="nodes"]').on('ifChecked', function(e){
+            $("#id_laboratories").val(null).trigger('change');
+            datatableelement.ajax.reload();
 
+
+    });
+    $('#id_laboratories').on('select2:select', function (e) {
+        datatableelement.ajax.reload();
+    });
+</script>
 {% endblock%}

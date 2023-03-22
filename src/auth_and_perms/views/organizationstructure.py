@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from django.conf import settings
-from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm
+from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, LaboratoryOfOrganizationForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
@@ -81,7 +81,8 @@ def organization_manage_view(request):
              'adduserform': AddUserForm(),
              'addrolform': AddProfileRolForm(),
              'addorgform': AddOrganizationForm(),
-             'relorgform': RelOrganizationForm()
+             'relorgform': RelOrganizationForm(),
+             'labform': LaboratoryOfOrganizationForm()
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 

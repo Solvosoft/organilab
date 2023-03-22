@@ -1,12 +1,14 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPTokenForm
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets.selects import AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 from djgentelella.widgets import core as genwidgets
 from auth_and_perms.models import Rol
+from laboratory.models import Laboratory, OrganizationStructure
 
 
 class AddUserForm(GTForm, forms.Form):
@@ -87,3 +89,16 @@ class AddProfileDigitalSignatureForm(GTForm):
     field_order = [
         'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'ds_transaction'
     ]
+
+class LaboratoryOfOrganizationForm(GTForm):
+    laboratories = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all(),
+                                                  widget=AutocompleteSelect(
+                                                    'relorgbase', attrs={
+                                                     'data-s2filter-organization': '.nodeorg:checked'})
+                                                  )
+
+
+# no visible
+class LaboratoryAndOrganizationForm(forms.Form):
+    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
+    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
