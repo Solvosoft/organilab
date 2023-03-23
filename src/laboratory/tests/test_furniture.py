@@ -99,11 +99,8 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
 class ShelfViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelf_list(self):
-        data = {
-            'furniture': 2
-        }
-        url = reverse("laboratory:list_shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = reverse("laboratory:list_shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "furniture_pk": 2})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sexto Estante", json.loads(response.content)['content']['inner-fragments']['#shelf'])
 
@@ -217,10 +214,14 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(total+1, ShelfObject.objects.all().count())
 
     def test_delete_shelfobject(self):
-        shelfobject = ShelfObject.objects.last()
+        shelfobject = ShelfObject.objects.get(pk=3)
         pk_check = shelfobject.pk
         url = reverse("laboratory:shelfobject_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelfobject.pk})
-        response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        data = {
+            'row': shelfobject.shelf.row(),
+            'col': shelfobject.shelf.col(),
+        }
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(pk_check, list(ShelfObject.objects.values_list("pk", flat=True)))
 

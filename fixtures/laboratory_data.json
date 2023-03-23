@@ -1192,6 +1192,20 @@
     }
   },
   {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "quantity": 2.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
     "model": "laboratory.object",
     "pk": 3,
     "fields": {
