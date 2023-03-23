@@ -47,20 +47,24 @@ function function_name_furniture(argument) {
 	});
 }
 
-function function_name_shelf(argument) {
-		ajax({
-			url : document.shelf_list,
-			data : {
-				"furniture" : argument
-			},
-			cache : false,
-			type : "GET",
-			success : function processResponseshelf(dat) {
-				$('#shelf').html(dat);
-			}
-		});
+function replaceLast(obj, search, replace) {
+    return obj.replace(new RegExp(search+"([^"+search+"]*)$"), replace+"");
+}
 
-	}
+function function_name_shelf(argument) {
+    var url = document.shelf_list;
+    url = replaceLast(url, '0', argument);
+
+    ajax({
+        url : url,
+        cache : false,
+        type : "GET",
+        success : function processResponseshelf(dat) {
+            $('#shelf').html(dat);
+        }
+    });
+
+}
 	
 function function_name_shelfobject(argument) {
 		ajax({

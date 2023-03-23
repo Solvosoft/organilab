@@ -508,6 +508,19 @@ class ShelfObjectListForm(GTForm, forms.Form):
     id = forms.IntegerField(required=True)
 
 
+#VALIDATE DATA FORMS
 class FurnitureLabRoomForm(forms.Form):
     labroom = forms.IntegerField(required=True)
+
+class InitialShelfObjectForm(forms.Form):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+    shelf = forms.IntegerField(widget=forms.HiddenInput)
+
+class ValidateShelfForm(forms.Form):
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+
+class ValidateShelfObjectForm(forms.Form):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
 
