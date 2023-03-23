@@ -6,7 +6,16 @@ import json
 
 class FurnitureViewTest(BaseLaboratorySetUpTest):
 
-    def test_get_furniture_list(self):
+    def test_get_furniture_list_filter_by_labroom(self):
+        url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        data = {
+            "labroom": 2
+        }
+        response = self.client.get(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Mueble 5", json.loads(response.content)['content']['inner-fragments']['#furnitures'])
+
+    def test_get_furniture_list_filter_by_lab(self):
         url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)

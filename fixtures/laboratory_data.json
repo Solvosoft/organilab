@@ -1015,6 +1015,87 @@
     }
   },
   {
+    "model": "laboratory.furniture",
+    "pk": 4,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 4",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[10],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 5,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 5",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[11]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 6,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 6",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[12],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 10,
+    "fields": {
+      "furniture": 4,
+      "name": "Décimo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 11,
+    "fields": {
+      "furniture": 5,
+      "name": "Estante 11",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 12,
+    "fields": {
+      "furniture": 6,
+      "name": "Estante 12",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
     "model": "reservations_management.reservations",
     "pk": 1,
     "fields": {
