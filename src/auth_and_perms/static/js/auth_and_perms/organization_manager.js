@@ -1,5 +1,6 @@
 
 datatableuserpermelement=createDataTable('#userpermelement', prolabor_api_url, {
+language: {"url": datatables_lang },
  columns: [
         {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
         {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
@@ -19,6 +20,7 @@ datatableuserpermelement=createDataTable('#userpermelement', prolabor_api_url, {
 
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
+language: {"url": datatables_lang },
  columns: [
         {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
         {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
