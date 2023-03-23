@@ -507,3 +507,7 @@ class ShelfObjectListForm(GTForm, forms.Form):
     lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
     id = forms.IntegerField(required=True)
 
+
+class FurnitureLabRoomForm(forms.Form):
+    labroom = forms.IntegerField(required=True)
+

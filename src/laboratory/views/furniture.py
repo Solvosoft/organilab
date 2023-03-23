@@ -6,7 +6,7 @@ from django.urls import reverse
 from djgentelella.widgets import core as genwidgets
 
 from presentation.utils import build_qr_instance
-from ..forms import FurnitureForm, CatalogForm
+from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
 from ..utils import organilab_logentry
 
 '''
@@ -154,14 +154,15 @@ class FurnitureDelete(DeleteView):
 
 
 @login_required
-def list_furniture_render(request, lab_pk=None, org_pk=None):
-    var = request.GET.get('namelaboratoryRoom', '0')
+def list_furniture_render(request, org_pk, lab_pk):
+    furnitures = Furniture.objects.filter(labroom__laboratory=lab_pk)
 
-    if var:
-        furnitures = Furniture.objects.filter(
-            labroom__laboratory=lab_pk, labroom=var)
-    else:
-        furnitures = Furniture.objects.filter(labroom__laboratory=lab_pk)
+    if request.method == "GET":
+        form = FurnitureLabRoomForm(request.GET)
+        if form.is_valid():
+            furnitures = Furniture.objects.filter(
+                labroom__laboratory=lab_pk, labroom=form.cleaned_data['labroom'])
+
     return render_to_string(
         'laboratory/furniture_list.html',
         context={
@@ -175,10 +176,10 @@ def list_furniture_render(request, lab_pk=None, org_pk=None):
 # Here we need to discuss if it is necesary to look for lab_pk in ajax requests
 @login_required
 @ajax
-def list_furniture(request, *args, **kwargs):
+def list_furniture(request, org_pk, lab_pk):
     return {
         'inner-fragments': {
-            '#furnitures': list_furniture_render(request, kwargs['lab_pk'], kwargs['org_pk']),
+            '#furnitures': list_furniture_render(request, org_pk, lab_pk),
             '.jsmessage': "<script>see_prototype_shelf_field();</script>"
 
         },
