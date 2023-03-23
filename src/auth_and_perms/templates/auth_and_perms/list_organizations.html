@@ -25,7 +25,7 @@
 <div class="row">
 <div class="col">
 <div class="row">
-    <div class="card w-25 p-2 bg-purple text-center">
+    <div class="text-purple-400 text-center">
         <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
     </div>
 </div>
@@ -37,9 +37,9 @@
             <div class="row" id="rols">
                 <div class="row">
                     <div class="col-11">
-                    <h4 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.node.pk}}" class="w-100"
+                    <h6 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.node.pk}}" class="w-100"
                         role="button" aria-expanded="false" aria-controls="collapse{{node.0.node.pk}}"
-                    >{{node.0.node}}</h4>
+                    >{{node.0.node}}</h6>
                     </div>
                     <div class="col-1">
                         <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.node.pk}}" {% if not forloop0 %} selected {% endif %}/>
@@ -129,7 +129,22 @@
 
 </div>
     <div class="col">
+
         <div class="container" >
+
+            <ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" id="navbylabs"   data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab" aria-controls="bylabs" aria-selected="true">{% trans 'By laboratory' %}</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="navbyorgs"  data-bs-toggle="tab" data-bs-target="#byorgs" type="button" role="tab" aria-controls="byorgs" aria-selected="true">{% trans 'By organization' %}</a>
+  </li>
+
+</ul>
+
+
+<div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
             <h5 class="text-center mb-5">{% trans 'Rol by laboratory' %}
                 <br><small class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</small></h5>
             <div class="row">
@@ -138,14 +153,18 @@
             <div class="role table-responsive">
             <table   id="userpermelement" class="compact nowrap w-100"> </table>
             </div>
-            <hr class="m-5">
+        </div>
+
+        <div class="tab-pane fade" id="byorgs" role="tabpanel" aria-labelledby="navbyorgs">
             <h5 class="text-center mb-5 title">{% trans 'Rol in all organization' %}
                 <br><small class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</small></h5>
             <div class="role table-responsive">
             <table   id="orpermelement" class="compact nowrap w-100"> </table>
             </div>
         </div>
+</div>
     </div>
+</div>
 </div>
 <div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -193,7 +212,6 @@
         </div>
     </div>
 </div>
-
 <div id="addOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="OrganizationmodalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -215,7 +233,6 @@
         </div>
     </div>
 </div>
-
 <div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -239,8 +256,6 @@
         </div>
     </div>
 </div>
-
-
 <div id="orgbyusermodal" class="modal fade" tabindex="-1" aria-labelledby="orgbyusermodalLabel"
      aria-hidden="true">
     <div class="modal-dialog">

@@ -301,7 +301,6 @@ class UserInOrganization(mixins.ListModelMixin,
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
-
 class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     http_method_names = ['delete']
     serializer_class = DeleteUserFromContenttypeSerializer

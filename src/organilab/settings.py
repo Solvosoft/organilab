@@ -229,9 +229,6 @@ LOCATION_FIELD = {
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2
-DATATABLES_SUPPORT_LANGUAGES = {
-    'es': '//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json'
-}
 
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 
