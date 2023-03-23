@@ -182,3 +182,7 @@ img {
 .furnituredescriptor {
     display: inline;
 }
+
+.dataTables_wrapper div:last-child {
+    margin-top: 2em;
+}
