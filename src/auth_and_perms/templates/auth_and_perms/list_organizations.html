@@ -83,7 +83,7 @@
             </div>
 
             <div class="float-end">
-                <ul class="list-group list-group-horizontal">
+                <ul class="list-group  list-group-horizontal-sm">
                     <div class="role ">
                         {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
                     </div>
@@ -143,12 +143,17 @@
 </ul>
 
 
-<div class="tab-content" id="myTabContent">
+<div class="tab-content mt-3" id="myTabContent">
         <div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
             <h5 class="text-center mb-5">{% trans 'Rol by laboratory' %}
                 <br><small class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</small></h5>
             <div class="row">
                 {{labform.as_horizontal}}
+            </div>
+            <div class="row">
+                <button id="relateusertolab" type="button" class="btn btn-sm text-purple-400">
+                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                    {% trans 'Relate user with this laboratory'%}</button>
             </div>
             <div class="role table-responsive">
             <table   id="userpermelement" class="compact nowrap w-100"> </table>
