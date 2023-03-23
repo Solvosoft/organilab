@@ -32,7 +32,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm
+    ShelfObjectListForm, ValidateShelfForm, InitialShelfObjectForm, ValidateShelfObjectForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -233,7 +233,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab, self.shelf.furniture.pk))
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -266,22 +266,29 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
-        shelf=self.request.GET.get('shelf')
-        kwargs['initial']['shelf'] = shelf
-        kwargs['initial']['row'] = self.request.GET.get('row')
-        kwargs['initial']['col'] = self.request.GET.get('col')
+        if self.request.method == "POST":
+            form = InitialShelfObjectForm(self.request.POST)
+        else:
+            form = InitialShelfObjectForm(self.request.GET)
+        if form.is_valid():
+            shelf = form.cleaned_data['shelf']
+            kwargs['initial']['shelf'] = shelf
+            kwargs['initial']['row'] = form.cleaned_data['row']
+            kwargs['initial']['col'] = form.cleaned_data['col']
+
         kwargs['org_pk'] = self.org
         return kwargs
 
     def get_form_class(self):
-        shelf=None
-        if self.request.method == 'GET' and 'shelf' in self.request.GET:
-            shelf = get_object_or_404(Shelf, pk=int(self.request.GET['shelf']))
+        if self.request.method == 'GET':
+            form = ValidateShelfForm(self.request.GET)
         else:
-            shelf = get_object_or_404(Shelf, pk=int(self.request.POST['shelf']))
+            form = ValidateShelfForm(self.request.POST)
 
-        if shelf.discard:
-            return ShelfObjectRefuseForm
+        if form.is_valid():
+            self.shelf = form.cleaned_data['shelf']
+            if self.shelf.discard:
+                return ShelfObjectRefuseForm
         return self.form_class
 
     def form_invalid(self, form):
@@ -292,6 +299,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
                 '#shelfobjectCreate': response.content
             }
         }
+
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -299,7 +307,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab, self.object.shelf.furniture.pk))
 
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
@@ -320,9 +328,16 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = UpdateView.get_form_kwargs(self)
-        kwargs['initial']['shelf'] = self.request.GET.get('shelf')
-        kwargs['initial']['row'] = self.request.GET.get('row')
-        kwargs['initial']['col'] = self.request.GET.get('col')
+
+        if self.request.method == "POST":
+            form = InitialShelfObjectForm(self.request.POST)
+        else:
+            form = InitialShelfObjectForm(self.request.GET)
+        if form.is_valid():
+            shelf = form.cleaned_data['shelf']
+            kwargs['initial']['shelf'] = shelf
+            kwargs['initial']['row'] = form.cleaned_data['row']
+            kwargs['initial']['col'] = form.cleaned_data['col']
         return kwargs
 
 
@@ -381,7 +396,7 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab))
+        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab, self.object.shelf.furniture.pk))
 
     def get_context_data(self, **kwargs):
         context = DeleteView.get_context_data(self, **kwargs)
@@ -390,29 +405,39 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return context
 
     def get(self, request, *args, **kwargs):
-        self.row = request.GET.get("row")
-        self.col = request.GET.get("col")
+        if request.method == "GET":
+            form = ValidateShelfObjectForm(request.GET)
+            if form.is_valid():
+                self.row = form.cleaned_data['row']
+                self.col = form.cleaned_data['col']
         return DeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        DeleteView.post(self, request, *args, **kwargs)
-        self.row = request.POST.get("row")
-        self.col = request.POST.get("col")
-
-        return {
+        data = {
             'inner-fragments': {
-                '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
-                    request, row=self.row, col=self.col, shelf=self.object.shelf.pk, org_pk=self.org, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
-            },
+            }
         }
+        DeleteView.post(self, request, *args, **kwargs)
+
+        if request.method == "POST":
+            form = ValidateShelfObjectForm(request.POST)
+
+            if form.is_valid():
+                self.row = form.cleaned_data['row']
+                self.col = form.cleaned_data['col']
+
+            data['inner-fragments'].update({
+                    '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
+                        request, row=self.row, col=self.col, shelf=self.object.shelf.pk, org_pk=self.org, lab_pk=self.lab),
+            })
+        return data
 
     def form_valid(self, form):
         success_url = self.get_success_url()
         utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
         self.object.delete()
         return HttpResponseRedirect(success_url)
-
 
 
 @method_decorator(permission_required('laboratory.view_shelfobject'), name='dispatch')

@@ -7,58 +7,50 @@ Created on 26/12/2016
 
 from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.db.models.query import QuerySet
-from django.http import JsonResponse
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
+from django_ajax.decorators import ajax
+from django_ajax.mixin import AJAXMixin
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import wysiwyg
-from django_ajax.decorators import ajax
-from django_ajax.mixin import AJAXMixin
-from laboratory.models import Furniture, Shelf, ShelfObject
+
+from laboratory.models import Furniture, Shelf
 from laboratory.shelf_utils import get_dataconfig
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
-import re
 
-def get_shelves(furniture):
-    if type(furniture) == QuerySet:
-        furniture = furniture[0]
+
+def list_shelf_render(request, org_pk, lab_pk, furniture_pk):
+    shelf_list = []
+    furniture = get_object_or_404(Furniture, pk=furniture_pk)
 
     if furniture.dataconfig:
-        return get_dataconfig(furniture.dataconfig)
-
-def list_shelf_render(request, org_pk, lab_pk):
-    var = request.GET.get('furniture', '0')
-    furniture = Furniture.objects.filter(pk=var)
-    shelf = get_shelves(furniture)
+        shelf_list = get_dataconfig(furniture.dataconfig)
 
     return render_to_string(
         'laboratory/shelf_list.html',
         context={
-            'object_list': shelf,
+            'object_list': shelf_list,
             'laboratory': lab_pk,
             'request': request,
-            'furniture': furniture[0],
+            'furniture': furniture,
             'org_pk':org_pk
         }, request=request)
 
 
 @permission_required('laboratory.view_shelf')
 @ajax
-def list_shelf(request, org_pk, lab_pk):
+def list_shelf(request, org_pk, lab_pk, furniture_pk):
     x =  {
         'inner-fragments': {
-            '#shelf': list_shelf_render(request, org_pk, lab_pk)
+            '#shelf': list_shelf_render(request, org_pk, lab_pk, furniture_pk)
 
         },
     }
