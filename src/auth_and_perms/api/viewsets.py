@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -10,11 +10,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
-    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer
-from auth_and_perms.forms import LaboratoryAndOrganizationForm
+    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer
+from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
-from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.models import OrganizationStructure, Laboratory, OrganizationUserManagement
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
@@ -235,15 +235,15 @@ class UserLaboratoryOrganization(mixins.ListModelMixin,
     def get_queryset(self):
         profiles = get_profile_by_organization(self.organization.pk)
         return profiles.filter(
-            profilepermission__content_type__app_label=self.laboratory._meta.app_label,
-            profilepermission__content_type__model=self.laboratory._meta.model_name,
-            profilepermission__object_id=self.laboratory.pk)
+            profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
+            profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
+            profilepermission__object_id=self.contenttypeobj.pk)
 
     def list(self, request, *args, **kwargs):
         form = LaboratoryAndOrganizationForm(request.GET)
         if form.is_valid():
             self.organization = form.cleaned_data['organization']
-            self.laboratory = form.cleaned_data['laboratory']
+            self.contenttypeobj = form.cleaned_data['laboratory']
 
             queryset = self.get_queryset()
             total = queryset.count()
@@ -257,3 +257,79 @@ class UserLaboratoryOrganization(mixins.ListModelMixin,
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
+
+
+class UserInOrganization(mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileRolDataTableSerializer
+    queryset = Profile.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['user__first_name',  'user__last_name']  # for the global search
+    filterset_class = ProfileFilterSet
+    ordering_fields = ['user', ]
+    ordering = ('-user',)  # default order
+
+    def get_queryset(self):
+        orgum=OrganizationUserManagement.objects.filter(organization=self.organization)
+
+        profiles = self.queryset.filter(user__in=orgum.values_list('users', flat=True))
+        return profiles.filter(
+            profilepermission__content_type__app_label=self.organization._meta.app_label,
+            profilepermission__content_type__model=self.organization._meta.model_name,
+            profilepermission__object_id=self.organization.pk)
+
+    def list(self, request, *args, **kwargs):
+        form = OrganizationForViewsetForm(request.GET)
+        if form.is_valid():
+            self.organization = form.cleaned_data['organization']
+            # serializer assume that object laboratory is a contenttype element
+            self.contenttypeobj = self.organization
+
+            queryset = self.get_queryset()
+            total = queryset.count()
+            queryset = self.filter_queryset(queryset)
+            data = self.paginate_queryset(queryset)
+        else:
+            data = Profile.objects.none()
+            queryset = data
+            total = 0
+        response = {'data': data, 'recordsTotal': total,
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+
+class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    http_method_names = ['delete']
+    serializer_class = DeleteUserFromContenttypeSerializer
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            if serializer.data['disable_user']:
+                user=User.objects.filter(profile=serializer.data['profile']).first()
+                if user:
+                    user.is_active=False
+                    user.save()
+            ProfilePermission.objects.filter(
+                profile_id=serializer.data['profile'],
+                content_type__app_label=serializer.data['app_label'],
+                content_type__model=serializer.data['model'],
+                object_id = serializer.data['object_id'],
+            ).delete()
+            if 'organizationstructure' == serializer.data['model']:
+                orgum = OrganizationUserManagement.objects.filter(organization=serializer.data['organization']).first()
+                if orgum:
+                    profile = orgum.users.filter(profile=serializer.data['profile']).first()
+                    if profile:
+                        orgum.users.remove(profile)  # only remove relation
+
+        return Response({'result': 'ok'})
+
+    def list(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)

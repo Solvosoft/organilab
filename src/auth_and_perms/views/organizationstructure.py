@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -53,29 +54,31 @@ def getNodeInformation(node):
         'labs': labs
     }
 
-def getTree(node, structure, user, pks, level=0):
+def getTree(node, structure, user, pks, level=0, parents=[]):
 
     klss=list(getLevelClass(level))
     pks.append(node.pk)
     klss.insert(0, getNodeInformation(node))
     structure.append(klss)
 
-    if node.children.exists():
-        for child in node.descendants().filter(organizationusermanagement__users=user):
+    if node.children.all().exists():
+        for child in node.descendants().filter(
+                Q(organizationusermanagement__users=user)|Q(pk__in=parents)):
             if child.pk not in pks:
-                getTree(child, structure, user, pks, level=level+1)
+                getTree(child, structure, user, pks, level=level+1, parents=parents)
 
 
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
     query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
-    parents=list(query_list)
+    parents=list(query_list.order_by('-parent'))
+    parents_pks=set(query_list.values_list('pk', flat=True))
     nodes = []
     pks=[]
     for node in parents:
         if node.pk not in pks:
-            getTree(node, nodes,request.user,pks, level=0)
+            getTree(node, nodes,request.user,pks, level=0, parents=parents_pks)
 
     context={'nodes': nodes,
              'adduserform': AddUserForm(),
@@ -279,6 +282,7 @@ class AddUser(CreateView):
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
+
         send_email(self.request, user)
         organilab_logentry(user, user, ADDITION, 'user', changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
                            relobj=self.organization)

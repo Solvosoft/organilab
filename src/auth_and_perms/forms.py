@@ -102,3 +102,7 @@ class LaboratoryOfOrganizationForm(GTForm):
 class LaboratoryAndOrganizationForm(forms.Form):
     laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
     organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+
+
+class OrganizationForViewsetForm(forms.Form):
+    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())

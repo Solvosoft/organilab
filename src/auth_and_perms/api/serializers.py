@@ -75,18 +75,32 @@ class ProfileSerializer(serializers.ModelSerializer):
     action = serializers.SerializerMethodField()
 
     def get_rols(self, obj):
-        rol= get_roles(obj.pk, self.context['view'].laboratory, self.context['view'].organization)
+        contenttypeobj=self.context['view'].contenttypeobj
+        org=self.context['view'].organization
+        rol= get_roles(obj.pk, contenttypeobj, org)
+        if not rol:
+            datatext = """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
+                org.pk, obj.pk, contenttypeobj._meta.app_label, contenttypeobj._meta.model_name, contenttypeobj.pk
+            )
 
+            rol="""
+            <i %s class="fa fa-user-md" onclick="newuserrol(%s)" id="profile_%s" aria-hidden="true"></i>
+            """%(datatext, obj.pk, obj.pk )
         return rol
 
     def get_user(self, obj):
         return str(obj)
 
     def get_action(self, obj):
+        contenttypeobj = self.context['view'].contenttypeobj
+        org = self.context['view'].organization
+        datatext = """ id="ndel_%s" data-org="%s" data-profile="%s" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
+            obj.pk, str(contenttypeobj), str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name, contenttypeobj.pk
+        )
+
         return """
-        <i class="fa fa-user-md"   onclick="modifyuserrol(%s)" aria-hidden="true"></i>
-        <i class="fa fa-trash mr-2" onclick="deleteuserlab(%s)" aria-hidden="true"></i>
-        """%(obj.pk, obj.pk)
+        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab(%s, %s)" aria-hidden="true"></i>
+        """%(datatext, obj.pk, org.pk)
 
     class Meta:
         model = Profile
@@ -98,3 +112,12 @@ class ProfileRolDataTableSerializer(serializers.Serializer):
         draw = serializers.IntegerField(required=True)
         recordsFiltered = serializers.IntegerField(required=True)
         recordsTotal = serializers.IntegerField(required=True)
+
+
+class DeleteUserFromContenttypeSerializer(serializers.Serializer):
+        profile = serializers.PrimaryKeyRelatedField(many=False, queryset=Profile.objects.all())
+        app_label = serializers.CharField()
+        model = serializers.CharField()
+        object_id = serializers.IntegerField()
+        organization = serializers.PrimaryKeyRelatedField(many=False, queryset=OrganizationStructure.objects.all())
+        disable_user = serializers.BooleanField(default=False)
