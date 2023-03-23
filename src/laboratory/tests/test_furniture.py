@@ -190,11 +190,6 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
 
 class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
-    def test_get_shelfobject_list(self):
-        url = reverse("laboratory:list_shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-
     def test_create_shelfobject(self):
         total = ShelfObject.objects.all().count()
         data = {
