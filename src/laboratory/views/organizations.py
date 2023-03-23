@@ -19,7 +19,8 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, ProfilePermission
+from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, UserOrganization
 from .djgeneric import ListView
@@ -138,12 +139,10 @@ class OrganizationCreateView(CreateView):
             self.object.position=self.object.parent.position+1
             self.object.save()
 
-        orguserman=OrganizationUserManagement.objects.create(
-            organization=self.object
-        )
+        orguserman=OrganizationUserManagement.objects.create( organization=self.object)
         orguserman.users.add(self.request.user)
         UserOrganization.objects.create(organization=self.object, user=self.request.user)
-
+        set_rol_administrator_on_org(self.request.user.profile, self.object)
         organilab_logentry(self.request.user, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response
 

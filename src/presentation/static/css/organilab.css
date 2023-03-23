@@ -77,10 +77,10 @@ img {
 }
 
 .bs-callout {
- padding:1.25rem;
- margin-top:1.25rem;
+ padding:0.5rem;
+ margin-top:0.75rem;
  border:1px solid #e9ecef;
- border-left-width:.25rem;
+ border-left-width:.15rem;
  border-radius:.25rem;
 }
 .bs-callout h4 {

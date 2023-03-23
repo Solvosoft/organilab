@@ -1,4 +1,50 @@
 
+datatableuserpermelement=createDataTable('#userpermelement', prolabor_api_url, {
+ columns: [
+        {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
+        {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
+        {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
+      ],
+ ajax: {
+    url: prolabor_api_url,
+    type: 'GET',
+    data: function(dataTableParams, settings) {
+        var data= formatDataTableParams(dataTableParams, settings);
+        data['organization'] = $('.nodeorg:checked').val();
+        data['laboratory'] = $('#id_laboratories').val();
+        return data;
+    }
+}
+}, addfilter=false);
+
+
+datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
+ columns: [
+        {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
+        {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
+        {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
+      ],
+ ajax: {
+    url: userinorg_api_url,
+    type: 'GET',
+    data: function(dataTableParams, settings) {
+        var data= formatDataTableParams(dataTableParams, settings);
+        data['organization'] = $('.nodeorg:checked').val();
+        return data;
+    }
+}
+}, addfilter=false);
+
+$('input[name="nodes"]').on('ifChecked', function(e){
+        $("#id_laboratories").val(null).trigger('change');
+        datatableuserpermelement.ajax.reload();
+        datatableorpermelement.ajax.reload();
+
+
+});
+$('#id_laboratories').on('select2:select', function (e) {
+    datatableuserpermelement.ajax.reload();
+});
 
 function add_rol_org(url, data){
 
@@ -18,7 +64,8 @@ function add_rol_org(url, data){
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
       success: function( data ) {
-           window.location.reload();
+          datatableuserpermelement.ajax.reload();
+          datatableorpermelement.ajax.reload();
       },
       error: function( jqXHR, textStatus, errorThrown ){
         Swal.fire({
@@ -59,13 +106,56 @@ document.contextroletable={
     user: null
 }
 
-function deleteuserlab(elementid){
-console.log("bingoooo deleteuserlab")
-}
-function modifyuserrol(elementid){
-    console.log("bingoooo modifyuserrol")
+function reload_datatables(){
+           datatableorpermelement.ajax.reload();
+           datatableuserpermelement.ajax.reload();
 }
 
+function deleteuserlab(elementid, contentTypeobj){
+    var element=$("#ndel_"+elementid)[0]
+    Swal.fire(
+    {
+        showCancelButton: true,
+        title:  gettext('Are you sure you want to delete?'),
+        icon:  'question',
+        html: element.dataset.profile + gettext(' from ') + element.dataset.org,
+        confirmButtonText: gettext('Yes, delete it'),
+        input: 'checkbox',
+        inputValue: 0,
+        inputPlaceholder: gettext('Also disable user login on platform'),
+    }
+    ).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+          $.ajax({
+              type: "DELETE",
+              url: delete_rol_profile_url,
+              data: {'profile': elementid,
+                      'app_label': element.dataset.appname,
+                      'model': element.dataset.model,
+                      'object_id': element.dataset.objectid,
+                      'organization': contentTypeobj,
+                      'disable_user': result.value},
+             // contentType: 'application/json',
+              headers: {'X-CSRFToken': getCookie('csrftoken')},
+              success: reload_datatables,
+            //  dataType: 'json'
+            });
+          }
+    })
+}
+
+function newuserrol(profile){
+    var element=$("#profile_"+profile)[0]
+
+    document.contextroletable.as_conttentype=false;
+    document.contextroletable.as_user=false;
+    document.contextroletable.user=null;
+    document.contextroletable.as_role=true;
+    document.contextroletable.contenttypeobj=Object.assign({}, element.dataset);
+    document.contextroletable.profile=profile;
+    $("#modal"+element.dataset.org).modal('show');
+}
 function applyasrole(elementid, profile){
     var element=$("#rol_"+elementid)[0]
 
@@ -78,6 +168,7 @@ function applyasrole(elementid, profile){
     $("#modal"+element.dataset.org).modal('show');
 }
 
+
 //$(".applyasrole").on('click', applyasrole);
 $(".applybycontenttype").on('click', function(e){
     document.contextroletable.as_conttentype=true;
@@ -88,6 +179,9 @@ $(".applybycontenttype").on('click', function(e){
     document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
     $("#modal"+e.target.dataset.org).modal('show');
 });
+
+
+
 $(".applybyuser").on('click', function(e){
     document.contextroletable.as_role=false;
     document.contextroletable.as_conttentype=false;
@@ -224,6 +318,7 @@ $(".btnsaverole").on('click', function(e){
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
       success: function( data ) {
+           datatableorpermelement.ajax.reload();
            datatableuserpermelement.ajax.reload();
            $(".modal").modal('hide');
       },
@@ -325,15 +420,7 @@ $("#btn_copy_rol").on('click', function(e){
     }
 });
 
-/**
-$('.btn-toggle').click(function() {
-    $(this).find('.btn').toggleClass('active');
-  if ($(this).find('.btn-primary').length>0) {
-      $(this).find('.btn').toggleClass('btn-primary');
-    }
-  $(this).find('.btn').toggleClass('btn-default');
- });
-**/
+
 
 $(document).ready(function(){
     $("#copy_rol_container").hide();

@@ -68,6 +68,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     organization=None
+
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         return self.list(request, pk, **kwargs)
@@ -162,10 +163,11 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     organization = None
 
     def get_queryset(self):
-        labs = OrganizationStructureRelations.objects.filter(
+        labs = list(OrganizationStructureRelations.objects.filter(
             organization=self.organization.pk,
             content_type__app_label='laboratory', content_type__model='laboratory'
-        ).values_list('object_id', flat=True)
+        ).values_list('object_id', flat=True))
+        labs += list(self.organization.laboratory_set.all().values_list('pk', flat=True))
         return Laboratory.objects.filter(pk__in=labs)
 
     def retrieve(self, request, pk, **kwargs):

@@ -277,57 +277,9 @@
 {% block js %}
 {{block.super}}
 <script>
-    prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}"
-    datatableuserpermelement=createDataTable('#userpermelement', prolabor_api_url, {
-     columns: [
-            {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
-            {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
-            {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
-          ],
-     ajax: {
-        url: prolabor_api_url,
-        type: 'GET',
-        data: function(dataTableParams, settings) {
-            var data= formatDataTableParams(dataTableParams, settings);
-            data['organization'] = $('.nodeorg:checked').val();
-            data['laboratory'] = $('#id_laboratories').val();
-            return data;
-        }
-    }
-    }, addfilter=false);
-
-
-    datatableorpermelement=createDataTable('#orpermelement', prolabor_api_url, {
-     columns: [
-            {data: "user", name: "user", title: gettext("Name"), type: "string", visible: true},
-            {data: "rols", name: "rols", title: gettext("Rols"), type: "string", visible: true},
-            {data: "action", name: "action", title: gettext("Actions"), type: "string", visible: true},
-          ],
-     ajax: {
-        url: prolabor_api_url,
-        type: 'GET',
-        data: function(dataTableParams, settings) {
-            var data= formatDataTableParams(dataTableParams, settings);
-            data['organization'] = $('.nodeorg:checked').val();
-            data['laboratory'] = $('#id_laboratories').val();
-            return data;
-        }
-    }
-    }, addfilter=false);
-
-
+prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
+userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
+delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
-<script>
-    $('input[name="nodes"]').on('ifChecked', function(e){
-            $("#id_laboratories").val(null).trigger('change');
-            datatableuserpermelement.ajax.reload();
-            datatableorpermelement.ajax.reload();
-
-
-    });
-    $('#id_laboratories').on('select2:select', function (e) {
-        datatableuserpermelement.ajax.reload();
-    });
-</script>
 {% endblock%}
