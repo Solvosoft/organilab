@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import re_path, path, include, reverse_lazy
+from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView
 from djgentelella.urls import urlpatterns as urls_djgentelela
 from djreservation import urls as djreservation_urls
@@ -29,11 +30,13 @@ from laboratory import urls as laboratory_urls
 from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
 from msds.urls import regulation_urlpath
+from presentation.templatetags.organilab_tags import get_organilab_version
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
 from sga import urls as sga_urls
 from derb import urls as derb_urls
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = urls_djgentelela + auth_urls + [
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
@@ -52,7 +55,6 @@ urlpatterns = urls_djgentelela + auth_urls + [
     re_path(r'^markitup/', include('markitup.urls')),
     path('admin/', admin.site.urls),
     path('async_notifications/', include('async_notifications.urls')),
-
 ]
 
 paypal_urls = [
@@ -67,9 +69,13 @@ urlpatterns += regulation_urlpath
 if settings.DEBUG:
     from django.conf.urls.static import static
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+        path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
+    ]
 else:
     urlpatterns += [
         re_path('^media/(?P<path>.*)', media_access, name='media'),
+        path("jsi18n/", cache_page(86400, key_prefix='jsi18n-%s' % get_organilab_version())(JavaScriptCatalog.as_view()), name="javascript-catalog")
     ]
 
 

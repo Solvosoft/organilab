@@ -8,29 +8,6 @@
     {% define_urlname_action 'riskzone_detail' %}
     {% define_urlname_action 'riskzone_update' %}
 {% endblock %}
-{% block extra_css %}
-{{block.super}}
-<style>
-    .btn-group {
-        float: right;
-    }
-    #btn_manage_obj{
-    	width:100px;
-    	float: right;
-    	margin-right: 0;
-    }
-    .page-header {
-    	padding: 15px;
-    }
-    .list-group {
-    	margin: 0px 16px;
-    }
-    #btnsearch {
-        height: 38px;
-        margin-right: 0;
-    }
-</style>
-{% endblock%}
 {% block content %}
   {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
@@ -41,15 +18,15 @@
 		<h3 class="heading-1"><span>{% trans 'Risk Zone Management'  %}</span></h3>
 	</div>
 </div>
-<div class="row">
+<div class="row mt-3">
     <div class="container-fluid">
         <form metod="get" action="">
             <div class="form-group row justify-content-end">
                 <div class="col-sm-9">
-                    <div class="input-group custom-search-form">
+                    <div class="input-group input-group-sm custom-search-form">
                         <input class="form-control input-group" name="q" value="{{q}}" placeholder="{% trans 'Search...' %}" type="text">
                         <span class="input-group-btn">
-                            <button id="btnsearch" type="submit" class="btn btn-sm btn-outline-secondary">
+                            <button id="btnsearch" type="submit" class="btn btn-md btn-outline-secondary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
@@ -58,26 +35,25 @@
             </div>
             {% if perm_add_riskzone %}
                 <div class="form-group row justify-content-end">
-                    <div class="col-sm-9">
-                        <a id="btn_manage_obj" class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:riskzone_create' org_pk %}">
+                    <div class="col-md-9">
+                        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:riskzone_create' org_pk %}">
                     <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
                     </div>
                 </div>
             {% endif %}
         </form>
-
-    </div>
-    <div class="row">
-      <ul class="list-group">
+        <div class="row">
+      <ul class="list-group list-group-vertical ms-1">
         {% for object in object_list %}
-          <li class="row list-group-item">
-            <div class="col-md-9 mb-2 ">
+          <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-9 mb-2">
                 <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
                 <a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
             </div>
 
-            <div class="col-md-3">
-                <div class="btn-group btn-group-sm" role="group">
+                <div class="col-md-3">
+                <div class="btn-group btn-group-sm float-end" role="group">
              {% if perm_change_riskzone %}
               <a class="btn btn-outline-warning"
                  href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}">
@@ -90,6 +66,7 @@
              {% endif %}
             </div>
             </div>
+              </div>
           </li>
         {% endfor %}
       </ul>
@@ -117,5 +94,7 @@
 
       {% endif %}
     </div>
+    </div>
+
 </div>
 {% endblock %}
