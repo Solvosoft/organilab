@@ -157,6 +157,7 @@ organization_urls = [
     path('organization/<int:pk>/update', OrganizationUpdateView.as_view(), name="update_organization"),
     path('profile/<int:pk>/info', ChangeUser.as_view(), name='profile'),
     path('profile/<int:pk>/password', password_change, name='password_change'),
+    path('profile/info/<int:org_pk>/<int:pk>', get_profile, name='profile_detail'),
     path('logentry/<int:org_pk>', get_logentry_from_organization, name='logentry_list'),
     path('reports/<int:org_pk>/', reports.report_index, name='reports'),
 ]
@@ -244,7 +245,6 @@ urlpatterns += organization_urls + [
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
-    path('profile/info/<org_pk>/<int:pk>', get_profile, name='profile_detail'),
 
 
 ]  + edit_objects
