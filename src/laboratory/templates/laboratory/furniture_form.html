@@ -120,6 +120,22 @@
       </div><!-- /.modal-dialog -->
     </div>
   </div>
+
+<div id="warningobjects" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Do you want to remove this shelfs?' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="wbody" class="overflow-auto" style="height:350px;"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger"  id="cancel_modal" data-bs-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i> No</button>
+          <button id="remove_shelf" type="button" class="btn btn-primary" ><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Yes'%}</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock%}
 
 {% block css %}
@@ -157,6 +173,7 @@
       yes:"{% trans 'Yes, delete it' %}",
       cancel:"{% trans 'Cancel' %}"
     };
+    const shelfs_url= "{% url 'laboratory:get_shelfs_list' %}";
   </script>
   <script src="{% static 'js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'laboratory/js/furniture_table.js' %}?v={% get_organilab_version %}"></script>

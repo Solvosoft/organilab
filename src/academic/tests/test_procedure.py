@@ -137,7 +137,7 @@ class AcademicTest(TestCase):
         response = self.client.post(reverse('academic:add_steps_wrapper', kwargs=url), follow=True)
         step=ProcedureStep.objects.filter(procedure=self.procedure).latest('pk')
         self.assertEqual(response.status_code,200)
-        self.assertEqual(step.__str__(),'Paso sin título')
+        self.assertEqual(step.__str__(), 'No titled step')
         self.assertNotEquals(step.pk, early_step.pk)
 
     def test_add_step(self):
