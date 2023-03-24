@@ -177,7 +177,7 @@ class SGAAcademicTest(TestCase):
         }
 
         response_pos = self.client.post(reverse('academic:add_prudence_advice', kwargs=self.url_attr), data=data, follow=True)
-        self.assertFormError(response_pos,'form','name','Este campo es requerido.')
+        self.assertFormError(response_pos,'form','name', 'This field is required.')
         self.assertTrue("2158" != PrudenceAdvice.objects.last().code)
 
     def test_update_danger_indications(self):

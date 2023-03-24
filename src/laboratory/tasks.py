@@ -1,9 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
 from celery import Celery
-from django.utils import timezone
-
-from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod
+import re
+from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod, Furniture
 from async_notifications.utils import send_email_from_template
 from datetime import date
 from .limit_shelfobject import send_email_limit_objs
@@ -65,3 +64,10 @@ def create_informs_based_on_period():
     informschedulerquery = InformScheduler.objects.filter(active=True)
     for informscheduler in informschedulerquery:
         create_informsperiods(informscheduler)
+
+@app.task()
+def remove_shelf_not_furniture():
+    furnitures = Furniture.objects.all()
+    for furniture in furnitures:
+        obj_pks= re.findall(r'\d+', furniture.dataconfig)
+        furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()

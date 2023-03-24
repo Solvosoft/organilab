@@ -16,6 +16,7 @@ class NotInTestingFilter(Filter):
         return not settings.TESTING_MODE
 
 
+LANGUAGE_CODE='en'
 
 
 LOGGING = {

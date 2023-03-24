@@ -1,4 +1,10 @@
 # organilab
+
+[![Tests](https://github.com/Solvosoft/organilab/actions/workflows/tests.yml/badge.svg)](https://github.com/Solvosoft/organilab/actions/workflows/tests.yml)
+[![Documentation](https://img.shields.io/readthedocs/organilab?label=Read%20the%20Docs&logo=read%20the%20docs&logoColor=white)](http://organilab.readthedocs.io/en/latest/?badge=latest)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django)
+![Coverage](https://solvosoft.github.io/organilab/coverage.svg)
+
 Simple laboratory organizer with multiples features:
 
 - Laboratory builder and elegant presentation 
@@ -56,6 +62,10 @@ Compile translations
 	$ django-admin makemessages --all
 	$ django-admin compilemessages --locale es
 
+Compile JS translations
+
+    django-admin makemessages -d djangojs -l es --ignore *.min.js
+
 ## Run with composer in development environment
 
 Create your image organilab
@@ -75,22 +85,6 @@ Enter to the container:
 docker run -it organilab python manage.py runserver 0.0.0.0:8000
 ```
 And finally each change you make in your local files will restart the environment in order to apply them.
-
-
-## Cómo compilar el editor.
-
-1) Create in `assert` folder 2 links 
-   - assets/svgcanvas   <- svgeditor/packages/svgcanvas
-   - assets/svgedit  <- svgedit
-2) Install dependencies usin `npm i`
-3) Install svgcanvas dependencies using `npm i` in folder `assets/svgcanvas`
-4) Build de project 
-   - npm run svgcanvas
-   - npm run editor
-   - npm run build
-
-Listo, la biblioteca ya está correctamente compilada y en las carpetas que debería
-
 
 ## happy hacking	
 

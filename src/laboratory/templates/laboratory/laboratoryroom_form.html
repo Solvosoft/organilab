@@ -13,7 +13,6 @@
 	{% endif %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory room management' %}{% endblock %}
-
 {% block content %}
 	{% if perms.laboratory.view_laboratoryroom or perms.laboratory.add_laboratoryroom or  perms.laboratory.change_laboratoryroom or perms.laboratory.delete_laboratoryroom %}
 <div class="row">
@@ -21,78 +20,84 @@
 		<h3 class="heading-1"><span>{% trans 'Laboratory room management' %}</span></h3>
 	</div>
 </div>
-<div class="row ">
-		<div class="container-fluid">
-			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
-			<div style="padding: 15px;">
-				<form class="form-horizontal " action="" method="post">{% csrf_token %}
-					{{ form.as_horizontal }}
-					<button class="btn btn-sm btn-outline-success" type="submit" style="width:90px; float: right; ">
-						{% if form.instance.pk %}
-							<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Update' %}
-						{% else %}
-							<span class="fa fa-plus" aria-hidden="true"></span>{% trans 'New' %}
-						{% endif %}
-					</button>
-				</form>
-				{% endif %}
-			</div>
-		</div>
+<div class="row">
+	<div class="container-fluid">
+		{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
+			<form class="form-horizontal " action="" method="post">{% csrf_token %}
+				{{ form.as_horizontal }}
+				<div class="form-group row justify-content-end">
+					<div class="col-md-9">
+						<button type="submit"
+								class="btn btn-sm {% if form.instance.pk %}btn-outline-warning{% else %}btn-outline-success{% endif %} float-end me-0">
+							{% if form.instance.pk %}
+								<span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Update' %}
+							{% else %}
+								<span class="fa fa-plus" aria-hidden="true"></span> {% trans 'New' %}
+							{% endif %}
+						</button>
+					</div>
+				</div>
+			</form>
+		{% endif %}
 		<div class="row">
-			<ul class="list-group" style="margin: 0px 10px;">
-				{% for object in object_list %}
-					<li class="row list-group-item">
-						<div class="col-md-10">
-							<div class="row">
-								<div class="col-md-4">
-									{% get_qr_svg_img object width='40px' organization=org_pk %}
-									{{ object }}
-								</div>
-								<div class="col-md-4"></div>
-								<div class="col-md-4" style="font-size: 1.5em">
-									<div class="btn-group" role="group" aria-label="...">
-										<div id="f{{object.pk}}" class="hidden">
-											<ul class="list-group">
-												{% for furniture in object.furniture_set.all %}
-													<li class="list-group-item">
-														<a href="{% url 'laboratory:furniture_update' lab_pk=laboratory pk=furniture.pk org_pk=org_pk %}" > {{furniture}} </a>
-													</li>
-												{% endfor %}
-											</ul>
-										</div>
-										<button type="button" class="btn btn-sm btn-outline-success"
-												data-bs-container="body" data-bs-toggle="popover"
-												data-content="f{{object.pk}}"
-												data-bs-html=true>
-											{{ object.furniture_set.count }}
-										</button>
-										<button type="button" class="btn btn-sm btn-outline-dark" title="{% trans 'Create Furniture' %}"
-												data-bs-toggle="modal" data-bs-target="#furnitureModal"
-												data-href="{% url 'laboratory:furniture_create' lab_pk=laboratory labroom=object.pk org_pk=org_pk %}">
-											+ <span  class="fa fa-bed" aria-hidden="true"></span>
-										</button>
+		<ul class="list-group list-group-vertical ms-1">
+			{% for object in object_list %}
+				<li class="list-group-item">
+					<div class="row">
+					<div class="col-md-9">
+						<div class="row">
+							<div class="col-md-4">
+								{% get_qr_svg_img object width='40px' organization=org_pk %}
+								{{ object }}
+							</div>
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<div class="btn-group" role="group" aria-label="...">
+									<div id="f{{object.pk}}" class="hidden">
+										<ul class="list-group">
+											{% for furniture in object.furniture_set.all %}
+												<li class="list-group-item">
+													<a href="{% url 'laboratory:furniture_update' lab_pk=laboratory pk=furniture.pk org_pk=org_pk %}" > {{furniture}} </a>
+												</li>
+											{% endfor %}
+										</ul>
 									</div>
+									<button type="button" class="btn btn-sm btn-outline-success"
+											data-bs-container="body" data-bs-toggle="popover"
+											data-content="f{{object.pk}}"
+											data-bs-html=true>
+										{{ object.furniture_set.count }}
+									</button>
+									<button type="button" class="btn btn-sm btn-outline-dark" title="{% trans 'Create Furniture' %}"
+											data-bs-toggle="modal" data-bs-target="#furnitureModal"
+											data-href="{% url 'laboratory:furniture_create' lab_pk=laboratory labroom=object.pk org_pk=org_pk %}">
+										+ <span  class="fa fa-bed" aria-hidden="true"></span>
+									</button>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-2">
-							<div class="btn-group btn-group-sm" role="group" >
-								{% if perms.laboratory.change_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" class="btn btn-group btn-group-sm btn-outline-warning">
-										<span class="fa fa-edit" aria-hidden="true"> </span>{% trans 'Update' %}
-									</a>
-								{% endif %}
-								{% if perms.laboratory.delete_laboratoryroom %}
-									<a href="{% url 'laboratory:rooms_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" class="btn btn-group btn-group-sm btn-outline-danger">
-										<span class="fa fa-trash" aria-hidden="true"> </span>{% trans 'Delete' %}
-									</a>
-								{% endif %}
-							</div>
+					</div>
+					<div class="col-md-3">
+						<div class="btn-group float-end" role="group">
+							{% if perms.laboratory.change_laboratoryroom %}
+								<a href="{% url 'laboratory:rooms_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" class="btn btn-sm btn-outline-warning">
+									<i class="fa fa-edit" aria-hidden="true"> </i> {% trans 'Update' %}
+								</a>
+							{% endif %}
+							{% if perms.laboratory.delete_laboratoryroom %}
+								<a href="{% url 'laboratory:rooms_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}" class="btn btn-sm btn-outline-danger">
+									<i class="fa fa-trash" aria-hidden="true"> </i> {% trans 'Delete' %}
+								</a>
+							{% endif %}
 						</div>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
+						</div>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+	</div>
+
 	{% else %} 
 		{% include 'laboratory/action_denied.html' %} 
 	{% endif %}
