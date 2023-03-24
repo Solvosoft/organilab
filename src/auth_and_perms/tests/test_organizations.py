@@ -252,3 +252,34 @@ class OrganizationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(user_regist.count()==0)
 
+    def test_rol_list(self):
+
+        url = reverse("auth_and_perms:api-rol-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json.loads(response.content)['count'] >0)
+        self.assertContains(response,'permissions')
+
+    def test_add_rol(self):
+        data = {
+            "name": "Limpieza",
+            "color": "#003001",
+            "permissions":[7,30,4],
+            "rol": 1,
+            "relate_rols": [1, 2],
+        }
+        url = reverse("auth_and_perms:api-rol-list")
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(data['name'], json.loads(response.content)['name'])
+
+    def test_update_rol(self):
+        rol = Rol.objects.first()
+        data = {"name": "Casar"}
+        url = reverse("auth_and_perms:api-rol-detail", kwargs={"pk": rol.pk, })
+        response = self.client.put(url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        rol = Rol.objects.first()
+        self.assertEqual(rol.name, data['name'])
+
