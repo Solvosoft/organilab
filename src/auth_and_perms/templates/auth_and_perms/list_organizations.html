@@ -144,6 +144,7 @@
 
 
 <div class="tab-content mt-3" id="myTabContent">
+        <input type="hidden" value="laboratory" id="id_typeofcontenttype" name="typeofcontenttype" \>
         <div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
             <h5 class="text-center mb-5">{% trans 'Rol by laboratory' %}
                 <br><small class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</small></h5>
@@ -164,6 +165,9 @@
             <h5 class="text-center mb-5 title">{% trans 'Rol in all organization' %}
                 <br><small class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</small></h5>
             <div class="role table-responsive">
+                <button id="relateusertoorg"  type="button" class="btn btn-sm text-purple-400 w-100">
+                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                    {% trans 'Relate user with this organization'%}</button>
             <table   id="orpermelement" class="compact nowrap w-100"> </table>
             </div>
         </div>
@@ -321,6 +325,7 @@
 prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
 userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
 delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
+create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock%}

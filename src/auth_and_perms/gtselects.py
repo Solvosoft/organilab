@@ -73,7 +73,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     organization=None
-    laboratory=None
+    contenttypeobj=None
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
@@ -83,9 +83,12 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                if form.cleaned_data['laboratory']:
-                    self.laboratory = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
                 self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                if form.cleaned_data['typeofcontenttype'] == 'laboratory':
+                    if form.cleaned_data['laboratory']:
+                        self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
+                elif form.cleaned_data['typeofcontenttype'] == 'organization':
+                        self.contenttypeobj = self.organization
 
         if self.organization is None:
             raise
@@ -96,14 +99,14 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         users = list(OrganizationUserManagement.objects.filter(
             organization__in=orgByuser).values_list('users', flat=True))
         queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
-        if self.laboratory:
+        if self.contenttypeobj:
             profiles = get_profile_by_organization(self.organization.pk)
-            profiles.filter(profilepermission__content_type__app_label= self.laboratory._meta.app_label,
-                            profilepermission__content_type__model= self.laboratory._meta.model_name,
-                            profilepermission__object_id=self.laboratory.pk)
-            queryset = queryset.exclude(profile__in=profiles)
+            profiles.filter(profilepermission__content_type__app_label= self.contenttypeobj._meta.app_label,
+                            profilepermission__content_type__model= self.contenttypeobj._meta.model_name,
+                            profilepermission__object_id=self.contenttypeobj.pk)
+            queryset = queryset.exclude(profile__in=profiles).distinct()
 
-        return queryset
+        return queryset.order_by('first_name')
 
     def get_text_display(self, obj):
         if hasattr(obj, 'profile') and obj.profile:
