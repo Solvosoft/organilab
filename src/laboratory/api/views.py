@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from laboratory.api import serializers
+from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer
@@ -98,14 +99,17 @@ class CommentAPI(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
-        pk = None
-        if 'pk' in kwargs:
-            comments= self.get_queryset().filter(pk=pk)
-            return Response(self.get_serializer(comments).data)
-        else:
+        queryset = self.get_queryset()
+        comments = queryset.none()
 
-            template = render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform__pk=int(request.GET.get('inform'))).order_by('pk'), 'user':request.user},request)
-            return Response({'data':template})
+        if request.method == "GET":
+            form = CommentInformForm(request.GET)
+
+            if form.is_valid():
+                comments = queryset.filter(inform__pk=form.cleaned_data['inform']).order_by('pk')
+
+        template = render_to_string('laboratory/comment.html', {'comments': comments, 'user':request.user}, request)
+        return Response({'data':template})
 
     def update(self, request, pk=None):
         comment=None
