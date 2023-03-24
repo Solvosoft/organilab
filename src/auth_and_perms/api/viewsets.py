@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -10,11 +11,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
-    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer
+    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer, \
+    ProfileAssociateOrganizationSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.templatetags.user_rol_tags import get_related_contenttype_objects
-from laboratory.models import OrganizationStructure, Laboratory, OrganizationUserManagement
+from laboratory.models import OrganizationStructure, Laboratory, OrganizationUserManagement, UserOrganization
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
@@ -54,6 +56,32 @@ class RolAPI(mixins.ListModelMixin,
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+
+class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericViewSet):
+
+    queryset = OrganizationUserManagement.objects.all()
+    serializer_class = ProfileAssociateOrganizationSerializer
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        contenttypeobj = None
+        organization = get_object_or_404(OrganizationStructure, pk=serializer.data['organization'])
+        user = get_object_or_404(User, pk=serializer.data['user'])
+        if serializer.data['typeofcontenttype'] == 'laboratory':
+            contenttypeobj = get_object_or_404(Laboratory, pk=serializer.data['laboratory'])
+        elif serializer.data['typeofcontenttype'] == 'organization':
+            contenttypeobj = organization
+
+        oum , created = OrganizationUserManagement.objects.get_or_create(organization=organization)
+        UserOrganization.objects.get_or_create( organization=organization, user=user)
+        oum.users.add(user)
+        ProfilePermission.objects.get_or_create(
+            profile=user.profile,
+            content_type = ContentType.objects.filter(app_label=contenttypeobj._meta.app_label,
+                                                      model=contenttypeobj._meta.model_name).first(),
+            object_id =contenttypeobj.pk
+        )
 
 class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = ProfilePermission.objects.all()
@@ -279,7 +307,7 @@ class UserInOrganization(mixins.ListModelMixin,
         return profiles.filter(
             profilepermission__content_type__app_label=self.organization._meta.app_label,
             profilepermission__content_type__model=self.organization._meta.model_name,
-            profilepermission__object_id=self.organization.pk)
+            profilepermission__object_id=self.organization.pk).order_by('-user')
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)

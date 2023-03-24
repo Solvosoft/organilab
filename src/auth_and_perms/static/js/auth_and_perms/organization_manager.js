@@ -17,26 +17,7 @@ language: {"url": datatables_lang },
     }
 }
 }, addfilter=false);
-
-$("#relateusertolab").on('click', function(){
-    let laboratory=$('.nodeorg:checked').val();
-    if (laboratory != undefined){
-        $("#id_profile").val(null).change();
-        $("#relprofilelabmodal").modal('show');
-    }else{
-    Swal.fire({
-          icon: 'error',
-          title: gettext('Laboratory needs to be selected'),
-          text: gettext('Sorry you need to select laboratory before relate user to it'),
-        })
-    }
-
-});
-$("#relprofilewithlaboratorybtn").on('click', function(){
-    console.log($("#id_profile").val());
-    console.log($(".nodeorg:checked").val());
-    console.log($("#id_laboratories").val())
-});
+    relateusertoorg
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
 language: {"url": datatables_lang },
@@ -131,6 +112,55 @@ function reload_datatables(){
            datatableorpermelement.ajax.reload();
            datatableuserpermelement.ajax.reload();
 }
+
+function send_create_profile_on_conttentype(data){
+    $.ajax({
+      type: "POST",
+      url: create_profile_ctt_url,
+      data: data,
+      //contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: reload_datatables,
+      dataType: 'json'
+    });
+
+}
+
+$("#relateusertoorg").on('click', function(){
+    $("#id_typeofcontenttype").val('organization');
+     $("#id_profile").val(null).change();
+     $("#relprofilelabmodal").modal('show');
+})
+$("#relateusertolab").on('click', function(){
+    let laboratory=$('.nodeorg:checked').val();
+    $("#id_typeofcontenttype").val('laboratory');
+
+    if (laboratory != undefined){
+        $("#id_profile").val(null).change();
+        $("#relprofilelabmodal").modal('show');
+    }else{
+    Swal.fire({
+          icon: 'error',
+          title: gettext('Laboratory needs to be selected'),
+          text: gettext('Sorry you need to select laboratory before relate user to it'),
+        })
+    }
+
+});
+$("#relprofilewithlaboratorybtn").on('click', function(){
+    data = {
+      'typeofcontenttype': $("#id_typeofcontenttype").val(),
+      'user': $("#id_profile").val(),
+      'organization': $(".nodeorg:checked").val()
+    }
+
+    if (data['typeofcontenttype'] == "laboratory"){
+        data[ 'laboratory'] = $("#id_laboratories").val();
+    }
+    send_create_profile_on_conttentype(data);
+});
+
+
 
 function deleteuserlab(elementid, contentTypeobj){
     var element=$("#ndel_"+elementid)[0]

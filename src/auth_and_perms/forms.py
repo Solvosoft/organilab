@@ -110,10 +110,10 @@ class OrganizationForViewsetForm(forms.Form):
 
 class ProfileListForm(GTForm):
     profile = forms.ModelChoiceField(queryset=User.objects.all(),
-                                      widget=AutocompleteSelect(
-                                          'laborguserbase', attrs={
+                                      widget=AutocompleteSelect('laborguserbase', attrs={
                                               'data-s2filter-organization': '.nodeorg:checked',
                                               'data-s2filter-laboratory': '#id_laboratories',
+                                              'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
                                               'data-dropdownparent': '#relprofilelabmodal'
                                           })
                                       )

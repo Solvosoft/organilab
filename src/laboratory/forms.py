@@ -306,6 +306,7 @@ class RelOrganizationForm(GTForm):
 class RelOrganizationPKIntForm(GTForm):
     organization = forms.IntegerField(required=True)
     laboratory = forms.IntegerField(required=False)
+    typeofcontenttype = forms.CharField(required=False)
 
 class CatalogForm(GTForm, forms.ModelForm):
     class Meta:

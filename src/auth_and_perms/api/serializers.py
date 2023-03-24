@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django_filters import FilterSet
 from rest_framework import serializers
@@ -5,7 +6,7 @@ from rest_framework.reverse import reverse_lazy
 
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
 from auth_and_perms.templatetags.user_rol_tags import get_roles
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, Laboratory
 
 
 class RolSerializer(serializers.ModelSerializer):
@@ -16,17 +17,30 @@ class RolSerializer(serializers.ModelSerializer):
         fields = ["name", "permissions"]
 
 
+class ProfileAssociateOrganizationSerializer(serializers.Serializer):
+    typeofcontenttype = serializers.CharField(required=True)
+    user = serializers.PrimaryKeyRelatedField(many=False, queryset=User.objects.all(), required=True)
+    organization = serializers.PrimaryKeyRelatedField(many=False,
+                                                      queryset=OrganizationStructure.objects.all(),
+                                                      required=True)
+    laboratory = serializers.PrimaryKeyRelatedField(many=False,
+                                                    queryset=Laboratory.objects.all(),
+                                                    required=False)
+
+
 class AuthenticateDataRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuthenticateDataRequest
         fields = '__all__'
 
+
 class AuthenticateDataRequestNotifySerializer(serializers.Serializer):
     id_transaction = serializers.IntegerField()
     data = AuthenticateDataRequestSerializer()
 
+
 class ContentTypeObjectToPermissionManager(serializers.Serializer):
-    org=serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.all())
+    org = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.all())
     appname = serializers.CharField()
     model = serializers.CharField()
     objectid = serializers.IntegerField(required=False, allow_null=True)
@@ -45,9 +59,7 @@ class ProfilePermissionRolOrganizationSerializer(serializers.Serializer):
     ])
 
 
-
 class OrganizationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = OrganizationStructure
         fields = ['name', 'parent']
@@ -55,12 +67,12 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class ProfileFilterSet(FilterSet):
 
-
     def filter_queryset(self, queryset):
         search = self.request.GET.get('search', '')
         if search:
-            queryset= queryset.filter(
-                Q(user__first_name__icontains=search)|Q(user__last_name__icontains=search)|Q(user__username__icontains=search)
+            queryset = queryset.filter(
+                Q(user__first_name__icontains=search) | Q(user__last_name__icontains=search) | Q(
+                    user__username__icontains=search)
             )
         return queryset
 
@@ -75,17 +87,17 @@ class ProfileSerializer(serializers.ModelSerializer):
     action = serializers.SerializerMethodField()
 
     def get_rols(self, obj):
-        contenttypeobj=self.context['view'].contenttypeobj
-        org=self.context['view'].organization
-        rol= get_roles(obj.pk, contenttypeobj, org)
+        contenttypeobj = self.context['view'].contenttypeobj
+        org = self.context['view'].organization
+        rol = get_roles(obj.pk, contenttypeobj, org)
         if not rol:
             datatext = """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
                 org.pk, obj.pk, contenttypeobj._meta.app_label, contenttypeobj._meta.model_name, contenttypeobj.pk
             )
 
-            rol="""
+            rol = """
             <i %s class="fa fa-user-md" onclick="newuserrol(%s)" id="profile_%s" aria-hidden="true"></i>
-            """%(datatext, obj.pk, obj.pk )
+            """ % (datatext, obj.pk, obj.pk)
         return rol
 
     def get_user(self, obj):
@@ -95,12 +107,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         contenttypeobj = self.context['view'].contenttypeobj
         org = self.context['view'].organization
         datatext = """ id="ndel_%s" data-org="%s" data-profile="%s" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
-            obj.pk, str(contenttypeobj), str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name, contenttypeobj.pk
+            obj.pk, str(contenttypeobj), str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name,
+            contenttypeobj.pk
         )
 
         return """
         <i %s class="fa fa-trash mr-2" onclick="deleteuserlab(%s, %s)" aria-hidden="true"></i>
-        """%(datatext, obj.pk, org.pk)
+        """ % (datatext, obj.pk, org.pk)
 
     class Meta:
         model = Profile
@@ -108,16 +121,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileRolDataTableSerializer(serializers.Serializer):
-        data = serializers.ListField(child=ProfileSerializer(), required=True)
-        draw = serializers.IntegerField(required=True)
-        recordsFiltered = serializers.IntegerField(required=True)
-        recordsTotal = serializers.IntegerField(required=True)
+    data = serializers.ListField(child=ProfileSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
 
 
 class DeleteUserFromContenttypeSerializer(serializers.Serializer):
-        profile = serializers.PrimaryKeyRelatedField(many=False, queryset=Profile.objects.all())
-        app_label = serializers.CharField()
-        model = serializers.CharField()
-        object_id = serializers.IntegerField()
-        organization = serializers.PrimaryKeyRelatedField(many=False, queryset=OrganizationStructure.objects.all())
-        disable_user = serializers.BooleanField(default=False)
+    profile = serializers.PrimaryKeyRelatedField(many=False, queryset=Profile.objects.all())
+    app_label = serializers.CharField()
+    model = serializers.CharField()
+    object_id = serializers.IntegerField()
+    organization = serializers.PrimaryKeyRelatedField(many=False, queryset=OrganizationStructure.objects.all())
+    disable_user = serializers.BooleanField(default=False)
