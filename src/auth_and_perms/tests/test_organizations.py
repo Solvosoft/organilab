@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 import json
 
-from auth_and_perms.models import Rol
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
+from auth_and_perms.models import Rol, RegistrationUser, UserTOTPDevice
 from laboratory.models import UserOrganization, OrganizationStructure, OrganizationStructureRelations
 
 
@@ -163,18 +165,90 @@ class OrganizationTest(TestCase):
 
     def test_add_contenttype_to_org(self):
         data = {
-            'first_name':'Vaca',
-            'last_name':'Lola',
-            'email':'lola@vaca.ac.cr',
-            'phone_number':'6666-66-66',
-            'id_card': '1331113',
-            'job_position': 'Lechera',
-            'ds_transaction': '135135313135',
             'organization': 1,
+            'contentyperelobj':[37,45]
+        }
+        org_relacion= OrganizationStructureRelations.objects.all().count()
+        response = self.client.post(reverse('auth_and_perms:add_contenttype_to_org'),data=data)
+        org_relations= OrganizationStructureRelations.objects.filter(organization__pk=1)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(org_relations.count() > org_relacion)
+        self.assertRedirects(response, reverse('auth_and_perms:organizationManager'))
+
+    def test_add_contenttype_to_org_not_lab(self):
+        data = {
+            'organization': 1,
+            'contentyperelobj':[]
+        }
+        org_relacion= OrganizationStructureRelations.objects.all().count()
+        response = self.client.post(reverse('auth_and_perms:add_contenttype_to_org'),data=data)
+        org_relations= OrganizationStructureRelations.objects.filter(organization__pk=1)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(org_relations.count() == 0)
+        self.assertRedirects(response, reverse('auth_and_perms:organizationManager'))
+
+    def test_add_contenttype_to_org_error(self):
+        data = {
+            'organization': 999,
             'contentyperelobj':[37]
         }
         response = self.client.post(reverse('auth_and_perms:add_contenttype_to_org'),data=data)
         org_relations= OrganizationStructureRelations.objects.filter(organization__pk=1)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(org_relations.count() == 0)
+
+    def test_register_user_digital(self):
+        data = {
+             'username' :"p@gmail.co",
+             'validation_method' : 2,
+             'organization_name' : "CR Full",
+             'password1' : "112153153fas",
+             'password2': "112153153fas",
+        }
+        response = self.client.post(reverse('auth_and_perms:register_user_to_platform'), data=data)
+        user = User.objects.last()
+        user_regist= RegistrationUser.objects.filter(user=user)
+        success_url =reverse('auth_and_perms:create_profile_by_digital_signature', kwargs={'pk':user.pk})
+
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(org_relations.count() > 0)
-        self.assertRedirects(response, reverse('auth_and_perms:organizationManager'))
+
+        self.assertRedirects(response, success_url)
+        self.assertTrue(user_regist.count()==1)
+
+    def test_register_user_otp(self):
+        data = {
+             'username' :"p@gmail.co",
+             'validation_method' : 1,
+             'organization_name' : "CR Full",
+             'password1' : "112153153fas",
+             'password2': "112153153fas",
+        }
+        response = self.client.post(reverse('auth_and_perms:register_user_to_platform'), data=data)
+        user = User.objects.last()
+        user_regist= RegistrationUser.objects.filter(user=user)
+        success_url =reverse('auth_and_perms:user_org_creation_totp', kwargs={'pk':user.pk})
+        otp = UserTOTPDevice.objects.filter(user=user).count()
+        self.assertEqual(response.status_code, 302)
+
+        self.assertRedirects(response, success_url)
+        self.assertTrue(user_regist.count()==1)
+        self.assertTrue(otp==1)
+
+    def test_register_user_error(self):
+        data = {
+             'username' :"pgmail.co",
+             'validation_method' : 0,
+             'organization_name' : "CR Full",
+             'password1' : "112153153fas",
+             'password2': "112153153fas",
+        }
+        response = self.client.post(reverse('auth_and_perms:register_user_to_platform'), data=data)
+        user = User.objects.last()
+        user_regist= RegistrationUser.objects.filter(user=user)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(user_regist.count()==0)
+
