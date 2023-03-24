@@ -18,6 +18,25 @@ language: {"url": datatables_lang },
 }
 }, addfilter=false);
 
+$("#relateusertolab").on('click', function(){
+    let laboratory=$('.nodeorg:checked').val();
+    if (laboratory != undefined){
+        $("#id_profile").val(null).change();
+        $("#relprofilelabmodal").modal('show');
+    }else{
+    Swal.fire({
+          icon: 'error',
+          title: gettext('Laboratory needs to be selected'),
+          text: gettext('Sorry you need to select laboratory before relate user to it'),
+        })
+    }
+
+});
+$("#relprofilewithlaboratorybtn").on('click', function(){
+    console.log($("#id_profile").val());
+    console.log($(".nodeorg:checked").val());
+    console.log($("#id_laboratories").val())
+});
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
 language: {"url": datatables_lang },
@@ -72,7 +91,7 @@ function add_rol_org(url, data){
       error: function( jqXHR, textStatus, errorThrown ){
         Swal.fire({
           icon: 'error',
-          title: 'Name',
+          title: gettext('Name'),
           text: jqXHR.responseJSON.name[0],
         })
       },
