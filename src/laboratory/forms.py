@@ -524,3 +524,8 @@ class ValidateShelfObjectForm(forms.Form):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
+class ReservedProductsForm(forms.Form):
+    obj = forms.IntegerField(required=True)
+    user = forms.IntegerField(required=True)
+    status = forms.IntegerField(required=True)
+    initial_date = forms.DateTimeField(required=True)

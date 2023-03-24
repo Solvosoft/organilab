@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 
 from django.utils.translation import gettext_lazy as _
+
+from laboratory.forms import ReservedProductsForm
 from reservations_management.models import ReservedProducts
 from django.http import JsonResponse
 from datetime import datetime, timedelta
@@ -22,11 +24,27 @@ def isValidate_molecular_formula(value):
 
 
 def validate_duplicate_initial_date(request):
+    response = {'is_valid': False}
+
     if request.method == 'GET':
-        products = ReservedProducts.objects.filter(user_id=request.GET['user']).filter(status=request.GET['status']).filter(shelf_object=request.GET['obj'])
-        for product in products:
-            init_date = product.initial_date - timedelta(hours=6)
-            db_initial_date = init_date.strftime("%m/%d/%Y %I:%M %p")
-            if db_initial_date == request.GET['initial_date']:
-                return JsonResponse({'is_valid': False})
-    return JsonResponse({'is_valid': True})
+        form = ReservedProductsForm(request.GET)
+
+        if form.is_valid():
+            initial_date = form.cleaned_data['initial_date']
+
+            filters = {
+                'user_id': form.cleaned_data['user'],
+                'status': form.cleaned_data['status'],
+                'shelf_object': form.cleaned_data['obj']
+            }
+
+            products = ReservedProducts.objects.filter(**filters).distinct()
+
+            for product in products:
+                init_date = product.initial_date - timedelta(hours=6)
+                db_initial_date = init_date.strftime("%m/%d/%Y %I:%M %p")
+                if db_initial_date == initial_date:
+                    return JsonResponse(response)
+
+            response['is_valid'] = True
+    return JsonResponse(response)
