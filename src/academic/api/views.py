@@ -27,7 +27,7 @@ class ReviewSubstanceViewSet(viewsets.ModelViewSet):
         org_pk, showapprove = None, None
 
         if self.request.method == "GET":
-            form = ValidateReviewSubstanceForm()
+            form = ValidateReviewSubstanceForm(self.request.GET)
 
             if form.is_valid():
                 org_pk = form.cleaned_data['org_pk']
