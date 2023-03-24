@@ -151,7 +151,7 @@
                 {{labform.as_horizontal}}
             </div>
             <div class="row">
-                <button id="relateusertolab" type="button" class="btn btn-sm text-purple-400">
+                <button id="relateusertolab"  type="button" class="btn btn-sm text-purple-400">
                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                     {% trans 'Relate user with this laboratory'%}</button>
             </div>
@@ -285,6 +285,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+            </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+<div id="relprofilelabmodal" class="modal fade" tabindex="-1" aria-labelledby="relprofilelabmodalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="relprofilelabmodalLabel">{% trans 'Relate user to laboratory' %}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="relprofilelabform" action="" method="post">
+            <div class="modal-body">
+                {{ profileform.as_horizontal }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button id="relprofilewithlaboratorybtn" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button>
             </div>
                 {% csrf_token %}
             </form>

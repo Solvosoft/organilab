@@ -7,7 +7,7 @@ from django_otp.forms import OTPTokenForm
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 from djgentelella.widgets import core as genwidgets
-from auth_and_perms.models import Rol
+from auth_and_perms.models import Rol, Profile
 from laboratory.models import Laboratory, OrganizationStructure
 
 
@@ -106,3 +106,14 @@ class LaboratoryAndOrganizationForm(forms.Form):
 
 class OrganizationForViewsetForm(forms.Form):
     organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+
+
+class ProfileListForm(GTForm):
+    profile = forms.ModelChoiceField(queryset=User.objects.all(),
+                                      widget=AutocompleteSelect(
+                                          'laborguserbase', attrs={
+                                              'data-s2filter-organization': '.nodeorg:checked',
+                                              'data-s2filter-laboratory': '#id_laboratories',
+                                              'data-dropdownparent': '#relprofilelabmodal'
+                                          })
+                                      )
