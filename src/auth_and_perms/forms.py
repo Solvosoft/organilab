@@ -7,6 +7,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets import core as genwidgets
 from auth_and_perms.models import Rol
+from laboratory.models import Laboratory
 
 
 class AddUserForm(GTForm, forms.Form):
@@ -87,3 +88,7 @@ class AddProfileDigitalSignatureForm(GTForm):
     field_order = [
         'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'ds_transaction'
     ]
+
+class ContentypeForm(GTForm,forms.Form):
+    organization = forms.IntegerField()
+    contentyperelobj = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
