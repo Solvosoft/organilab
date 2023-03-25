@@ -6,13 +6,6 @@
     {% define_urlname_action 'riskzone_list' %}
 {% endblock %}
 {% block title %}{% trans 'Risk Zone Management' %}{% endblock %}
-{% block extra_css %}
-<style>
-    #btnsave {
-        margin-right: 0;
-    }
-</style>
-{% endblock%}
 {% block content %}
 <div class="row">
     <div class="offset-md-1 col-md-3">
@@ -37,7 +30,7 @@
         {{ form.as_horizontal }}
         <div class="form-group row justify-content-end">
             <div class="col-sm-9">
-              <button id="btnsave" class="btn btn-sm btn-outline-success float-end" type="submit">
+              <button id="btnsave" class="btn btn-sm btn-outline-success float-end me-0" type="submit">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}
               </button>
             </div>
