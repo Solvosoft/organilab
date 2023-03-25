@@ -176,3 +176,13 @@ img {
 .furnituredescriptor {
     display: inline;
 }
+
+.fc-eight {
+    font-size: 8px;
+}
+.fc-nine {
+    font-size: 9px;
+}
+.card-margin-top{
+    margin-top:3.3rem
+}
