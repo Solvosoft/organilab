@@ -44,7 +44,7 @@ urlpatterns = [
     path('rp/api/reservedProducts/<int:pk>/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     path('rp/api/reservedProducts/<int:pk>/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     path('r/api/reservation/', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
-    path('reserve_object/<int:modelpk>', ShelfObjectReservation.as_view(), name="object_reservation"), #THIS URL IS NOT USED
+    path('reserve_object/<int:modelpk>', ShelfObjectReservation.as_view(), name="object_reservation"),
     path('validators', validate_duplicate_initial_date, name="date_validator"),
     path('returnLabId', return_laboratory_of_shelf_id, name="get_lab_id"),
 ]
@@ -77,7 +77,7 @@ shelf_object_urls = [
     path('create/', shelfobject.ShelfObjectCreate.as_view(), name="shelfobject_create"),
     path('delete/<int:pk>/', shelfobject.ShelfObjectDelete.as_view(), name="shelfobject_delete"),
     path('detail/<int:pk>/', shelfobject.ShelfObjectDetail.as_view(), name="shelfobject_detail"),
-    path('edit/<int:pk>/', shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"), #THIS URL IS NOT USED
+    path('edit/<int:pk>/', shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     path('get_shelfobject_limit/<int:pk>/', shelfobject.edit_limit_object, name="get_shelfobject_limit"),
@@ -88,7 +88,7 @@ lab_reports_urls = [
     # PDF reports
     path('laboratory/', reports.report_labroom_building, name='report_building'),
     path('furniture/', reports.report_furniture,  name='reports_furniture'),
-    path('objects/', reports.report_objects, name='reports_objects'), #THIS URL REQUIRES REVIEW FROM TEMPLATE 'laboratory/reactive_precursos_objects_list.html'
+    path('objects/', reports.report_objects, name='reports_objects'),
     path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
     path('limited_shelf_objects/', reports.report_limited_shelf_objects,
          name='reports_limited_shelf_objects'),

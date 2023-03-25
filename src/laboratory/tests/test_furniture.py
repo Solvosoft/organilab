@@ -2,19 +2,29 @@ from django.urls import reverse
 
 from laboratory.models import Shelf, Furniture, ShelfObject, LaboratoryRoom, TranferObject, Provider
 from laboratory.tests.utils import BaseLaboratorySetUpTest
+import json
 
 class FurnitureViewTest(BaseLaboratorySetUpTest):
 
-    def test_get_furniture_list(self):
+    def test_get_furniture_list_filter_by_labroom(self):
+        url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        data = {
+            "labroom": 2
+        }
+        response = self.client.get(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Mueble 5", json.loads(response.content)['content']['inner-fragments']['#furnitures'])
+
+    def test_get_furniture_list_filter_by_lab(self):
         url = reverse("laboratory:furniture_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+        self.assertIn("Mueble 2", json.loads(response.content)['content']['inner-fragments']['#furnitures'])
 
     def test_update_furniture(self):
         furniture = Furniture.objects.first()
         url = reverse("laboratory:furniture_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": furniture.pk})
 
-        #Checking by method get if initial data furniture exists
         response_get = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response_get.status_code, 200)
         self.assertContains(response_get, "Mueble 1")
@@ -30,6 +40,7 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
         response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertRedirects(response_post, success_url)
+        self.assertIn("Mueble Aéreo", list(Furniture.objects.values_list("name", flat=True)))
 
     def test_create_furniture(self):
         labroom = LaboratoryRoom.objects.first()
@@ -45,12 +56,13 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
         self.assertIn("Mueble Esquinero", list(Furniture.objects.values_list("name", flat=True)))
 
     def test_delete_furniture(self):
-        furniture = Furniture.objects.last()
+        furniture = Furniture.objects.get(name="Mueble 3")
         url = reverse("laboratory:furniture_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": furniture.pk})
         response = self.client.post(url)
         success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+        self.assertNotIn("Mueble 3", list(Furniture.objects.values_list("name", flat=True)))
 
     def test_furniture_report(self):
         data = {
@@ -87,12 +99,10 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
 class ShelfViewTest(BaseLaboratorySetUpTest):
 
     def test_get_shelf_list(self):
-        data = {
-            'furniture': 1
-        }
-        url = reverse("laboratory:list_shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = reverse("laboratory:list_shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "furniture_pk": 2})
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+        self.assertIn("Sexto Estante", json.loads(response.content)['content']['inner-fragments']['#shelf'])
 
     def test_update_shelf(self):
         shelf = Shelf.objects.first()
@@ -106,15 +116,21 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
 
         # Updating shelf
         data = {
-            "name": "Estante central",
-            "type": 74,
-            "furniture": 1,
-            "color": "#73879C",
-            "row": 1,
-            "col": 0
+            "shelf--name": "Estante central",
+            "shelf--type": 74,
+            "shelf--furniture": 1,
+            "shelf--color": "#73879C",
+            "shelf--row": 1,
+            "shelf--col": 0,
+            "shelf--in_where_laboratory": self.lab.pk,
+            "shelf--discard": False,
+            "shelf--quantity": 3,
+            "shelf--description": "Estante de muestras",
+            "shelf--measurement_unit": 59
         }
         response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response_post.status_code, 200)
+        self.assertIn("Estante central", json.loads(response_post.content)['content']['inner-fragments']['#shelfmodalbody'])
 
     def test_create_shelf(self):
         data = {
@@ -127,7 +143,8 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
             "shelf--discard": False,
             "shelf--quantity": 3,
             "shelf--description": "Estante de muestras",
-            "shelf--measurement_unit": 59
+            "shelf--measurement_unit": 59,
+            "shelf--in_where_laboratory": self.lab.pk,
         }
         url = reverse("laboratory:shelf_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -135,11 +152,12 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
 
     def test_delete_shelf(self):
-        shelf = Shelf.objects.last()
+        shelf = Shelf.objects.get(name="Noveno Estante")
         url = reverse("laboratory:shelf_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelf.pk,
                                                          "row": shelf.row(), "col": shelf.col()})
         response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+        self.assertNotIn("Noveno Estante", list(Shelf.objects.values_list("name", flat=True)))
 
     def test_add_shelf_type_catalog(self):
         url = reverse("laboratory:add_shelf_type_catalog")
@@ -172,17 +190,13 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
 
 class ShelfObjectViewTest(BaseLaboratorySetUpTest):
 
-    def test_get_shelfobject_list(self):
-        url = reverse("laboratory:list_shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-
     def test_create_shelfobject(self):
         total = ShelfObject.objects.all().count()
         data = {
             "object": 1,
             "shelf": 1,
             "quantity": 5,
+            "in_where_laboratory": self.lab.pk,
             "limit_quantity": 4,
             "measurement_unit": 63,
             "row": 0,
@@ -195,10 +209,14 @@ class ShelfObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(total+1, ShelfObject.objects.all().count())
 
     def test_delete_shelfobject(self):
-        shelfobject = ShelfObject.objects.last()
+        shelfobject = ShelfObject.objects.get(pk=3)
         pk_check = shelfobject.pk
         url = reverse("laboratory:shelfobject_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelfobject.pk})
-        response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        data = {
+            'row': shelfobject.shelf.row(),
+            'col': shelfobject.shelf.col(),
+        }
+        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(pk_check, list(ShelfObject.objects.values_list("pk", flat=True)))
 
