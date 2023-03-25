@@ -32,50 +32,50 @@
 
 {% for node in nodes %}
 <div class="row">
-    <div class="{{node.1}}">
-        <div class="bs-callout bs-callout-{{node.2}}">
+    <div class="{{node.1.0}}">
+        <div class="bs-callout bs-callout-{{node.1.1}}">
             <div class="row" id="rols">
                 <div class="row">
                     <div class="col-11">
-                    <h6 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.node.pk}}" class="w-100"
-                        role="button" aria-expanded="false" aria-controls="collapse{{node.0.node.pk}}"
-                    >{{node.0.node}}</h6>
+                    <h6 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.pk}}" class="w-100"
+                        role="button" aria-expanded="false" aria-controls="collapse{{node.0.pk}}"
+                    >{{node.0}}</h6>
                     </div>
                     <div class="col-1">
-                        <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.node.pk}}" {% if not forloop0 %} selected {% endif %}/>
+                        <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
                     </div>
                 </div>
-                <div id="collapse{{node.0.node.pk}}" class="collapse">
+                <div id="collapse{{node.0.pk}}" class="collapse">
                     <div class="row">
                         <ul>
                             {% if perms.auth_and_perms.add_rol %}
-                            <li class="rolcontainer" rol="{{node.0.node.pk}}" title="{% trans 'Add new rol' %}"
+                            <li class="rolcontainer" rol="{{node.0.pk}}" title="{% trans 'Add new rol' %}"
                                 confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span
-                                    class="btn btn-sm btn-success rolbtnadd" data-id="{{node.0.node.pk}}" data-url="{% url 'auth_and_perms:copy_rols' node.0.node.pk %}"><i class="fa fa-plus"></i> {% trans 'Rol' %}</span>
+                                    class="btn btn-sm btn-success rolbtnadd" data-id="{{node.0.pk}}" data-url="{% url 'auth_and_perms:copy_rols' node.0.pk %}"><i class="fa fa-plus"></i> {% trans 'Rol' %}</span>
                             </li>
                             {% endif %}
                             {% if perms.auth_and_perms.add_profile %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-                                                        href="{% url 'auth_and_perms:add_user' node.0.node.pk %}"
+                                                        href="{% url 'auth_and_perms:add_user' node.0.pk %}"
                                                         title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i>
                                 {% trans 'User' %}</a>
                             </li>
                             <li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-                                    class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.node.pk}}"
-                                    data-url="{% url 'auth_and_perms:addusersorganization' node.0.node.pk %}"
+                                    class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.pk}}"
+                                    data-url="{% url 'auth_and_perms:addusersorganization' node.0.pk %}"
                                     data-appname="laboratory" data-model="organizationstructure"
-                                    data-objectid="{{node.0.node.pk}}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
+                                    data-objectid="{{node.0.pk}}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
 
                             {% endif %}
                             {% if perms.laboratory.add_laboratory %}
                             <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-                                                        href="{% url 'laboratory:create_lab' node.0.node.pk %}"
+                                                        href="{% url 'laboratory:create_lab' node.0.pk %}"
                                                         title="{% trans 'Add Laboratory' %}">
                                 <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
                             <li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-                                    data-href="{% url 'relorgbase-detail' node.0.node.pk %}"
-                                    data-org="{{node.0.node.pk}}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
-                                    type="button" data-id="{{node.0.node.pk}}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}</a></li>
+                                    data-href="{% url 'relorgbase-detail' node.0.pk %}"
+                                    data-org="{{node.0.pk}}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
+                                    type="button" data-id="{{node.0.pk}}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -85,17 +85,17 @@
             <div class="float-end">
                 <ul class="list-group  list-group-horizontal-sm">
                     <div class="role ">
-                        {% include 'auth_and_perms/organization_permission_table.html' with object=node.0.node %}
+                        {% include 'auth_and_perms/organization_permission_table.html' with object=node.0 %}
                     </div>
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
-                        <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.node.pk %}"  title="{% trans 'Log List' %}">
+                        <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}"  title="{% trans 'Log List' %}">
                             <i class="fa fa-file-text-o"></i></a>
                     </li>
                     {% endif %}
                     {% if perms.auth_and_perms.change_rol %}
                     <li class="list-group-item">
-                        <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.node.pk %}"  title="{% trans 'Rol List' %}">
+                        <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"  title="{% trans 'Rol List' %}">
                             <i class="fa fa-list-alt"></i></a>
                     </li>
                     {% endif %}
@@ -103,19 +103,19 @@
 
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
-                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.node.pk %}" data-org="{{node.0.node.pk}}" data-display="{{node.0.node}}">
+                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}" data-org="{{node.0.pk}}" data-display="{{node.0.node}}">
                             <i class="fa fa-sort-amount-desc text-secondary"></i></span>
                     </li>
                     {% endif %}
                     {% if perms.laboratory.add_organizationstructure %}
                     <li class="list-group-item">
-                        <span class="addOrgStructure" data-parent="{{node.0.node.pk}}"><i
+                        <span class="addOrgStructure" data-parent="{{node.0.pk}}"><i
                                 class="fa fa-plus  text-secondary"></i></span>
                     </li>
                     {% endif %}
                     {% if perms.laboratory.delete_organizationstructure %}
                     <li class="list-group-item">
-                        <a href="{% url 'laboratory:delete_organization' node.0.node.pk %}"><i
+                        <a href="{% url 'laboratory:delete_organization' node.0.pk %}"><i
                                 class="fa fa-minus text-danger"></i></a>
                     </li>
                     {% endif %}
