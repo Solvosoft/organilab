@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPTokenForm
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 from djgentelella.widgets import core as genwidgets
-from auth_and_perms.models import Rol, Profile
+from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
+
+from auth_and_perms.models import Rol
 from laboratory.models import Laboratory, OrganizationStructure
 
 
@@ -36,16 +36,16 @@ class AddProfileRolForm(GTForm, forms.Form):
 class CreationUserOrganization(UserCreationForm, GTForm):
     organization_name = forms.CharField(max_length=255, widget=genwidgets.TextInput, label=_('Organization name'))
     validation_method = forms.ChoiceField(
-        choices=((1, 'OTPT' ),(2, _('Digital signature'))),
-        #choices=((1, 'OTPT'),),
+        choices=((1, 'OTPT'), (2, _('Digital signature'))),
+        # choices=((1, 'OTPT'),),
         widget=genwidgets.RadioSelect,
         label=_('Validation method')
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget=genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
-        self.fields['password2'].widget=genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
+        self.fields['password1'].widget = genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
+        self.fields['password2'].widget = genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
         self.fields['username'].label = _("Email")
 
     class Meta(UserCreationForm.Meta):
@@ -55,7 +55,9 @@ class CreationUserOrganization(UserCreationForm, GTForm):
             'username': genwidgets.EmailInput
 
         }
-#from django_otp.views import LoginView
+
+
+# from django_otp.views import LoginView
 class AddProfileForm(OTPTokenForm, GTForm):
     first_name = forms.CharField(label=_("First name"), max_length=150, widget=genwidgets.TextInput)
     last_name = forms.CharField(label=_("Last name"), max_length=150, widget=genwidgets.TextInput)
@@ -64,16 +66,16 @@ class AddProfileForm(OTPTokenForm, GTForm):
     id_card = forms.CharField(label=_('Identification'), max_length=100, widget=genwidgets.TextInput)
     job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=genwidgets.TextInput)
 
-
     field_order = [
         'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'otp_device',
         'otp_challenge', 'otp_token'
     ]
-    def __init__(self,  *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['otp_device'].widget=forms.HiddenInput()
-        self.fields['otp_challenge'].widget=forms.HiddenInput()
-        self.fields['otp_token'].widget=genwidgets.TextInput()
+        self.fields['otp_device'].widget = forms.HiddenInput()
+        self.fields['otp_challenge'].widget = forms.HiddenInput()
+        self.fields['otp_token'].widget = genwidgets.TextInput()
 
 
 class AddProfileDigitalSignatureForm(GTForm):
@@ -90,11 +92,12 @@ class AddProfileDigitalSignatureForm(GTForm):
         'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'ds_transaction'
     ]
 
+
 class LaboratoryOfOrganizationForm(GTForm):
     laboratories = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all(),
                                                   widget=AutocompleteSelect(
-                                                    'laborgbase', attrs={
-                                                     'data-s2filter-organization': '.nodeorg:checked'})
+                                                      'laborgbase', attrs={
+                                                          'data-s2filter-organization': '.nodeorg:checked'})
                                                   )
 
 
@@ -110,10 +113,15 @@ class OrganizationForViewsetForm(forms.Form):
 
 class ProfileListForm(GTForm):
     profile = forms.ModelChoiceField(queryset=User.objects.all(),
-                                      widget=AutocompleteSelect('laborguserbase', attrs={
-                                              'data-s2filter-organization': '.nodeorg:checked',
-                                              'data-s2filter-laboratory': '#id_laboratories',
-                                              'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
-                                              'data-dropdownparent': '#relprofilelabmodal'
-                                          })
-                                      )
+                                     widget=AutocompleteSelect('laborguserbase', attrs={
+                                         'data-s2filter-organization': '.nodeorg:checked',
+                                         'data-s2filter-laboratory': '#id_laboratories',
+                                         'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
+                                         'data-dropdownparent': '#relprofilelabmodal'
+                                     })
+                                     )
+
+
+class ContentypeForm(GTForm, forms.Form):
+    organization = forms.IntegerField()
+    contentyperelobj = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
