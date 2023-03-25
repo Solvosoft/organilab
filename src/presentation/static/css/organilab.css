@@ -77,10 +77,10 @@ img {
 }
 
 .bs-callout {
- padding:1.25rem;
- margin-top:1.25rem;
+ padding:0.5rem;
+ margin-top:0.75rem;
  border:1px solid #e9ecef;
- border-left-width:.25rem;
+ border-left-width:.15rem;
  border-radius:.25rem;
 }
 .bs-callout h4 {
@@ -122,6 +122,10 @@ img {
  color:#337ab7;
 }
 
+.bs-callout-default h6 {
+ color:#337ab7;
+}
+
 .center_block_content{
     width: 60%;
     margin-left: 20%;
@@ -129,7 +133,9 @@ img {
     margin-top: 5%;
 }
 
-
+.text-purple-400 {
+    color: #6f42c1;
+}
 
 .btedit span {
     font-color: #169F85!important;
@@ -185,4 +191,8 @@ img {
 }
 .card-margin-top{
     margin-top:3.3rem
+
+.dataTables_wrapper div:last-child {
+    margin-top: 2em;
+
 }

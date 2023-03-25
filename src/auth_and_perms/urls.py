@@ -1,6 +1,7 @@
 from django.urls import path, include, re_path
 
-from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, OrganizationAPI
+from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, OrganizationAPI, \
+    UserLaboratoryOrganization, UserInOrganization, DeleteUserFromContenttypeViewSet, ProfileToContenttypeObjectAPI
 from auth_and_perms.views import organizationstructure as orgstruct
 
 from rest_framework.routers import SimpleRouter
@@ -14,6 +15,10 @@ routes = SimpleRouter()
 
 routes.register('rol', RolAPI, 'api-rol' )
 routes.register('profilepermissionrol', UpdateRolOrganizationProfilePermission, 'api-rolbyorg' )
+routes.register('profilelaborgrol', UserLaboratoryOrganization, 'api-prolaborg' )
+routes.register('profileinorgrol', UserInOrganization, 'api-userinorg' )
+routes.register('deluserorgcontt', DeleteUserFromContenttypeViewSet, 'api-deluserorgcontt' )
+routes.register('relusertocontenttype', ProfileToContenttypeObjectAPI, 'api-relusertocontenttype' )
 
 app_name='auth_and_perms'
 

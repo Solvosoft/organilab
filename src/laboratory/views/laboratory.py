@@ -1,13 +1,11 @@
 # encoding: utf-8
 import uuid
 
-from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
@@ -22,9 +20,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
-from auth_and_perms.models import Profile, ProfilePermission, Rol
+from auth_and_perms.models import Profile, ProfilePermission
 from laboratory import utils
-
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations, \
@@ -40,7 +37,7 @@ class LaboratoryEdit(UpdateView):
     template_name = 'laboratory/edit.html'
     lab_pk_field = 'pk'
 
-    #fields = ['name', 'phone_number', 'location', 'geolocation']
+    # fields = ['name', 'phone_number', 'location', 'geolocation']
     form_class = LaboratoryEdit
 
     def get_context_data(self, **kwargs):
@@ -49,12 +46,12 @@ class LaboratoryEdit(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('laboratory:mylabs',kwargs={'org_pk':self.org})
+        return reverse('laboratory:mylabs', kwargs={'org_pk': self.org})
 
-    def form_valid(self,form):
+    def form_valid(self, form):
         laboratory = form.save()
         utils.organilab_logentry(self.request.user, laboratory, CHANGE, changed_data=form.changed_data,
-                           relobj=self.object)
+                                 relobj=self.object)
         return super(LaboratoryEdit, self).form_valid(form)
 
 
@@ -97,16 +94,17 @@ class LaboratoryView(object):
             path('delete/<int:pk>/', self.delete, name='laboratory_delete'),
         ]
 
+
 @method_decorator(permission_required('laboratory.add_laboratory'), name='dispatch')
 class CreateLaboratoryFormView(FormView):
     template_name = 'laboratory/laboratory_create.html'
     form_class = LaboratoryCreate
     success_url = ''
 
- #   def dispatch(self, request, *args, **kwargs):
- #       if not self.request.user.has_perm('laboratory.add_laboratory'):
- #           return render(request, 'laboratory/laboratory_notperm.html')
- #       return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
+    #   def dispatch(self, request, *args, **kwargs):
+    #       if not self.request.user.has_perm('laboratory.add_laboratory'):
+    #           return render(request, 'laboratory/laboratory_notperm.html')
+    #       return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
@@ -121,14 +119,14 @@ class CreateLaboratoryFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
-        utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data,
-                           relobj=self.object)
+        utils.organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
+                                 relobj=self.object)
 
         user = self.request.user
         admins = User.objects.filter(is_superuser=True)
         # TODO: This is necesary ?  all user has to be profile
         user.profile.laboratories.add(self.object)
-        for admin in admins: 
+        for admin in admins:
             if not hasattr(admin, 'profile'):
                 admin.profile = Profile.objects.create(user=admin)
             admin.profile.laboratories.add(self.object)
@@ -161,63 +159,37 @@ class CreateLaboratoryView(CreateView):
             return redirect(self.success_url)
 
 
-
-class LaboratoryListView(UserPassesTestMixin, ListView):
+@method_decorator(permission_required('laboratory.view_laboratory'), name='dispatch')
+class LaboratoryListView(ListView):
     model = Laboratory
-    template_name= 'laboratory/laboratory_list.html'
+    template_name = 'laboratory/laboratory_list.html'
     success_url = '/'
     paginate_by = 15
     ordering = ['name']
 
-    def test_func(self):
-        app_label = 'laboratory'
-        codename = 'view_laboratory'
-        org_pk = self.kwargs['org_pk']
-        labs = set(Laboratory.objects.filter(
-            Q(organization=org_pk) | Q(pk__in=
-                                       OrganizationStructureRelations.objects.filter(
-                                           organization=org_pk,
-                                           content_type__app_label='laboratory',
-                                           content_type__model="laboratory",
-                                       ).values_list('object_id', flat=True)
-                                       )
-        ).values_list('pk', flat=True))
-
-        profile_in = ProfilePermission.objects.filter(profile=self.request.user.profile,
-                                                      content_type__app_label='laboratory',
-                                                      content_type__model="laboratory",
-                                                      object_id__in=labs)
-
-        rols = profile_in.values_list('rol', flat=True)
-        rolsquery = Rol.objects.filter(
-            pk__in=rols,
-            permissions__content_type__app_label=app_label,
-            permissions__codename=codename
-        )
-
-        return rolsquery.exists()
-
     def get_queryset(self):
-        queryset=OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.org)
+        queryset = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.org)
         rel_lab = OrganizationStructureRelations.objects.filter(organization=self.org,
-            content_type__app_label='laboratory', content_type__model='laboratory').values_list('object_id', flat=True)
+                                                                content_type__app_label='laboratory',
+                                                                content_type__model='laboratory').values_list(
+            'object_id', flat=True)
 
         filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
         queryset = queryset.filter(filters).distinct()
         q = self.request.GET.get('search_fil', '')
         if q != "":
-            queryset = queryset.filter(name__icontains=q) 
+            queryset = queryset.filter(name__icontains=q)
         return queryset.order_by(*self.ordering)
 
 
 @method_decorator(permission_required('laboratory.delete_laboratory'), name='dispatch')
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory
-    template_name= 'laboratory/laboratory_delete.html'
+    template_name = 'laboratory/laboratory_delete.html'
     lab_pk_field = 'pk'
 
     def get_success_url(self):
-        return  "/"
+        return "/"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -229,6 +201,7 @@ class LaboratoryDeleteView(DeleteView):
         utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
 
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class HCodeReports(ListView):
@@ -242,7 +215,7 @@ class HCodeReports(ListView):
             q = form.cleaned_data['hcode']
         lista_reactivos = []
         if q:
-            lista_reactivos= filter_by_user_and_hcode(self.request.user, q)
+            lista_reactivos = filter_by_user_and_hcode(self.request.user, q)
         return lista_reactivos
 
     def get_filter_params(self):
@@ -250,7 +223,7 @@ class HCodeReports(ListView):
         form = H_CodeForm(self.request.GET)
         if form.is_valid():
             for code in form.cleaned_data['hcode']:
-                dev+='&hcode='+code.code
+                dev += '&hcode=' + code.code
         return dev
 
     def get_context_data(self, **kwargs):
@@ -259,6 +232,7 @@ class HCodeReports(ListView):
         context['params'] = self.get_filter_params()
         context['org_pk'] = self.org
         return context
+
 
 @permission_required('laboratory.view_registeruserqr')
 def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
@@ -277,13 +251,13 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
         'rel_obj_name': lab.name,
         'obj_qr': obj_qr,
         'org_pk': org_pk,
-        'domain': "file://%s"%( str(settings.MEDIA_ROOT).replace("/media/", ''),)
+        'domain': "file://%s" % (str(settings.MEDIA_ROOT).replace("/media/", ''),)
     }
 
     html = template.render(context=context)
     page = HTML(string=html, base_url=request.build_absolute_uri(), encoding='utf-8').write_pdf()
     response = HttpResponse(page, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="register_user_qr_%s%s%s.pdf"'%(org_pk, lab_pk, pk)
+    response['Content-Disposition'] = 'attachment; filename="register_user_qr_%s%s%s.pdf"' % (org_pk, lab_pk, pk)
     return response
 
 
@@ -313,10 +287,8 @@ class RegisterUserQRList(ListView):
         return queryset
 
 
-
 @permission_required('laboratory.add_registeruserqr')
 def manage_register_qr(request, org_pk, lab_pk, pk=None):
-
     obj = None
     user = request.user
     schema = request.scheme + "://"
@@ -334,8 +306,9 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
         if form.is_valid():
             organization_register = form.cleaned_data['organization_register']
             instance = form.save()
-            url = domain + reverse('laboratory:login_register_user_qr', kwargs={'org_pk': organization_register.pk, 'lab_pk': lab_pk,
-                                                                                'pk': instance.pk})
+            url = domain + reverse('laboratory:login_register_user_qr',
+                                   kwargs={'org_pk': organization_register.pk, 'lab_pk': lab_pk,
+                                           'pk': instance.pk})
             instance.url = url
             img, file = utils.generate_QR_img_file(url, user, extension_file=".svg", file_name="qrcode")
             instance.register_user_qr = img
@@ -343,7 +316,7 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
             file.close()
             messages.success(request, _("Element saved successfully"))
             utils.organilab_logentry(request.user, instance, action, 'register user QR', changed_data=form.changed_data,
-                           relobj=lab_pk)
+                                     relobj=lab_pk)
             return redirect(reverse('laboratory:list_register_user_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
         else:
             messages.error(request, _("Error, form is invalid"))
@@ -400,6 +373,7 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
         'laboratory': lab_pk,
         'qr_obj': register_qr.pk,
     })
+
 
 def login_register_user_qr(request, org_pk, lab_pk, pk):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
@@ -472,7 +446,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
         organilab_logentry(user, user_org, ADDITION, 'user organization',
                            changed_data=['organization', 'user'], relobj=org_pk)
 
-    #Login Log - relobj(USER) - action(CHANGE)
+    # Login Log - relobj(USER) - action(CHANGE)
     organilab_logentry(user, user, CHANGE, 'user', changed_data=['Login', qr_obj.pk], relobj=org)
 
 
