@@ -9,7 +9,7 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
             "org_pk": self.org.pk,
             "showapprove": "True",
             "offset": 0,
-            "limit": 10
+            "limit": 50
         }
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
@@ -21,7 +21,7 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
             "org_pk": self.org.pk,
             "showapprove": "False",
             "offset": 0,
-            "limit": 10
+            "limit": 50
         }
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
