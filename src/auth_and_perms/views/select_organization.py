@@ -1,21 +1,19 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
 
-from auth_and_perms.views.organizationstructure import getLevelClass, getTree
+from auth_and_perms.node_tree import get_organization_tree
 from laboratory.models import OrganizationStructure
-
-
 
 @login_required
 def select_organization_by_user(request, org_pk=None):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
-    parents = list(query_list)
+    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct().order_by('-parent')
+    parent_structure = list(query_list)
+    parents=query_list.values_list('pk', flat=True)
     nodes = []
     pks=[]
-    for node in parents:
+    for node in parent_structure:
         if node.pk not in pks:
-            getTrees(node, nodes, request.user, pks, level=0)
+            get_organization_tree(node, nodes, request.user, pks, level=0, parents=parents, append_info=False)
 
     context = {
         'nodes': nodes,
@@ -23,13 +21,3 @@ def select_organization_by_user(request, org_pk=None):
     }
 
     return render(request, 'auth_and_perms/select_organization.html', context=context)
-
-def getTrees(node, structure, user, pks, level=0):
-
-    structure+=[(node,getLevelClass(level))]
-    pks.append(node.pk)
-
-    if node.children.exists():
-        for child in node.descendants().filter(organizationusermanagement__users=user):
-            if child.pk not in pks:
-                getTrees(child, structure, user, pks, level=level+1)

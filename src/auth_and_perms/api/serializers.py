@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
 
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
-from auth_and_perms.templatetags.user_rol_tags import get_roles
+from auth_and_perms.utils import get_roles_in_html
 from laboratory.models import OrganizationStructure, Laboratory
 
 
@@ -89,7 +89,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_rols(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
         org = self.context['view'].organization
-        rol = get_roles(obj.pk, contenttypeobj, org)
+        rol = get_roles_in_html(obj.pk, contenttypeobj, org)
         if not rol:
             datatext = """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
                 org.pk, obj.pk, contenttypeobj._meta.app_label, contenttypeobj._meta.model_name, contenttypeobj.pk
