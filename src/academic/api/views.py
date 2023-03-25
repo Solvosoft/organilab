@@ -6,6 +6,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.api import serializers
+from academic.api.forms import ValidateReviewSubstanceForm
 from sga.models import ReviewSubstance
 
 
@@ -23,14 +24,20 @@ class ReviewSubstanceViewSet(viewsets.ModelViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        org_pk = self.request.GET.get('org_pk', None)
-        showapprove = self.request.GET.get('showapprove', None)
+        org_pk, showapprove = None, None
+
+        if self.request.method == "GET":
+            form = ValidateReviewSubstanceForm(self.request.GET)
+
+            if form.is_valid():
+                org_pk = form.cleaned_data['org_pk']
+                showapprove = form.cleaned_data['showapprove']
 
         if org_pk:
             queryset = queryset.filter(substance__organization__pk=org_pk)
 
             if showapprove is not None:
-                if eval(showapprove):
+                if showapprove:
                     queryset = queryset.filter(is_approved=True)
                 else:
                     queryset = queryset.filter(is_approved=False)
