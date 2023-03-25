@@ -68,6 +68,12 @@ function add_rol_org(url, data){
       success: function( data ) {
           datatableuserpermelement.ajax.reload();
           datatableorpermelement.ajax.reload();
+          $('#addrolmodal').modal('hide');
+          Swal.fire({
+          icon: 'success',
+          title: gettext('Your rol was set successfully'),
+          text: gettext('Now you can set this rol in laboratory user table'),
+        })
       },
       error: function( jqXHR, textStatus, errorThrown ){
         Swal.fire({
@@ -219,30 +225,6 @@ function applyasrole(elementid, profile){
     $("#modal"+element.dataset.org).modal('show');
 }
 
-
-//$(".applyasrole").on('click', applyasrole);
-$(".applybycontenttype").on('click', function(e){
-    document.contextroletable.as_conttentype=true;
-    document.contextroletable.as_user=false;
-    document.contextroletable.user=null;
-    document.contextroletable.as_role=false;
-    document.contextroletable.profile=null;
-    document.contextroletable.contenttypeobj=Object.assign({}, e.target.dataset);
-    $("#modal"+e.target.dataset.org).modal('show');
-});
-
-
-
-$(".applybyuser").on('click', function(e){
-    document.contextroletable.as_role=false;
-    document.contextroletable.as_conttentype=false;
-    document.contextroletable.contenttypeobj=null;
-    document.contextroletable.as_user=true;
-    document.contextroletable.profile=e.target.dataset.user;
-    $("#modal"+e.target.dataset.org).modal('show');
-});
-
-
 $(".userbtnadd").on('click', function(e){
     document.contextroletable.as_conttentype=true;
     document.contextroletable.as_user=false;
@@ -253,9 +235,7 @@ $(".userbtnadd").on('click', function(e){
     $("#modaluser"+e.target.dataset.id).modal('show');
 });
 
-document.profileroleselects={
-
-}
+document.profileroleselects={}
 
 
 function add_selected_elements_to_select2(rols, data){
@@ -394,18 +374,6 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
     var organizationinput = $('#relOrganizationmodal input[name="organization"]');
     organizationinput.val(this.dataset.org)
     $(select).val(null).trigger('change');
-/**
-    $.ajax({
-      type: "GET",
-      url: url,
-      data: document.contextroletable,
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_data_to_select(select),
-      dataType: 'json'
-    });
-    $(select).select2({theme: 'bootstrap-5',  dropdownParent: $("#relOrganizationmodal")});
-    **/
     $("#relOrganizationmodal").modal('show');
 });
 

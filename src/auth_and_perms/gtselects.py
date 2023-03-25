@@ -151,7 +151,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         users = []
         for org in set(orgs):
             users += list(get_users_from_organization(org.pk, org=org, userfilters={'users__isnull': False}))
-        return self.model.objects.filter(pk__in=set(users))
+        return self.model.objects.filter(pk__in=set(users)).order_by('pk')
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
