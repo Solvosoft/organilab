@@ -9,8 +9,8 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView
-
-from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, LaboratoryOfOrganizationForm, \
+from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, ContentypeForm
+from auth_and_perms.forms import LaboratoryOfOrganizationForm, \
     ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from auth_and_perms.node_tree import get_organization_tree
@@ -247,9 +247,10 @@ class AddUser(CreateView):
 @permission_required("laboratory.change_organizationusermanagement")
 def add_contenttype_to_org(request):
     "contentyperelobj organization"
-    contentyperelobj = request.POST.getlist('contentyperelobj', [])
-    organization = get_object_or_404(OrganizationStructure, pk=request.POST.get('organization', '0'))
-    if organization and contentyperelobj:
+    form = ContentypeForm(request.POST)
+    if form.is_valid():
+        organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+        contentyperelobj = form.cleaned_data['contentyperelobj'].values_list('pk',flat=True)
         for obj in contentyperelobj:
             OrganizationStructureRelations.objects.create(
                 organization=organization,
