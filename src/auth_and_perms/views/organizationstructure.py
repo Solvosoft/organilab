@@ -26,8 +26,8 @@ from laboratory.views.djgeneric import ListView, DeleteView
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
-    parents=list(query_list.order_by('-parent'))
+    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct()
+    parents=list(query_list.order_by('level'))
     parents_pks=set(query_list.values_list('pk', flat=True))
     nodes = []
     pks=[]
