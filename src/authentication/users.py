@@ -44,11 +44,10 @@ class ChangeUser(UpdateView):
 
 @login_required
 @permission_required("auth_and_perms.view_profile")
-def get_profile(request, *args, **kwargs):
-    org=kwargs.get('org_pk')
-    profile = get_object_or_404(Profile, user__pk=kwargs.get('pk'))
+def get_profile(request, org_pk, pk):
+    profile = get_object_or_404(Profile, user__pk=pk)
     context={
-        'org_pk':org,
+        'org_pk':org_pk,
         'profile':profile
     }
     return render(request,'laboratory/profile_detail.html', context=context)

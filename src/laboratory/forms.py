@@ -509,3 +509,25 @@ class ShelfObjectListForm(GTForm, forms.Form):
     lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
     id = forms.IntegerField(required=True)
 
+
+#VALIDATE DATA FORMS
+class FurnitureLabRoomForm(forms.Form):
+    labroom = forms.IntegerField(required=True)
+
+class InitialShelfObjectForm(forms.Form):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+    shelf = forms.IntegerField(widget=forms.HiddenInput)
+
+class ValidateShelfForm(forms.Form):
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+
+class ValidateShelfObjectForm(forms.Form):
+    col = forms.IntegerField(widget=forms.HiddenInput)
+    row = forms.IntegerField(widget=forms.HiddenInput)
+
+class ReservedProductsForm(forms.Form):
+    obj = forms.IntegerField(required=True)
+    user = forms.IntegerField(required=True)
+    status = forms.IntegerField(required=True)
+    initial_date = forms.DateTimeField(required=True)
