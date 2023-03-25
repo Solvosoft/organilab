@@ -49,10 +49,17 @@ def register_user_to_platform(request):
     }
     return render(request, 'auth_and_perms/create_user_organization.html', context=context)
 
-
-def create_user_organization(user, organization, form):
+def set_rol_administrator_on_org(profile, organization):
     group, _x = Group.objects.get_or_create(name='RegisterOrganization')
     rol = Rol.objects.create(name=_('Organization Management'))
+    ct=ContentType.objects.filter(app_label=organization._meta.app_label, model=organization._meta.model_name).first()
+    pp, none=ProfilePermission.objects.get_or_create(profile=profile, content_type=ct, object_id=organization.pk)
+    rol.permissions.add(*[x for x in group.permissions.all()])
+    pp.rol.add(rol)
+    organization.rol.add(rol)
+
+def create_user_organization(user, organization, form):
+
     profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                      id_card=form.cleaned_data['id_card'],
                                      job_position=form.cleaned_data['job_position'])
@@ -60,10 +67,9 @@ def create_user_organization(user, organization, form):
                                           content_type=ContentType.objects.filter(
                                               app_label=profile._meta.app_label,
                                               model=profile._meta.model_name).first())
-    rol.permissions.add(*[x for x in group.permissions.all()])
-    pp.rol.add(rol)
+
     org = OrganizationStructure.objects.create(name=organization)
-    org.rol.add(rol)
+    set_rol_administrator_on_org(profile, org)
 
     orguserman = OrganizationUserManagement.objects.create(organization=org)
     orguserman.users.add(user)

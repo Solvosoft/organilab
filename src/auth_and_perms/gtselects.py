@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
@@ -11,7 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
 from laboratory.forms import  RelOrganizationPKIntForm
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations, \
+    OrganizationUserManagement, UserOrganization
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -37,8 +39,11 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        if not args:
-            raise
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+
         if self.organization is None:
             raise
         return super().list(request, *args, **kwargs)
@@ -59,6 +64,55 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return queryset
 
 
+@register_lookups(prefix="laborguserbase", basename="laborguserbase")
+class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
+    model = User
+    fields = ['username']
+    organization = None
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    organization=None
+    contenttypeobj=None
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                if form.cleaned_data['typeofcontenttype'] == 'laboratory':
+                    if form.cleaned_data['laboratory']:
+                        self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
+                elif form.cleaned_data['typeofcontenttype'] == 'organization':
+                        self.contenttypeobj = self.organization
+
+        if self.organization is None:
+            raise
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        orgByuser = OrganizationStructure.os_manager.organization_tree(self.organization.pk)
+        users = list(OrganizationUserManagement.objects.filter(
+            organization__in=orgByuser).values_list('users', flat=True))
+        queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
+        if self.contenttypeobj:
+            profiles = get_profile_by_organization(self.organization.pk)
+            profiles.filter(profilepermission__content_type__app_label= self.contenttypeobj._meta.app_label,
+                            profilepermission__content_type__model= self.contenttypeobj._meta.model_name,
+                            profilepermission__object_id=self.contenttypeobj.pk)
+            queryset = queryset.exclude(profile__in=profiles).distinct()
+
+        return queryset.order_by('first_name')
+
+    def get_text_display(self, obj):
+        if hasattr(obj, 'profile') and obj.profile:
+            return str(obj.profile)
+        return str(obj)
+
 @register_lookups(prefix="orguserbase", basename="orguserbase")
 class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     model = User
@@ -68,13 +122,20 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     organization=None
+    laboratory=None
+
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        if not args:
-            raise
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                if form.cleaned_data['laboratory']:
+                    self.laboratory = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+
         if self.organization is None:
             raise
         return super().list(request, *args, **kwargs)
@@ -90,7 +151,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         users = []
         for org in set(orgs):
             users += list(get_users_from_organization(org.pk, org=org, userfilters={'users__isnull': False}))
-        return self.model.objects.filter(pk__in=set(users))
+        return self.model.objects.filter(pk__in=set(users)).order_by('pk')
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -149,6 +210,40 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         if self.organization is None:
             raise Http404("Organization not found")
         return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="laborgbase", basename="laborgbase")
+class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
+    model = Laboratory
+    fields = ['name']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = GPaginatorMoreElements
+    order_by = ['name']
+    organization = None
+
+    def get_queryset(self):
+        labs = list(OrganizationStructureRelations.objects.filter(
+            organization=self.organization.pk,
+            content_type__app_label='laboratory', content_type__model='laboratory'
+        ).values_list('object_id', flat=True))
+        labs += list(self.organization.laboratory_set.all().values_list('pk', flat=True))
+        return Laboratory.objects.filter(pk__in=labs)
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+
+        if self.organization is None:
+            raise Http404("Organization not found")
+        return super().list(request, *args, **kwargs)
+
 
 
 @register_lookups(prefix="roluserorgbase", basename="roluserorgbase")

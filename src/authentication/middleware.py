@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http import Http404
 
 from auth_and_perms.models import ProfilePermission
@@ -31,7 +32,6 @@ class ProfileMiddleware:
         return Permission.objects.filter(**{user_groups_query: user_obj}).values_list('content_type__app_label', 'codename').order_by()
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        profile_in = None
         user = request.user
         lab_pk=None
         org_pk=None
@@ -40,22 +40,16 @@ class ProfileMiddleware:
         if user.is_superuser:
             return
 
-        if hasattr(user, 'profile'):
-            profile = user.profile
-        else:
+        if not hasattr(user, 'profile'):
             raise Http404("User has not profile")
 
+        profile = user.profile
         if 'org_pk' in view_kwargs and view_kwargs['org_pk']:
             org_pk = view_kwargs['org_pk']
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk']:
             lab_pk = view_kwargs['lab_pk']
-        elif 'lab_pk' in request.GET and request.GET['lab_pk']:
-            lab_pk = request.GET['lab_pk']
-        elif 'lab_pk' in request.POST and request.POST['lab_pk']:
-            lab_pk = request.POST['lab_pk']
-        elif 'lab' in request.GET and request.GET['lab']:
-            lab_pk = request.POST['lab']
-        elif hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
+
+        if hasattr(view_func, 'view_class') and hasattr(view_func.view_class, 'lab_pk_field') and \
                 view_func.view_class.lab_pk_field in view_kwargs and view_kwargs[view_func.view_class.lab_pk_field
                 ] is not None:
             lab_pk = view_kwargs[view_func.view_class.lab_pk_field]
@@ -63,31 +57,23 @@ class ProfileMiddleware:
                 view_kwargs[view_func.lab_pk_field] is not None:
             lab_pk = view_kwargs[view_func.lab_pk_field]
 
+        queryQ=Q(profile=profile, object_id=profile.pk,
+                 content_type__app_label=profile._meta.app_label,
+                 content_type__model=profile._meta.model_name)
+
         if lab_pk:
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type= ContentType.objects.get(app_label='laboratory',
-                                                                                                model="laboratory"),
-                                                          object_id=lab_pk).first()
-        if not profile_in and  org_pk:
-            profile_in = ProfilePermission.objects.filter(profile=user.profile,
-                                                          content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                                model="organizationstructure"),
-                                                          object_id=org_pk).first()
-        if not profile_in:
-            profile_in = ProfilePermission.objects.filter(profile=profile, object_id=profile.pk,
-                                                         content_type=ContentType.objects.filter(
-                                                         app_label=profile._meta.app_label,
-                                                          model=profile._meta.model_name).first()).first()
+            queryQ |= Q(profile=user.profile,object_id=lab_pk,
+                        content_type__app_label='laboratory',  content_type__model="laboratory")
+        if org_pk:
+            queryQ |= Q(profile=user.profile, object_id=org_pk,
+                        content_type__app_label='laboratory', content_type__model="organizationstructure")
 
-        if profile_in:
-            roles = profile_in.rol.all()
-            user_permissions = []
-            for rol in roles:
-                user_permissions += list(rol.permissions.values_list('content_type__app_label', 'codename').order_by())
+        profile_in = ProfilePermission.objects.filter(queryQ)
 
-            user_permissions += list(
-                request.user.user_permissions.values_list('content_type__app_label', 'codename').order_by())
-            user_permissions += list(self.get_group_permissions(request.user))
+        perms = list(profile_in.values_list('rol__permissions__content_type__app_label', 'rol__permissions__codename'))
+        user_perms = list(request.user.user_permissions.values_list('content_type__app_label', 'codename'))
+        group_permissions = list(self.get_group_permissions(request.user))
 
-            if user_permissions:
-                request.user._perm_cache = {"%s.%s" % (ct, name) for ct, name in user_permissions}
+        user_permissions = perms+user_perms+group_permissions
+        if user_permissions:
+            request.user._perm_cache = {"%s.%s" % (ct, name) for ct, name in user_permissions}

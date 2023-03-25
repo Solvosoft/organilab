@@ -1,20 +1,19 @@
-from django import forms
-from django.contrib.admin.models import ADDITION
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import User, Group
-from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, get_object_or_404, redirect
-from django.template.loader import render_to_string
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView
-from django.conf import settings
-from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm
+
+from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, LaboratoryOfOrganizationForm, \
+    ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
+from auth_and_perms.node_tree import get_organization_tree
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm, RelOrganizationForm
@@ -24,76 +23,32 @@ from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import ListView, DeleteView
 
 
-def getLevelClass(level):
-    color = {
-        0: 'default',
-        1: 'danger',
-        2: 'info',
-        3: 'warning',
-        4: 'default',
-        5: 'danger',
-        6: 'info'
-
-    }
-    level = level % 6
-    cl="col-md-12"
-    if level:
-        cl="col-md-%d offset-md-%d"%(12-level, level)
-    return cl, color[level]
-
-def getNodeInformation(node):
-    users=[]
-    labs = node.laboratory_set.all()
-    for orguser in node.organizationusermanagement_set.all():
-        users += list(orguser.users.all())
-
-    return {
-        'node': node,
-        'users': users,
-        'labs': labs
-    }
-
-def getTree(node, structure, user, pks, level=0):
-
-    klss=list(getLevelClass(level))
-    pks.append(node.pk)
-    klss.insert(0, getNodeInformation(node))
-    structure.append(klss)
-
-    if node.children.exists():
-        for child in node.descendants().filter(organizationusermanagement__users=user):
-            if child.pk not in pks:
-                getTree(child, structure, user, pks, level=level+1)
-
-
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user)
-    parents=list(query_list)
+    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct()
+    parents=list(query_list.order_by('level'))
+    parents_pks=set(query_list.values_list('pk', flat=True))
     nodes = []
     pks=[]
     for node in parents:
         if node.pk not in pks:
-            getTree(node, nodes,request.user,pks, level=0)
+            get_organization_tree(node, nodes,request.user,pks, level=0, parents=parents_pks, append_info=False)
 
     context={'nodes': nodes,
              'adduserform': AddUserForm(),
              'addrolform': AddProfileRolForm(),
              'addorgform': AddOrganizationForm(),
-             'relorgform': RelOrganizationForm()
+             'relorgform': RelOrganizationForm(),
+             'labform': LaboratoryOfOrganizationForm(),
+             'profileform': ProfileListForm(),
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)
 
 
 def user_in_many_org(user):
     user_management = OrganizationUserManagement.objects.filter(users__in=[user])
-
-    if user_management.exists():
-        if user_management.count() > 1:
-            return True
-        else:
-            return False
+    return user_management.count() > 1
 
 
 def delete_permissions(remove_perms_org, rol_list, user):
@@ -278,6 +233,7 @@ class AddUser(CreateView):
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
+
         send_email(self.request, user)
         organilab_logentry(user, user, ADDITION, 'user', changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
                            relobj=self.organization)
@@ -308,15 +264,13 @@ def add_contenttype_to_org(request):
 
 
 @permission_required("laboratory.change_organizationstructure")
+@require_http_methods(["POST"])
 def copy_rols(request, pk):
     org = get_object_or_404(OrganizationStructure, pk=pk)
-
-    if request.method == "POST":
-        form = AddRolForm(request.POST)
-
-        if form.is_valid():
-            org.rol.add(*form.cleaned_data['rols'])
-            messages.success(request, _("Element saved successfully"))
-        else:
-            messages.error(request, _("Error, form is invalid"))
+    form = AddRolForm(request.POST)
+    if form.is_valid():
+        org.rol.add(*form.cleaned_data['rols'])
+        messages.success(request, _("Element saved successfully"))
+    else:
+        messages.error(request, _("Error, form is invalid"))
     return redirect('auth_and_perms:organizationManager')
