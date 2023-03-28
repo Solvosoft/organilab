@@ -1,0 +1,245 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "userorg1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "userorg1",
+      "first_name": "User",
+      "last_name": "Org 1",
+      "email": "userorg1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "userorg2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "userorg2",
+      "first_name": "User",
+      "last_name": "Org 2",
+      "email": "userorg2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+        "name": "Gestión Laboratorio",
+        "color": "#337193",
+        "permissions": [1, 37, 38, 39]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+        "name": "Gestión Informes",
+        "color": "#337193",
+        "permissions": [475, 472, 473, 474]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+        "name": "Gestión Sustancias",
+        "color": "#337193",
+        "permissions": [29, 30, 31, 32]
+    }
+},
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organization 1",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": 1,
+      "name": "Child Organization 1",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization 2",
+      "position": 0,
+      "level": 0,
+      "rol": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": 2,
+      "name": "Child Organization 2",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "users": [2]
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Lab 1",
+      "phone_number": "88888888",
+      "location": "San José",
+      "geolocation": "9.895804362670006,-84.4325435324",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "rooms": [],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Lab 2",
+      "phone_number": "44444444",
+      "location": "San Miguel",
+      "geolocation": "9.32442142332,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "rooms": [],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "Lab 3",
+      "phone_number": "33333333",
+      "location": "San Antonio",
+      "geolocation": "9.354352434334343,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 2,
+      "rooms": [],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 4,
+    "fields": {
+      "name": "Lab 4",
+      "phone_number": "22222222",
+      "location": "San Andres",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 2,
+      "rooms": [],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [1, 2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [3, 4]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [2, 3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+        "profile": 2,
+        "content_type": 1,
+        "object_id": 3,
+        "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+        "profile": 2,
+        "content_type": 1,
+        "object_id": 4,
+        "rol": [1]
+    }
+  }
+]
