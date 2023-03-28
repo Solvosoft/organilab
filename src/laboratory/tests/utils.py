@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 from django.test import TestCase
 
+from auth_and_perms.models import Rol
 from laboratory.models import OrganizationStructure, Laboratory
 import base64
 
@@ -48,4 +50,41 @@ class BaseLaboratoryTasksSetUpTest(BaseSetUpTest):
         self.lab = Laboratory.objects.first()
         self.labroom = self.lab.rooms.first()
         self.client.force_login(self.user)
+        super().setUp()
+
+
+class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
+    fixtures = ["organization_manage_data.json"]
+
+    def setUp(self):
+        self.org1 = OrganizationStructure.objects.filter(name="Organization 1").first()
+        self.org2 = OrganizationStructure.objects.filter(name="Organization 2").first()
+        self.user_org1 = get_user_model().objects.filter(username="userorg1").first()
+        self.user_org2 = get_user_model().objects.filter(username="userorg2").first()
+        self.profile_org1 = self.user_org1.profile
+        self.profile_org2 = self.user_org2.profile
+        self.client_org1 = self.client
+        self.client_org2 = self.client
+        self.client_org1.force_login(self.user_org1)
+        self.client_org2.force_login(self.user_org2)
+        self.user1_org_list = OrganizationStructure.os_manager.filter_user_org(self.user_org1).distinct()
+        self.user2_org_list = OrganizationStructure.os_manager.filter_user_org(self.user_org2).distinct()
+        self.lab1_org1 = Laboratory.objects.get(name="Lab 1")
+        self.lab2_org1 = Laboratory.objects.get(name="Lab 2")
+        self.lab3_org2 = Laboratory.objects.get(name="Lab 3")
+        self.lab4_org2 = Laboratory.objects.get(name="Lab 4")
+        self.role_manage_lab = Rol.objects.get(name="Gestión Laboratorio")
+        self.base_data = {
+            'rols': [self.role_manage_lab.pk],
+            'as_role': True,
+            'as_user': False,         # REMOVE
+            'as_conttentype': False,  # REMOVE
+            'contenttypeobj': {
+                'model': 'laboratory',
+                'appname': 'laboratory'
+            },
+        }
+        self.lab_contenttype = ContentType.objects.filter(
+            app_label=self.base_data['contenttypeobj']['appname'],
+            model=self.base_data['contenttypeobj']['model']).first()
         super().setUp()
