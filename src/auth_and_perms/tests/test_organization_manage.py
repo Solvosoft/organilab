@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
 from auth_and_perms.models import ProfilePermission
@@ -23,7 +24,7 @@ class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
         pp = ProfilePermission.objects.filter(profile=self.profile2_org2,
                                               content_type=self.lab_contenttype,
                                               object_id=self.base_data['contenttypeobj']['objectid']).first()
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertFalse(self.role_manage_lab in pp.rol.all())
         self.assertFalse(self.org2 in self.user1_org_list)
 
@@ -61,7 +62,7 @@ class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
         pp = ProfilePermission.objects.filter(profile=self.profile2_org2,
                                               content_type=self.lab_contenttype,
                                               object_id=self.base_data['contenttypeobj']['objectid']).first()
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertFalse(not self.role_manage_lab in pp.rol.all())
         self.assertFalse(self.org2 in self.user1_org_list)
 
@@ -99,7 +100,7 @@ class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
         pp = ProfilePermission.objects.filter(profile=self.profile1_org1,
                                               content_type=self.lab_contenttype,
                                               object_id=self.base_data['contenttypeobj']['objectid']).first()
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertNotEqual(pp.rol.all().count(), len(self.base_data['rols']))
         self.assertFalse(self.role_manage_lab in pp.rol.all())
         self.assertTrue(self.org1 in self.user2_org_list)
@@ -125,7 +126,7 @@ class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
         self.assertTrue(self.org1 in self.user1_org_list)
 
 
-class ProfilePermissionViewTest(BaseOrganizatonManageSetUpTest):
+class ProfilePermissionLabViewTest(BaseOrganizatonManageSetUpTest):
 
     def setUp(self):
         super().setUp()
@@ -135,9 +136,9 @@ class ProfilePermissionViewTest(BaseOrganizatonManageSetUpTest):
             'disable_user': False
         }
 
-    def test_user1_delete_profilepermissions3(self):
+    def test_user1_delete_profilepermissionslab1profile3(self):
         """
-        Usuario 1 elimina profilepermission 3 en una org de la cual SI es miembro, CASO PERMITIDO
+        Usuario 1 elimina profilepermission lab 1 perfil 3 en una org de la cual SI es miembro, CASO PERMITIDO
         """
 
         url = reverse("auth_and_perms:api-deluserorgcontt-list")
@@ -154,9 +155,9 @@ class ProfilePermissionViewTest(BaseOrganizatonManageSetUpTest):
         self.assertFalse(pp.exists())
         self.assertTrue(self.org1 in self.user1_org_list)
 
-    def test_user2_delete_profilepermissions3(self):
+    def test_user2_delete_profilepermissionslab1profile3(self):
         """
-        Usuario 2 elimina profilepermission 3 en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
+        Usuario 2 elimina profilepermission lab 1 perfil 3 en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
         """
 
         url = reverse("auth_and_perms:api-deluserorgcontt-list")
@@ -169,6 +170,57 @@ class ProfilePermissionViewTest(BaseOrganizatonManageSetUpTest):
         pp = ProfilePermission.objects.filter(profile=self.profile3_org1,
                                               content_type=self.lab_contenttype,
                                               object_id=self.base_data['object_id'])
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(pp.exists())
+        self.assertFalse(self.org1 in self.user2_org_list)
+
+class ProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
+
+    def setUp(self):
+        super().setUp()
+        self.base_data = {
+            'app_label': 'laboratory',
+            'model': 'organizationstructure',
+            'disable_user': False
+        }
+        self.org_contenttype = ContentType.objects.filter(
+            app_label=self.base_data['app_label'],
+            model=self.base_data['model']).first()
+
+    def test_user1_delete_profilepermissionsorg1profile3(self):
+        """
+        Usuario 1 elimina profilepermission org 1 lab 3 en una org de la cual SI es miembro, CASO PERMITIDO
+        """
+
+        url = reverse("auth_and_perms:api-deluserorgcontt-list")
+        self.base_data.update({
+            'object_id': self.org1.pk,
+            'profile': self.profile3_org1.pk,
+            'organization': self.org1.pk,
+        })
+        response = self.client1_org1.delete(url, data=json.dumps(self.base_data), content_type='application/json')
+        pp = ProfilePermission.objects.filter(profile=self.profile3_org1,
+                                              content_type=self.org_contenttype,
+                                              object_id=self.base_data['object_id'])
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(pp.exists())
+        self.assertTrue(self.org1 in self.user1_org_list)
+
+    def test_user2_delete_profilepermissionsorg1profile3(self):
+        """
+        Usuario 2 elimina profilepermission org 1 perfil 3 en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
+        """
+
+        url = reverse("auth_and_perms:api-deluserorgcontt-list")
+        self.base_data.update({
+            'object_id': self.org1.pk,
+            'profile': self.profile3_org1.pk,
+            'organization': self.org1.pk,
+        })
+        response = self.client2_org2.delete(url, data=json.dumps(self.base_data), content_type='application/json')
+        pp = ProfilePermission.objects.filter(profile=self.profile3_org1,
+                                              content_type=self.org_contenttype,
+                                              object_id=self.base_data['object_id'])
+        self.assertEqual(response.status_code, 403)
         self.assertTrue(pp.exists())
         self.assertFalse(self.org1 in self.user2_org_list)
