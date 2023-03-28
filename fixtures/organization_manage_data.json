@@ -3,13 +3,13 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "userorg1pass",
+      "password": "user1org1pass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": false,
-      "username": "userorg1",
-      "first_name": "User",
+      "username": "user1org1",
+      "first_name": "User 1",
       "last_name": "Org 1",
-      "email": "userorg1@gmail.com",
+      "email": "user1org1@gmail.com",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -21,13 +21,31 @@
     "model": "auth.user",
     "pk": 2,
     "fields": {
-      "password": "userorg2pass",
+      "password": "user2org2pass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": false,
-      "username": "userorg2",
-      "first_name": "User",
+      "username": "user2org2",
+      "first_name": "User 2",
       "last_name": "Org 2",
-      "email": "userorg2@gmail.com",
+      "email": "user2org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "user3org1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user3org1",
+      "first_name": "User 3",
+      "last_name": "Org 1",
+      "email": "user3org1@gmail.com",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -111,7 +129,7 @@
     "pk": 1,
     "fields": {
       "organization": 1,
-      "users": [1]
+      "users": [1, 3]
     }
   },
   {
@@ -213,6 +231,17 @@
     }
   },
   {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "6666-6666",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [3, 4]
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
@@ -240,6 +269,16 @@
         "content_type": 1,
         "object_id": 4,
         "rol": [1]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 4,
+    "fields": {
+        "profile": 3,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [2, 3]
     }
   }
 ]
