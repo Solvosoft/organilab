@@ -54,6 +54,24 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "user4org2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user4org2",
+      "first_name": "User 4",
+      "last_name": "Org 2",
+      "email": "user4org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
@@ -168,7 +186,7 @@
       "email": "",
       "coordinator": "",
       "unit": "",
-      "organization": 1,
+      "organization": 2,
       "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
@@ -185,7 +203,7 @@
       "email": "",
       "coordinator": "",
       "unit": "",
-      "organization": 2,
+      "organization": 1,
       "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
@@ -202,7 +220,7 @@
       "email": "",
       "coordinator": "",
       "unit": "",
-      "organization": 2,
+      "organization": 4,
       "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
@@ -216,7 +234,7 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1, 2]
+      "laboratories": [1, 3]
     }
   },
   {
@@ -227,7 +245,7 @@
       "phone_number": "7777-7777",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [3, 4]
+      "laboratories": [2, 4]
     }
   },
   {
@@ -238,7 +256,18 @@
       "phone_number": "6666-6666",
       "id_card": "0-0000-0000",
       "job_position": "Student",
-      "laboratories": [3, 4]
+      "laboratories": [1, 3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [2, 4]
     }
   },
   {
