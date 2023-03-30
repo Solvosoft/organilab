@@ -72,6 +72,24 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "user5org3pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user5org3",
+      "first_name": "User 5",
+      "last_name": "Org 3",
+      "email": "user5org3@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
@@ -143,6 +161,17 @@
     }
   },
   {
+    "model": "laboratory.organizationstructure",
+    "pk": 5,
+    "fields": {
+      "parent": null,
+      "name": "Organization 3",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3]
+    }
+  },
+  {
     "model": "laboratory.organizationusermanagement",
     "pk": 1,
     "fields": {
@@ -155,7 +184,15 @@
     "pk": 2,
     "fields": {
       "organization": 2,
-      "users": [2]
+      "users": [2, 4]
+    }
+  },
+  {
+    "model": "laboratory.organizationusermanagement",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "users": [5]
     }
   },
   {
@@ -227,6 +264,23 @@
     }
   },
   {
+    "model": "laboratory.laboratory",
+    "pk": 5,
+    "fields": {
+      "name": "Lab 5",
+      "phone_number": "55555555",
+      "location": "Turrialba",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 5,
+      "rooms": [],
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -271,6 +325,17 @@
     }
   },
   {
+    "model": "auth_and_perms.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Admin",
+      "laboratories": [5]
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
@@ -284,15 +349,25 @@
     "model": "auth_and_perms.profilepermission",
     "pk": 2,
     "fields": {
-        "profile": 2,
+        "profile": 3,
         "content_type": 1,
-        "object_id": 3,
-        "rol": []
+        "object_id": 1,
+        "rol": [2]
     }
   },
   {
     "model": "auth_and_perms.profilepermission",
     "pk": 3,
+    "fields": {
+        "profile": 3,
+        "content_type": 30,
+        "object_id": 1,
+        "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 4,
     "fields": {
         "profile": 2,
         "content_type": 1,
@@ -302,12 +377,80 @@
   },
   {
     "model": "auth_and_perms.profilepermission",
+    "pk": 5,
+    "fields": {
+      "profile": 5,
+      "content_type": 1,
+      "object_id": 5,
+      "rol": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 6,
+    "fields": {
+      "profile": 2,
+      "content_type": 30,
+      "object_id": 2,
+      "rol": [1]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 7,
+    "fields": {
+      "profile": 4,
+      "content_type": 30,
+      "object_id": 2,
+      "rol": [1]
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+        "organization": 1,
+        "user": 1,
+        "status": true
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 2,
+    "fields": {
+        "organization": 1,
+        "user": 3,
+        "status": true
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 3,
+    "fields": {
+        "organization": 2,
+        "user": 2,
+        "status": true
+    }
+},
+  {
+    "model": "laboratory.userorganization",
     "pk": 4,
     "fields": {
-        "profile": 3,
-        "content_type": 1,
-        "object_id": 1,
-        "rol": [2, 3]
+        "organization": 2,
+        "user": 4,
+        "status": true
     }
-  }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 5,
+    "fields": {
+        "organization": 3,
+        "user": 5,
+        "status": true
+    }
+}
 ]
