@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
+from django.urls import reverse
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 from django.test import TestCase
@@ -52,6 +53,7 @@ class BaseLaboratoryTasksSetUpTest(BaseSetUpTest):
         self.labroom = self.lab.rooms.first()
         self.client.force_login(self.user)
 
+
 class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
     fixtures = ["organization_manage_data.json"]
 
@@ -61,6 +63,7 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         #ORG
         self.org1 = OrganizationStructure.objects.filter(name="Organization 1").first()
         self.org2 = OrganizationStructure.objects.filter(name="Organization 2").first()
+        self.org3 = OrganizationStructure.objects.filter(name="Organization 3").first()
 
         #USER
         self.user1_org1 = get_user_model().objects.filter(username="user1org1").first()
@@ -91,8 +94,21 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         self.lab_contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
         self.org_contenttype = ContentType.objects.filter(app_label='laboratory', model='organizationstructure').first()
 
+class BaseSetUpAjaxRequest(BaseOrganizatonManageSetUpTest):
+    def setUp(self):
+        super().setUp()
+
         #CLIENT - LOGIN
         self.client1_org1 = self.client
         self.client2_org2 = self.client
         self.client1_org1.force_login(self.user1_org1)
         self.client2_org2.force_login(self.user2_org2)
+
+
+class BaseSetUpDjangoRequest(BaseOrganizatonManageSetUpTest):
+    fixtures = ["organization_manage_data.json"]
+
+    def setUp(self):
+        super().setUp()
+
+        self.org = self.org3
