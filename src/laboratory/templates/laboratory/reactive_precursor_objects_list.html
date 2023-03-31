@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n laboratory static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
 	{% define_urlname_action 'reactive_precursor_object_list' %}
 	{% define_urlname_action 'reports_objects' %}
