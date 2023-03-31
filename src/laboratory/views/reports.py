@@ -11,10 +11,11 @@ import django_excel
 from django import forms
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
+from django.core.files.base import ContentFile
 from django.db.models.aggregates import Sum, Min
 from django.http import Http404
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
@@ -27,15 +28,19 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 
-from laboratory.forms import H_CodeForm
+from laboratory.forms import H_CodeForm, ReportForm, TasksForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, SustanceCharacteristics, PrecursorReport
+    OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
 from laboratory.models import ObjectLogChange
+from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from sga.forms import SearchDangerIndicationForm
+from laboratory import register
+from django.utils.module_loading import import_string
+from django.urls import reverse
 
 
 def make_book_organization_laboratory(objects):
@@ -420,9 +425,9 @@ def report_objects(request, *args, **kwargs):
     return response
 
 
-
 @permission_required('laboratory.do_report')
 def report_reactive_precursor_objects(request, *args, **kwargs):
+
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
     org = kwargs.get('org_pk')
@@ -466,6 +471,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     response['Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
 
     return response
+
 
 
 def make_book_furniture_objects(furnitures):
@@ -629,6 +635,8 @@ class ReactivePrecursorObjectList(ListView):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
         context['all_labs'] = self.all_labs
+        context['form'] = ReportForm(lab=self.lab, report='reactive_precursor')
+
         return context
 
     def get_queryset(self):
@@ -1020,3 +1028,66 @@ def search_danger_indication_report(request):
         form = SearchDangerIndicationForm()
 
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
+
+@login_required
+def create_request_by_report(request):
+
+    type_report = None
+    form = None
+    task_celery = None
+    result = False
+
+    if 'report_name' in request.GET:
+        type_report = register.REPORT_FORMS[request.GET['report_name']]
+        x= import_string(type_report['form'])
+        form = x(request.GET)
+
+        if form.is_valid():
+            format=form.cleaned_data['format']
+            result=True
+            task = TaskReport.objects.create(
+                creator=request.user,
+                type_report=form.cleaned_data['report_name'],
+                status=_("On hold"),
+                file_type=format,
+                data=request.GET
+            )
+
+            method = import_string(type_report['task'])
+            task_celery=method.delay(task.pk)
+            task_celery=task_celery.task_id
+
+            return JsonResponse({'result': result, 'report': task.pk, 'celery_id':task_celery})
+        return JsonResponse({'result': result})
+    return JsonResponse({'result': result})
+
+@login_required
+def download_report(request):
+    from django_celery_results.models import TaskResult
+    form = TasksForm(request.GET)
+    task = None
+    result = None
+    if form.is_valid():
+        task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+        if result:
+            if task.status==_('Generated') and result.status=='SUCCESS':
+                task.status=_('Delivered')
+                task.save()
+                if task.file_type=='html':
+                    return JsonResponse({'result': True, 'url_file':reverse('laboratory:report_table',kwargs={'lab_pk':task.data['laboratory'],'pk':task.pk}) ,'type_report':task.file_type})
+                else:
+                    return JsonResponse({'result': True, 'url_file': task.file.url})
+            else:
+                return JsonResponse({'result': False})
+        else:
+            return JsonResponse({'result': False})
+    return JsonResponse({'result': False})
+
+@login_required
+def report_table(request, lab_pk, pk):
+    task = TaskReport.objects.filter(pk=pk).first()
+    title = register.REPORT_FORMS[task.type_report]['title']
+
+    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title})
+

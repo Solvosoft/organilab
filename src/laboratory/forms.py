@@ -531,3 +531,28 @@ class ReservedProductsForm(forms.Form):
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
+
+class ReportForm(GTForm,forms.Form):
+    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
+    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
+    laboratory = forms.IntegerField(widget=forms.HiddenInput())
+    report_name = forms.CharField(widget=forms.HiddenInput())
+    format = forms.ChoiceField(widget=genwidgets.Select,choices=(
+        ('html', _('On screen')),
+        ('pdf', _('PDF')),
+        ('xls', 'XSL'),
+        ('xlsx', 'XLSX'),
+        ('ods', 'ODS')
+    ), required=False,label=_('Format'))
+
+    def __init__(self, *args, **kwargs):
+        lab = kwargs.pop('lab', None)
+        report = kwargs.pop('report', None)
+        super(ReportForm, self).__init__(*args, **kwargs)
+        if lab and report:
+            self.fields['laboratory'].initial = lab
+            self.fields['report_name'].initial = report
+
+class TasksForm(GTForm,forms.Form):
+    taskreport = forms.IntegerField( required=True)
+    task = forms.CharField(max_length=255,required=True)
