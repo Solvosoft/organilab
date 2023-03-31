@@ -2,13 +2,13 @@ import json
 
 from django.urls import reverse
 
-from auth_and_perms.models import ProfilePermission, Profile
+from auth_and_perms.models import ProfilePermission, Profile, Rol
 from laboratory.models import OrganizationUserManagement, UserOrganization
-from laboratory.tests.utils import BaseOrganizatonManageSetUpTest
+from laboratory.tests.utils import BaseSetUpAjaxRequest, BaseSetUpDjangoRequest
 from laboratory.utils import get_profile_by_organization
 
 
-class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
+class ActionRolViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -119,7 +119,7 @@ class ActionRolViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(pp.rol.all().count(), len(data['rols']))
         self.assertTrue(self.role_manage_lab in pp.rol.all())
 
-class DeleteProfilePermissionLabViewTest(BaseOrganizatonManageSetUpTest):
+class DeleteProfilePermissionLabViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -182,7 +182,7 @@ class DeleteProfilePermissionLabViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(pp.exists())
 
-class CreateProfilePermissionLabViewTest(BaseOrganizatonManageSetUpTest):
+class CreateProfilePermissionLabViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -222,7 +222,7 @@ class CreateProfilePermissionLabViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(response.status_code, 201)
         self.assertTrue(pp.exists())
 
-class ListProfileLabViewTest(BaseOrganizatonManageSetUpTest):
+class ListProfileLabViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -292,7 +292,7 @@ class ListProfileLabViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(self.profiles.count(), len(response_data))
         self.assertContains(response, self.profiles.first().user.get_full_name())
 
-class DeleteProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
+class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -309,7 +309,7 @@ class DeleteProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
 
     def test_user1_delete_profilepermissionsorg1profile3(self):
         """
-        Usuario 1 elimina profilepermission org 1 lab 3 en una org de la cual SI es miembro, CASO PERMITIDO
+        Usuario 1 elimina profilepermission3 org 1 de la cual SI es miembro, CASO PERMITIDO
         """
 
         data = self.base_data
@@ -337,7 +337,7 @@ class DeleteProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
 
     def test_user2_delete_profilepermissionsorg1profile3(self):
         """
-        Usuario 2 elimina profilepermission org 1 perfil 3 en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
+        Usuario 2 elimina profilepermission3 org 1 la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
         """
 
         data = self.base_data
@@ -363,7 +363,7 @@ class DeleteProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
         if self.orgum:
             self.assertTrue(self.orgum.users.filter(profile=self.profile3_org1).exists())
 
-class CreateProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
+class CreateProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -401,7 +401,7 @@ class CreateProfilePermissionOrgViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(response.status_code, 201)
         self.assertTrue(pp.exists())
 
-class ListProfileOrgViewTest(BaseOrganizatonManageSetUpTest):
+class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
 
     def setUp(self):
         super().setUp()
@@ -472,3 +472,113 @@ class ListProfileOrgViewTest(BaseOrganizatonManageSetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.profiles.count(), len(response_data))
         self.assertContains(response, self.profiles.first().user.get_full_name())
+
+class CreateRolViewTest(BaseSetUpAjaxRequest):
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("auth_and_perms:api-rol-list")
+
+    def test_user1_create_rol_org1_with_relaterols(self):
+        """
+        Usuario 1 crea rol con roles relacionados(copiado de permisos) de la org1 de la cual SI es miembro, CASO PERMITIDO
+        """
+
+        data = {
+            'name': "Gestión de reportes",
+            'relate_rols': [1, 2],
+            'rol': self.org1.pk,
+        }
+        response = self.client1_org1.post(self.url, data=data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(data['name'], json.loads(response.content)['name'])
+
+    def test_user1_create_rol_org1_without_relaterols(self):
+        """
+        Usuario 1 crea rol sin roles relacionados(copiado de permisos) de la org1 de la cual SI es miembro, CASO PERMITIDO
+        """
+
+        data = {
+            'name': "Gestión de sustancias",
+            'rol': self.org1.pk,
+        }
+        response = self.client1_org1.post(self.url, data=data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(data['name'], json.loads(response.content)['name'])
+
+    def test_user2_create_rol_org1_with_relaterols(self):
+        """
+        Usuario 2 crea rol con roles relacionados(copiado de permisos) de la org1 de la cual NO es miembro, CASO NO PERMITIDO
+        """
+
+        data = {
+            'name': "Gestión de reservaciones",
+            'relate_rols': [1, 2],
+            'rol': self.org1.pk,
+        }
+        response = self.client2_org2.post(self.url, data=data)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn(data['name'], json.loads(response.content)['name'])
+
+    def test_user2_create_rol_org1_without_relaterols(self):
+        """
+        Usuario 2 crea rol sin roles relacionados(copiado de permisos) de la org1 de la cual NO es miembro, CASO NO PERMITIDO
+        """
+
+        data = {
+            'name': "Revisión de sustancias",
+            'rol': self.org1.pk,
+        }
+        response = self.client2_org2.post(self.url, data=data)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn(data['name'], json.loads(response.content)['name'])
+
+class User1DeleteRolViewTest(BaseSetUpDjangoRequest):
+
+    def setUp(self):
+        super().setUp()
+        # CLIENT - LOGIN
+        self.client1_org1 = self.client
+        self.client1_org1.force_login(self.user1_org1)
+        self.rol = Rol.objects.get(name='Gestión de reporte de zonas de riesgo')
+        self.url = reverse("auth_and_perms:del_rol_by_org", kwargs={'org_pk': self.org.pk, 'pk': self.rol.pk})
+
+    def test_user1_delete_rol_org3(self):
+        """
+        Usuario 1 elimina rol de la org3 de la cual SI es miembro, CASO PERMITIDO
+        """
+
+        #VERIFICAR QUE EL ROL EXISTA ANTES DE SER ELIMINADO DE LA ORG
+        org_rol_check = self.org.rol.filter(pk=self.rol.pk)
+        self.assertTrue(org_rol_check.exists())
+
+        response = self.client1_org1.post(self.url)
+        org_rol_check = self.org.rol.filter(pk=self.rol.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(org_rol_check.exists())
+
+class User2DeleteRolViewTest(BaseSetUpDjangoRequest):
+
+    def setUp(self):
+        super().setUp()
+        # CLIENT - LOGIN
+        self.client2_org2 = self.client
+        self.client2_org2.force_login(self.user2_org2)
+        self.rol = Rol.objects.get(name='Reporte de zonas de riesgo')
+        self.url = reverse("auth_and_perms:del_rol_by_org", kwargs={'org_pk': self.org.pk, 'pk': self.rol.pk})
+
+    def test_user2_delete_rol_org3(self):
+        """
+        Usuario 2 intenta eliminar el rol de la org3 de la cual NO es miembro, CASO NO PERMITIDO(NO DEBERIA FALLAR)
+        """
+
+        # VERIFICAR QUE EL ROL EXISTA ANTES DE SER ELIMINADO DE LA ORG
+        org_rol_check = self.org.rol.filter(pk=self.rol.pk)
+        self.assertTrue(org_rol_check.exists())
+
+        response = self.client2_org2.post(self.url)
+        org_rol_check = self.org.rol.filter(pk=self.rol.pk)
+
+        #REDIRECIONA AL USER 2 QUE NO TIENE PERMISOS PARA ELIMINAR UN ROL DE UNA ORG DE LA CUAL NO ES MIEMBRO
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(org_rol_check.exists())
