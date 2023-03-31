@@ -1,6 +1,7 @@
 from django.urls import reverse
 
-from laboratory.models import Inform, CommentInform
+from laboratory.api.serializers import InformSerializer
+from laboratory.models import Inform, CommentInform, InformsPeriod
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 import json
 
@@ -10,7 +11,10 @@ class InformViewTest(BaseLaboratorySetUpTest):
     def test_get_inform_list(self):
         url = reverse("laboratory:get_informs", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.get(url)
+        inform_name_list = [inform.name for inform in response.context['informs']]
         self.assertEqual(response.status_code, 200)
+        self.assertIn('Gestión de laboratorio', inform_name_list)
+        self.assertTrue(response.context['informs'].count() > 0)
 
     def test_update_inform(self):
         url = reverse("laboratory:complete_inform", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": 1})
@@ -47,12 +51,18 @@ class InformViewTest(BaseLaboratorySetUpTest):
         self.assertNotIn("Reactivos mensuales despachados", list(Inform.objects.values_list("name", flat=True)))
 
     def test_api_informs_detail(self):
-        inform_list = Inform.objects.filter(organization=self.org)
+        period = InformsPeriod.objects.first()
+        inform_list = period.informs.all()
         url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk, })
-        response = self.client.get(url)
+        data = {
+            'period': period.pk
+        }
+        response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         content_obj = json.loads(response.content)
-        self.assertEqual(content_obj['recordsTotal'], inform_list.count())
+        serializer_obj = InformSerializer(inform_list.first()).data
+        self.assertIn(serializer_obj, content_obj['data'])
+        self.assertEqual(content_obj['recordsFiltered'], inform_list.count())
 
 class CommentInformViewTest(BaseLaboratorySetUpTest):
 

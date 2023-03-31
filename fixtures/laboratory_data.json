@@ -1519,5 +1519,20 @@
       "type_action": 0,
       "note": ""
     }
-  }
+  },
+  {
+    "model": "laboratory.informsperiod",
+    "pk": 1,
+    "fields": {
+        "scheduler": 1,
+        "organization": 1,
+        "inform_template": 1,
+        "creation_date": "2023-03-31",
+        "start_application_date": "2023-03-31",
+        "close_application_date": "2023-03-31",
+        "informs": [
+            1
+        ]
+    }
+}
 ]
