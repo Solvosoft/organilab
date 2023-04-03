@@ -28,7 +28,7 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 
-from laboratory.forms import H_CodeForm, ReportForm, TasksForm
+from laboratory.forms import H_CodeForm, TasksForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
 from laboratory.models import ObjectLogChange
@@ -37,6 +37,7 @@ from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_or
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from report.forms import ReportForm
 from sga.forms import SearchDangerIndicationForm
 from laboratory import register
 from django.utils.module_loading import import_string
@@ -635,7 +636,12 @@ class ReactivePrecursorObjectList(ListView):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
         context['all_labs'] = self.all_labs
-        context['form'] = ReportForm(lab=self.lab, report='reactive_precursor')
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context['form'] = ReportForm(initial={
+            'organization': self.org,
+            'report_name': 'reactive_precursor',
+            'laboratory': [lab_obj]
+        })
 
         return context
 
@@ -1058,6 +1064,9 @@ def create_request_by_report(request):
             task_celery=task_celery.task_id
 
             return JsonResponse({'result': result, 'report': task.pk, 'celery_id':task_celery})
+
+        else:
+            print(form.errors)
         return JsonResponse({'result': result})
     return JsonResponse({'result': result})
 
