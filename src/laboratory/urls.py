@@ -210,8 +210,8 @@ user_register_qr = [
 ]
 celery_reports = [
     path('reports/create/', reports.create_request_by_report, name='create_report_request'),
-    path('reports/', reports.download_report, name='generate_report'),
-    path('reports/table/<int:lab_pk>/<int:pk>', reports.report_table, name='report_table'),
+    path('reports/<int:org_pk>', reports.download_report, name='generate_report'),
+    path('reports/table/<int:org_pk>/<int:pk>', reports.report_table, name='report_table'),
 
 ]
 
@@ -250,6 +250,6 @@ urlpatterns += organization_urls + [
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
-    path('celery/', include(celery_reports))
+    path('celery/<int:lab_pk>/', include(celery_reports))
 
 ]  + edit_objects
