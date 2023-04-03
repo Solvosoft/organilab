@@ -640,7 +640,7 @@ class ReactivePrecursorObjectList(ListView):
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'reactive_precursor',
-            'laboratory': [lab_obj]
+            'laboratory': lab_obj
         })
 
         return context
@@ -1037,38 +1037,34 @@ def search_danger_indication_report(request):
 
 @login_required
 def create_request_by_report(request):
-
-    type_report = None
-    form = None
-    task_celery = None
-    result = False
+    response = {'result': False}
 
     if 'report_name' in request.GET:
         type_report = register.REPORT_FORMS[request.GET['report_name']]
-        x= import_string(type_report['form'])
-        form = x(request.GET)
 
-        if form.is_valid():
-            format=form.cleaned_data['format']
-            result=True
-            task = TaskReport.objects.create(
-                creator=request.user,
-                type_report=form.cleaned_data['report_name'],
-                status=_("On hold"),
-                file_type=format,
-                data=request.GET
-            )
+        if 'form' in type_report:
+            import_form = import_string(type_report['form'])
+            form = import_form(request.GET)
 
-            method = import_string(type_report['task'])
-            task_celery=method.delay(task.pk)
-            task_celery=task_celery.task_id
+            if form.is_valid():
+                format=form.cleaned_data['format']
+                response['result'] = True
+                task = TaskReport.objects.create(
+                    creator=request.user,
+                    type_report=form.cleaned_data['report_name'],
+                    status=_("On hold"),
+                    file_type=format,
+                    data=request.GET
+                )
 
-            return JsonResponse({'result': result, 'report': task.pk, 'celery_id':task_celery})
-
-        else:
-            print(form.errors)
-        return JsonResponse({'result': result})
-    return JsonResponse({'result': result})
+                method = import_string(type_report['task'])
+                task_celery=method.delay(task.pk)
+                task_celery=task_celery.task_id
+                response.update({
+                    'report': task.pk,
+                    'celery_id': task_celery
+                })
+    return JsonResponse(response)
 
 @login_required
 def download_report(request):
