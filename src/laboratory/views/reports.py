@@ -1036,7 +1036,7 @@ def search_danger_indication_report(request):
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
 
 @login_required
-def create_request_by_report(request):
+def create_request_by_report(request, lab_pk):
     response = {'result': False}
 
     if 'report_name' in request.GET:
@@ -1048,13 +1048,18 @@ def create_request_by_report(request):
 
             if form.is_valid():
                 format=form.cleaned_data['format']
+
+                data = request.GET.copy()
+
+                data['laboratory'] = form.cleaned_data['laboratory']
+
                 response['result'] = True
                 task = TaskReport.objects.create(
                     creator=request.user,
                     type_report=form.cleaned_data['report_name'],
                     status=_("On hold"),
                     file_type=format,
-                    data=request.GET
+                    data=data
                 )
 
                 method = import_string(type_report['task'])
@@ -1067,7 +1072,7 @@ def create_request_by_report(request):
     return JsonResponse(response)
 
 @login_required
-def download_report(request):
+def download_report(request, lab_pk, org_pk):
     from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
     task = None
@@ -1080,7 +1085,7 @@ def download_report(request):
                 task.status=_('Delivered')
                 task.save()
                 if task.file_type=='html':
-                    return JsonResponse({'result': True, 'url_file':reverse('laboratory:report_table',kwargs={'lab_pk':task.data['laboratory'],'pk':task.pk}) ,'type_report':task.file_type})
+                    return JsonResponse({'result': True, 'url_file':reverse('laboratory:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
                 else:
                     return JsonResponse({'result': True, 'url_file': task.file.url})
             else:
@@ -1090,9 +1095,9 @@ def download_report(request):
     return JsonResponse({'result': False})
 
 @login_required
-def report_table(request, lab_pk, pk):
+def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
 
-    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title})
+    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk})
 

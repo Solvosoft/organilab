@@ -7,13 +7,15 @@ from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_molecular_formula, get_imdg
 from django.utils.translation import gettext as _
 from io import BytesIO
+from weasyprint import HTML
+
 
 def report_reactive_precursor_objects(report):
     lab = report.data['laboratory']
     builder =None
     if lab:
         rpo = Object.objects.filter(
-            shelfobject__shelf__furniture__labroom__laboratory__pk=lab)
+            shelfobject__shelf__furniture__labroom__laboratory__pk__in=lab)
     else:
         rpo = Object.objects.all()
 
@@ -92,7 +94,6 @@ def report_reactive_precursor_objects_html(report):
     report.save()
     return rpo
 def report_reactive_precursor_objects_pdf(report):
-    from weasyprint import HTML
 
     report_reactive_precursor_objects_html(report)
     context = {

@@ -33,7 +33,7 @@ class ValidateReportForm(ReportBase):
         organization = self.cleaned_data['organization']
         all_labs_org = self.cleaned_data['all_labs_org']
         laboratory = self.cleaned_data['laboratory']
-
         if all_labs_org:
             laboratory = get_laboratories_from_organization(organization)
-        return laboratory
+
+        return list(laboratory.values_list('pk',flat=True))
