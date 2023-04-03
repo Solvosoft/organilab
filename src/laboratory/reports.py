@@ -69,7 +69,7 @@ def report_reactive_precursor_objects_html(report):
     builder =None
     if lab:
         rpo = Object.objects.filter(
-            shelfobject__shelf__furniture__labroom__laboratory__pk=lab)
+            shelfobject__shelf__furniture__labroom__laboratory__pk__in=lab)
     else:
         rpo = Object.objects.all()
 
