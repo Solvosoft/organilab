@@ -8,8 +8,9 @@ from async_notifications.utils import send_email_from_template
 from datetime import date
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods
-from laboratory.reports import report_reactive_precursor_objects, report_reactive_precursor_objects_html, \
-    report_reactive_precursor_objects_pdf
+from laboratory.reports import report_reactive_precursor_html, report_reactive_precursor_pdf, \
+    report_reactive_precursor_doc, report_objects_html, report_object_doc, report_objects_pdf, report_limit_object_html, \
+    report_limit_object_pdf, report_limit_object_doc
 from django.conf import settings
 import importlib
 app = importlib.import_module(settings.CELERY_MODULE).app
@@ -77,11 +78,29 @@ def remove_shelf_not_furniture():
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
 
 @app.task()
-def reactive_precursor(pk):
+def report_reactive_precursor(pk):
     report = TaskReport.objects.filter(pk=pk).first()
     if report.file_type=='html':
-        report_reactive_precursor_objects_html(report)
+        report_reactive_precursor_html(report)
     elif report.file_type=='pdf':
-        report_reactive_precursor_objects_pdf(report)
+        report_reactive_precursor_pdf(report)
     else:
-        report_reactive_precursor_objects(report)
+        report_reactive_precursor_doc(report)
+@app.task()
+def report_objects(pk):
+    report = TaskReport.objects.filter(pk=pk).first()
+    if report.file_type=='html':
+        report_objects_html(report)
+    elif report.file_type == 'pdf':
+        report_objects_pdf(report)
+    else:
+        report_object_doc(report)@app.task()
+@app.task()
+def report_limit_objects(pk):
+    report = TaskReport.objects.filter(pk=pk).first()
+    if report.file_type=='html':
+        report_limit_object_html(report)
+    elif report.file_type == 'pdf':
+        report_limit_object_pdf(report)
+    else:
+        report_limit_object_doc(report)

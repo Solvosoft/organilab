@@ -37,7 +37,7 @@ from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_or
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm
+from report.forms import ReportForm, ReportObjectsForm
 from sga.forms import SearchDangerIndicationForm
 from laboratory import register
 from django.utils.module_loading import import_string
@@ -606,6 +606,11 @@ class ObjectList(ListView):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
         context['type_id'] = self.get_type()
+        context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
+                                                     'object_type':self.get_type(),
+                                                     'organization': self.org,
+                                                     'report_name':'report_objects',
+                                                     'detail':False})
         return context
 
 
@@ -624,6 +629,11 @@ class LimitedShelfObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(LimitedShelfObjectList,
                         self).get_context_data(**kwargs)
+        context['form'] = ReportForm(initial={
+            'organization': self.org,
+            'report_name': 'report_limit_objects',
+            'laboratory': self.lab
+        })
         return context
 
 
@@ -1072,6 +1082,8 @@ def create_request_by_report(request, lab_pk):
                     'report': task.pk,
                     'celery_id': task_celery
                 })
+            else:
+                print(form.errors)
     return JsonResponse(response)
 
 @login_required
