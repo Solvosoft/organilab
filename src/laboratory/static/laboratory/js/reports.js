@@ -77,3 +77,86 @@ function get_doc_filter(){
         }
       return dev;
 }
+
+
+function add_data_to_select(select){
+
+    $(select).find('option').remove();
+    $(select).val(null).trigger('change');
+
+    return (data)=>{
+        let has_selected=false;
+        for(let x=0; x<data.results.length; x++){
+            console.log(data.results[x]);
+            if(data.results[x].selected){
+                has_selected=true;
+            }
+            if ($(select).find("option[value='" + data.results[x].id + "']").length) {
+                $(select).val(data.results[x].id).trigger('change');
+            }else{
+                var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
+                        data.results[x].selected);
+                $(select).append(newOption)
+
+            }
+        }
+        if(!has_selected) {
+            $(select).val(null).trigger('change');
+        }else{
+            $(select).trigger('change');
+        }
+    }
+}
+
+document.select_data = {
+    all_labs_org: false,
+    organization: $("#id_organization").val(),
+    laboratory: $("#id_laboratory").val(),
+}
+
+function update_lab_rooms(){
+    var select_labroom = $("form select#id_lab_room");
+    var url = $(select_labroom).data('url');
+    var selecteditems = [];
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: document.select_data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(select_labroom),
+      dataType: 'json'
+    });
+}
+
+function update_furniture(){
+    var select_furniture = $("form select#id_furniture");
+    var url = $(select_furniture).data('url');
+    var selecteditems = [];
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: document.select_data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(select_furniture),
+      dataType: 'json'
+    });
+}
+
+
+$('#id_all_labs_org').on('change', function(){
+     if($(this).is(":checked")){
+        document.select_data.all_labs_org = true;
+    }
+    update_lab_rooms();
+    update_furniture();
+});
+
+
+$(document).ready(function() {
+    update_lab_rooms();
+    update_furniture();
+});

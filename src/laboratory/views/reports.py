@@ -1053,6 +1053,9 @@ def create_request_by_report(request, lab_pk):
 
                 data['laboratory'] = form.cleaned_data['laboratory']
 
+                if 'lab_room' in request.GET:
+                    data['lab_room'] = form.cleaned_data['lab_room']
+
                 response['result'] = True
                 task = TaskReport.objects.create(
                     creator=request.user,
