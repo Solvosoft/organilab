@@ -6,19 +6,19 @@ Created on 26/12/2016
 '''
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
-from laboratory.models import LaboratoryRoom, Laboratory
-from presentation.utils import build_qr_instance, update_qr_instance
-from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-
+from laboratory.models import LaboratoryRoom, Laboratory, Furniture
+from presentation.utils import build_qr_instance, update_qr_instance
+from report.forms import LaboratoryRoomReportForm
+from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from ..utils import organilab_logentry
 
 
@@ -118,14 +118,40 @@ class LaboratoryRoomDelete(DeleteView):
 
 
 
+# @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+# class LaboratoryRoomReportView(ListView):
+#     model = LaboratoryRoom
+#     template_name = "laboratory/report_laboratoryroom_list.html"
+#
+#     def get_queryset(self):
+#         lab = get_object_or_404(Laboratory, pk=self.lab)
+#         return lab.rooms.all()
+
+
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
-    template_name = "laboratory/report_laboratoryroom_list.html"
+    template_name = "report/base_report_form_view.html"
 
     def get_queryset(self):
-        lab = get_object_or_404(Laboratory, pk=self.lab)
-        return lab.rooms.all()
+        self.obj_lab = get_object_or_404(Laboratory, pk=self.lab)
+        self.obj_rooms = self.obj_lab.rooms.all()
+        return self.obj_rooms
+
+    def get_context_data(self, **kwargs):
+        context = super(LaboratoryRoomReportView,
+                        self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context['title_view'] = _("Laboratory report")
+        furniture = Furniture.objects.filter(labroom__in=self.obj_rooms)
+        context['form'] = LaboratoryRoomReportForm(initial={
+            'organization': self.org,
+            'report_name': 'laboratory_room',
+            'laboratory': lab_obj,
+            'lab_room': self.obj_rooms,
+            'furniture': furniture
+        })
+        return context
 
 
 @permission_required('laboratory.change_laboratoryroom')
