@@ -399,8 +399,7 @@ class OrganizationStructureManager(models.Manager):
 
 
     def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
-        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(
-            organizationusermanagement__users=user)
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(users=user)
         if org_pk:
             organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
         else:
@@ -425,17 +424,17 @@ class OrganizationStructureManager(models.Manager):
 
 
         organizations = OrganizationStructure.objects.filter(
-            Q(organizationusermanagement__users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
+            Q(users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for sons in org.descendants(include_self=include_self).filter(users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for parent in org.descendants(include_self=include_self).filter(users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
@@ -446,17 +445,17 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.none()
 
     def filter_user_orgs(self, user, org=None, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user, organizationusermanagement__organization=org)
+        organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for sons in org.descendants(include_self=include_self).filter(users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for parent in org.descendants(include_self=include_self).filter(users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
@@ -488,18 +487,12 @@ class OrganizationStructure(TreeNode):
     level = models.SmallIntegerField(default=0)
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
-
+    users = models.ManyToManyField(User, blank=True, through='UserOrganization',
+                                   through_fields=('organization', 'user'))
     class Meta:
         ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
-        permissions = (
-            ('add_organizationusermanagement', _('Can add organization user management')),
-            ('change_organizationusermanagement', _('Can change organization user management')),
-            ('delete_organizationusermanagement', _('Can delete organization user management')),
-            ('view_organizationusermanagement', _('Can view organization user management')),
-        )
-
     def __str__(self):
         return "%s" % self.name
 
@@ -515,14 +508,39 @@ class OrganizationStructure(TreeNode):
             labs += lab.name
         return labs
 
+class UserOrganization(models.Model):
+    ADMINISTRATOR=1
+    LABORATORY_MANAGER=2
+    LABORATORY_USER=3
+    TYPE_IN_ORG=(
+        (ADMINISTRATOR, _("Administrator")),
+        (LABORATORY_MANAGER, _("Laboratory Manager")),
+        (LABORATORY_USER, _("Laboratory User"))
+    )
 
-class OrganizationUserManagement(models.Model):
     organization = models.ForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
-    users = models.ManyToManyField(User, blank=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    type_in_organization = models.IntegerField(choices=TYPE_IN_ORG, default=LABORATORY_USER)
 
     def __str__(self):
-        return "%s" % self.organization.name
+        return "%s" % self.user
+
+    class Meta:
+        ordering = ('pk',)
+        verbose_name = _('User Organization')
+        verbose_name_plural = _('User Organizations')
+
+#FIXME: Delete this model
+
+#class OrganizationUserManagement(models.Model):
+#    organization = models.ForeignKey(
+#        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+#    users = models.ManyToManyField(User, blank=True)
+
+#    def __str__(self):
+#        return "%s" % self.organization.name
 
 
 class OrganizationStructureRelations(models.Model):
@@ -724,20 +742,6 @@ class Protocol(models.Model):
         ordering = ('pk',)
         verbose_name = _('Protocol')
         verbose_name_plural = _('Protocols')
-
-class UserOrganization(models.Model):
-    organization = models.ForeignKey(
-        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
-
-    def __str__(self):
-        return "%s" % self.user
-
-    class Meta:
-        ordering = ('pk',)
-        verbose_name = _('User Organization')
-        verbose_name_plural = _('User Organizations')
 
 
 class InformScheduler(AbstractOrganizationRef):

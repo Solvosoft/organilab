@@ -3,7 +3,7 @@ import json
 from django.urls import reverse
 
 from auth_and_perms.models import ProfilePermission, Profile, Rol
-from laboratory.models import OrganizationUserManagement, UserOrganization
+from laboratory.models import UserOrganization
 from laboratory.tests.utils import BaseSetUpAjaxRequest, BaseSetUpDjangoRequest
 from laboratory.utils import get_profile_by_organization
 
@@ -303,9 +303,6 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
             'disable_user': False
         }
         self.url = reverse("auth_and_perms:api-deluserorgcontt-list")
-        orgum = OrganizationUserManagement.objects.filter(organization=self.org)
-        if orgum.exists():
-            self.orgum = orgum.first()
 
     def test_user1_delete_profilepermissionsorg1profile3(self):
         """
@@ -414,8 +411,7 @@ class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
 
     def get_queryset(self):
         queryset = Profile.objects.all()
-        orgum = OrganizationUserManagement.objects.filter(organization=self.org)
-        profiles = queryset.filter(user__in=orgum.values_list('users', flat=True))
+        profiles = queryset.filter(user__in=self.org.values_list('users', flat=True))
 
         return profiles.filter(
             profilepermission__content_type__app_label=self.org._meta.app_label,

@@ -22,8 +22,7 @@ def getLevelClass(level):
 def getNodeInformation(node):
     users = []
     labs = node.laboratory_set.all()
-    for orguser in node.organizationusermanagement_set.all():
-        users += list(orguser.users.all())
+    users += list(node.users.all())
 
     return {
         'node': node,
@@ -37,7 +36,7 @@ def get_organization_tree(node, structure, user, pks, level=0, parents=[], appen
     pks.append(node.pk)
     if node.children.all().exists():
         for child in node.descendants().filter(
-                Q(organizationusermanagement__users=user) | Q(pk__in=parents)).distinct():
+                Q(users=user) | Q(pk__in=parents)).distinct():
             if child.pk not in pks:
                 get_organization_tree(child, structure, user, pks, level=level + 1, parents=parents,
                                       append_info=append_info)

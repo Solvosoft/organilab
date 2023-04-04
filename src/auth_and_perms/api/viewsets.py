@@ -14,7 +14,7 @@ from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOr
     ProfileAssociateOrganizationSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
-from laboratory.models import OrganizationStructure, Laboratory, OrganizationUserManagement, UserOrganization
+from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
@@ -54,7 +54,7 @@ class RolAPI(mixins.ListModelMixin,
 
 
 class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    queryset = OrganizationUserManagement.objects.all()
+    queryset = UserOrganization.objects.all()
     serializer_class = ProfileAssociateOrganizationSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -62,15 +62,17 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
     def perform_create(self, serializer):
         contenttypeobj = None
         organization = get_object_or_404(OrganizationStructure, pk=serializer.data['organization'])
+        type_user=UserOrganization.LABORATORY_USER
         user = get_object_or_404(User, pk=serializer.data['user'])
         if serializer.data['typeofcontenttype'] == 'laboratory':
             contenttypeobj = get_object_or_404(Laboratory, pk=serializer.data['laboratory'])
         elif serializer.data['typeofcontenttype'] == 'organization':
             contenttypeobj = organization
+            type_user=UserOrganization.LABORATORY_MANAGER
 
-        oum, created = OrganizationUserManagement.objects.get_or_create(organization=organization)
-        UserOrganization.objects.get_or_create(organization=organization, user=user)
-        oum.users.add(user)
+
+        UserOrganization.objects.get_or_create(organization=organization, user=user, type_in_organization=type_user)
+
         ProfilePermission.objects.get_or_create(
             profile=user.profile,
             content_type=ContentType.objects.filter(app_label=contenttypeobj._meta.app_label,
@@ -221,7 +223,7 @@ class UserInOrganization(mixins.ListModelMixin,
     ordering = ('-user',)  # default order
 
     def get_queryset(self):
-        orgum = OrganizationUserManagement.objects.filter(organization=self.organization)
+        orgum = OrganizationStructure.objects.filter(pk=self.organization)
 
         profiles = self.queryset.filter(user__in=orgum.values_list('users', flat=True))
         return profiles.filter(
@@ -271,7 +273,7 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 object_id=serializer.data['object_id'],
             ).delete()
             if 'organizationstructure' == serializer.data['model']:
-                orgum = OrganizationUserManagement.objects.filter(organization=serializer.data['organization']).first()
+                orgum = OrganizationStructure.objects.filter(pk=serializer.data['organization']).first()
                 if orgum:
                     profile = orgum.users.filter(profile=serializer.data['profile']).first()
                     if profile:

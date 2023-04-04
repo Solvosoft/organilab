@@ -40,7 +40,7 @@ class ObjectSearchForm(GTForm, forms.Form):
         super(ObjectSearchForm, self).__init__(*args, **kwargs)
         if org:
             org=utils.get_pk_org_ancestors_decendants(user, org)
-            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__organizationusermanagement__users=user).distinct()
+            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__users=user).distinct()
 
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
