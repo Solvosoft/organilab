@@ -11,9 +11,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.utils import get_roles_by_user
-from laboratory.forms import  RelOrganizationPKIntForm
+from laboratory.forms import RelOrganizationPKIntForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations, \
-    OrganizationUserManagement, UserOrganization
+   UserOrganization
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -96,8 +96,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
         orgByuser = OrganizationStructure.os_manager.organization_tree(self.organization.pk)
-        users = list(OrganizationUserManagement.objects.filter(
-            organization__in=orgByuser).values_list('users', flat=True))
+        users = list(OrganizationStructure.objects.filter(pk__in=orgByuser).values_list('users', flat=True))
         queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
         if self.contenttypeobj:
             profiles = get_profile_by_organization(self.organization.pk)
