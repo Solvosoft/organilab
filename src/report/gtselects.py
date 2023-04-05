@@ -60,13 +60,11 @@ class FurnitureModelLookups(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
+        result = queryset.none()
         if self.laboratory:
-            lab_room = self.laboratory[0].rooms.all()
-
-        lab_room = self.laboratory.values_list('rooms__pk', flat=True)
-        queryset = queryset.filter(labroom__in=lab_room)
-        return queryset
+            lab_room = self.laboratory.values_list('rooms__pk', flat=True)
+            result = queryset.filter(labroom__in=lab_room)
+        return result
 
     def list(self, request, *args, **kwargs):
         if self.laboratory is None:
