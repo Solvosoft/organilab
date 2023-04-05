@@ -79,7 +79,7 @@ function get_doc_filter(){
 }
 
 
-function add_data_to_select(select){
+function add_data_to_select(select, selecteditems){
 
     $(select).find('option').remove();
     $(select).val(null).trigger('change');
@@ -87,9 +87,12 @@ function add_data_to_select(select){
     return (data)=>{
         let has_selected=false;
         for(let x=0; x<data.results.length; x++){
-            console.log(data.results[x]);
-            if(data.results[x].selected){
+
+            if(data.results[x].selected || selecteditems.includes(String(data.results[x].id))){
                 has_selected=true;
+                if(selecteditems.includes(String(data.results[x].id))){
+                    data.results[x].selected = true;
+                }
             }
             if ($(select).find("option[value='" + data.results[x].id + "']").length) {
                 $(select).val(data.results[x].id).trigger('change');
@@ -117,7 +120,7 @@ document.select_data = {
 function update_lab_rooms(){
     var select_labroom = $("form select#id_lab_room");
     var url = $(select_labroom).data('url');
-    var selecteditems = [];
+    var selecteditems = select_labroom.val();
 
     $.ajax({
       type: "GET",
@@ -125,7 +128,7 @@ function update_lab_rooms(){
       data: document.select_data,
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_data_to_select(select_labroom),
+      success: add_data_to_select(select_labroom, selecteditems),
       dataType: 'json'
     });
 }
@@ -133,7 +136,7 @@ function update_lab_rooms(){
 function update_furniture(){
     var select_furniture = $("form select#id_furniture");
     var url = $(select_furniture).data('url');
-    var selecteditems = [];
+    var selecteditems = select_furniture.val();
 
     $.ajax({
       type: "GET",
@@ -141,13 +144,14 @@ function update_furniture(){
       data: document.select_data,
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_data_to_select(select_furniture),
+      success: add_data_to_select(select_furniture, selecteditems),
       dataType: 'json'
     });
 }
 
 
 $('#id_all_labs_org').on('change', function(){
+    document.select_data.all_labs_org = false;
      if($(this).is(":checked")){
         document.select_data.all_labs_org = true;
     }
