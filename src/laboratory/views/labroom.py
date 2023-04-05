@@ -143,14 +143,11 @@ class LaboratoryRoomReportView(ListView):
                         self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['title_view'] = _("Laboratory report")
-        furniture = Furniture.objects.filter(labroom__in=self.obj_rooms)
         context['report_name'] = 'laboratory_room'
         context['form'] = LaboratoryRoomReportForm(initial={
             'organization': self.org,
             'report_name': 'laboratory_room',
             'laboratory': lab_obj,
-            'lab_room': self.obj_rooms,
-            'furniture': furniture
         })
         return context
 
