@@ -22,6 +22,6 @@ REPORT_FORMS ={
     'report_objectschanges': {
         'task': 'report.tasks.object_log_change_report',
         'form': 'report.forms.ValidateObjectLogChangeReportForm',
-        'title': 'Limited shelf objects',
+        'title': 'Changes on Objects',
     },
 }
