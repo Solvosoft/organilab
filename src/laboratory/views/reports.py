@@ -1063,8 +1063,11 @@ def create_request_by_report(request, lab_pk):
 
                 data['laboratory'] = form.cleaned_data['laboratory']
 
-                if 'lab_room' in request.GET:
+                if 'lab_room' in form.fields:
                     data['lab_room'] = form.cleaned_data['lab_room']
+
+                if 'furniture' in form.fields:
+                    data['furniture'] = form.cleaned_data['furniture']
 
                 response['result'] = True
                 task = TaskReport.objects.create(
@@ -1082,8 +1085,6 @@ def create_request_by_report(request, lab_pk):
                     'report': task.pk,
                     'celery_id': task_celery
                 })
-            else:
-                print(form.errors)
     return JsonResponse(response)
 
 @login_required

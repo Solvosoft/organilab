@@ -7,7 +7,7 @@ REPORT_FORMS ={
     'laboratory_room': {
         'task':'report.tasks.laboratory_room_report',
         'form':'report.forms.ValidateLaboratoryRoomReportForm',
-        'title':'Substances list by laboratory room',
+        'title':'Objects list by laboratory',
     },
     'report_objects': {
         'task':'laboratory.tasks.report_objects',
