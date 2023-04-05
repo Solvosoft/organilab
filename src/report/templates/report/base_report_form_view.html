@@ -4,9 +4,12 @@
 {% load organilab_tags %}
 
 {% block pre_head %}
-	{% define_urlname_action 'reactive_precursor_object_list' %}
-	{% define_urlname_action 'reports_objects' %}
-	{% define_urlname_action 'reports_reactive_precursor_objects' %}
+    {% if report_name == 'laboratory_room' %}
+        {% define_urlname_action 'reactive_precursor_object_list' %}
+        {% define_urlname_action 'reports_objects' %}
+        {% define_urlname_action 'reports_reactive_precursor_objects' %}
+    {% else %}
+    {% endif %}
 {% endblock %}
 {% block title %}{{title_view}}{% endblock %}
 
