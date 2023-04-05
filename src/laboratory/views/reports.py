@@ -578,7 +578,7 @@ def report_h_code(request, *args, **kwargs):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
-    template_name = 'laboratory/report_object_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_type(self):
         if 'type_id' in self.request.GET:
@@ -617,24 +617,36 @@ class ObjectList(ListView):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
-    template_name = 'laboratory/limited_shelfobject_report_list.html'
-
-    def get_queryset(self):
-        query = super(LimitedShelfObjectList, self).get_queryset()
-        query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
-        for shelf_object in query:
-            if shelf_object.limit_reached:
-                yield shelf_object
+    template_name = 'report/base_report_form_view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(LimitedShelfObjectList,
-                        self).get_context_data(**kwargs)
+        context = super(LimitedShelfObjectList,self).get_context_data(**kwargs)
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'report_limit_objects',
-            'laboratory': self.lab
-        })
+           'laboratory': self.lab})
         return context
+
+#class LimitedShelfObjectList(ListView):
+#    model = ShelfObject
+#    template_name = 'laboratory/limited_shelfobject_report_list.html'
+
+#    def get_queryset(self):
+#       query = super(LimitedShelfObjectList, self).get_queryset()
+#       query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
+#       for shelf_object in query:
+#           if shelf_object.limit_reached:
+#               yield shelf_object
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(LimitedShelfObjectList,
+#                        self).get_context_data(**kwargs)
+#        context['form'] = ReportForm(initial={
+#            'organization': self.org,
+#            'report_name': 'report_limit_objects',
+#           'laboratory': self.lab
+#       })
+#       return context
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
@@ -1050,6 +1062,7 @@ def search_danger_indication_report(request):
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
 
 @login_required
+@permission_required('laboratory.do_report')
 def create_request_by_report(request, lab_pk):
     response = {'result': False}
 
@@ -1093,6 +1106,7 @@ def create_request_by_report(request, lab_pk):
     return JsonResponse(response)
 
 @login_required
+@permission_required('laboratory.do_report')
 def download_report(request, lab_pk, org_pk):
     from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
@@ -1116,6 +1130,8 @@ def download_report(request, lab_pk, org_pk):
     return JsonResponse({'result': False})
 
 @login_required
+@permission_required('laboratory.do_report')
+
 def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
