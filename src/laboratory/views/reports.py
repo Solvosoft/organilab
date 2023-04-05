@@ -37,7 +37,7 @@ from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_or
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm
 from sga.forms import SearchDangerIndicationForm
 from laboratory import register
 from django.utils.module_loading import import_string
@@ -693,6 +693,7 @@ class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
     form_class=FilterForm
+    template_name = "report/base_report_form_view.html"
     pdf_template = 'laboratory/reports/logobject_pdf.html'
 
     DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
@@ -753,7 +754,10 @@ class LogObjectView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form
+        context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
+                                                     'organization': self.org,
+                                                     'report_name':'report_objectschanges',
+                                                     })
 
         if self.form.cleaned_data['resume']:
             messages.info(self.request,
@@ -1062,11 +1066,13 @@ def create_request_by_report(request, lab_pk):
                 data = request.GET.copy()
 
                 data['laboratory'] = form.cleaned_data['laboratory']
+                data['lab_pk'] =lab_pk
 
                 if 'lab_room' in request.GET:
                     data['lab_room'] = form.cleaned_data['lab_room']
 
                 response['result'] = True
+
                 task = TaskReport.objects.create(
                     creator=request.user,
                     type_report=form.cleaned_data['report_name'],
