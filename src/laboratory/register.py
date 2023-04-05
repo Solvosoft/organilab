@@ -19,4 +19,9 @@ REPORT_FORMS ={
         'form': 'report.forms.ValidateReportForm',
         'title': 'Limited shelf objects',
     },
+    'report_objectschanges': {
+        'task': 'report.tasks.object_log_change_report',
+        'form': 'report.forms.ValidateObjectLogChangeReportForm',
+        'title': 'Limited shelf objects',
+    },
 }
