@@ -605,7 +605,17 @@ class ObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
-        context['type_id'] = self.get_type()
+        type_id = self.get_type()
+        context['type_id'] = type_id
+        if type_id == "0":
+           context['title_view']= _('Reactive management')
+        elif type_id == "1":
+           context['title_view']= _('Material management')
+        elif type_id == "2":
+           context['title_view']= _('Equipment management')
+        else:
+           context['title_view']= _('Object management')
+
         context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
                                                      'object_type':self.get_type(),
                                                      'organization': self.org,
@@ -619,50 +629,40 @@ class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'report/base_report_form_view.html'
 
+    def get_queryset(self):
+        query = super(LimitedShelfObjectList, self).get_queryset()
+        query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
+        for shelf_object in query:
+            if shelf_object.limit_reached:
+                yield shelf_object
+
     def get_context_data(self, **kwargs):
-        context = super(LimitedShelfObjectList,self).get_context_data(**kwargs)
+        context = super(LimitedShelfObjectList,
+                        self).get_context_data(**kwargs)
+        context['title_view'] = _("Limited shelf objects")
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'report_limit_objects',
-           'laboratory': self.lab})
+            'laboratory': self.lab
+        })
         return context
-
-#class LimitedShelfObjectList(ListView):
-#    model = ShelfObject
-#    template_name = 'laboratory/limited_shelfobject_report_list.html'
-
-#    def get_queryset(self):
-#       query = super(LimitedShelfObjectList, self).get_queryset()
-#       query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
-#       for shelf_object in query:
-#           if shelf_object.limit_reached:
-#               yield shelf_object
-#
-#    def get_context_data(self, **kwargs):
-#        context = super(LimitedShelfObjectList,
-#                        self).get_context_data(**kwargs)
-#        context['form'] = ReportForm(initial={
-#            'organization': self.org,
-#            'report_name': 'report_limit_objects',
-#           'laboratory': self.lab
-#       })
-#       return context
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
-    template_name = 'laboratory/reactive_precursor_objects_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
         context['all_labs'] = self.all_labs
+        context['title_view'] =  _("Reactive report of precursor objects")
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'reactive_precursor',
-            'laboratory': lab_obj
+            'laboratory': lab_obj,
         })
 
         return context
@@ -766,6 +766,7 @@ class LogObjectView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title_view'] = _("Changes on Objects")
         context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
                                                      'organization': self.org,
                                                      'report_name':'report_objectschanges',
@@ -1131,7 +1132,6 @@ def download_report(request, lab_pk, org_pk):
 
 @login_required
 @permission_required('laboratory.do_report')
-
 def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
