@@ -94,7 +94,7 @@ def report_objects(pk):
     elif report.file_type == 'pdf':
         report_objects_pdf(report)
     else:
-        report_object_doc(report)@app.task()
+        report_object_doc(report)
 @app.task()
 def report_limit_objects(pk):
     report = TaskReport.objects.filter(pk=pk).first()

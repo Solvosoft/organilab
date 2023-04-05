@@ -37,7 +37,7 @@ from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_or
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm
 from sga.forms import SearchDangerIndicationForm
 from laboratory import register
 from django.utils.module_loading import import_string
@@ -578,7 +578,7 @@ def report_h_code(request, *args, **kwargs):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
-    template_name = 'laboratory/report_object_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_type(self):
         if 'type_id' in self.request.GET:
@@ -605,19 +605,28 @@ class ObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
-        context['type_id'] = self.get_type()
+        type_id = self.get_type()
+        context['type_id'] = type_id
+        if type_id == "0":
+           context['title_view']= _('Reactive management')
+        elif type_id == "1":
+           context['title_view']= _('Material management')
+        elif type_id == "2":
+           context['title_view']= _('Equipment management')
+        else:
+           context['title_view']= _('Object management')
+
         context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
                                                      'object_type':self.get_type(),
                                                      'organization': self.org,
-                                                     'report_name':'report_objects',
-                                                     'detail':False})
+                                                     'report_name':'report_objects'})
         return context
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
-    template_name = 'laboratory/limited_shelfobject_report_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_queryset(self):
         query = super(LimitedShelfObjectList, self).get_queryset()
@@ -629,6 +638,7 @@ class LimitedShelfObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(LimitedShelfObjectList,
                         self).get_context_data(**kwargs)
+        context['title_view'] = _("Limited shelf objects")
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'report_limit_objects',
@@ -640,17 +650,18 @@ class LimitedShelfObjectList(ListView):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
-    template_name = 'laboratory/reactive_precursor_objects_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
         context['all_labs'] = self.all_labs
+        context['title_view'] =  _("Reactive report of precursor objects")
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'reactive_precursor',
-            'laboratory': lab_obj
+            'laboratory': lab_obj,
         })
 
         return context
@@ -693,6 +704,7 @@ class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
     form_class=FilterForm
+    template_name = "report/base_report_form_view.html"
     pdf_template = 'laboratory/reports/logobject_pdf.html'
 
     DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
@@ -753,7 +765,11 @@ class LogObjectView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form
+        context['title_view'] = _("Changes on Objects")
+        context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
+                                                     'organization': self.org,
+                                                     'report_name':'report_objectschanges',
+                                                     })
 
         if self.form.cleaned_data['resume']:
             messages.info(self.request,
@@ -1046,6 +1062,7 @@ def search_danger_indication_report(request):
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
 
 @login_required
+@permission_required('laboratory.do_report')
 def create_request_by_report(request, lab_pk):
     response = {'result': False}
 
@@ -1062,6 +1079,7 @@ def create_request_by_report(request, lab_pk):
                 data = request.GET.copy()
 
                 data['laboratory'] = form.cleaned_data['laboratory']
+                data['lab_pk'] =lab_pk
 
                 if 'lab_room' in form.fields:
                     data['lab_room'] = form.cleaned_data['lab_room']
@@ -1070,6 +1088,7 @@ def create_request_by_report(request, lab_pk):
                     data['furniture'] = form.cleaned_data['furniture']
 
                 response['result'] = True
+
                 task = TaskReport.objects.create(
                     creator=request.user,
                     type_report=form.cleaned_data['report_name'],
@@ -1088,6 +1107,7 @@ def create_request_by_report(request, lab_pk):
     return JsonResponse(response)
 
 @login_required
+@permission_required('laboratory.do_report')
 def download_report(request, lab_pk, org_pk):
     from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
@@ -1111,6 +1131,7 @@ def download_report(request, lab_pk, org_pk):
     return JsonResponse({'result': False})
 
 @login_required
+@permission_required('laboratory.do_report')
 def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
