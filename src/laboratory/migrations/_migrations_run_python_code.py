@@ -12,7 +12,6 @@ from laboratory.models import (CLInventory,
                                Shelf,
                                Furniture,
                                OrganizationStructure,
-                               OrganizationUserManagement,
                                Laboratory
                                )
 

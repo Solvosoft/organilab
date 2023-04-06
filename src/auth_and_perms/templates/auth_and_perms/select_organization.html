@@ -27,7 +27,7 @@
 <div class="row">
     <div class="{{node.1.0}}">
         <div class="bs-callout bs-callout-{{node.1.1}}">
-            <h4 class="w-100" >{{node.0}}</h4>
+            <h4 class="w-100" >{{node.0.pk}} -- {{node.0}}</h4>
              {% if can_laboratory %}
             <a class="btn btn-success btn-sm" title="{% trans 'My laboratories' %}" href="{% url 'laboratory:mylabs'  node.0.pk  %}"><i class="fa fa-flask"></i> {% trans 'My laboratories' %}</a>
             {% endif %}

@@ -136,7 +136,6 @@ class OrganizationCreateView(CreateView):
         if self.object.parent:
             self.object.position=self.object.parent.position+1
             self.object.save()
-        UserOrganization.objects.create(organization=self.object, user=self.request.user)
         set_rol_administrator_on_org(self.request.user.profile, self.object)
         organilab_logentry(self.request.user, self.object, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response

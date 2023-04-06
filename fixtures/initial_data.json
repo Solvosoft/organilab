@@ -227,13 +227,6 @@
   "model": "contenttypes.contenttype",
   "fields": {
     "app_label": "laboratory",
-    "model": "organizationusermanagement"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "laboratory",
     "model": "objectlogchange"
   }
 },
@@ -8632,50 +8625,6 @@
 {
   "model": "auth.permission",
   "fields": {
-    "name": "Can add organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationstructure"
-    ],
-    "codename": "add_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationstructure"
-    ],
-    "codename": "change_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationstructure"
-    ],
-    "codename": "delete_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can view organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationstructure"
-    ],
-    "codename": "view_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
     "name": "Can add catalog",
     "content_type": [
       "laboratory",
@@ -8759,50 +8708,6 @@
       "sustancecharacteristics"
     ],
     "codename": "view_sustancecharacteristics"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationusermanagement"
-    ],
-    "codename": "add_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationusermanagement"
-    ],
-    "codename": "change_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationusermanagement"
-    ],
-    "codename": "delete_organizationusermanagement"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can view organization user management",
-    "content_type": [
-      "laboratory",
-      "organizationusermanagement"
-    ],
-    "codename": "view_organizationusermanagement"
   }
 },
 {
@@ -13294,17 +13199,7 @@
         "organizationstructure"
       ],
       [
-        "add_organizationusermanagement",
-        "laboratory",
-        "organizationstructure"
-      ],
-      [
         "change_organizationstructure",
-        "laboratory",
-        "organizationstructure"
-      ],
-      [
-        "change_organizationusermanagement",
         "laboratory",
         "organizationstructure"
       ],
@@ -13314,17 +13209,7 @@
         "organizationstructure"
       ],
       [
-        "delete_organizationusermanagement",
-        "laboratory",
-        "organizationstructure"
-      ],
-      [
         "view_organizationstructure",
-        "laboratory",
-        "organizationstructure"
-      ],
-      [
-        "view_organizationusermanagement",
         "laboratory",
         "organizationstructure"
       ],
@@ -16742,62 +16627,6 @@
 },
 {
   "model": "djgentelella.permissionscategorymanagement",
-  "pk": 178,
-  "fields": {
-    "name": "Add Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "organizationManager",
-    "permission": [
-      "add_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 179,
-  "fields": {
-    "name": "Change Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "organizationManager",
-    "permission": [
-      "change_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 180,
-  "fields": {
-    "name": "Delete Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "organizationManager",
-    "permission": [
-      "delete_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 181,
-  "fields": {
-    "name": "View Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "organizationManager",
-    "permission": [
-      "view_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
   "pk": 182,
   "fields": {
     "name": "Add Organization Structure Relations",
@@ -16863,20 +16692,6 @@
       "can_add_disposal",
       "laboratory",
       "shelf"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 187,
-  "fields": {
-    "name": "Change Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "addusersorganization",
-    "permission": [
-      "change_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
     ]
   }
 },
@@ -17043,34 +16858,6 @@
     "url_name": "add_contenttype_to_org",
     "permission": [
       "view_organizationstructure",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 200,
-  "fields": {
-    "name": "Add Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "index",
-    "permission": [
-      "add_organizationusermanagement",
-      "laboratory",
-      "organizationstructure"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 201,
-  "fields": {
-    "name": "View Organization User Management",
-    "category": "Organization User Management",
-    "url_name": "index",
-    "permission": [
-      "view_organizationusermanagement",
       "laboratory",
       "organizationstructure"
     ]

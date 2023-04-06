@@ -78,10 +78,10 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         self.profile4_org2 = self.user4_org2.profile
 
         #ORGS BY USER
-        self.user1_org1_list = OrganizationStructure.os_manager.filter_user_org(self.user1_org1).distinct()
-        self.user2_org2_list = OrganizationStructure.os_manager.filter_user_org(self.user2_org2).distinct()
-        self.user3_org1_list = OrganizationStructure.os_manager.filter_user_org(self.user3_org1).distinct()
-        self.user4_org2_list = OrganizationStructure.os_manager.filter_user_org(self.user4_org2).distinct()
+        self.user1_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user1_org1).distinct()
+        self.user2_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user2_org2).distinct()
+        self.user3_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user3_org1).distinct()
+        self.user4_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user4_org2).distinct()
 
         #LABS
         self.lab1_org1 = Laboratory.objects.get(name="Lab 1")

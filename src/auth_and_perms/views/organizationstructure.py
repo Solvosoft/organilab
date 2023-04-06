@@ -26,7 +26,7 @@ from laboratory.views.djgeneric import ListView, DeleteView
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct()
+    query_list = OrganizationStructure.os_manager.filter_organization_by_user(request.user).distinct()
     parents=list(query_list.order_by('level'))
     parents_pks=set(query_list.values_list('pk', flat=True))
     nodes = []
@@ -225,7 +225,7 @@ class AddUser(CreateView):
         ).first()
         user.password = password
         user.save()
-        self.organization.users.add(user)
+        #self.organization.users.add(user)
         UserOrganization.objects.create(organization=self.organization.organization, user=user)
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],

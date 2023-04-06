@@ -199,46 +199,6 @@
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
-    "pk": 1,
-    "fields": {
-      "organization": 1,
-      "users": [1, 3]
-    }
-  },
-  {
-    "model": "laboratory.organizationusermanagement",
-    "pk": 2,
-    "fields": {
-      "organization": 3,
-      "users": [1, 3]
-    }
-  },
-  {
-    "model": "laboratory.organizationusermanagement",
-    "pk": 3,
-    "fields": {
-      "organization": 2,
-      "users": [2, 4]
-    }
-  },
-  {
-    "model": "laboratory.organizationusermanagement",
-    "pk": 4,
-    "fields": {
-      "organization": 4,
-      "users": [2, 4]
-    }
-  },
-  {
-    "model": "laboratory.organizationusermanagement",
-    "pk": 5,
-    "fields": {
-      "organization": 5,
-      "users": [1, 5]
-    }
-  },
-  {
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
@@ -477,7 +437,8 @@
     "fields": {
         "organization": 1,
         "user": 1,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -486,7 +447,8 @@
     "fields": {
         "organization": 3,
         "user": 1,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -495,7 +457,8 @@
     "fields": {
         "organization": 1,
         "user": 3,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -504,7 +467,8 @@
     "fields": {
         "organization": 3,
         "user": 3,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -513,7 +477,8 @@
     "fields": {
         "organization": 2,
         "user": 2,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -522,7 +487,8 @@
     "fields": {
         "organization": 4,
         "user": 2,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -531,7 +497,8 @@
     "fields": {
         "organization": 2,
         "user": 4,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -540,7 +507,8 @@
     "fields": {
         "organization": 4,
         "user": 4,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -549,7 +517,8 @@
     "fields": {
         "organization": 5,
         "user": 5,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
 },
   {
@@ -558,7 +527,108 @@
     "fields": {
         "organization": 5,
         "user": 1,
-        "status": true
+        "status": true,
+        "type_in_organization": 3
     }
-}
+},
+   {
+    "model": "laboratory.userorganization",
+    "pk": 11,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+   {
+    "model": "laboratory.userorganization",
+    "pk": 12,
+    "fields": {
+      "organization": 1,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 13,
+    "fields": {
+      "organization": 3,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 14,
+    "fields": {
+      "organization": 3,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 15,
+    "fields": {
+      "organization": 2,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 16,
+    "fields": {
+      "organization": 2,
+      "user": 4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 17,
+    "fields": {
+      "organization": 4,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 18,
+    "fields": {
+      "organization": 4,
+      "user":  4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 19,
+    "fields": {
+      "organization": 5,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 20,
+    "fields": {
+      "organization": 5,
+      "user": 5,
+      "status": true,
+      "type_in_organization": 1
+    }
+  }
 ]
