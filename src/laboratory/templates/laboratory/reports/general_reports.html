@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block title %}{% trans 'Reports' %} {% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+	{% define_urlname_action 'reactive_precursor_object_list' %}
+	{% define_urlname_action 'reports_objects' %}
+	{% define_urlname_action 'reports_reactive_precursor_objects' %}
+{% endblock %}
+
+{% block content %}
+
+{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
+<div class="offset-md-2 col-md-8">
+	<div class="page-header" align="center">
+		<h3 class="heading-1" ><span> {{title}}  </span></h3>
+	</div>
+</div>
+<table id="table_id" class="display table table-striped table-bordered text-center">
+    {{ table | safe }}
+</table>
+{% endif %}
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+    $("#table_id").DataTable({responsive: true });
+</script>
+{% endblock %}

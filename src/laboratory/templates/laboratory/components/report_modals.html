@@ -1,0 +1,18 @@
+{% load i18n %}
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Download document' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>{% trans 'Do you want to download the report' %}</p>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-danger" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Cancel' %}</button>
+          <a id="download-report" target="_blank" class="btn btn-success" href="#" download=""><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download' %}</a>
+      </div>
+    </div>
+  </div>
+</div>
