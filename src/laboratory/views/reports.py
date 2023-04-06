@@ -963,24 +963,23 @@ class OrganizationReactivePresenceList(ReportListView):
         for item in query:
 
             laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
-            usermanagement = item.values('users__first_name', 'users__last_name', 'users__id')
+            usermanagement = item.users.values('first_name', 'last_name', 'id')
             for lab in laboratories:
-
                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
                     shelf__furniture=lab['rooms__furniture']
                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
                 for user in usermanagement:
                     # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
                     try:
-                        profile = Profile.objects.get(user__id=user['users__id'])
+                        profile = Profile.objects.get(user__id=user['id'])
 
                     except Profile.DoesNotExist as error:
                         add_profile_info = False
 
                     for reactive in reactives:
                         user_data = [lab['name'],
-                                    user['users__first_name'],
-                                    user['users__last_name'],
+                                    user['first_name'],
+                                    user['last_name'],
                                     reactive.obj.code,
                                     reactive.obj.name,
                                     reactive.cas_id_number,

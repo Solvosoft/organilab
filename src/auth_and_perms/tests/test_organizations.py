@@ -49,7 +49,8 @@ class OrganizationTest(TestCase):
             'users': []
         }
 
-        pre_user_org = UserOrganization.objects.get(user__pk=19, organization__pk=1).status
+        pre_user_org = UserOrganization.objects.get(user__pk=19, organization__pk=1,
+                                                    type_in_organization=3).status
 
         response = self.client.post(reverse('auth_and_perms:addusersorganization', kwargs={'pk':1}),data=data)
 

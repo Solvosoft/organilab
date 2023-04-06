@@ -1,5 +1,7 @@
+from django.db.models import Value, DateField
 from django.urls import reverse
-
+from django.utils.timezone import now
+from django.test import RequestFactory
 from laboratory.api.serializers import InformSerializer
 from laboratory.models import Inform, CommentInform, InformsPeriod
 from laboratory.tests.utils import BaseLaboratorySetUpTest
@@ -51,16 +53,32 @@ class InformViewTest(BaseLaboratorySetUpTest):
         self.assertNotIn("Reactivos mensuales despachados", list(Inform.objects.values_list("name", flat=True)))
 
     def test_api_informs_detail(self):
+
         period = InformsPeriod.objects.first()
         inform_list = period.informs.all()
         url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk, })
         data = {
             'period': period.pk
         }
+        class ObjView:
+            def __init__(self, pk):
+                self.kwargs={
+                    'pk': pk
+                }
+        factory = RequestFactory()
+        request = factory.get(url) # this don't make a request to server, only the object request
+        request.user = self.user
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         content_obj = json.loads(response.content)
-        serializer_obj = InformSerializer(inform_list.first()).data
+        serializer_obj = InformSerializer(inform_list.annotate(
+                start_application_date=Value(now(), DateField()),
+                close_application_date=Value(now(), DateField())).first(),
+                                          context={'request': request,
+                                                   'view': ObjView(self.org.pk)
+                                                   }
+                                          # self.context['view'].kwargs['pk']
+        ).data
         self.assertIn(serializer_obj, content_obj['data'])
         self.assertEqual(content_obj['recordsFiltered'], inform_list.count())
 

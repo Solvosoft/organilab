@@ -14,6 +14,7 @@ from auth_and_perms.forms import LaboratoryOfOrganizationForm, \
     ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from auth_and_perms.node_tree import get_organization_tree
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm, RelOrganizationForm
@@ -21,6 +22,7 @@ from laboratory.models import OrganizationStructure, Laboratory, \
     OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import ListView, DeleteView
+from django.conf import settings
 
 
 @login_required
@@ -47,7 +49,7 @@ def organization_manage_view(request):
 
 
 def user_in_many_org(user):
-    user_management = UserOrganization.objects.filter(users=user).values_list('organization', flat=True).distinct()
+    user_management = UserOrganization.objects.filter(user=user).values_list('organization', flat=True).distinct()
     return len(set(user_management)) > 1
 
 
@@ -87,17 +89,16 @@ def get_related_users(user_management, form):
 @permission_required("laboratory.change_organizationstructure")
 def add_users_organization(request, pk):
 
-    organizationstructure = get_object_or_404(OrganizationStructure, pk=pk)
-    user_management = organizationstructure.organizationusermanagement_set.first()
-    permissions = list(organizationstructure.rol.filter(permissions__isnull=False).values_list('permissions', flat=True))
+    organizationstructure = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+    user_is_allowed_on_organization(request.user, organizationstructure)
+    permissions = list(organizationstructure.rol.using(settings.READONLY_DATABASE).filter(
+        permissions__isnull=False).values_list('permissions', flat=True))
 
     if request.method == 'POST':
 
         form = AddUserForm(request.POST)
         if form.is_valid():
-
-            remove_users, add_users = get_related_users(user_management, form)
-
+            remove_users, add_users = get_related_users(organizationstructure, form)
             if remove_users:
                 cc_lab = ContentType.objects.get(app_label='laboratory', model="laboratory")
                 labs = organizationstructure.laboratory_set.all()
@@ -126,17 +127,15 @@ def add_users_organization(request, pk):
                     else:
                         user.user_permissions.remove(*permissions)
                         pp_user.filter(object_id__in=org_labs).delete()
-                    user_management.users.remove(user)
+                    organizationstructure.users.remove(user)
 
             if add_users:
-                user_management.users.add(*form.cleaned_data['users'])
+                #user_management.users.add(*form.cleaned_data['users'])
                 for user in add_users:
-                    u, created = UserOrganization.objects.get_or_create(user=form.cleaned_data['users'].get(pk=user),
-                                                           organization=organizationstructure)
-                    if u:
-                        u.status=True
-                        u.save()
-
+                    u, created = UserOrganization.objects.get_or_create(
+                        user=form.cleaned_data['users'].get(pk=user),
+                        status=True,
+                        organization=organizationstructure, type_in_organization=UserOrganization.LABORATORY_USER)
             messages.success(request, _("Element saved successfully"))
             return redirect('auth_and_perms:organizationManager')
     messages.error(request, _("Organization doesn't exists"))
@@ -206,10 +205,12 @@ class AddUser(CreateView):
 
     def get(self, request, *args, **kwargs):
         self.organization = OrganizationStructure.objects.get(pk=kwargs.pop('pk'))
+        user_is_allowed_on_organization(request.user, self.organization)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.organization = OrganizationStructure.objects.get(pk=kwargs.pop('pk'))
+        user_is_allowed_on_organization(request.user, self.organization)
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -226,7 +227,7 @@ class AddUser(CreateView):
         user.password = password
         user.save()
         #self.organization.users.add(user)
-        UserOrganization.objects.create(organization=self.organization.organization, user=user)
+        UserOrganization.objects.create(organization=self.organization, user=user)
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
