@@ -15,6 +15,7 @@ from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOr
     ProfileAssociateOrganizationSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
@@ -110,6 +111,7 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=False):
             org = OrganizationStructure.objects.get(pk=pk)
+            user_is_allowed_on_organization(request.user, org)
             action = serializer.data['mergeaction']
             rols = org.rol.filter(pk__in=serializer.data['rols'])
 

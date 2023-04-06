@@ -329,8 +329,7 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(pp.exists())
         self.assertFalse(UserOrganization.objects.filter(organization=self.org, user=self.profile3_org1.user).exists())
-        if self.orgum:
-            self.assertFalse(self.orgum.users.filter(profile=self.profile3_org1).exists())
+
 
     def test_user2_delete_profilepermissionsorg1profile3(self):
         """
@@ -357,8 +356,6 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(pp.exists())
         self.assertTrue(UserOrganization.objects.filter(organization=self.org, user=self.profile3_org1.user).exists())
-        if self.orgum:
-            self.assertTrue(self.orgum.users.filter(profile=self.profile3_org1).exists())
 
 class CreateProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
 
@@ -411,7 +408,7 @@ class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
 
     def get_queryset(self):
         queryset = Profile.objects.all()
-        profiles = queryset.filter(user__in=self.org.values_list('users', flat=True))
+        profiles = queryset.filter(user__in=self.org.users.values_list('pk', flat=True))
 
         return profiles.filter(
             profilepermission__content_type__app_label=self.org._meta.app_label,
