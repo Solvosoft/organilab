@@ -4,23 +4,27 @@
 {% load organilab_tags %}
 
 {% block pre_head %}
-	{% define_urlname_action 'reactive_precursor_object_list' %}
-	{% define_urlname_action 'reports_objects' %}
-	{% define_urlname_action 'reports_reactive_precursor_objects' %}
+    {% if report_name == 'laboratory_room' %}
+        {% define_urlname_action 'reactive_precursor_object_list' %}
+        {% define_urlname_action 'reports_objects' %}
+        {% define_urlname_action 'reports_reactive_precursor_objects' %}
+    {% else %}
+    {% endif %}
 {% endblock %}
-{% block title %}{% trans 'Reactive precursor objects' %}{% endblock %}
+{% block title %}{{title_view}}{% endblock %}
 
 {% block content %}
 
 {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
-    <div class="container p-3 mt-1">
-        <div class="card">
+    <div class="row container p-3 mt-1">
+        <div class='col-md-10 offset-md-1'>
+            <div class="card">
             <div class="card-title text-center">
-                <h2>{% trans 'Reactive report of precursor objects' %}</h2>
+                <h2>{{title_view}}</h2>
             </div>
             <div class="card-body">
                 <form id="form" onsubmit="return false;">
-                    {{form.as_inline}}
+                    {{form.as_horizontal}}
 
                 	<button id="send" class="btn-outline-success btn float-end" type="button">
 	                    <span id="button-text">{% trans 'Send' %}</span>
@@ -28,6 +32,7 @@
 	                </button>
                 </form>
             </div>
+        </div>
         </div>
     </div>
 <div class="row statuspanel d-none">
@@ -54,8 +59,8 @@
           <p>{% trans 'Do you want to download the report' %}</p>
       </div>
       <div class="modal-footer">
-          <button class="btn btn-danger" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-ban" aria-hidden="true"></i>{% trans 'Cancel' %}</button>
-          <a id="download-report" target="_blank" class="btn btn-success" href="#" download=""><i class="fa fa-download" aria-hidden="true"></i>{% trans 'Download' %}</a>
+          <button class="btn btn-danger" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Cancel' %}</button>
+          <a id="download-report" target="_blank" class="btn btn-success" href="#" download=""><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download' %}</a>
       </div>
     </div>
   </div>
