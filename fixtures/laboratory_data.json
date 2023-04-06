@@ -480,27 +480,30 @@
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
+    "model": "laboratory.userorganization",
     "pk": 1,
     "fields": {
       "organization": 1,
-      "users": [1]
+      "user": 1,
+      "type_in_organization": 1
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
+    "model": "laboratory.userorganization",
     "pk": 2,
     "fields": {
       "organization": 2,
-      "users": [2]
+      "user": 2,
+      "type_in_organization": 1
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
+    "model": "laboratory.userorganization",
     "pk": 3,
     "fields": {
       "organization": 3,
-      "users": [1]
+      "user": 1,
+      "type_in_organization": 1
     }
   },
   {

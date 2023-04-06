@@ -440,11 +440,13 @@
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
+    "model": "laboratory.userOrganization",
     "pk": 1,
     "fields": {
       "organization": 1,
-      "users": [1]
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
     }
   },
   {

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
@@ -214,7 +215,7 @@ class UserInOrganization(mixins.ListModelMixin,
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileRolDataTableSerializer
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['user__first_name', 'user__last_name']  # for the global search
@@ -223,13 +224,13 @@ class UserInOrganization(mixins.ListModelMixin,
     ordering = ('-user',)  # default order
 
     def get_queryset(self):
-        orgum = OrganizationStructure.objects.filter(pk=self.organization)
+        users=self.organization.users.using(settings.READONLY_DATABASE).filter(
+            userorganization__type_in_organization__in=[UserOrganization.ADMINISTRATOR,
+                                                        UserOrganization.LABORATORY_MANAGER],
 
-        profiles = self.queryset.filter(user__in=orgum.values_list('users', flat=True))
-        return profiles.filter(
-            profilepermission__content_type__app_label=self.organization._meta.app_label,
-            profilepermission__content_type__model=self.organization._meta.model_name,
-            profilepermission__object_id=self.organization.pk).order_by('-user')
+        ).values_list('pk', flat=True)
+
+        return self.queryset.filter(user__in=users).distinct()
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)

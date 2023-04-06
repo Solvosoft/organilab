@@ -49,7 +49,17 @@ def register_user_to_platform(request):
     }
     return render(request, 'auth_and_perms/create_user_organization.html', context=context)
 
-def set_rol_administrator_on_org(profile, organization):
+
+def set_profile_administrator(profile, rol):
+    ct = ContentType.objects.filter(app_label=profile._meta.app_label, model=profile._meta.model_name).first()
+    pp, none=ProfilePermission.objects.get_or_create(profile=profile, content_type=ct, object_id=profile.pk)
+    pp.rol.add(rol)
+
+
+def set_rol_administrator_on_org(profile, organization, type_in_organization=UserOrganization.ADMINISTRATOR):
+    UserOrganization.objects.create(organization=organization, user=profile.user,
+                                    type_in_organization=type_in_organization)
+
     group, _x = Group.objects.get_or_create(name='RegisterOrganization')
     rol = Rol.objects.create(name=_('Organization Management'))
     ct=ContentType.objects.filter(app_label=organization._meta.app_label, model=organization._meta.model_name).first()
@@ -57,22 +67,20 @@ def set_rol_administrator_on_org(profile, organization):
     rol.permissions.add(*[x for x in group.permissions.all()])
     pp.rol.add(rol)
     organization.rol.add(rol)
+    set_profile_administrator(profile, rol)
 
-def create_user_organization(user, organization, form, user_type=UserOrganization.LABORATORY_USER):
-
-    profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
-                                     id_card=form.cleaned_data['id_card'],
-                                     job_position=form.cleaned_data['job_position'])
-    pp = ProfilePermission.objects.create(profile=profile, object_id=profile.pk,
-                                          content_type=ContentType.objects.filter(
-                                              app_label=profile._meta.app_label,
-                                              model=profile._meta.model_name).first())
-
-    org = OrganizationStructure.objects.create(name=organization)
-    set_rol_administrator_on_org(profile, org)
+def create_user_organization(user, organization, data, user_type=UserOrganization.LABORATORY_USER):
+    profile = Profile.objects.create(user=user, phone_number=data['phone_number'],
+                                     id_card=data['id_card'],
+                                     job_position=data['job_position'])
+    if isinstance(organization, str):
+        org = OrganizationStructure.objects.create(name=organization)
+    else:
+        org = organization
+    set_rol_administrator_on_org(profile, org, type_in_organization=user_type)
     user.active = True
     user.save()
-    UserOrganization.objects.create(user=user, organization=org, status=True, type_in_organization=user_type)
+#    //UserOrganization.objects.create(user=user, organization=org, status=True, type_in_organization=user_type)
 
 @transaction.atomic
 def create_profile_otp(request, pk):
@@ -88,14 +96,14 @@ def create_profile_otp(request, pk):
                 expired_date__gte=now(),
             ).first()
             if reguser:
-                create_user_organization(user, reguser.organization_name, form)
+                create_user_organization(user, reguser.organization_name, form.cleaned_data)
                 reguser.delete()
                 return render(request, 'auth_and_perms/create_user_success.html', )
             else:
                 messages.error(request, _("You have no creation process, maybe it was expired, please try to register again"))
                 return redirect(reverse('auth_and_perms:register_user_to_platform'))
     else:
-        form = form(initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk})
+        form = form(initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk, 'email': user.email})
     context={
         'form': form,
         'user': user.pk
@@ -118,7 +126,7 @@ def create_profile_by_digital_signature(request, pk):
                 expired_date__gte=now(),
             ).first()
             if reguser:
-                create_user_organization(user, reguser.organization_name, form)
+                create_user_organization(user, reguser.organization_name, form.cleaned_data)
                 reguser.delete()
                 return render(request, 'auth_and_perms/create_user_success.html', )
             else:

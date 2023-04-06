@@ -923,7 +923,7 @@ class OrganizationReactivePresenceList(ReportListView):
         for item in query:
 
             laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
-            usermanagement = item.organizationusermanagement_set.all().values('users__first_name', 'users__last_name', 'users__id')
+            usermanagement = item.values('users__first_name', 'users__last_name', 'users__id')
             for lab in laboratories:
 
                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
@@ -1000,6 +1000,7 @@ def report_index(request, org_pk):
         'org_pk': org_pk
     }
     return render(request, 'laboratory/reports/report_index.html', context=context)
+
 
 
 def search_danger_indication_report(request):

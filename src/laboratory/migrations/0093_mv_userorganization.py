@@ -8,9 +8,9 @@ def mv_users(apps, schema_editor):
     for organization in OrganizationUserManagement.objects.all():
         for user in organization.users.all():
             UserOrganization.objects.create(
-                organization=organization,
+                organization=organization.organization,
                 user=user,
-                type_in_organization=UserOrganization.ADMINISTRATOR
+                type_in_organization=1
             )
 
 

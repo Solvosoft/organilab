@@ -418,23 +418,21 @@ class OrganizationStructureManager(models.Manager):
     def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
-    def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
-        # TODO: we have problems detecting user organizations
-        # user.userorganization_set.all()
+    def filter_organization_by_user(self, user, descendants=True, ancestors=False):
 
 
-        organizations = OrganizationStructure.objects.filter(
-            Q(users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
+
+        organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(users=user):
+                for sons in org.descendants(include_self=False).filter(users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(users=user):
+                for parent in org.descendants(include_self=False).filter(users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
@@ -485,10 +483,12 @@ class OrganizationStructure(TreeNode):
     # vista de administración, para los permisos usar ProfilePermission
     rol = models.ManyToManyField('auth_and_perms.Rol', blank=True)
     level = models.SmallIntegerField(default=0)
-    objects = TreeQuerySet.as_manager()
-    os_manager = OrganizationStructureManager()
     users = models.ManyToManyField(User, blank=True, through='UserOrganization',
                                    through_fields=('organization', 'user'))
+
+    objects = TreeQuerySet.as_manager()
+    os_manager = OrganizationStructureManager()
+
     class Meta:
         ordering = ["position"]
         verbose_name = _('Organization')
