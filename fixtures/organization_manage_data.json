@@ -630,5 +630,17 @@
       "status": true,
       "type_in_organization": 1
     }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 20,
+    "fields": {
+      "organization": 2,
+      "object_id": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ]
+    }
   }
 ]

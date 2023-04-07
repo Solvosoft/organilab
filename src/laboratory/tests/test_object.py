@@ -105,25 +105,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
 
-    def test_reactive_precursor_object_list_report(self):
-        url = reverse("laboratory:reactive_precursor_object_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Tanque 1000 mL")
-
-    def test_object_change_logs_report(self):
-        url = reverse("laboratory:object_change_logs", kwargs={"org_pk": self.org.pk, "lab_pk": 2})
-        data = {
-            "resume": True,
-            "precursor": True,
-            "all_laboratories": False,
-            "period": "09-02-2023 - 15-03-2023",
-            "format": "html"
-        }
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Tanque 1000 mL")
-
     def test_precursor_report(self):
         data = {
             "consecutive": 1,

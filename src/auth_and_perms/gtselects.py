@@ -10,7 +10,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.models import Rol, ProfilePermission
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_by_user
 from laboratory.forms import RelOrganizationPKIntForm
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
@@ -94,6 +94,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                     if form.cleaned_data['laboratory']:
                         self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'],
                                                                 using=settings.READONLY_DATABASE)
+                        organization_can_change_laboratory(self.contenttypeobj, self.organization)
                 elif form.cleaned_data['typeofcontenttype'] == 'organization':
                     self.contenttypeobj = self.organization
                     user_is_allowed_on_organization(self.request.user, self.contenttypeobj)

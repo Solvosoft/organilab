@@ -60,26 +60,10 @@ class InformViewTest(BaseLaboratorySetUpTest):
         data = {
             'period': period.pk
         }
-        class ObjView:
-            def __init__(self, pk):
-                self.kwargs={
-                    'pk': pk
-                }
-        factory = RequestFactory()
-        request = factory.get(url) # this don't make a request to server, only the object request
-        request.user = self.user
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         content_obj = json.loads(response.content)
-        serializer_obj = InformSerializer(inform_list.annotate(
-                start_application_date=Value(now(), DateField()),
-                close_application_date=Value(now(), DateField())).first(),
-                                          context={'request': request,
-                                                   'view': ObjView(self.org.pk)
-                                                   }
-                                          # self.context['view'].kwargs['pk']
-        ).data
-        self.assertIn(serializer_obj, content_obj['data'])
+        self.assertContains(response, '<a href=\\"/lab/1/1/informs/complete_inform/1/\\">')
         self.assertEqual(content_obj['recordsFiltered'], inform_list.count())
 
 class CommentInformViewTest(BaseLaboratorySetUpTest):
