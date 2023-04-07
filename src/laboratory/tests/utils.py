@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 from django.test import TestCase
+from django.test import Client
 
 from auth_and_perms.models import Rol
 from laboratory.models import OrganizationStructure, Laboratory
@@ -100,8 +101,8 @@ class BaseSetUpAjaxRequest(BaseOrganizatonManageSetUpTest):
         super().setUp()
 
         #CLIENT - LOGIN
-        self.client1_org1 = self.client
-        self.client2_org2 = self.client
+        self.client1_org1 = Client()
+        self.client2_org2 = Client()
         self.client1_org1.force_login(self.user1_org1)
         self.client2_org2.force_login(self.user2_org2)
 
