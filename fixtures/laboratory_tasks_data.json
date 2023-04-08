@@ -450,15 +450,6 @@
     }
   },
   {
-    "model": "laboratory.laboratoryroom",
-    "pk": 1,
-    "fields": {
-      "name": "Sala de inventario",
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
@@ -470,9 +461,18 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
     }
   },
   {

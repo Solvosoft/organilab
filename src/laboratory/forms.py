@@ -213,7 +213,7 @@ class ObjectFeaturesForm(forms.ModelForm, GTForm):
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        fields = '__all__'
+        exclude = ['laboratory']
         widgets = {
             'name': genwidgets.TextInput(),
             'legal_identity': genwidgets.NumberInput,
@@ -234,9 +234,9 @@ class FurnitureCreateForm(forms.ModelForm, GTForm):
 class RoomCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        fields = '__all__'
+        exclude = ['laboratory']
         widgets = {
-            'name': genwidgets.TextInput
+            'name': genwidgets.TextInput,
         }
 
 

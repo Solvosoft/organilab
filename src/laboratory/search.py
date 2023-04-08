@@ -82,7 +82,7 @@ class SearchDisposalObject(ListView):
     def get_queryset(self):
         user = self.request.user
         labs = Laboratory.objects.filter(profile__user=user.pk,organization=self.org,
-                                         rooms__furniture__shelf__discard=True).distinct()
+                                         laboratoryroom__furniture__shelf__discard=True).distinct()
 
         return labs
 

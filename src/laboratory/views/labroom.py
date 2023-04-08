@@ -30,7 +30,7 @@ class LaboratoryRoomsList(ListView):
         lab = get_object_or_404(
             Laboratory, pk=self.lab)
         self.request.session['search_lab'] = self.lab
-        return lab.rooms.all()
+        return lab.laboratoryroom_set.all()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,7 +53,7 @@ class LabroomCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
         lab = get_object_or_404(Laboratory, pk=self.lab)
-        context['object_list'] = lab.rooms.all()
+        context['object_list'] = lab.laboratoryroom_set.all()
         context['laboratory'] = self.lab
         context['furniture_form'] = FurnitureCreateForm
         return context
@@ -66,10 +66,10 @@ class LabroomCreate(CreateView):
         build_qr_instance(url, self.object, self.org)
 
     def form_valid(self,form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         lab = get_object_or_404(Laboratory, pk=self.lab)
-        lab.rooms.add(self.object)
-        lab.save()
+        self.object.laboratory= lab
+        self.object.save()
         self.generate_qr()
 
         organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
@@ -94,12 +94,19 @@ class LabroomUpdate(UpdateView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
-    def form_valid(self,form):
-        room = form.save()
-        organilab_logentry(self.request.user,  room, CHANGE, changed_data=form.changed_data,
-                           relobj=self.lab)
-        return super(LabroomUpdate, self).form_valid(form)
+    def get_form_kwargs(self):
+        return super().get_form_kwargs()
 
+    def form_valid(self,form):
+        self.object = form.save(commit=False)
+        self.object.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+        self.object.save()
+        organilab_logentry(self.request.user,  self.object, CHANGE, changed_data=form.changed_data,
+                           relobj=self.lab)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
 @method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
@@ -116,18 +123,6 @@ class LaboratoryRoomDelete(DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
-
-
-# @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
-# class LaboratoryRoomReportView(ListView):
-#     model = LaboratoryRoom
-#     template_name = "laboratory/report_laboratoryroom_list.html"
-#
-#     def get_queryset(self):
-#         lab = get_object_or_404(Laboratory, pk=self.lab)
-#         return lab.rooms.all()
-
-
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
@@ -135,7 +130,7 @@ class LaboratoryRoomReportView(ListView):
 
     def get_queryset(self):
         self.obj_lab = get_object_or_404(Laboratory, pk=self.lab)
-        self.obj_rooms = self.obj_lab.rooms.all()
+        self.obj_rooms = self.obj_lab.laboratoryroom_set.all()
         return self.obj_rooms
 
     def get_context_data(self, **kwargs):
@@ -159,7 +154,7 @@ def rebuild_laboratory_qr(request, org_pk, lab_pk):
     domain = schema + request.get_host()
     baseurl = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
 
-    for labroom in lab.rooms.all():
+    for labroom in lab.laboratoryroom_set.all():
         labroom_url="#labroom=%d"%labroom.pk
         update_qr_instance(baseurl+labroom_url, labroom, org_pk)
         for furniture in labroom.furniture_set.all():

@@ -507,33 +507,6 @@
     }
   },
   {
-    "model": "laboratory.laboratoryroom",
-    "pk": 1,
-    "fields": {
-      "name": "Sala de inventario",
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
-    "model": "laboratory.laboratoryroom",
-    "pk": 2,
-    "fields": {
-      "name": "Sala de muestras",
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
-    "model": "laboratory.laboratoryroom",
-    "pk": 3,
-    "fields": {
-      "name": "Sala de equipos de protección individual",
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
     "model": "laboratory.laboratory",
     "pk": 1,
     "fields": {
@@ -545,7 +518,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1, 2],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -562,7 +534,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [3],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -579,9 +550,38 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [3],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de muestras",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Sala de equipos de protección individual",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 2
     }
   },
   {

@@ -143,8 +143,8 @@ class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
-    quantity = models.FloatField(_('Material quantity'), help_text='Use dot like 0.344 on decimal')
-    limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
+    quantity = models.FloatField(_('Material quantity'), help_text= _('Use dot like 0.344 on decimal'))
+    limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'))
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
@@ -182,6 +182,7 @@ class ShelfObject(models.Model):
         return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
 class LaboratoryRoom(models.Model):
+    laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
     name = models.CharField(_('Name'), max_length=255)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
@@ -570,8 +571,6 @@ class Laboratory(models.Model):
     organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE, null=True)
 
-    rooms = models.ManyToManyField(
-        'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
