@@ -127,7 +127,7 @@ DATABASES = {
     },
 }
 
-READONLY_DATABASE='default'
+READONLY_DATABASE = os.getenv('READONLY_DATABASE', 'default')
 
 # TEST - DJANGO
 
