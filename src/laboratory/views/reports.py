@@ -174,7 +174,7 @@ def report_labroom_building(request, *args, **kwargs):
     org=None
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
-            Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
+            Laboratory, pk=kwargs.get('lab_pk')).laboratoryroom_set.all()
     else:
         rooms = LaboratoryRoom.objects.all()
     if 'org_pk' in kwargs:
@@ -962,11 +962,11 @@ class OrganizationReactivePresenceList(ReportListView):
         add_profile_info = True
         for item in query:
 
-            laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
+            laboratories = item.laboratory_set.all().values('name', 'laboratoryroom__furniture')
             usermanagement = item.users.values('first_name', 'last_name', 'id')
             for lab in laboratories:
                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
-                    shelf__furniture=lab['rooms__furniture']
+                    shelf__furniture=lab['laboratoryroom__furniture']
                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
                 for user in usermanagement:
                     # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added

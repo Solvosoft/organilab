@@ -2,6 +2,9 @@ from __future__ import absolute_import, unicode_literals
 
 from celery import Celery
 import re
+
+from click.core import F
+
 from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod, Furniture, \
     TaskReport
 from async_notifications.utils import send_email_from_template
@@ -16,14 +19,7 @@ import importlib
 app = importlib.import_module(settings.CELERY_MODULE).app
 
 def get_limited_shelf_objects(lab):
-    object_list = []
-
-    for rooms in lab.rooms.all():
-        for furniture in rooms.furniture_set.all():
-            for obj in furniture.get_limited_shelf_objects():
-                    object_list.append(obj)
-
-    return object_list
+    return ShelfObject.objects.filter(in_where_laboratory=lab, quantity__lte=F('limit_quantity'))
 
 
 @app.task

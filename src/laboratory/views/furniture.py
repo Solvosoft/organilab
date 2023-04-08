@@ -80,7 +80,7 @@ class FurnitureCreateView(CreateView):
         context = CreateView.get_context_data(self, **kwargs)
         lab = get_object_or_404(Laboratory, pk=self.lab)
         context['object_list'] = self.model.objects.filter(
-            labroom__in=lab.rooms.all()).order_by('labroom')
+            labroom__in=lab.laboratoryroom_set.all()).order_by('labroom')
         return context
 
     class Meta:

@@ -9,8 +9,8 @@
       "is_superuser": true,
       "username": "german",
       "first_name": "German",
-      "last_name": "Zárate Montero",
-      "email": "gedzar@gmail.com",
+      "last_name": "Mora Blanca",
+      "email": "organilab@organilab.org",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -430,12 +430,30 @@
     }
   },
   {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Organiza tan",
+      "phone_number": "85794954",
+      "location": "Heredia",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
       "name": "Cuarto 1",
       "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
     }
   },
   {
@@ -492,23 +510,7 @@
 
     }
   },
-  {
-    "model": "laboratory.laboratory",
-    "pk": 1,
-    "fields": {
-      "name": "Organiza tan",
-      "phone_number": "85794954",
-      "location": "Heredia",
-      "geolocation": "9.895804362670006,-84.1552734375",
-      "email": "",
-      "coordinator": "",
-      "unit": "",
-      "organization": 1,
-      "rooms": [1],
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
+
 {
   "model": "academic.procedure",
   "pk": 10,

@@ -210,7 +210,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -227,7 +226,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 2,
-      "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -244,7 +242,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -261,7 +258,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 4,
-      "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -278,7 +274,6 @@
       "coordinator": "",
       "unit": "",
       "organization": 5,
-      "rooms": [],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }

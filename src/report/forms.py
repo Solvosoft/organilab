@@ -111,8 +111,7 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
             laboratory = Laboratory.objects.filter(pk__in=laboratory)
 
         if not lab_room:
-            rooms = list(laboratory.values_list('rooms__pk', flat=True))
-            lab_room = LaboratoryRoom.objects.filter(pk__in=rooms)
+            lab_room = laboratory.laboratoryroom_set.all()
         return list(lab_room.values_list('pk',flat=True).distinct())
 
 
