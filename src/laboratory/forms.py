@@ -40,7 +40,7 @@ class ObjectSearchForm(GTForm, forms.Form):
         super(ObjectSearchForm, self).__init__(*args, **kwargs)
         if org:
             org=utils.get_pk_org_ancestors_decendants(user, org)
-            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__organizationusermanagement__users=user).distinct()
+            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__users=user).distinct()
 
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
@@ -213,7 +213,7 @@ class ObjectFeaturesForm(forms.ModelForm, GTForm):
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        fields = '__all__'
+        exclude = ['laboratory']
         widgets = {
             'name': genwidgets.TextInput(),
             'legal_identity': genwidgets.NumberInput,
@@ -234,9 +234,9 @@ class FurnitureCreateForm(forms.ModelForm, GTForm):
 class RoomCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        fields = '__all__'
+        exclude = ['laboratory']
         widgets = {
-            'name': genwidgets.TextInput
+            'name': genwidgets.TextInput,
         }
 
 
@@ -531,3 +531,7 @@ class ReservedProductsForm(forms.Form):
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
+
+class TasksForm(GTForm,forms.Form):
+    taskreport = forms.IntegerField( required=True)
+    task = forms.CharField(max_length=255,required=True)

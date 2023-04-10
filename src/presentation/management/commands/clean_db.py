@@ -64,7 +64,7 @@ class Command(BaseCommand):
         ).filter(user_count=0).delete()
 
     def delete_laboratory(self):
-        labs = Laboratory.objects.annotate(shobj_count=Count('rooms__furniture__shelf__shelfobject')).filter(shobj_count=0)
+        labs = Laboratory.objects.annotate(shobj_count=Count('laboratoryroom__furniture__shelf__shelfobject')).filter(shobj_count=0)
             #.delete()
         #print(list(labs.values_list('pk', flat=True)))
 

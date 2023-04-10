@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'derb',
     'django_otp',
-    'django_otp.plugins.otp_totp'
+    'django_otp.plugins.otp_totp',
+    'report'
 ]
 
 
@@ -125,6 +126,8 @@ DATABASES = {
         }
     },
 }
+
+READONLY_DATABASE = os.getenv('READONLY_DATABASE', 'default')
 
 # TEST - DJANGO
 

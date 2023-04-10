@@ -249,14 +249,6 @@
 },
 {
     "model": "contenttypes.contenttype",
-    "pk": 32,
-    "fields": {
-        "app_label": "laboratory",
-        "model": "organizationusermanagement"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
     "pk": 33,
     "fields": {
         "app_label": "laboratory",
@@ -8820,54 +8812,6 @@
 },
 {
     "model": "auth.permission",
-    "pk": 119,
-    "fields": {
-        "name": "Can add organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationstructure"
-        ],
-        "codename": "add_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 120,
-    "fields": {
-        "name": "Can change organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationstructure"
-        ],
-        "codename": "change_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 121,
-    "fields": {
-        "name": "Can delete organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationstructure"
-        ],
-        "codename": "delete_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 122,
-    "fields": {
-        "name": "Can view organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationstructure"
-        ],
-        "codename": "view_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
     "pk": 123,
     "fields": {
         "name": "Can add catalog",
@@ -8960,54 +8904,6 @@
             "sustancecharacteristics"
         ],
         "codename": "view_sustancecharacteristics"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 131,
-    "fields": {
-        "name": "Can add organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationusermanagement"
-        ],
-        "codename": "add_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 132,
-    "fields": {
-        "name": "Can change organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationusermanagement"
-        ],
-        "codename": "change_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 133,
-    "fields": {
-        "name": "Can delete organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationusermanagement"
-        ],
-        "codename": "delete_organizationusermanagement"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 134,
-    "fields": {
-        "name": "Can view organization user management",
-        "content_type": [
-            "laboratory",
-            "organizationusermanagement"
-        ],
-        "codename": "view_organizationusermanagement"
     }
 },
 {
@@ -13698,17 +13594,7 @@
                 "organizationstructure"
             ],
             [
-                "add_organizationusermanagement",
-                "laboratory",
-                "organizationstructure"
-            ],
-            [
                 "change_organizationstructure",
-                "laboratory",
-                "organizationstructure"
-            ],
-            [
-                "change_organizationusermanagement",
                 "laboratory",
                 "organizationstructure"
             ],
@@ -13718,17 +13604,11 @@
                 "organizationstructure"
             ],
             [
-                "delete_organizationusermanagement",
-                "laboratory",
-                "organizationstructure"
-            ],
-            [
                 "view_organizationstructure",
                 "laboratory",
                 "organizationstructure"
             ],
             [
-                "view_organizationusermanagement",
                 "laboratory",
                 "organizationstructure"
             ],
@@ -17009,7 +16889,6 @@
         "category": "Organization User Management",
         "url_name": "organizationManager",
         "permission": [
-            "add_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17023,7 +16902,6 @@
         "category": "Organization User Management",
         "url_name": "organizationManager",
         "permission": [
-            "change_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17037,7 +16915,6 @@
         "category": "Organization User Management",
         "url_name": "organizationManager",
         "permission": [
-            "delete_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17051,7 +16928,6 @@
         "category": "Organization User Management",
         "url_name": "organizationManager",
         "permission": [
-            "view_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17093,7 +16969,6 @@
         "category": "Organization User Management",
         "url_name": "addusersorganization",
         "permission": [
-            "change_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17275,7 +17150,6 @@
         "category": "Organization User Management",
         "url_name": "index",
         "permission": [
-            "add_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]
@@ -17289,7 +17163,6 @@
         "category": "Organization User Management",
         "url_name": "index",
         "permission": [
-            "view_organizationusermanagement",
             "laboratory",
             "organizationstructure"
         ]

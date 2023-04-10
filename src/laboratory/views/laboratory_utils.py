@@ -44,14 +44,14 @@ def get_function(name):
 def filter_by_user_and_hcode(user, q, function='convert_hcodereport_table'):
     functiont = get_function(function)
     user_labs = get_user_laboratories(user)
-    labs = user_labs.filter(rooms__furniture__shelf__shelfobject__object__sustancecharacteristics__h_code__in=q)
+    labs = user_labs.filter(laboratoryroom__furniture__shelf__shelfobject__object__sustancecharacteristics__h_code__in=q)
     # 'rooms__furniture__shelf__shelfobject__object__h_code__code'
     result = labs.annotate(
-        room=F('rooms__name'),
-        furniture=F('rooms__furniture__name'),
-        reactive=F('rooms__furniture__shelf__shelfobject__object__name'),
-        quantity=F('rooms__furniture__shelf__shelfobject__quantity'),
-        units=F('rooms__furniture__shelf__shelfobject__measurement_unit'),
-        reactive_id=F('rooms__furniture__shelf__shelfobject__object__pk')
-    ).values('name', 'room', 'furniture', 'reactive', 'quantity', 'units', 'reactive_id')
+        room=F('laboratoryroom__name'),
+        furniture=F('laboratoryroom__furniture__name'),
+        reactive=F('laboratoryroom__furniture__shelf__shelfobject__object__name'),
+        quantity=F('laboratoryroom__furniture__shelf__shelfobject__quantity'),
+        units=F('laboratoryroom__furniture__shelf__shelfobject__measurement_unit'),
+        reactive_id=F('laboratoryroom__furniture__shelf__shelfobject__object__pk')
+    ).values('name', 'laboratoryroom', 'furniture', 'reactive', 'quantity', 'units', 'reactive_id')
     return functiont(result)

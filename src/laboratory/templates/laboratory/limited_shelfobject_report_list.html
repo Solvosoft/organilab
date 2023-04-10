@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n laboratory %}
+{% load i18n laboratory organilab_tags static %}
 {% block title %}{% trans 'Limited shelf objects' %}{% endblock %}
 {% load urlname_tags %}
 {% block pre_head %}
@@ -8,79 +8,24 @@
 {% endblock %}
 {% block content %}
 	<div class="page-header"><h1>{% trans 'Limited shelf objects' %}</h1></div>
-	{% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
-	  <div class="float-end">
-	  
-	    <div class="btn-group dropup">
-	  <button type="button" class="btn btn-danger">
-	  <i class="fa fa-download" aria-hidden="true"></i>
-	   {% trans 'Download'%}</button>
+<form id="form" onsubmit="return false;">
+	{{form.as_inline}}
+		<button id="send" class="btn-outline-success btn float-end" type="button">
+	                    <span id="button-text">{% trans 'Send' %}</span>
+	        	        <span id="spiner" role="status" aria-hidden="true"></span>
+		</button>
+		{% include 'laboratory/components/report_modals.html'%}
 
-	  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+</form>
+{% endblock %}
 
-	    <span class="caret"></span>
-	    <span class="sr-only"> {% trans 'Toggle Dropdown'%} </span>
-	  </button>
-	  <ul class="dropdown-menu">
-		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=pdf">{% trans "PDF" %} </a>
-		  </li>
-		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=ods">{% trans "Ods" %} </a>
-		  </li>
-		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=xls">{% trans "Xls" %} </a>
-		  </li>
-		  <li>
-			  <a class="dropdown-item" href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?format=xlsx">{% trans "Xlsx" %} </a>
-		  </li>
-	  </ul>
-	  </div>
-	  </div> 
-   {% endif %}
-	  
-	  <br> <br>
-	  {{ lab }}
-	
-  {% if perms.laboratory.view_shelfobject  %}
-		  {% for obj in object_list %}
-		    <h3 class="alert alert-info">
-		      {{ obj }}
-		      <a class="btn btn-sm btn-danger float-end"
-		         title="{{ obj }}"
-		         href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}?pk={{ obj.pk }}">
-		   		<i class="fa fa-download" aria-hidden="true"></i>
-		        {% trans "PDF" %}</a>
-		    </h3>
-		    <ul>
-		      <li>{% trans "Shelf:" %} {{ obj.shelf }}</li>
-		      <li>{% trans "Object:" %}
-		        {{ obj.object }}
-		      </li>
-		      <li>{% trans "Quantity:" %}
-		        {{ obj.quantity }} {{ obj.get_measurement_unit_display }}
-		      </li>
-		      <li>{% trans "Limit quantity:" %}
-		        {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}
-		      </li>
-		    </ul>
-		  {% empty %}
-		    <i>{% trans "No objects" %}</i>
-		  {% endfor %}
-		  
-  {% else %}
-      {% include 'laboratory/action_denied.html' %}
-  {% endif %}
-
-  <br>
-  <div>
-    {% if perms.laboratory.do_report and perms.laboratory.view_shelfobject  %}
-    <a class="btn btn-primary float-end" title="{% trans 'All objects' %}"
-         href="{% url 'laboratory:reports_limited_shelf_objects' lab_pk=laboratory org_pk=org_pk %}">
-        <i class="fa fa-download" aria-hidden="true"></i>
-        {% trans "All objects in PDF" %}
-    </a>
-    <br> <br>
-    {% endif %}
-  </div>
+{% block javascripts %}
+{{ block.super }}
+<script>
+	const report_urls = {
+		create_request : "{% url 'laboratory:create_report_request' lab_pk=laboratory %}",
+		generate_report : "{% url 'laboratory:generate_report' lab_pk=laboratory org_pk=org_pk %}",
+	}
+</script>
+<script src="{% static 'laboratory/js/reports.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

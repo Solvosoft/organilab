@@ -1,9 +1,7 @@
 from django.contrib import admin
-from django.utils.decorators import method_decorator
-
-from laboratory import models
 from django.utils.translation import gettext_lazy as _
 
+from laboratory import models
 from laboratory.task_utils import create_informsperiods
 
 
@@ -38,8 +36,6 @@ admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
-admin.site.register(models.OrganizationUserManagement)
-
 admin.site.register(models.ObjectFeatures)
 admin.site.register(models.Object, Object_Admin)
 admin.site.register(models.ShelfObject)
@@ -55,6 +51,7 @@ admin.site.register(models.RegisterUserQR)
 
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
+admin.site.register(models.TaskReport)
 admin.site.register(models.InformScheduler, InformSchedulerAdmin)
 
 

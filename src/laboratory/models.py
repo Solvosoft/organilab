@@ -143,8 +143,8 @@ class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
-    quantity = models.FloatField(_('Material quantity'), help_text='Use dot like 0.344 on decimal')
-    limit_quantity = models.FloatField(_('Limit material quantity'), help_text='Use dot like 0.344 on decimal')
+    quantity = models.FloatField(_('Material quantity'), help_text= _('Use dot like 0.344 on decimal'))
+    limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'))
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
@@ -182,6 +182,7 @@ class ShelfObject(models.Model):
         return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
 class LaboratoryRoom(models.Model):
+    laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
     name = models.CharField(_('Name'), max_length=255)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
@@ -399,8 +400,7 @@ class OrganizationStructureManager(models.Manager):
 
 
     def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
-        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(
-            organizationusermanagement__users=user)
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(users=user)
         if org_pk:
             organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
         else:
@@ -419,23 +419,21 @@ class OrganizationStructureManager(models.Manager):
     def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
 
-    def filter_user_org(self, user, descendants=True, include_self=True, ancestors=False):
-        # TODO: we have problems detecting user organizations
-        # user.userorganization_set.all()
+    def filter_organization_by_user(self, user, descendants=True, ancestors=False):
 
 
-        organizations = OrganizationStructure.objects.filter(
-            Q(organizationusermanagement__users=user)|Q(pk__in=user.userorganization_set.values_list('organization', flat=True)))
+
+        organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for sons in org.descendants(include_self=False).filter(users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for parent in org.descendants(include_self=False).filter(users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
@@ -446,17 +444,17 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.none()
 
     def filter_user_orgs(self, user, org=None, descendants=True, include_self=True, ancestors=False):
-        organizations = OrganizationStructure.objects.filter(organizationusermanagement__users=user, organizationusermanagement__organization=org)
+        organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for sons in org.descendants(include_self=include_self).filter(users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(organizationusermanagement__users=user):
+                for parent in org.descendants(include_self=include_self).filter(users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
@@ -486,6 +484,9 @@ class OrganizationStructure(TreeNode):
     # vista de administración, para los permisos usar ProfilePermission
     rol = models.ManyToManyField('auth_and_perms.Rol', blank=True)
     level = models.SmallIntegerField(default=0)
+    users = models.ManyToManyField(User, blank=True, through='UserOrganization',
+                                   through_fields=('organization', 'user'))
+
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
 
@@ -493,13 +494,6 @@ class OrganizationStructure(TreeNode):
         ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
-        permissions = (
-            ('add_organizationusermanagement', _('Can add organization user management')),
-            ('change_organizationusermanagement', _('Can change organization user management')),
-            ('delete_organizationusermanagement', _('Can delete organization user management')),
-            ('view_organizationusermanagement', _('Can view organization user management')),
-        )
-
     def __str__(self):
         return "%s" % self.name
 
@@ -515,14 +509,39 @@ class OrganizationStructure(TreeNode):
             labs += lab.name
         return labs
 
+class UserOrganization(models.Model):
+    ADMINISTRATOR=1
+    LABORATORY_MANAGER=2
+    LABORATORY_USER=3
+    TYPE_IN_ORG=(
+        (ADMINISTRATOR, _("Administrator")),
+        (LABORATORY_MANAGER, _("Laboratory Manager")),
+        (LABORATORY_USER, _("Laboratory User"))
+    )
 
-class OrganizationUserManagement(models.Model):
     organization = models.ForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
-    users = models.ManyToManyField(User, blank=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    type_in_organization = models.IntegerField(choices=TYPE_IN_ORG, default=LABORATORY_USER)
 
     def __str__(self):
-        return "%s" % self.organization.name
+        return "%s" % self.user
+
+    class Meta:
+        ordering = ('pk',)
+        verbose_name = _('User Organization')
+        verbose_name_plural = _('User Organizations')
+
+#FIXME: Delete this model
+
+#class OrganizationUserManagement(models.Model):
+#    organization = models.ForeignKey(
+#        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
+#    users = models.ManyToManyField(User, blank=True)
+
+#    def __str__(self):
+#        return "%s" % self.organization.name
 
 
 class OrganizationStructureRelations(models.Model):
@@ -552,8 +571,6 @@ class Laboratory(models.Model):
     organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE, null=True)
 
-    rooms = models.ManyToManyField(
-        'LaboratoryRoom', verbose_name=_("Rooms"), blank=True)
 
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
@@ -725,20 +742,6 @@ class Protocol(models.Model):
         verbose_name = _('Protocol')
         verbose_name_plural = _('Protocols')
 
-class UserOrganization(models.Model):
-    organization = models.ForeignKey(
-        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
-
-    def __str__(self):
-        return "%s" % self.user
-
-    class Meta:
-        ordering = ('pk',)
-        verbose_name = _('User Organization')
-        verbose_name_plural = _('User Organizations')
-
 
 class InformScheduler(AbstractOrganizationRef):
     name = models.CharField(max_length=512)
@@ -799,3 +802,21 @@ class RegisterUserQR(models.Model):
 
     def __str__(self):
         return f"{self.url}"
+
+
+DELIVER = _('Delivered')
+WAIT = _('On hold')
+GENERATED = _('Generated')
+STATUS_TEMPLATE=[(_('On hold'),WAIT),
+                  (_('Delivered'),DELIVER),
+                  (_('Generated'),GENERATED),
+                 ]
+class TaskReport(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    type_report = models.CharField(max_length=100, blank=False, null=False)
+    form_name = models.TextField(null=True, blank=True)
+    table_content = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=30, default=WAIT,choices=STATUS_TEMPLATE)
+    file_type = models.CharField(max_length=30, blank=True, null=True)
+    file = models.FileField(upload_to='reports/', blank=True, null=True)
+    data = models.JSONField(null=True, blank=True)

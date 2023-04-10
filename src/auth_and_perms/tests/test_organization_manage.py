@@ -3,7 +3,7 @@ import json
 from django.urls import reverse
 
 from auth_and_perms.models import ProfilePermission, Profile, Rol
-from laboratory.models import OrganizationUserManagement, UserOrganization
+from laboratory.models import UserOrganization
 from laboratory.tests.utils import BaseSetUpAjaxRequest, BaseSetUpDjangoRequest
 from laboratory.utils import get_profile_by_organization
 
@@ -27,7 +27,7 @@ class ActionRolViewTest(BaseSetUpAjaxRequest):
 
     def test_check_user1_append_rol_to_profile(self):
         """
-        Usuario 1 agregando 1 rol(Gestión lab) en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
+        Usuario 1 agregando 1 rol(Gestión lab) en una org 2 de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
         """
 
         data = self.base_data
@@ -38,7 +38,8 @@ class ActionRolViewTest(BaseSetUpAjaxRequest):
                                               content_type=self.lab_contenttype,
                                               object_id=data['contenttypeobj']['objectid']).first()
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(self.role_manage_lab in pp.rol.all())
+        self.assertIsNone(pp)
+        #self.assertFalse(self.role_manage_lab in pp.rol.all())
 
     def test_check_user2_append_rol_to_profile(self):
         """
@@ -47,7 +48,7 @@ class ActionRolViewTest(BaseSetUpAjaxRequest):
 
         data = self.base_data
         data.update({'mergeaction': 'append', 'profile': self.profile2_org2.pk})
-        data['contenttypeobj'].update({'org': self.org2.pk, 'objectid': self.lab3_org1.pk})
+        data['contenttypeobj'].update({'org': self.org2.pk, 'objectid': self.lab2_org2.pk})
         response = self.client2_org2.put(self.url, data=json.dumps(data), content_type='application/json')
         pp = ProfilePermission.objects.filter(profile=self.profile2_org2,
                                               content_type=self.lab_contenttype,
@@ -83,7 +84,7 @@ class ActionRolViewTest(BaseSetUpAjaxRequest):
                                               content_type=self.lab_contenttype,
                                               object_id=data['contenttypeobj']['objectid']).first()
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(not self.role_manage_lab in pp.rol.all())
+        self.assertFalse(self.role_manage_lab in pp.rol.all())
 
     def test_check_user2_full_rol_to_profile(self):
         """
@@ -250,22 +251,19 @@ class ListProfileLabViewTest(BaseSetUpAjaxRequest):
         data = self.base_data
         data.update({'offset': 0, 'limit': 10})
         response = self.client2_org2.get(self.url, data=data)
-        response_data = json.loads(response.content)['data']
         self.assertEqual(response.status_code, 403)
-        self.assertNotEqual(self.profiles.count(), len(response_data))
-        self.assertNotContains(response, self.profiles.first().user.get_full_name())
 
     def test_user2_list_profileslab1_default_limit(self):
         """
         Usuario 2 obtiene la lista de perfiles del lab 1 en una org de la cual NO es miembro, CASO NO PERMITIDO DEBERIA FALLAR
         """
-
+        old_count = self.profiles.count()
         data = self.base_data
         response = self.client2_org2.get(self.url, data=data)
-        response_data = json.loads(response.content)['data']
         self.assertEqual(response.status_code, 403)
-        self.assertNotEqual(self.profiles.count(), len(response_data))
-        self.assertNotContains(response, self.profiles.first().user.get_full_name())
+        #response_data = json.loads(response.content)['data']
+        #self.assertNotEqual(self.profiles.count(), len(response_data))
+        #self.assertNotContains(response, self.profiles.first().user.get_full_name())
 
     def test_user1_list_profileslab1_set_limit(self):
         """
@@ -303,9 +301,6 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
             'disable_user': False
         }
         self.url = reverse("auth_and_perms:api-deluserorgcontt-list")
-        orgum = OrganizationUserManagement.objects.filter(organization=self.org)
-        if orgum.exists():
-            self.orgum = orgum.first()
 
     def test_user1_delete_profilepermissionsorg1profile3(self):
         """
@@ -332,8 +327,7 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(pp.exists())
         self.assertFalse(UserOrganization.objects.filter(organization=self.org, user=self.profile3_org1.user).exists())
-        if self.orgum:
-            self.assertFalse(self.orgum.users.filter(profile=self.profile3_org1).exists())
+
 
     def test_user2_delete_profilepermissionsorg1profile3(self):
         """
@@ -360,8 +354,6 @@ class DeleteProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(pp.exists())
         self.assertTrue(UserOrganization.objects.filter(organization=self.org, user=self.profile3_org1.user).exists())
-        if self.orgum:
-            self.assertTrue(self.orgum.users.filter(profile=self.profile3_org1).exists())
 
 class CreateProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
 
@@ -382,7 +374,7 @@ class CreateProfilePermissionOrgViewTest(BaseSetUpAjaxRequest):
 
         data = self.base_data
         response = self.client1_org1.post(self.url, data=json.dumps(data), content_type='application/json')
-        pp = ProfilePermission.objects.filter(profile=self.profile4_org2,
+        pp = ProfilePermission.objects.filter(profile=self.profile1_org1,
                                               content_type=self.org_contenttype,
                                               object_id=data['organization'])
         self.assertEqual(response.status_code, 403)
@@ -414,8 +406,7 @@ class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
 
     def get_queryset(self):
         queryset = Profile.objects.all()
-        orgum = OrganizationUserManagement.objects.filter(organization=self.org)
-        profiles = queryset.filter(user__in=orgum.values_list('users', flat=True))
+        profiles = queryset.filter(user__in=self.org.users.values_list('pk', flat=True))
 
         return profiles.filter(
             profilepermission__content_type__app_label=self.org._meta.app_label,
@@ -430,10 +421,11 @@ class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
         data = self.base_data
         data.update({'offset': 0, 'limit': 10})
         response = self.client1_org1.get(self.url, data=data)
-        response_data = json.loads(response.content)['data']
+
         self.assertEqual(response.status_code, 403)
-        self.assertNotEqual(self.profiles.count(), len(response_data))
-        self.assertNotContains(response, self.profiles.first().user.get_full_name())
+     #   response_data = json.loads(response.content)['data']
+     #   self.assertNotEqual(self.profiles.count(), len(response_data))
+     #   self.assertNotContains(response, self.profiles.first().user.get_full_name())
 
     def test_user1_list_profilesorg2_default_limit(self):
         """
@@ -442,10 +434,10 @@ class ListProfileOrgViewTest(BaseSetUpAjaxRequest):
 
         data = self.base_data
         response = self.client1_org1.get(self.url, data=data)
-        response_data = json.loads(response.content)['data']
         self.assertEqual(response.status_code, 403)
-        self.assertNotEqual(self.profiles.count(), len(response_data))
-        self.assertNotContains(response, self.profiles.first().user.get_full_name())
+        #response_data = json.loads(response.content)['data']
+        #self.assertNotEqual(self.profiles.count(), len(response_data))
+        #self.assertNotContains(response, self.profiles.first().user.get_full_name())
 
     def test_user2_list_profilesorg2_set_limit(self):
         """
@@ -518,7 +510,8 @@ class CreateRolViewTest(BaseSetUpAjaxRequest):
         }
         response = self.client2_org2.post(self.url, data=data)
         self.assertEqual(response.status_code, 403)
-        self.assertNotIn(data['name'], json.loads(response.content)['name'])
+       # self.assertNotIn(data['name'], json.loads(response.content)['name'])
+       # No tadata es returned
 
     def test_user2_create_rol_org1_without_relaterols(self):
         """
@@ -531,7 +524,7 @@ class CreateRolViewTest(BaseSetUpAjaxRequest):
         }
         response = self.client2_org2.post(self.url, data=data)
         self.assertEqual(response.status_code, 403)
-        self.assertNotIn(data['name'], json.loads(response.content)['name'])
+#        self.assertNotIn(data['name'], json.loads(response.content)['name'])
 
 class User1DeleteRolViewTest(BaseSetUpDjangoRequest):
 

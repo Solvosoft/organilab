@@ -12,7 +12,6 @@ from laboratory.models import (CLInventory,
                                Shelf,
                                Furniture,
                                OrganizationStructure,
-                               OrganizationUserManagement,
                                Laboratory
                                )
 
@@ -40,7 +39,6 @@ def create_perms(codename):
         "organizationstructure": OrganizationStructure,
         "laboratory": Laboratory,
         "laboratoryroom": LaboratoryRoom,
-        "organizationusermanagement": OrganizationUserManagement,
         "profile": Profile,
         "procedure": Procedure,
         "procedurestep": ProcedureStep,

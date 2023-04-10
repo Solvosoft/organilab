@@ -11,10 +11,11 @@ import django_excel
 from django import forms
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
+from django.core.files.base import ContentFile
 from django.db.models.aggregates import Sum, Min
 from django.http import Http404
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
@@ -27,15 +28,20 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 
-from laboratory.forms import H_CodeForm
+from laboratory.forms import H_CodeForm, TasksForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, SustanceCharacteristics, PrecursorReport
+    OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
 from laboratory.models import ObjectLogChange
+from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm
 from sga.forms import SearchDangerIndicationForm
+from laboratory import register
+from django.utils.module_loading import import_string
+from django.urls import reverse
 
 
 def make_book_organization_laboratory(objects):
@@ -168,7 +174,7 @@ def report_labroom_building(request, *args, **kwargs):
     org=None
     if 'lab_pk' in kwargs:
         rooms = get_object_or_404(
-            Laboratory, pk=kwargs.get('lab_pk')).rooms.all()
+            Laboratory, pk=kwargs.get('lab_pk')).laboratoryroom_set.all()
     else:
         rooms = LaboratoryRoom.objects.all()
     if 'org_pk' in kwargs:
@@ -420,9 +426,9 @@ def report_objects(request, *args, **kwargs):
     return response
 
 
-
 @permission_required('laboratory.do_report')
 def report_reactive_precursor_objects(request, *args, **kwargs):
+
     template = get_template('pdf/reactive_precursor_objects_pdf.html')
     lab = kwargs.get('lab_pk')
     org = kwargs.get('org_pk')
@@ -466,6 +472,7 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
     response['Content-Disposition'] = 'attachment; filename="report_reactive_precursor_objects.pdf"'
 
     return response
+
 
 
 def make_book_furniture_objects(furnitures):
@@ -571,7 +578,7 @@ def report_h_code(request, *args, **kwargs):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ObjectList(ListView):
     model = Object
-    template_name = 'laboratory/report_object_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_type(self):
         if 'type_id' in self.request.GET:
@@ -598,14 +605,28 @@ class ObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
-        context['type_id'] = self.get_type()
+        type_id = self.get_type()
+        context['type_id'] = type_id
+        if type_id == "0":
+           context['title_view']= _('Reactive management')
+        elif type_id == "1":
+           context['title_view']= _('Material management')
+        elif type_id == "2":
+           context['title_view']= _('Equipment management')
+        else:
+           context['title_view']= _('Object management')
+
+        context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
+                                                     'object_type':self.get_type(),
+                                                     'organization': self.org,
+                                                     'report_name':'report_objects'})
         return context
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
-    template_name = 'laboratory/limited_shelfobject_report_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_queryset(self):
         query = super(LimitedShelfObjectList, self).get_queryset()
@@ -617,18 +638,32 @@ class LimitedShelfObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(LimitedShelfObjectList,
                         self).get_context_data(**kwargs)
+        context['title_view'] = _("Limited shelf objects")
+        context['form'] = ReportForm(initial={
+            'organization': self.org,
+            'report_name': 'report_limit_objects',
+            'laboratory': self.lab
+        })
         return context
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class ReactivePrecursorObjectList(ListView):
     model = Object
-    template_name = 'laboratory/reactive_precursor_objects_list.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
         context['all_labs'] = self.all_labs
+        context['title_view'] =  _("Reactive report of precursor objects")
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context['form'] = ReportForm(initial={
+            'organization': self.org,
+            'report_name': 'reactive_precursor',
+            'laboratory': lab_obj,
+        })
+
         return context
 
     def get_queryset(self):
@@ -669,6 +704,7 @@ class LogObjectView(ReportListView):
     model = ObjectLogChange
     paginate_by = 100
     form_class=FilterForm
+    template_name = "report/base_report_form_view.html"
     pdf_template = 'laboratory/reports/logobject_pdf.html'
 
     DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
@@ -729,7 +765,11 @@ class LogObjectView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form
+        context['title_view'] = _("Changes on Objects")
+        context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
+                                                     'organization': self.org,
+                                                     'report_name':'report_objectschanges',
+                                                     })
 
         if self.form.cleaned_data['resume']:
             messages.info(self.request,
@@ -922,25 +962,24 @@ class OrganizationReactivePresenceList(ReportListView):
         add_profile_info = True
         for item in query:
 
-            laboratories = item.laboratory_set.all().values('name', 'rooms__furniture')
-            usermanagement = item.organizationusermanagement_set.all().values('users__first_name', 'users__last_name', 'users__id')
+            laboratories = item.laboratory_set.all().values('name', 'laboratoryroom__furniture')
+            usermanagement = item.users.values('first_name', 'last_name', 'id')
             for lab in laboratories:
-
                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
-                    shelf__furniture=lab['rooms__furniture']
+                    shelf__furniture=lab['laboratoryroom__furniture']
                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
                 for user in usermanagement:
                     # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
                     try:
-                        profile = Profile.objects.get(user__id=user['users__id'])
+                        profile = Profile.objects.get(user__id=user['id'])
 
                     except Profile.DoesNotExist as error:
                         add_profile_info = False
 
                     for reactive in reactives:
                         user_data = [lab['name'],
-                                    user['users__first_name'],
-                                    user['users__last_name'],
+                                    user['first_name'],
+                                    user['last_name'],
                                     reactive.obj.code,
                                     reactive.obj.name,
                                     reactive.cas_id_number,
@@ -1002,6 +1041,7 @@ def report_index(request, org_pk):
     return render(request, 'laboratory/reports/report_index.html', context=context)
 
 
+
 def search_danger_indication_report(request):
     if request.method == "POST":
         form = SearchDangerIndicationForm(request.POST)
@@ -1020,3 +1060,81 @@ def search_danger_indication_report(request):
         form = SearchDangerIndicationForm()
 
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
+
+@login_required
+@permission_required('laboratory.do_report')
+def create_request_by_report(request, lab_pk):
+    response = {'result': False}
+
+    if 'report_name' in request.GET:
+        type_report = register.REPORT_FORMS[request.GET['report_name']]
+
+        if 'form' in type_report:
+            import_form = import_string(type_report['form'])
+            form = import_form(request.GET)
+
+            if form.is_valid():
+                format=form.cleaned_data['format']
+
+                data = request.GET.copy()
+
+                data['laboratory'] = form.cleaned_data['laboratory']
+                data['lab_pk'] =lab_pk
+
+                if 'lab_room' in form.fields:
+                    data['lab_room'] = form.cleaned_data['lab_room']
+
+                if 'furniture' in form.fields:
+                    data['furniture'] = form.cleaned_data['furniture']
+
+                response['result'] = True
+
+                task = TaskReport.objects.create(
+                    creator=request.user,
+                    type_report=form.cleaned_data['report_name'],
+                    status=_("On hold"),
+                    file_type=format,
+                    data=data
+                )
+
+                method = import_string(type_report['task'])
+                task_celery=method.delay(task.pk)
+                task_celery=task_celery.task_id
+                response.update({
+                    'report': task.pk,
+                    'celery_id': task_celery
+                })
+    return JsonResponse(response)
+
+@login_required
+@permission_required('laboratory.do_report')
+def download_report(request, lab_pk, org_pk):
+    from django_celery_results.models import TaskResult
+    form = TasksForm(request.GET)
+    task = None
+    result = None
+    if form.is_valid():
+        task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+        if result:
+            if task.status==_('Generated') and result.status=='SUCCESS':
+                task.status=_('Delivered')
+                task.save()
+                if task.file_type=='html':
+                    return JsonResponse({'result': True, 'url_file':reverse('laboratory:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
+                else:
+                    return JsonResponse({'result': True, 'url_file': task.file.url})
+            else:
+                return JsonResponse({'result': False})
+        else:
+            return JsonResponse({'result': False})
+    return JsonResponse({'result': False})
+
+@login_required
+@permission_required('laboratory.do_report')
+def report_table(request, lab_pk, pk, org_pk):
+    task = TaskReport.objects.filter(pk=pk).first()
+    title = register.REPORT_FORMS[task.type_report]['title']
+
+    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk})
+

@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -19,10 +18,9 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
-from auth_and_perms.models import Profile, ProfilePermission
+from auth_and_perms.models import Profile
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
-
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, UserOrganization
+from laboratory.models import Laboratory, OrganizationStructure, UserOrganization
 from .djgeneric import ListView
 from ..forms import AddOrganizationForm
 from ..utils import organilab_logentry
@@ -138,12 +136,8 @@ class OrganizationCreateView(CreateView):
         if self.object.parent:
             self.object.position=self.object.parent.position+1
             self.object.save()
-
-        orguserman=OrganizationUserManagement.objects.create( organization=self.object)
-        orguserman.users.add(self.request.user)
-        UserOrganization.objects.create(organization=self.object, user=self.request.user)
         set_rol_administrator_on_org(self.request.user.profile, self.object)
-        organilab_logentry(self.request.user, orguserman, ADDITION, 'organization structure', changed_data=['organization', 'users'])
+        organilab_logentry(self.request.user, self.object, ADDITION, 'organization structure', changed_data=['organization', 'users'])
         return response
 
 
