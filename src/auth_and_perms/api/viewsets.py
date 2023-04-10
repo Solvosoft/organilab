@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -8,13 +10,15 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
     OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer, \
     ProfileAssociateOrganizationSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
-from laboratory.models import OrganizationStructure, Laboratory, OrganizationUserManagement, UserOrganization
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
@@ -36,9 +40,12 @@ class RolAPI(mixins.ListModelMixin,
 
     def perform_create(self, serializer):
         super().perform_create(serializer)
-        organizationstructure = OrganizationStructure.objects.filter(pk=self.request.data['rol']).first()
-        if organizationstructure:
-            serializer.instance.organizationstructure_set.add(organizationstructure)
+        organizationstructure = OrganizationStructure.objects.using(settings.READONLY_DATABASE
+                                                                    ).filter(pk=self.request.data['rol']).first()
+
+        user_is_allowed_on_organization(self.request.user, organizationstructure)
+
+        serializer.instance.organizationstructure_set.add(organizationstructure)
 
         if 'relate_rols' in self.request.data:
             relate_rols = self.request.data['relate_rols']
@@ -46,31 +53,32 @@ class RolAPI(mixins.ListModelMixin,
             permissions = list(Permission.objects.filter(pk__in=perms_rols))
             serializer.instance.permissions.add(*permissions)
 
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
-
 
 class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    queryset = OrganizationUserManagement.objects.all()
+    queryset = UserOrganization.objects.all()
     serializer_class = ProfileAssociateOrganizationSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         contenttypeobj = None
-        organization = get_object_or_404(OrganizationStructure, pk=serializer.data['organization'])
-        user = get_object_or_404(User, pk=serializer.data['user'])
+        organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                            pk=serializer.data['organization'])
+        user_is_allowed_on_organization(self.request.user, organization)
+        type_user=UserOrganization.LABORATORY_USER
+        user = get_object_or_404(User.objects.using(settings.READONLY_DATABASE), pk=serializer.data['user'])
         if serializer.data['typeofcontenttype'] == 'laboratory':
-            contenttypeobj = get_object_or_404(Laboratory, pk=serializer.data['laboratory'])
+            contenttypeobj = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                               pk=serializer.data['laboratory'])
+            if not organization_can_change_laboratory(contenttypeobj, organization):
+                return HttpResponseForbidden(_("Laboratory modification not authorized"))
         elif serializer.data['typeofcontenttype'] == 'organization':
             contenttypeobj = organization
+            type_user=UserOrganization.LABORATORY_MANAGER
 
-        oum, created = OrganizationUserManagement.objects.get_or_create(organization=organization)
-        UserOrganization.objects.get_or_create(organization=organization, user=user)
-        oum.users.add(user)
+
+        UserOrganization.objects.get_or_create(organization=organization, user=user, type_in_organization=type_user)
+
         ProfilePermission.objects.get_or_create(
             profile=user.profile,
             content_type=ContentType.objects.filter(app_label=contenttypeobj._meta.app_label,
@@ -107,6 +115,7 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=False):
             org = OrganizationStructure.objects.get(pk=pk)
+            user_is_allowed_on_organization(request.user, org)
             action = serializer.data['mergeaction']
             rols = org.rol.filter(pk__in=serializer.data['rols'])
 
@@ -125,6 +134,8 @@ class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.G
                 if content_type['model'] == 'laboratory' and content_type['appname'] == 'laboratory':
 
                     lab = Laboratory.objects.filter(pk=int(content_type['objectid'])).first()
+                    if not organization_can_change_laboratory(lab, org):
+                        return HttpResponseForbidden(_("Laboratory modification not authorized"))
 
                     if lab and action == 'append':
                         profile.laboratories.add(lab)
@@ -192,7 +203,9 @@ class UserLaboratoryOrganization(mixins.ListModelMixin,
         if form.is_valid():
             self.organization = form.cleaned_data['organization']
             self.contenttypeobj = form.cleaned_data['laboratory']
-
+            user_is_allowed_on_organization(request.user, self.organization)
+            if not organization_can_change_laboratory(self.contenttypeobj, self.organization):
+                return HttpResponseForbidden(_("Laboratory modification not authorized"))
             queryset = self.get_queryset()
             total = queryset.count()
             queryset = self.filter_queryset(queryset)
@@ -212,7 +225,7 @@ class UserInOrganization(mixins.ListModelMixin,
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileRolDataTableSerializer
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['user__first_name', 'user__last_name']  # for the global search
@@ -221,13 +234,13 @@ class UserInOrganization(mixins.ListModelMixin,
     ordering = ('-user',)  # default order
 
     def get_queryset(self):
-        orgum = OrganizationUserManagement.objects.filter(organization=self.organization)
+        users=self.organization.users.using(settings.READONLY_DATABASE).filter(
+            userorganization__type_in_organization__in=[UserOrganization.ADMINISTRATOR,
+                                                        UserOrganization.LABORATORY_MANAGER],
 
-        profiles = self.queryset.filter(user__in=orgum.values_list('users', flat=True))
-        return profiles.filter(
-            profilepermission__content_type__app_label=self.organization._meta.app_label,
-            profilepermission__content_type__model=self.organization._meta.model_name,
-            profilepermission__object_id=self.organization.pk).order_by('-user')
+        ).values_list('pk', flat=True)
+
+        return self.queryset.filter(user__in=users).distinct()
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)
@@ -235,7 +248,7 @@ class UserInOrganization(mixins.ListModelMixin,
             self.organization = form.cleaned_data['organization']
             # serializer assume that object laboratory is a contenttype element
             self.contenttypeobj = self.organization
-
+            user_is_allowed_on_organization(request.user, self.organization)
             queryset = self.get_queryset()
             total = queryset.count()
             queryset = self.filter_queryset(queryset)
@@ -259,6 +272,13 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
     def delete(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            org = OrganizationStructure.objects.using(settings.READONLY_DATABASE).filter(
+                pk=serializer.data['organization']).first()
+            user_is_allowed_on_organization(request.user, org)
+            profile = org.users.filter(profile=serializer.data['profile']).first()
+            if profile:
+                org.users.remove(profile)  # only remove relation
+
             if serializer.data['disable_user']:
                 user = User.objects.filter(profile=serializer.data['profile']).first()
                 if user:
@@ -270,12 +290,6 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 content_type__model=serializer.data['model'],
                 object_id=serializer.data['object_id'],
             ).delete()
-            if 'organizationstructure' == serializer.data['model']:
-                orgum = OrganizationUserManagement.objects.filter(organization=serializer.data['organization']).first()
-                if orgum:
-                    profile = orgum.users.filter(profile=serializer.data['profile']).first()
-                    if profile:
-                        orgum.users.remove(profile)  # only remove relation
 
         return Response({'result': 'ok'})
 

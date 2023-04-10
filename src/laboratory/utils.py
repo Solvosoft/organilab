@@ -230,7 +230,7 @@ def get_pk_org_ancestors(org_pk):
     return pks
 
 def get_pk_org_ancestors_decendants(user, org_pk):
-    org = OrganizationStructure.objects.filter(organizationusermanagement__users=user, pk=org_pk)
+    org = OrganizationStructure.objects.filter(users=user, pk=org_pk)
 
     pks = []
     if org.exists():

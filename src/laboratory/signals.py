@@ -26,7 +26,7 @@ def add_level_organization_structure(sender, **kwargs):
 
 def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
     labroom = shelf_object.shelf.furniture.labroom
-    laboratory = labroom.laboratory_set.first()
+    laboratory = labroom.laboratory
     context = {
         'shelf_object': [shelf_object],
         'labroom': labroom,

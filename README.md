@@ -57,9 +57,16 @@ Run your development server
 
 	$ python manage.py runserver
 
-Compile translations 
+Create translations 
 
 	$ django-admin makemessages --all
+
+Create javascript translations
+
+    $ django-admin makemessages -d djangojs -l es  --ignore *.min.js
+
+Compile translations
+
 	$ django-admin compilemessages --locale es
 
 ## Run with composer in development environment

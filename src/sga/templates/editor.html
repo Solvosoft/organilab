@@ -34,11 +34,7 @@
             };
         {% endif %}
     </script>
-    <script type="module">import SvgCanvas  from '/static/svgcanvas/svgcanvas.js';
-    window.SvgCanvas=SvgCanvas;
-</script>
-    <script src="{% static 'sga/sga-bundle.js' %}?v={% get_organilab_version %}" type="module"> </script>
-    <script src="{% static 'sga/js/canvas_editor.js' %}?v={% get_organilab_version %}"> </script>
+
     <script src="{% static 'sga/js/codigosPH.js' %}?v={% get_organilab_version %}"></script>
 
 {{form.media}}

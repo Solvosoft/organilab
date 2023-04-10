@@ -440,20 +440,13 @@
     }
   },
   {
-    "model": "laboratory.organizationusermanagement",
+    "model": "laboratory.userOrganization",
     "pk": 1,
     "fields": {
       "organization": 1,
-      "users": [1]
-    }
-  },
-  {
-    "model": "laboratory.laboratoryroom",
-    "pk": 1,
-    "fields": {
-      "name": "Sala de inventario",
-      "creation_date": "2023-01-25T20:46:09.591Z",
-      "last_update": "2023-01-25T20:46:09.591Z"
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
     }
   },
   {
@@ -468,9 +461,18 @@
       "coordinator": "",
       "unit": "",
       "organization": 1,
-      "rooms": [1],
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
     }
   },
   {

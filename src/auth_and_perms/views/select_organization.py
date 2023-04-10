@@ -6,9 +6,9 @@ from laboratory.models import OrganizationStructure
 
 @login_required
 def select_organization_by_user(request, org_pk=None):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct().order_by('-parent')
+    query_list = OrganizationStructure.os_manager.filter_organization_by_user(request.user).distinct().order_by('-parent')
     parent_structure = list(query_list.order_by('level'))
-    parents=query_list.values_list('pk', flat=True)
+    parents=query_list.filter(parent=None).values_list('pk', flat=True)
     nodes = []
     pks=[]
     for node in parent_structure:

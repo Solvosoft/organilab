@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 from django.test import TestCase
+from django.test import Client
 
 from auth_and_perms.models import Rol
 from laboratory.models import OrganizationStructure, Laboratory
@@ -36,10 +37,11 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
 
     def setUp(self):
         super().setUp()
+
         self.user = get_user_model().objects.filter(username="admin").first()
         self.org = OrganizationStructure.objects.first()
         self.lab = Laboratory.objects.first()
-        self.labroom = self.lab.rooms.first()
+        self.labroom = self.lab.laboratoryroom_set.first()
         self.client.force_login(self.user)
 
 class BaseLaboratoryTasksSetUpTest(BaseSetUpTest):
@@ -50,7 +52,7 @@ class BaseLaboratoryTasksSetUpTest(BaseSetUpTest):
         self.user = get_user_model().objects.filter(username="admin").first()
         self.org = OrganizationStructure.objects.first()
         self.lab = Laboratory.objects.first()
-        self.labroom = self.lab.rooms.first()
+        self.labroom = self.lab.laboratoryroom_set.first()
         self.client.force_login(self.user)
 
 
@@ -78,10 +80,10 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         self.profile4_org2 = self.user4_org2.profile
 
         #ORGS BY USER
-        self.user1_org1_list = OrganizationStructure.os_manager.filter_user_org(self.user1_org1).distinct()
-        self.user2_org2_list = OrganizationStructure.os_manager.filter_user_org(self.user2_org2).distinct()
-        self.user3_org1_list = OrganizationStructure.os_manager.filter_user_org(self.user3_org1).distinct()
-        self.user4_org2_list = OrganizationStructure.os_manager.filter_user_org(self.user4_org2).distinct()
+        self.user1_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user1_org1).distinct()
+        self.user2_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user2_org2).distinct()
+        self.user3_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user3_org1).distinct()
+        self.user4_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(self.user4_org2).distinct()
 
         #LABS
         self.lab1_org1 = Laboratory.objects.get(name="Lab 1")
@@ -99,8 +101,8 @@ class BaseSetUpAjaxRequest(BaseOrganizatonManageSetUpTest):
         super().setUp()
 
         #CLIENT - LOGIN
-        self.client1_org1 = self.client
-        self.client2_org2 = self.client
+        self.client1_org1 = Client()
+        self.client2_org2 = Client()
         self.client1_org1.force_login(self.user1_org1)
         self.client2_org2.force_login(self.user2_org2)
 

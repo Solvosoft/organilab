@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import Http404
 from djgentelella.groute import register_lookups
@@ -10,10 +10,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.models import Rol, ProfilePermission
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_by_user
-from laboratory.forms import  RelOrganizationPKIntForm
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations, \
-    OrganizationUserManagement, UserOrganization
+from laboratory.forms import RelOrganizationPKIntForm
+from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -42,11 +42,16 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                self.organization = form.cleaned_data['organization']
 
-        if self.organization is None:
-            raise
+        if self.organization:
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.organization,
+                                                  using=settings.READONLY_DATABASE)
+        user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
+    def get_queryset(self):
+        queryset=super().get_queryset()
+        return queryset.using(settings.READONLY_DATABASE)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -76,28 +81,30 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     contenttypeobj=None
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk, using=settings.READONLY_DATABASE)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'],
+                                                      using=settings.READONLY_DATABASE)
                 if form.cleaned_data['typeofcontenttype'] == 'laboratory':
                     if form.cleaned_data['laboratory']:
-                        self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
+                        self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'],
+                                                                using=settings.READONLY_DATABASE)
+                        organization_can_change_laboratory(self.contenttypeobj, self.organization)
                 elif form.cleaned_data['typeofcontenttype'] == 'organization':
-                        self.contenttypeobj = self.organization
+                    self.contenttypeobj = self.organization
+                    user_is_allowed_on_organization(self.request.user, self.contenttypeobj)
 
-        if self.organization is None:
-            raise
+        user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         orgByuser = OrganizationStructure.os_manager.organization_tree(self.organization.pk)
-        users = list(OrganizationUserManagement.objects.filter(
-            organization__in=orgByuser).values_list('users', flat=True))
+        users = list(OrganizationStructure.objects.filter(pk__in=orgByuser).values_list('users', flat=True))
         queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
         if self.contenttypeobj:
             profiles = get_profile_by_organization(self.organization.pk)
@@ -125,7 +132,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     laboratory=None
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk, using=settings.READONLY_DATABASE)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -133,11 +140,12 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
                 if form.cleaned_data['laboratory']:
-                    self.laboratory = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'])
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                    self.laboratory = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'],
+                                                        using=settings.READONLY_DATABASE)
+                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'],
+                                                      using=settings.READONLY_DATABASE)
 
-        if self.organization is None:
-            raise
+        user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -223,12 +231,12 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     organization = None
 
     def get_queryset(self):
-        labs = list(OrganizationStructureRelations.objects.filter(
+        labs = list(OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE).filter(
             organization=self.organization.pk,
             content_type__app_label='laboratory', content_type__model='laboratory'
         ).values_list('object_id', flat=True))
-        labs += list(self.organization.laboratory_set.all().values_list('pk', flat=True))
-        return Laboratory.objects.filter(pk__in=labs)
+        labs += list(self.organization.laboratory_set.using(settings.READONLY_DATABASE).all().values_list('pk', flat=True))
+        return Laboratory.objects.using(settings.READONLY_DATABASE).filter(pk__in=labs)
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)

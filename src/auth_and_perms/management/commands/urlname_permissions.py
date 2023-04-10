@@ -994,22 +994,22 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Add Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.add_organizationusermanagement'
+            'permission': 'laboratory.add_organizationstructure'
         },
         {
             'name': 'Change Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.change_organizationusermanagement'
+            'permission': 'laboratory.change_organizationstructure'
         },
         {
             'name': 'Delete Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.delete_organizationusermanagement'
+            'permission': 'laboratory.delete_organizationstructure'
         },
         {
             'name': 'View Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.view_organizationusermanagement'
+            'permission': 'laboratory.view_organizationstructure'
         },
         {
             'name': 'Add Organization Structure Relations',
@@ -1041,7 +1041,7 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Change Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.change_organizationusermanagement'
+            'permission': 'laboratory.change_organizationstructure'
         },
         {
             'name': 'Change Profile Permission',
@@ -1115,12 +1115,12 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Add Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.add_organizationusermanagement'
+            'permission': 'laboratory.add_organizationstructure'
         },
         {
             'name': 'View Organization User Management',
             'category': 'Organization User Management',
-            'permission': 'laboratory.view_organizationusermanagement'
+            'permission': 'laboratory.view_organizationstructure'
         },
         {
             'name': 'View Label',

@@ -3,6 +3,7 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseForbidden, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -14,19 +15,21 @@ from auth_and_perms.forms import LaboratoryOfOrganizationForm, \
     ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
 from auth_and_perms.node_tree import get_organization_tree
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm, RelOrganizationForm
-from laboratory.models import OrganizationStructure, OrganizationUserManagement, Laboratory, \
+from laboratory.models import OrganizationStructure, Laboratory, \
     OrganizationStructureRelations, UserOrganization
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import ListView, DeleteView
+from django.conf import settings
 
 
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_user_org(request.user).distinct()
+    query_list = OrganizationStructure.os_manager.filter_organization_by_user(request.user).distinct()
     parents=list(query_list.order_by('level'))
     parents_pks=set(query_list.values_list('pk', flat=True))
     nodes = []
@@ -47,8 +50,8 @@ def organization_manage_view(request):
 
 
 def user_in_many_org(user):
-    user_management = OrganizationUserManagement.objects.filter(users__in=[user])
-    return user_management.count() > 1
+    user_management = UserOrganization.objects.filter(user=user).values_list('organization', flat=True).distinct()
+    return len(set(user_management)) > 1
 
 
 def delete_permissions(remove_perms_org, rol_list, user):
@@ -74,8 +77,8 @@ def delete_pp(cc_lab, user, org_labs):
     remove_pp = list(remove_pp.difference(keep_pp_orgs))
     ProfilePermission.objects.filter(pk__in=remove_pp).delete()
 
-def get_related_users(user_management, form):
-    set_old_users = set(user_management.users.all().values_list('pk', flat=True))
+def get_related_users(organization, form):
+    set_old_users = set(organization.users.all().values_list('pk', flat=True))
     set_new_users= set()
     if form.cleaned_data['users'] is not None:
         set_new_users = set(form.cleaned_data['users'].values_list('pk', flat=True))
@@ -84,26 +87,23 @@ def get_related_users(user_management, form):
     return remove_users, add_users
 
 
-@permission_required("laboratory.change_organizationusermanagement")
+@permission_required("laboratory.change_organizationstructure")
 def add_users_organization(request, pk):
 
-    organizationstructure = get_object_or_404(OrganizationStructure, pk=pk)
-    user_management = organizationstructure.organizationusermanagement_set.first()
-    permissions = list(organizationstructure.rol.filter(permissions__isnull=False).values_list('permissions', flat=True))
+    organizationstructure = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+    user_is_allowed_on_organization(request.user, organizationstructure)
+    permissions = list(organizationstructure.rol.using(settings.READONLY_DATABASE).filter(
+        permissions__isnull=False).values_list('permissions', flat=True))
 
     if request.method == 'POST':
 
         form = AddUserForm(request.POST)
         if form.is_valid():
-
-            remove_users, add_users = get_related_users(user_management, form)
-
+            remove_users, add_users = get_related_users(organizationstructure, form)
             if remove_users:
                 cc_lab = ContentType.objects.get(app_label='laboratory', model="laboratory")
                 labs = organizationstructure.laboratory_set.all()
                 org_labs = list(labs.values_list('pk', flat=True))
-
-
                 for user in remove_users:
                     user = User.objects.get(pk=user)
                     pp_user = ProfilePermission.objects.filter(content_type=cc_lab, profile__user=user)
@@ -113,12 +113,11 @@ def add_users_organization(request, pk):
                     if user_in_many_org(user): # check if user is in many organizations
                         org_filters = {
                             'users__in': [user],
-                            'organization__rol__isnull': False,
-                            'organization__rol__permissions__isnull': False
+                            'rol__isnull': False,
+                            'rol__permissions__isnull': False
                         }
-                        org_list = OrganizationUserManagement.objects.filter(**org_filters).exclude(organization__pk=organizationstructure.pk).distinct()
-                        org_pk = list(org_list.values_list('organization__pk', flat=True))
-                        pp_lab_list = list(OrganizationStructure.objects.filter(pk__in=org_pk).values_list('laboratory', flat=True).distinct())
+                        org_list = OrganizationStructure.objects.filter(**org_filters).exclude(pk=organizationstructure.pk).distinct()
+                        pp_lab_list = list(org_list.values_list('laboratory', flat=True).distinct())
                         rol_pk = list(pp_user.filter(object_id__in=pp_lab_list).values_list('rol__pk', flat=True).distinct())
                         rol_list = Rol.objects.filter(pk__in=rol_pk, permissions__isnull=False).distinct()
 
@@ -129,17 +128,15 @@ def add_users_organization(request, pk):
                     else:
                         user.user_permissions.remove(*permissions)
                         pp_user.filter(object_id__in=org_labs).delete()
-                    user_management.users.remove(user)
+                    organizationstructure.users.remove(user)
 
             if add_users:
-                user_management.users.add(*form.cleaned_data['users'])
+                #user_management.users.add(*form.cleaned_data['users'])
                 for user in add_users:
-                    u, created = UserOrganization.objects.get_or_create(user=form.cleaned_data['users'].get(pk=user),
-                                                           organization=organizationstructure)
-                    if u:
-                        u.status=True
-                        u.save()
-
+                    u, created = UserOrganization.objects.get_or_create(
+                        user=form.cleaned_data['users'].get(pk=user),
+                        status=True,
+                        organization=organizationstructure, type_in_organization=UserOrganization.LABORATORY_USER)
             messages.success(request, _("Element saved successfully"))
             return redirect('auth_and_perms:organizationManager')
     messages.error(request, _("Organization doesn't exists"))
@@ -156,7 +153,9 @@ class ListRolByOrganization(ListView):
     model = Rol
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        queryset = super().get_queryset().using(settings.READONLY_DATABASE).filter(organizationstructure=self.org)
+        organization=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org)
+        user_is_allowed_on_organization(self.request.user, organization)
         return queryset
 
 
@@ -165,7 +164,9 @@ class DeleteRolByOrganization(DeleteView):
     model = Rol
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(organizationstructure=self.org)
+        queryset = super().get_queryset().using(settings.READONLY_DATABASE).filter(organizationstructure=self.org)
+        organization=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org)
+        user_is_allowed_on_organization(self.request.user, organization)
         return queryset
 
     def get_success_url(self):
@@ -179,18 +180,25 @@ def add_rol_by_laboratory(request):
         form = AddProfileRolForm(request.POST)
 
         if form.is_valid():
-            org = OrganizationStructure.objects.get(pk=form.cleaned_data['org_pk'])
+            org = OrganizationStructure.objects.using(settings.READONLY_DATABASE).get(pk=form.cleaned_data['org_pk'])
+            user_is_allowed_on_organization(request.user, org)
             lab = Laboratory.objects.get(pk=form.cleaned_data['lab_pk'])
-            profile_list = ProfilePermission.objects.filter(content_type=cc_org, object_id =org.pk)
+            if not organization_can_change_laboratory(lab, org):
+                return HttpResponseForbidden(_("Laboratory modification not authorized"))
+
+            profile_list = ProfilePermission.objects.using(settings.READONLY_DATABASE).filter(
+                content_type=cc_org, object_id =org.pk)
 
             for profile in profile_list:
-                pp_lab = ProfilePermission.objects.filter(content_type=cc_lab, object_id =lab.pk, profile=profile.profile)
+                pp_lab = ProfilePermission.objects.filter(content_type=cc_lab, object_id=lab.pk,
+                                                          profile=profile.profile)
 
                 if pp_lab.exists():
                     pp_lab = pp_lab.first()
                     pp_lab.rol.add(*form.cleaned_data['rols'])
                 else:
-                    pp_lab = ProfilePermission.objects.create(content_type=cc_lab, object_id=lab.pk, profile=profile.profile)
+                    pp_lab = ProfilePermission.objects.create(content_type=cc_lab, object_id=lab.pk,
+                                                              profile=profile.profile)
                     pp_lab.rol.add(*form.cleaned_data['rols'])
                 assign_rol_permissions(pp_lab.profile.user, form.cleaned_data['rols'])
 
@@ -208,11 +216,13 @@ class AddUser(CreateView):
     form_class = CreateUserForm
 
     def get(self, request, *args, **kwargs):
-        self.organization = OrganizationUserManagement.objects.get(organization=kwargs.pop('pk'))
+        self.organization = OrganizationStructure.objects.get(pk=kwargs.pop('pk'))
+        user_is_allowed_on_organization(request.user, self.organization)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.organization = OrganizationUserManagement.objects.get(organization=kwargs.pop('pk'))
+        self.organization = OrganizationStructure.objects.get(pk=kwargs.pop('pk'))
+        user_is_allowed_on_organization(request.user, self.organization)
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -228,8 +238,8 @@ class AddUser(CreateView):
         ).first()
         user.password = password
         user.save()
-        self.organization.users.add(user)
-        UserOrganization.objects.create(organization=self.organization.organization, user=user)
+        #self.organization.users.add(user)
+        UserOrganization.objects.create(organization=self.organization, user=user)
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
@@ -244,15 +254,16 @@ class AddUser(CreateView):
         return response
 
 
-@permission_required("laboratory.change_organizationusermanagement")
+@permission_required("laboratory.change_organizationstructure")
 def add_contenttype_to_org(request):
-    "contentyperelobj organization"
     form = ContentypeForm(request.POST)
     if form.is_valid():
-        organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+        organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                         pk=form.cleaned_data['organization'])
+        user_is_allowed_on_organization(request.user, organization)
         contentyperelobj = form.cleaned_data['contentyperelobj'].values_list('pk',flat=True)
         for obj in contentyperelobj:
-            OrganizationStructureRelations.objects.create(
+            OrganizationStructureRelations.objects.get_or_create(
                 organization=organization,
                 content_type=ContentType.objects.filter(
                     app_label='laboratory',
@@ -260,6 +271,8 @@ def add_contenttype_to_org(request):
                 ).first(),
                 object_id=obj
             )
+    else:
+        raise Http404(_("Form data is wrong, you need to pass a valid laboratory as contenttype"))
     return redirect('auth_and_perms:organizationManager')
 
 

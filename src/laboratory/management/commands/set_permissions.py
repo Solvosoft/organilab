@@ -25,8 +25,8 @@ class Command(BaseCommand):
 
         if laboratory_administrator:
             per_laboratory_administrator = list(Group.objects.filter(name="Laboratory Administrator").values_list('permissions__codename', flat=True))
-            per_laboratory_administrator += ['add_organizationusermanagement', 'change_organizationusermanagement',
-                                            'delete_organizationusermanagement', 'view_organizationusermanagement']
+            per_laboratory_administrator += ['add_organizationstructure', 'change_organizationstructure',
+                                            'delete_organizationstructure', 'view_organizationstructure']
         if professor:
             per_professor = list(Group.objects.filter(name="Professor").values_list('permissions__codename', flat=True))
 
