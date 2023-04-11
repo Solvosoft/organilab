@@ -12,7 +12,6 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.files.base import ContentFile
 from django.db.models.aggregates import Sum, Min
 from django.http import Http404
 from django.http.response import HttpResponse, JsonResponse
@@ -32,14 +31,13 @@ from laboratory.forms import H_CodeForm, TasksForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
 from laboratory.models import ObjectLogChange
-from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm
 from sga.forms import SearchDangerIndicationForm
-from laboratory import register
+from report import register
 from django.utils.module_loading import import_string
 from django.urls import reverse
 

@@ -6,6 +6,7 @@ from django.urls import reverse
 from djgentelella.widgets import core as genwidgets
 
 from presentation.utils import build_qr_instance
+from report.forms import LaboratoryRoomReportForm
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
 from ..utils import organilab_logentry
 
@@ -29,13 +30,33 @@ from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 from django.utils.translation import gettext_lazy as _
 
 
+# @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
+# class FurnitureReportView(ListView):
+#     model = Furniture
+#     template_name = "laboratory/report_furniture_list.html"
+#
+#     def get_queryset(self):
+#         return Furniture.objects.filter(labroom__laboratory=self.lab)
+
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
-    template_name = "laboratory/report_furniture_list.html"
+    template_name = "report/base_report_form_view.html"
 
     def get_queryset(self):
         return Furniture.objects.filter(labroom__laboratory=self.lab)
+
+    def get_context_data(self, **kwargs):
+        context = super(FurnitureReportView, self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context['title_view'] = _("Furniture report")
+        context['report_name'] = 'report_furniture'
+        context['form'] = LaboratoryRoomReportForm(initial={
+            'organization': self.org,
+            'report_name': 'report_furniture',
+            'laboratory': lab_obj,
+        })
+        return context
 
 
 
