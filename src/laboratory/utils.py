@@ -9,7 +9,7 @@ from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, User
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
@@ -328,3 +328,18 @@ def get_logentries_org_management(self, org):
 def check_has_profile(user):
     obj = Profile.objects.filter(user=user)
     return obj.exists()
+
+def get_laboratories_from_organization_profile(rootpk, user):
+    org = OrganizationStructure.objects.filter(pk=rootpk).first()
+    if org:
+        desendants = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True, of=org).values_list('pk', flat=True))
+        return Laboratory.objects.filter(organization__in= desendants, profile__user__pk=user).distinct()
+
+    return Laboratory.objects.none()
+
+def get_users_from_organization(rootpk):
+    org = OrganizationStructure.objects.filter(pk=rootpk).first()
+    if org:
+        desendants = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True, of=org).values_list('pk', flat=True))
+        return User.objects.filter(organizationstructure__in= desendants).distinct()
+    return User.objects.none()

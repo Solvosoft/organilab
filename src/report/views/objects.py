@@ -5,7 +5,8 @@ from io import BytesIO
 from django.utils.translation import gettext as _
 from weasyprint import HTML
 
-from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory
+from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, OrganizationStructure, \
+    SustanceCharacteristics
 
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
@@ -13,7 +14,7 @@ from laboratory.views.djgeneric import ResultQueryElement
 from django.urls import reverse
 
 from report.utils import filter_period
-
+from auth_and_perms.models import Profile
 
 def resume_queryset(queryset):
     objects = set(queryset.values_list('object', flat=True))
@@ -245,7 +246,7 @@ def report_reactive_precursor_pdf(report):
         'user': report.creator,
     }
 
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
+    html = render_to_string('report/base_report_pdf.html', context=context)
     file = BytesIO()
 
     HTML(string=html, encoding='utf-8').write_pdf(file)
@@ -348,7 +349,7 @@ def report_objects_pdf(report):
         'user': report.creator,
     }
     report.table_content = table
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
+    html = render_to_string('report/base_report_pdf.html', context=context)
     file = BytesIO()
 
     HTML(string=html, encoding='utf-8').write_pdf(file)
@@ -462,7 +463,7 @@ def report_limit_object_pdf(report):
         'user': report.creator,
     }
 
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
+    html = render_to_string('report/base_report_pdf.html', context=context)
     file = BytesIO()
 
     HTML(string=html, encoding='utf-8').write_pdf(file)
@@ -506,6 +507,138 @@ def report_limit_object_doc(report):
                                 str(obj.object),
                                 f'{obj.quantity} {obj.get_measurement_unit_display()}',
                                 f'{obj.limit_quantity} {obj.get_measurement_unit_display()}'
+                                ])
+
+
+
+    builder.add_table(content, report.data['title'])
+    file=builder.save()
+    report_name = report.data['name'] if report.data['name'] else 'report'
+    file_name = f'{report_name}.{report.file_type}'
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    report.file = content
+    report.status = _('Generated')
+    report.save()
+    file.close()
+
+
+def report_organization_reactive_list_html(report):
+
+    table=f'<thead><tr><th>{_("Laboratory name")}</th><th>{_("First Name")}</th>' \
+          f'<th>{_("Last Name")}</th><th>{_("Code")}</th>' \
+          f'<th>{_("Sustance")}</th><th>{_("CAS")}</th>' \
+          f'<th>{_("White Organ")}</th><th>{_("Carcinogenic")}</th>' \
+          f'<th>{_("ID Card")}</th><th>{_("Job Position")}</th>' \
+          f'</tr></thead>'
+    table+="<tbody>"
+    filters ={}
+    query = OrganizationStructure.objects.filter(pk=report.data['organization'])
+    usermanagement= None
+    add_profile_info = True
+    for item in query:
+        if 'laboratory' in report.data:
+            laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator, pk__in= report.data['laboratory']).values('name', 'laboratoryroom__furniture')
+        else:
+            laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator).values('name', 'laboratoryroom__furniture')
+        if 'users' in report.data:
+            usermanagement = item.filter(users__pk__in=report.data['users']).values('first_name', 'last_name', 'id')
+        else:
+            usermanagement = item.users.values('first_name', 'last_name', 'id')
+        for lab in laboratories:
+            reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+                    shelf__furniture=lab['laboratoryroom__furniture']
+                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+            for user in usermanagement:
+
+                try:
+                    profile = Profile.objects.get(user__id=user['id'])
+                except Profile.DoesNotExist as error:
+                        add_profile_info = False
+
+                for reactive in reactives:
+                    table += f'<tr><td>{lab["name"]}</td><td>{user["first_name"]}</td>' \
+                                 f'<td>{user["last_name"]}<td>{reactive.obj.code}</td>' \
+                                 f'<td>{reactive.obj.name}</td><td>{reactive.cas_id_number}</td>' \
+                                 f'<td>{", ".join(reactive.white_organ.all().values_list("description", flat=True))}</td>' \
+                                 f'<td>{str(reactive.iarc) if reactive.iarc else ""}</td>'
+                    if add_profile_info:
+                        table+=f'<td>{profile.id_card}</td><td>{profile.job_position}</td></tr>'
+                    else:
+                        table+="<td></td><td></td></tr>"
+
+    table += '</tbody>'
+    report.table_content = table
+    report.status = _('Generated')
+    report.save()
+
+def report_organization_reactive_list_pdf(report):
+
+    report_organization_reactive_list_html(report)
+    context = {
+        'datalist': report.table_content,
+        'user': report.creator,
+    }
+
+    html = render_to_string('report/base_report_pdf.html', context=context)
+    file = BytesIO()
+
+    HTML(string=html, encoding='utf-8').write_pdf(file)
+
+    file_name = f'{report.data["name"]}.pdf'
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    report.file = content
+    report.status = _('Generated')
+    report.save()
+    file.close()
+
+def report_organization_reactive_list_doc(report):
+
+
+    content = []
+    builder = ExcelGraphBuilder()
+    content.append([_('Laboratory name'),_('First Name'),_('Last Name'),
+                    _('Code'),_('Sustance'),_('CAS'),_('White Organ'),
+                    _('Carcinogenic'),_('ID Card'),_('Job Position')])
+    query = OrganizationStructure.objects.filter(pk=report.data['organization'])
+
+    add_profile_info = True
+    id_card=""
+    job=""
+    for item in query:
+
+        laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator).values('name', 'laboratoryroom__furniture')
+        usermanagement = item.users.values('first_name', 'last_name', 'id')
+        for lab in laboratories:
+            reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+                    shelf__furniture=lab['laboratoryroom__furniture']
+                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+            for user in usermanagement:
+
+                try:
+                    profile = Profile.objects.get(user__id=user['id'])
+                except Profile.DoesNotExist as error:
+                        add_profile_info = False
+
+                for reactive in reactives:
+                    id_card=""
+                    job=""
+                    if add_profile_info:
+                        id_card= profile.id_card
+                        job = profile.job_position
+
+                    content.append([lab['name'],
+                                    user['first_name'],
+                                    user['last_name'],
+                                    reactive.obj.code,
+                                    reactive.obj.name,
+                                    reactive.cas_id_number,
+                                    ", ".join(reactive.white_organ.all().values_list(
+                                        'description', flat=True)),
+                                    str(reactive.iarc) if reactive.iarc else "",
+                                    id_card,
+                                    job
                                 ])
 
 
