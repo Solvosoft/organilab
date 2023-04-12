@@ -5,7 +5,7 @@ from report import register
 
 
 def build_report(pk):
-    report = TaskReport.objects.filter(pk=pk).first()
+    report = TaskReport.objects.get(pk=pk)
 
     if report.type_report in register.REPORT_FORMS:
         if report.file_type in register.REPORT_FORMS[report.type_report]:

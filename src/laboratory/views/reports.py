@@ -1155,5 +1155,5 @@ def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
 
-    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk})
+    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
 
