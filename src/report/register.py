@@ -1,6 +1,6 @@
 REPORT_FORMS ={
     'reactive_precursor': {
-        'task':'laboratory.tasks.report_reactive_precursor',
+        'task':'report.tasks.report_reactive_precursor',
         'form':'report.forms.ValidateReportForm',
         'title':'List of reactive precursors',
     },
@@ -20,7 +20,7 @@ REPORT_FORMS ={
         'title':'List of objects',
     },
     'report_limit_objects': {
-        'task': 'laboratory.tasks.report_limit_objects',
+        'task': 'report.tasks.report_limit_objects',
         'form': 'report.forms.ValidateReportForm',
         'title': 'Limited shelf objects',
     },
@@ -38,5 +38,10 @@ REPORT_FORMS ={
         'xls':'report.views.furniture.furniture_doc',
         'xlsx':'report.views.furniture.furniture_doc',
         'ods':'report.views.furniture.furniture_doc',
+    },
+    'report_organization_reactive_list': {
+        'task': 'report.tasks.report_organization_reactive_list',
+        'form': 'report.forms.OrganizationReactiveForm',
+        'title': 'User exposition',
     },
 }
