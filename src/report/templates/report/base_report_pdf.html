@@ -1,10 +1,5 @@
-{% extends 'pdf/base_organization_pdf.html' %}
+{% extends 'report/base_report_css.html' %}
 {% load i18n %}
-{% block extra_css %}
-.small {
-    width: 15%;
-}
-{% endblock %}
 {% block pdf_content %}
     <table>
         {{ datalist | safe }}

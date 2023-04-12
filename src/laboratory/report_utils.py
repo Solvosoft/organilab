@@ -1,5 +1,6 @@
 from openpyxl import Workbook
 from io import BytesIO
+from openpyxl.styles import Alignment
 
 class ExcelGraphBuilder:
 
@@ -11,8 +12,10 @@ class ExcelGraphBuilder:
         self.row_max=0
 
     def add_table(self, data, title):
-        start_x = self.x
+
         self.ws.append([title])
+        self.ws[f'A1'].alignment = Alignment(horizontal="center", vertical='center', wrap_text=True)
+
         self.row_max += 1
 
         for row in data:
