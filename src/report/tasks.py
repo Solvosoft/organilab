@@ -15,7 +15,10 @@ app = importlib.import_module(settings.CELERY_MODULE).app
 
 @app.task()
 def task_report(pk):
-    build_report(pk)
+    try:
+        build_report(pk)
+    except:
+        pass
 
 @app.task()
 def object_log_change_report(pk):

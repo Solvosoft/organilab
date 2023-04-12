@@ -59,10 +59,14 @@ def get_queryset(report):
     return query
 
 
+def objectchange_get_queryset(report):
+    queryset = get_queryset(report)
+    object_list = resume_queryset(queryset)
+    return object_list
+
 
 def report_objectlogchange_html(report):
-    queryset = get_queryset(report)
-    object_list=resume_queryset(queryset)
+    object_list = objectchange_get_queryset(report)
 
     table =f'<thead><tr><th>{_("User")}</th><th>{_("Laboratory")}</th>' \
            f'<th>{_("Object")}</th><th>{_("Day")}</th><th>{_("Old")}</th>' \
@@ -70,14 +74,56 @@ def report_objectlogchange_html(report):
            f'<th>{_("Unit")}</th></tr></thead>'
 
     table+="<tbody>"
+    object_json = {
+        'columns': [
+            {
+                'name': 'user',
+                'title':_("User"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'laboratory',
+                'title': _("Laboratory"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'object',
+                'title':_("Object"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'update_time',
+                'title':_("Day"),
+                'type': 'date',
+                'visible': 'true'
+            },{
+                'name': 'old_value',
+                'title':_("Old"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'new_value',
+                'title':_("New"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'diff_value',
+                'title':_("Difference"),
+                'type': 'string',
+                'visible': 'true'
+            },{
+                'name': 'measurement_unit',
+                'title':_("Unit"),
+                'type': 'string',
+                'visible': 'true'
+            }],
+        'dataset': []
+    }
     for obj in object_list:
+        object_json['dataset'].append([obj.user, str(obj.laboratory), str(obj.object), obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                                       obj.old_value,  obj.new_value, obj.diff_value, str(obj.measurement_unit)])
 
-        table+=f'<tr><td>{obj.user}</td><td>{str(obj.laboratory)}</td>' \
-               f'<td>{str(obj.object)}</td><td>{obj.update_time.strftime("%m/%d/%Y, %H:%M:%S")}</td>' \
-               f'<td>{obj.old_value}</td><td>{obj.new_value}</td>' \
-               f'<td>{obj.diff_value}</td><td>{str(obj.measurement_unit)}</td></tr>'
-    table+='</tbody>'
-    report.table_content = table
+    report.table_content = object_json
     report.status = _('Generated')
     report.save()
 
