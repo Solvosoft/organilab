@@ -4,8 +4,10 @@ from djgentelella.widgets import core as genwidgets
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from laboratory.models import Laboratory, Furniture, LaboratoryRoom
+from laboratory.models import Laboratory, Furniture, LaboratoryRoom, OrganizationStructure
 from laboratory.utils import get_laboratories_from_organization
+from sga.models import Substance
+from django.contrib.auth.models import User
 
 
 class ReportBase(GTForm):
@@ -180,3 +182,29 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
         return list(laboratory.values_list('pk',flat=True).distinct())
 
 
+class OrganizationReactiveForm(GTForm):
+    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
+    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
+    organization = forms.IntegerField(widget=forms.HiddenInput())
+    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.none())
+    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.none())
+    report_name = forms.CharField(widget=forms.HiddenInput())
+    format = forms.ChoiceField(widget=genwidgets.Select, choices=(
+        ('html', _('On screen')),
+        ('pdf', _('PDF')),
+        ('xls', 'XSL'),
+        ('xlsx', 'XLSX'),
+        ('ods', 'ODS')
+    ), required=False, label=_('Format'))
+
+    def __init__(self, *args, **kwargs):
+        super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
+        self.fields['laboratory'].widget.attrs['data-url'] = reverse('laboratorybase-list')
+        self.fields['users'].widget.attrs['data-url'] = reverse('usersbase-list')
+
+class RelOrganizationLaboratoryForm(GTForm):
+    organization = forms.IntegerField()
+    all_labs_org = forms.BooleanField(required=False)
+
+class OrganizationForm(GTForm):
+    organization = forms.IntegerField()

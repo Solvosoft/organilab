@@ -149,6 +149,22 @@ function update_furniture(){
     });
 }
 
+function update_selects(form_element){
+    var select = $(form_element);
+    var url = $(select).data('url');
+    var selecteditems = select.val();
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: document.select_data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_data_to_select(select, selecteditems),
+      dataType: 'json'
+    });
+}
+
 
 $('#id_all_labs_org').on('change', function(){
     document.select_data.all_labs_org = false;
@@ -163,4 +179,6 @@ $('#id_all_labs_org').on('change', function(){
 $(document).ready(function() {
     update_lab_rooms();
     update_furniture();
+    update_selects("form select#id_users")
+    update_selects("form select#id_laboratory")
 });
