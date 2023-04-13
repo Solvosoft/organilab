@@ -18,7 +18,7 @@ class ReportBase(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -49,7 +49,7 @@ class ReportObjectsBaseForm(ReportForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -161,7 +161,7 @@ class ObjectLogChangeBaseForm(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select,choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False,label=_('Format'))
@@ -192,7 +192,7 @@ class OrganizationReactiveForm(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
