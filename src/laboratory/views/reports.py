@@ -20,7 +20,7 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, get_language
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
@@ -1113,11 +1113,12 @@ def create_request_by_report(request, lab_pk):
                     type_report=form.cleaned_data['report_name'],
                     status=_("On hold"),
                     file_type=format,
-                    data=data
+                    data=data,
+                    language=get_language()
                 )
 
                 method = import_string(type_report['task'])
-                task_celery=method.delay(task.pk)
+                task_celery=method.delay(task.pk, request.build_absolute_uri())
                 task_celery=task_celery.task_id
                 response.update({
                     'report': task.pk,
