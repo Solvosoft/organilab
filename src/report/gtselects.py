@@ -107,7 +107,7 @@ class LaboratoryModelLookups(BaseSelect2View):
 @register_lookups(prefix="usersbase", basename="usersbase")
 class UserModelLookups(BaseSelect2View):
     model = User
-    fields = ['name']
+    fields = ['first_name','last_name']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = GPaginatorMoreElements
@@ -119,7 +119,6 @@ class UserModelLookups(BaseSelect2View):
 
         if self.all_labs_org is not None or self.request.user is not None:
             if self.all_labs_org or self.request.user:
-                print(self.organization)
                 users = get_users_from_organization(self.organization.pk)
         return users
 
