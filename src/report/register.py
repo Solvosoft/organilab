@@ -30,7 +30,7 @@ REPORT_FORMS ={
         'ods': 'report.views.objects.report_objects_doc'
     },
     'report_limit_objects': {
-        'task': 'report.tasks.report_limit_objects',
+        'task':'report.tasks.task_report',
         'form': 'report.forms.ValidateReportForm',
         'title': 'Limited shelf objects',
         'html': 'report.views.objects.report_limit_object_html',
