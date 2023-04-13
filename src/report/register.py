@@ -20,7 +20,7 @@ REPORT_FORMS ={
         'ods':'report.views.lab_room.lab_room_doc',
     },
     'report_objects': {
-        'task':'laboratory.tasks.report_objects',
+        'task':'report.tasks.task_report',
         'form':'report.forms.ReportObjectForm',
         'title':'List of objects',
         'html': 'report.views.objects.report_objects_html',
