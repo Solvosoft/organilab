@@ -1,5 +1,19 @@
-{% extends 'report/base_report_css.html' %}
+{% extends 'report/base_pdf.html' %}
 {% load i18n %}
+
+{% block extra_css %}
+{{block.super}}
+
+table, th, td {
+    word-wrap: break-word;
+    border: 1px solid black;
+    text-aling:center;
+    border-collapse: collapse;
+    font-size:11px;
+}
+
+{% endblock %}
+
 {% block pdf_content %}
     <table>
         {{ datalist | safe }}

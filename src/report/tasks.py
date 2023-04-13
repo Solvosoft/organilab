@@ -14,8 +14,8 @@ app = importlib.import_module(settings.CELERY_MODULE).app
 
 
 @app.task()
-def task_report(pk):
-    build_report(pk)
+def task_report(pk, absolute_uri):
+    build_report(pk, absolute_uri)
 
 @app.task()
 def object_log_change_report(pk):
