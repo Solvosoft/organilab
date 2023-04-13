@@ -120,7 +120,6 @@ class UserModelLookups(BaseSelect2View):
         if self.all_labs_org is not None or self.request.user is not None:
             if self.all_labs_org or self.request.user:
                 users = get_users_from_organization(self.organization.pk)
-                print(users.count())
         return users
 
     def list(self, request, *args, **kwargs):
