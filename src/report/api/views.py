@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from laboratory.models import TaskReport
 from report.api.serializers import ReportDataTableSerializer
-
+from django.db import connection
 
 class ReportDataViewSet(viewsets.ViewSet):
     authentication_classes = [SessionAuthentication]
@@ -24,8 +24,12 @@ class ReportDataViewSet(viewsets.ViewSet):
     report = None
 
     def get_queryset(self):
-        return TaskReport.objects.filter(pk=self.pk).annotate(content=F('table_content'), filter=Q(table_content__dataset__0__7__icontains='Litros')).values_list('content', flat=True)[0]
+        with connection.cursor() as cursor:
+            cursor.execute("""Select ll.row_data::json from laboratory_taskreport as lab join 
+                                                   (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport ) as ll
+                                                   on ll.id=lab.id where ll.row_data->>7 = 'Litros' order by ll.row_data->>6 desc""")
 
+            return list(map(lambda x: x[0], cursor))
     def get_serializer(self, data):
         return self.serializer_class(data)
 
