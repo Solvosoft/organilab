@@ -81,28 +81,6 @@ def report_objectlogchange_html(report):
     report.status = _('Generated')
     report.save()
 
-def report_objectlogchange_pdf(report):
-
-    report_objectlogchange_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['lab_pk'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
-
 def report_objectlogchange_doc(report):
     queryset = get_queryset(report)
     object_list=resume_queryset(queryset)
@@ -236,28 +214,6 @@ def report_reactive_precursor_html(report):
     report.status = _('Generated')
     report.save()
     return rpo
-
-def report_reactive_precursor_pdf(report):
-
-    report_reactive_precursor_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
 
 
 def get_object_elements(obj):
@@ -454,28 +410,6 @@ def report_limit_object_html(report):
     report.status = _('Generated')
     report.save()
 
-def report_limit_object_pdf(report):
-
-    report_limit_object_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
-
 def report_limit_object_doc(report):
 
     labs = report.data['laboratory']
@@ -571,27 +505,6 @@ def report_organization_reactive_list_html(report):
     report.table_content = table
     report.status = _('Generated')
     report.save()
-
-def report_organization_reactive_list_pdf(report):
-
-    report_organization_reactive_list_html(report)
-    context = {
-        'datalist': report.table_content,
-        'user': report.creator,
-    }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
 
 def report_organization_reactive_list_doc(report):
 

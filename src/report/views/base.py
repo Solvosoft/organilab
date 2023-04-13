@@ -15,8 +15,12 @@ def build_report(pk, absolute_uri):
     if report.type_report in register.REPORT_FORMS:
         if report.file_type in register.REPORT_FORMS[report.type_report]:
             if report.file_type == 'pdf':
-                html_function = register.REPORT_FORMS[report.type_report]['html']
-                import_string(register.REPORT_FORMS[report.type_report][report.file_type])(report, absolute_uri, html_function)#(URL MEDIA REQUIRED)
+                f_pdf = register.REPORT_FORMS[report.type_report][report.file_type]
+                if 'base_pdf' in f_pdf:
+                    html_function = register.REPORT_FORMS[report.type_report]['html']
+                    import_string(f_pdf)(report, absolute_uri, html_function)#(URL MEDIA REQUIRED)
+                else:
+                    import_string(f_pdf)(report)
             else:
                 import_string(register.REPORT_FORMS[report.type_report][report.file_type])(report)
 
