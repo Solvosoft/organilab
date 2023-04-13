@@ -820,3 +820,4 @@ class TaskReport(models.Model):
     file_type = models.CharField(max_length=30, blank=True, null=True)
     file = models.FileField(upload_to='reports/', blank=True, null=True)
     data = models.JSONField(null=True, blank=True)
+    language = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)
