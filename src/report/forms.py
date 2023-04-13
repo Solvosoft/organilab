@@ -18,7 +18,7 @@ class ReportBase(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -49,7 +49,7 @@ class ReportObjectsBaseForm(ReportForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -161,7 +161,7 @@ class ObjectLogChangeBaseForm(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select,choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False,label=_('Format'))
@@ -186,13 +186,13 @@ class OrganizationReactiveForm(GTForm):
     name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
     title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
     organization = forms.IntegerField(widget=forms.HiddenInput())
-    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.none())
-    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.none())
+    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all())
+    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.all())
     report_name = forms.CharField(widget=forms.HiddenInput())
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -201,6 +201,15 @@ class OrganizationReactiveForm(GTForm):
         super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
         self.fields['laboratory'].widget.attrs['data-url'] = reverse('laboratorybase-list')
         self.fields['users'].widget.attrs['data-url'] = reverse('usersbase-list')
+
+    def clean_laboratory(self):
+        organization = self.cleaned_data['organization']
+        laboratory = self.cleaned_data['laboratory']
+
+        if laboratory:
+            laboratory = get_laboratories_from_organization(organization)
+
+        return list(laboratory.values_list('pk',flat=True))
 
 class RelOrganizationLaboratoryForm(GTForm):
     organization = forms.IntegerField()
