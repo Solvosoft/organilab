@@ -1,4 +1,6 @@
 from io import BytesIO
+
+from django.utils import timezone
 from weasyprint import HTML
 from django.core.files.base import ContentFile
 from django.template.loader import render_to_string
@@ -22,25 +24,6 @@ def furniture_html(report):
                      f'<td>{shelfobject.quantity} {shelf_unit}</td><td>{shelfobject.in_where_laboratory.name}</td>' \
                      f'<td>{furniture.labroom.name}</td><td>{furniture.name}</td><td>{shelfobject.shelf.name}</td></tr>'
     update_table_report(report, col_list, rows)
-
-
-def furniture_pdf(report):
-    furniture_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.save()
-    file.close()
 
 
 def furniture_doc(report):

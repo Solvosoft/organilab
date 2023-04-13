@@ -7,7 +7,7 @@
         <style>
             @page {
                 margin: 2cm 2cm;
-                size: a4 portrait;
+                size: {% if size_sheet %}{{size_sheet}}{% else %}a4 portrait{% endif %};
 
                 @bottom-right{
                     content: "{% trans 'Page' %} " counter(page) " {% trans "of" %} " counter(pages);
