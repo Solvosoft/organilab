@@ -60,64 +60,23 @@ def objectchange_get_queryset(report):
 
 def report_objectlogchange_html(report):
     object_list = objectchange_get_queryset(report)
-
-    table =f'<thead><tr><th>{_("User")}</th><th>{_("Laboratory")}</th>' \
-           f'<th>{_("Object")}</th><th>{_("Day")}</th><th>{_("Old")}</th>' \
-           f'<th>{_("New")}</th><th>{_("Difference")}</th>'\
-           f'<th>{_("Unit")}</th></tr></thead>'
-
-    table+="<tbody>"
     object_json = {
         'columns': [
-            {
-                'name': 'user',
-                'title':_("User"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'laboratory',
-                'title': _("Laboratory"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'object',
-                'title':_("Object"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'update_time',
-                'title':_("Day"),
-                'type': 'date',
-                'visible': 'true'
-            },{
-                'name': 'old_value',
-                'title':_("Old"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'new_value',
-                'title':_("New"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'diff_value',
-                'title':_("Difference"),
-                'type': 'string',
-                'visible': 'true'
-            },{
-                'name': 'measurement_unit',
-                'title':_("Unit"),
-                'type': 'string',
-                'visible': 'true'
-            }],
+            {'name': 'user', 'title':_("User"), 'type': 'string', 'visible': 'true'},
+            {'name': 'laboratory', 'title': _("Laboratory"), 'type': 'string', 'visible': 'true'},
+            {'name': 'object', 'title':_("Object"), 'type': 'string', 'visible': 'true'},
+            {'name': 'update_time', 'title':_("Day"), 'type': 'date', 'visible': 'true'},
+            {'name': 'old_value', 'title':_("Old"), 'type': 'string','visible': 'true'},
+            {'name': 'new_value', 'title':_("New"), 'type': 'string', 'visible': 'true'},
+            {'name': 'diff_value', 'title':_("Difference"), 'type': 'string', 'visible': 'true'},
+            {'name': 'measurement_unit', 'title':_("Unit"),'type': 'string', 'visible': 'true'}
+        ],
         'dataset': []
     }
     for obj in object_list:
         object_json['dataset'].append([obj.user, str(obj.laboratory), str(obj.object), obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
                                        obj.old_value,  obj.new_value, obj.diff_value, str(obj.measurement_unit)])
-
     report.table_content = object_json
-    report.status = _('Generated')
     report.save()
 
 def report_objectlogchange_doc(report):
@@ -149,7 +108,6 @@ def report_objectlogchange_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
@@ -218,20 +176,33 @@ def report_reactive_precursor_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
 def report_reactive_precursor_html(report):
 
-    lab = report.data['laboratory']
-    builder =None
+    object_json = {
+        'columns': [
+            {'name': 'laboratory', 'title': _("Laboratory"), 'type': 'string', 'visible': 'true'},
+            {'name': 'code', 'title': _("Code"), 'type': 'string', 'visible': 'true'},
+            {'name': 'name', 'title': _("Name"), 'type': 'string', 'visible': 'true'},
+            {'name': 'type', 'title': _("Type"), 'type': 'date', 'visible': 'true'},
+            {'name': 'quantity_total', 'title': _("Quantity total"), 'type': 'string', 'visible': 'true'},
+            {'name': 'measurement_unit', 'title': _("Measurement units"), 'type': 'string', 'visible': 'true'},
+            {'name': 'molecular_formula', 'title': _("Molecular formula"), 'type': 'string', 'visible': 'true'},
+            {'name': 'cas_id_number', 'title': _("CAS id number"), 'type': 'string', 'visible': 'true'},
+            {'name': 'precursor', 'title': _("Is precursor?"), 'type': 'string', 'visible': 'true'},
+            {'name': 'imdg_type', 'title': _("IMDG type"), 'type': 'string', 'visible': 'true'}
+        ],
+        'dataset': []
+    }
+    lab = []
+
+    if 'laboratory' in report.data:
+        lab = report.data['laboratory']
+
     org = True if len(lab)>1 else False
 
-    table = f'<thead><tr>{"<th>"+_("Laboratory")+"</th>" if org else "" }<th>{_("Code")}</th><th>{_("Name")}</th><th>{_("Type")}</th>' \
-            f'<th>{_("Quantity total")}</th><th>{_("Measurement units")}</th><th>{_("Molecular formula")}</th>' \
-            f'<th>{_("CAS id number")}</th><th>{("Is precursor?")}</th><th>{("IMDG type")}</th></tr></thead>'
-    table+='<tbody>'
     for lab_pk in lab:
         if lab:
             rpo = Object.objects.filter(
@@ -246,14 +217,14 @@ def report_reactive_precursor_html(report):
 
         for object in objects:
             precursor = _('Yes') if object.is_precursor else 'No'
-            table += f'<tr>{"<td>"+laboratory.name+"</td>" if org else "" }<td>{object.code}</td><td>{object.name}</td><td>{object.get_type_display()}</td><td>{object.quantity_total}</td>' \
-                     f'<td>{ShelfObject.get_units(object.measurement_unit)}</td><td>{str(get_molecular_formula(object))}</td><td>{str(get_cas(object, ""))}</td>' \
-                     f'<td>{precursor}</td><td>{str(get_imdg(object, ""))}</td></tr>'
-    table+='</tbody>'
-    report.table_content = table
-    report.status = _('Generated')
+            object_json['dataset'].append([laboratory.name if org else "", object.code, object.name, object.get_type_display(),
+                                           object.quantity_total, ShelfObject.get_units(object.measurement_unit),
+                                           str(get_molecular_formula(object)), str(get_cas(object, "")),
+                                           precursor, str(get_imdg(object, ""))
+
+            ])
+    report.table_content = object_json
     report.save()
-    return rpo
 
 #report_objects
 def get_object_elements(obj):
@@ -307,7 +278,6 @@ def report_objects_html(report):
                      f'<i class="fa fa-download" aria-hidden="true"></i> PDF </a></td></tr>'
     table += '</tbody>'
     report.table_content = table
-    report.status = _('Generated')
     report.save()
 
 def report_object_doc(report):
@@ -370,7 +340,6 @@ def report_object_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
@@ -399,7 +368,6 @@ def report_limit_object_html(report):
 
     table += '</tbody>'
     report.table_content = table
-    report.status = _('Generated')
     report.save()
 
 def report_limit_object_doc(report):
@@ -444,7 +412,6 @@ def report_limit_object_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
@@ -495,7 +462,6 @@ def report_organization_reactive_list_html(report):
 
     table += '</tbody>'
     report.table_content = table
-    report.status = _('Generated')
     report.save()
 
 def report_organization_reactive_list_doc(report):
@@ -555,6 +521,5 @@ def report_organization_reactive_list_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
