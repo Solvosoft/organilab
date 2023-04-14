@@ -1,21 +1,17 @@
 from django.core.files.base import ContentFile
 from django.db.models import Sum, Min
-from django.template.loader import render_to_string
-from io import BytesIO
+from django.urls import reverse
 from django.utils.translation import gettext as _
-from weasyprint import HTML
 
+from auth_and_perms.models import Profile
 from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, OrganizationStructure, \
     SustanceCharacteristics
-
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
 from laboratory.views.djgeneric import ResultQueryElement
-from django.urls import reverse
-
 from report.utils import filter_period
-from auth_and_perms.models import Profile
 
+#report_objectlogchange
 def resume_queryset(queryset):
     objects = set(queryset.values_list('object', flat=True))
     list_obj = []
@@ -43,7 +39,6 @@ def resume_queryset(queryset):
                             )
     return list_obj
 
-
 def get_queryset(report):
     query = ObjectLogChange.objects.all().order_by('update_time')
     if 'period' in report.data:
@@ -57,8 +52,6 @@ def get_queryset(report):
     if 'resume' in report.data:
         query = query
     return query
-
-
 
 def report_objectlogchange_html(report):
     queryset = get_queryset(report)
@@ -114,6 +107,7 @@ def report_objectlogchange_doc(report):
     report.save()
     file.close()
 
+#report_reactive_precursor
 def report_reactive_precursor_doc(report):
 
     lab = report.data['laboratory']
@@ -215,7 +209,7 @@ def report_reactive_precursor_html(report):
     report.save()
     return rpo
 
-
+#report_objects
 def get_object_elements(obj):
     features=""
     shelfobjects=""
@@ -269,55 +263,6 @@ def report_objects_html(report):
     report.table_content = table
     report.status = _('Generated')
     report.save()
-
-def report_objects_pdf(report):
-    org = report.data['organization']
-    labs = report.data['laboratory']
-    general = True if 'all_labs_org' in report.data else False
-    filters = {}
-
-    type_id = report.data['object_type']
-    filters['organization__in'] = get_pk_org_ancestors(org)
-    filters['is_public'] = True
-    filters['type'] = type_id
-
-    objects = Object.objects.filter(**filters)
-    table = f'<thead><tr>{"<th>" + _("Laboratory") + "</th>" if general else ""}<th>{_("Code")}</th><th>{_("Name")}</th><th>{_("Type")}</th>' \
-            f'<th>{_("Features")}</th><th>{_("Danger indication")}</th><th>{_("Quantity")}</th>' \
-            f'<th>{_("Molecular formula")}</th><th>{_("CAS ID Number")}</th></tr></thead>'
-    table += '<tbody>'
-
-    for lab_pk in labs:
-        lab = Laboratory.objects.filter(pk=lab_pk).first()
-        for obj in objects:
-            formula="-"
-            features,danger,shelfobjects = get_object_elements(obj)
-            cas = get_cas(obj,"") if get_cas(obj,"") else ""
-            if hasattr(obj, 'sustancecharacteristics'):
-                formula = obj.sustancecharacteristics.molecular_formula if obj.sustancecharacteristics.molecular_formula else '-'
-            table += f'<tr>{"<td>" + lab.name + "</td>" if general else ""}<td>{obj.code}</td><td>{obj.name}</td><td>{obj.get_type_display()}</td><td>{features}</td>' \
-                     f'<td>{danger}</td><td>{shelfobjects}</td><td>{ formula }</td>' \
-                     f'<td>{ cas }</td></tr>'
-    table += '</tbody>'
-    context = {
-        'datalist': table,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-    report.table_content = table
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
-
 
 def report_object_doc(report):
     org = report.data['organization']
@@ -383,6 +328,7 @@ def report_object_doc(report):
     report.save()
     file.close()
 
+#report_limit_object
 def get_limited_shelf_objects(query):
     for shelf_object in query:
         if shelf_object.limit_reached:
@@ -456,7 +402,7 @@ def report_limit_object_doc(report):
     report.save()
     file.close()
 
-
+#report_organization_reactive
 def report_organization_reactive_list_html(report):
 
     table=f'<thead><tr><th>{_("Laboratory name")}</th><th>{_("First Name")}</th>' \
