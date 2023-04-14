@@ -4,8 +4,10 @@ from djgentelella.widgets import core as genwidgets
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from laboratory.models import Laboratory, Furniture, LaboratoryRoom
+from laboratory.models import Laboratory, Furniture, LaboratoryRoom, OrganizationStructure
 from laboratory.utils import get_laboratories_from_organization
+from sga.models import Substance
+from django.contrib.auth.models import User
 
 
 class ReportBase(GTForm):
@@ -16,7 +18,7 @@ class ReportBase(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -47,7 +49,7 @@ class ReportObjectsBaseForm(ReportForm):
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
@@ -97,6 +99,16 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.all(), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.all(), required=False)
 
+    def clean_laboratory(self):
+        organization = self.cleaned_data['organization']
+        all_labs_org = self.cleaned_data['all_labs_org']
+        laboratory = self.cleaned_data['laboratory']
+
+        if all_labs_org:
+            laboratory = get_laboratories_from_organization(organization)
+
+        return list(laboratory.values_list('pk',flat=True))
+
     def clean_lab_room(self):
         organization = self.cleaned_data['organization']
         all_labs_org = self.cleaned_data['all_labs_org']
@@ -111,7 +123,7 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
             laboratory = Laboratory.objects.filter(pk__in=laboratory)
 
         if not lab_room:
-            lab_room = laboratory.laboratoryroom_set.all()
+            lab_room = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
         return list(lab_room.values_list('pk',flat=True).distinct())
 
 
@@ -149,7 +161,7 @@ class ObjectLogChangeBaseForm(GTForm):
     format = forms.ChoiceField(widget=genwidgets.Select,choices=(
         ('html', _('On screen')),
         ('pdf', _('PDF')),
-        ('xls', 'XSL'),
+        ('xls', 'XLS'),
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False,label=_('Format'))
@@ -170,3 +182,38 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
         return list(laboratory.values_list('pk',flat=True).distinct())
 
 
+class OrganizationReactiveForm(GTForm):
+    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
+    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
+    organization = forms.IntegerField(widget=forms.HiddenInput())
+    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all())
+    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.all())
+    report_name = forms.CharField(widget=forms.HiddenInput())
+    format = forms.ChoiceField(widget=genwidgets.Select, choices=(
+        ('html', _('On screen')),
+        ('pdf', _('PDF')),
+        ('xls', 'XLS'),
+        ('xlsx', 'XLSX'),
+        ('ods', 'ODS')
+    ), required=False, label=_('Format'))
+
+    def __init__(self, *args, **kwargs):
+        super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
+        self.fields['laboratory'].widget.attrs['data-url'] = reverse('laboratorybase-list')
+        self.fields['users'].widget.attrs['data-url'] = reverse('usersbase-list')
+
+    def clean_laboratory(self):
+        organization = self.cleaned_data['organization']
+        laboratory = self.cleaned_data['laboratory']
+
+        if laboratory:
+            laboratory = get_laboratories_from_organization(organization)
+
+        return list(laboratory.values_list('pk',flat=True))
+
+class RelOrganizationLaboratoryForm(GTForm):
+    organization = forms.IntegerField()
+    all_labs_org = forms.BooleanField(required=False)
+
+class OrganizationForm(GTForm):
+    organization = forms.IntegerField()

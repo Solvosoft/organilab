@@ -1,20 +1,17 @@
 from django.core.files.base import ContentFile
 from django.db.models import Sum, Min
-from django.template.loader import render_to_string
-from io import BytesIO
+from django.urls import reverse
 from django.utils.translation import gettext as _
-from weasyprint import HTML
 
-from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory
-
+from auth_and_perms.models import Profile
+from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, OrganizationStructure, \
+    SustanceCharacteristics
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
 from laboratory.views.djgeneric import ResultQueryElement
-from django.urls import reverse
-
 from report.utils import filter_period
 
-
+#report_objectlogchange
 def resume_queryset(queryset):
     objects = set(queryset.values_list('object', flat=True))
     list_obj = []
@@ -42,7 +39,6 @@ def resume_queryset(queryset):
                             )
     return list_obj
 
-
 def get_queryset(report):
     query = ObjectLogChange.objects.all().order_by('update_time')
     if 'period' in report.data:
@@ -57,50 +53,31 @@ def get_queryset(report):
         query = query
     return query
 
-
+def objectchange_get_queryset(report):
+    queryset = get_queryset(report)
+    object_list = resume_queryset(queryset)
+    return object_list
 
 def report_objectlogchange_html(report):
-    queryset = get_queryset(report)
-    object_list=resume_queryset(queryset)
-
-    table =f'<thead><tr><th>{_("User")}</th><th>{_("Laboratory")}</th>' \
-           f'<th>{_("Object")}</th><th>{_("Day")}</th><th>{_("Old")}</th>' \
-           f'<th>{_("New")}</th><th>{_("Difference")}</th>'\
-           f'<th>{_("Unit")}</th></tr></thead>'
-
-    table+="<tbody>"
-    for obj in object_list:
-
-        table+=f'<tr><td>{obj.user}</td><td>{str(obj.laboratory)}</td>' \
-               f'<td>{str(obj.object)}</td><td>{obj.update_time.strftime("%m/%d/%Y, %H:%M:%S")}</td>' \
-               f'<td>{obj.old_value}</td><td>{obj.new_value}</td>' \
-               f'<td>{obj.diff_value}</td><td>{str(obj.measurement_unit)}</td></tr>'
-    table+='</tbody>'
-    report.table_content = table
-    report.status = _('Generated')
-    report.save()
-
-def report_objectlogchange_pdf(report):
-
-    report_objectlogchange_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['lab_pk'],
-        'user': report.creator,
+    object_list = objectchange_get_queryset(report)
+    object_json = {
+        'columns': [
+            {'name': 'user', 'title':_("User"), 'type': 'string', 'visible': 'true'},
+            {'name': 'laboratory', 'title': _("Laboratory"), 'type': 'string', 'visible': 'true'},
+            {'name': 'object', 'title':_("Object"), 'type': 'string', 'visible': 'true'},
+            {'name': 'update_time', 'title':_("Day"), 'type': 'date', 'visible': 'true'},
+            {'name': 'old_value', 'title':_("Old"), 'type': 'string','visible': 'true'},
+            {'name': 'new_value', 'title':_("New"), 'type': 'string', 'visible': 'true'},
+            {'name': 'diff_value', 'title':_("Difference"), 'type': 'string', 'visible': 'true'},
+            {'name': 'measurement_unit', 'title':_("Unit"),'type': 'string', 'visible': 'true'}
+        ],
+        'dataset': []
     }
-
-    html = render_to_string('report/base_report_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
+    for obj in object_list:
+        object_json['dataset'].append([obj.user, str(obj.laboratory), str(obj.object), obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                                       obj.old_value,  obj.new_value, obj.diff_value, str(obj.measurement_unit)])
+    report.table_content = object_json
     report.save()
-    file.close()
 
 def report_objectlogchange_doc(report):
     queryset = get_queryset(report)
@@ -131,10 +108,10 @@ def report_objectlogchange_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
+#report_reactive_precursor
 def report_reactive_precursor_doc(report):
 
     lab = report.data['laboratory']
@@ -199,20 +176,33 @@ def report_reactive_precursor_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
 def report_reactive_precursor_html(report):
 
-    lab = report.data['laboratory']
-    builder =None
+    object_json = {
+        'columns': [
+            {'name': 'laboratory', 'title': _("Laboratory"), 'type': 'string', 'visible': 'true'},
+            {'name': 'code', 'title': _("Code"), 'type': 'string', 'visible': 'true'},
+            {'name': 'name', 'title': _("Name"), 'type': 'string', 'visible': 'true'},
+            {'name': 'type', 'title': _("Type"), 'type': 'date', 'visible': 'true'},
+            {'name': 'quantity_total', 'title': _("Quantity total"), 'type': 'string', 'visible': 'true'},
+            {'name': 'measurement_unit', 'title': _("Measurement units"), 'type': 'string', 'visible': 'true'},
+            {'name': 'molecular_formula', 'title': _("Molecular formula"), 'type': 'string', 'visible': 'true'},
+            {'name': 'cas_id_number', 'title': _("CAS id number"), 'type': 'string', 'visible': 'true'},
+            {'name': 'precursor', 'title': _("Is precursor?"), 'type': 'string', 'visible': 'true'},
+            {'name': 'imdg_type', 'title': _("IMDG type"), 'type': 'string', 'visible': 'true'}
+        ],
+        'dataset': []
+    }
+    lab = []
+
+    if 'laboratory' in report.data:
+        lab = report.data['laboratory']
+
     org = True if len(lab)>1 else False
 
-    table = f'<thead><tr>{"<th>"+_("Laboratory")+"</th>" if org else "" }<th>{_("Code")}</th><th>{_("Name")}</th><th>{_("Type")}</th>' \
-            f'<th>{_("Quantity total")}</th><th>{_("Measurement units")}</th><th>{_("Molecular formula")}</th>' \
-            f'<th>{_("CAS id number")}</th><th>{("Is precursor?")}</th><th>{("IMDG type")}</th></tr></thead>'
-    table+='<tbody>'
     for lab_pk in lab:
         if lab:
             rpo = Object.objects.filter(
@@ -227,38 +217,16 @@ def report_reactive_precursor_html(report):
 
         for object in objects:
             precursor = _('Yes') if object.is_precursor else 'No'
-            table += f'<tr>{"<td>"+laboratory.name+"</td>" if org else "" }<td>{object.code}</td><td>{object.name}</td><td>{object.get_type_display()}</td><td>{object.quantity_total}</td>' \
-                     f'<td>{ShelfObject.get_units(object.measurement_unit)}</td><td>{str(get_molecular_formula(object))}</td><td>{str(get_cas(object, ""))}</td>' \
-                     f'<td>{precursor}</td><td>{str(get_imdg(object, ""))}</td></tr>'
-    table+='</tbody>'
-    report.table_content = table
-    report.status = _('Generated')
+            object_json['dataset'].append([laboratory.name if org else "", object.code, object.name, object.get_type_display(),
+                                           object.quantity_total, ShelfObject.get_units(object.measurement_unit),
+                                           str(get_molecular_formula(object)), str(get_cas(object, "")),
+                                           precursor, str(get_imdg(object, ""))
+
+            ])
+    report.table_content = object_json
     report.save()
-    return rpo
 
-def report_reactive_precursor_pdf(report):
-
-    report_reactive_precursor_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
-
-
+#report_objects
 def get_object_elements(obj):
     features=""
     shelfobjects=""
@@ -310,57 +278,7 @@ def report_objects_html(report):
                      f'<i class="fa fa-download" aria-hidden="true"></i> PDF </a></td></tr>'
     table += '</tbody>'
     report.table_content = table
-    report.status = _('Generated')
     report.save()
-
-def report_objects_pdf(report):
-    org = report.data['organization']
-    labs = report.data['laboratory']
-    general = True if 'all_labs_org' in report.data else False
-    filters = {}
-
-    type_id = report.data['object_type']
-    filters['organization__in'] = get_pk_org_ancestors(org)
-    filters['is_public'] = True
-    filters['type'] = type_id
-
-    objects = Object.objects.filter(**filters)
-    table = f'<thead><tr>{"<th>" + _("Laboratory") + "</th>" if general else ""}<th>{_("Code")}</th><th>{_("Name")}</th><th>{_("Type")}</th>' \
-            f'<th>{_("Features")}</th><th>{_("Danger indication")}</th><th>{_("Quantity")}</th>' \
-            f'<th>{_("Molecular formula")}</th><th>{_("CAS ID Number")}</th></tr></thead>'
-    table += '<tbody>'
-
-    for lab_pk in labs:
-        lab = Laboratory.objects.filter(pk=lab_pk).first()
-        for obj in objects:
-            formula="-"
-            features,danger,shelfobjects = get_object_elements(obj)
-            cas = get_cas(obj,"") if get_cas(obj,"") else ""
-            if hasattr(obj, 'sustancecharacteristics'):
-                formula = obj.sustancecharacteristics.molecular_formula if obj.sustancecharacteristics.molecular_formula else '-'
-            table += f'<tr>{"<td>" + lab.name + "</td>" if general else ""}<td>{obj.code}</td><td>{obj.name}</td><td>{obj.get_type_display()}</td><td>{features}</td>' \
-                     f'<td>{danger}</td><td>{shelfobjects}</td><td>{ formula }</td>' \
-                     f'<td>{ cas }</td></tr>'
-    table += '</tbody>'
-    context = {
-        'datalist': table,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-    report.table_content = table
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
-
 
 def report_object_doc(report):
     org = report.data['organization']
@@ -422,10 +340,10 @@ def report_object_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
     report.save()
     file.close()
 
+#report_limit_object
 def get_limited_shelf_objects(query):
     for shelf_object in query:
         if shelf_object.limit_reached:
@@ -450,30 +368,7 @@ def report_limit_object_html(report):
 
     table += '</tbody>'
     report.table_content = table
-    report.status = _('Generated')
     report.save()
-
-def report_limit_object_pdf(report):
-
-    report_limit_object_html(report)
-    context = {
-        'datalist': report.table_content,
-        'laboratory': report.data['laboratory'],
-        'user': report.creator,
-    }
-
-    html = render_to_string('laboratory/reports/reactive_precursor_pdf.html', context=context)
-    file = BytesIO()
-
-    HTML(string=html, encoding='utf-8').write_pdf(file)
-
-    file_name = f'{report.data["name"]}.pdf'
-    file.seek(0)
-    content = ContentFile(file.getvalue(), name=file_name)
-    report.file = content
-    report.status = _('Generated')
-    report.save()
-    file.close()
 
 def report_limit_object_doc(report):
 
@@ -517,6 +412,114 @@ def report_limit_object_doc(report):
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
-    report.status = _('Generated')
+    report.save()
+    file.close()
+
+#report_organization_reactive
+def report_organization_reactive_list_html(report):
+
+    table=f'<thead><tr><th>{_("Laboratory name")}</th><th>{_("First Name")}</th>' \
+          f'<th>{_("Last Name")}</th><th>{_("Code")}</th>' \
+          f'<th>{_("Sustance")}</th><th>{_("CAS")}</th>' \
+          f'<th>{_("White Organ")}</th><th>{_("Carcinogenic")}</th>' \
+          f'<th>{_("ID Card")}</th><th>{_("Job Position")}</th>' \
+          f'</tr></thead>'
+    table+="<tbody>"
+    filters ={}
+    query = OrganizationStructure.objects.filter(pk=report.data['organization'])
+    usermanagement= None
+    add_profile_info = True
+    for item in query:
+        if 'laboratory' in report.data:
+            laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator, pk__in= report.data['laboratory']).values('name', 'laboratoryroom__furniture')
+        else:
+            laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator).values('name', 'laboratoryroom__furniture')
+        if 'users' in report.data:
+            usermanagement = item.filter(users__pk__in=report.data['users']).values('first_name', 'last_name', 'id')
+        else:
+            usermanagement = item.users.values('first_name', 'last_name', 'id')
+        for lab in laboratories:
+            reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+                    shelf__furniture=lab['laboratoryroom__furniture']
+                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+            for user in usermanagement:
+
+                try:
+                    profile = Profile.objects.get(user__id=user['id'])
+                except Profile.DoesNotExist as error:
+                        add_profile_info = False
+
+                for reactive in reactives:
+                    table += f'<tr><td>{lab["name"]}</td><td>{user["first_name"]}</td>' \
+                                 f'<td>{user["last_name"]}<td>{reactive.obj.code}</td>' \
+                                 f'<td>{reactive.obj.name}</td><td>{reactive.cas_id_number}</td>' \
+                                 f'<td>{", ".join(reactive.white_organ.all().values_list("description", flat=True))}</td>' \
+                                 f'<td>{str(reactive.iarc) if reactive.iarc else ""}</td>'
+                    if add_profile_info:
+                        table+=f'<td>{profile.id_card}</td><td>{profile.job_position}</td></tr>'
+                    else:
+                        table+="<td></td><td></td></tr>"
+
+    table += '</tbody>'
+    report.table_content = table
+    report.save()
+
+def report_organization_reactive_list_doc(report):
+
+
+    content = []
+    builder = ExcelGraphBuilder()
+    content.append([_('Laboratory name'),_('First Name'),_('Last Name'),
+                    _('Code'),_('Sustance'),_('CAS'),_('White Organ'),
+                    _('Carcinogenic'),_('ID Card'),_('Job Position')])
+    query = OrganizationStructure.objects.filter(pk=report.data['organization'])
+
+    add_profile_info = True
+    id_card=""
+    job=""
+    for item in query:
+
+        laboratories = item.laboratory_set.filter(organization__pk=report.data['organization'], profile__user=report.creator).values('name', 'laboratoryroom__furniture')
+        usermanagement = item.users.values('first_name', 'last_name', 'id')
+        for lab in laboratories:
+            reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+                    shelf__furniture=lab['laboratoryroom__furniture']
+                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+            for user in usermanagement:
+
+                try:
+                    profile = Profile.objects.get(user__id=user['id'])
+                except Profile.DoesNotExist as error:
+                        add_profile_info = False
+
+                for reactive in reactives:
+                    id_card=""
+                    job=""
+                    if add_profile_info:
+                        id_card= profile.id_card
+                        job = profile.job_position
+
+                    content.append([lab['name'],
+                                    user['first_name'],
+                                    user['last_name'],
+                                    reactive.obj.code,
+                                    reactive.obj.name,
+                                    reactive.cas_id_number,
+                                    ", ".join(reactive.white_organ.all().values_list(
+                                        'description', flat=True)),
+                                    str(reactive.iarc) if reactive.iarc else "",
+                                    id_card,
+                                    job
+                                ])
+
+
+
+    builder.add_table(content, report.data['title'])
+    file=builder.save()
+    report_name = report.data['name'] if report.data['name'] else 'report'
+    file_name = f'{report_name}.{report.file_type}'
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    report.file = content
     report.save()
     file.close()

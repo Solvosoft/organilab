@@ -12,7 +12,6 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.files.base import ContentFile
 from django.db.models.aggregates import Sum, Min
 from django.http import Http404
 from django.http.response import HttpResponse, JsonResponse
@@ -21,7 +20,7 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, get_language
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
@@ -32,14 +31,13 @@ from laboratory.forms import H_CodeForm, TasksForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
     OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
 from laboratory.models import ObjectLogChange
-from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.utils import get_user_laboratories
 from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm
 from sga.forms import SearchDangerIndicationForm
-from laboratory import register
+from report import register
 from django.utils.module_loading import import_string
 from django.urls import reverse
 
@@ -949,66 +947,87 @@ class PrecursorsView(ReportListView):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class OrganizationReactivePresenceList(ReportListView):
     model = OrganizationStructure
-    template_name = 'laboratory/organization_reactive_presence.html'
+    template_name = 'report/base_report_form_view.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form'] = OrganizationReactiveForm(initial={
+            'organization': self.org,
+            'report_name': 'report_organization_reactive_list',
+        })
+        context['laboratory'] = 0
+        context['title_view'] = _("Reactive precursor objects")
         return context
 
-    def get_queryset(self):
-        query = self.model.objects.filter(pk = self.org) #.descendants(include_self=True)
-
-        data = []
-        add_profile_info = True
-        for item in query:
-
-            laboratories = item.laboratory_set.all().values('name', 'laboratoryroom__furniture')
-            usermanagement = item.users.values('first_name', 'last_name', 'id')
-            for lab in laboratories:
-                reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
-                    shelf__furniture=lab['laboratoryroom__furniture']
-                ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
-                for user in usermanagement:
-                    # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
-                    try:
-                        profile = Profile.objects.get(user__id=user['id'])
-
-                    except Profile.DoesNotExist as error:
-                        add_profile_info = False
-
-                    for reactive in reactives:
-                        user_data = [lab['name'],
-                                    user['first_name'],
-                                    user['last_name'],
-                                    reactive.obj.code,
-                                    reactive.obj.name,
-                                    reactive.cas_id_number,
-                                    ", ".join(reactive.white_organ.all().values_list(
-                                        'description', flat=True)),
-                                    str(reactive.iarc) if reactive.iarc else "",
-                        ]
-                        if add_profile_info:
-                            user_data.append(profile.id_card)
-                            user_data.append(profile.job_position)
-                                        
-                        data.append(user_data)
-                
-        return data
-
-    def get_book(self, context):
-        book = [[str(_('Laboratory name')),
-                 str(_('First Name')),
-                 str(_('Last Name')),
-                 str(_('Code')),
-                 str(_('Sustance')),
-                 str(_('CAS')),
-                 str(_('White Organ')),
-                 str(_('Carcinogenic')),
-                 str(_('ID Card')),
-                 str(_('Job Position'))
-                 ]]+context['object_list']
-
-        return book
+#@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+# class OrganizationReactivePresenceLists(ListView):
+#     model = OrganizationStructure
+#     template_name = 'report/base_report_form_view.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['form'] = OrganizationReactiveForm(initial={
+#             'organization': self.org,
+#             'report_name': 'report_organization_reactive_list',
+#         })
+#         context['laboratory'] = 0
+#         context['title_view'] = _("Reactive precursor objects")
+#         return context
+#
+#     def get_queryset(self):
+#         query = self.model.objects.filter(pk = self.org) #.descendants(include_self=True)
+#
+#         data = []
+#         add_profile_info = True
+#         for item in query:
+#
+#             laboratories = item.laboratory_set.all().values('name', 'laboratoryroom__furniture')
+#             usermanagement = item.users.values('first_name', 'last_name', 'id')
+#             for lab in laboratories:
+#                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
+#                     shelf__furniture=lab['laboratoryroom__furniture']
+#                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
+#                 for user in usermanagement:
+#                     # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
+#                     try:
+#                         profile = Profile.objects.get(user__id=user['id'])
+#
+#                     except Profile.DoesNotExist as error:
+#                         add_profile_info = False
+#
+#                     for reactive in reactives:
+#                         user_data = [lab['name'],
+#                                     user['first_name'],
+#                                     user['last_name'],
+#                                     reactive.obj.code,
+#                                     reactive.obj.name,
+#                                     reactive.cas_id_number,
+#                                     ", ".join(reactive.white_organ.all().values_list(
+#                                         'description', flat=True)),
+#                                     str(reactive.iarc) if reactive.iarc else "",
+#                         ]
+#                         if add_profile_info:
+#                             user_data.append(profile.id_card)
+#                             user_data.append(profile.job_position)
+#
+#                         data.append(user_data)
+#
+#         return data
+#
+#     def get_book(self, context):
+#         book = [[str(_('Laboratory name')),
+#                  str(_('First Name')),
+#                  str(_('Last Name')),
+#                  str(_('Code')),
+#                  str(_('Sustance')),
+#                  str(_('CAS')),
+#                  str(_('White Organ')),
+#                  str(_('Carcinogenic')),
+#                  str(_('ID Card')),
+#                  str(_('Job Position'))
+#                  ]]+context['object_list']
+#
+#         return book
 
 
 def getLevelClass(level):
@@ -1077,8 +1096,8 @@ def create_request_by_report(request, lab_pk):
                 format=form.cleaned_data['format']
 
                 data = request.GET.copy()
-
-                data['laboratory'] = form.cleaned_data['laboratory']
+                if 'laboratory' in data:
+                    data['laboratory'] = form.cleaned_data['laboratory']
                 data['lab_pk'] =lab_pk
 
                 if 'lab_room' in form.fields:
@@ -1094,11 +1113,12 @@ def create_request_by_report(request, lab_pk):
                     type_report=form.cleaned_data['report_name'],
                     status=_("On hold"),
                     file_type=format,
-                    data=data
+                    data=data,
+                    language=get_language()
                 )
 
                 method = import_string(type_report['task'])
-                task_celery=method.delay(task.pk)
+                task_celery=method.delay(task.pk, request.build_absolute_uri())
                 task_celery=task_celery.task_id
                 response.update({
                     'report': task.pk,
@@ -1136,5 +1156,5 @@ def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
     title = register.REPORT_FORMS[task.type_report]['title']
 
-    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk})
+    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
 
