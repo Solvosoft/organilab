@@ -4,9 +4,14 @@
 .small {
     width: 15%;
 }
+table, th, td {
+  border: 1px solid black;
+  font-size:11px;
+  border-collapse: collapse;
+}
 {% endblock %}
 {% block pdf_content %}
-    <table>
+    <table id="pdf_table" width="50">
         {{ datalist | safe }}
     </table>
 {% endblock %}
