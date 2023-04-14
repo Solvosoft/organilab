@@ -24,7 +24,7 @@ REPORT_FORMS ={
         'form':'report.forms.ReportObjectForm',
         'title':'List of objects',
         'html': 'report.views.objects.report_objects_html',
-        'pdf': 'report.views.objects.report_objects_pdf',
+        'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_objects_doc',
         'xlsx': 'report.views.objects.report_objects_doc',
         'ods': 'report.views.objects.report_objects_doc'

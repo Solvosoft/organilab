@@ -13,20 +13,17 @@ def build_report(pk, absolute_uri):
     translation.activate(report.language)
 
     if report.type_report in register.REPORT_FORMS:
+        report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
-            if report.file_type == 'pdf':
-                f_pdf = register.REPORT_FORMS[report.type_report][report.file_type]
-                if 'base_pdf' in f_pdf:
-                    html_function = register.REPORT_FORMS[report.type_report]['html']
-                    import_string(f_pdf)(report, absolute_uri, html_function)#(URL MEDIA REQUIRED)
-                else:
-                    import_string(f_pdf)(report)
+            if report.file_type == 'pdf' and 'html' in report_obj:
+                f_pdf = report_obj[report.file_type]
+                import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
+                import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
             else:
-                import_string(register.REPORT_FORMS[report.type_report][report.file_type])(report)
+                import_string(report_obj[report.file_type])(report)
 
 
-def base_pdf(report, uri, html_function):
-    import_string(html_function)(report)
+def base_pdf(report, uri):
     context = {
         'datalist': report.table_content,
         'user': report.creator,
