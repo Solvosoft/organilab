@@ -19,12 +19,40 @@ def filter_period(text, queryset):
     dates[1] = format_date(dates[1].strip())
     return queryset.filter(update_time__range=dates)
 
-def update_table_report(report, col_list, rows):
-    columns = '<thead><tr>'
-    for col in col_list:
-        columns += f'<th>{col}</th>'
-    columns += '</tr></thead>'
-    table = columns + '<tbody>' + rows +'</tbody>'
-    report.table_content = table
-    report.status = _('Generated')
-    report.save()
+
+def set_format_table_columns(columns_fields):
+    columns = []
+    type = 'string'
+
+    for field in columns_fields:
+        if 'type' in field:
+            type = field['type']
+
+        columns.append({
+            'name': field['name'],
+            'title': field['title'],
+            'type': type,
+            'visible': 'true'
+        })
+
+    return columns
+
+
+def get_pdf_table_content(table_content):
+    pdf_table = "<thead>"
+    if 'columns' and 'dataset' in table_content:
+        pdf_table += '<tr>'
+        for col in table_content['columns']:
+            if 'title' in col:
+                pdf_table += "<th>%s</th>" % (col['title'])
+        pdf_table += '</tr></thead><tbody>'
+
+        for row in table_content['dataset']:
+            pdf_table += '<tr>'
+            for item in row:
+                pdf_table += '<td>%s</td>' % (item)
+            pdf_table += '</tr>'
+        "</tbody>"
+    else:
+        pdf_table = ""
+    return pdf_table
