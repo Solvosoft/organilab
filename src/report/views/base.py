@@ -18,12 +18,16 @@ def build_report(pk, absolute_uri):
     if report.type_report in register.REPORT_FORMS:
         report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
-            if report.file_type == 'pdf' and 'html' in report_obj:
+            if report.file_type == 'pdf':
+                if 'html' in report_obj:
                     f_pdf = report_obj[report.file_type]
                     import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
                     import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
+                    report.status = _('Generated')
             else:
                 import_string(report_obj[report.file_type])(report)
+                report.status = _('Generated')
+            report.save()
 
 
 def base_pdf(report, uri):
