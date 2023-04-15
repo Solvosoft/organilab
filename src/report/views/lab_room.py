@@ -1,9 +1,5 @@
-from io import BytesIO
-
 from django.core.files.base import ContentFile
-from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
-from weasyprint import HTML
 
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import update_table_report

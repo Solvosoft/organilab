@@ -1,9 +1,4 @@
-from io import BytesIO
-
-from django.utils import timezone
-from weasyprint import HTML
 from django.core.files.base import ContentFile
-from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
 from laboratory.report_utils import ExcelGraphBuilder
