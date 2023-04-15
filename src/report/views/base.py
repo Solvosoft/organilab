@@ -1,12 +1,15 @@
 from django.core.files.base import ContentFile
 from django.template.loader import render_to_string
 from django.utils.module_loading import import_string
-
+from django.utils.translation import gettext as _
 from laboratory.models import TaskReport, Furniture
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
+
+from report.utils import get_pdf_table_content
+
 
 def build_report(pk, absolute_uri):
     report = TaskReport.objects.get(pk=pk)
@@ -29,7 +32,7 @@ def build_report(pk, absolute_uri):
 
 def base_pdf(report, uri):
     context = {
-        'datalist': report.table_content,
+        'datalist': get_pdf_table_content(report.table_content),
         'user': report.creator,
         'title': report.data['title'],
         'datetime': timezone.now(),
