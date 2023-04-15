@@ -1,12 +1,15 @@
 from django.core.files.base import ContentFile
 from django.template.loader import render_to_string
 from django.utils.module_loading import import_string
-
+from django.utils.translation import gettext as _
 from laboratory.models import TaskReport, Furniture
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
+
+from report.utils import get_pdf_table_content
+
 
 def build_report(pk, absolute_uri):
     report = TaskReport.objects.get(pk=pk)
@@ -16,16 +19,16 @@ def build_report(pk, absolute_uri):
         report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
             if report.file_type == 'pdf' and 'html' in report_obj:
-                f_pdf = report_obj[report.file_type]
-                import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
-                import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
+                    f_pdf = report_obj[report.file_type]
+                    import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
+                    import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
             else:
                 import_string(report_obj[report.file_type])(report)
 
 
 def base_pdf(report, uri):
     context = {
-        'datalist': report.table_content,
+        'datalist': get_pdf_table_content(report.table_content),
         'user': report.creator,
         'title': report.data['title'],
         'datetime': timezone.now(),
