@@ -68,5 +68,6 @@ REPORT_FORMS ={
         'xls': 'report.views.objects.report_organization_reactive_list_doc',
         'xlsx': 'report.views.objects.report_organization_reactive_list_doc',
         'ods': 'report.views.objects.report_organization_reactive_list_doc'
+
     },
 }

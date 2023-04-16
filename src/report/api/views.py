@@ -25,11 +25,13 @@ class ReportDataViewSet(viewsets.ViewSet):
 
     def get_queryset(self):
         with connection.cursor() as cursor:
-            cursor.execute("""Select ll.row_data::json from laboratory_taskreport as lab join 
-                                                   (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport ) as ll
-                                                   on ll.id=lab.id where ll.row_data->>7 = 'Litros' order by ll.row_data->>6 desc""")
 
-            return list(map(lambda x: x[0], cursor))
+            cursor.execute("""Select ll.row_data::json from laboratory_taskreport as lab join 
+                                                (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport ) as ll
+                                                on ll.id=lab.id where ll.row_data->>7 = 'Litros' order by ll.row_data->>6 desc""")
+
+            return list(map(lambda x:x[0],cursor))
+
     def get_serializer(self, data):
         return self.serializer_class(data)
 

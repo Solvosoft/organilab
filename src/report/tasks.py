@@ -14,3 +14,4 @@ def task_report(pk, absolute_uri):
         build_report(pk, absolute_uri)
     except Exception:
         raise ObjectDoesNotExist(_("Object doesn't exists"))
+
