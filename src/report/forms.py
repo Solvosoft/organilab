@@ -211,6 +211,7 @@ class OrganizationReactiveForm(GTForm):
 
         return list(laboratory.values_list('pk',flat=True))
 
+
 class RelOrganizationLaboratoryForm(GTForm):
     organization = forms.IntegerField()
     all_labs_org = forms.BooleanField(required=False)
