@@ -689,7 +689,7 @@ class LogObjectView(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title_view'] = _("Changes on Objects")
-        context['report_urlnames'] = ['']
+        context['report_urlnames'] = ['object_change_logs']
         context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
                                                      'organization': self.org,
                                                      'report_name':'report_objectschanges',
