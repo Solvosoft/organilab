@@ -5,41 +5,35 @@ Created on 26/12/2016
 @author: luisza
 '''
 
-from datetime import datetime, date
+from datetime import date
 
 import django_excel
 from django import forms
 from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.db.models.aggregates import Sum, Min
 from django.http import Http404
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.translation import gettext as _, get_language
+from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
 
 from auth_and_perms.models import Profile
-
-from laboratory.forms import H_CodeForm, TasksForm
+from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, SustanceCharacteristics, PrecursorReport, TaskReport
+    OrganizationStructure, PrecursorReport
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
-from laboratory.utils import get_user_laboratories
-from laboratory.views.djgeneric import ListView, ReportListView, ResultQueryElement
+from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm
 from sga.forms import SearchDangerIndicationForm
-from report import register
-from django.utils.module_loading import import_string
-from django.urls import reverse
 
 
 def make_book_organization_laboratory(objects):
@@ -588,32 +582,20 @@ class ObjectList(ListView):
         else:
             return None
 
-    def get_queryset(self):
-        query = super(ObjectList, self).get_queryset()
-        filters = {
-            'organization__in': get_pk_org_ancestors(self.org),
-            'is_public': True
-        }
-
-        if self.get_type():
-            filters['type'] = self.get_type()
-
-        return query.filter(**filters)
-
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
         type_id = self.get_type()
         context['type_id'] = type_id
+        context['title_view'] = _('Object management')
         if type_id == "0":
            context['title_view']= _('Reactive management')
         elif type_id == "1":
            context['title_view']= _('Material management')
         elif type_id == "2":
            context['title_view']= _('Equipment management')
-        else:
-           context['title_view']= _('Object management')
 
+        context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
         context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
                                                      'object_type':self.get_type(),
                                                      'organization': self.org,
@@ -637,6 +619,7 @@ class LimitedShelfObjectList(ListView):
         context = super(LimitedShelfObjectList,
                         self).get_context_data(**kwargs)
         context['title_view'] = _("Limited shelf objects")
+        context['report_urlnames'] = ['reports_limited_shelf_objects_list', 'reports_limited_shelf_objects']
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'report_limit_objects',
@@ -656,6 +639,7 @@ class ReactivePrecursorObjectList(ListView):
         context['all_labs'] = self.all_labs
         context['title_view'] =  _("Reactive report of precursor objects")
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
         context['form'] = ReportForm(initial={
             'organization': self.org,
             'report_name': 'reactive_precursor',
@@ -700,104 +684,18 @@ class FilterForm(GTForm, forms.Form):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class LogObjectView(ReportListView):
     model = ObjectLogChange
-    paginate_by = 100
-    form_class=FilterForm
     template_name = "report/base_report_form_view.html"
-    pdf_template = 'laboratory/reports/logobject_pdf.html'
-
-    DATEFORMAT = '%d/%m/%Y' # "%m/%d/%Y"
-
-    def format_date(self, value):
-        dev = None
-        try:
-            dev = datetime.strptime(value, self.DATEFORMAT)
-        except ValueError as e:
-            pass
-        return dev
-
-    def filter_period(self, text, queryset):
-        if not str:
-            return queryset
-        dates = text.split('-')
-        if len(dates) != 2:
-            return queryset
-        dates[0] = self.format_date(dates[0].strip())
-        dates[1] = self.format_date(dates[1].strip())
-        return queryset.filter(update_time__range=dates)
-
-    def resume_queryset(self, queryset):
-        objects = set(queryset.values_list('object', flat=True))
-        list_obj = []
-        for obj in objects:
-            obj_check = Object.objects.filter(pk=obj)
-            if obj_check.exists():
-                ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
-                end = queryset.filter(object=obj).last()
-                diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
-                list_obj.append(ResultQueryElement({'user': end.user,
-                                                    'laboratory': end.laboratory,
-                                                    'object': end.object,
-                                                    'update_time': end.update_time,
-                                                    'old_value': ini,
-                                                    'new_value': end.new_value,
-                                                    'diff_value': diff,
-                                                    'measurement_unit': end.measurement_unit
-                                                    })
-                                )
-        return list_obj
-
-    def get_queryset(self):
-        query = super().get_queryset().order_by('update_time')
-        self.form = self.form_class(self.request.GET)
-        self.form.is_valid()
-        query = self.filter_period(self.form.cleaned_data['period'], query)
-        if self.form.cleaned_data['precursor']:
-            query = query.filter(precursor=True)
-        if self.form.cleaned_data['all_laboratories']:
-            query = query.filter(laboratory__in=get_user_laboratories(self.request.user) )
-        else:
-            query = query.filter(laboratory=self.lab)
-        if self.form.cleaned_data['resume']:
-            self.myqueryset = query
-        return query
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title_view'] = _("Changes on Objects")
+        context['report_urlnames'] = ['']
         context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
                                                      'organization': self.org,
                                                      'report_name':'report_objectschanges',
                                                      })
-
-        if self.form.cleaned_data['resume']:
-            messages.info(self.request,
-                          _("When resume date, we use last object for fill User, Laboratory, and Day ")
-                          )
-            context['object_list'] = self.resume_queryset(self.myqueryset)
         return context
 
-    def get_book(self, context):
-        book = [[str(_('User')),
-                 str(_('Laboratory')),
-                 str(_('Object')),
-                 str(_('Day')),
-                 str(_('Old')),
-                 str(_('New')),
-                 str(_('Difference')),
-                 str(_('Unit')),
-                 ]]
-
-        for obj in context['object_list']:
-            book.append([obj.user.get_full_name(),
-                         str(obj.laboratory),
-                         str(obj.object),
-                         obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                         obj.old_value,
-                         obj.new_value,
-                         obj.diff_value,
-                         str(obj.measurement_unit)
-                         ])
-        return book
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class PrecursorsView(ReportListView):
@@ -957,77 +855,8 @@ class OrganizationReactivePresenceList(ReportListView):
         })
         context['laboratory'] = 0
         context['title_view'] = _("Reactive precursor objects")
+        context['report_urlnames'] = ['organizationreactivepresence']
         return context
-
-#@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
-# class OrganizationReactivePresenceLists(ListView):
-#     model = OrganizationStructure
-#     template_name = 'report/base_report_form_view.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['form'] = OrganizationReactiveForm(initial={
-#             'organization': self.org,
-#             'report_name': 'report_organization_reactive_list',
-#         })
-#         context['laboratory'] = 0
-#         context['title_view'] = _("Reactive precursor objects")
-#         return context
-#
-#     def get_queryset(self):
-#         query = self.model.objects.filter(pk = self.org) #.descendants(include_self=True)
-#
-#         data = []
-#         add_profile_info = True
-#         for item in query:
-#
-#             laboratories = item.laboratory_set.all().values('name', 'laboratoryroom__furniture')
-#             usermanagement = item.users.values('first_name', 'last_name', 'id')
-#             for lab in laboratories:
-#                 reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
-#                     shelf__furniture=lab['laboratoryroom__furniture']
-#                 ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
-#                 for user in usermanagement:
-#                     # Tries to acces to the user's profile if exists, otherwise an exception occured and the profile data are not going to be added
-#                     try:
-#                         profile = Profile.objects.get(user__id=user['id'])
-#
-#                     except Profile.DoesNotExist as error:
-#                         add_profile_info = False
-#
-#                     for reactive in reactives:
-#                         user_data = [lab['name'],
-#                                     user['first_name'],
-#                                     user['last_name'],
-#                                     reactive.obj.code,
-#                                     reactive.obj.name,
-#                                     reactive.cas_id_number,
-#                                     ", ".join(reactive.white_organ.all().values_list(
-#                                         'description', flat=True)),
-#                                     str(reactive.iarc) if reactive.iarc else "",
-#                         ]
-#                         if add_profile_info:
-#                             user_data.append(profile.id_card)
-#                             user_data.append(profile.job_position)
-#
-#                         data.append(user_data)
-#
-#         return data
-#
-#     def get_book(self, context):
-#         book = [[str(_('Laboratory name')),
-#                  str(_('First Name')),
-#                  str(_('Last Name')),
-#                  str(_('Code')),
-#                  str(_('Sustance')),
-#                  str(_('CAS')),
-#                  str(_('White Organ')),
-#                  str(_('Carcinogenic')),
-#                  str(_('ID Card')),
-#                  str(_('Job Position'))
-#                  ]]+context['object_list']
-#
-#         return book
 
 
 def getLevelClass(level):
@@ -1079,82 +908,3 @@ def search_danger_indication_report(request):
         form = SearchDangerIndicationForm()
 
     return render(request, 'laboratory/reports/report_danger_indication.html', {'form': form})
-
-@login_required
-@permission_required('laboratory.do_report')
-def create_request_by_report(request, lab_pk):
-    response = {'result': False}
-
-    if 'report_name' in request.GET:
-        type_report = register.REPORT_FORMS[request.GET['report_name']]
-
-        if 'form' in type_report:
-            import_form = import_string(type_report['form'])
-            form = import_form(request.GET)
-
-            if form.is_valid():
-                format=form.cleaned_data['format']
-
-                data = request.GET.copy()
-                if 'laboratory' in data:
-                    data['laboratory'] = form.cleaned_data['laboratory']
-                data['lab_pk'] =lab_pk
-
-                if 'lab_room' in form.fields:
-                    data['lab_room'] = form.cleaned_data['lab_room']
-
-                if 'furniture' in form.fields:
-                    data['furniture'] = form.cleaned_data['furniture']
-
-                response['result'] = True
-
-                task = TaskReport.objects.create(
-                    creator=request.user,
-                    type_report=form.cleaned_data['report_name'],
-                    status=_("On hold"),
-                    file_type=format,
-                    data=data,
-                    language=get_language()
-                )
-
-                method = import_string(type_report['task'])
-                task_celery=method.delay(task.pk, request.build_absolute_uri())
-                task_celery=task_celery.task_id
-                response.update({
-                    'report': task.pk,
-                    'celery_id': task_celery
-                })
-    return JsonResponse(response)
-
-@login_required
-@permission_required('laboratory.do_report')
-def download_report(request, lab_pk, org_pk):
-    from django_celery_results.models import TaskResult
-    form = TasksForm(request.GET)
-    task = None
-    result = None
-    if form.is_valid():
-        task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
-        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
-        if result:
-            if task.status==_('Generated') and result.status=='SUCCESS':
-                task.status=_('Delivered')
-                task.save()
-                if task.file_type=='html':
-                    return JsonResponse({'result': True, 'url_file':reverse('laboratory:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
-                else:
-                    return JsonResponse({'result': True, 'url_file': task.file.url})
-            else:
-                return JsonResponse({'result': False})
-        else:
-            return JsonResponse({'result': False})
-    return JsonResponse({'result': False})
-
-@login_required
-@permission_required('laboratory.do_report')
-def report_table(request, lab_pk, pk, org_pk):
-    task = TaskReport.objects.filter(pk=pk).first()
-    title = register.REPORT_FORMS[task.type_report]['title']
-
-    return render(request,template_name='laboratory/reports/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
-
