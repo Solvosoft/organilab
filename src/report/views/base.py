@@ -1,8 +1,14 @@
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.module_loading import import_string
-from django.utils.translation import gettext as _
-from laboratory.models import TaskReport, Furniture
+from django.utils.translation import gettext as _, get_language
+
+from laboratory.forms import TasksForm
+from laboratory.models import TaskReport
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
@@ -50,22 +56,80 @@ def base_pdf(report, uri):
     file.close()
 
 
-def get_furniture_queryset_by_filters(report):
-    furniture, lab_room, lab = [], [], []
-    if 'laboratory' in report.data:
-        lab = report.data['laboratory']
+@login_required
+@permission_required('laboratory.do_report')
+def create_request_by_report(request, lab_pk):
+    response = {'result': False}
 
-    if 'lab_room' in report.data:
-        lab_room = report.data['lab_room']
+    if 'report_name' in request.GET:
+        type_report = register.REPORT_FORMS[request.GET['report_name']]
 
-    if 'furniture' in report.data:
-        furniture = report.data['furniture']
+        if 'form' in type_report:
+            import_form = import_string(type_report['form'])
+            form = import_form(request.GET)
 
-    if furniture:
-        furniture_list = Furniture.objects.filter(pk__in=furniture)
-    elif lab_room:
-        furniture_list = Furniture.objects.filter(labroom__pk__in=lab_room)
-    else:
-        furniture_list = Furniture.objects.filter(labroom__laboratory__pk__in=lab)
+            if form.is_valid():
+                format=form.cleaned_data['format']
 
-    return furniture_list
+                data = request.GET.copy()
+                if 'laboratory' in data:
+                    data['laboratory'] = form.cleaned_data['laboratory']
+                data['lab_pk'] =lab_pk
+
+                if 'lab_room' in form.fields:
+                    data['lab_room'] = form.cleaned_data['lab_room']
+
+                if 'furniture' in form.fields:
+                    data['furniture'] = form.cleaned_data['furniture']
+
+                response['result'] = True
+
+                task = TaskReport.objects.create(
+                    creator=request.user,
+                    type_report=form.cleaned_data['report_name'],
+                    status=_("On hold"),
+                    file_type=format,
+                    data=data,
+                    language=get_language()
+                )
+
+                method = import_string(type_report['task'])
+                task_celery=method.delay(task.pk, request.build_absolute_uri())
+                task_celery=task_celery.task_id
+                response.update({
+                    'report': task.pk,
+                    'celery_id': task_celery
+                })
+    return JsonResponse(response)
+
+@login_required
+@permission_required('laboratory.do_report')
+def download_report(request, lab_pk, org_pk):
+    from django_celery_results.models import TaskResult
+    form = TasksForm(request.GET)
+
+    if form.is_valid():
+        task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+        if result:
+            if task.status==_('Generated') and result.status=='SUCCESS':
+                task.status=_('Delivered')
+                task.save()
+                if task.file_type=='html':
+                    return JsonResponse({'result': True, 'url_file':reverse('report:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
+                else:
+                    return JsonResponse({'result': True, 'url_file': task.file.url})
+            else:
+                return JsonResponse({'result': False})
+        else:
+            return JsonResponse({'result': False})
+    return JsonResponse({'result': False})
+
+@login_required
+@permission_required('laboratory.do_report')
+def report_table(request, lab_pk, pk, org_pk):
+    task = TaskReport.objects.filter(pk=pk).first()
+    title = register.REPORT_FORMS[task.type_report]['title']
+
+    return render(request,template_name='report/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
+
