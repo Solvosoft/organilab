@@ -1,8 +1,12 @@
+from django.conf import settings
 from django.contrib.admin.models import LogEntry
+from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from laboratory.models import CommentInform, Inform, ShelfObject
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -212,13 +216,13 @@ class InformFilterSet(FilterSet):
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
 
+class ShelfObjectFilterSet(FilterSet):
+    class Meta:
+        model = ShelfObject
+        fields = {'object__name': ['icontains'] }
 
-class ShelfObjectSerialize(serializers.ModelSerializer):
-    object_name = serializers.SerializerMethodField()
-    unit = serializers.SerializerMethodField()
-    last_update = serializers.SerializerMethodField()
-    creator = serializers.SerializerMethodField()
-    action = serializers.SerializerMethodField()
+
+class BaseShelfObjectSerializer:
 
     def get_object_name(self, obj):
         return obj.object.name
@@ -227,12 +231,22 @@ class ShelfObjectSerialize(serializers.ModelSerializer):
         return obj.get_measurement_unit_display()
 
     def get_last_update(self, obj):
-            return obj.last_update.date()
+        return obj.last_update.date()
+
     def get_creator(self, obj):
         if obj.creator:
             return str(obj.creator)
         else:
             return _('Unknown')
+
+
+class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerializer):
+    action = serializers.SerializerMethodField()
+    object_name = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
+    last_update = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+
     def get_action(self, obj):
         if obj:
             org_pk = self.context['org_pk']
@@ -256,3 +270,67 @@ class ShelfObjectSerialize(serializers.ModelSerializer):
 
 class ShelfPkList(serializers.Serializer):
     shelfs=serializers.ListField(child=serializers.IntegerField(), allow_null=False, allow_empty=False)
+
+
+class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
+    object_name = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
+    last_update = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        context={
+            'laboratory': self.context['view'].data['laboratory'],
+            'org_pk': self.context['view'].data['organization'],
+            'shelfobject': obj
+        }
+        return render_to_string(
+            'laboratory/serializers/shelfobject_actions.html',
+            request=self.context['request'],
+            context=context
+        )
+
+        pass
+    class Meta:
+        model = ShelfObject
+        fields = ['object_name', 'unit','quantity','last_update','creator', 'actions']
+
+
+class ShelfObjectTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectLaboratoryViewSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class BaseOrganizationLaboratory(serializers.Serializer):
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+
+    def validate_organization(self, value):
+        user_is_allowed_on_organization(self.user, value)
+        return value
+
+    def validate(self, value):
+        if not organization_can_change_laboratory(value['laboratory'], value['organization']):
+            raise ValidationError(detail="Wrong Laboratory")
+        return value
+    user = None
+
+    def set_user(self, user):
+        self.user=user
+
+
+class ShelfLabViewSerializer(BaseOrganizationLaboratory):
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=False)
+
+    def validate(self, value):
+        value = super().validate(value)
+        if 'shelf' not in value:
+            value['shelf']=None
+
+        if value['shelf'] is not None:
+            if value['laboratory'] != value['shelf'].furniture.labroom.laboratory:
+                raise ValidationError(detail="Shelf not found on Laboratory")
+        return value

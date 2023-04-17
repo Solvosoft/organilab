@@ -1,33 +1,46 @@
-
-
-#shelf .card-body {
-    padding: 0!important;
+ul, #ullabroom {
+  list-style-type: none;
 }
 
-#shelf td {
- padding: 0!important;
- border-right: 5px solid #2A3F54;
+#ullabroom {
+  margin: 0;
+  padding: 0;
 }
 
-#shelf tr {
-    border-bottom: 10px solid #2A3F54;
+.box {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
 }
 
-.whitebg{
-    background-color: #fff;
-    padding-left: 0.8em;
+.box::before {
+  content: "\2610";
+  color: black;
+  display: inline-block;
+  margin-right: 4px;
 }
 
-.shelfobjectcontainer {
-    padding: 0.2em 0.1em;
+.check-box::before {
+  content: "\2611";
+  color: dodgerblue;
 }
 
-.listshelfobject{
-    opacity: 0.8;
+.nested {
+  display: none;
 }
 
-#shelf li {
-    border-radius: unset !important;
-    padding: 5px;
-    margin: 0px 5px;
+.active {
+  display: block;
+}
+
+.laboratoryfilter{
+    max-height: 300px;
+    overflow: scroll;
+    background-color: #e9ecef;
+   border-radius: 0% 0% 5% 5%;
+}
+.nomargin{
+    margin-bottom: 0px;
 }
