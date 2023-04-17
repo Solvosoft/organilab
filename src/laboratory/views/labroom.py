@@ -139,6 +139,7 @@ class LaboratoryRoomReportView(ListView):
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['title_view'] = _("Laboratory report")
         context['report_name'] = 'report_laboratory_room'
+        context['report_urlnames'] = ['reports_laboratory', 'report_building']
         context['form'] = LaboratoryRoomReportForm(initial={
             'organization': self.org,
             'report_name': 'report_laboratory_room',
