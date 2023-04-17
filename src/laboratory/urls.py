@@ -10,7 +10,7 @@ from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, ShelfObjectViewSet
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -223,6 +223,7 @@ router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
+router.register('api_shelfobject', ShelfObjectViewSet, basename='api-shelfobject')
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),

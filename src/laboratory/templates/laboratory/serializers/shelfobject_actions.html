@@ -1,0 +1,42 @@
+{% load i18n %}
+{% if shelf.discard %}
+    {% if perms.laboratory.can_manage_disposal %}
+        <a class="float-end" data-ajax="true"
+           data-success="processResponseshelfobjectDelete"
+           href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ shelf.pk }}"
+           style="margin-left: 10px; color:red">
+           <i class="fa fa-close" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+{% elif perms.laboratory.delete_shelfobject %}
+<a class="float-end" data-ajax="true"
+   data-success="processResponseshelfobjectDelete"
+   href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}?shelf={{ shelf.pk }}"
+   style="margin-left: 10px; color:red">
+   <i class="fa fa-close" aria-hidden="true"></i>
+</a>
+{% endif %}
+
+{% if perms.laboratory.do_report %}
+<a class="float-end" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory org_pk=org_pk pk=shelfobject.pk %}"
+   style="margin-right: 10px;">
+   <i class="fa fa-download" aria-hidden="true"></i>
+</a>
+{% endif %}
+{% if shelf.discard %}
+    {% if admin_add_disposal_perm %}
+        <a class="float-end"
+           data-bs-toggle="modal"
+           data-bs-target="#modal_reservation"
+           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">
+            <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
+        </a>
+    {% endif %}
+{% elif perms.reservations_management.add_reservedproducts %}
+<a class="float-end"
+   data-bs-toggle="modal"
+   data-bs-target="#modal_reservation"
+   style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">
+    <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>
+</a>
+{% endif %}

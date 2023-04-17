@@ -15,10 +15,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from laboratory.api import serializers
-from laboratory.api.forms import CommentInformForm
+from laboratory.api.forms import CommentInformForm, ShelfObjectLabviewForm
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
-    LogEntryUserDataTableSerializer
+    LogEntryUserDataTableSerializer, ShelfLabViewSerializer
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
     Laboratory, InformsPeriod, ShelfObject, Shelf
 from laboratory.utils import get_logentries_org_management
@@ -289,3 +289,40 @@ class ShelfList(APIView):
             shelfs = Shelf.objects.filter(pk__in=serializer.data['shelfs'])
             data = render_to_string(template_name="laboratory/components/shelfdetail.html", context={'shelfs':shelfs}, request=request)
         return Response({'data':data})
+
+
+
+class ShelfObjectViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.ShelfObjectTableSerializer
+    queryset = ShelfObject.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['name', 'last_update', ]  # for the global search
+    filterset_class = serializers.ShelfObjectFilterSet
+    ordering_fields = ['last_update']
+    ordering = ('-last_update',)  # default order
+
+    def get_queryset(self):
+        if self.data['shelf'] is None:
+            return self.queryset.none()
+        return self.queryset.filter(
+            in_where_laboratory=self.data['laboratory'],
+            shelf=self.data['shelf']
+
+        )
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        validate_serializer = ShelfLabViewSerializer(data=request.GET)
+        validate_serializer.set_user(request.user)
+        validate_serializer.is_valid(raise_exception=True)
+        self.data = validate_serializer.data
+
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': ShelfObject.objects.count(),
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
