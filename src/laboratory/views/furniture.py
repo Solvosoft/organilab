@@ -30,14 +30,6 @@ from .djgeneric import ListView, CreateView, UpdateView, DeleteView
 from django.utils.translation import gettext_lazy as _
 
 
-# @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
-# class FurnitureReportView(ListView):
-#     model = Furniture
-#     template_name = "laboratory/report_furniture_list.html"
-#
-#     def get_queryset(self):
-#         return Furniture.objects.filter(labroom__laboratory=self.lab)
-
 @method_decorator(permission_required('laboratory.do_report'), name='dispatch')
 class FurnitureReportView(ListView):
     model = Furniture
@@ -51,13 +43,13 @@ class FurnitureReportView(ListView):
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['title_view'] = _("Furniture report")
         context['report_name'] = 'report_furniture'
+        context['report_urlnames'] = ['reports_furniture_detail']
         context['form'] = LaboratoryRoomReportForm(initial={
             'organization': self.org,
             'report_name': 'report_furniture',
             'laboratory': lab_obj,
         })
         return context
-
 
 
 @method_decorator(permission_required('laboratory.add_furniture'), name='dispatch')
