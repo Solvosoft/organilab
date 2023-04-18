@@ -19,6 +19,7 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
@@ -587,19 +588,23 @@ class ObjectList(ListView):
         context['lab_pk'] = self.kwargs.get('lab_pk')
         type_id = self.get_type()
         context['type_id'] = type_id
-        context['title_view'] = _('Object management')
+        context['title_view'] = _('Objects Report')
         if type_id == "0":
-           context['title_view']= _('Reactive management')
+           context['title_view']= _('Reactive Objects Report')
         elif type_id == "1":
-           context['title_view']= _('Material management')
+           context['title_view']= _('Material Objects Report')
         elif type_id == "2":
-           context['title_view']= _('Equipment management')
+           context['title_view']= _('Equipment Objects Report')
 
         context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
-        context['form'] = ReportObjectsForm(initial={'laboratory':self.lab,
-                                                     'object_type':self.get_type(),
-                                                     'organization': self.org,
-                                                     'report_name':'report_objects'})
+        context['form'] = ReportObjectsForm(initial={
+            'name': context['title_view'] +' '+ now().strftime("%x"),
+            'title': context['title_view'],
+            'laboratory':self.lab,
+            'object_type':self.get_type(),
+            'organization': self.org,
+            'report_name':'report_objects'
+        })
         return context
 
 
@@ -608,19 +613,15 @@ class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = 'report/base_report_form_view.html'
 
-    def get_queryset(self):
-        query = super(LimitedShelfObjectList, self).get_queryset()
-        query = query.filter(shelf__furniture__labroom__laboratory=self.lab)
-        for shelf_object in query:
-            if shelf_object.limit_reached:
-                yield shelf_object
-
     def get_context_data(self, **kwargs):
         context = super(LimitedShelfObjectList,
                         self).get_context_data(**kwargs)
-        context['title_view'] = _("Limited shelf objects")
+        title = _("Limited Shelf Objects Report")
+        context['title_view'] = title
         context['report_urlnames'] = ['reports_limited_shelf_objects_list', 'reports_limited_shelf_objects']
         context['form'] = ReportForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
             'organization': self.org,
             'report_name': 'report_limit_objects',
             'laboratory': self.lab
@@ -636,11 +637,13 @@ class ReactivePrecursorObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
-        context['all_labs'] = self.all_labs
-        context['title_view'] =  _("Reactive report of precursor objects")
+        title = _("Reactive Precursor Objects Report")
+        context['title_view'] = title
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
         context['form'] = ReportForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
             'organization': self.org,
             'report_name': 'reactive_precursor',
             'laboratory': lab_obj,
@@ -688,12 +691,16 @@ class LogObjectView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_view'] = _("Changes on Objects")
+        title = _("Changes on Objects Report")
+        context['title_view'] = title
         context['report_urlnames'] = ['object_change_logs']
-        context['form'] = ObjectLogChangeReportForm(initial={'laboratory':self.lab,
-                                                     'organization': self.org,
-                                                     'report_name':'report_objectschanges',
-                                                     })
+        context['form'] = ObjectLogChangeReportForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
+            'laboratory':self.lab,
+            'organization': self.org,
+            'report_name':'report_objectschanges',
+        })
         return context
 
 
@@ -849,12 +856,15 @@ class OrganizationReactivePresenceList(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        title = _('User Reactive Exposition in Organization Report')
         context['form'] = OrganizationReactiveForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
             'organization': self.org,
             'report_name': 'report_organization_reactive_list',
         })
         context['laboratory'] = 0
-        context['title_view'] = _("Reactive precursor objects")
+        context['title_view'] = title
         context['report_urlnames'] = ['organizationreactivepresence']
         return context
 
