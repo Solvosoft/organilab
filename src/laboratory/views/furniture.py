@@ -3,6 +3,7 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.utils.timezone import now
 from djgentelella.widgets import core as genwidgets
 
 from presentation.utils import build_qr_instance
@@ -41,10 +42,12 @@ class FurnitureReportView(ListView):
     def get_context_data(self, **kwargs):
         context = super(FurnitureReportView, self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
-        context['title_view'] = _("Furniture report")
-        context['report_name'] = 'report_furniture'
+        title = _('Objects by Furniture Report')
+        context['title_view'] = title
         context['report_urlnames'] = ['reports_furniture_detail']
         context['form'] = LaboratoryRoomReportForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
             'organization': self.org,
             'report_name': 'report_furniture',
             'laboratory': lab_obj,
