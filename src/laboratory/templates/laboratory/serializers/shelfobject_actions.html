@@ -1,4 +1,9 @@
 {% load i18n %}
+
+<a id="shelfobject_view_{{shelfobject.pk}}" href="{% url 'laboratory:shelfobject_detail' lab_pk=laboratory pk=shelfobject.pk org_pk=org_pk %}"  data-ajax="true" data-success="displayShelfobjectFunction">
+            <i class="fa fa-eye text-success" aria-hidden="true"></i>
+</a>
+
 {% if shelf.discard %}
     {% if perms.laboratory.can_manage_disposal %}
         <a class="float-end" data-ajax="true"
