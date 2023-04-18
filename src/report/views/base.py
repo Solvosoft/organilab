@@ -100,6 +100,8 @@ def create_request_by_report(request, lab_pk):
                     'report': task.pk,
                     'celery_id': task_celery
                 })
+            else:
+                response.update({'form_errors': form.errors})
     return JsonResponse(response)
 
 @login_required

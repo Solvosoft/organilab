@@ -1,24 +1,50 @@
 var filter =""
+
+function load_errors(error_list, obj){
+    ul_obj = "<ul class='errorlist report_form_errors'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>"
+    $(obj).before(ul_obj);
+    return ul_obj;
+}
+
+function form_field_errors(form_errors){
+    var item = "";
+    for (const [key, value] of Object.entries(form_errors)) {
+        item = "#id_"+key;
+        if($(item).length > 0){
+            load_errors(form_errors[key], item);
+        }
+    }
+}
+
+
 $('#send').on('click', function(){
     filter=get_doc_filter();
     filter= filter.substring(1,filter.length);
     filter="?"+filter;
-    document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm')
     url=report_urls['create_request']+filter;
-    $(this).attr('disabled',true)
-    $(".statuspanel").addClass("d-none")
+    $(this).attr('disabled',true);
+    $(".statuspanel").addClass("d-none");
 
-    $("#button-text").text('Loading the report may take a few minutes...')
+    $("#button-text").text('Loading the report may take a few minutes...');
+    document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
     $.ajax({
         url: url,
         type : "GET",
         dataType : 'json',
-        success : function({result,report, celery_id}) {
-        if (result==true){
-             get_doc(report,celery_id);
+        success : function(data) {
+            $('ul.report_form_errors').remove();
+            if (data['result']){
+                 get_doc(data['report'], data['celery_id']);
+            }else if(data['form_errors']){
+                form_field_errors(data['form_errors']);
+                accept_request();
+            }
         }
-        }
-        });
+    });
 
 });
 
