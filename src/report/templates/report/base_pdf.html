@@ -6,25 +6,31 @@
         <meta charset="UTF-8">
         <style>
             @page {
-                margin: 2cm 2cm;
+                margin: 2cm 1cm;
                 size: {% if size_sheet %}{{size_sheet}}{% else %}a4 portrait{% endif %};
 
                 @bottom-right{
                     content: "{% trans 'Page' %} " counter(page) " {% trans "of" %} " counter(pages);
+                    font-size: 1em;
                 }
 
                 @bottom-left{
                     content: "{% trans "User:" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
+                    font-size: 1em;
                 }
 
                 @top-right{
                     content: "{{ datetime }}";
-                    width: 5.5cm;
+                    width: {% if size_sheet == 'landscape' %}7cm{% else %}5.3cm{% endif %};
+                    font-family: "Arial", "sans-serif";
+                    font-size: 1em;
                 }
 
                 @top-center {
                     content:  string(title);
-                    width: 5.8cm;
+                    width: {% if size_sheet == 'landscape' %}10cm{% else %}8cm{% endif %};
+                    font-family: "Arial", "sans-serif";
+                    font-size: 1em;
                 }
 
                 @top-left {
@@ -58,10 +64,16 @@
             }
 
             #topleft {
-               width: 0;
-               height: 0;
-               visibility: hidden;
                string-set: logo content();
+            }
+
+            #pdf_table_report, #pdf_table_report th, #pdf_table_report td {
+                word-wrap: break-word;
+                border: 1px solid black;
+                text-align: center;
+                border-collapse: collapse;
+                font-family: "Arial", "sans-serif";
+                font-size: 0.8em;
             }
 
             {% block extra_css %}{% endblock %}
