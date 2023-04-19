@@ -4,8 +4,9 @@ from djgentelella.widgets import core as genwidgets
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, OrganizationStructure
-from laboratory.utils import get_laboratories_from_organization
+from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
 from sga.models import Substance
 from django.contrib.auth.models import User
 
@@ -22,8 +23,6 @@ class ReportBase(GTForm):
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
-
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
 
 class ReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
@@ -163,22 +162,35 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
 
 
 class OrganizationReactiveForm(ReportBase):
-    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all())
-    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.all())
+    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all(), label=_('Filter Laboratory'), required=False)
+    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Profile.objects.all(), label=_('Filter User'), required=False)
 
     def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
         super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
-        self.fields['laboratory'].widget.attrs['data-url'] = reverse('laboratorybase-list')
-        self.fields['users'].widget.attrs['data-url'] = reverse('usersbase-list')
+
+        if org_pk:
+            self.fields['laboratory'].queryset = get_laboratories_from_organization(org_pk)
+            self.fields['users'].queryset = Profile.objects.filter(user__in=get_users_from_organization(org_pk))
 
     def clean_laboratory(self):
         organization = self.cleaned_data['organization']
         laboratory = self.cleaned_data['laboratory']
 
-        if laboratory:
+        if not laboratory:
             laboratory = get_laboratories_from_organization(organization)
 
         return list(laboratory.values_list('pk',flat=True))
+
+    def clean_users(self):
+        organization = self.cleaned_data['organization']
+        users = self.cleaned_data['users']
+
+        if not users:
+            users = get_users_from_organization(organization)
+        else:
+            users = users.values_list('user__pk', flat=True)
+        return list(users.distinct())
 
 
 class RelOrganizationLaboratoryForm(GTForm):
