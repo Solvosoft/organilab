@@ -336,10 +336,3 @@ def get_laboratories_from_organization_profile(rootpk, user):
         return Laboratory.objects.filter(organization__in= desendants, profile__user__pk=user).distinct()
 
     return Laboratory.objects.none()
-
-def get_users_from_organization(rootpk):
-    org = OrganizationStructure.objects.filter(pk=rootpk).first()
-    if org:
-        desendants = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True, of=org).values_list('pk', flat=True))
-        return User.objects.filter(organizationstructure__in= desendants).distinct()
-    return User.objects.none()
