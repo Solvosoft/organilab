@@ -257,17 +257,17 @@ def report_object_doc(report):
 def get_dataset_limit_objects(report):
     dataset = []
     if 'laboratory' in report.data:
-        labs = report.data['laboratory']
+        labs = Laboratory.objects.filter(pk__in=report.data['laboratory'])
         for lab in labs:
             shelf_objects = ShelfObject.objects.filter(
-                        shelf__furniture__labroom__laboratory__pk=lab)
+                        shelf__furniture__labroom__laboratory=lab)
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
             for shelfobj in shelf_objects:
                 obj_item = [lab.name] if len(labs) > 1 else []
                 obj_item = obj_item + [
-                    shelfobj.shelf, shelfobj.object, f'{shelfobj.quantity} {shelfobj.get_measurement_unit_display()}',
-                    f'{shelfobj.limit_quantity} {shelfobj.get_measurement_unit_display()}',
+                    shelfobj.shelf.name, shelfobj.object.code, shelfobj.object.name, f'{shelfobj.quantity} {shelfobj.get_measurement_unit_display()}',
+                    f'{shelfobj.limit_quantity} {shelfobj.get_measurement_unit_display()}'
                 ]
                 dataset.append(obj_item)
     return dataset
@@ -279,8 +279,9 @@ def get_limited_shelf_objects(query):
 
 def report_limit_object_html(report):
     columns_fields = [
-        {'name': 'shelf', 'title': _("Shelf")}, {'name': 'object', 'title': _("Object")},
-        {'name': 'quantity', 'title': _("Quantity")}, {'name': 'limit_quanity', 'title': _("Limit quantity")}
+        {'name': 'shelf', 'title': _("Shelf")}, {'name': 'code', 'title': _("Code")},
+        {'name': 'object', 'title': _("Object")}, {'name': 'quantity', 'title': _("Quantity")},
+        {'name': 'limit_quantity', 'title': _("Limit quantity")}, {'name': 'measurement_unit', 'title': _("Measurement Unit")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
@@ -291,7 +292,7 @@ def report_limit_object_html(report):
 def report_limit_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
-        _("Shelf"), _("Object"), _("Quantity"), _('Limit quantity')
+        _("Shelf"), _("Code"), _("Object"), _("Quantity"), _('Limit quantity'), _("Measurement Unit")
     ]]
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
