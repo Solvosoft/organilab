@@ -242,7 +242,7 @@ def report_object_doc(report):
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content = content + get_datatset_limit_objects(report)
+    content = content + get_dataset_limit_objects(report)
     builder.add_table(content, report.data['title'] if report.data['title'] else '')
     file=builder.save()
     report_name = report.data['name'] if report.data['name'] else 'report'
@@ -254,7 +254,7 @@ def report_object_doc(report):
     file.close()
 
 #report_limit_object
-def get_datatset_limit_objects(report):
+def get_dataset_limit_objects(report):
     dataset = []
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
@@ -284,7 +284,7 @@ def report_limit_object_html(report):
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
-        'dataset': get_datatset_limit_objects(report)
+        'dataset': get_dataset_limit_objects(report)
     }
     report.save()
 
@@ -298,7 +298,7 @@ def report_limit_object_doc(report):
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content =  content + get_datatset_limit_objects(report)
+    content =  content + get_dataset_limit_objects(report)
     builder.add_table(content, report.data['title'] if report.data['title'] else '')
     file=builder.save()
     report_name = report.data['name'] if report.data['name'] else 'report'
@@ -325,7 +325,7 @@ def get_dataset_report_organization_reactive(report):
                 values('name', 'laboratoryroom__furniture')
 
         if 'users' in report.data:
-            usermanagement = organization.filter(users__pk__in=report.data['users']).values('first_name', 'last_name', 'id')
+            usermanagement = organization.users.filter(pk__in=report.data['users']).values('first_name', 'last_name', 'id')
         else:
             usermanagement = organization.users.values('first_name', 'last_name', 'id')
 
@@ -358,10 +358,6 @@ def get_dataset_report_organization_reactive(report):
     return dataset
 
 def report_organization_reactive_list_html(report):
-    object_json = {
-        'columns': [],
-        'dataset': []
-    }
     columns_fields = [
         {'name': 'laboratory_name', 'title': _("Laboratory name")}, {'name': 'first_name', 'title': _("First Name")},
         {'name': 'last_name', 'title': _("Last Name")}, {'name': 'code', 'title': _("Code")},
@@ -369,9 +365,10 @@ def report_organization_reactive_list_html(report):
         {'name': 'white_organ', 'title': _("White Organ")}, {'name': 'carcinogenic', 'title': _("Carcinogenic")},
         {'name': 'id_card', 'title': _("ID Card")}, {'name': 'job_position', 'title': _("Job Position")}
     ]
-    object_json['columns'] = set_format_table_columns(columns_fields)
-    object_json['datatset'] = get_dataset_report_organization_reactive(report)
-    report.table_content = object_json
+    report.table_content = {
+        'columns': set_format_table_columns(columns_fields),
+        'dataset': get_dataset_report_organization_reactive(report)
+    }
     report.save()
 
 def report_organization_reactive_list_doc(report):
