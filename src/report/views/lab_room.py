@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import set_format_table_columns
-from report.views.base import get_furniture_queryset_by_filters
+from report.utils import get_furniture_queryset_by_filters
 
 def get_dataset(report):
     dataset = []

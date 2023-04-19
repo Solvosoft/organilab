@@ -4,13 +4,13 @@
 {% load organilab_tags %}
 
 {% block pre_head %}
-    {% if report_name == 'laboratory_room' %}
-        {% define_urlname_action 'reactive_precursor_object_list' %}
-        {% define_urlname_action 'reports_objects' %}
-        {% define_urlname_action 'reports_reactive_precursor_objects' %}
-    {% else %}
+    {% if report_urlnames %}
+        {% for urlname in report_urlnames %}
+            {% define_urlname_action urlname %}
+        {% endfor %}
     {% endif %}
 {% endblock %}
+
 {% block title %}{{title_view}}{% endblock %}
 
 {% block content %}
@@ -72,8 +72,8 @@
 {{ block.super }}
 <script>
 	const report_urls = {
-		create_request : "{% url 'laboratory:create_report_request' lab_pk=laboratory %}",
-		generate_report : "{% url 'laboratory:generate_report' lab_pk=laboratory org_pk=org_pk %}",
+		create_request : "{% url 'report:create_report_request' lab_pk=laboratory %}",
+		generate_report : "{% url 'report:generate_report' lab_pk=laboratory org_pk=org_pk %}",
 	}
 </script>
 <script src="{% static 'laboratory/js/reports.js' %}?v={% get_organilab_version %}"></script>

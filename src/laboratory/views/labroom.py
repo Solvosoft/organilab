@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
@@ -137,9 +138,13 @@ class LaboratoryRoomReportView(ListView):
         context = super(LaboratoryRoomReportView,
                         self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
-        context['title_view'] = _("Laboratory report")
+        title = _("Objects by Laboratory Room Report")
+        context['title_view'] = title
         context['report_name'] = 'report_laboratory_room'
+        context['report_urlnames'] = ['reports_laboratory', 'report_building']
         context['form'] = LaboratoryRoomReportForm(initial={
+            'name': title +' '+ now().strftime("%x"),
+            'title': title,
             'organization': self.org,
             'report_name': 'report_laboratory_room',
             'laboratory': lab_obj,
