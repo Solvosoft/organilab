@@ -11,8 +11,8 @@ from django.contrib.auth.models import User
 
 
 class ReportBase(GTForm):
-    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
-    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
+    name = forms.CharField(max_length=100, label=_('File Name'), widget=genwidgets.TextInput(), required=True)
+    title = forms.CharField(max_length=100, label=_('Report Title'), widget=genwidgets.TextInput(), required=True)
     organization = forms.IntegerField(widget=forms.HiddenInput())
     report_name = forms.CharField(widget=forms.HiddenInput())
     format = forms.ChoiceField(widget=genwidgets.Select, choices=(
@@ -26,10 +26,12 @@ class ReportBase(GTForm):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
 
 class ReportForm(ReportBase):
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
 
 
 class ValidateReportForm(ReportBase):
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Laboratory.objects.all())
 
     def clean_laboratory(self):
@@ -41,19 +43,7 @@ class ValidateReportForm(ReportBase):
 
         return list(laboratory.values_list('pk',flat=True))
 
-class ReportObjectsBaseForm(ReportForm):
-    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
-    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
-    organization = forms.IntegerField(widget=forms.HiddenInput())
-    report_name = forms.CharField(widget=forms.HiddenInput())
-    format = forms.ChoiceField(widget=genwidgets.Select, choices=(
-        ('html', _('On screen')),
-        ('pdf', _('PDF')),
-        ('xls', 'XLS'),
-        ('xlsx', 'XLSX'),
-        ('ods', 'ODS')
-    ), required=False, label=_('Format'))
-
+class ReportObjectsBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     object_type = forms.CharField(max_length=500, widget=genwidgets.HiddenInput())
 
@@ -84,6 +74,7 @@ class RelLaboratoryForm(GTForm):
 
 
 class LaboratoryRoomReportForm(ReportBase):
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
@@ -95,6 +86,7 @@ class LaboratoryRoomReportForm(ReportBase):
 
 
 class ValidateLaboratoryRoomReportForm(ReportBase):
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.SelectMultiple, queryset=Laboratory.objects.all())
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.all(), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.all(), required=False)
@@ -150,23 +142,11 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
                 furniture = self.get_furniture(lab_room, laboratory)
         return list(furniture.values_list('pk',flat=True).distinct())
 
-class ObjectLogChangeBaseForm(GTForm):
-    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
-    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
+class ObjectLogChangeBaseForm(ReportBase):
     period = forms.CharField(widget=genwidgets.DateRangeInput, required=False,label=_('Period'))
     precursor = forms.BooleanField(widget=genwidgets.YesNoInput,  required=False,label=_('Precursor'))
     resume = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,label=_('Resume'))
-    report_name = forms.CharField(widget=forms.HiddenInput())
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
-    format = forms.ChoiceField(widget=genwidgets.Select,choices=(
-        ('html', _('On screen')),
-        ('pdf', _('PDF')),
-        ('xls', 'XLS'),
-        ('xlsx', 'XLSX'),
-        ('ods', 'ODS')
-    ), required=False,label=_('Format'))
-
-    organization = forms.IntegerField(widget=genwidgets.HiddenInput)
 
 class ObjectLogChangeReportForm(ObjectLogChangeBaseForm):
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
@@ -182,20 +162,9 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
         return list(laboratory.values_list('pk',flat=True).distinct())
 
 
-class OrganizationReactiveForm(GTForm):
-    name = forms.CharField(max_length=100, label=_('Name'), widget=genwidgets.TextInput(), required=True)
-    title = forms.CharField(max_length=100, widget=genwidgets.TextInput(), required=True)
-    organization = forms.IntegerField(widget=forms.HiddenInput())
+class OrganizationReactiveForm(ReportBase):
     laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all())
     users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=User.objects.all())
-    report_name = forms.CharField(widget=forms.HiddenInput())
-    format = forms.ChoiceField(widget=genwidgets.Select, choices=(
-        ('html', _('On screen')),
-        ('pdf', _('PDF')),
-        ('xls', 'XLS'),
-        ('xlsx', 'XLSX'),
-        ('ods', 'ODS')
-    ), required=False, label=_('Format'))
 
     def __init__(self, *args, **kwargs):
         super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
