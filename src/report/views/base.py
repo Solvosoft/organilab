@@ -14,7 +14,7 @@ from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
 
-from report.utils import get_pdf_table_content
+from report.utils import get_pdf_table_content, save_request_data
 
 
 def build_report(pk, absolute_uri):
@@ -70,19 +70,9 @@ def create_request_by_report(request, lab_pk):
 
             if form.is_valid():
                 format=form.cleaned_data['format']
-
                 data = request.GET.copy()
-                if 'laboratory' in data:
-                    data['laboratory'] = form.cleaned_data['laboratory']
-                data['lab_pk'] =lab_pk
-
-                if 'lab_room' in form.fields:
-                    data['lab_room'] = form.cleaned_data['lab_room']
-
-                if 'furniture' in form.fields:
-                    data['furniture'] = form.cleaned_data['furniture']
-
-                response['result'] = True
+                data['lab_pk'] = lab_pk
+                save_request_data(form, data)
 
                 task = TaskReport.objects.create(
                     creator=request.user,
@@ -96,6 +86,8 @@ def create_request_by_report(request, lab_pk):
                 method = import_string(type_report['task'])
                 task_celery=method.delay(task.pk, request.build_absolute_uri())
                 task_celery=task_celery.task_id
+
+                response['result'] = True
                 response.update({
                     'report': task.pk,
                     'celery_id': task_celery
