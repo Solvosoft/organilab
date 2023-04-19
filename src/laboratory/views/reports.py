@@ -861,8 +861,8 @@ class OrganizationReactivePresenceList(ReportListView):
             'name': title +' '+ now().strftime("%x"),
             'title': title,
             'organization': self.org,
-            'report_name': 'report_organization_reactive_list',
-        })
+            'report_name': 'report_organization_reactive_list'
+        }, org_pk=self.org)
         context['laboratory'] = 0
         context['title_view'] = title
         context['report_urlnames'] = ['organizationreactivepresence']
