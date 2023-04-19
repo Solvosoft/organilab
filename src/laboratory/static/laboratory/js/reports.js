@@ -205,6 +205,4 @@ $('#id_all_labs_org').on('change', function(){
 $(document).ready(function() {
     update_lab_rooms();
     update_furniture();
-    update_selects("form select#id_users")
-    update_selects("form select#id_laboratory")
 });
