@@ -598,7 +598,7 @@ class ObjectList(ListView):
 
         context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
         context['form'] = ReportObjectsForm(initial={
-            'name': context['title_view'] +' '+ now().strftime("%x"),
+            'name': context['title_view'] +' '+ now().strftime("%x").replace('/', '-'),
             'title': context['title_view'],
             'laboratory':self.lab,
             'object_type':self.get_type(),
@@ -620,7 +620,7 @@ class LimitedShelfObjectList(ListView):
         context['title_view'] = title
         context['report_urlnames'] = ['reports_limited_shelf_objects_list', 'reports_limited_shelf_objects']
         context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'report_limit_objects',
@@ -642,7 +642,7 @@ class ReactivePrecursorObjectList(ListView):
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
         context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'reactive_precursor',
@@ -695,7 +695,7 @@ class LogObjectView(ReportListView):
         context['title_view'] = title
         context['report_urlnames'] = ['object_change_logs']
         context['form'] = ObjectLogChangeReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'laboratory':self.lab,
             'organization': self.org,
@@ -858,7 +858,7 @@ class OrganizationReactivePresenceList(ReportListView):
         context = super().get_context_data(**kwargs)
         title = _('User Reactive Exposition in Organization Report')
         context['form'] = OrganizationReactiveForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'report_organization_reactive_list'
