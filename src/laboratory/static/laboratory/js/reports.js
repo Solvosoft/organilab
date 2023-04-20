@@ -78,14 +78,13 @@ function get_doc(pk,task){
 
             if(type_report==='html'){
                 open_new_window(url_file);
-                accept_request();
             }else{
-                accept_request();
-                $("#download-report").attr("href",url_file)
-                $("#download_file").attr("href",url_file)
-                $(".statuspanel").removeClass("d-none")
+                $("#download-report").attr("href", url_file);
+                $("#download_file").attr("href", url_file);
+                $(".statuspanel").removeClass("d-none");
                 $("#reportModal").modal('show');
             }
+            accept_request();
          }else{
             setTimeout(function(){
                         get_doc(pk,task);
@@ -205,4 +204,9 @@ $('#id_all_labs_org').on('change', function(){
 $(document).ready(function() {
     update_lab_rooms();
     update_furniture();
+});
+
+
+$("#download-report").on("click", function(){
+    $("#reportModal").modal('hide');
 });
