@@ -1696,7 +1696,7 @@ msgstr "Crear palabra de advertencia"
 #: laboratory/reports.py:255 report/views/objects.py:225
 #: report/views/objects.py:237 sga/models.py:132 sga/models.py:330
 msgid "Danger indication"
-msgstr "Crear indicación de peligro"
+msgstr "Indicación de peligro"
 
 #: academic/templates/academic/substance/pdf/section_two.html:38
 #: sga/models.py:119 sga/models.py:134 sga/models.py:332
