@@ -14,7 +14,7 @@ from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
 
-from report.utils import get_pdf_table_content, save_request_data
+from report.utils import get_pdf_table_content, save_request_data, get_report_name
 
 
 def build_report(pk, absolute_uri):
@@ -37,10 +37,14 @@ def build_report(pk, absolute_uri):
 
 
 def base_pdf(report, uri):
+    title = ''
+    if 'title' in report.data and report.data['title']:
+        title = report.data['title']
+    report_name = get_report_name(report)
     context = {
         'datalist': get_pdf_table_content(report.table_content),
         'user': report.creator,
-        'title': report.data['title'],
+        'title': title if title else report_name,
         'datetime': timezone.now(),
         'size_sheet': 'landscape'
     }
@@ -48,7 +52,7 @@ def base_pdf(report, uri):
     html = render_to_string('report/base_report_pdf.html', context=context)
     file = BytesIO()
     HTML(string=html, base_url=uri, encoding='utf-8').write_pdf(file)
-    file_name = f'{report.data["name"]}.pdf'
+    file_name = f'{report_name}.pdf'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
@@ -123,7 +127,10 @@ def download_report(request, lab_pk, org_pk):
 @permission_required('laboratory.do_report')
 def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
-    title = register.REPORT_FORMS[task.type_report]['title']
-
-    return render(request,template_name='report/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
+    return render(request, template_name='report/general_reports.html', context={
+        'table': task.table_content,
+        'lab_pk': lab_pk,
+        'org_pk': org_pk,
+        'obj_task': task
+    })
 

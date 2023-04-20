@@ -2,7 +2,7 @@ from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import set_format_table_columns
+from report.utils import set_format_table_columns, get_report_name
 from report.utils import get_furniture_queryset_by_filters
 
 def get_dataset(report):
@@ -36,9 +36,9 @@ def lab_room_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("Code"), _("Object"), _("Quantity"), _("Laboratory"), _("Laboratory Room"), _("Furniture"), _("Shelf")]]
     content = content + get_dataset(report)
-    builder.add_table(content, report.data['title'])
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)

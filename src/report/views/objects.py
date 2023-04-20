@@ -10,7 +10,8 @@ from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, 
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
 from laboratory.views.djgeneric import ResultQueryElement
-from report.utils import filter_period, set_format_table_columns
+from report.utils import filter_period, set_format_table_columns, get_report_name
+
 
 #report_objectlogchange
 def resume_queryset(queryset):
@@ -79,10 +80,10 @@ def report_objectlogchange_html(report):
 def report_objectlogchange_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("User"), _("Laboratory"), _("Object"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]]
-    content.append(get_dataset_objectlogchange(report))
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    content = content + get_dataset_objectlogchange(report)
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -152,9 +153,9 @@ def report_reactive_precursor_doc(report):
             content[0].insert(0, _('Laboratory'))
 
     content = content + get_dataset_reactive_precursor(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -243,9 +244,9 @@ def report_object_doc(report):
             content[0].insert(0,_('Laboratory'))
 
     content = content + get_dataset_limit_objects(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -300,9 +301,9 @@ def report_limit_object_doc(report):
             content[0].insert(0,_('Laboratory'))
 
     content =  content + get_dataset_limit_objects(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -377,9 +378,9 @@ def report_organization_reactive_list_doc(report):
     content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'), _('Sustance'), _('CAS'),
                     _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position')]]
     content = content + get_dataset_report_organization_reactive(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)

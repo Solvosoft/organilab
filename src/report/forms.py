@@ -142,10 +142,10 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
         return list(furniture.values_list('pk',flat=True).distinct())
 
 class ObjectLogChangeBaseForm(ReportBase):
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     period = forms.CharField(widget=genwidgets.DateRangeInput, required=False,label=_('Period'))
     precursor = forms.BooleanField(widget=genwidgets.YesNoInput,  required=False,label=_('Precursor'))
     resume = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,label=_('Resume'))
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
 
 class ObjectLogChangeReportForm(ObjectLogChangeBaseForm):
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())

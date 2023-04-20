@@ -46,7 +46,7 @@ class FurnitureReportView(ListView):
         context['title_view'] = title
         context['report_urlnames'] = ['reports_furniture_detail']
         context['form'] = LaboratoryRoomReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'report_furniture',
