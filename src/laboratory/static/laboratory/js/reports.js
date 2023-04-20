@@ -29,7 +29,7 @@ $('#send').on('click', function(){
     $(this).attr('disabled',true);
     $(".statuspanel").addClass("d-none");
 
-    $("#button-text").text('Loading the report may take a few minutes...');
+    $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
     $.ajax({
         url: url,
@@ -59,7 +59,7 @@ function open_new_window(url_file){
 
 function accept_request(){
     document.querySelector('#spiner').classList.remove('spinner-border', 'spinner-border-sm')
-    document.querySelector("#button-text").textContent = 'Send'
+    document.querySelector("#button-text").textContent = gettext('Send');
     document.querySelector("#send").removeAttribute('disabled');
 }
 
