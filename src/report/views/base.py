@@ -105,6 +105,7 @@ def create_request_by_report(request, lab_pk):
 def download_report(request, lab_pk, org_pk):
     from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
+    response = {'result': False}
 
     if form.is_valid():
         task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
@@ -113,15 +114,19 @@ def download_report(request, lab_pk, org_pk):
             if task.status==_('Generated') and result.status=='SUCCESS':
                 task.status=_('Delivered')
                 task.save()
+                response['result'] = True
                 if task.file_type=='html':
-                    return JsonResponse({'result': True, 'url_file':reverse('report:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
+                    response.update({
+                        'url_file':reverse('report:report_table', kwargs={
+                            'lab_pk':lab_pk,
+                            'pk':task.pk,
+                            'org_pk':org_pk
+                        }),
+                        'type_report':task.file_type
+                    })
                 else:
-                    return JsonResponse({'result': True, 'url_file': task.file.url})
-            else:
-                return JsonResponse({'result': False})
-        else:
-            return JsonResponse({'result': False})
-    return JsonResponse({'result': False})
+                    response.update({'url_file': task.file.url})
+    return JsonResponse(response)
 
 @login_required
 @permission_required('laboratory.do_report')

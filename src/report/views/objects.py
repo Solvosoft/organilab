@@ -17,7 +17,6 @@ from report.utils import filter_period, set_format_table_columns, get_report_nam
 def resume_queryset(queryset):
     objects = set(queryset.values_list('object', flat=True))
     list_obj = []
-    user=""
     for obj in objects:
         obj_check = Object.objects.filter(pk=obj)
         if obj_check.exists():
@@ -26,6 +25,8 @@ def resume_queryset(queryset):
             diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
             try:
                 user = end.user.get_full_name()
+                if not user:
+                    user = end.user.username
             except Exception as e:
                 user = ""
 
