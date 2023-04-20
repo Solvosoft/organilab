@@ -33,7 +33,8 @@ from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm, \
+    ValidateObjectTypeForm
 from sga.forms import SearchDangerIndicationForm
 
 
@@ -573,21 +574,15 @@ class ObjectList(ListView):
     model = Object
     template_name = 'report/base_report_form_view.html'
 
-    def get_type(self):
-        if 'type_id' in self.request.GET:
-            self.type_id = self.request.GET.get('type_id', '')
-            if self.type_id:
-                return self.type_id
-            else:
-                return None
-        else:
-            return None
-
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
-        type_id = self.get_type()
-        context['type_id'] = type_id
+        type_id = ""
+        objecttypeform = ValidateObjectTypeForm(self.request.GET)
+
+        if objecttypeform.is_valid():
+            type_id = objecttypeform.cleaned_data['type_id']
+
         context['title_view'] = _('Objects Report')
         if type_id == "0":
            context['title_view']= _('Reactive Objects Report')
@@ -601,7 +596,7 @@ class ObjectList(ListView):
             'name': context['title_view'] +' '+ now().strftime("%x").replace('/', '-'),
             'title': context['title_view'],
             'laboratory':self.lab,
-            'object_type':self.get_type(),
+            'object_type': type_id,
             'organization': self.org,
             'report_name':'report_objects'
         })

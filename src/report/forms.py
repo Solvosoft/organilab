@@ -1,14 +1,13 @@
+from django import forms
+from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from django import forms
-from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, Furniture, LaboratoryRoom, OrganizationStructure
+from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
-from sga.models import Substance
-from django.contrib.auth.models import User
 
 
 class ReportBase(GTForm):
@@ -44,7 +43,7 @@ class ValidateReportForm(ReportBase):
 
 class ReportObjectsBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
-    object_type = forms.CharField(max_length=500, widget=genwidgets.HiddenInput())
+    object_type = forms.CharField(max_length=1, widget=genwidgets.HiddenInput(), required=False)
 
 class ReportObjectsForm(ReportObjectsBaseForm):
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
@@ -199,3 +198,17 @@ class RelOrganizationLaboratoryForm(GTForm):
 
 class OrganizationForm(GTForm):
     organization = forms.IntegerField()
+
+
+class ValidateObjectTypeForm(GTForm):
+    type_id = forms.CharField(max_length=1)
+
+    def clean_type_id(self):
+        type_id = self.cleaned_data['type_id']
+        error = ValidationError(_("Object type is not allowed"))
+
+        if not type_id.isnumeric():
+            raise error
+        elif not type_id in dict(Object.TYPE_CHOICES).keys():
+            raise error
+        return type_id
