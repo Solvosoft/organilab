@@ -6,18 +6,25 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.db.models import Sum, Q
 from django.db.models.expressions import F
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-from django.db.models import Sum, Q
-from organilab.settings import DATE_INPUT_FORMATS
+
 from presentation.models import AbstractOrganizationRef
 from . import catalog
 
+
+class BaseCreationObj(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
 
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
@@ -181,11 +188,9 @@ class ShelfObject(models.Model):
     def get_object_detail(self):
         return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
 
-class LaboratoryRoom(models.Model):
+class LaboratoryRoom(BaseCreationObj):
     laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
     name = models.CharField(_('Name'), max_length=255)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('Laboratory Room')
@@ -195,7 +200,7 @@ class LaboratoryRoom(models.Model):
         return '%s' % (self.name,)
 
 
-class Shelf(models.Model):
+class Shelf(BaseCreationObj):
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"), on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
@@ -210,8 +215,6 @@ class Shelf(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -265,7 +268,7 @@ class Shelf(models.Model):
                        ('can_add_disposal', 'Can add disposal'),
                        ('can_view_disposal', 'Can view disposal')]
 
-class Furniture(models.Model):
+class Furniture(BaseCreationObj):
     labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
     name = models.CharField(_('Name'), max_length=255)
     # old  'F' Cajón   'D' Estante
@@ -273,9 +276,6 @@ class Furniture(models.Model):
                                 key_name="key", key_value='furniture_type')
     color = models.CharField(default="#73879C", max_length=10)
     dataconfig = models.TextField(_('Data configuration'))
-
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
 
     def remove_shelf_dataconfig(self, shelf_pk):
         if self.dataconfig:
@@ -558,7 +558,7 @@ class OrganizationStructureRelations(models.Model):
         ]
 
 
-class Laboratory(models.Model):
+class Laboratory(BaseCreationObj):
     name = models.CharField(_('Laboratory name'), default='', max_length=255)
     phone_number = models.CharField(_('Phone'), default='', max_length=25)
 
@@ -570,10 +570,6 @@ class Laboratory(models.Model):
     unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE, null=True)
-
-
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('Laboratory')
@@ -590,7 +586,7 @@ class Laboratory(models.Model):
         return self.__str__()
 
 
-class Provider(models.Model):
+class Provider(BaseCreationObj):
     name = models.CharField(max_length=255, blank=True, default='',verbose_name=_('Name'))
     phone_number = models.CharField(max_length=25, blank=True, default='',verbose_name=_('Phone'))
     email = models.EmailField(blank=True,verbose_name=_('Email'))
@@ -643,7 +639,7 @@ TRANFEROBJECT_STATUS = (
     (ACCEPTED, _("Accepted")),
 )
 
-class TranferObject(models.Model):
+class TranferObject(BaseCreationObj):
     object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
     laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
     laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
@@ -723,16 +719,14 @@ class LabOrgLogEntry(models.Model):
         return f'{self.log_entry}'
 
 
-class Protocol(models.Model):
+class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(upload_to="protocols", verbose_name=_("Protocol PDF File"),
                             validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
 
     short_description = models.CharField(_("short description"), max_length=300)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
-    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
+    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='upload_protocol', on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.name
@@ -811,8 +805,9 @@ STATUS_TEMPLATE=[(_('On hold'),WAIT),
                   (_('Delivered'),DELIVER),
                   (_('Generated'),GENERATED),
                  ]
-class TaskReport(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class TaskReport(BaseCreationObj):
     type_report = models.CharField(max_length=100, blank=False, null=False)
     form_name = models.TextField(null=True, blank=True)
     table_content = models.JSONField(null=True, blank=True)

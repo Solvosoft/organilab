@@ -32,7 +32,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm, InitialShelfObjectForm, ValidateShelfObjectForm
+    ShelfObjectListForm, ValidateShelfForm,  ValidateShelfObjectForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -86,14 +86,12 @@ def list_shelfobject(request, *args, **kwargs):
 
 
 class ShelfObjectForm(CustomForm, forms.ModelForm):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(ShelfObjectForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
-        shelf = Shelf.objects.filter(pk=initial['shelf']).first()
+        shelf = initial['shelf']
         if shelf:
             self.fields['measurement_unit'].initial=shelf.measurement_unit
         self.fields['object'] = forms.ModelChoiceField(
@@ -140,14 +138,11 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
         }
 
 class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
-
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(ShelfObjectRefuseForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
-        shelf = Shelf.objects.filter(pk=initial['shelf']).first()
+        shelf = initial['shelf']
         if shelf:
             self.fields['measurement_unit'].initial = shelf.measurement_unit
         self.fields['object'] = forms.ModelChoiceField(
@@ -166,13 +161,15 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
         quantity = cleaned_data.get("quantity")
         shelf = cleaned_data.get("shelf")
         measurement_unit = cleaned_data.get("measurement_unit")
-        if shelf.measurement_unit == measurement_unit:
+
+        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
             total = shelf.get_total_refuse()
             new_total =total+quantity
-            if shelf.quantity>=new_total:
+            if shelf.quantity>=new_total or not shelf.quantity:
                 return cleaned_data
             else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit"))
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
+                    'limit': "%s"%(shelf.quantity,)}))
         else:
             self.add_error('measurement_unit',
                            _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
@@ -254,12 +251,8 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True)
         utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
 
-        row = form.cleaned_data['row']
-        col = form.cleaned_data['col']
         return {
             'inner-fragments': {
-                '#row_%d_col_%d_shelf_%d' % (row, col, self.object.shelf.pk): list_shelfobject_render(
-                    self.request, self.object.shelf.pk, row, col, org_pk=self.org, lab_pk=self.lab),
                 "#closemodal": '<script>$("#object_create").modal("hide");</script>'
             },
         }
@@ -267,14 +260,12 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
         if self.request.method == "POST":
-            form = InitialShelfObjectForm(self.request.POST)
+            form = ValidateShelfForm(self.request.POST)
         else:
-            form = InitialShelfObjectForm(self.request.GET)
+            form = ValidateShelfForm(self.request.GET)
         if form.is_valid():
             shelf = form.cleaned_data['shelf']
             kwargs['initial']['shelf'] = shelf
-            kwargs['initial']['row'] = form.cleaned_data['row']
-            kwargs['initial']['col'] = form.cleaned_data['col']
 
         kwargs['org_pk'] = self.org
         return kwargs
@@ -330,9 +321,9 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         kwargs = UpdateView.get_form_kwargs(self)
 
         if self.request.method == "POST":
-            form = InitialShelfObjectForm(self.request.POST)
+            form = ValidateShelfForm(self.request.POST)
         else:
-            form = InitialShelfObjectForm(self.request.GET)
+            form = ValidateShelfForm(self.request.GET)
         if form.is_valid():
             shelf = form.cleaned_data['shelf']
             kwargs['initial']['shelf'] = shelf
@@ -459,10 +450,9 @@ def add_object(request, pk):
 
         if action == 2:
             if form.is_valid():
-                try:
-                    amount = float(form.cleaned_data['amount'])
-                except ValueError:
-                    return JsonResponse({'msg': _('The quantity field only accept numbers not letter'), 'status':False})
+
+                amount = form.cleaned_data['amount']
+
                 old = shelfobject.quantity
                 new = old + amount
                 shelfobject.quantity = new
@@ -471,7 +461,7 @@ def add_object(request, pk):
                 if shelf.discard:
                     total = shelf.get_total_refuse()
                     new_total = total+amount
-                    if shelf.quantity>=new_total:
+                    if shelf.quantity>=new_total or not shelf.quantity:
                         shelfobject.save()
                         log_object_add_change(request.user, pk, shelfobject, old, new, "Add", form.cleaned_data['provider'],
                                               form.cleaned_data['bill'], create=False)
@@ -483,11 +473,14 @@ def add_object(request, pk):
                             'msg': _('Added successfully'),
                             'object': {'object':shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
-                                       'unit': shelfobject.measurement_unit.description}
+                                       'unit': shelfobject.measurement_unit.description,
+                                       'pk': shelf.pk}
                         }
                         return JsonResponse(response)
                     else:
-                        return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit')})
+                        return JsonResponse({'status': False, 'msg': _('The quantity is much larger than the shelf limit %(limit)s') %{
+                            'limit': "%s"%(shelf.quantity)
+                        } })
 
                 else:
                     status=False
@@ -511,6 +504,7 @@ def add_object(request, pk):
                             'msg': _('Added successfully'),
                             'object': {'object': shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
+                                       'pk': shelf.pk,
                                        'unit': shelfobject.measurement_unit.description}
                         }
                     else:
@@ -520,6 +514,7 @@ def add_object(request, pk):
                             'msg': _('The quantity is more than the shelf has'),
                             'object': {'object': shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
+                                       'pk': shelf.pk,
                                        'unit': shelfobject.measurement_unit.description}
                         }
 

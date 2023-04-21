@@ -305,7 +305,7 @@ class ShelfObjectViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     ordering = ('-last_update',)  # default order
 
     def get_queryset(self):
-        if self.data['shelf'] is None:
+        if not self.data['shelf'] :
             return self.queryset.none()
         return self.queryset.filter(
             in_where_laboratory=self.data['laboratory'],

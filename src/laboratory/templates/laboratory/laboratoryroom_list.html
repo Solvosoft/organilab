@@ -83,7 +83,7 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-
+<div id="closemodal"></div>
 {% endblock %}
 
 {% block css %}
@@ -93,8 +93,10 @@
 {% block js %}
 {{block.super}}
 <script>
+document.urls = {
+    shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
+}
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
-document.shelf_list = '{% url "laboratory:list_shelf" org_pk laboratory 0 %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';
 document.api_modal = '{% url "laboratory:api_reservation_create"%}';
 document.date_validation_script_url = '{% url "laboratory:date_validator"%}';

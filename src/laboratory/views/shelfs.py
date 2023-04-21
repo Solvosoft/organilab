@@ -20,41 +20,11 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import wysiwyg
 
-from laboratory.models import Furniture, Shelf
-from laboratory.shelf_utils import get_dataconfig
+from laboratory.models import Shelf
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
 
-
-def list_shelf_render(request, org_pk, lab_pk, furniture_pk):
-    shelf_list = []
-    furniture = get_object_or_404(Furniture, pk=furniture_pk)
-
-    if furniture.dataconfig:
-        shelf_list = get_dataconfig(furniture.dataconfig)
-
-    return render_to_string(
-        'laboratory/shelf_list.html',
-        context={
-            'object_list': shelf_list,
-            'laboratory': lab_pk,
-            'request': request,
-            'furniture': furniture,
-            'org_pk':org_pk
-        }, request=request)
-
-
-@permission_required('laboratory.view_shelf')
-@ajax
-def list_shelf(request, org_pk, lab_pk, furniture_pk):
-    x =  {
-        'inner-fragments': {
-            '#shelf': list_shelf_render(request, org_pk, lab_pk, furniture_pk)
-
-        },
-    }
-    return x
 
 @ajax
 @permission_required('laboratory.delete_shelf')

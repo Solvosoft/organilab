@@ -1,20 +1,11 @@
 const float_regex= /^[+-]?\d+(\.\d+)?$/;
 
+function processResponseshelfobject(dat){
+    $("#closemodal").html(dat["inner-fragments"]["#closemodal"]);
+}
+
 function processResponseshelfobjectCreate(dat) {
     $('#shelfobjectCreate').html(dat);
-
-    let options = document.getElementById("id_measurement_unit");
-    for(var i=0; i<options.options.length; i++){
-        let option = options.options[i]
-        if(options.value!=""){
-            if(option.value!=options.value){
-                option.setAttribute('disabled',true)
-                }else{
-                option.setAttribute('selected',true)
-                }
-        }
-    }
-
     $("#object_create").modal('show');
 }
 
@@ -51,21 +42,6 @@ function replaceLast(obj, search, replace) {
     return obj.replace(new RegExp(search+"([^"+search+"]*)$"), replace+"");
 }
 
-function function_name_shelf(argument) {
-    var url = document.shelf_list;
-    url = replaceLast(url, '0', argument);
-
-    ajax({
-        url : url,
-        cache : false,
-        type : "GET",
-        success : function processResponseshelf(dat) {
-            $('#shelf').html(dat);
-        }
-    });
-
-}
-	
 function function_name_shelfobject(argument) {
 		ajax({
 			url : document.shelfobject_list,
