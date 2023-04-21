@@ -294,7 +294,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
         pass
     class Meta:
         model = ShelfObject
-        fields = ['object_name', 'unit','quantity','last_update','creator', 'actions']
+        fields = ['pk','object_name', 'unit','quantity','last_update','creator', 'actions']
 
 
 class ShelfObjectTableSerializer(serializers.Serializer):

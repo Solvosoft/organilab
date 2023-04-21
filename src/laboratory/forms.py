@@ -150,7 +150,7 @@ class TransferObjectForm(GTForm):
 
 
 class AddObjectForm(GTForm, forms.Form):
-    amount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal',
+    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text='Use dot like 0.344 on decimal',
                              label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
@@ -514,10 +514,6 @@ class ShelfObjectListForm(GTForm, forms.Form):
 class FurnitureLabRoomForm(forms.Form):
     labroom = forms.IntegerField(required=True)
 
-class InitialShelfObjectForm(forms.Form):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
-    shelf = forms.IntegerField(widget=forms.HiddenInput)
 
 class ValidateShelfForm(forms.Form):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)

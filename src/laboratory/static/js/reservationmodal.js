@@ -124,7 +124,8 @@ function add_reservation() {
                     data: data,
                     success: function({status,msg,object,template}) {
                       if(status){
-                          message(msg,'success', object=object,template=template);
+                           tableObject.update_object(object);
+                           message(msg,'success');
                        }else{
                           message(msg,'error');
                        }
