@@ -8,7 +8,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _, get_language
 
 from laboratory.forms import TasksForm
-from laboratory.models import TaskReport
+from report.models import TaskReport
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
