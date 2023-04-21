@@ -797,22 +797,3 @@ class RegisterUserQR(models.Model):
     def __str__(self):
         return f"{self.url}"
 
-
-DELIVER = _('Delivered')
-WAIT = _('On hold')
-GENERATED = _('Generated')
-STATUS_TEMPLATE=[(_('On hold'),WAIT),
-                  (_('Delivered'),DELIVER),
-                  (_('Generated'),GENERATED),
-                 ]
-
-
-class TaskReport(BaseCreationObj):
-    type_report = models.CharField(max_length=100, blank=False, null=False)
-    form_name = models.TextField(null=True, blank=True)
-    table_content = models.JSONField(null=True, blank=True)
-    status = models.CharField(max_length=30, default=WAIT,choices=STATUS_TEMPLATE)
-    file_type = models.CharField(max_length=30, blank=True, null=True)
-    file = models.FileField(upload_to='reports/', blank=True, null=True)
-    data = models.JSONField(null=True, blank=True)
-    language = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)

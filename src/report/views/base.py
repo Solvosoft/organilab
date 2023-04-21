@@ -8,13 +8,13 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _, get_language
 
 from laboratory.forms import TasksForm
-from laboratory.models import TaskReport
+from report.models import TaskReport
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
 
-from report.utils import get_pdf_table_content
+from report.utils import get_pdf_table_content, save_request_data, get_report_name
 
 
 def build_report(pk, absolute_uri):
@@ -37,10 +37,14 @@ def build_report(pk, absolute_uri):
 
 
 def base_pdf(report, uri):
+    title = ''
+    if 'title' in report.data and report.data['title']:
+        title = report.data['title']
+    report_name = get_report_name(report)
     context = {
         'datalist': get_pdf_table_content(report.table_content),
         'user': report.creator,
-        'title': report.data['title'],
+        'title': title if title else report_name,
         'datetime': timezone.now(),
         'size_sheet': 'landscape'
     }
@@ -48,7 +52,7 @@ def base_pdf(report, uri):
     html = render_to_string('report/base_report_pdf.html', context=context)
     file = BytesIO()
     HTML(string=html, base_url=uri, encoding='utf-8').write_pdf(file)
-    file_name = f'{report.data["name"]}.pdf'
+    file_name = f'{report_name}.pdf'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
@@ -70,19 +74,9 @@ def create_request_by_report(request, lab_pk):
 
             if form.is_valid():
                 format=form.cleaned_data['format']
-
                 data = request.GET.copy()
-                if 'laboratory' in data:
-                    data['laboratory'] = form.cleaned_data['laboratory']
-                data['lab_pk'] =lab_pk
-
-                if 'lab_room' in form.fields:
-                    data['lab_room'] = form.cleaned_data['lab_room']
-
-                if 'furniture' in form.fields:
-                    data['furniture'] = form.cleaned_data['furniture']
-
-                response['result'] = True
+                data['lab_pk'] = lab_pk
+                save_request_data(form, data)
 
                 task = TaskReport.objects.create(
                     creator=request.user,
@@ -96,6 +90,8 @@ def create_request_by_report(request, lab_pk):
                 method = import_string(type_report['task'])
                 task_celery=method.delay(task.pk, request.build_absolute_uri())
                 task_celery=task_celery.task_id
+
+                response['result'] = True
                 response.update({
                     'report': task.pk,
                     'celery_id': task_celery
@@ -109,6 +105,7 @@ def create_request_by_report(request, lab_pk):
 def download_report(request, lab_pk, org_pk):
     from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
+    response = {'result': False}
 
     if form.is_valid():
         task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
@@ -117,21 +114,28 @@ def download_report(request, lab_pk, org_pk):
             if task.status==_('Generated') and result.status=='SUCCESS':
                 task.status=_('Delivered')
                 task.save()
+                response['result'] = True
                 if task.file_type=='html':
-                    return JsonResponse({'result': True, 'url_file':reverse('report:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
+                    response.update({
+                        'url_file':reverse('report:report_table', kwargs={
+                            'lab_pk':lab_pk,
+                            'pk':task.pk,
+                            'org_pk':org_pk
+                        }),
+                        'type_report':task.file_type
+                    })
                 else:
-                    return JsonResponse({'result': True, 'url_file': task.file.url})
-            else:
-                return JsonResponse({'result': False})
-        else:
-            return JsonResponse({'result': False})
-    return JsonResponse({'result': False})
+                    response.update({'url_file': task.file.url})
+    return JsonResponse(response)
 
 @login_required
 @permission_required('laboratory.do_report')
 def report_table(request, lab_pk, pk, org_pk):
     task = TaskReport.objects.filter(pk=pk).first()
-    title = register.REPORT_FORMS[task.type_report]['title']
-
-    return render(request,template_name='report/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
+    return render(request, template_name='report/general_reports.html', context={
+        'table': task.table_content,
+        'lab_pk': lab_pk,
+        'org_pk': org_pk,
+        'obj_task': task
+    })
 
