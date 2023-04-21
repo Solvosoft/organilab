@@ -167,21 +167,22 @@ def report_reactive_precursor_doc(report):
 #report_objects
 def get_object_elements(obj):
     features=""
-    shelfobjects=""
     danger = ""
-    for feature in obj.features.all():
-        features+=f"{feature.name} "
+    all_features = obj.features.all()
+
+    for x, feature in enumerate(all_features):
+        features += f"{feature.name}"
+        if not(x + 1 == len(all_features)):
+            features += ", "
 
     if hasattr(obj, 'sustancecharacteristics'):
+        all_hcode = obj.sustancecharacteristics.h_code.all()
+        for x, h_code in enumerate(all_hcode):
+            danger += f"{h_code}"
+            if not(x + 1 == len(all_hcode)):
+                danger += ", "
 
-        for h_code in obj.sustancecharacteristics.h_code.all():
-            danger+=f"{h_code} "
-
-
-    for shelfobject in obj.shelfobject_set.all():
-        shelfobjects += f'{shelfobject.shelf}: {shelfobject.quantity} {shelfobject.get_measurement_unit_display()}'
-
-    return [features,danger,shelfobjects]
+    return [features, danger]
 
 def get_dataset_objects(report):
     dataset, labs = [], []
@@ -203,18 +204,14 @@ def get_dataset_objects(report):
         lab = Laboratory.objects.filter(pk=lab_pk).first()
         for obj in objects:
             formula = "-"
-            features, danger, shelfobjects = get_object_elements(obj)
+            features, danger = get_object_elements(obj)
 
             if hasattr(obj, 'sustancecharacteristics'):
                 formula = obj.sustancecharacteristics.molecular_formula if obj.sustancecharacteristics.molecular_formula else '-'
             cas = get_cas(obj, "") if get_cas(obj, "") else ""
 
             obj_item = [lab.name] if general else []
-            obj_item = obj_item + [
-                obj.code, obj.name, obj.get_type_display(),
-                features, danger,
-                shelfobjects, formula, cas
-            ]
+            obj_item = obj_item + [obj.code, obj.name, obj.get_type_display(), features, danger, formula, cas]
             dataset.append(obj_item)
     return dataset
 
@@ -224,8 +221,9 @@ def report_objects_html(report):
     columns_fields = columns + [
         {'name': 'code', 'title': _("Code")}, {'name': 'name', 'title': _("Name")},
         {'name': 'type', 'title': _("Type")}, {'name': 'features', 'title': _("Features")},
-        {'name': 'danger_indication', 'title': _("Danger indication")}, {'name': 'quantity', 'title': _("Quantity")},
-        {'name': 'molecular_formula', 'title': _("Molecular formula")}, {'name': 'cas_id_number', 'title': _("CAS id number")}
+        {'name': 'danger_indication', 'title': _("Danger indication")},
+        {'name': 'molecular_formula', 'title': _("Molecular formula")},
+        {'name': 'cas_id_number', 'title': _("CAS id number")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
@@ -233,18 +231,18 @@ def report_objects_html(report):
     }
     report.save()
 
-def report_object_doc(report):
+def report_objects_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
         _("Code"), _("Name"), _("Type"), _("Features"), _('Danger indication'),
-        _('Quantity'), _("Molecular formula"), _("CAS id number")
+        _("Molecular formula"), _("CAS id number")
     ]]
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content = content + get_dataset_limit_objects(report)
+    content = content + get_dataset_objects(report)
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
