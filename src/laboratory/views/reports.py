@@ -33,7 +33,8 @@ from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm, \
+    ValidateObjectTypeForm
 from sga.forms import SearchDangerIndicationForm
 
 
@@ -573,21 +574,15 @@ class ObjectList(ListView):
     model = Object
     template_name = 'report/base_report_form_view.html'
 
-    def get_type(self):
-        if 'type_id' in self.request.GET:
-            self.type_id = self.request.GET.get('type_id', '')
-            if self.type_id:
-                return self.type_id
-            else:
-                return None
-        else:
-            return None
-
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['lab_pk'] = self.kwargs.get('lab_pk')
-        type_id = self.get_type()
-        context['type_id'] = type_id
+        type_id = ""
+        objecttypeform = ValidateObjectTypeForm(self.request.GET)
+
+        if objecttypeform.is_valid():
+            type_id = objecttypeform.cleaned_data['type_id']
+
         context['title_view'] = _('Objects Report')
         if type_id == "0":
            context['title_view']= _('Reactive Objects Report')
@@ -598,10 +593,10 @@ class ObjectList(ListView):
 
         context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
         context['form'] = ReportObjectsForm(initial={
-            'name': context['title_view'] +' '+ now().strftime("%x"),
+            'name': context['title_view'] +' '+ now().strftime("%x").replace('/', '-'),
             'title': context['title_view'],
             'laboratory':self.lab,
-            'object_type':self.get_type(),
+            'object_type': type_id,
             'organization': self.org,
             'report_name':'report_objects'
         })
@@ -620,7 +615,7 @@ class LimitedShelfObjectList(ListView):
         context['title_view'] = title
         context['report_urlnames'] = ['reports_limited_shelf_objects_list', 'reports_limited_shelf_objects']
         context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'report_limit_objects',
@@ -642,7 +637,7 @@ class ReactivePrecursorObjectList(ListView):
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
         context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
             'report_name': 'reactive_precursor',
@@ -695,7 +690,7 @@ class LogObjectView(ReportListView):
         context['title_view'] = title
         context['report_urlnames'] = ['object_change_logs']
         context['form'] = ObjectLogChangeReportForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'laboratory':self.lab,
             'organization': self.org,
@@ -858,11 +853,11 @@ class OrganizationReactivePresenceList(ReportListView):
         context = super().get_context_data(**kwargs)
         title = _('User Reactive Exposition in Organization Report')
         context['form'] = OrganizationReactiveForm(initial={
-            'name': title +' '+ now().strftime("%x"),
+            'name': title +' '+ now().strftime("%x").replace('/', '-'),
             'title': title,
             'organization': self.org,
-            'report_name': 'report_organization_reactive_list',
-        })
+            'report_name': 'report_organization_reactive_list'
+        }, org_pk=self.org)
         context['laboratory'] = 0
         context['title_view'] = title
         context['report_urlnames'] = ['organizationreactivepresence']

@@ -80,3 +80,22 @@ def get_furniture_queryset_by_filters(report):
         furniture_list = Furniture.objects.filter(labroom__laboratory__pk__in=lab)
 
     return furniture_list
+
+
+def save_request_data(form, data):
+    general_report_fields = ['laboratory', 'lab_room', 'furniture', 'users']
+
+    for field in general_report_fields:
+        if field in form.fields:
+            data[field] = form.cleaned_data[field]
+
+
+def get_report_name(report):
+    report_name = _('Report')
+    if 'name' in report.data and report.data['name']:
+        report_name = report.data['name']
+    elif 'title' in report.data and report.data['title']:
+        report_name = report.data['title']
+    elif 'report_name' in report.data and report.data['report_name']:
+        report_name = report.data['report_name']
+    return report_name
