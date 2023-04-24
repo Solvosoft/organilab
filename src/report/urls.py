@@ -21,5 +21,6 @@ app_name = 'report'
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('file/status/', base.download_pdf_status, name="report_pdf_status"),
     path('celery/<int:lab_pk>/', include(celery_reports))
 ]

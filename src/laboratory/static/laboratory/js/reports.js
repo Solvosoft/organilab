@@ -1,5 +1,20 @@
 var filter =""
+function get_archive_status(){
+    url=urls['report_status_url']+filter;
 
+    $.ajax({
+        url: url,
+        type : "GET",
+        dataType : 'json',
+        success : function(data) {
+            $("#textstatus").html(data['text']);
+            if (data['end']!=true){
+                setTimeout(get_archive_status, 10000);
+            }
+
+       }
+    });
+}
 function load_errors(error_list, obj){
     ul_obj = "<ul class='errorlist report_form_errors'>";
     error_list.forEach((item)=>{
