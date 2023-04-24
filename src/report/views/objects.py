@@ -10,13 +10,13 @@ from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, 
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
 from laboratory.views.djgeneric import ResultQueryElement
-from report.utils import filter_period, set_format_table_columns
+from report.utils import filter_period, set_format_table_columns, get_report_name
+
 
 #report_objectlogchange
 def resume_queryset(queryset):
     objects = set(queryset.values_list('object', flat=True))
     list_obj = []
-    user=""
     for obj in objects:
         obj_check = Object.objects.filter(pk=obj)
         if obj_check.exists():
@@ -25,6 +25,8 @@ def resume_queryset(queryset):
             diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
             try:
                 user = end.user.get_full_name()
+                if not user:
+                    user = end.user.username
             except Exception as e:
                 user = ""
 
@@ -79,10 +81,10 @@ def report_objectlogchange_html(report):
 def report_objectlogchange_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("User"), _("Laboratory"), _("Object"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]]
-    content.append(get_dataset_objectlogchange(report))
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    content = content + get_dataset_objectlogchange(report)
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -152,9 +154,9 @@ def report_reactive_precursor_doc(report):
             content[0].insert(0, _('Laboratory'))
 
     content = content + get_dataset_reactive_precursor(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -165,21 +167,22 @@ def report_reactive_precursor_doc(report):
 #report_objects
 def get_object_elements(obj):
     features=""
-    shelfobjects=""
     danger = ""
-    for feature in obj.features.all():
-        features+=f"{feature.name} "
+    all_features = obj.features.all()
+
+    for x, feature in enumerate(all_features):
+        features += f"{feature.name}"
+        if not(x + 1 == len(all_features)):
+            features += ", "
 
     if hasattr(obj, 'sustancecharacteristics'):
+        all_hcode = obj.sustancecharacteristics.h_code.all()
+        for x, h_code in enumerate(all_hcode):
+            danger += f"{h_code}"
+            if not(x + 1 == len(all_hcode)):
+                danger += ", "
 
-        for h_code in obj.sustancecharacteristics.h_code.all():
-            danger+=f"{h_code} "
-
-
-    for shelfobject in obj.shelfobject_set.all():
-        shelfobjects += f'{shelfobject.shelf}: {shelfobject.quantity} {shelfobject.get_measurement_unit_display()}'
-
-    return [features,danger,shelfobjects]
+    return [features, danger]
 
 def get_dataset_objects(report):
     dataset, labs = [], []
@@ -201,18 +204,14 @@ def get_dataset_objects(report):
         lab = Laboratory.objects.filter(pk=lab_pk).first()
         for obj in objects:
             formula = "-"
-            features, danger, shelfobjects = get_object_elements(obj)
+            features, danger = get_object_elements(obj)
 
             if hasattr(obj, 'sustancecharacteristics'):
                 formula = obj.sustancecharacteristics.molecular_formula if obj.sustancecharacteristics.molecular_formula else '-'
             cas = get_cas(obj, "") if get_cas(obj, "") else ""
 
             obj_item = [lab.name] if general else []
-            obj_item = obj_item + [
-                obj.code, obj.name, obj.get_type_display(),
-                features, danger,
-                shelfobjects, formula, cas
-            ]
+            obj_item = obj_item + [obj.code, obj.name, obj.get_type_display(), features, danger, formula, cas]
             dataset.append(obj_item)
     return dataset
 
@@ -222,8 +221,9 @@ def report_objects_html(report):
     columns_fields = columns + [
         {'name': 'code', 'title': _("Code")}, {'name': 'name', 'title': _("Name")},
         {'name': 'type', 'title': _("Type")}, {'name': 'features', 'title': _("Features")},
-        {'name': 'danger_indication', 'title': _("Danger indication")}, {'name': 'quantity', 'title': _("Quantity")},
-        {'name': 'molecular_formula', 'title': _("Molecular formula")}, {'name': 'cas_id_number', 'title': _("CAS id number")}
+        {'name': 'danger_indication', 'title': _("Danger indication")},
+        {'name': 'molecular_formula', 'title': _("Molecular formula")},
+        {'name': 'cas_id_number', 'title': _("CAS id number")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
@@ -231,21 +231,21 @@ def report_objects_html(report):
     }
     report.save()
 
-def report_object_doc(report):
+def report_objects_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
         _("Code"), _("Name"), _("Type"), _("Features"), _('Danger indication'),
-        _('Quantity'), _("Molecular formula"), _("CAS id number")
+        _("Molecular formula"), _("CAS id number")
     ]]
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content = content + get_datatset_limit_objects(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    content = content + get_dataset_objects(report)
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -254,20 +254,20 @@ def report_object_doc(report):
     file.close()
 
 #report_limit_object
-def get_datatset_limit_objects(report):
+def get_dataset_limit_objects(report):
     dataset = []
     if 'laboratory' in report.data:
-        labs = report.data['laboratory']
+        labs = Laboratory.objects.filter(pk__in=report.data['laboratory'])
         for lab in labs:
             shelf_objects = ShelfObject.objects.filter(
-                        shelf__furniture__labroom__laboratory__pk=lab)
+                        shelf__furniture__labroom__laboratory=lab)
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
             for shelfobj in shelf_objects:
                 obj_item = [lab.name] if len(labs) > 1 else []
                 obj_item = obj_item + [
-                    shelfobj.shelf, shelfobj.object, f'{shelfobj.quantity} {shelfobj.get_measurement_unit_display()}',
-                    f'{shelfobj.limit_quantity} {shelfobj.get_measurement_unit_display()}',
+                    shelfobj.shelf.name, shelfobj.object.code, shelfobj.object.name, f'{shelfobj.quantity} {shelfobj.get_measurement_unit_display()}',
+                    f'{shelfobj.limit_quantity} {shelfobj.get_measurement_unit_display()}'
                 ]
                 dataset.append(obj_item)
     return dataset
@@ -279,29 +279,30 @@ def get_limited_shelf_objects(query):
 
 def report_limit_object_html(report):
     columns_fields = [
-        {'name': 'shelf', 'title': _("Shelf")}, {'name': 'object', 'title': _("Object")},
-        {'name': 'quantity', 'title': _("Quantity")}, {'name': 'limit_quanity', 'title': _("Limit quantity")}
+        {'name': 'shelf', 'title': _("Shelf")}, {'name': 'code', 'title': _("Code")},
+        {'name': 'object', 'title': _("Object")}, {'name': 'quantity', 'title': _("Quantity")},
+        {'name': 'limit_quantity', 'title': _("Limit quantity")}, {'name': 'measurement_unit', 'title': _("Measurement Unit")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
-        'dataset': get_datatset_limit_objects(report)
+        'dataset': get_dataset_limit_objects(report)
     }
     report.save()
 
 def report_limit_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
-        _("Shelf"), _("Object"), _("Quantity"), _('Limit quantity')
+        _("Shelf"), _("Code"), _("Object"), _("Quantity"), _('Limit quantity'), _("Measurement Unit")
     ]]
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content =  content + get_datatset_limit_objects(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    content =  content + get_dataset_limit_objects(report)
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -325,7 +326,7 @@ def get_dataset_report_organization_reactive(report):
                 values('name', 'laboratoryroom__furniture')
 
         if 'users' in report.data:
-            usermanagement = organization.filter(users__pk__in=report.data['users']).values('first_name', 'last_name', 'id')
+            usermanagement = organization.users.filter(pk__in=report.data['users']).values('first_name', 'last_name', 'id')
         else:
             usermanagement = organization.users.values('first_name', 'last_name', 'id')
 
@@ -358,10 +359,6 @@ def get_dataset_report_organization_reactive(report):
     return dataset
 
 def report_organization_reactive_list_html(report):
-    object_json = {
-        'columns': [],
-        'dataset': []
-    }
     columns_fields = [
         {'name': 'laboratory_name', 'title': _("Laboratory name")}, {'name': 'first_name', 'title': _("First Name")},
         {'name': 'last_name', 'title': _("Last Name")}, {'name': 'code', 'title': _("Code")},
@@ -369,9 +366,10 @@ def report_organization_reactive_list_html(report):
         {'name': 'white_organ', 'title': _("White Organ")}, {'name': 'carcinogenic', 'title': _("Carcinogenic")},
         {'name': 'id_card', 'title': _("ID Card")}, {'name': 'job_position', 'title': _("Job Position")}
     ]
-    object_json['columns'] = set_format_table_columns(columns_fields)
-    object_json['datatset'] = get_dataset_report_organization_reactive(report)
-    report.table_content = object_json
+    report.table_content = {
+        'columns': set_format_table_columns(columns_fields),
+        'dataset': get_dataset_report_organization_reactive(report)
+    }
     report.save()
 
 def report_organization_reactive_list_doc(report):
@@ -379,9 +377,9 @@ def report_organization_reactive_list_doc(report):
     content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'), _('Sustance'), _('CAS'),
                     _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position')]]
     content = content + get_dataset_report_organization_reactive(report)
-    builder.add_table(content, report.data['title'] if report.data['title'] else '')
+    report_name = get_report_name(report)
+    builder.add_table(content, report_name)
     file=builder.save()
-    report_name = report.data['name'] if report.data['name'] else 'report'
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)

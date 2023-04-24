@@ -8,7 +8,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from laboratory.models import TaskReport
+from report.models import TaskReport
 from report.api.serializers import ReportDataTableSerializer
 from django.db import connection
 

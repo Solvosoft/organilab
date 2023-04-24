@@ -44,7 +44,7 @@ $('#send').on('click', function(){
     $(this).attr('disabled',true);
     $(".statuspanel").addClass("d-none");
 
-    $("#button-text").text('Loading the report may take a few minutes...');
+    $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
     $.ajax({
         url: url,
@@ -74,7 +74,7 @@ function open_new_window(url_file){
 
 function accept_request(){
     document.querySelector('#spiner').classList.remove('spinner-border', 'spinner-border-sm')
-    document.querySelector("#button-text").textContent = 'Send'
+    document.querySelector("#button-text").textContent = gettext('Send');
     document.querySelector("#send").removeAttribute('disabled');
 }
 
@@ -93,14 +93,13 @@ function get_doc(pk,task){
 
             if(type_report==='html'){
                 open_new_window(url_file);
-                accept_request();
             }else{
-                accept_request();
-                $("#download-report").attr("href",url_file)
-                $("#download_file").attr("href",url_file)
-                $(".statuspanel").removeClass("d-none")
+                $("#download-report").attr("href", url_file);
+                $("#download_file").attr("href", url_file);
+                $(".statuspanel").removeClass("d-none");
                 $("#reportModal").modal('show');
             }
+            accept_request();
          }else{
             setTimeout(function(){
                         get_doc(pk,task);
@@ -220,6 +219,9 @@ $('#id_all_labs_org').on('change', function(){
 $(document).ready(function() {
     update_lab_rooms();
     update_furniture();
-    update_selects("form select#id_users")
-    update_selects("form select#id_laboratory")
+});
+
+
+$("#download-report").on("click", function(){
+    $("#reportModal").modal('hide');
 });
