@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.utils.translation import gettext as _
+from djgentelella.models import Notification
 
 from laboratory.models import Furniture
 
@@ -80,3 +81,12 @@ def get_furniture_queryset_by_filters(report):
         furniture_list = Furniture.objects.filter(labroom__laboratory__pk__in=lab)
 
     return furniture_list
+
+def create_notification(user, message,url):
+    noti = Notification.objects.create(
+        state='visible',
+        user=user,
+        message_type="info",
+        description=message,
+        link=url,
+    )
