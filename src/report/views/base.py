@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.module_loading import import_string
+from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
 from laboratory.forms import TasksForm
@@ -14,7 +15,8 @@ from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
 
-from report.utils import get_pdf_table_content
+from report.models import DocumentReportStatus
+from report.utils import get_pdf_table_content, create_notification
 
 
 def build_report(pk, absolute_uri):
@@ -24,6 +26,10 @@ def build_report(pk, absolute_uri):
     if report.type_report in register.REPORT_FORMS:
         report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
+            DocumentReportStatus.objects.create(
+                report=report,
+                description="Iniciando creacíon del reporte %s" % (now().strftime("%m/%d/%Y, %H:%M:%S"))
+            )
             if report.file_type == 'pdf':
                 if 'html' in report_obj:
                     f_pdf = report_obj[report.file_type]
@@ -118,8 +124,11 @@ def download_report(request, lab_pk, org_pk):
                 task.status=_('Delivered')
                 task.save()
                 if task.file_type=='html':
+                    create_notification(request.user, _("A list of")+" "+task.data['name'], reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
                     return JsonResponse({'result': True, 'url_file':reverse('report:report_table',kwargs={'lab_pk':lab_pk,'pk':task.pk,'org_pk':org_pk}) ,'type_report':task.file_type})
                 else:
+                    file_name = f"{task.data['name']}.{task.file_type}"
+                    create_notification(request.user, _("A new report was generated with the name")+" "+file_name , task.file.url)
                     return JsonResponse({'result': True, 'url_file': task.file.url})
             else:
                 return JsonResponse({'result': False})
@@ -135,3 +144,20 @@ def report_table(request, lab_pk, pk, org_pk):
 
     return render(request,template_name='report/general_reports.html', context={'table':task.table_content,'lab_pk':lab_pk, 'title':title,'org_pk':org_pk, 'obj_task': task})
 
+
+@login_required
+def download_pdf_status(request):
+    from django_celery_results.models import TaskResult
+
+    result = TaskResult.objects.filter(task_id=request.GET.get('task')).first()
+    if result:
+        end = result.status=='SUCCESS'
+    else:
+        end = False
+    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('pk')).order_by('report_time')
+    description = ''
+    for text in status:
+        description += "%s %s %s <br>"%(
+            text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+            text.description, result.status)
+    return JsonResponse({'end': end, 'text': description})
