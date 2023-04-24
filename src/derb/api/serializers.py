@@ -39,5 +39,5 @@ class IncidentReportSerializer(serializers.ModelSerializer):
 class OrganizationStrtSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationStructure
-        fields = '__all__'
+        fields = ['name', 'users']
 
