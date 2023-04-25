@@ -87,8 +87,8 @@ function get_doc(pk,task){
             accept_request();
          }else{
             setTimeout(function(){
-                        get_doc(pk,task);
-                        }, 3000);
+                get_doc(pk,task);
+            }, 3000);
          }
          }
     });
@@ -103,88 +103,61 @@ function get_doc_filter(){
       return dev;
 }
 
-
-function add_data_to_select(select, selecteditems){
-
-    $(select).find('option').remove();
-    $(select).val(null).trigger('change');
-
-    return (data)=>{
-        let has_selected=false;
-        for(let x=0; x<data.results.length; x++){
-
-            if(data.results[x].selected || selecteditems.includes(String(data.results[x].id))){
-                has_selected=true;
-                if(selecteditems.includes(String(data.results[x].id))){
-                    data.results[x].selected = true;
-                }
-            }
-            if ($(select).find("option[value='" + data.results[x].id + "']").length) {
-                $(select).val(data.results[x].id).trigger('change');
-            }else{
-                var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected,
-                        data.results[x].selected);
-                $(select).append(newOption)
-
-            }
-        }
-        if(!has_selected) {
-            $(select).val(null).trigger('change');
-        }else{
-            $(select).trigger('change');
-        }
-    }
-}
-
 document.select_data = {
+    relfield: '',
     all_labs_org: false,
     organization: $("#id_organization").val(),
     laboratory: $("#id_laboratory").val(),
 }
 
-function update_lab_rooms(){
-    var select_labroom = $("form select#id_lab_room");
-    var url = $(select_labroom).data('url');
-    var selecteditems = select_labroom.val();
 
-    $.ajax({
-      type: "GET",
-      url: url,
-      data: document.select_data,
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_data_to_select(select_labroom, selecteditems),
-      dataType: 'json'
-    });
+function add_data_to_select(select, selecteditems){
+    $(select).find('option').remove();
+    var value = [];
+
+    if(selecteditems){
+        return (data)=>{
+            let has_selected=false;
+            for(let x=0; x<data.results.length; x++){
+                if(data.results[x].selected || selecteditems.includes(String(data.results[x].id))){
+                    has_selected=true;
+                    if(selecteditems.includes(String(data.results[x].id))){
+                        data.results[x].selected = true;
+                        value.push(String(data.results[x].id));
+                    }
+                    var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected);
+                    $(select).append(newOption)
+                }
+            }
+            if(!has_selected) {
+                $(select).val(null).trigger('change');
+            }else{
+                $(select).val(value).trigger('change');
+                if($(select)[0].name =='lab_room'){
+                    document.select_data.relfield = $(select).val().join(",");
+                }
+            }
+        }
+    }
 }
 
-function update_furniture(){
-    var select_furniture = $("form select#id_furniture");
-    var url = $(select_furniture).data('url');
-    var selecteditems = select_furniture.val();
-
-    $.ajax({
-      type: "GET",
-      url: url,
-      data: document.select_data,
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_data_to_select(select_furniture, selecteditems),
-      dataType: 'json'
-    });
-}
 
 function update_selects(form_element){
-    var select = $(form_element);
+    var select = $("#id_"+form_element);
     var url = $(select).data('url');
     var selecteditems = select.val();
 
+    if(selecteditems){
+        document.select_data[form_element] = selecteditems;
+    }
+
     $.ajax({
       type: "GET",
       url: url,
       data: document.select_data,
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
+      traditional: true,
       success: add_data_to_select(select, selecteditems),
       dataType: 'json'
     });
@@ -196,15 +169,24 @@ $('#id_all_labs_org').on('change', function(){
      if($(this).is(":checked")){
         document.select_data.all_labs_org = true;
     }
-    update_lab_rooms();
-    update_furniture();
+    update_selects("lab_room");
 });
 
 
 $(document).ready(function() {
-    update_lab_rooms();
-    update_furniture();
+    update_selects("lab_room");
 });
+
+$('#id_lab_room').on('change', function(){
+    var value = $(this).val();
+    if(value){
+        document.select_data.relfield = value.join(",");
+    }else{
+        document.select_data.relfield = '';
+    }
+    update_selects("furniture");
+});
+
 
 
 $("#download-report").on("click", function(){

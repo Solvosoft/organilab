@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
@@ -64,23 +65,35 @@ class ReportObjectForm(ReportObjectsBaseForm):
 
 class RelOrganizationForm(GTForm):
     organization = forms.IntegerField()
-    laboratory = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
+    laboratory = forms.IntegerField()
+    lab_room = forms.ModelMultipleChoiceField(queryset=LaboratoryRoom.objects.all(), required=False)
     all_labs_org = forms.BooleanField(required=False)
 
-class RelLaboratoryForm(GTForm):
-    laboratory = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
+class RelFurnitureForm(GTForm):
+    organization = forms.IntegerField()
+    laboratory = forms.IntegerField()
+    furniture = forms.ModelMultipleChoiceField(queryset=Furniture.objects.all(), required=False)
+    all_labs_org = forms.BooleanField(required=False)
 
 
 class LaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
-    lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
-    furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(LaboratoryRoomReportForm, self).__init__(*args, **kwargs)
-        self.fields['lab_room'].widget.attrs['data-url'] = reverse('labroombase-list')
-        self.fields['furniture'].widget.attrs['data-url'] = reverse('furniturebase-list')
+    lab_room = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("lab_room", attrs={
+        'data-related': 'true',
+        'data-pos': 0,
+        'data-groupname': 'labroomreport',
+        'data-s2filter-organization': '#id_organization',
+        'data-s2filter-laboratory': '#id_laboratory',
+        'data-s2filter-all_labs_org': '#id_all_labs_org:checked'
+    }),
+    queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
+    furniture = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("furniture", attrs={
+        'data-related': 'true',
+        'data-pos': 1,
+        'data-groupname': 'labroomreport'
+    }),
+   queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
 
 
 class ValidateLaboratoryRoomReportForm(ReportBase):
