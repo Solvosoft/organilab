@@ -632,38 +632,22 @@ class ReactivePrecursorObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
-        title = _("Reactive Precursor Objects Report")
-        context['title_view'] = title
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
-        context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
-        context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
-            'report_name': 'reactive_precursor',
-            'laboratory': lab_obj,
+        title = _("Reactive Precursor Objects Report")
+        context.update({
+            'title_view': title,
+            'report_name': 'report_furniture',
+            'report_urlnames': ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects'],
+            'form': ReportForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'reactive_precursor',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
-
         return context
-
-    def get_queryset(self):
-        try:
-            self.all_labs = int(self.request.GET.get('all_labs', '0'))
-        except:
-            self.all_labs = 0
-        query = super(ReactivePrecursorObjectList, self).get_queryset()
-
-        query = query.filter(type=Object.REACTIVE,
-                             sustancecharacteristics__is_precursor=True)
-        if not self.all_labs:
-            query = query.filter(
-                shelfobject__shelf__furniture__labroom__laboratory=self.lab).distinct()
-
-        for obj in query:
-            clentry = CLInventory.objects.filter(
-                cas_id_number=get_cas(obj, 0)).first()
-            setattr(obj, 'clinventory_entry', clentry)
-        return query
 
 
 class FilterForm(GTForm, forms.Form):
