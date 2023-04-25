@@ -576,29 +576,36 @@ class ObjectList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
-        context['lab_pk'] = self.kwargs.get('lab_pk')
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         type_id = ""
+        title_by_object = {
+            "0": _('Reactive Objects Report'),
+            "1": _('Material Objects Report'),
+            "2": _('Equipment Objects Report'),
+        }
         objecttypeform = ValidateObjectTypeForm(self.request.GET)
 
         if objecttypeform.is_valid():
             type_id = objecttypeform.cleaned_data['type_id']
 
-        context['title_view'] = _('Objects Report')
-        if type_id == "0":
-           context['title_view']= _('Reactive Objects Report')
-        elif type_id == "1":
-           context['title_view']= _('Material Objects Report')
-        elif type_id == "2":
-           context['title_view']= _('Equipment Objects Report')
+        if type_id in title_by_object:
+            title_view = title_by_object[type_id]
+        else:
+            title_view = _('Objects Report')
 
-        context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
-        context['form'] = ReportObjectsForm(initial={
-            'name': context['title_view'] +' '+ now().strftime("%x").replace('/', '-'),
-            'title': context['title_view'],
-            'laboratory':self.lab,
-            'object_type': type_id,
-            'organization': self.org,
-            'report_name':'report_objects'
+        context.update({
+            'title_view': title_view,
+            'report_name': 'report_objects',
+            'report_urlnames': ['reports_objects_list', 'reports_objects'],
+            'form': ReportObjectsForm(initial={
+                'name': title_view + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title_view,
+                'organization': self.org,
+                'report_name': 'report_objects',
+                'laboratory': lab_obj,
+                'all_labs_org': False,
+                'object_type': type_id,
+            })
         })
         return context
 
