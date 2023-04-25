@@ -43,14 +43,18 @@ class FurnitureReportView(ListView):
         context = super(FurnitureReportView, self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         title = _('Objects by Furniture Report')
-        context['title_view'] = title
-        context['report_urlnames'] = ['reports_furniture_detail']
-        context['form'] = LaboratoryRoomReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
+        context.update({
+            'title_view': title,
             'report_name': 'report_furniture',
-            'laboratory': lab_obj,
+            'report_urlnames': ['reports_furniture_detail'],
+            'form': LaboratoryRoomReportForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_furniture',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
         return context
 
