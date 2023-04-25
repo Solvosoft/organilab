@@ -9,35 +9,47 @@ user_is_allowed_on_organization()
 organization_can_change_laboratory()
 get_users_from_organization()
 """
-#OrganizationStructure
+#Item structure
+#<option value={{item.key}}>{{item.value}}</option>
 
 
 class ObjectsSerializer(serializers.ModelSerializer):
+    key = serializers.ReadOnlyField(source='id')
+    value = serializers.CharField(source='name')
     class Meta:
         model = Object
-        fields = '__all__'
+        fields = ['key', 'value']
 
 
 class InformSerializer(serializers.ModelSerializer):
+    key = serializers.ReadOnlyField(source='id')
+    value = serializers.CharField(source='name')
     class Meta:
         model = Inform
-        fields = '__all__'
+        fields = ['key', 'value']
 
 
 class LaboratorySerializer(serializers.ModelSerializer):
+    key = serializers.ReadOnlyField(source='id')
+    value = serializers.CharField(source='name')
     class Meta:
         model = Laboratory
-        fields = '__all__'
+        fields = ['key', 'value']
 
 
 class IncidentReportSerializer(serializers.ModelSerializer):
+    key = serializers.ReadOnlyField(source='id')
+    value = serializers.CharField(source='short_description')
+
     class Meta:
         model = IncidentReport
-        fields = '__all__'
+        fields = ['key', 'value']
 
 
 class OrganizationStrtSerializer(serializers.ModelSerializer):
+    key = serializers.ReadOnlyField(source='id')
+    value = serializers.CharField(source='name')
     class Meta:
         model = OrganizationStructure
-        fields = ['name', 'users']
+        fields = ['key', 'value']
 
