@@ -10,20 +10,26 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, o
 
 
 class InformView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
-        inform_queryset = Inform.objects.filter(organization__pk=org_pk)
+        inform_queryset = Inform.objects.filter(created_by=request.user)
         serializer = InformSerializer(inform_queryset, many=True)
         return Response(serializer.data)
 
 
 class LaboratorytView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
-        lab_queryset = Laboratory.objects.filter(organization__id=org_pk)
+        lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user, org_pk) #Laboratory.objects.filter(organization__id=org_pk)
         serializer = LaboratorySerializer(lab_queryset, many=True)
         return Response(serializer.data)
 
 
 class ObjectsView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
         objects_queryset = Object.objects.filter(organization__pk=org_pk)
         serializer = ObjectsSerializer(objects_queryset, many=True)
@@ -41,6 +47,8 @@ class IncidentReportView(APIView):
         return Response(serializer.data)
 
 class OrganizationUsersView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
         org = OrganizationStructure.objects.get(pk=org_pk)
         user_is_allowed_on_organization(request.user, org)

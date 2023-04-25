@@ -1,11 +1,12 @@
 # encoding: utf-8
+from django.conf import settings
 from django.contrib.admin.models import DELETION, ADDITION
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect, reverse, get_object_or_404
 from django.shortcuts import render
 
 from laboratory.forms import InformForm, CommentForm
-from laboratory.models import Inform
+from laboratory.models import Inform, OrganizationStructure
 
 from django.contrib import messages
 from django.utils.translation import gettext as _
@@ -54,6 +55,8 @@ def create_informs(request, *args, **kwargs):
         inform.content_type=content
         inform.object_id=int(laboratory)
         inform.schema=inform.custom_form.schema
+        inform.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org)
+        inform.created_by = request.user
         inform.save()
         organilab_logentry(request.user, inform, ADDITION, 'informs', relobj=laboratory)
         return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory,'org_pk':org}))
