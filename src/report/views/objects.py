@@ -254,6 +254,11 @@ def report_objects_doc(report):
     file.close()
 
 #report_limit_object
+def get_limited_shelf_objects(query):
+    for shelf_object in query:
+        if shelf_object.limit_reached:
+            yield shelf_object
+
 def get_dataset_limit_objects(report):
     dataset = []
     if 'laboratory' in report.data:
@@ -266,19 +271,16 @@ def get_dataset_limit_objects(report):
             for shelfobj in shelf_objects:
                 obj_item = [lab.name] if len(labs) > 1 else []
                 obj_item = obj_item + [
-                    shelfobj.shelf.name, shelfobj.object.code, shelfobj.object.name, f'{shelfobj.quantity} {shelfobj.get_measurement_unit_display()}',
-                    f'{shelfobj.limit_quantity} {shelfobj.get_measurement_unit_display()}'
+                    shelfobj.shelf.name, shelfobj.object.code, shelfobj.object.name, shelfobj.quantity,
+                    shelfobj.limit_quantity, shelfobj.get_measurement_unit_display()
                 ]
                 dataset.append(obj_item)
     return dataset
 
-def get_limited_shelf_objects(query):
-    for shelf_object in query:
-        if shelf_object.limit_reached:
-            yield shelf_object
-
 def report_limit_object_html(report):
-    columns_fields = [
+    general = True if 'all_labs_org' in report.data else False
+    columns = [{'name': 'laboratory', 'title': _("Laboratory")}] if general else []
+    columns_fields = columns + [
         {'name': 'shelf', 'title': _("Shelf")}, {'name': 'code', 'title': _("Code")},
         {'name': 'object', 'title': _("Object")}, {'name': 'quantity', 'title': _("Quantity")},
         {'name': 'limit_quantity', 'title': _("Limit quantity")}, {'name': 'measurement_unit', 'title': _("Measurement Unit")}
