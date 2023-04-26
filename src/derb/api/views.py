@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,11 +20,19 @@ class InformView(APIView):
         return Response(serializer.data)
 
 
-class LaboratorytView(APIView):
+class LaboratoryByUserView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
-        lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user, org_pk) #Laboratory.objects.filter(organization__id=org_pk)
+        lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user)
+        serializer = LaboratorySerializer(lab_queryset, many=True)
+        return Response(serializer.data)
+
+class LaboratoryByOrgView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, org_pk):
+        lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user, org_pk)
         serializer = LaboratorySerializer(lab_queryset, many=True)
         return Response(serializer.data)
 
