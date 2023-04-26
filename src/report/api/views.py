@@ -28,20 +28,20 @@ class ReportDataViewSet(viewsets.ViewSet):
     def get_queryset(self):
         self.datadict={column['name']:'ll.row_data->>'+str(i) for i,column in enumerate(self.report.table_content['columns'])}
         self.translation_columns={self.datadict[data]:self.request.GET[data].lower() for data in self.datadict if data in self.request.GET}
-        sql_query="""Select ll.row_data::json from laboratory_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport where id=%s) as ll on ll.id=lab.id %s order by %s %s;"""%(self.pk, self.get_where_clause(), self.get_ordering(), self.get_limit_and_offset())
+        sql_query="""Select ll.row_data::json from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id %s order by %s %s;"""%(self.pk, self.get_where_clause(), self.get_ordering(), self.get_limit_and_offset())
 
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
             return list(map(lambda x: x[0], cursor))
 
     def get_queryset_total(self):
-        sql_query = """Select COUNT(ll.row_data->>0) from laboratory_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport where id=%s) as ll on ll.id=lab.id""" %(self.pk,)
+        sql_query = """Select COUNT(ll.row_data->>0) from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id""" %(self.pk,)
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
             return cursor.fetchone()[0]
 
     def get_queryset_record_filtered_total(self):
-        sql_query = """Select COUNT(ll.row_data->>0) from laboratory_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from laboratory_taskreport where id= %s ) as ll on ll.id=lab.id %s""" % (self.pk, self.get_where_clause())
+        sql_query = """Select COUNT(ll.row_data->>0) from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id= %s ) as ll on ll.id=lab.id %s""" % (self.pk, self.get_where_clause())
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
             return cursor.fetchone()[0]
