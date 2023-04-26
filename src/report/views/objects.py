@@ -77,11 +77,14 @@ def report_objectlogchange_html(report):
         'dataset': get_dataset_objectlogchange(report)
     }
     report.save()
+    return len(report.table_content['dataset'])
 
 def report_objectlogchange_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("User"), _("Laboratory"), _("Object"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]]
     content = content + get_dataset_objectlogchange(report)
+    record_total=len(content)-1
+
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -91,6 +94,7 @@ def report_objectlogchange_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
 
 #report_reactive_precursor
 def get_dataset_reactive_precursor(report):
@@ -141,6 +145,7 @@ def report_reactive_precursor_html(report):
         'dataset': get_dataset_reactive_precursor(report)
     }
     report.save()
+    return len(report.table_content['dataset'])
 
 def report_reactive_precursor_doc(report):
     builder = ExcelGraphBuilder()
@@ -154,6 +159,8 @@ def report_reactive_precursor_doc(report):
             content[0].insert(0, _('Laboratory'))
 
     content = content + get_dataset_reactive_precursor(report)
+    record_total=len(content)-1
+
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -163,6 +170,7 @@ def report_reactive_precursor_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
 
 #report_objects
 def get_object_elements(obj):
@@ -230,6 +238,7 @@ def report_objects_html(report):
         'dataset': get_dataset_objects(report)
     }
     report.save()
+    return len(report.table_content['dataset'])
 
 def report_objects_doc(report):
     builder = ExcelGraphBuilder()
@@ -243,6 +252,7 @@ def report_objects_doc(report):
             content[0].insert(0,_('Laboratory'))
 
     content = content + get_dataset_objects(report)
+    record_total =len(content)-1
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -252,6 +262,7 @@ def report_objects_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
 
 #report_limit_object
 def get_dataset_limit_objects(report):
@@ -281,14 +292,14 @@ def report_limit_object_html(report):
     columns_fields = [
         {'name': 'shelf', 'title': _("Shelf")}, {'name': 'code', 'title': _("Code")},
         {'name': 'object', 'title': _("Object")}, {'name': 'quantity', 'title': _("Quantity")},
-        {'name': 'limit_quantity', 'title': _("Limit quantity")}, {'name': 'measurement_unit', 'title': _("Measurement Unit")}
+        {'name': 'limit_quantity', 'title': _("Limit quantity")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
         'dataset': get_dataset_limit_objects(report)
     }
     report.save()
-
+    return len(report.table_content['dataset'])
 def report_limit_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
@@ -300,6 +311,7 @@ def report_limit_object_doc(report):
             content[0].insert(0,_('Laboratory'))
 
     content =  content + get_dataset_limit_objects(report)
+    record_total=len(content)-1
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -309,6 +321,7 @@ def report_limit_object_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
 
 #report_organization_reactive
 def get_dataset_report_organization_reactive(report):
@@ -371,12 +384,15 @@ def report_organization_reactive_list_html(report):
         'dataset': get_dataset_report_organization_reactive(report)
     }
     report.save()
+    return len(report.table_content['dataset'])
 
 def report_organization_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'), _('Sustance'), _('CAS'),
                     _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position')]]
     content = content + get_dataset_report_organization_reactive(report)
+    record_total=len(content)-1
+
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -386,3 +402,4 @@ def report_organization_reactive_list_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
