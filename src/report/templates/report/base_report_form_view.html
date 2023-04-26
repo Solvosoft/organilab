@@ -42,7 +42,14 @@
 <div class="row statuspanel d-none">
     <div class='col-md-10 offset-md-1'>
         <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>
+            </div>
             <div class="card-body">
+                {% trans 'Queuing report creation' %}
+                <div id="textstatus"></div>
+            </div>
+            <div class="card-footer d-none">
                 <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
             </div>
         </div>
