@@ -5129,6 +5129,42 @@ msgstr "Carcinógeno"
 msgid "Sustance"
 msgstr "Sustancia"
 
+#: report/templates/report/base_report_form_view.html:46
+msgid "Detail of the process please do not close this window"
+msgstr "Detalle del proceso por favor no cierre esta ventana"
+
+#: report/templates/report/base_report_form_view.html:46
+msgid "Queuing report creation"
+msgstr "Encolando creación de reporte"
+
+#: report/views/base.py:33
+msgid "Starting report creation"
+msgstr "Iniciando creacíon del reporte"
+
+#: report/views/base.py:36
+msgid "Loading data to analyze in"
+msgstr "Cargando datos a analizar en"
+
+#: report/views/base.py:49
+msgid "created in"
+msgstr "creado en"
+
+#: report/views/base.py:49
+msgid "with"
+msgstr "con"
+
+#: report/views/base.py:49
+msgid "records"
+msgstr "registros"
+
+#: report/utils.py:36
+msgid "seconds"
+msgstr "segundos"
+
+#: report/utils.py:36
+msgid "minutes"
+msgstr "minutos"
+
 #: reservations_management/models.py:20 reservations_management/models.py:27
 msgid "Denied"
 msgstr "Rechazado"
