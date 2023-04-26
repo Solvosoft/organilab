@@ -1,6 +1,5 @@
 # encoding: utf-8
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils.timezone import now
@@ -45,7 +44,6 @@ class FurnitureReportView(ListView):
         title = _('Objects by Furniture Report')
         context.update({
             'title_view': title,
-            'report_name': 'report_furniture',
             'report_urlnames': ['reports_furniture_detail'],
             'form': LaboratoryRoomReportForm(initial={
                 'name': title + ' ' + now().strftime("%x").replace('/', '-'),

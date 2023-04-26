@@ -16,65 +16,6 @@ from report.forms import RelOrganizationForm, RelOrganizationLaboratoryForm, Org
 class GPaginatorMoreElements(GPaginator):
     page_size = 100
 
-
-@register_lookups(prefix="laboratorybase", basename="laboratorybase")
-class LaboratoryModelLookups(BaseSelect2View):
-    model = Laboratory
-    fields = ['name']
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-    pagination_class = GPaginatorMoreElements
-    organization= None
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        labs = queryset.none()
-
-        if self.request.user is not None:
-            if self.request.user:
-                labs = get_laboratories_from_organization_profile(self.organization.pk, self.request.user.pk)
-        return labs
-
-    def list(self, request, *args, **kwargs):
-        if self.organization is None:
-            form = RelOrganizationLaboratoryForm(self.request.GET)
-
-            if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
-        if self.organization is None:
-            raise Http404("Organization not found")
-        return super().list(request, *args, **kwargs)
-
-@register_lookups(prefix="usersbase", basename="usersbase")
-class UserModelLookups(BaseSelect2View):
-    model = User
-    fields = ['first_name','last_name']
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-    pagination_class = GPaginatorMoreElements
-    organization, all_labs_org= None, None
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        users = queryset.none()
-
-        if self.all_labs_org is not None or self.request.user is not None:
-            if self.all_labs_org or self.request.user:
-                users = get_users_from_organization(self.organization.pk)
-        return users
-
-    def list(self, request, *args, **kwargs):
-        if self.organization is None:
-            form = OrganizationForm(self.request.GET)
-
-            if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
-
-        if self.organization is None:
-            raise Http404("Organization not found")
-        return super().list(request, *args, **kwargs)
-
-
 @register_lookups(prefix="lab_room", basename="lab_room")
 class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = LaboratoryRoom

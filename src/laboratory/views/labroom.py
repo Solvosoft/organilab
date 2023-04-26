@@ -16,7 +16,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-from laboratory.models import LaboratoryRoom, Laboratory, Furniture
+from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
@@ -141,7 +141,6 @@ class LaboratoryRoomReportView(ListView):
         title = _("Objects by Laboratory Room Report")
         context.update({
             'title_view': title,
-            'report_name': 'report_laboratory_room',
             'report_urlnames': ['reports_laboratory', 'report_building'],
             'form': LaboratoryRoomReportForm(initial={
                 'name': title +' '+ now().strftime("%x").replace('/', '-'),
