@@ -16,29 +16,38 @@ from weasyprint import HTML
 from io import BytesIO
 
 from report.models import DocumentReportStatus
-from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name
+from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name, \
+    document_status, calc_duration
 
 
 def build_report(pk, absolute_uri):
     report = TaskReport.objects.get(pk=pk)
     translation.activate(report.language)
-
+    start_time = now()
+    record_total=0
     if report.type_report in register.REPORT_FORMS:
         report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
-            DocumentReportStatus.objects.create(
-                report=report,
-                description="Iniciando creacíon del reporte %s" % (now().strftime("%m/%d/%Y, %H:%M:%S"))
-            )
+
+            description =_("Starting report creation")
+            document_status(report, description)
+            t, tx = calc_duration(start_time, now())
+            description = _("Loading data to analyze in")+f" {t} {tx}"
+            document_status(report, description)
+
             if report.file_type == 'pdf':
                 if 'html' in report_obj:
                     f_pdf = report_obj[report.file_type]
                     import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
-                    import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
+                    record_total=import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
                     report.status = _('Generated')
             else:
-                import_string(report_obj[report.file_type])(report)
+                record_total=import_string(report_obj[report.file_type])(report)
                 report.status = _('Generated')
+            t, tx = calc_duration(start_time, now())
+            description = report.data['name']+"."+report.file_type+f" {_('created in')} {t} {tx} {_('with')} {record_total} {_('records')}"
+
+            document_status(report, description)
             report.save()
 
 
@@ -64,6 +73,8 @@ def base_pdf(report, uri):
     report.file = content
     report.save()
     file.close()
+    return len(report.table_content['dataset'])
+
 
 
 @login_required
@@ -158,10 +169,10 @@ def download_pdf_status(request):
         end = result.status=='SUCCESS'
     else:
         end = False
-    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('pk')).order_by('report_time')
+    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('taskreport')).order_by('report_time')
     description = ''
     for text in status:
-        description += "%s %s %s <br>"%(
+        description += "%s %s <br>"%(
             text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
-            text.description, result.status)
+            text.description)
     return JsonResponse({'end': end, 'text': description})

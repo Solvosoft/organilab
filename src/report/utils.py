@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
 from laboratory.models import Furniture
+from report.models import DocumentReportStatus
 
 
 def format_date(value):
@@ -108,3 +109,18 @@ def get_report_name(report):
     elif 'report_name' in report.data and report.data['report_name']:
         report_name = report.data['report_name']
     return report_name
+
+
+def document_status(report,description):
+    DocumentReportStatus.objects.create(
+        report=report,
+        description=description
+    )
+
+def calc_duration(start_time, end_time):
+    duration = end_time - start_time
+    duration_in_s = duration.total_seconds()
+    minutos=divmod(duration_in_s, 60)[0]
+    if divmod(duration_in_s, 60)[0] == 0:
+        return duration.total_seconds(), _('seconds')
+    return minutos, _('minutes')
