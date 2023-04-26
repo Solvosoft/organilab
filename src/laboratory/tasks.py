@@ -5,8 +5,9 @@ import re
 
 from click.core import F
 
-from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod, Furniture, \
-    TaskReport
+from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, InformsPeriod, Furniture
+from report.models import TaskReport
+
 from async_notifications.utils import send_email_from_template
 from datetime import date
 from .limit_shelfobject import send_email_limit_objs
