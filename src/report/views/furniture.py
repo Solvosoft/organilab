@@ -33,12 +33,14 @@ def furniture_html(report):
         'dataset': get_dataset(report)
     }
     report.save()
-
+    return len(report.table_content['dataset'])
 
 def furniture_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("Code"), _("Object"), _("Type"), _("Quantity"), _("Laboratory"), _("Laboratory Room"), _("Furniture"), _("Shelf")]]
     content = content + get_dataset(report)
+    record_total=len(content)-1
+
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
     file=builder.save()
@@ -48,3 +50,4 @@ def furniture_doc(report):
     report.file = content
     report.save()
     file.close()
+    return record_total
