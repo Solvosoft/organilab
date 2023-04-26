@@ -595,7 +595,6 @@ class ObjectList(ListView):
 
         context.update({
             'title_view': title_view,
-            'report_name': 'report_objects',
             'report_urlnames': ['reports_objects_list', 'reports_objects'],
             'form': ReportObjectsForm(initial={
                 'name': title_view + ' ' + now().strftime("%x").replace('/', '-'),
@@ -643,7 +642,6 @@ class ReactivePrecursorObjectList(ListView):
         title = _("Reactive Precursor Objects Report")
         context.update({
             'title_view': title,
-            'report_name': 'report_furniture',
             'report_urlnames': ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects'],
             'form': ReportForm(initial={
                 'name': title + ' ' + now().strftime("%x").replace('/', '-'),
@@ -678,14 +676,18 @@ class LogObjectView(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         title = _("Changes on Objects Report")
-        context['title_view'] = title
-        context['report_urlnames'] = ['object_change_logs']
-        context['form'] = ObjectLogChangeReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'laboratory':self.lab,
-            'organization': self.org,
-            'report_name':'report_objectschanges',
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['object_change_logs'],
+            'form': ObjectLogChangeReportForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_objectschanges',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
         return context
 
@@ -843,15 +845,17 @@ class OrganizationReactivePresenceList(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         title = _('User Reactive Exposition in Organization Report')
-        context['form'] = OrganizationReactiveForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
-            'report_name': 'report_organization_reactive_list'
-        }, org_pk=self.org)
-        context['laboratory'] = 0
-        context['title_view'] = title
-        context['report_urlnames'] = ['organizationreactivepresence']
+        context.update({
+            'title_view': title,
+            'laboratory': 0,
+            'report_urlnames': ['organizationreactivepresence'],
+            'form': OrganizationReactiveForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_organization_reactive_list'
+            }, org_pk=self.org)
+        })
         return context
 
 
