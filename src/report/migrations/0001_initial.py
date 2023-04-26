@@ -29,4 +29,13 @@ class Migration(migrations.Migration):
                 ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        migrations.CreateModel(
+            name='DocumentReportStatus',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('report_time', models.DateTimeField(auto_now=True)),
+                ('description', models.CharField(max_length=512)),
+                ('report', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='report.taskreport')),
+            ],
+        ),
     ]

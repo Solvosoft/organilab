@@ -1,5 +1,20 @@
 var filter =""
+function get_archive_status(){
+    url=report_urls['report_status_url']+filter;
+    console.log(filter)
+    $.ajax({
+        url: url,
+        type : "GET",
+        dataType : 'json',
+        success : function(data) {
+            $("#textstatus").html(data['text']);
+            if (data['end']!=true){
+                setTimeout(get_archive_status, 5000);
+            }
 
+       }
+    });
+}
 function load_errors(error_list, obj){
     ul_obj = "<ul class='errorlist report_form_errors'>";
     error_list.forEach((item)=>{
@@ -22,15 +37,20 @@ function form_field_errors(form_errors){
 
 
 $('#send').on('click', function(){
+
     filter=get_doc_filter();
     filter= filter.substring(1,filter.length);
     filter="?"+filter;
     url=report_urls['create_request']+filter;
     $(this).attr('disabled',true);
-    $(".statuspanel").addClass("d-none");
+    document.querySelector(".statuspanel").classList.remove('d-none');
+    $(".card-footer").addClass("d-none")
+    $("#textstatus").html("");
 
     $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
+    setTimeout(get_archive_status, 1000);
+
     $.ajax({
         url: url,
         type : "GET",
@@ -67,7 +87,6 @@ function get_doc(pk,task){
 
     filter=`?taskreport=${pk}&task=${task}`;
     url=report_urls['generate_report']+filter;
-
     $.ajax({
         url: url,
         type : "GET",
@@ -83,9 +102,10 @@ function get_doc(pk,task){
                 $("#download_file").attr("href", url_file);
                 $(".statuspanel").removeClass("d-none");
                 $("#reportModal").modal('show');
+                $(".card-footer").removeClass("d-none")
             }
             accept_request();
-         }else{
+        }else{
             setTimeout(function(){
                 get_doc(pk,task);
             }, 3000);
