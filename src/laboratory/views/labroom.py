@@ -141,7 +141,7 @@ class LaboratoryRoomReportView(ListView):
         title = _("Objects by Laboratory Room Report")
         context.update({
             'title_view': title,
-            'report_urlnames': ['reports_laboratory', 'report_building'],
+            'report_urlnames': ['reports_laboratory'],
             'form': LaboratoryRoomReportForm(initial={
                 'name': title +' '+ now().strftime("%x").replace('/', '-'),
                 'title': title,

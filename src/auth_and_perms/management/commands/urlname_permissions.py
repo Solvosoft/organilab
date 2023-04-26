@@ -359,6 +359,16 @@ URLNAME_PERMISSIONS = {
     ],
     'reports_laboratory': [
         {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
@@ -1773,30 +1783,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Object Features',
             'category': 'Object Features',
             'permission': 'laboratory.view_objectfeatures'
-        }
-    ],
-    'report_building': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Laboratory',
-            'category': 'Laboratory',
-            'permission': 'laboratory.view_laboratory'
-        }
-    ],
-    'reports_furniture': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
         }
     ],
     'reports_objects': [

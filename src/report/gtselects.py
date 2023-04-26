@@ -1,16 +1,13 @@
-from django.contrib.auth.models import User
 from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
-from laboratory.models import LaboratoryRoom, OrganizationStructure, Laboratory, Furniture
-from laboratory.utils import get_laboratories_from_organization, get_laboratories_from_organization_profile, \
-    get_users_from_organization
-from report.forms import RelOrganizationForm, RelOrganizationLaboratoryForm, OrganizationForm
+from laboratory.models import LaboratoryRoom, Furniture
+from laboratory.utils import get_laboratories_from_organization
+from report.forms import RelOrganizationForm
 
 
 class GPaginatorMoreElements(GPaginator):
