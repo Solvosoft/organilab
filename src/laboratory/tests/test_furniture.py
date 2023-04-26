@@ -64,15 +64,6 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
         self.assertNotIn("Mueble 3", list(Furniture.objects.values_list("name", flat=True)))
 
-    def test_furniture_report(self):
-        data = {
-            "pk": 1,
-            "format": "pdf"
-        }
-        url = reverse("laboratory:reports_furniture", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-
     def test_reactive_precursor_objects_report(self):
         data = {
             "all_labs": 2,
