@@ -1,6 +1,7 @@
 {% load i18n shelf_position laboratory %}
-{% load urlname_tags %}
+{% load urlname_tags i18n gentelellamenu gtsettings %}
 {% get_user_labs as mylabs %}
+          {% top_menu %}
 
 {% if perms.djgentelella.can_manage_permissions %}
     {% get_urlname_action as urlnameactions %}
@@ -18,7 +19,6 @@
     </a>
 </li>
 {% endif %}
-
 {% if laboratory and org_pk %}
 
 

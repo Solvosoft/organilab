@@ -16,7 +16,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
     LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-from laboratory.models import LaboratoryRoom, Laboratory, Furniture
+from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
@@ -139,15 +139,17 @@ class LaboratoryRoomReportView(ListView):
                         self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         title = _("Objects by Laboratory Room Report")
-        context['title_view'] = title
-        context['report_name'] = 'report_laboratory_room'
-        context['report_urlnames'] = ['reports_laboratory', 'report_building']
-        context['form'] = LaboratoryRoomReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
-            'report_name': 'report_laboratory_room',
-            'laboratory': lab_obj,
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['reports_laboratory'],
+            'form': LaboratoryRoomReportForm(initial={
+                'name': title +' '+ now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_laboratory_room',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
         return context
 

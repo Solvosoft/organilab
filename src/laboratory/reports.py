@@ -2,7 +2,8 @@ from django.core.files.base import ContentFile
 from django.db.models import Sum, Min
 from django.template.loader import  render_to_string
 
-from laboratory.models import TaskReport, Object, CLInventory, ShelfObject, Laboratory
+from laboratory.models import Object, ShelfObject, Laboratory
+
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_cas, get_molecular_formula, get_imdg, get_pk_org_ancestors
 from django.utils.translation import gettext as _

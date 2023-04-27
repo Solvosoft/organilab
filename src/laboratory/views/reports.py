@@ -127,81 +127,6 @@ def report_organization_building(request, *args, **kwargs):
     return response
 
 
-def make_book_laboratory(rooms):
-
-    content = {}
-    for labroom in rooms:
-        labobj = [[
-            _("Furniture"),
-            _("Shelf"),
-            _("Code"),
-            _("Name"),
-            _("Quantity"),
-            _("Units"),
-            _("Object type"),
-            _("CAS ID"),
-            _("IMDG code")
-        ]]
-
-        for furniture in labroom.furniture_set.all():
-            for obj in furniture.get_objects():
-                labobj.append([
-                    furniture.name,
-                    obj.shelf.name,
-                    obj.object.code,
-                    obj.object.name,
-                    obj.quantity,
-                    obj.get_measurement_unit_display(),
-                    obj.object.get_type_display(),
-                    get_cas(obj.object,""),
-                    str(get_imdg(obj.object,""))
-                ])
-        if labobj:
-            content[labroom.name] = labobj
-
-    return content
-
-
-
-@permission_required('laboratory.do_report')
-def report_labroom_building(request, *args, **kwargs):
-    org=None
-    if 'lab_pk' in kwargs:
-        rooms = get_object_or_404(
-            Laboratory, pk=kwargs.get('lab_pk')).laboratoryroom_set.all()
-    else:
-        rooms = LaboratoryRoom.objects.all()
-    if 'org_pk' in kwargs:
-        org=kwargs.get('org_pk')
-    fileformat = request.GET.get('format', 'pdf')
-    if fileformat in ['xls', 'xlsx', 'ods']:
-        return django_excel.make_response_from_book_dict(
-            make_book_laboratory(rooms), fileformat, file_name="Laboratories.%s" % (fileformat,))
-
-
-    context = {
-        #set your report title in verbose_name
-        'verbose_name': "Organilab Laboratory Report",
-        'object_list': rooms,
-        'datetime': timezone.now(),
-        'request': request,
-        'laboratory': kwargs.get('lab_pk'),
-        'org_pk': org
-    }
-    template = get_template('pdf/laboratoryroom_pdf.html')
-    #added explicit context
-    html = template.render(context=context)
-
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-
-    response['Content-Disposition'] = 'attachment; filename="report_laboratory.pdf"'
-
-    return response
-
-
-
 @permission_required('laboratory.do_report')
 def report_shelf_objects(request, org_pk, lab_pk, pk):
 
@@ -467,75 +392,6 @@ def report_reactive_precursor_objects(request, *args, **kwargs):
 
     return response
 
-
-
-def make_book_furniture_objects(furnitures):
-    content = {}
-    for furniture in furnitures:
-        funobjs = [
-            [_("Shelf"),
-                _("Code"),
-                _("Name"),
-                _("Quantity"),
-                _("Limit Quantity"),
-                _("Units"),
-             ]
-        ]
-        for shelf in furniture.shelf_set.all():
-            for obj in shelf.shelfobject_set.all():
-                funobjs.append([
-
-                    obj.shelf.name,
-                    obj.object.code,
-                    obj.object.name,
-                    obj.quantity,
-                    obj.limit_quantity,
-                    obj.get_measurement_unit_display(),
-                ])
-        content[furniture.name] = funobjs
-
-    return content
-
-
-
-@permission_required('laboratory.do_report')
-def report_furniture(request, *args, **kwargs):
-    var = request.GET.get('pk')
-    lab = kwargs.get('lab_pk')
-    org = kwargs.get('org_pk')
-
-    if var is None:
-        furniture = Furniture.objects.filter(
-            labroom__laboratory__pk=lab)
-    else:
-        furniture = Furniture.objects.filter(pk=var)
-
-    fileformat = request.GET.get('format', 'pdf')
-    if fileformat in ['xls', 'xlsx', 'ods']:
-        return django_excel.make_response_from_book_dict(
-            make_book_furniture_objects(furniture), fileformat, file_name="Furniture.%s" % (fileformat,))
-
-
-    context = {
-        'verbose_name': "Organilab Summary Furniture Report",
-        'object_list': furniture,
-        'datetime': timezone.now(),
-        'request': request,
-        'laboratory': lab,
-        'org_pk': org
-    }
-
-    template = get_template('pdf/summaryfurniture_pdf.html')
-    html = template.render(context=context)
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
-    response = HttpResponse(page, content_type='application/pdf')
-
-    response['Content-Disposition'] = 'attachment; filename="furniture_report.pdf"'
-
-    return response
-
-
 @permission_required('laboratory.do_report')
 def report_h_code(request, *args, **kwargs):
     form = H_CodeForm(request.GET)
@@ -576,29 +432,35 @@ class ObjectList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
-        context['lab_pk'] = self.kwargs.get('lab_pk')
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         type_id = ""
+        title_by_object = {
+            "0": _('Reactive Objects Report'),
+            "1": _('Material Objects Report'),
+            "2": _('Equipment Objects Report'),
+        }
         objecttypeform = ValidateObjectTypeForm(self.request.GET)
 
         if objecttypeform.is_valid():
             type_id = objecttypeform.cleaned_data['type_id']
 
-        context['title_view'] = _('Objects Report')
-        if type_id == "0":
-           context['title_view']= _('Reactive Objects Report')
-        elif type_id == "1":
-           context['title_view']= _('Material Objects Report')
-        elif type_id == "2":
-           context['title_view']= _('Equipment Objects Report')
+        if type_id in title_by_object:
+            title_view = title_by_object[type_id]
+        else:
+            title_view = _('Objects Report')
 
-        context['report_urlnames'] = ['reports_objects_list', 'reports_objects']
-        context['form'] = ReportObjectsForm(initial={
-            'name': context['title_view'] +' '+ now().strftime("%x").replace('/', '-'),
-            'title': context['title_view'],
-            'laboratory':self.lab,
-            'object_type': type_id,
-            'organization': self.org,
-            'report_name':'report_objects'
+        context.update({
+            'title_view': title_view,
+            'report_urlnames': ['reports_objects_list', 'reports_objects'],
+            'form': ReportObjectsForm(initial={
+                'name': title_view + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title_view,
+                'organization': self.org,
+                'report_name': 'report_objects',
+                'laboratory': lab_obj,
+                'all_labs_org': False,
+                'object_type': type_id,
+            })
         })
         return context
 
@@ -632,38 +494,21 @@ class ReactivePrecursorObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ReactivePrecursorObjectList,
                         self).get_context_data(**kwargs)
-        title = _("Reactive Precursor Objects Report")
-        context['title_view'] = title
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
-        context['report_urlnames'] = ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects']
-        context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
-            'report_name': 'reactive_precursor',
-            'laboratory': lab_obj,
+        title = _("Reactive Precursor Objects Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['reports_objects', 'reactive_precursor_object_list', 'reports_reactive_precursor_objects'],
+            'form': ReportForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'reactive_precursor',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
-
         return context
-
-    def get_queryset(self):
-        try:
-            self.all_labs = int(self.request.GET.get('all_labs', '0'))
-        except:
-            self.all_labs = 0
-        query = super(ReactivePrecursorObjectList, self).get_queryset()
-
-        query = query.filter(type=Object.REACTIVE,
-                             sustancecharacteristics__is_precursor=True)
-        if not self.all_labs:
-            query = query.filter(
-                shelfobject__shelf__furniture__labroom__laboratory=self.lab).distinct()
-
-        for obj in query:
-            clentry = CLInventory.objects.filter(
-                cas_id_number=get_cas(obj, 0)).first()
-            setattr(obj, 'clinventory_entry', clentry)
-        return query
 
 
 class FilterForm(GTForm, forms.Form):
@@ -687,14 +532,18 @@ class LogObjectView(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         title = _("Changes on Objects Report")
-        context['title_view'] = title
-        context['report_urlnames'] = ['object_change_logs']
-        context['form'] = ObjectLogChangeReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'laboratory':self.lab,
-            'organization': self.org,
-            'report_name':'report_objectschanges',
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['object_change_logs'],
+            'form': ObjectLogChangeReportForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_objectschanges',
+                'laboratory': lab_obj,
+                'all_labs_org': False
+            })
         })
         return context
 
@@ -852,15 +701,17 @@ class OrganizationReactivePresenceList(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         title = _('User Reactive Exposition in Organization Report')
-        context['form'] = OrganizationReactiveForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
-            'title': title,
-            'organization': self.org,
-            'report_name': 'report_organization_reactive_list'
-        }, org_pk=self.org)
-        context['laboratory'] = 0
-        context['title_view'] = title
-        context['report_urlnames'] = ['organizationreactivepresence']
+        context.update({
+            'title_view': title,
+            'laboratory': 0,
+            'report_urlnames': ['organizationreactivepresence'],
+            'form': OrganizationReactiveForm(initial={
+                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'report_organization_reactive_list'
+            }, org_pk=self.org)
+        })
         return context
 
 

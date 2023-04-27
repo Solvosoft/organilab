@@ -1,14 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
-
 
 class ReportBase(GTForm):
     name = forms.CharField(max_length=100, label=_('File Name'), widget=genwidgets.TextInput(), required=True)
@@ -26,7 +25,6 @@ class ReportBase(GTForm):
 class ReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
-
 
 class ValidateReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
@@ -61,27 +59,30 @@ class ReportObjectForm(ReportObjectsBaseForm):
 
         return list(laboratory.values_list('pk',flat=True))
 
-
 class RelOrganizationForm(GTForm):
     organization = forms.IntegerField()
-    laboratory = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
+    laboratory = forms.IntegerField()
+    lab_room = forms.ModelMultipleChoiceField(queryset=LaboratoryRoom.objects.all(), required=False)
     all_labs_org = forms.BooleanField(required=False)
-
-class RelLaboratoryForm(GTForm):
-    laboratory = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
-
 
 class LaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
-    lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
-    furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(LaboratoryRoomReportForm, self).__init__(*args, **kwargs)
-        self.fields['lab_room'].widget.attrs['data-url'] = reverse('labroombase-list')
-        self.fields['furniture'].widget.attrs['data-url'] = reverse('furniturebase-list')
-
+    lab_room = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("lab_room", attrs={
+        'data-related': 'true',
+        'data-pos': 0,
+        'data-groupname': 'labroomreport',
+        'data-s2filter-organization': '#id_organization',
+        'data-s2filter-laboratory': '#id_laboratory',
+        'data-s2filter-all_labs_org': '#id_all_labs_org:checked'
+    }),
+    queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
+    furniture = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("furniture", attrs={
+        'data-related': 'true',
+        'data-pos': 1,
+        'data-groupname': 'labroomreport'
+    }),
+   queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
 
 class ValidateLaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
@@ -159,7 +160,6 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
             laboratory = get_laboratories_from_organization(organization)
         return list(laboratory.values_list('pk',flat=True).distinct())
 
-
 class OrganizationReactiveForm(ReportBase):
     laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all(), label=_('Filter Laboratory'), required=False)
     users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Profile.objects.all(), label=_('Filter User'), required=False)
@@ -190,15 +190,6 @@ class OrganizationReactiveForm(ReportBase):
         else:
             users = users.values_list('user__pk', flat=True)
         return list(users.distinct())
-
-
-class RelOrganizationLaboratoryForm(GTForm):
-    organization = forms.IntegerField()
-    all_labs_org = forms.BooleanField(required=False)
-
-class OrganizationForm(GTForm):
-    organization = forms.IntegerField()
-
 
 class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
