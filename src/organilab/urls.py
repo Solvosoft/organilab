@@ -39,6 +39,16 @@ from derb import urls as derb_urls
 from report import urls as report_urls
 from django.views.i18n import JavaScriptCatalog
 
+def import_module_app_gt(app, name):
+    try:
+        __import__(app + '.' + name)
+    except ModuleNotFoundError as e:
+        pass
+
+
+for app in settings.INSTALLED_APPS:
+    import_module_app_gt(app, 'gtselects')
+
 urlpatterns = urls_djgentelela + auth_urls + [
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
     path('index/', include('presentation.urls')),

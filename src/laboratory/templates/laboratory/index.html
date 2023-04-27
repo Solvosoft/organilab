@@ -10,7 +10,6 @@
 {% endblock %}
 {% block pre_head %}
     {% define_urlname_action 'labindex' %}
-    {% define_urlname_action 'reports_furniture' %}
     {% define_urlname_action 'reports_objects' %}
 {% endblock %}
 
@@ -152,10 +151,6 @@
                   <a href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
                 </li>
               {% endif %}
-                              
-              <li class="list-group-item">
-                <a href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Furnitures' %}</strong></a>
-              </li>
 
               <li class="list-group-item">
                 <a href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Objects' %}</strong></a>

@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.module_loading import import_string
+from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
 from laboratory.forms import TasksForm
@@ -14,25 +15,39 @@ from django.utils import translation, timezone
 from weasyprint import HTML
 from io import BytesIO
 
-from report.utils import get_pdf_table_content, save_request_data, get_report_name
+from report.models import DocumentReportStatus
+from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name, \
+    document_status, calc_duration
 
 
 def build_report(pk, absolute_uri):
     report = TaskReport.objects.get(pk=pk)
     translation.activate(report.language)
-
+    start_time = now()
+    record_total=0
     if report.type_report in register.REPORT_FORMS:
         report_obj = register.REPORT_FORMS[report.type_report]
         if report.file_type in register.REPORT_FORMS[report.type_report]:
+
+            description =_("Starting report creation")
+            document_status(report, description)
+            t, tx = calc_duration(start_time, now())
+            description = _("Loading data to analyze in")+f" {t} {tx}"
+            document_status(report, description)
+
             if report.file_type == 'pdf':
                 if 'html' in report_obj:
                     f_pdf = report_obj[report.file_type]
                     import_string(report_obj['html'])(report) #GET DATASET AND COLUMNS
-                    import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
+                    record_total=import_string(f_pdf)(report, absolute_uri) #(ABSOLUTE URL MEDIA REQUIRED)
                     report.status = _('Generated')
             else:
-                import_string(report_obj[report.file_type])(report)
+                record_total=import_string(report_obj[report.file_type])(report)
                 report.status = _('Generated')
+            t, tx = calc_duration(start_time, now())
+            description = report.data['name']+"."+report.file_type+f" {_('created in')} {t} {tx} {_('with')} {record_total} {_('records')}"
+
+            document_status(report, description)
             report.save()
 
 
@@ -58,6 +73,8 @@ def base_pdf(report, uri):
     report.file = content
     report.save()
     file.close()
+    return len(report.table_content['dataset'])
+
 
 
 @login_required
@@ -124,7 +141,10 @@ def download_report(request, lab_pk, org_pk):
                         }),
                         'type_report':task.file_type
                     })
+                    create_notification(request.user, _("A list of")+" "+task.data['name'], reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
                 else:
+                    file_name = f"{task.data['name']}.{task.file_type}"
+                    create_notification(request.user, file_name , task.file.url)
                     response.update({'url_file': task.file.url})
     return JsonResponse(response)
 
@@ -139,3 +159,20 @@ def report_table(request, lab_pk, pk, org_pk):
         'obj_task': task
     })
 
+
+@login_required
+def download_pdf_status(request):
+    from django_celery_results.models import TaskResult
+
+    result = TaskResult.objects.filter(task_id=request.GET.get('task')).first()
+    if result:
+        end = result.status=='SUCCESS'
+    else:
+        end = False
+    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('taskreport')).order_by('report_time')
+    description = ''
+    for text in status:
+        description += "%s %s <br>"%(
+            text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+            text.description)
+    return JsonResponse({'end': end, 'text': description})
