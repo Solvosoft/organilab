@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from djgentelella.widgets import core as genwidgets
 
 from presentation.utils import build_qr_instance
-from report.forms import LaboratoryRoomReportForm
+from report.forms import LaboratoryRoomReportForm, ValidateFurnitureForm
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
 from ..utils import organilab_logentry
 
@@ -42,17 +42,24 @@ class FurnitureReportView(ListView):
         context = super(FurnitureReportView, self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         title = _('Objects by Furniture Report')
+        initial_data = {
+            'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+            'title': title,
+            'organization': self.org,
+            'report_name': 'report_furniture',
+            'laboratory': lab_obj,
+            'all_labs_org': False
+        }
+        furniture_form = ValidateFurnitureForm(self.request.GET)
+
+        if furniture_form.is_valid():
+            initial_data['furniture'] = furniture_form.cleaned_data['furniture']
+            initial_data['laboratory'] = furniture_form.cleaned_data['laboratory']
+
         context.update({
             'title_view': title,
             'report_urlnames': ['reports_furniture_detail'],
-            'form': LaboratoryRoomReportForm(initial={
-                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
-                'title': title,
-                'organization': self.org,
-                'report_name': 'report_furniture',
-                'laboratory': lab_obj,
-                'all_labs_org': False
-            })
+            'form': LaboratoryRoomReportForm(initial=initial_data)
         })
         return context
 
