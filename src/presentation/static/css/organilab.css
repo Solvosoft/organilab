@@ -196,3 +196,7 @@ img {
 .dataTables_wrapper div:last-child {
     margin-top: 2em;
 }
+
+#textstatus{
+    list-style-type: circle
+}
