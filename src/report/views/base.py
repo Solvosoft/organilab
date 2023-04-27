@@ -175,7 +175,7 @@ def report_status(request):
         status = DocumentReportStatus.objects.filter(report__pk=form.cleaned_data['taskreport']).order_by('report_time')
         description = ''
         for text in status:
-            description += "%s %s <br>"%(
+            description += "<li>%s %s </li>"%(
                 text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
                 text.description)
     return JsonResponse({'end': end, 'text': description})
