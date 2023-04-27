@@ -196,13 +196,10 @@ class ValidateObjectTypeForm(GTForm):
 
     def clean_type_id(self):
         type_id = self.cleaned_data['type_id']
-        error = ValidationError(_("Object type is not allowed"))
 
-        if not type_id.isnumeric():
-            raise error
-        elif not type_id in dict(Object.TYPE_CHOICES).keys():
-            raise error
-        return type_id
+        if type_id.isnumeric() and type_id in dict(Object.TYPE_CHOICES).keys():
+            return type_id
+        self.add_error('type_id', _("Object type is not allowed"))
 
 
 class ValidateFurnitureForm(GTForm):
