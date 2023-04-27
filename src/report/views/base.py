@@ -18,6 +18,7 @@ from io import BytesIO
 from report.models import DocumentReportStatus
 from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name, \
     document_status, calc_duration
+from django_celery_results.models import TaskResult
 
 
 def build_report(pk, absolute_uri):
@@ -120,7 +121,6 @@ def create_request_by_report(request, lab_pk):
 @login_required
 @permission_required('laboratory.do_report')
 def download_report(request, lab_pk, org_pk):
-    from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
     response = {'result': False}
 
@@ -162,7 +162,6 @@ def report_table(request, lab_pk, pk, org_pk):
 
 @login_required
 def download_pdf_status(request):
-    from django_celery_results.models import TaskResult
 
     result = TaskResult.objects.filter(task_id=request.GET.get('task')).first()
     if result:
