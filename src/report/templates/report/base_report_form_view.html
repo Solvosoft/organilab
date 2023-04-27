@@ -17,9 +17,9 @@
 
 {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
     <div class="row container p-3 mt-1">
-        <div class='col-md-10 offset-md-1'>
+        <div class='col-md-10 offset-md-2'>
             <div class="card">
-            <div class="card-title text-center">
+            <div class="card-header card-title text-center">
                 <h2>{{title_view}}</h2>
             </div>
             <div class="card-body">
@@ -39,8 +39,8 @@
         </div>
         </div>
     </div>
-<div class="row statuspanel d-none">
-    <div class='col-md-10 offset-md-1'>
+<div class="row statuspanel container d-none">
+    <div class='col-md-10 offset-md-2'>
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>

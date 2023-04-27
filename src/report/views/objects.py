@@ -294,7 +294,7 @@ def report_limit_object_html(report):
     columns_fields = columns + [
         {'name': 'shelf', 'title': _("Shelf")}, {'name': 'code', 'title': _("Code")},
         {'name': 'object', 'title': _("Object")}, {'name': 'quantity', 'title': _("Quantity")},
-        {'name': 'limit_quantity', 'title': _("Limit quantity")}
+        {'name': 'limit_quantity', 'title': _("Limit quantity")},{'name': 'measurement_unit', 'title':_("Unit")}
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
