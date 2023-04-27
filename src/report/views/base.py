@@ -161,17 +161,21 @@ def report_table(request, lab_pk, pk, org_pk):
 
 
 @login_required
+@permission_required('laboratory.do_report')
 def download_pdf_status(request):
-
-    result = TaskResult.objects.filter(task_id=request.GET.get('task')).first()
-    if result:
-        end = result.status=='SUCCESS'
-    else:
-        end = False
-    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('taskreport')).order_by('report_time')
-    description = ''
-    for text in status:
-        description += "%s %s <br>"%(
-            text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
-            text.description)
+    form = TasksForm(request.GET)
+    end = False
+    description=""
+    if form.is_valid():
+        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+        if result:
+            end = result.status=='SUCCESS'
+        else:
+            end = False
+        status = DocumentReportStatus.objects.filter(report__pk=form.cleaned_data['taskreport']).order_by('report_time')
+        description = ''
+        for text in status:
+            description += "%s %s <br>"%(
+                text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                text.description)
     return JsonResponse({'end': end, 'text': description})
