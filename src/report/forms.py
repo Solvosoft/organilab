@@ -203,3 +203,18 @@ class ValidateObjectTypeForm(GTForm):
         elif not type_id in dict(Object.TYPE_CHOICES).keys():
             raise error
         return type_id
+
+
+class ValidateFurnitureForm(GTForm):
+    furniture = forms.IntegerField()
+    laboratory = forms.IntegerField()
+
+    def clean_furniture(self):
+        laboratory = self.cleaned_data['laboratory']
+        furniture = self.cleaned_data['furniture']
+
+        if furniture and laboratory:
+            furniture_obj = Furniture.objects.filter(pk=furniture, labroom__laboratory=laboratory)
+            if furniture_obj.exists():
+                return furniture
+        self.add_error('furniture', _("Furniture is not allowed"))
