@@ -50,11 +50,17 @@ class FurnitureReportView(ListView):
             'laboratory': lab_obj,
             'all_labs_org': False
         }
-        furniture_form = ValidateFurnitureForm(self.request.GET)
 
-        if furniture_form.is_valid():
-            initial_data['furniture'] = furniture_form.cleaned_data['furniture']
-            initial_data['laboratory'] = furniture_form.cleaned_data['laboratory']
+        if self.request.method == "GET":
+            furniture_form = ValidateFurnitureForm(self.request.GET)
+            if furniture_form.is_valid():
+                furniture = Furniture.objects.get(pk=furniture_form.cleaned_data['furniture'])
+                lab_obj = get_object_or_404(Laboratory, pk=furniture_form.cleaned_data['laboratory'])
+                initial_data.update({
+                    'furniture': furniture,
+                    'lab_room': furniture.labroom,
+                    'laboratory': lab_obj
+                })
 
         context.update({
             'title_view': title,

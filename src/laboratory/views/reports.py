@@ -434,20 +434,21 @@ class ObjectList(ListView):
         context = super(ObjectList, self).get_context_data(**kwargs)
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         type_id = ""
+        title_view = _('Objects Report')
         title_by_object = {
             "0": _('Reactive Objects Report'),
             "1": _('Material Objects Report'),
             "2": _('Equipment Objects Report'),
         }
-        objecttypeform = ValidateObjectTypeForm(self.request.GET)
 
-        if objecttypeform.is_valid():
-            type_id = objecttypeform.cleaned_data['type_id']
+        if self.request.method == 'GET':
+            objecttypeform = ValidateObjectTypeForm(self.request.GET)
+
+            if objecttypeform.is_valid():
+                type_id = objecttypeform.cleaned_data['type_id']
 
         if type_id in title_by_object:
             title_view = title_by_object[type_id]
-        else:
-            title_view = _('Objects Report')
 
         context.update({
             'title_view': title_view,
