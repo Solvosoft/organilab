@@ -162,7 +162,7 @@ def report_table(request, lab_pk, pk, org_pk):
 
 @login_required
 @permission_required('laboratory.do_report')
-def download_pdf_status(request):
+def report_status(request):
     form = TasksForm(request.GET)
     end = False
     description=""

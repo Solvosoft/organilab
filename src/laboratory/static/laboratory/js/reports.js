@@ -1,6 +1,6 @@
 var filter =""
 function get_archive_status(){
-    url=report_urls['report_status_url']+filter;
+    url=report_urls['report_status']+filter;
     console.log(filter)
     $.ajax({
         url: url,
