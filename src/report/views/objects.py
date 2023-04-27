@@ -204,7 +204,8 @@ def get_dataset_objects(report):
         labs = report.data['laboratory']
 
     if 'object_type' in report.data:
-        filters['type'] = report.data['object_type']
+        if report.data['object_type'] in dict(Object.TYPE_CHOICES).keys():
+            filters['type'] = report.data['object_type']
 
     objects = Object.objects.filter(**filters)
 

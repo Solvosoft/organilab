@@ -47,7 +47,7 @@
             </div>
             <div class="card-body">
                 {% trans 'Queuing report creation' %}
-                <div id="textstatus"></div>
+                <ul id="textstatus"></ul>
             </div>
             <div class="card-footer d-none">
                 <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
@@ -85,7 +85,7 @@
 	const report_urls = {
 		create_request : "{% url 'report:create_report_request' lab_pk=laboratory %}",
 		generate_report : "{% url 'report:generate_report' lab_pk=laboratory org_pk=org_pk %}",
-		report_status_url: "{% url 'report:report_pdf_status' %}"
+		report_status: "{% url 'report:report_status' %}"
 
 	}
 </script>
