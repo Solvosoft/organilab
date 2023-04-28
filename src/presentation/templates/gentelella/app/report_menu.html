@@ -12,14 +12,6 @@
             <ul class="dropdown-menu">
                 <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}">
                     {% trans 'Objects' %}</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_organization' lab_pk=laboratory org_pk=org_pk  %}">
-                    {% trans 'Principal Technician' %}</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
             </ul>
         </li>
         <li>
