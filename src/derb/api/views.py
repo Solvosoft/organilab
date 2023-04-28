@@ -34,6 +34,8 @@ class LaboratoryByOrgView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
+        org = OrganizationStructure.objects.get(pk=org_pk)
+        user_is_allowed_on_organization(request.user, org)
         lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user, org_pk)
         serializer = LaboratorySerializer(lab_queryset, many=True)
         return Response(serializer.data)
@@ -43,6 +45,8 @@ class ObjectsView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
+        org = OrganizationStructure.objects.get(pk=org_pk)
+        user_is_allowed_on_organization(request.user, org)
         objects_queryset = Object.objects.filter(organization__pk=org_pk)
         serializer = ObjectsSerializer(objects_queryset, many=True)
         return Response(serializer.data)
