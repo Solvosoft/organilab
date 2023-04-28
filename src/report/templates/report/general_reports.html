@@ -6,9 +6,7 @@
 {% block title %}{% trans 'Reports' %} {% endblock %}
 {% block pre_head %}
     {% define_true 'use_datatables' %}
-	{% define_urlname_action 'reactive_precursor_object_list' %}
-	{% define_urlname_action 'reports_objects' %}
-	{% define_urlname_action 'reports_reactive_precursor_objects' %}
+	{% define_urlname_action 'can_do_report' %}
 {% endblock %}
 
 {% block content %}
