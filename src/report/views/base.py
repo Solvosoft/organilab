@@ -141,7 +141,7 @@ def download_report(request, lab_pk, org_pk):
                         }),
                         'type_report':task.file_type
                     })
-                    create_notification(request.user, _("A list of")+" "+task.data['name'], reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
+                    create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
                 else:
                     file_name = f"{task.data['name']}.{task.file_type}"
                     create_notification(request.user, file_name , task.file.url)
