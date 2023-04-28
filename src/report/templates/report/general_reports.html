@@ -30,16 +30,18 @@
 {{obj_task.table_content|json_script:"columns"}}
 <script>
 
-    datatableelement=createDataTable('#table_id', '{% url "report:api-report-detail" obj_task.pk %}', {
-     columns: JSON.parse(document.getElementById('columns').textContent)['columns'],
-        ajax: {
-            url: "{% url "report:api-report-detail" obj_task.pk  %}",
-            type: 'GET',
-            data: function(dataTableParams, settings) {
-                return formatDataTableParams(dataTableParams, settings);
-            }
-        }
-    }, addfilter=true);
+        datatableelement=createDataTable('#table_id', '{% url "report:api-report-detail" obj_task.pk %}', {
+          bFilter: false,
+          columns: JSON.parse(document.getElementById('columns').textContent)['columns'],
 
+			ajax: {
+				url: "{% url "report:api-report-detail" obj_task.pk  %}",
+				type: 'GET',
+				data: function(dataTableParams, settings) {
+					return formatDataTableParams(dataTableParams, settings);
+				}
+			}
+
+	    }, addfilter=true);
 </script>
 {% endblock %}
