@@ -6,16 +6,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from derb.api.serializers import InformSerializer, LaboratorySerializer, ObjectsSerializer, OrganizationStrtSerializer, \
     IncidentReportSerializer
-from laboratory.models import Object, Inform, Laboratory, OrganizationStructure, UserOrganization
+from laboratory.models import Object, Inform, OrganizationStructure
 from risk_management.models import IncidentReport
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 
 
 class InformView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
-        inform_queryset = Inform.objects.filter(created_by=request.user)
+        org = OrganizationStructure.objects.get(pk=org_pk)
+        user_is_allowed_on_organization(request.user, org)
+        inform_queryset = Inform.objects.filter(organization=org, created_by=request.user)
         serializer = InformSerializer(inform_queryset, many=True)
         return Response(serializer.data)
 
@@ -23,7 +25,7 @@ class InformView(APIView):
 class LaboratoryByUserView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, org_pk):
+    def get(self, request, org_pk=None):
         lab_queryset = OrganizationStructure.os_manager.filter_labs_by_user(request.user)
         serializer = LaboratorySerializer(lab_queryset, many=True)
         return Response(serializer.data)
@@ -52,7 +54,7 @@ class IncidentReportView(APIView):
     def get(self, request, org_pk):
         org = OrganizationStructure.objects.get(pk=org_pk)
         user_is_allowed_on_organization(request.user, org)
-        incident_queryset = IncidentReport.objects.filter(created_by=request.user)
+        incident_queryset = IncidentReport.objects.filter(organization=org ,created_by=request.user)
         serializer = IncidentReportSerializer(incident_queryset, many=True)
         return Response(serializer.data)
 
