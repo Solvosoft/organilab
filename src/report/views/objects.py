@@ -194,11 +194,11 @@ def get_object_elements(obj):
 
 def get_dataset_objects(report):
     dataset, labs = [], []
-    filters = {'is_public': True}
+    filters = {'object__is_public': True}
     general = True if 'all_labs_org' in report.data else False
     if 'organization' in report.data:
         org = report.data['organization']
-        filters['organization__in'] = get_pk_org_ancestors(org)
+        filters['object__organization__in'] = get_pk_org_ancestors(org)
 
     if 'laboratory' in report.data:
         filters['in_where_laboratory__pk__in']=report.data['laboratory']
