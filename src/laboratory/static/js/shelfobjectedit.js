@@ -2,11 +2,7 @@ const float_regex= /^[+-]?\d+(\.\d+)?$/;
 
 function processResponseshelfobject(dat){
     $("#closemodal").html(dat["inner-fragments"]["#closemodal"]);
-}
-
-function processResponseshelfobjectCreate(dat) {
-    $('#shelfobjectCreate').html(dat);
-    $("#object_create").modal('show');
+    datatableelement.ajax.reload();
 }
 
 function processResponseshelfobjectDelete(dat) {

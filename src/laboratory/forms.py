@@ -164,7 +164,7 @@ class AddObjectForm(GTForm, forms.Form):
 
 
 class SubtractObjectForm(GTForm):
-    discount = forms.CharField(widget=genwidgets.TextInput, max_length=10, help_text='Use dot like 0.344 on decimal',
+    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
                                label=_('Amount'), required=True)
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
@@ -517,10 +517,6 @@ class FurnitureLabRoomForm(forms.Form):
 
 class ValidateShelfForm(forms.Form):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
-
-class ValidateShelfObjectForm(forms.Form):
-    col = forms.IntegerField(widget=forms.HiddenInput)
-    row = forms.IntegerField(widget=forms.HiddenInput)
 
 class ReservedProductsForm(forms.Form):
     obj = forms.IntegerField(required=True)

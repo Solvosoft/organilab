@@ -128,7 +128,7 @@ lab_features_urls = [
 edit_objects = [
     path('edit_object/<int:pk>/', shelfobject.add_object,  name="edit_object"),
     path('get_object_detail', shelfobject.send_detail, name="get_object_detail"),
-    path('update_transfer/<int:org_pk>/<int:lab_pk>/<int:transfer_pk>/<int:shelf_pk>', shelfobject.objects_transfer, name="update_transfer"),
+    path('update_transfer/<int:transfer_pk>/<int:shelf_pk>', shelfobject.objects_transfer, name="update_transfer"),
     path('shelfs_list/', shelfobject.get_shelf_list, name="get_shelfs"),
     path('delete_transfer/<int:pk>/', shelfobject.delete_transfer, name="delete_transfer"),
 
@@ -235,6 +235,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/shelfedit/', include(edit_objects)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
@@ -244,4 +245,4 @@ urlpatterns += organization_urls + [
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
 
-]  + edit_objects
+]
