@@ -76,13 +76,14 @@ class LaboratoryRoomReportForm(ReportBase):
         'data-s2filter-laboratory': '#id_laboratory',
         'data-s2filter-all_labs_org': '#id_all_labs_org:checked'
     }),
-    queryset=LaboratoryRoom.objects.none(), label=_('Filter Laboratory Room'), required=False)
+    queryset=LaboratoryRoom.objects.all(), label=_('Filter Laboratory Room'), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("furniture", attrs={
         'data-related': 'true',
         'data-pos': 1,
         'data-groupname': 'labroomreport'
     }),
-   queryset=Furniture.objects.none(), label=_('Filter Furniture'), required=False)
+   queryset=Furniture.objects.all(), label=_('Filter Furniture'), required=False)
+
 
 class ValidateLaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
@@ -194,12 +195,31 @@ class OrganizationReactiveForm(ReportBase):
 class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
 
-    def clean_type_id(self):
+    def clean(self):
+        cleaned_data = super().clean()
         type_id = self.cleaned_data['type_id']
-        error = ValidationError(_("Object type is not allowed"))
 
         if not type_id.isnumeric():
-            raise error
-        elif not type_id in dict(Object.TYPE_CHOICES).keys():
-            raise error
-        return type_id
+            self.add_error('type_id', _("Object type is not allowed"))
+        else:
+            if not type_id in dict(Object.TYPE_CHOICES).keys():
+                self.add_error('type_id', _("Object type is not allowed"))
+        return cleaned_data
+
+
+class ValidateFurnitureForm(GTForm):
+    furniture = forms.IntegerField()
+    laboratory = forms.IntegerField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        laboratory = cleaned_data.get('laboratory')
+        furniture = cleaned_data.get('furniture')
+
+        if not furniture or not laboratory:
+            self.add_error('furniture', _("Furniture is not allowed"))
+        else:
+            furniture_obj = Furniture.objects.filter(pk=furniture, labroom__laboratory=laboratory)
+            if not furniture_obj.exists():
+                self.add_error('furniture', _("Furniture is not allowed"))
+        return cleaned_data

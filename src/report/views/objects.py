@@ -194,33 +194,32 @@ def get_object_elements(obj):
 
 def get_dataset_objects(report):
     dataset, labs = [], []
-    filters = {'is_public': True}
+    filters = {'object__is_public': True}
     general = True if 'all_labs_org' in report.data else False
     if 'organization' in report.data:
         org = report.data['organization']
-        filters['organization__in'] = get_pk_org_ancestors(org)
+        filters['object__organization__in'] = get_pk_org_ancestors(org)
 
     if 'laboratory' in report.data:
-        labs = report.data['laboratory']
+        filters['in_where_laboratory__pk__in']=report.data['laboratory']
 
     if 'object_type' in report.data:
-        filters['type'] = report.data['object_type']
+        if report.data['object_type'] in dict(Object.TYPE_CHOICES).keys():
+            filters['object__type'] = report.data['object_type']
 
-    objects = Object.objects.filter(**filters)
+    objects = ShelfObject.objects.filter(**filters).distinct('pk')
 
-    for lab_pk in labs:
-        lab = Laboratory.objects.filter(pk=lab_pk).first()
-        for obj in objects:
-            formula = "-"
-            features, danger = get_object_elements(obj)
+    for obj in objects:
+        formula = "-"
+        features, danger = get_object_elements(obj.object)
 
-            if hasattr(obj, 'sustancecharacteristics'):
-                formula = obj.sustancecharacteristics.molecular_formula if obj.sustancecharacteristics.molecular_formula else '-'
-            cas = get_cas(obj, "") if get_cas(obj, "") else ""
+        if hasattr(obj.object, 'sustancecharacteristics'):
+            formula = obj.object.sustancecharacteristics.molecular_formula if obj.object.sustancecharacteristics.molecular_formula else '-'
+        cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
 
-            obj_item = [lab.name] if general else []
-            obj_item = obj_item + [obj.code, obj.name, obj.get_type_display(), features, danger, formula, cas]
-            dataset.append(obj_item)
+        obj_item = [obj.in_where_laboratory.name] if general else []
+        obj_item = obj_item + [obj.object.code, obj.object.name, obj.object.get_type_display(), features, danger, formula, cas]
+        dataset.append(obj_item)
     return dataset
 
 def report_objects_html(report):

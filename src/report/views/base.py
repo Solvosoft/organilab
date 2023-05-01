@@ -18,6 +18,7 @@ from io import BytesIO
 from report.models import DocumentReportStatus
 from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name, \
     document_status, calc_duration
+from django_celery_results.models import TaskResult
 
 
 def build_report(pk, absolute_uri):
@@ -120,7 +121,6 @@ def create_request_by_report(request, lab_pk):
 @login_required
 @permission_required('laboratory.do_report')
 def download_report(request, lab_pk, org_pk):
-    from django_celery_results.models import TaskResult
     form = TasksForm(request.GET)
     response = {'result': False}
 
@@ -141,7 +141,7 @@ def download_report(request, lab_pk, org_pk):
                         }),
                         'type_report':task.file_type
                     })
-                    create_notification(request.user, _("A list of")+" "+task.data['name'], reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
+                    create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
                 else:
                     file_name = f"{task.data['name']}.{task.file_type}"
                     create_notification(request.user, file_name , task.file.url)
@@ -161,18 +161,21 @@ def report_table(request, lab_pk, pk, org_pk):
 
 
 @login_required
-def download_pdf_status(request):
-    from django_celery_results.models import TaskResult
-
-    result = TaskResult.objects.filter(task_id=request.GET.get('task')).first()
-    if result:
-        end = result.status=='SUCCESS'
-    else:
-        end = False
-    status = DocumentReportStatus.objects.filter(report__pk=request.GET.get('taskreport')).order_by('report_time')
-    description = ''
-    for text in status:
-        description += "%s %s <br>"%(
-            text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
-            text.description)
+@permission_required('laboratory.do_report')
+def report_status(request):
+    form = TasksForm(request.GET)
+    end = False
+    description=""
+    if form.is_valid():
+        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+        if result:
+            end = result.status=='SUCCESS'
+        else:
+            end = False
+        status = DocumentReportStatus.objects.filter(report__pk=form.cleaned_data['taskreport']).order_by('report_time')
+        description = ''
+        for text in status:
+            description += "<li>%s %s </li>"%(
+                text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                text.description)
     return JsonResponse({'end': end, 'text': description})

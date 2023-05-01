@@ -16,41 +16,44 @@
 {% block content %}
 
 {% if perms.laboratory.do_report and perms.laboratory.view_object  %}
-    <div class="row container p-3 mt-1">
-        <div class='col-md-10 offset-md-2'>
-            <div class="card">
-            <div class="card-header card-title text-center">
-                <h2>{{title_view}}</h2>
-            </div>
-            <div class="card-body">
-                <form id="form" onsubmit="return false;">
-                    {{form.as_horizontal}}
-
-                    <div class="form-group row justify-content-end">
-                        <div class="col-sm-9">
-                            <button id="send" class="btn btn-outline-success float-end me-0" type="button">
-                                <span id="button-text">{% trans 'Send' %}</span>
-                                <span id="spiner" role="status" aria-hidden="true"></span>
-                            </button>
-                        </div>
+    <div class="row p-3 mt-1">
+        <div class='col-md-10 offset-md-1'>
+            <div class="container">
+                <div class="card">
+                    <div class="card-header card-title text-center">
+                        <h2>{{title_view}}</h2>
                     </div>
-                </form>
+                    <div class="card-body">
+                        <form id="form" onsubmit="return false;">
+                            {{form.as_horizontal}}
+                            <div class="form-group row justify-content-end">
+                                <div class="col-sm-9">
+                                    <button id="send" class="btn btn-outline-success float-end me-0" type="button">
+                                        <span id="button-text">{% trans 'Send' %}</span>
+                                        <span id="spiner" role="status" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
     </div>
-<div class="row statuspanel container d-none">
-    <div class='col-md-10 offset-md-2'>
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>
-            </div>
-            <div class="card-body">
-                {% trans 'Queuing report creation' %}
-                <div id="textstatus"></div>
-            </div>
-            <div class="card-footer d-none">
-                <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
+<div class="row statuspanel d-none">
+    <div class="col-md-10 offset-md-1">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>
+                </div>
+                <div class="card-body">
+                    {% trans 'Queuing report creation' %}
+                    <ul id="textstatus"></ul>
+                </div>
+                <div class="card-footer d-none">
+                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +88,7 @@
 	const report_urls = {
 		create_request : "{% url 'report:create_report_request' lab_pk=laboratory %}",
 		generate_report : "{% url 'report:generate_report' lab_pk=laboratory org_pk=org_pk %}",
-		report_status_url: "{% url 'report:report_pdf_status' %}"
+		report_status: "{% url 'report:report_status' %}"
 
 	}
 </script>
