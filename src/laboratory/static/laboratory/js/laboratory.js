@@ -1,12 +1,20 @@
 
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
+    addObjectOk: function(data){
+         datatableelement.ajax.reload();
+         console.log("Wiii");
+    },
+    addObjectResponse: function(dat){
+            $('#shelfobjectCreate').html(dat);
+            $("#object_create").modal('show');
+    },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
         if (activeshelf == undefined){
             return 1;
         }
-        ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, processResponseshelfobjectCreate);
+        ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, tableObject.addObjectResponse);
     },
     get_active_shelf: function(){
          let value= $('input[name="shelfselected"]:checked').val();
@@ -26,8 +34,7 @@ const tableObject={
     },
     update_object: function(obj){
         datatableelement.rows( function ( idx, data, node ) {
-                                return data.pk == obj.pk ?
-                                    true : false;
+                                return data.pk == obj.pk;
                             } ).data(obj).draw();
     }
 

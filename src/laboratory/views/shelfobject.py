@@ -32,10 +32,11 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm,  ValidateShelfObjectForm
+    ShelfObjectListForm, ValidateShelfForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
+from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
 from django.core.exceptions import ValidationError
@@ -386,50 +387,15 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = "/"
 
-    def get_success_url(self):
-        return reverse_lazy('laboratory:list_shelf', args=(self.org, self.lab, self.object.shelf.furniture.pk))
-
-    def get_context_data(self, **kwargs):
-        context = DeleteView.get_context_data(self, **kwargs)
-        context['row'] = self.row
-        context['col'] = self.col
-        return context
-
-    def get(self, request, *args, **kwargs):
-        if request.method == "GET":
-            form = ValidateShelfObjectForm(request.GET)
-            if form.is_valid():
-                self.row = form.cleaned_data['row']
-                self.col = form.cleaned_data['col']
-        return DeleteView.get(self, request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
+        self.object.delete()
         data = {
             'inner-fragments': {
                 "#closemodal": '<script>$("#object_delete").modal("hide");</script>'
             }
         }
-        DeleteView.post(self, request, *args, **kwargs)
-
-        if request.method == "POST":
-            form = ValidateShelfObjectForm(request.POST)
-
-            if form.is_valid():
-                self.row = form.cleaned_data['row']
-                self.col = form.cleaned_data['col']
-
-            data['inner-fragments'].update({
-                    '#row_%s_col_%s_shelf_%d' % (self.row, self.col, self.object.shelf.pk): list_shelfobject_render(
-                        request, row=self.row, col=self.col, shelf=self.object.shelf.pk, org_pk=self.org, lab_pk=self.lab),
-            })
         return data
-
-    def form_valid(self, form):
-        success_url = self.get_success_url()
-        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
-        self.object.delete()
-        return HttpResponseRedirect(success_url)
-
 
 @method_decorator(permission_required('laboratory.view_shelfobject'), name='dispatch')
 class ShelfObjectDetail(AJAXMixin, DetailView):
@@ -437,7 +403,7 @@ class ShelfObjectDetail(AJAXMixin, DetailView):
 
 
 @permission_required('laboratory.change_shelfobject')
-def add_object(request, pk):
+def add_object(request, org_pk, lab_pk, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     elements_form=ShelfObjectOptions(request.POST)
     response={}
@@ -469,7 +435,6 @@ def add_object(request, pk):
 
                         response = {
                             'status': True,
-                            'template':get_shelfobject_template(request,request.POST['lab'],org.pk,shelfobject),
                             'msg': _('Added successfully'),
                             'object': {'object':shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
@@ -500,7 +465,6 @@ def add_object(request, pk):
                         organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=form.changed_data)
                         response = {
                             'status': True,
-                            'template': get_shelfobject_template(request,request.POST['lab'],org.pk,shelfobject),
                             'msg': _('Added successfully'),
                             'object': {'object': shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
@@ -510,7 +474,6 @@ def add_object(request, pk):
                     else:
                         response = {
                             'status': False,
-                            'template': get_shelfobject_template(request, request.POST['lab'], org.pk, shelfobject),
                             'msg': _('The quantity is more than the shelf has'),
                             'object': {'object': shelfobject.__str__(),
                                        'amount': shelfobject.quantity,
@@ -525,7 +488,7 @@ def add_object(request, pk):
         elif action == 4:
             return subtract_object(request, pk, elements_form)
         else:
-            return transfer_object(request, pk, elements_form)
+            return transfer_object(request, pk, org_pk, elements_form)
     return JsonResponse({'status': True, 'msg': _('Added successfully')})
 
 add_object.lab_pk_field= 'pk'
@@ -601,7 +564,7 @@ def subtract_object(request, pk, elements_form):
 
 
 @permission_required('laboratory.add_tranferobject')
-def transfer_object(request, pk, elements_form):
+def transfer_object(request, pk, org_pk, elements_form):
 
     try:
         amount = float(request.POST.get('amount_send'))
@@ -626,11 +589,15 @@ def transfer_object(request, pk, elements_form):
         utils.organilab_logentry(request.user, transfer, ADDITION,  changed_data=changed_data, relobj=[lab_send, transfer])
     else:
         return JsonResponse({'status': False,'template':template,'msg': _('The amount sending is less that the amount we have in the Shelf')})
-    return JsonResponse({'status': True, 'template': template, 'msg': _('Transfer done successfully')})
+
+    view=Object()
+    setattr(view, 'data', {'laboratory': pk, 'organization': org_pk})
+    serializer=ShelfObjectLaboratoryViewSerializer(instance=obj, context={'view': view, 'request': request})
+    return JsonResponse({'status': True, 'template': template, "object": serializer.data, 'msg': _('Transfer done successfully')})
 
 
 @csrf_exempt
-def send_detail(request):
+def send_detail(request, *args, **kwargs):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
