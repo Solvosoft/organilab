@@ -86,12 +86,7 @@ shelf_object_urls = [
 
 lab_reports_urls = [
     # PDF reports
-    path('objects/', reports.report_objects, name='reports_objects'),
     path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
-    path('limited_shelf_objects/', reports.report_limited_shelf_objects,
-         name='reports_limited_shelf_objects'),
-    path('reactive_precursor_objects/', reports.report_reactive_precursor_objects,
-         name='reports_reactive_precursor_objects'),
     # HTML reports
     path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(),
          name='reports_laboratory'),
@@ -105,14 +100,6 @@ lab_reports_urls = [
          name='reactive_precursor_object_list'),
     path('objectchanges/', reports.LogObjectView.as_view(), name='object_change_logs'),
     path('precursors/', reports.PrecursorsView.as_view(), name='precursor_report'),
-
-]
-
-lab_reports_organization_urls = [
-    path('organization', reports.report_organization_building,
-         name='reports_organization_building'),
-    path('list', organizations.OrganizationReportView.as_view(),
-         name='reports_organization'),
 
 ]
 
@@ -231,7 +218,6 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/', include(shelf_object_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/shelf/', include(lab_shelf_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/features/', include(lab_features_urls)),
-    path('lab/<int:org_pk>/<int:lab_pk>/organizations/reports/', include(lab_reports_organization_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),

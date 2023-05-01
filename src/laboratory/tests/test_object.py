@@ -87,16 +87,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:objectview_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})+"?type_id=1"
         self.assertRedirects(response, success_url)
 
-    def test_object_report(self):
-        data = {
-            "type_id": "1",
-            "format": "pdf",
-            "pk": 1
-        }
-        url = reverse("laboratory:reports_objects", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-
     def test_objects_list_report(self):
         data = {
             "type_id": "1"

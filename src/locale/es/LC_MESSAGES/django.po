@@ -2428,6 +2428,10 @@ msgstr "Contraseña reiniciada con éxito"
 msgid "User is trying to update data doesn't belong to him"
 msgstr "Usuario está intentando actualizar datos que no le pertenecen"
 
+#: authentication/forms.py:41
+msgid "Confirm Password"
+msgstr "Confirmar contraseña"
+
 #: derb/templates/formBuilder/edit_view.html:12
 msgid "Rename"
 msgstr "Renombrar"
