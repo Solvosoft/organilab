@@ -29,5 +29,11 @@ If the API is used in a select from ``Form.io``, follow these steps:
 
  - Save the component.
 
-.. autoclass:: api.views.LaboratoryByUserView
+Documentation from every view class
+====================================
+.. automodule:: derb.api.views
     :members:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:

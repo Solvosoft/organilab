@@ -12,6 +12,9 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 
 
 class InformView(APIView):
+    """
+    This view gets all informs associated to a user.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
@@ -23,6 +26,9 @@ class InformView(APIView):
 
 
 class LaboratoryByUserView(APIView):
+    """
+    This view gets all laboratories associated to a user.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk=None):
@@ -32,7 +38,7 @@ class LaboratoryByUserView(APIView):
 
 class LaboratoryByOrgView(APIView):
     """
-    This is an example class for demonstration purposes.
+    This view gets all laboratories associated to an organization.
     """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -45,6 +51,9 @@ class LaboratoryByOrgView(APIView):
 
 
 class ObjectsView(APIView):
+    """
+    This view gets all objects associated to an organization.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
@@ -56,6 +65,9 @@ class ObjectsView(APIView):
 
 
 class IncidentReportView(APIView):
+    """
+    This view gets all laboratories associated to an organization and a specific user.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
@@ -66,6 +78,9 @@ class IncidentReportView(APIView):
         return Response(serializer.data)
 
 class OrganizationUsersView(APIView):
+    """
+    This view gets all users associated to an organization.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):

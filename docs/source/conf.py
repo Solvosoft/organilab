@@ -19,7 +19,11 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../src/derb'))
+sys.path.insert(0, os.path.abspath('../../src'))
+
+import django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'organilab.settings'
+django.setup()
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
