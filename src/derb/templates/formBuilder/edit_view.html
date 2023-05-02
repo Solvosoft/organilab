@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load organilab_tags %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'get_informs' %}
+{% endblock %}
 {% block extra_css %}
  <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}?v={% get_organilab_version %}">
 {% endblock %}

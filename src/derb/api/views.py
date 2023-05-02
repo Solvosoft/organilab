@@ -31,6 +31,9 @@ class LaboratoryByUserView(APIView):
         return Response(serializer.data)
 
 class LaboratoryByOrgView(APIView):
+    """
+    This is an example class for demonstration purposes.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, org_pk):
