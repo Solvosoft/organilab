@@ -1379,7 +1379,12 @@ URLNAME_PERMISSIONS = {
             'name': 'View Inform',
             'category': 'Inform',
             'permission': 'laboratory.view_inform'
-        }
+        },
+{
+            'name': 'Fill Informs',
+            'category': 'Inform',
+            'permission': 'laboratory.view_inform'
+        },
     ],
     'remove_inform': [
         {
