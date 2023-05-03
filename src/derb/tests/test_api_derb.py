@@ -1,11 +1,5 @@
 import datetime
-
-from django.contrib.contenttypes.models import ContentType
-
-from laboratory.admin import create_informs
-from laboratory.models import Object, Inform, Laboratory, OrganizationStructure, UserOrganization, ObjectFeatures
-from laboratory.views.informs import create_informs
-from risk_management.models import IncidentReport
+from laboratory.models import Object, Inform, Laboratory, OrganizationStructure, ObjectFeatures
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
