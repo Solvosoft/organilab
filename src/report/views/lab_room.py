@@ -2,20 +2,33 @@ from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import set_format_table_columns, get_report_name
+from report.utils import set_format_table_columns, get_report_name, load_dataset_by_column
 from report.utils import get_furniture_queryset_by_filters
 
-def get_dataset(report):
+def get_dataset(report, column_list=None):
     dataset = []
+    data_column = {}
     furniture_list = get_furniture_queryset_by_filters(report)
     for furniture in furniture_list:
         for shelfobject in furniture.get_objects():
             shelf_unit = shelfobject.get_measurement_unit_display()
             furniture = shelfobject.shelf.furniture
-            dataset.append([
+            obj_item = [
                 shelfobject.object.code, shelfobject.object.name, f'{shelfobject.quantity} {shelf_unit}',
                 shelfobject.in_where_laboratory.name, furniture.labroom.name, furniture.name, shelfobject.shelf.name
-            ])
+            ]
+            if column_list:
+                data_column.update({
+                    'code': obj_item[0],
+                    'object': obj_item[1],
+                    'quantity': obj_item[2],
+                    'laboratory': obj_item[3],
+                    'laboratory_room': obj_item[4],
+                    'furniture': obj_item[5],
+                    'shelf': obj_item[6]
+                })
+                obj_item = load_dataset_by_column(column_list, data_column)
+            dataset.append(obj_item)
     return dataset
 
 def lab_room_html(report):
@@ -25,9 +38,11 @@ def lab_room_html(report):
         {'name': 'laboratory_room', 'title': _("Laboratory Room")}, {'name': 'furniture', 'title': _("Furniture")},
         {'name': 'shelf', 'title': _("Shelf")}
     ]
+    columns_fields = set_format_table_columns(columns_fields)
+    column_list = list(map(lambda x: x['name'], columns_fields))
     report.table_content = {
-        'columns': set_format_table_columns(columns_fields),
-        'dataset': get_dataset(report)
+        'columns': columns_fields,
+        'dataset': get_dataset(report, column_list)
     }
     report.save()
     return len(report.table_content['dataset'])
@@ -35,7 +50,7 @@ def lab_room_html(report):
 def lab_room_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_("Code"), _("Object"), _("Quantity"), _("Laboratory"), _("Laboratory Room"), _("Furniture"), _("Shelf")]]
-    content = content + get_dataset(report)
+    content = content + get_dataset(report, None)
     record_total=len(content)-1
 
     report_name = get_report_name(report)
