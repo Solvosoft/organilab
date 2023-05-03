@@ -46,10 +46,7 @@ class IncidentReportSerializer(serializers.ModelSerializer):
         fields = ['key', 'value']
 
 
-class OrganizationStrtSerializer(serializers.ModelSerializer):
-    key = serializers.ReadOnlyField(source='id')
-    value = serializers.CharField(source='name')
+class OrganizationUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationStructure
-        fields = ['key', 'value']
-
+        fields = ['users']
