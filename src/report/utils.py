@@ -28,18 +28,25 @@ def filter_period(text, queryset):
 def set_format_table_columns(columns_fields):
     columns = []
     type = 'string'
+    title = ''
+    js_column_types = ['string', 'date', 'datetime', 'number', 'select', 'boolean', 'integer',
+                    'null', 'node', 'array', 'function', 'object', 'undefined']
 
     for field in columns_fields:
-        if 'type' in field:
-            type = field['type']
+        if 'name' in field and field['name']:
 
-        columns.append({
-            'name': field['name'],
-            'title': field['title'],
-            'type': type,
-            'visible': 'true'
-        })
+            if 'type' in field and field['type'] in js_column_types:
+                type = field['type']
 
+            if 'title' in field:
+                title = field['title']
+
+            columns.append({
+                'name': field['name'],
+                'title': title,
+                'type': type,
+                'visible': 'true'
+            })
     return columns
 
 
@@ -124,3 +131,13 @@ def calc_duration(start_time, end_time):
     if divmod(duration_in_s, 60)[0] == 0:
         return duration.total_seconds(), _('seconds')
     return minutos, _('minutes')
+
+
+def load_dataset_by_column(column_list, data_column):
+    obj_item = []
+    for name in column_list:
+        value = ''
+        if name in data_column:
+            value = data_column[name]
+        obj_item.append(value)
+    return obj_item
