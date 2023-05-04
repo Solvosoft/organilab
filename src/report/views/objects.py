@@ -1,7 +1,6 @@
 from django.core.files.base import ContentFile
 from django.db.models import Sum, Min
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from auth_and_perms.models import Profile
@@ -60,21 +59,20 @@ def get_dataset_objectlogchange(report, column_list=None):
     dataset = []
     queryset = get_queryset(report)
     object_list = resume_queryset(queryset)
-    data_column = {}
     for obj in object_list:
-        obj_item = [obj.user, str(obj.laboratory), str(obj.object), obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                                       obj.old_value,  obj.new_value, obj.diff_value, str(obj.measurement_unit)]
+        data_column = {
+            'user': obj.user,
+            'laboratory': str(obj.laboratory),
+            'object': str(obj.object),
+            'update_time': obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+            'old_value': obj.old_value,
+            'new_value': obj.new_value,
+            'diff_value': obj.diff_value,
+            'measurement_unit': str(obj.measurement_unit)
+        }
+        obj_item = list(data_column.values())
+
         if column_list:
-            data_column.update({
-                'user': obj_item[0],
-                'laboratory': obj_item[1],
-                'object': obj_item[2],
-                'update_time': obj_item[3],
-                'old_value': obj_item[4],
-                'new_value': obj_item[5],
-                'diff_value': obj_item[6],
-                'measurement_unit': obj_item[7],
-            })
             obj_item = load_dataset_by_column(column_list, data_column)
         dataset.append(obj_item)
     return dataset
@@ -117,7 +115,6 @@ def get_dataset_reactive_precursor(report, column_list=None):
     general = True if 'all_labs_org' in report.data else False
     dataset = []
     lab = []
-    data_column = {}
 
     if 'laboratory' in report.data:
         lab = report.data['laboratory']
@@ -136,24 +133,21 @@ def get_dataset_reactive_precursor(report, column_list=None):
 
         for object in objects:
             precursor = _('Yes') if object.is_precursor else 'No'
-            obj_item = [
-                laboratory.name, object.code, object.name, object.get_type_display(),
-                object.quantity_total, ShelfObject.get_units(object.measurement_unit),
-                str(get_molecular_formula(object)), str(get_cas(object, "")), precursor, str(get_imdg(object, ""))
-            ]
+            data_column = {
+                'laboratory': laboratory.name,
+                'code': object.code,
+                'name': object.name,
+                'type': object.get_type_display(),
+                'quantity_total': object.quantity_total,
+                'measurement_unit': ShelfObject.get_units(object.measurement_unit),
+                'molecular_formula': str(get_molecular_formula(object)),
+                'cas_id_number': str(get_cas(object, "")),
+                'precursor': precursor,
+                'imdg_type': str(get_imdg(object, "")),
+            }
+            obj_item = list(data_column.values())
+
             if column_list:
-                data_column.update({
-                    'laboratory': obj_item[0],
-                    'code': obj_item[1],
-                    'name': obj_item[2],
-                    'type': obj_item[3],
-                    'quantity_total': obj_item[4],
-                    'measurement_unit': obj_item[5],
-                    'molecular_formula': obj_item[6],
-                    'cas_id_number': obj_item[7],
-                    'precursor': obj_item[8],
-                    'imdg_type': obj_item[9],
-                })
                 obj_item = load_dataset_by_column(column_list, data_column)
             elif not general:
                 del obj_item[0]
@@ -243,31 +237,28 @@ def get_objects(report):
 
 def get_dataset_objects(report, column_list=None):
     dataset = []
-    data_column = {}
     objects = get_objects(report)
     general = True if 'all_labs_org' in report.data else False
 
     for obj in objects:
         formula = "-"
         features, danger = get_object_elements(obj.object)
-
         if hasattr(obj.object, 'sustancecharacteristics'):
             formula = obj.object.sustancecharacteristics.molecular_formula if obj.object.sustancecharacteristics.molecular_formula else '-'
         cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
-        obj_item = [obj.in_where_laboratory.name, obj.object.code, obj.object.name, obj.object.get_type_display(), features, danger,
-                               formula, cas]
+        data_column = {
+            'laboratory': obj.in_where_laboratory.name,
+            'code': obj.object.code,
+            'name': obj.object.name,
+            'type': obj.object.get_type_display(),
+            'features': features,
+            'danger_indication': danger,
+            'molecular_formula': formula,
+            'cas_id_number': cas
+        }
+        obj_item = list(data_column.values())
 
         if column_list:
-            data_column.update({
-                'laboratory': obj_item[0],
-                'code': obj_item[1],
-                'name': obj_item[2],
-                'type': obj_item[3],
-                'features': obj_item[4],
-                'danger_indication': obj_item[5],
-                'molecular_formula': obj_item[6],
-                'cas_id_number': obj_item[7]
-            })
             obj_item = load_dataset_by_column(column_list, data_column)
         elif not general:
             del obj_item[0]
@@ -325,7 +316,6 @@ def get_limited_shelf_objects(query):
 
 def get_dataset_limit_objects(report, column_list=None):
     dataset = []
-    data_column = {}
     if 'laboratory' in report.data:
         labs = Laboratory.objects.filter(pk__in=report.data['laboratory'])
         for lab in labs:
@@ -334,21 +324,18 @@ def get_dataset_limit_objects(report, column_list=None):
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
             for shelfobj in shelf_objects:
-                obj_item = [
-                    lab.name, shelfobj.shelf.name, shelfobj.object.code, shelfobj.object.name, shelfobj.quantity,
-                    shelfobj.limit_quantity, shelfobj.get_measurement_unit_display()
-                ]
+                data_column = {
+                    'laboratory': lab.name,
+                    'shelf': shelfobj.shelf.name,
+                    'code': shelfobj.object.code,
+                    'object': shelfobj.object.name,
+                    'quantity': shelfobj.quantity,
+                    'limit_quantity': shelfobj.limit_quantity,
+                    'measurement_unit': shelfobj.get_measurement_unit_display()
+                }
+                obj_item = list(data_column.values())
 
                 if column_list:
-                    data_column.update({
-                        'laboratory': obj_item[0],
-                        'shelf': obj_item[1],
-                        'code': obj_item[2],
-                        'object': obj_item[3],
-                        'quantity': obj_item[4],
-                        'limit_quantity': obj_item[5],
-                        'measurement_unit': obj_item[6]
-                    })
                     obj_item = load_dataset_by_column(column_list, data_column)
                 elif not len(labs) > 1:
                     del obj_item[0]
@@ -397,7 +384,6 @@ def report_limit_object_doc(report):
 #report_organization_reactive
 def get_dataset_report_organization_reactive(report, column_list=None):
     dataset = []
-    data_column = {}
     if 'organization' in report.data:
         org_pk = report.data['organization']
         organization = get_object_or_404(OrganizationStructure, pk=org_pk)
@@ -428,31 +414,26 @@ def get_dataset_report_organization_reactive(report, column_list=None):
                     profile = None
 
                 for reactive in reactives:
-                    obj_item = [
-                        lab["name"], user["first_name"], user["last_name"], reactive.obj.code, reactive.obj.name,
-                        reactive.cas_id_number,
-                        ", ".join(reactive.white_organ.all().values_list("description", flat=True)),
-                        str(reactive.iarc) if reactive.iarc else ""
-                    ]
+                    iarc = str(reactive.iarc) if reactive.iarc else ""
+                    white_organ = ", ".join(reactive.white_organ.all().values_list("description", flat=True))
+                    data_column = {
+                        'laboratory_name': lab["name"],
+                        'first_name': user["first_name"],
+                        'last_name': user["last_name"],
+                        'code': reactive.obj.code,
+                        'substance': reactive.obj.name,
+                        'cas': reactive.cas_id_number,
+                        'white_organ': white_organ,
+                        'carcinogenic': iarc,
+                        'id_card': "",
+                        'job_position': ""
+                    }
 
                     if profile:
-                        obj_item = obj_item + [profile.id_card, profile.job_position]
-                    else:
-                        obj_item = obj_item + ["", ""]
+                        data_column.update({'id_card': profile.id_card, 'job_position': profile.job_position})
+                    obj_item = list(data_column.values())
 
                     if column_list:
-                        data_column.update({
-                            'laboratory_name': obj_item[0],
-                            'first_name': obj_item[1],
-                            'last_name': obj_item[2],
-                            'code': obj_item[3],
-                            'substance': obj_item[4],
-                            'cas': obj_item[5],
-                            'white_organ': obj_item[6],
-                            'carcinogenic': obj_item[7],
-                            'id_card': obj_item[8],
-                            'job_position': obj_item[9]
-                        })
                         obj_item = load_dataset_by_column(column_list, data_column)
                     dataset.append(obj_item)
     return dataset
