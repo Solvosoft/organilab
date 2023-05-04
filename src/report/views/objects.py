@@ -1,5 +1,6 @@
+from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
-from django.db.models import Sum, Min
+from django.db.models import Sum, Min, Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -8,7 +9,8 @@ from auth_and_perms.models import Profile
 from laboratory.models import Object, ObjectLogChange, ShelfObject, Laboratory, OrganizationStructure, \
     SustanceCharacteristics
 from laboratory.report_utils import ExcelGraphBuilder
-from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg
+from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg, \
+    get_users_from_organization
 from laboratory.views.djgeneric import ResultQueryElement
 from report.utils import filter_period, set_format_table_columns, get_report_name
 
@@ -84,10 +86,15 @@ def report_objectlogchange_doc(report):
     content = [[_("User"), _("Laboratory"), _("Object"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]]
     content = content + get_dataset_objectlogchange(report)
     record_total=len(content)-1
-
+    file=None
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
-    file=builder.save()
+    if report.file_type!= 'ods':
+        builder.add_table(content, report_name)
+        file=builder.save()
+    else:
+        content.insert(0,[report_name])
+        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -163,7 +170,13 @@ def report_reactive_precursor_doc(report):
 
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
-    file=builder.save()
+    file=None
+    if report.file_type!= 'ods':
+        builder.add_table(content, report_name)
+        file=builder.save()
+    else:
+        content.insert(0,[report_name])
+        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -254,7 +267,13 @@ def report_objects_doc(report):
     record_total =len(content)-1
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
-    file=builder.save()
+    file=None
+    if report.file_type!= 'ods':
+        builder.add_table(content, report_name)
+        file=builder.save()
+    else:
+        content.insert(0,[report_name])
+        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -315,7 +334,13 @@ def report_limit_object_doc(report):
     record_total=len(content)-1
     report_name = get_report_name(report)
     builder.add_table(content, report_name)
-    file=builder.save()
+    file=None
+    if report.file_type!= 'ods':
+        builder.add_table(content, report_name)
+        file=builder.save()
+    else:
+        content.insert(0,[report_name])
+        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -327,58 +352,45 @@ def report_limit_object_doc(report):
 #report_organization_reactive
 def get_dataset_report_organization_reactive(report):
     dataset = []
+    filters = {"object__sustancecharacteristics__isnull":False}
+    users=[]
     if 'organization' in report.data:
         org_pk = report.data['organization']
         organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+        filters['object__organization'] = organization
 
-        if 'laboratory' in report.data:
-            laboratories = organization.laboratory_set.filter(
-                profile__user=report.creator, pk__in=report.data['laboratory']).\
-                values('name', 'laboratoryroom__furniture')
-        else:
-            laboratories = organization.laboratory_set.filter(profile__user=report.creator).\
-                values('name', 'laboratoryroom__furniture')
-
+        laboratories = organization.laboratory_set.filter(profile__user=report.creator)
         if 'users' in report.data:
-            usermanagement = organization.users.filter(pk__in=report.data['users']).values('first_name', 'last_name', 'id')
+            users =  report.data['users']
         else:
-            usermanagement = organization.users.values('first_name', 'last_name', 'id')
-
-        for lab in laboratories:
-            reactives = SustanceCharacteristics.objects.filter(obj__in=list(ShelfObject.objects.filter(
-                shelf__furniture=lab['laboratoryroom__furniture']
-            ).values_list('object', flat=True))).exclude(cas_id_number=None).distinct()
-
-            for user in usermanagement:
-
-                try:
-                    profile = Profile.objects.get(user__id=user['id'])
-                except Profile.DoesNotExist as error:
-                    profile = None
-
-                for reactive in reactives:
-                    obj_item = [
-                        lab["name"], user["first_name"], user["last_name"], reactive.obj.code, reactive.obj.name,
-                        reactive.cas_id_number,
-                        ", ".join(reactive.white_organ.all().values_list("description", flat=True)),
-                        str(reactive.iarc) if reactive.iarc else ""
+            users= get_users_from_organization(org_pk)
+        objs = ObjectLogChange.objects.filter(**filters, user__in=users).values('object','laboratory__name','object__code','object__name','user__pk','user__first_name','user__last_name').annotate(count=Count('object'))
+        for reactive in objs:
+            caracteristics = SustanceCharacteristics.objects.filter(obj__pk=reactive['object']).first()
+            obj_item = [
+                        reactive['laboratory__name'],reactive['user__first_name'], reactive['user__last_name'],
+                        reactive["object__code"], reactive["object__name"],caracteristics.cas_id_number,
+                        ", ".join(caracteristics.white_organ.all().values_list("description", flat=True)),
+                        str(caracteristics.iarc) if caracteristics.iarc else ""
                     ]
+            try:
+                profile = Profile.objects.get(user__pk=reactive['user__pk'])
+                obj_item= obj_item+[profile.id_card, profile.job_position,reactive["count"]]
+            except Profile.DoesNotExist as error:
+                obj_item = obj_item + ["", "",reactive["count"]]
 
-                    if profile:
-                        obj_item = obj_item + [profile.id_card, profile.job_position]
-                    else:
-                        obj_item = obj_item + ["", ""]
-
-                    dataset.append(obj_item)
+            dataset.append(obj_item)
     return dataset
 
-def report_organization_reactive_list_html(report):
+def report_reactive_exposition_html(report):
     columns_fields = [
-        {'name': 'laboratory_name', 'title': _("Laboratory name")}, {'name': 'first_name', 'title': _("First Name")},
+        {'name': 'laboratory_name', 'title': _("Laboratory name")},{'name': 'first_name', 'title': _("First Name")},
         {'name': 'last_name', 'title': _("Last Name")}, {'name': 'code', 'title': _("Code")},
         {'name': 'substance', 'title': _("Substance")}, {'name': 'cas', 'title': _("CAS")},
         {'name': 'white_organ', 'title': _("White Organ")}, {'name': 'carcinogenic', 'title': _("Carcinogenic")},
-        {'name': 'id_card', 'title': _("ID Card")}, {'name': 'job_position', 'title': _("Job Position")}
+        {'name': 'id_card', 'title': _("ID Card")}, {'name': 'job_position', 'title': _("Job Position")},
+        {'name': 'amount', 'title': "#" + _("Exposition")},
+
     ]
     report.table_content = {
         'columns': set_format_table_columns(columns_fields),
@@ -390,13 +402,17 @@ def report_organization_reactive_list_html(report):
 def report_organization_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'), _('Sustance'), _('CAS'),
-                    _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position')]]
+                    _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position'),"#"+_("Exposition")]]
     content = content + get_dataset_report_organization_reactive(report)
     record_total=len(content)-1
-
+    file=None
     report_name = get_report_name(report)
-    builder.add_table(content, report_name)
-    file=builder.save()
+    if report.file_type!= 'ods':
+        builder.add_table(content, report_name)
+        file=builder.save()
+    else:
+        content.insert(0,[report_name])
+        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
