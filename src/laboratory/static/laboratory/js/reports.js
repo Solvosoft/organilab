@@ -42,10 +42,6 @@ $('#send').on('click', function(){
     filter="?"+filter;
     url=report_urls['create_request']+filter;
     $(this).attr('disabled',true);
-    document.querySelector(".statuspanel").classList.remove('d-none');
-    $(".card-footer").addClass("d-none")
-    $("#textstatus").html("");
-
     $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
     setTimeout(get_archive_status, 1000);
@@ -57,10 +53,19 @@ $('#send').on('click', function(){
         success : function(data) {
             $('ul.report_form_errors').remove();
             if (data['result']){
+                $("#diverrormessage").hide();
+                $("#textstatus").html("");
+                 $(".statuspanel").removeClass("d-none");
                  get_doc(data['report'], data['celery_id']);
             }else if(data['form_errors']){
                 form_field_errors(data['form_errors']);
                 accept_request();
+            }else if(data['error_message']){
+                if(!$("#diverrormessage").is(":visible")){
+                    $("#errormessagecontent").html(data['error_message']);
+                    $("#diverrormessage").show();
+                    accept_request();
+                }
             }
         }
     });
