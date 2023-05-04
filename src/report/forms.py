@@ -162,7 +162,6 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
         return list(laboratory.values_list('pk',flat=True).distinct())
 
 class OrganizationReactiveForm(ReportBase):
-    laboratory = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Laboratory.objects.all(), label=_('Filter Laboratory'), required=False)
     users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Profile.objects.all(), label=_('Filter User'), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -170,17 +169,16 @@ class OrganizationReactiveForm(ReportBase):
         super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            self.fields['laboratory'].queryset = get_laboratories_from_organization(org_pk)
             self.fields['users'].queryset = Profile.objects.filter(user__in=get_users_from_organization(org_pk))
 
-    def clean_laboratory(self):
+    def clean_user(self):
         organization = self.cleaned_data['organization']
-        laboratory = self.cleaned_data['laboratory']
+        users = self.cleaned_data['users']
 
-        if not laboratory:
-            laboratory = get_laboratories_from_organization(organization)
+        if not users:
+            users = get_users_from_organization(organization)
 
-        return list(laboratory.values_list('pk',flat=True))
+        return list(users.values_list('pk',flat=True))
 
     def clean_users(self):
         organization = self.cleaned_data['organization']
@@ -195,16 +193,14 @@ class OrganizationReactiveForm(ReportBase):
 class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def clean_type_id(self):
         type_id = self.cleaned_data['type_id']
-
-        if not type_id.isnumeric():
-            self.add_error('type_id', _("Object type is not allowed"))
-        else:
+        if type_id:
             if not type_id in dict(Object.TYPE_CHOICES).keys():
                 self.add_error('type_id', _("Object type is not allowed"))
-        return cleaned_data
+            return type_id
+        else:
+            return None
 
 
 class ValidateFurnitureForm(GTForm):

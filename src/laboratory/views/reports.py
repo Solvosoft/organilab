@@ -122,6 +122,10 @@ class ObjectList(ListView):
         }
 
         if self.request.method == 'GET':
+            if "type_id" in self.request.GET:
+                id=self.request.GET["type_id"]
+                if id.isalpha() or id not in title_by_object:
+                    raise Http404(_("Page not found"))
             objecttypeform = ValidateObjectTypeForm(self.request.GET)
 
             if objecttypeform.is_valid():
