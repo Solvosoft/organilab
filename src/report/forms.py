@@ -1,5 +1,5 @@
 from django import forms
-from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
@@ -21,6 +21,12 @@ class ReportBase(GTForm):
         ('xlsx', 'XLSX'),
         ('ods', 'ODS')
     ), required=False, label=_('Format'))
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = slugify(name)
+        return name
+
 
 class ReportForm(ReportBase):
     all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
