@@ -7,26 +7,22 @@ from report.utils import get_furniture_queryset_by_filters
 
 def get_dataset(report, column_list=None):
     dataset = []
-    data_column = {}
     furniture_list = get_furniture_queryset_by_filters(report)
     for furniture in furniture_list:
         for shelfobject in furniture.get_objects():
             shelf_unit = shelfobject.get_measurement_unit_display()
             furniture = shelfobject.shelf.furniture
-            obj_item = [
-                shelfobject.object.code, shelfobject.object.name, f'{shelfobject.quantity} {shelf_unit}',
-                shelfobject.in_where_laboratory.name, furniture.labroom.name, furniture.name, shelfobject.shelf.name
-            ]
+            data_column = {
+                'code': shelfobject.object.code,
+                'object': shelfobject.object.name,
+                'quantity': f'{shelfobject.quantity} {shelf_unit}',
+                'laboratory': shelfobject.in_where_laboratory.name,
+                'laboratory_room': furniture.labroom.name,
+                'furniture': furniture.name,
+                'shelf': shelfobject.shelf.name
+            }
+            obj_item = list(data_column.values())
             if column_list:
-                data_column.update({
-                    'code': obj_item[0],
-                    'object': obj_item[1],
-                    'quantity': obj_item[2],
-                    'laboratory': obj_item[3],
-                    'laboratory_room': obj_item[4],
-                    'furniture': obj_item[5],
-                    'shelf': obj_item[6]
-                })
                 obj_item = load_dataset_by_column(column_list, data_column)
             dataset.append(obj_item)
     return dataset
