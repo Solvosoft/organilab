@@ -29,7 +29,8 @@ class ReportBase(GTForm):
 
 
 class ReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
+        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
 
 class ValidateReportForm(ReportBase):
@@ -46,7 +47,8 @@ class ValidateReportForm(ReportBase):
         return list(laboratory.values_list('pk',flat=True))
 
 class ReportObjectsBaseForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
+        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     object_type = forms.CharField(max_length=1, widget=genwidgets.HiddenInput(), required=False)
 
 class ReportObjectsForm(ReportObjectsBaseForm):
@@ -72,9 +74,11 @@ class RelOrganizationForm(GTForm):
     all_labs_org = forms.BooleanField(required=False)
 
 class LaboratoryRoomReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
+        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
-    lab_room = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("lab_room", attrs={
+    lab_room = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select laboratory rooms (This is an extra filter not required)"),
+        widget=AutocompleteSelectMultiple("lab_room", attrs={
         'data-related': 'true',
         'data-pos': 0,
         'data-groupname': 'labroomreport',
@@ -83,7 +87,8 @@ class LaboratoryRoomReportForm(ReportBase):
         'data-s2filter-all_labs_org': '#id_all_labs_org:checked'
     }),
     queryset=LaboratoryRoom.objects.all(), label=_('Filter Laboratory Room'), required=False)
-    furniture = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple("furniture", attrs={
+    furniture = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select furnitures (This is an extra filter not required)"),
+        widget=AutocompleteSelectMultiple("furniture", attrs={
         'data-related': 'true',
         'data-pos': 1,
         'data-groupname': 'labroomreport'
@@ -92,7 +97,7 @@ class LaboratoryRoomReportForm(ReportBase):
 
 
 class ValidateLaboratoryRoomReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.SelectMultiple, queryset=Laboratory.objects.all())
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.all(), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.all(), required=False)
@@ -149,7 +154,8 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
         return list(furniture.values_list('pk',flat=True).distinct())
 
 class ObjectLogChangeBaseForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
+        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     period = forms.CharField(widget=genwidgets.DateRangeInput, required=False,label=_('Period'))
     precursor = forms.BooleanField(widget=genwidgets.YesNoInput,  required=False,label=_('Precursor'))
     resume = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,label=_('Resume'))
