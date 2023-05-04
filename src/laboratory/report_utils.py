@@ -1,7 +1,8 @@
 from openpyxl import Workbook
-from io import BytesIO
+from io import BytesIO, StringIO
 from openpyxl.styles import Alignment
-
+from pyexcel_io.manager import get_io
+from pyexcel_io import save_data
 class ExcelGraphBuilder:
 
     def __init__(self):
@@ -35,3 +36,8 @@ class ExcelGraphBuilder:
             output = BytesIO()
         self.wb.save(output)
         return output
+
+    def save_ods(self, data,format_type="ods"):
+        io= get_io(format_type)
+        save_data(io, data,format_type)
+        return io
