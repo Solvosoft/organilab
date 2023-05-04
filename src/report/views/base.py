@@ -82,8 +82,10 @@ def base_pdf(report, uri):
 @permission_required('laboratory.do_report')
 def create_request_by_report(request, lab_pk):
     response = {'result': False}
+    report_name_list = register.REPORT_FORMS.keys()
+    error_message = _("Report can't be processed, try again or contact administrator")
 
-    if 'report_name' in request.GET:
+    if 'report_name' in request.GET and request.GET['report_name'] in report_name_list:
         type_report = register.REPORT_FORMS[request.GET['report_name']]
 
         if 'form' in type_report:
@@ -116,6 +118,10 @@ def create_request_by_report(request, lab_pk):
                 })
             else:
                 response.update({'form_errors': form.errors})
+        else:
+            response['error_message'] = error_message
+    else:
+        response['error_message'] = error_message
     return JsonResponse(response)
 
 @login_required
