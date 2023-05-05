@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from laboratory.models import Object, Inform, Laboratory, OrganizationStructure
 from risk_management.models import IncidentReport
 from rest_framework import serializers
@@ -63,3 +65,17 @@ class OrganizationUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationStructure
         fields = ['users']
+
+class UsersSerializer(serializers.ModelSerializer):
+    key = serializers.IntegerField(source='id')
+    value = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ['key', 'value']
+
+    def get_value(self, obj):
+        name = obj.get_full_name()
+        if name:
+            return name
+        else:
+            return obj.username

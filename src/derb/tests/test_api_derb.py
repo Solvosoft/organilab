@@ -1,5 +1,5 @@
 import datetime
-from laboratory.models import Object, Inform, Laboratory, OrganizationStructure, ObjectFeatures
+from laboratory.models import Object, Laboratory, OrganizationStructure, ObjectFeatures
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User

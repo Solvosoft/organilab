@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from derb.api.serializers import InformSerializer, LaboratorySerializer, ObjectsSerializer, IncidentReportSerializer, \
-    OrganizationUsersSerializer
+    OrganizationUsersSerializer, UsersSerializer
 from laboratory.models import Object, Inform, OrganizationStructure, Laboratory
 from risk_management.models import IncidentReport
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -101,31 +101,10 @@ class OrganizationUsersView(APIView):
             lab = get_object_or_404(Laboratory, pk=lab_pk)
             organization_can_change_laboratory(lab, org)
             lab_queryset = OrganizationStructure.os_manager.organization_tree(organization=org_pk)
-            serializer = OrganizationUsersSerializer(lab_queryset, many=True)
-            user_data = self.extract_users_from_lab(serializer.data)
+            users = User.objects.filter(organizationstructure__pk__in=lab_queryset.values_list("pk", flat=True)) #OrganizationUsersSerializer(lab_queryset, many=True)
+            serializer = UsersSerializer(users.distinct(), many=True)
 
-        except:
-            serializer = OrganizationUsersSerializer(org)
-            user_data = self.extract_users_from_organization(serializer.data)
-        return Response(user_data)
-
-    def extract_users_from_organization(self, data):
-        response_data = []
-        used_ids = []
-        for id in data['users']:
-            if not(id in used_ids):
-                val = {'key': id, 'value':User.objects.get(pk=id).username}
-                response_data.append(val)
-                used_ids.append(id)
-        return response_data
-
-    def extract_users_from_lab(self, data):
-        response_data = []
-        used_ids = []
-        for values in data:
-            for id in values['users']:
-                if not(id in used_ids):
-                    val = {'key': id, 'value':User.objects.get(pk=id).username}
-                    response_data.append(val)
-                    used_ids.append(id)
-        return response_data
+        except Exception as i:
+            users = User.objects.filter(organizationstructure__pk=org.pk)
+            serializer = UsersSerializer(users.distinct(), many=True)
+        return Response(serializer.data)
