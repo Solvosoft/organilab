@@ -6,10 +6,12 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
+from django.http import Http404
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile, User
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
@@ -336,3 +338,28 @@ def get_laboratories_from_organization_profile(rootpk, user):
         return Laboratory.objects.filter(organization__in= desendants, profile__user__pk=user).distinct()
 
     return Laboratory.objects.none()
+
+
+def get_laboratories_by_user_profile(user, org_pk):
+    queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk)
+    rel_lab = OrganizationStructureRelations.objects.filter(organization=org_pk, content_type__app_label='laboratory',
+    content_type__model='laboratory').values_list('object_id', flat=True)
+    filters = Q(organization__pk=org_pk, profile__user=user) | Q(pk__in=rel_lab)
+    return list(queryset.filter(filters).distinct().values_list('pk', flat=True))
+
+
+def check_kwargs_org_lab(org, lab, user):
+    if org:
+        organization = OrganizationStructure.objects.filter(pk=org)
+        if organization.exists():
+            organization = organization.first()
+            user_is_allowed_on_organization(user, organization)
+            if lab:
+                laboratory = Laboratory.objects.filter(pk=lab)
+                if laboratory.exists():
+                    can_change = organization_can_change_laboratory(laboratory.first(), organization)
+                    user_labs = get_laboratories_by_user_profile(user, org)
+                    if not can_change or not lab in user_labs:
+                        raise Http404()
+        else:
+            raise Http404()
