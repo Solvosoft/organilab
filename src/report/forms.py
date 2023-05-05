@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django_celery_results.models import TaskResult
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
@@ -8,6 +9,8 @@ from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
+from report.models import TaskReport, DocumentReportStatus
+
 
 class ReportBase(GTForm):
     name = forms.CharField(max_length=100, label=_('File Name'), widget=genwidgets.TextInput(), required=True)
@@ -235,3 +238,15 @@ class ValidateFurnitureForm(GTForm):
             if not furniture_obj.exists():
                 self.add_error('furniture', _("Furniture is not allowed"))
         return cleaned_data
+
+class TasksForm(GTForm):
+    task = forms.CharField(max_length=255)
+    taskreport = forms.IntegerField()
+
+    def clean_taskreport(self):
+        taskreport = self.cleaned_data.get('taskreport', 0)
+        report = TaskReport.objects.filter(pk=taskreport)
+
+        if not report.exists():
+            self.add_error('taskreport', _("Task report doesn't exists"))
+        return taskreport

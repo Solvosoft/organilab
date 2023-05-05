@@ -36,7 +36,7 @@ function form_field_errors(form_errors){
 
 
 $('#send').on('click', function(){
-
+    $(".statuspanel, .card-footer").addClass("d-none");
     filter=get_doc_filter();
     filter= filter.substring(1,filter.length);
     filter="?"+filter;
@@ -95,26 +95,28 @@ function get_doc(pk,task){
         url: url,
         type : "GET",
         dataType : 'json',
-        success : function({result, url_file, type_report}) {
-
-        if (result==true){
-
-            if(type_report==='html'){
-                open_new_window(url_file);
+        success : function(data) {
+            if (data['result']==true){
+                if(data['type_report']==='html'){
+                    open_new_window(data['url_file']);
+                }else{
+                    $("#download-report, #download_file").attr("href", data['url_file']);
+                    $(".statuspanel, .card-footer").removeClass("d-none");
+                    $("#reportModal").modal('show');
+                }
+                accept_request();
+            }else if(data['error_message']){
+                if(!$("#diverrormessage").is(":visible")){
+                    $("#errormessagecontent").html(data['error_message']);
+                    $("#diverrormessage").show();
+                    accept_request();
+                }
             }else{
-                $("#download-report").attr("href", url_file);
-                $("#download_file").attr("href", url_file);
-                $(".statuspanel").removeClass("d-none");
-                $("#reportModal").modal('show');
-                $(".card-footer").removeClass("d-none")
+                setTimeout(function(){
+                    get_doc(pk,task);
+                }, 3000);
             }
-            accept_request();
-        }else{
-            setTimeout(function(){
-                get_doc(pk,task);
-            }, 3000);
-         }
-         }
+        }
     });
  }
 
