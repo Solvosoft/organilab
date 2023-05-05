@@ -80,7 +80,7 @@ class LaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
         widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
-    lab_room = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select laboratory rooms (This is an extra filter not required)"),
+    lab_room = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select laboratory rooms (Optional)"),
         widget=AutocompleteSelectMultiple("lab_room", attrs={
         'data-related': 'true',
         'data-pos': 0,
@@ -90,7 +90,7 @@ class LaboratoryRoomReportForm(ReportBase):
         'data-s2filter-all_labs_org': '#id_all_labs_org:checked'
     }),
     queryset=LaboratoryRoom.objects.all(), label=_('Filter Laboratory Room'), required=False)
-    furniture = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select furnitures (This is an extra filter not required)"),
+    furniture = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select furnitures (Optional)"),
         widget=AutocompleteSelectMultiple("furniture", attrs={
         'data-related': 'true',
         'data-pos': 1,
@@ -177,7 +177,8 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
         return list(laboratory.values_list('pk',flat=True).distinct())
 
 class OrganizationReactiveForm(ReportBase):
-    users = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple(), queryset=Profile.objects.all(), label=_('Filter User'), required=False)
+    users = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select users (Optional)"),
+        widget=genwidgets.SelectMultiple(), queryset=Profile.objects.all(), label=_('Filter User'), required=False)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
