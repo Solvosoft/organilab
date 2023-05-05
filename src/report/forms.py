@@ -194,7 +194,7 @@ class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
 
     def clean_type_id(self):
-        type_id = self.cleaned_data['type_id']
+        type_id = self.cleaned_data.get('type_id')
         if type_id:
             if not type_id in dict(Object.TYPE_CHOICES).keys():
                 self.add_error('type_id', _("Object type is not allowed"))
