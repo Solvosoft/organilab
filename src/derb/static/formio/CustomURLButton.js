@@ -1,0 +1,1 @@
+const TextFieldComponent = Formio.Components.components.select;
