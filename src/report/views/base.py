@@ -8,7 +8,7 @@ from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
-from laboratory.forms import TasksForm
+from report.forms import TasksForm
 from report.models import TaskReport
 from report import register
 from django.utils import translation, timezone
@@ -80,10 +80,12 @@ def base_pdf(report, uri):
 
 @login_required
 @permission_required('laboratory.do_report')
-def create_request_by_report(request, lab_pk):
+def create_request_by_report(request, org_pk, lab_pk):
     response = {'result': False}
+    report_name_list = register.REPORT_FORMS.keys()
+    error_message = _("Report can't be processed, try again or contact administrator")
 
-    if 'report_name' in request.GET:
+    if 'report_name' in request.GET and request.GET['report_name'] in report_name_list:
         type_report = register.REPORT_FORMS[request.GET['report_name']]
 
         if 'form' in type_report:
@@ -116,41 +118,50 @@ def create_request_by_report(request, lab_pk):
                 })
             else:
                 response.update({'form_errors': form.errors})
+        else:
+            response['error_message'] = error_message
+    else:
+        response['error_message'] = error_message
     return JsonResponse(response)
 
 @login_required
 @permission_required('laboratory.do_report')
 def download_report(request, lab_pk, org_pk):
-    form = TasksForm(request.GET)
     response = {'result': False}
+    error_message = _("Report can't be processed, try again or contact administrator")
 
-    if form.is_valid():
-        task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
-        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
-        if result:
-            if task.status==_('Generated') and result.status=='SUCCESS':
-                task.status=_('Delivered')
-                task.save()
-                response['result'] = True
-                if task.file_type=='html':
-                    response.update({
-                        'url_file':reverse('report:report_table', kwargs={
-                            'lab_pk':lab_pk,
-                            'pk':task.pk,
-                            'org_pk':org_pk
-                        }),
-                        'type_report':task.file_type
-                    })
-                    create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
-                else:
-                    file_name = f"{task.data['name']}.{task.file_type}"
-                    create_notification(request.user, file_name , task.file.url)
-                    response.update({'url_file': task.file.url})
+    if request.method == "GET":
+        form = TasksForm(request.GET)
+
+        if form.is_valid():
+            task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+            result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+            if result:
+                if task.status==_('Generated') and result.status=='SUCCESS':
+                    task.status=_('Delivered')
+                    task.save()
+                    response['result'] = True
+                    if task.file_type=='html':
+                        response.update({
+                            'url_file':reverse('report:report_table', kwargs={
+                                'org_pk': org_pk,
+                                'lab_pk':lab_pk,
+                                'pk':task.pk
+                            }),
+                            'type_report':task.file_type
+                        })
+                        create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
+                    else:
+                        file_name = f"{task.data['name']}.{task.file_type}"
+                        create_notification(request.user, file_name , task.file.url)
+                        response.update({'url_file': task.file.url})
+        else:
+            response['error_message'] = error_message
     return JsonResponse(response)
 
 @login_required
 @permission_required('laboratory.do_report')
-def report_table(request, lab_pk, pk, org_pk):
+def report_table(request, org_pk, lab_pk, pk):
     task = TaskReport.objects.filter(pk=pk).first()
     return render(request, template_name='report/general_reports.html', context={
         'table': task.table_content,
@@ -162,20 +173,22 @@ def report_table(request, lab_pk, pk, org_pk):
 
 @login_required
 @permission_required('laboratory.do_report')
-def report_status(request):
-    form = TasksForm(request.GET)
+def report_status(request, org_pk, lab_pk):
     end = False
     description=""
-    if form.is_valid():
-        result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
-        if result:
-            end = result.status=='SUCCESS'
-        else:
-            end = False
-        status = DocumentReportStatus.objects.filter(report__pk=form.cleaned_data['taskreport']).order_by('report_time')
-        description = ''
-        for text in status:
-            description += "<li>%s %s </li>"%(
-                text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                text.description)
+
+    if request.method == "GET":
+        form = TasksForm(request.GET)
+
+        if form.is_valid():
+            result = TaskResult.objects.filter(task_id=form.cleaned_data['task'])
+
+            if result.exists():
+                end = result.first().status=='SUCCESS'
+
+            status = DocumentReportStatus.objects.filter(report=form.cleaned_data['taskreport']).order_by('report_time')
+
+            if status.exists():
+                for text in status:
+                    description += "<li>%s %s </li>"%(text.report_time.strftime("%m/%d/%Y, %H:%M:%S"), text.description)
     return JsonResponse({'end': end, 'text': description})

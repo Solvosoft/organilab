@@ -19,6 +19,12 @@
     <div class="row p-3 mt-1">
         <div class='col-md-10 offset-md-1'>
             <div class="container">
+                <div class="row" id="diverrormessage" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div id="errormessagecontent"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header card-title text-center">
                         <h2>{{title_view}}</h2>
@@ -52,7 +58,7 @@
                     <ul id="textstatus"></ul>
                 </div>
                 <div class="card-footer d-none">
-                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
+                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#" target="_blank" download="">{% trans 'Download' %}</a></h2>
                 </div>
             </div>
         </div>
@@ -86,9 +92,9 @@
 {{ block.super }}
 <script>
 	const report_urls = {
-		create_request : "{% url 'report:create_report_request' lab_pk=laboratory %}",
-		generate_report : "{% url 'report:generate_report' lab_pk=laboratory org_pk=org_pk %}",
-		report_status: "{% url 'report:report_status' %}"
+		create_request : "{% url 'report:create_report_request' org_pk=org_pk lab_pk=laboratory %}",
+		generate_report : "{% url 'report:generate_report' org_pk=org_pk lab_pk=laboratory %}",
+		report_status: "{% url 'report:report_status' org_pk=org_pk lab_pk=laboratory %}"
 
 	}
 </script>
