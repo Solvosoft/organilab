@@ -14,6 +14,7 @@ from django.views.generic.edit import DeleteView as djDeleteView
 from django.views.generic.edit import UpdateView as djUpdateView
 from django.views.generic.list import ListView as djListView
 from weasyprint import HTML
+from laboratory.utils import check_kwargs_org_lab
 
 
 class CreateView(djCreateView):
@@ -24,8 +25,7 @@ class CreateView(djCreateView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
-
-
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djCreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -35,6 +35,7 @@ class CreateView(djCreateView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djCreateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -53,6 +54,7 @@ class UpdateView(djUpdateView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djUpdateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -60,9 +62,9 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
-
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djUpdateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -80,6 +82,7 @@ class DeleteView(djDeleteView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djDeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -89,6 +92,7 @@ class DeleteView(djDeleteView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djDeleteView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -106,6 +110,7 @@ class ListView(djListView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djListView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -123,6 +128,7 @@ class DetailView(djDetailView):
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+        check_kwargs_org_lab(self.org, self.lab, request.user)
         return djDetailView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -143,6 +149,9 @@ class ReportListView(djListView):
             self.org = int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab = int(kwargs['lab_pk'])
+
+        check_kwargs_org_lab(self.org, self.lab, request.user)
+
         self.request_format = request.GET.get('format', 'html')
 
         if self.request_format=='html':
