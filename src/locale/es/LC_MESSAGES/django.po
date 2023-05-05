@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-04 15:25-0600\n"
+"POT-Creation-Date: 2023-05-05 16:02-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -53,8 +53,8 @@ msgstr "Descripción"
 #: laboratory/templates/laboratory/transfer_objects.html:25
 #: report/views/furniture.py:37 report/views/furniture.py:53
 #: report/views/lab_room.py:32 report/views/lab_room.py:48
-#: report/views/objects.py:83 report/views/objects.py:98
-#: report/views/objects.py:350 report/views/objects.py:364
+#: report/views/objects.py:85 report/views/objects.py:100
+#: report/views/objects.py:369 report/views/objects.py:383
 msgid "Object"
 msgstr "Objeto"
 
@@ -68,9 +68,9 @@ msgstr "Cantidad"
 
 #: academic/forms.py:39 laboratory/models.py:569
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:24
-#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:233
-#: report/views/objects.py:85 report/views/objects.py:98
-#: report/views/objects.py:351
+#: laboratory/views/laboratory_utils.py:8 laboratory/views/reports.py:237
+#: report/views/objects.py:87 report/views/objects.py:100
+#: report/views/objects.py:370
 msgid "Unit"
 msgstr "Unidad"
 
@@ -161,8 +161,8 @@ msgstr "Observaciones del procedimiento"
 #: msds/templates/regulation/regulations_document.html:15
 #: msds/templates/regulation/regulations_document.html:34
 #: presentation/forms.py:13 presentation/models.py:38
-#: report/views/objects.py:161 report/views/objects.py:179
-#: report/views/objects.py:272 report/views/objects.py:290
+#: report/views/objects.py:168 report/views/objects.py:186
+#: report/views/objects.py:285 report/views/objects.py:303
 #: risk_management/models.py:38 risk_management/models.py:51 sga/forms.py:15
 #: sga/models.py:17 sga/models.py:50 sga/models.py:66 sga/models.py:89
 #: sga/models.py:138 sga/models.py:227 sga/models.py:251 sga/models.py:291
@@ -231,8 +231,8 @@ msgstr "Sustancias SGA"
 #: academic/templates/academic/substance/detail_substance.html:115
 #: academic/templates/academic/substance/pdf/section_three.html:11
 #: laboratory/models.py:115 laboratory/templates/pdf/shelf_object_pdf.html:106
-#: report/views/objects.py:163 report/views/objects.py:179
-#: report/views/objects.py:275 report/views/objects.py:291 sga/models.py:196
+#: report/views/objects.py:170 report/views/objects.py:186
+#: report/views/objects.py:288 report/views/objects.py:304 sga/models.py:196
 msgid "Molecular formula"
 msgstr "Formula molecular"
 
@@ -668,7 +668,7 @@ msgstr "Mostrar sustancias aprobadas"
 #: laboratory/templates/laboratory/complete_inform.html:92
 #: laboratory/templates/laboratory/furniture_form.html:134
 #: laboratory/templates/laboratory/search.html:124
-#: laboratory/templatetags/humanformat.py:16 report/views/objects.py:135
+#: laboratory/templatetags/humanformat.py:16 report/views/objects.py:142
 #: reservations_management/templates/reservations_management/reservations_list.html:91
 #: sga/templates/donate_organilab.html:47 sga/templates/list_company.html:70
 msgid "Yes"
@@ -687,7 +687,7 @@ msgstr "Previsualizar"
 #: academic/templates/academic/substance/pdf/section_three.html:4
 #: laboratory/templates/laboratory/disposal_substance.html:41
 #: laboratory/templates/laboratory/disposal_substance.html:67
-#: report/views/objects.py:445 sga/models.py:182 sga/models.py:273
+#: report/views/objects.py:463 sga/models.py:182 sga/models.py:273
 #: sga/models.py:474
 msgid "Substance"
 msgstr "Sustancia"
@@ -743,10 +743,10 @@ msgstr "Agregar"
 #: laboratory/templates/pdf/shelf_object_pdf.html:58
 #: report/views/furniture.py:37 report/views/furniture.py:53
 #: report/views/lab_room.py:32 report/views/lab_room.py:48
-#: report/views/objects.py:161 report/views/objects.py:179
-#: report/views/objects.py:272 report/views/objects.py:290
-#: report/views/objects.py:349 report/views/objects.py:364
-#: report/views/objects.py:444 report/views/objects.py:460 sga/models.py:88
+#: report/views/objects.py:168 report/views/objects.py:186
+#: report/views/objects.py:285 report/views/objects.py:303
+#: report/views/objects.py:368 report/views/objects.py:383
+#: report/views/objects.py:462 report/views/objects.py:479 sga/models.py:88
 #: sga/models.py:105
 msgid "Code"
 msgstr "Código"
@@ -786,7 +786,7 @@ msgstr "Concentración"
 #: academic/templates/academic/substance/detail_substance.html:95
 #: laboratory/templates/laboratory/shelfobject_detail.html:54
 #: laboratory/templates/pdf/shelf_object_pdf.html:122
-#: report/views/objects.py:446 report/views/objects.py:461
+#: report/views/objects.py:464 report/views/objects.py:480
 #: risk_management/templates/risk_management/riskzone_detail.html:86
 msgid "White Organ"
 msgstr "Organo blanco"
@@ -1454,7 +1454,7 @@ msgstr "Teléfono de emergencia"
 #: auth_and_perms/forms.py:49 laboratory/models.py:567 laboratory/models.py:595
 #: laboratory/templates/laboratory/profile_detail.html:26
 #: laboratory/templates/laboratory/provider_list.html:20
-#: laboratory/views/reports.py:239 presentation/forms.py:19
+#: laboratory/views/reports.py:243 presentation/forms.py:19
 #: presentation/models.py:39 sga/models.py:343
 #: sga/templates/donate_organilab.html:38
 msgid "Email"
@@ -1683,7 +1683,7 @@ msgid "Warning Word"
 msgstr "Crear palabra de advertencia"
 
 #: academic/templates/academic/substance/pdf/section_two.html:28
-#: report/views/objects.py:274 report/views/objects.py:290 sga/models.py:132
+#: report/views/objects.py:287 report/views/objects.py:303 sga/models.py:132
 #: sga/models.py:330
 msgid "Danger indication"
 msgstr "Indicación de peligro"
@@ -1835,7 +1835,7 @@ msgstr "Dirección de correo electrónico"
 #: laboratory/templates/laboratory/profile_detail.html:25
 #: laboratory/templates/laboratory/provider_list.html:19
 #: laboratory/templates/pdf/base_organization_pdf.html:63
-#: laboratory/views/reports.py:239 sga/models.py:228
+#: laboratory/views/reports.py:243 sga/models.py:228
 #: sga/templates/list_company.html:28
 msgid "Phone"
 msgstr "Teléfono"
@@ -1848,7 +1848,7 @@ msgstr "Identificación"
 #: auth_and_perms/models.py:18 authentication/forms.py:13
 #: laboratory/forms.py:177
 #: laboratory/templates/laboratory/profile_detail.html:27
-#: report/views/objects.py:447 report/views/objects.py:461
+#: report/views/objects.py:465 report/views/objects.py:480
 msgid "Job Position"
 msgstr "Puesto de trabajo"
 
@@ -1858,7 +1858,7 @@ msgstr "Este campo será usado cuando se autentique con firma digital"
 
 #: auth_and_perms/models.py:16 authentication/forms.py:12
 #: laboratory/templates/laboratory/profile_detail.html:24
-#: report/views/objects.py:447 report/views/objects.py:461
+#: report/views/objects.py:465 report/views/objects.py:480
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
 
@@ -2020,8 +2020,8 @@ msgstr "Agregar Usuario"
 #: laboratory/templates/laboratory/logentry_list.html:19
 #: laboratory/templates/laboratory/register_user_qr/logentry_list.html:19
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:17
-#: presentation/models.py:27 report/views/objects.py:82
-#: report/views/objects.py:98 reservations_management/models.py:51
+#: presentation/models.py:27 report/views/objects.py:84
+#: report/views/objects.py:100 reservations_management/models.py:51
 #: reservations_management/models.py:62
 #: reservations_management/templates/reservations_management/reservations_list.html:69
 #: sga/models.py:230 sga/templates/list_company.html:30
@@ -2048,10 +2048,10 @@ msgstr "Agregar Laboratorio"
 #: presentation/templates/gentelella/app/report_menu.html:11
 #: report/views/furniture.py:39 report/views/furniture.py:53
 #: report/views/lab_room.py:33 report/views/lab_room.py:48
-#: report/views/objects.py:82 report/views/objects.py:98
-#: report/views/objects.py:159 report/views/objects.py:185
-#: report/views/objects.py:270 report/views/objects.py:296
-#: report/views/objects.py:347 report/views/objects.py:369
+#: report/views/objects.py:84 report/views/objects.py:100
+#: report/views/objects.py:166 report/views/objects.py:192
+#: report/views/objects.py:283 report/views/objects.py:309
+#: report/views/objects.py:366 report/views/objects.py:388
 #: reservations_management/models.py:70
 #: reservations_management/templates/reservations_management/reservations_list.html:71
 msgid "Laboratory"
@@ -2355,7 +2355,7 @@ msgstr "Su contraseña no puede contener solo números."
 #: laboratory/templates/laboratory/my_reservation_delete_all.html:17
 #: laboratory/templates/laboratory/search.html:107
 #: laboratory/templates/laboratory/transfer_object_modal.html:27
-#: report/templates/report/base_report_form_view.html:76
+#: report/templates/report/base_report_form_view.html:82
 #: reservations_management/templates/reservations_management/product_modal.html:42
 #: sga/templates/add_recipient_size.html:25 sga/templates/add_substance.html:22
 #: sga/templates/donate_organilab.html:21
@@ -2380,7 +2380,7 @@ msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
 
 #: authentication/templates/feedback/feedbackentry_form.html:22
 #: authentication/templates/registration/request_a_demo.html:19
-#: report/templates/report/base_report_form_view.html:32
+#: report/templates/report/base_report_form_view.html:38
 msgid "Send"
 msgstr "Enviar"
 
@@ -2534,8 +2534,8 @@ msgstr "Archivo no encontrado"
 #: msds/templates/regulation/regulations_document.html:17
 #: msds/templates/regulation/regulations_document.html:27
 #: msds/templates/regulation/regulations_document.html:36 msds/views.py:29
-#: report/templates/report/base_report_form_view.html:55
-#: report/templates/report/base_report_form_view.html:77
+#: report/templates/report/base_report_form_view.html:61
+#: report/templates/report/base_report_form_view.html:83
 #: risk_management/templates/risk_management/incidentreport_detail.html:41
 #: risk_management/templates/risk_management/incidentreport_detail.html:84
 msgid "Download"
@@ -2584,8 +2584,8 @@ msgstr "Factura"
 msgid "Provider"
 msgstr "Proveedores"
 
-#: laboratory/forms.py:175 report/views/objects.py:444
-#: report/views/objects.py:460
+#: laboratory/forms.py:175 report/views/objects.py:462
+#: report/views/objects.py:479
 msgid "Last Name"
 msgstr "Apellidos"
 
@@ -2603,8 +2603,8 @@ msgstr "Tarjeta de identificación"
 #: laboratory/templates/pdf/shelf_object_pdf.html:46
 #: laboratory/views/laboratory_utils.py:8 report/views/furniture.py:40
 #: report/views/furniture.py:53 report/views/lab_room.py:35
-#: report/views/lab_room.py:48 report/views/objects.py:349
-#: report/views/objects.py:364
+#: report/views/lab_room.py:48 report/views/objects.py:368
+#: report/views/objects.py:383
 msgid "Shelf"
 msgstr "Estante"
 
@@ -2725,9 +2725,9 @@ msgstr "Nombres separados por comas"
 
 #: laboratory/models.py:67 laboratory/models.py:204 laboratory/models.py:271
 #: laboratory/templates/laboratory/search.html:67 report/views/furniture.py:38
-#: report/views/furniture.py:53 report/views/objects.py:162
-#: report/views/objects.py:179 report/views/objects.py:273
-#: report/views/objects.py:290
+#: report/views/furniture.py:53 report/views/objects.py:169
+#: report/views/objects.py:186 report/views/objects.py:286
+#: report/views/objects.py:303
 msgid "Type"
 msgstr "Tipo"
 
@@ -2775,7 +2775,7 @@ msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
 #: laboratory/models.py:151 laboratory/models.py:561
-#: report/views/objects.py:443 report/views/objects.py:460
+#: report/views/objects.py:461 report/views/objects.py:479
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
 
@@ -2832,8 +2832,8 @@ msgstr "Estante del contenedor"
 #: laboratory/templates/pdf/shelf_object_pdf.html:50
 #: laboratory/views/laboratory_utils.py:8 report/views/furniture.py:38
 #: report/views/furniture.py:53 report/views/lab_room.py:33
-#: report/views/lab_room.py:48 report/views/objects.py:350
-#: report/views/objects.py:364
+#: report/views/lab_room.py:48 report/views/objects.py:369
+#: report/views/objects.py:383
 msgid "Quantity"
 msgstr "Cantidad"
 
@@ -2884,7 +2884,7 @@ msgstr "Organizaciones del usuario"
 msgid "Location"
 msgstr "Ubicación"
 
-#: laboratory/models.py:568 laboratory/views/reports.py:233
+#: laboratory/models.py:568 laboratory/views/reports.py:237
 msgid "Coordinator"
 msgstr "Coordinador"
 
@@ -3057,7 +3057,7 @@ msgstr "Información pendiente en el formulario"
 
 #: laboratory/sustance/views.py:138
 #: laboratory/templates/pdf/shelf_object_pdf.html:172
-#: report/views/objects.py:164 report/views/objects.py:180
+#: report/views/objects.py:171 report/views/objects.py:187
 msgid "Is precursor?"
 msgstr "¿Es precursor?"
 
@@ -3345,12 +3345,12 @@ msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 
 #: laboratory/templates/laboratory/components/report_modals.html:6
-#: report/templates/report/base_report_form_view.html:69
+#: report/templates/report/base_report_form_view.html:75
 msgid "Download document"
 msgstr "Descargar  documento"
 
 #: laboratory/templates/laboratory/components/report_modals.html:10
-#: report/templates/report/base_report_form_view.html:73
+#: report/templates/report/base_report_form_view.html:79
 msgid "Do you want to download the report"
 msgstr "¿Deseas descargar el reporte?"
 
@@ -3417,7 +3417,7 @@ msgid "Yes, delete it"
 msgstr "Si, eliminarlo"
 
 #: laboratory/templates/laboratory/furniture_list.html:25
-#: laboratory/templates/laboratory/h_code_report.html:48 report/forms.py:19
+#: laboratory/templates/laboratory/h_code_report.html:48 report/forms.py:22
 #: risk_management/templates/risk_management/incidentreport_detail.html:49
 #: risk_management/templates/risk_management/incidentreport_detail.html:92
 msgid "PDF"
@@ -3561,7 +3561,7 @@ msgstr "Administración de sala de laboratorio"
 
 #: laboratory/templates/laboratory/laboratoryroom_form.html:35
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:22
-#: report/views/objects.py:84 report/views/objects.py:98
+#: report/views/objects.py:86 report/views/objects.py:100
 #: risk_management/templates/risk_management/incidentreport_list.html:41
 #: risk_management/templates/risk_management/riskzone_list.html:40
 msgid "New"
@@ -3725,7 +3725,7 @@ msgid "Consecutive"
 msgstr "Consecutivo"
 
 #: laboratory/templates/laboratory/precursor_report.html:24
-#: laboratory/views/reports.py:236
+#: laboratory/views/reports.py:240
 msgid "Month"
 msgstr "Mes"
 
@@ -3871,23 +3871,23 @@ msgid "Changes on Objects"
 msgstr "Cambio de objetos"
 
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:20
-#: report/views/objects.py:83 report/views/objects.py:98
+#: report/views/objects.py:85 report/views/objects.py:100
 msgid "Day"
 msgstr "Día"
 
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:21
-#: report/views/objects.py:84 report/views/objects.py:98
+#: report/views/objects.py:86 report/views/objects.py:100
 msgid "Old"
 msgstr "Antiguo"
 
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:23
-#: report/views/objects.py:85 report/views/objects.py:98
+#: report/views/objects.py:87 report/views/objects.py:100
 msgid "Difference"
 msgstr "Diferencia"
 
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:25
 #: laboratory/templates/laboratory/reports/logobject_pdf.html:40
-#: report/forms.py:160
+#: report/forms.py:163
 msgid "Precursor"
 msgstr "¿Es precursor?"
 
@@ -3972,7 +3972,7 @@ msgstr "Descargar QR"
 
 #: laboratory/templates/laboratory/shelfobject_detail.html:31
 #: laboratory/templates/pdf/shelf_object_pdf.html:146
-#: report/views/objects.py:273 report/views/objects.py:290
+#: report/views/objects.py:286 report/views/objects.py:303
 msgid "Features"
 msgstr "Características"
 
@@ -4245,71 +4245,77 @@ msgstr "Reporte de Objetos Materiales"
 msgid "Equipment Objects Report"
 msgstr "Reporte de Objetos Equipos"
 
-#: laboratory/views/reports.py:157
+#: laboratory/views/reports.py:128
+#, fuzzy
+#| msgid "File not found"
+msgid "Page not found"
+msgstr "Archivo no encontrado"
+
+#: laboratory/views/reports.py:161
 msgid "Limited Shelf Objects Report"
 msgstr "Reporte de Objetos en el Límite"
 
-#: laboratory/views/reports.py:179
+#: laboratory/views/reports.py:183
 msgid "Reactive Precursor Objects Report"
 msgstr "Reporte de Objetos Reactivos Precursores"
 
-#: laboratory/views/reports.py:201
+#: laboratory/views/reports.py:205
 msgid "Changes on Objects Report"
 msgstr "Reporte de Cambio de Objetos"
 
-#: laboratory/views/reports.py:233
+#: laboratory/views/reports.py:237
 msgid "#Consecutivo"
 msgstr "Consecutivo"
 
-#: laboratory/views/reports.py:236
+#: laboratory/views/reports.py:240
 msgid "Laboratorio o centro de trabajo"
 msgstr "Laboratorio o centro de trabajo"
 
-#: laboratory/views/reports.py:241
+#: laboratory/views/reports.py:245
 msgid "Nombre de la sustancia o producto"
 msgstr "Nombre de la sustancia o producto"
 
-#: laboratory/views/reports.py:242
+#: laboratory/views/reports.py:246
 msgid "Unid"
 msgstr "Unidad"
 
-#: laboratory/views/reports.py:243
+#: laboratory/views/reports.py:247
 msgid "Saldo final de reporte anterior"
 msgstr "Saldo final de reporte anterior"
 
-#: laboratory/views/reports.py:244
+#: laboratory/views/reports.py:248
 msgid "Ingresos durante el mes"
 msgstr "Saldo final de reporte anterior"
 
-#: laboratory/views/reports.py:245
+#: laboratory/views/reports.py:249
 msgid "Numero de factura"
 msgstr "Numero de factura"
 
-#: laboratory/views/reports.py:246
+#: laboratory/views/reports.py:250
 msgid "Proveedor"
 msgstr "Proveedores"
 
-#: laboratory/views/reports.py:247
+#: laboratory/views/reports.py:251
 msgid "Total de existencias"
 msgstr "Total de existencias"
 
-#: laboratory/views/reports.py:248
+#: laboratory/views/reports.py:252
 msgid "Gasto durante el mes"
 msgstr "No hay piezas de mueble"
 
-#: laboratory/views/reports.py:249
+#: laboratory/views/reports.py:253
 msgid "Saldo al final del mes reportado en este informe"
 msgstr "Saldo al final del mes reportado en este informe"
 
-#: laboratory/views/reports.py:250
+#: laboratory/views/reports.py:254
 msgid "Razon de gasto o despacho"
 msgstr "Razon de gasto o despacho"
 
-#: laboratory/views/reports.py:251
+#: laboratory/views/reports.py:255
 msgid "Asunto"
 msgstr "Asunto"
 
-#: laboratory/views/reports.py:370
+#: laboratory/views/reports.py:374
 msgid "User Reactive Exposition in Organization Report"
 msgstr "Reporte Exposición Reactiva del Usuario en la Organización"
 
@@ -4873,23 +4879,23 @@ msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
 "Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos."
 
-#: report/forms.py:13
+#: report/forms.py:16
 msgid "File Name"
 msgstr "Nombre de archivo"
 
-#: report/forms.py:14
+#: report/forms.py:17
 msgid "Report Title"
 msgstr "Título del reporte"
 
-#: report/forms.py:18
+#: report/forms.py:21
 msgid "On screen"
 msgstr "En pantalla"
 
-#: report/forms.py:23
+#: report/forms.py:26
 msgid "Format"
 msgstr "Formato"
 
-#: report/forms.py:32 report/forms.py:50 report/forms.py:77 report/forms.py:157
+#: report/forms.py:35 report/forms.py:53 report/forms.py:80 report/forms.py:160
 msgid ""
 "This option allows to expand this query to all laboratories of current "
 "organization"
@@ -4897,71 +4903,66 @@ msgstr ""
 "Esta opción permite expandir la consulta a todos los laboratorios de la "
 "organización actual"
 
-#: report/forms.py:33 report/forms.py:37 report/forms.py:51 report/forms.py:78
-#: report/forms.py:158
+#: report/forms.py:36 report/forms.py:40 report/forms.py:54 report/forms.py:81
+#: report/forms.py:161
 msgid "All laboratories"
 msgstr "En todos los laboratorios"
 
-#: report/forms.py:80
-msgid ""
-"If you want to delimit this query select laboratory rooms (This is an extra "
-"filter not required)"
+#: report/forms.py:83
+msgid "If you want to delimit this query select laboratory rooms (Optional)"
 msgstr ""
-"Si deseas delimitar la consulta selecciona salas de laboratorio (Este es un "
-"filtro extra no requerido)"
+"Si deseas delimitar la consulta selecciona salas de laboratorio (Opcional)"
 
-#: report/forms.py:89
+#: report/forms.py:92
 msgid "Filter Laboratory Room"
 msgstr "Filtrar sala de laboratorio"
 
-#: report/forms.py:90
-msgid ""
-"If you want to delimit this query select furnitures (This is an extra filter "
-"not required)"
-msgstr ""
-"Si deseas delimitar la consulta selecciona muebles (Este es un filtro extra "
-"no requerido)"
+#: report/forms.py:93
+msgid "If you want to delimit this query select furnitures (Optional)"
+msgstr "Si deseas delimitar la consulta selecciona muebles (Opcional)"
 
-#: report/forms.py:96
+#: report/forms.py:99
 msgid "Filter Furniture"
 msgstr "Filtrar mueble"
 
-#: report/forms.py:159
+#: report/forms.py:162
 msgid "Period"
 msgstr "PerÍodo"
 
-#: report/forms.py:161
+#: report/forms.py:164
 msgid "Resume"
 msgstr "Resumen"
 
-#: report/forms.py:177
-msgid "Filter Laboratory"
-msgstr "Filtrar laboratorio"
+#: report/forms.py:180
+msgid "If you want to delimit this query select users (Optional)"
+msgstr "Si deseas delimitar la consulta selecciona usuarios (Opcional)"
 
-#: report/forms.py:178
+#: report/forms.py:181
 msgid "Filter User"
 msgstr "Registrar usuario"
 
-#: report/forms.py:215 report/forms.py:218
+#: report/forms.py:216
 msgid "Object type is not allowed"
-msgstr ""
+msgstr "Tipo de objeto no permitido"
 
 #: report/forms.py:232 report/forms.py:236
-#, fuzzy
-#| msgid "Furniture information"
 msgid "Furniture is not allowed"
-msgstr "Información del mueble"
+msgstr "Mueble no permitido"
 
-#: report/models.py:6 report/models.py:10 report/views/base.py:132
+#: report/forms.py:248
+msgid "Task report doesn't exists"
+msgstr "Tarea de reporte no existe"
+
+#: report/models.py:6 report/models.py:10 report/views/base.py:141
 msgid "Delivered"
 msgstr "Entregado"
 
-#: report/models.py:7 report/models.py:9 report/views/base.py:102
+#: report/models.py:7 report/models.py:9 report/views/base.py:104
 msgid "On hold"
 msgstr "En espera"
 
 #: report/models.py:8 report/models.py:11 report/views/base.py:44
-#: report/views/base.py:47 report/views/base.py:131
+#: report/views/base.py:47 report/views/base.py:140
 msgid "Generated"
 msgstr "Generado"
 
@@ -4969,15 +4970,15 @@ msgstr "Generado"
 msgid "Object doesn't exists"
 msgstr "Objeto no existe"
 
-#: report/templates/report/base_report_form_view.html:48
+#: report/templates/report/base_report_form_view.html:54
 msgid "Detail of the process please do not close this window"
 msgstr "Detalle del proceso por favor no cierre esta ventana"
 
-#: report/templates/report/base_report_form_view.html:51
+#: report/templates/report/base_report_form_view.html:57
 msgid "Queuing report creation"
 msgstr "Encolando creación de reporte"
 
-#: report/templates/report/base_report_form_view.html:55
+#: report/templates/report/base_report_form_view.html:61
 msgid "Download the report in this link"
 msgstr "Descargar el reporte en este enlace"
 
@@ -5001,44 +5002,54 @@ msgstr "Iniciando creacíon del reporte"
 msgid "Loading data to analyze in"
 msgstr "Cargando datos a analizar en"
 
-#: report/views/objects.py:162 report/views/objects.py:179
+#: report/views/base.py:86 report/views/base.py:131
+msgid "Report can't be processed, try again or contact administrator"
+msgstr ""
+"Reporte no puede ser procesado, intente nuevamente o contacte el "
+"administrador"
+
+#: report/views/objects.py:169 report/views/objects.py:186
 msgid "Quantity total"
 msgstr "Cantidad total"
 
-#: report/views/objects.py:163 report/views/objects.py:179
+#: report/views/objects.py:170 report/views/objects.py:186
 msgid "Measurement units"
 msgstr "Unidades de medida"
 
-#: report/views/objects.py:164 report/views/objects.py:180
-#: report/views/objects.py:276 report/views/objects.py:291
+#: report/views/objects.py:171 report/views/objects.py:187
+#: report/views/objects.py:289 report/views/objects.py:304
 msgid "CAS id number"
 msgstr "Número de identificación CAS"
 
-#: report/views/objects.py:165 report/views/objects.py:180
+#: report/views/objects.py:172 report/views/objects.py:187
 msgid "IMDG type"
 msgstr "Tipo IMDG"
 
-#: report/views/objects.py:351 report/views/objects.py:364
+#: report/views/objects.py:370 report/views/objects.py:383
 msgid "Limit quantity"
 msgstr "Cantidad límite"
 
-#: report/views/objects.py:364
+#: report/views/objects.py:383
 msgid "Measurement Unit"
 msgstr "Unidad de medida"
 
-#: report/views/objects.py:443 report/views/objects.py:460
+#: report/views/objects.py:461 report/views/objects.py:479
 msgid "First Name"
 msgstr "Nombre"
 
-#: report/views/objects.py:445 report/views/objects.py:460
+#: report/views/objects.py:463 report/views/objects.py:479
 msgid "CAS"
 msgstr "CAS"
 
-#: report/views/objects.py:446 report/views/objects.py:461
+#: report/views/objects.py:464 report/views/objects.py:480
 msgid "Carcinogenic"
 msgstr "Carcinógeno"
 
-#: report/views/objects.py:460
+#: report/views/objects.py:466 report/views/objects.py:480
+msgid "Exposition"
+msgstr "Exposición"
+
+#: report/views/objects.py:479
 msgid "Sustance"
 msgstr "Sustancia"
 
@@ -5954,6 +5965,9 @@ msgstr "Crear Compañía"
 #: sga/views.py:525
 msgid "Edit Company"
 msgstr "Editar Compañía"
+
+#~ msgid "Filter Laboratory"
+#~ msgstr "Filtrar laboratorio"
 
 #~ msgid "Organization laboratory report"
 #~ msgstr "Informe de laboratorio de la organización"
