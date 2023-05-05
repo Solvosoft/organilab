@@ -58,7 +58,7 @@
                     <ul id="textstatus"></ul>
                 </div>
                 <div class="card-footer d-none">
-                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#">{% trans 'Download' %}</a></h2>
+                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#" target="_blank" download="">{% trans 'Download' %}</a></h2>
                 </div>
             </div>
         </div>
@@ -92,9 +92,9 @@
 {{ block.super }}
 <script>
 	const report_urls = {
-		create_request : "{% url 'report:create_report_request' lab_pk=laboratory %}",
-		generate_report : "{% url 'report:generate_report' lab_pk=laboratory org_pk=org_pk %}",
-		report_status: "{% url 'report:report_status' %}"
+		create_request : "{% url 'report:create_report_request' org_pk=org_pk lab_pk=laboratory %}",
+		generate_report : "{% url 'report:generate_report' org_pk=org_pk lab_pk=laboratory %}",
+		report_status: "{% url 'report:report_status' org_pk=org_pk lab_pk=laboratory %}"
 
 	}
 </script>
