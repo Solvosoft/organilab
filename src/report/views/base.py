@@ -1,13 +1,16 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.models import OrganizationStructure
+from laboratory.utils import check_user_access_kwargs_org_lab
 from report.forms import TasksForm
 from report.models import TaskReport
 from report import register
@@ -83,81 +86,94 @@ def base_pdf(report, uri):
 def create_request_by_report(request, org_pk, lab_pk):
     response = {'result': False}
     report_name_list = register.REPORT_FORMS.keys()
-    error_message = _("Report can't be processed, try again or contact administrator")
+    status_code = 401
+    reason = None
 
-    if 'report_name' in request.GET and request.GET['report_name'] in report_name_list:
-        type_report = register.REPORT_FORMS[request.GET['report_name']]
+    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+        if 'report_name' in request.GET and request.GET['report_name'] in report_name_list:
+            type_report = register.REPORT_FORMS[request.GET['report_name']]
 
-        if 'form' in type_report:
-            import_form = import_string(type_report['form'])
-            form = import_form(request.GET)
+            if 'form' in type_report:
+                import_form = import_string(type_report['form'])
+                form = import_form(request.GET)
 
-            if form.is_valid():
-                format=form.cleaned_data['format']
-                data = request.GET.copy()
-                data['lab_pk'] = lab_pk
-                save_request_data(form, data)
+                if form.is_valid():
+                    format=form.cleaned_data['format']
+                    data = request.GET.copy()
+                    data['lab_pk'] = lab_pk
+                    save_request_data(form, data)
 
-                task = TaskReport.objects.create(
-                    creator=request.user,
-                    type_report=form.cleaned_data['report_name'],
-                    status=_("On hold"),
-                    file_type=format,
-                    data=data,
-                    language=get_language()
-                )
+                    task = TaskReport.objects.create(
+                        creator=request.user,
+                        type_report=form.cleaned_data['report_name'],
+                        status=_("On hold"),
+                        file_type=format,
+                        data=data,
+                        language=get_language()
+                    )
 
-                method = import_string(type_report['task'])
-                task_celery=method.delay(task.pk, request.build_absolute_uri())
-                task_celery=task_celery.task_id
+                    method = import_string(type_report['task'])
+                    task_celery=method.delay(task.pk, request.build_absolute_uri())
+                    task_celery=task_celery.task_id
 
-                response['result'] = True
-                response.update({
-                    'report': task.pk,
-                    'celery_id': task_celery
-                })
-            else:
-                response.update({'form_errors': form.errors})
-        else:
-            response['error_message'] = error_message
-    else:
-        response['error_message'] = error_message
-    return JsonResponse(response)
+                    response['result'] = True
+                    response.update({
+                        'report': task.pk,
+                        'celery_id': task_celery
+                    })
+                else:
+                    response.update({'form_errors': form.errors})
+                status_code = 200
+
+    if status_code != 200 or status_code != 201:
+        reason = _("Report can't be processed, try again or contact administrator")
+    response = JsonResponse(response, status=status_code, reason=reason)
+    return response
 
 @login_required
 @permission_required('laboratory.do_report')
-def download_report(request, lab_pk, org_pk):
+def download_report(request, org_pk, lab_pk):
     response = {'result': False}
-    error_message = _("Report can't be processed, try again or contact administrator")
+    status_code = 200
+    reason = None
 
-    if request.method == "GET":
-        form = TasksForm(request.GET)
+    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
 
-        if form.is_valid():
-            task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
-            result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
-            if result:
-                if task.status==_('Generated') and result.status=='SUCCESS':
-                    task.status=_('Delivered')
-                    task.save()
-                    response['result'] = True
-                    if task.file_type=='html':
-                        response.update({
-                            'url_file':reverse('report:report_table', kwargs={
-                                'org_pk': org_pk,
-                                'lab_pk':lab_pk,
-                                'pk':task.pk
-                            }),
-                            'type_report':task.file_type
-                        })
-                        create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
-                    else:
-                        file_name = f"{task.data['name']}.{task.file_type}"
-                        create_notification(request.user, file_name , task.file.url)
-                        response.update({'url_file': task.file.url})
-        else:
-            response['error_message'] = error_message
-    return JsonResponse(response)
+        if request.method == "GET":
+            form = TasksForm(request.GET)
+
+            if form.is_valid():
+                task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+                result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+
+                if result:
+                    if task.status==_('Generated') and result.status=='SUCCESS':
+                        task.status=_('Delivered')
+                        task.save()
+                        response['result'] = True
+                        if task.file_type=='html':
+                            response.update({
+                                'url_file':reverse('report:report_table', kwargs={
+                                    'org_pk': org_pk,
+                                    'lab_pk':lab_pk,
+                                    'pk':task.pk
+                                }),
+                                'type_report':task.file_type
+                            })
+                            create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_table',kwargs={"lab_pk":lab_pk,"org_pk":org_pk,"pk":task.pk}))
+                        else:
+                            file_name = f"{task.data['name']}.{task.file_type}"
+                            create_notification(request.user, file_name , task.file.url)
+                            response.update({'url_file': task.file.url})
+            else:
+                status_code = 401
+    else:
+        status_code = 401
+
+    if status_code != 200 or status_code != 201:
+        reason = _("Report can't be processed, try again or contact administrator")
+    response = JsonResponse(response, status=status_code, reason=reason)
+    return response
 
 @login_required
 @permission_required('laboratory.do_report')
