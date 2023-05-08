@@ -2,6 +2,7 @@
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.timezone import now
 from djgentelella.widgets import core as genwidgets
 
@@ -43,7 +44,7 @@ class FurnitureReportView(ListView):
         lab_obj = get_object_or_404(Laboratory, pk=self.lab)
         title = _('Objects by Furniture Report')
         initial_data = {
-            'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+            'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
             'title': title,
             'organization': self.org,
             'report_name': 'report_furniture',

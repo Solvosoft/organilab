@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
@@ -143,7 +144,7 @@ class LaboratoryRoomReportView(ListView):
             'title_view': title,
             'report_urlnames': ['reports_laboratory'],
             'form': LaboratoryRoomReportForm(initial={
-                'name': title +' '+ now().strftime("%x").replace('/', '-'),
+                'name': slugify(title +' '+ now().strftime("%x").replace('/', '-')),
                 'title': title,
                 'organization': self.org,
                 'report_name': 'report_laboratory_room',
