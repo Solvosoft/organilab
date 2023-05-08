@@ -14,8 +14,6 @@ def media_access(request, path):
     """
     user = request.user
 
-    real_path=path
-
     report=TaskReport.objects.filter(creator=user, file_type__isnull=False, file__isnull=False, file__icontains=path).exclude(file_type="html").first()
 
     if user.is_authenticated:
