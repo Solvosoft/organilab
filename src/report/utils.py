@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
@@ -134,3 +136,12 @@ def load_dataset_by_column(column_list, data_column):
             value = data_column[name]
         obj_item.append(value)
     return obj_item
+
+
+def check_import_obj(path):
+    try:
+        import_obj = import_string(path)
+    except ImportError:
+        import_obj = None
+
+    return import_obj
