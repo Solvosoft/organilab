@@ -348,18 +348,26 @@ def get_laboratories_by_user_profile(user, org_pk):
     return list(queryset.filter(filters).distinct().values_list('pk', flat=True))
 
 
-def check_kwargs_org_lab(org, lab, user):
+def check_user_access_kwargs_org_lab(org, lab, user):
+    user_access = False
+
     if org:
         organization = OrganizationStructure.objects.filter(pk=org)
+
         if organization.exists():
             organization = organization.first()
-            user_is_allowed_on_organization(user, organization)
-            if lab:
-                laboratory = Laboratory.objects.filter(pk=lab)
-                if laboratory.exists():
-                    can_change = organization_can_change_laboratory(laboratory.first(), organization)
-                    user_labs = get_laboratories_by_user_profile(user, org)
-                    if not can_change or not lab in user_labs:
-                        raise Http404()
-        else:
-            raise Http404()
+
+            if organization.users.filter(pk=user.pk).exists():
+
+                if lab:
+                    laboratory = Laboratory.objects.filter(pk=lab)
+
+                    if laboratory.exists():
+                        can_change = organization_can_change_laboratory(laboratory.first(), organization)
+                        user_labs = get_laboratories_by_user_profile(user, org)
+
+                        if can_change or lab in user_labs:
+                            user_access = True
+                else:
+                    user_access = True #REPORT VIEWS WITH LAB = 0
+    return user_access
