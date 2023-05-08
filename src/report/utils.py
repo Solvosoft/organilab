@@ -99,13 +99,6 @@ def create_notification(user, message,url):
         link=url,
     )
 
-def save_request_data(form, data):
-    general_report_fields = ['laboratory', 'lab_room', 'furniture', 'users']
-
-    for field in general_report_fields:
-        if field in form.fields:
-            data[field] = form.cleaned_data[field]
-
 
 def get_report_name(report):
     report_name = _('Report')

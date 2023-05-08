@@ -1,15 +1,12 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
-
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import OrganizationStructure
 from laboratory.utils import check_user_access_kwargs_org_lab
 from report.forms import TasksForm
 from report.models import TaskReport
@@ -19,7 +16,7 @@ from weasyprint import HTML
 from io import BytesIO
 
 from report.models import DocumentReportStatus
-from report.utils import get_pdf_table_content, create_notification, save_request_data, get_report_name, \
+from report.utils import get_pdf_table_content, create_notification, get_report_name, \
     document_status, calc_duration
 from django_celery_results.models import TaskResult
 
@@ -85,6 +82,7 @@ def base_pdf(report, uri):
 @permission_required('laboratory.do_report')
 def create_request_by_report(request, org_pk, lab_pk):
     response = {'result': False}
+    data = {'org_pk': org_pk, 'lab_pk': lab_pk}
     report_name_list = register.REPORT_FORMS.keys()
     status_code = 401
     reason = None
@@ -98,16 +96,13 @@ def create_request_by_report(request, org_pk, lab_pk):
                 form = import_form(request.GET)
 
                 if form.is_valid():
-                    format=form.cleaned_data['format']
-                    data = request.GET.copy()
-                    data['lab_pk'] = lab_pk
-                    save_request_data(form, data)
+                    data.update(form.cleaned_data)
 
                     task = TaskReport.objects.create(
                         creator=request.user,
                         type_report=form.cleaned_data['report_name'],
                         status=_("On hold"),
-                        file_type=format,
+                        file_type=form.cleaned_data['format'],
                         data=data,
                         language=get_language()
                     )
