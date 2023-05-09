@@ -35,7 +35,6 @@ class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
                                     pk=self.organization)
 
             has_permission=organization_can_change_laboratory(laboratory,org)
-            user_is_allowed_on_organization(self.request.user, org)
             if has_permission:
                 if self.all_labs_org:
                     labs_by_org = get_laboratories_from_organization(self.organization)
