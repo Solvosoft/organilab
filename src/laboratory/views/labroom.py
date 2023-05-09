@@ -6,7 +6,7 @@ Created on 26/12/2016
 '''
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
@@ -21,7 +21,7 @@ from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from ..utils import organilab_logentry
+from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
 @method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
@@ -157,6 +157,8 @@ class LaboratoryRoomReportView(ListView):
 
 @permission_required('laboratory.change_laboratoryroom')
 def rebuild_laboratory_qr(request, org_pk, lab_pk):
+    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+        raise Http404()
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     schema =  request.scheme + "://"
     domain = schema + request.get_host()
