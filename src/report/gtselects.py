@@ -1,11 +1,14 @@
+from django.conf import settings
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from laboratory.models import LaboratoryRoom, Furniture
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory
 from laboratory.utils import get_laboratories_from_organization
 from report.forms import RelOrganizationForm
 
@@ -27,16 +30,22 @@ class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
         queryset = super().get_queryset()
         result = queryset.none()
         if self.organization:
-            if self.all_labs_org:
-                labs_by_org = get_laboratories_from_organization(self.organization)
-                result = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org)
-            else:
-                if self.laboratory:
-                    result = queryset.filter(laboratory=self.laboratory)
+            laboratory= get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=self.laboratory)
+            org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                    pk=self.organization)
 
-            if self.lab_room:
-                id_list = list(self.lab_room.values_list('pk', flat=True))
-                self.selected = list(map(str, id_list))
+            has_permission=organization_can_change_laboratory(laboratory,org)
+            if has_permission:
+                if self.all_labs_org:
+                    labs_by_org = get_laboratories_from_organization(self.organization)
+                    result = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org.filter(profile__user=self.request.user).using(settings.READONLY_DATABASE))
+                else:
+                    if self.laboratory:
+                        result = queryset.filter(laboratory=self.laboratory)
+
+                if self.lab_room:
+                    id_list = list(self.lab_room.values_list('pk', flat=True))
+                    self.selected = list(map(str, id_list))
         return result
 
     def list(self, request, *args, **kwargs):

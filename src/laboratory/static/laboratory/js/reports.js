@@ -34,18 +34,24 @@ function form_field_errors(form_errors){
     }
 }
 
+function show_error_message(error_message){
+    if(error_message){
+        if(!$("#diverrormessage").is(":visible")){
+            $("#errormessagecontent").html(error_message);
+            $("#diverrormessage").show();
+            accept_request();
+        }
+    }
+}
+
 
 $('#send').on('click', function(){
-
+    $(".statuspanel, .card-footer").addClass("d-none");
     filter=get_doc_filter();
     filter= filter.substring(1,filter.length);
     filter="?"+filter;
     url=report_urls['create_request']+filter;
     $(this).attr('disabled',true);
-    document.querySelector(".statuspanel").classList.remove('d-none');
-    $(".card-footer").addClass("d-none")
-    $("#textstatus").html("");
-
     $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
     setTimeout(get_archive_status, 1000);
@@ -57,11 +63,17 @@ $('#send').on('click', function(){
         success : function(data) {
             $('ul.report_form_errors').remove();
             if (data['result']){
+                $("#diverrormessage").hide();
+                $("#textstatus").html("");
+                 $(".statuspanel").removeClass("d-none");
                  get_doc(data['report'], data['celery_id']);
             }else if(data['form_errors']){
                 form_field_errors(data['form_errors']);
                 accept_request();
             }
+        },
+        error: function(xhr, resp, text) {
+            show_error_message(text);
         }
     });
 
@@ -90,26 +102,25 @@ function get_doc(pk,task){
         url: url,
         type : "GET",
         dataType : 'json',
-        success : function({result, url_file, type_report}) {
-
-        if (result==true){
-
-            if(type_report==='html'){
-                open_new_window(url_file);
+        success : function(data) {
+            if (data['result']==true){
+                if(data['type_report']==='html'){
+                    open_new_window(data['url_file']);
+                }else{
+                    $("#download-report, #download_file").attr("href", data['url_file']);
+                    $(".statuspanel, .card-footer").removeClass("d-none");
+                    $("#reportModal").modal('show');
+                }
+                accept_request();
             }else{
-                $("#download-report").attr("href", url_file);
-                $("#download_file").attr("href", url_file);
-                $(".statuspanel").removeClass("d-none");
-                $("#reportModal").modal('show');
-                $(".card-footer").removeClass("d-none")
+                setTimeout(function(){
+                    get_doc(pk,task);
+                }, 3000);
             }
-            accept_request();
-        }else{
-            setTimeout(function(){
-                get_doc(pk,task);
-            }, 3000);
-         }
-         }
+        },
+        error: function(xhr, resp, text) {
+            show_error_message(text);
+        }
     });
  }
 

@@ -523,7 +523,3 @@ class ReservedProductsForm(forms.Form):
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
-
-class TasksForm(GTForm,forms.Form):
-    taskreport = forms.IntegerField( required=True)
-    task = forms.CharField(max_length=255,required=True)
