@@ -122,6 +122,10 @@ class ObjectList(ListView):
         }
 
         if self.request.method == 'GET':
+            if "type_id" in self.request.GET:
+                id=self.request.GET["type_id"]
+                if id.isalpha() or id not in title_by_object:
+                    raise Http404(_("Page not found"))
             objecttypeform = ValidateObjectTypeForm(self.request.GET)
 
             if objecttypeform.is_valid():
@@ -134,7 +138,7 @@ class ObjectList(ListView):
             'title_view': title_view,
             'report_urlnames': ['reports_objects_list'],
             'form': ReportObjectsForm(initial={
-                'name': title_view + ' ' + now().strftime("%x").replace('/', '-'),
+                'name': slugify(title_view + ' ' + now().strftime("%x").replace('/', '-')),
                 'title': title_view,
                 'organization': self.org,
                 'report_name': 'report_objects',
@@ -158,7 +162,7 @@ class LimitedShelfObjectList(ListView):
         context['title_view'] = title
         context['report_urlnames'] = ['reports_limited_shelf_objects_list', 'reports_limited_shelf_objects']
         context['form'] = ReportForm(initial={
-            'name': title +' '+ now().strftime("%x").replace('/', '-'),
+            'name': slugify(title +' '+ now().strftime("%x").replace('/', '-')),
             'title': title,
             'organization': self.org,
             'report_name': 'report_limit_objects',
@@ -181,7 +185,7 @@ class ReactivePrecursorObjectList(ListView):
             'title_view': title,
             'report_urlnames': ['reactive_precursor_object_list', 'reports_reactive_precursor_objects'],
             'form': ReportForm(initial={
-                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
                 'title': title,
                 'organization': self.org,
                 'report_name': 'reactive_precursor',
@@ -204,7 +208,7 @@ class LogObjectView(ReportListView):
             'title_view': title,
             'report_urlnames': ['object_change_logs'],
             'form': ObjectLogChangeReportForm(initial={
-                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
                 'title': title,
                 'organization': self.org,
                 'report_name': 'report_objectschanges',
@@ -373,7 +377,7 @@ class OrganizationReactivePresenceList(ReportListView):
             'laboratory': 0,
             'report_urlnames': ['organizationreactivepresence'],
             'form': OrganizationReactiveForm(initial={
-                'name': title + ' ' + now().strftime("%x").replace('/', '-'),
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
                 'title': title,
                 'organization': self.org,
                 'report_name': 'report_organization_reactive_list'

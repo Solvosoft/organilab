@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
@@ -28,18 +30,25 @@ def filter_period(text, queryset):
 def set_format_table_columns(columns_fields):
     columns = []
     type = 'string'
+    title = ''
+    js_column_types = ['string', 'date', 'datetime', 'number', 'select', 'boolean', 'integer',
+                    'null', 'node', 'array', 'function', 'object', 'undefined']
 
     for field in columns_fields:
-        if 'type' in field:
-            type = field['type']
+        if 'name' in field and field['name']:
 
-        columns.append({
-            'name': field['name'],
-            'title': field['title'],
-            'type': type,
-            'visible': 'true'
-        })
+            if 'type' in field and field['type'] in js_column_types:
+                type = field['type']
 
+            if 'title' in field:
+                title = field['title']
+
+            columns.append({
+                'name': field['name'],
+                'title': title,
+                'type': type,
+                'visible': 'true'
+            })
     return columns
 
 
@@ -92,13 +101,6 @@ def create_notification(user, message,url):
         link=url,
     )
 
-def save_request_data(form, data):
-    general_report_fields = ['laboratory', 'lab_room', 'furniture', 'users']
-
-    for field in general_report_fields:
-        if field in form.fields:
-            data[field] = form.cleaned_data[field]
-
 
 def get_report_name(report):
     report_name = _('Report')
@@ -124,3 +126,22 @@ def calc_duration(start_time, end_time):
     if divmod(duration_in_s, 60)[0] == 0:
         return duration.total_seconds(), _('seconds')
     return minutos, _('minutes')
+
+
+def load_dataset_by_column(column_list, data_column):
+    obj_item = []
+    for name in column_list:
+        value = ''
+        if name in data_column:
+            value = data_column[name]
+        obj_item.append(value)
+    return obj_item
+
+
+def check_import_obj(path):
+    try:
+        import_obj = import_string(path)
+    except ImportError:
+        import_obj = None
+
+    return import_obj

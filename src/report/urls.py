@@ -5,11 +5,11 @@ from report.api.views import ReportDataViewSet
 from report.views import base
 
 
-celery_reports = [
-    path('reports/create/', base.create_request_by_report, name='create_report_request'),
-    path('reports/<int:org_pk>', base.download_report, name='generate_report'),
-    path('reports/table/<int:org_pk>/<int:pk>', base.report_table, name='report_table'),
-
+base_reports = [
+    path('create/', base.create_request_by_report, name='create_report_request'),
+    path('download/', base.download_report, name='generate_report'),
+    path('table/<int:pk>/', base.report_table, name='report_table'),
+    path('status/', base.report_status, name="report_status"),
 ]
 
 router = DefaultRouter()
@@ -21,6 +21,5 @@ app_name = 'report'
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('reports/status/', base.report_status, name="report_status"),
-    path('celery/<int:lab_pk>/', include(celery_reports))
+    path('<int:org_pk>/<int:lab_pk>/', include(base_reports))
 ]

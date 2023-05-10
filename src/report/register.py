@@ -56,7 +56,7 @@ REPORT_FORMS ={
     'report_organization_reactive_list': {
         'task':'report.tasks.task_report',
         'form': 'report.forms.OrganizationReactiveForm',
-        'html': 'report.views.objects.report_organization_reactive_list_html',
+        'html': 'report.views.objects.report_reactive_exposition_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_organization_reactive_list_doc',
         'xlsx': 'report.views.objects.report_organization_reactive_list_doc',
