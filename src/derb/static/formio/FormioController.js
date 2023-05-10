@@ -1,11 +1,46 @@
+
 window.onload = function () {
     Formio.builder($('#formio')[0], saved, {
         noDefaultSubmitButton: true,
         builder: {
             advanced: false,
             data: false,
-            premium: false
-        }
+            premium: false,
+            custom: {
+                title: 'Pre-Defined Fields',
+                weight: 10,
+                components: {
+                    customText: {
+                        title: 'Custom Text',
+                        key: 'custom_textinput',
+                        icon: 'terminal',
+                        schema: {
+                            label: 'Custom Text',
+                            type: 'custom_textinput',
+                            key: 'custom_textinput',
+                            input: true
+                        }
+
+                    },
+                    customSelect: {
+                        title: 'Custom Select',
+                        type: 'custom_select',
+                        key: 'custom_select',
+                        icon: 'terminal',
+                        schema: {
+                            label: 'Custom Select',
+                            type: 'custom_select',
+                            key: 'custom_select',
+                            input: true
+                        },
+
+
+                    }
+                }
+            }
+        },
+
+
     }).then(function (new_form) {
         form = new_form.form;
         new_form.on('change', function () {
