@@ -213,7 +213,7 @@ class ObjectFeaturesForm(forms.ModelForm, GTForm):
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        exclude = ['laboratory']
+        exclude = ['laboratory', 'creator']
         widgets = {
             'name': genwidgets.TextInput(),
             'legal_identity': genwidgets.NumberInput,

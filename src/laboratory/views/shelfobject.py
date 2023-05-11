@@ -90,6 +90,7 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
+
         super(ShelfObjectForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
         shelf = initial['shelf']
@@ -97,8 +98,10 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
             self.fields['measurement_unit'].initial=shelf.measurement_unit
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#object_create"
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            attrs={
+                'data-dropdownparent': "#object_create",
+                'data-s2filter-shelf': '#id_shelf'
             }),
             label=_("Reactive/Material/Equipment"),
             help_text=_("Search by name, code or CAS number")

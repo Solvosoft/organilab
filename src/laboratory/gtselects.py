@@ -1,7 +1,11 @@
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from djgentelella.views.select2autocomplete import BaseSelect2View
 from djgentelella.groute import register_lookups
+
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.forms import ValidateShelfForm
 from laboratory.models import Object, OrganizationStructure
 from auth_and_perms.models import Rol
 from django.contrib.auth.models import User
@@ -28,25 +32,31 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = Object
     fields = ['code', 'name']
     org_pk = None
+    shelf = None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        if self.shelf and self.shelf.limit_only_objects:
+            return self.shelf.available_objects_when_limit.all()
 
+        queryset = super().get_queryset()
         if self.org_pk:
-            organizations = get_pk_org_ancestors(self.org_pk)
+            organizations = get_pk_org_ancestors(self.org_pk.pk)
             queryset = queryset.filter(organization__in=organizations)
         else:
             queryset = queryset.none()
         return queryset
 
     def retrieve(self, request, pk, **kwargs):
-        try:
-            self.org_pk=int(pk)
-        except Exception as e:
-            raise Http404("Not organization found")
 
+        self.org_pk=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+        user_is_allowed_on_organization(request.user, self.org_pk)
+        form = ValidateShelfForm(request.GET)
+        if form.is_valid():
+            shelf = form.cleaned_data['shelf']
+            if organization_can_change_laboratory(shelf.furniture.labroom.laboratory, self.org_pk):
+                self.shelf=shelf
         return self.list(request, pk, **kwargs)
 
 
@@ -55,6 +65,7 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
 class User(BaseSelect2View):
     model = User
     fields = ['username']
-
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
