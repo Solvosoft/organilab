@@ -15,12 +15,13 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import ReservationModalForm, AddObjectForm, TransferObjectForm, SubtractObjectForm, \
-    LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
+from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
+from ..shelfobject.forms import SubstractShelfObjectForm, TransferShelfObjectForm, AddShelfObjectForm, \
+    ReserveShelfObjectForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
@@ -35,10 +36,10 @@ class LaboratoryRoomsList(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['modal_form_reservation'] = ReservationModalForm()
-        context['tranfer_object_form'] = TransferObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
-        context['add_object_form'] = AddObjectForm(lab=self.lab)
-        context['subtract_object_form'] = SubtractObjectForm()
+        context['modal_form_reservation'] = ReserveShelfObjectForm()
+        context['tranfer_object_form'] = TransferShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
+        context['add_object_form'] = AddShelfObjectForm(lab=self.lab)
+        context['subtract_object_form'] = SubstractShelfObjectForm()
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context

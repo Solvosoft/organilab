@@ -1,0 +1,126 @@
+{% load static i18n %}
+
+<div aria-hidden="true" id="reservemodal" class="modal fade" aria-labelledby="reservemodal_form_title" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservemodal_form_title">{% trans 'Reserve' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="reserveform" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    {{modal_form_reservation.as_horizontal}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" id="addmodal" class="modal fade" aria-labelledby="addmodal_form_title" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addmodal_form_title">{% trans 'Add' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addform" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    {{add_object_form.as_horizontal}}
+
+                    <div id="content">
+                    <div id="tranfer" style="display:none;" class="form-group">
+                             {% for field in tranfer_object_form %}
+                            {% if 'amount_send' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-text unit"></span>
+                                 </div>
+                                        {{ field.help_text }}
+                                </div>
+                            {% else %}
+                              {{field.label_tag}}
+                                {{field}}
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div id="subtract" style="display:none;" class="form-group">
+                        {% for field in subtract_object_form %}
+                            {% if 'discount' in field.label_tag %}
+                                <div class="form-group">
+                                     {{field.label_tag}}
+                                 <div class="input-group">
+                                        {{ field }}
+                                <span class="input-group-text unit"></span>
+                                 </div>
+                                        {{field.help_text}}
+                                </div>
+                            {% else %}
+                                      {{field.label_tag}}
+                                          {{field}}
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" id="transfermodal" class="modal fade" aria-labelledby="transfermodal_form_title" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transfermodal_form_title">{% trans 'Transfer' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="transferform" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    {{tranfer_object_form.as_horizontal}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" id="substractmodal" class="modal fade" aria-labelledby="substractmodal_form_title" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="substractmodal_form_title">{% trans 'Transfer' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="substractform" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    {{subtract_object_form.as_horizontal}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
