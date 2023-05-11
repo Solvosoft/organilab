@@ -124,7 +124,7 @@ def get_components_url(request, schema, org, laboratory):
     for component in schema['components']:
         if component['type'] == 'custom_select':
             route = reverse(f'derb:{component["data"]["api"]}', kwargs={'org_pk': org})
-            if 'lab' in component['data']['url']:
+            if 'lab=' in component['data']['url']:
                 component['data']['url'] = f'http://{host}{route}?lab={laboratory}'
             else:
                 component['data']['url'] = f'http://{host}{route}'
