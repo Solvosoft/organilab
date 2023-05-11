@@ -216,6 +216,10 @@ class Shelf(BaseCreationObj):
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
 
+    limit_only_objects = models.BooleanField(default=False, verbose_name=_('Limit objects to be added'))
+    available_objects_when_limit = models.ManyToManyField(Object,  related_name="limit_objects",
+                                                          verbose_name=_('Only objects allowed in this shelf'))
+
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
 

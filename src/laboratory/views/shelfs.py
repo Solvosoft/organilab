@@ -19,8 +19,9 @@ from django_ajax.mixin import AJAXMixin
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import wysiwyg
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
-from laboratory.models import Shelf
+from laboratory.models import Shelf, Object
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
@@ -49,9 +50,20 @@ class ShelfForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['available_objects_when_limit'] = forms.ModelMultipleChoiceField(
+            queryset=Object.objects.all(),
+            required=False,
+            widget=AutocompleteSelectMultiple('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#createshelfmodal"
+            }))
+
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description',
+                  'limit_only_objects', 'available_objects_when_limit']
         widgets = {
             'name': genwidgets.TextInput,
             'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
@@ -60,7 +72,9 @@ class ShelfForm(forms.ModelForm, GTForm):
             'discard': genwidgets.CheckboxInput,
             'quantity': genwidgets.TextInput,
             'measurement_unit': genwidgets.Select,
-            'description': wysiwyg.TextareaWysiwyg
+            'description': wysiwyg.TextareaWysiwyg,
+            'limit_only_objects': genwidgets.CheckboxInput,
+
         }
 
     def clean(self):
@@ -68,17 +82,17 @@ class ShelfForm(forms.ModelForm, GTForm):
         quantity = self.cleaned_data['quantity']
         unit = self.cleaned_data['measurement_unit']
         if discard:
-            if unit != None and quantity<=0:
-                self.add_error('quantity',_("The quantity need to be greater than 0"))
+            if unit is not None and quantity <= 0:
+                self.add_error('quantity', _("The quantity need to be greater than 0"))
 
     def clean_measurement_unit(self):
         discard = self.cleaned_data['discard']
         unit = self.cleaned_data['measurement_unit']
 
-        if unit == None and discard:
-            self.add_error('measurement_unit', 'When a shelf if discard you need to add a measurement unit')
+        if unit is None and discard:
+            self.add_error('measurement_unit', _('When a shelf if discard you need to add a measurement unit'))
 
-        return  unit
+        return unit
 
 
 
@@ -86,9 +100,20 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
     col = forms.IntegerField(widget=forms.HiddenInput)
     row = forms.IntegerField(widget=forms.HiddenInput)
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['available_objects_when_limit'] = forms.ModelMultipleChoiceField(
+            queryset=Object.objects.all(),
+            required=False,
+            widget=AutocompleteSelectMultiple('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#createshelfmodal"
+            }))
+
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description']
+        fields = ['name', 'type', 'furniture', 'color','discard','quantity','measurement_unit','description',
+                  'limit_only_objects', 'available_objects_when_limit']
         widgets = {
             'name': genwidgets.TextInput,
             'type': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
@@ -97,7 +122,8 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
             'discard': genwidgets.CheckboxInput,
             'quantity': genwidgets.TextInput,
             'measurement_unit': genwidgets.Select,
-            'description': wysiwyg.TextareaWysiwyg
+            'description': wysiwyg.TextareaWysiwyg,
+            'limit_only_objects': genwidgets.CheckboxInput,
         }
 
     def clean_measurement_unit(self):
@@ -149,12 +175,15 @@ class ShelfCreate(AJAXMixin, CreateView):
     def get_prefix(self):
         return "shelf-"
 
+
     def get_form_kwargs(self):
         kwargs = CreateView.get_form_kwargs(self)
+        kwargs['org_pk'] = self.org
         kwargs['initial']['furniture'] = self.request.GET.get('furniture')
         kwargs['initial']['col'] = self.request.GET.get('col')
         kwargs['initial']['row'] = self.request.GET.get('row')
         return kwargs
+
 
     def generate_qr(self):
         schema = self.request.scheme + "://"
@@ -178,6 +207,11 @@ class ShelfCreate(AJAXMixin, CreateView):
 
         self.object.furniture = furniture
         self.object.save()
+        if form.cleaned_data['limit_only_objects']:
+            for objlimt in form.cleaned_data['available_objects_when_limit']:
+                self.object.available_objects_when_limit.add(objlimt)
+        else:
+            self.object.available_objects_when_limit.clear()
         self.generate_qr()
         organilab_logentry(self.request.user, self.object, ADDITION, 'shelf', changed_data=form.changed_data,
                            relobj=self.lab)
@@ -230,6 +264,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(ShelfEdit, self).get_form_kwargs()
+        kwargs['org_pk'] = self.org
         kwargs['initial']['furniture'] = self.request.GET.get('furniture')
         kwargs['initial']['col'] = self.col
         kwargs['initial']['row'] = self.row
@@ -249,6 +284,12 @@ class ShelfEdit(AJAXMixin, UpdateView):
 
         self.object.furniture = furniture
         self.object.save()
+        if form.cleaned_data['limit_only_objects']:
+            self.object.available_objects_when_limit.clear()
+            for objlimt in form.cleaned_data['available_objects_when_limit']:
+                self.object.available_objects_when_limit.add(objlimt)
+        else:
+            self.object.available_objects_when_limit.clear()
         organilab_logentry(self.request.user, self.object, CHANGE, changed_data=form.changed_data, relobj=self.lab)
 
         dev = render_to_string(
@@ -277,6 +318,7 @@ class ShelfEdit(AJAXMixin, UpdateView):
                 "#modalclose": "<script>refresh_description();</script>",
             }
         }
+
 
 class RemoveShelfForm(forms.Form):
     shelfs=forms.ModelMultipleChoiceField(queryset=Shelf.objects.all())

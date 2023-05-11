@@ -3,7 +3,7 @@ const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
          datatableelement.ajax.reload();
-         console.log("Wiii");
+
     },
     addObjectResponse: function(dat){
             $('#shelfobjectCreate').html(dat);

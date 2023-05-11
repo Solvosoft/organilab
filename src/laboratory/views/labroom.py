@@ -29,8 +29,7 @@ class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
     def get_queryset(self):
-        lab = get_object_or_404(
-            Laboratory, pk=self.lab)
+        lab = get_object_or_404( Laboratory, pk=self.lab)
         self.request.session['search_lab'] = self.lab
         return lab.laboratoryroom_set.all()
     
@@ -71,6 +70,7 @@ class LabroomCreate(CreateView):
         self.object = form.save(commit=False)
         lab = get_object_or_404(Laboratory, pk=self.lab)
         self.object.laboratory= lab
+        self.object.creator=self.request.user
         self.object.save()
         self.generate_qr()
 
