@@ -40,6 +40,7 @@
 
 {% block js %}
 <script src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'formio/CustomSelect.js' %}?v={% get_organilab_version %}"></script>
 <script type="text/javascript">
 const urls ={
     edit:"{% url 'laboratory:complete_inform' org_pk=org_pk lab_pk=laboratory pk=inform.pk %}",

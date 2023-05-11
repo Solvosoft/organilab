@@ -52,9 +52,9 @@ def create_informs(request, *args, **kwargs):
 
         inform= form.save(commit=False)
         content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
-        inform.content_type=content
-        inform.object_id=int(laboratory)
-        inform.schema=inform.custom_form.schema
+        inform.content_type = content
+        inform.object_id = int(laboratory)
+        inform.schema = get_components_url(request, inform.custom_form.schema, org, laboratory)
         inform.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org)
         inform.created_by = request.user
         inform.save()
@@ -62,6 +62,7 @@ def create_informs(request, *args, **kwargs):
         return redirect(reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory,'org_pk':org}))
 
     return render(request, 'laboratory/inform.html', context={'laboratory':laboratory, 'org_pk':org})
+
 
 def update_inform_data(item,data):
 
@@ -116,3 +117,16 @@ def complete_inform(request, *args, **kwargs):
 
         return JsonResponse({'url':reverse('laboratory:get_informs', kwargs={'lab_pk':laboratory, 'org_pk':org})})
     return render(request, 'laboratory/complete_inform.html', context)
+
+
+def get_components_url(request, schema, org, laboratory):
+    host = request.META.get('HTTP_HOST', '')
+    for component in schema['components']:
+        if component['type'] == 'custom_select':
+            route = reverse(f'derb:{component["data"]["api"]}', kwargs={'org_pk': org})
+            if 'lab' in component['data']['url']:
+                component['data']['url'] = f'http://{host}{route}?lab={laboratory}'
+            else:
+                component['data']['url'] = f'http://{host}{route}'
+
+    return schema
