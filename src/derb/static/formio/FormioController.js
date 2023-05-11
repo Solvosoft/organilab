@@ -7,21 +7,9 @@ window.onload = function () {
             data: false,
             premium: false,
             custom: {
-                title: 'Pre-Defined Fields',
+                title: 'Custom Fields',
                 weight: 10,
                 components: {
-                    customText: {
-                        title: 'Custom Text',
-                        key: 'custom_textinput',
-                        icon: 'terminal',
-                        schema: {
-                            label: 'Custom Text',
-                            type: 'custom_textinput',
-                            key: 'custom_textinput',
-                            input: true
-                        }
-
-                    },
                     customSelect: {
                         title: 'Custom Select',
                         type: 'custom_select',

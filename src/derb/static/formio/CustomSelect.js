@@ -57,6 +57,7 @@ class CustomSelect extends SelectComponent {
 }
 
 CustomSelect.editForm = function () {
+  let params = ''
   let editForm = SelectComponent.editForm([
     {
       key: 'conditional',
@@ -87,6 +88,10 @@ CustomSelect.editForm = function () {
       label: 'Data',
       components: [
         {
+            key: 'multiple',
+            weight: 10
+        },
+        {
             key: 'persistent',
             ignore: true
         },
@@ -113,10 +118,7 @@ CustomSelect.editForm = function () {
         },
         {
             key: 'data.headers',
-            refreshOn: 'data.api',
-            conditional: {
-              json: { '===': [{ var: 'dataSrc' }, 'api_org_structure'] },
-            },
+            ignore: true
         },
         {
             key: 'defaultValue',
@@ -163,23 +165,23 @@ CustomSelect.editForm = function () {
             label: 'API',
             key: 'data.api',
             input: true,
-            tooltip: 'Select an option from the available APIs in Organilab',
+            tooltip: gettext('Select an option from the available APIs in Organilab'),
             data: {
               values: [
-                { label: 'Inform', value: 'api_inform' },
-                { label: 'Incident Report', value: 'api_incident' },
-                { label: 'Laboratory by User', value: 'api_laboratory_by_user' },
-                { label: 'Laboratory by Organization', value: 'api_laboratory_by_org' },
-                { label: 'Users in Lab/Organization', value: 'api_org_structure' },
-                { label: 'Objects', value: 'api_objects' },
+                { label: gettext('Inform'), value: 'api_inform' },
+                { label: gettext('Incident Report'), value: 'api_incident' },
+                { label: gettext('Laboratory by User'), value: 'api_laboratory_by_user' },
+                { label: gettext('Laboratory by Organization'), value: 'api_laboratory_by_org' },
+                { label: gettext('Users in Lab/Organization'), value: 'api_org_structure' },
+                { label: gettext('Objects'), value: 'api_objects' },
               ]
             },
             defaultValue: 'api_inform',
-            weight: 2,
+            weight: 1,
             onChange(context) {
-                let route = window.location.pathname;
+                let route = window.location.pathname.split('/');
                 let host = window.location.host;
-                let org_pk = route.charAt(6)
+                let org_pk = route[2]
                 let view = context.instance.data.data.api
                 view = view.replace('api_', '').replace('_by_user', '').replace('_by_org', 'Org')
                 view = view.replace('_structure', '').replace('_', '').replace('incident', 'incidentReport')
@@ -188,6 +190,29 @@ CustomSelect.editForm = function () {
                 context.instance.data.data.url = url
 
             },
+        },
+        {
+            key: 'params',
+            label: gettext('Laboratory identifier'),
+            input: true,
+            type: 'number',
+            weight: 2,
+            conditional: {
+              json: { '===': [{ var: 'data.data.api' }, 'api_org_structure'] },
+            },
+            onChange(context) {
+                let temp_params = context.instance.data.params
+                if (temp_params && temp_params > 0) {
+                    context.instance.data.data.url += `?lab=${temp_params}`
+                    params = `?lab=${temp_params}`
+                }
+                else{
+                    let temp_url = context.instance.data.data.url
+                    temp_url = temp_url.replace(params, '')
+                    context.instance.data.data.url = temp_url
+                    params = ''
+                }
+            }
         },
       ]
     }
