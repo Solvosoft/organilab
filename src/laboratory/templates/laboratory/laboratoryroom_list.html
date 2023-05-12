@@ -32,8 +32,11 @@
 {% block content %}
 <input type="hidden" name="organization" id="id_organization" value="{{org_pk}}">
 <input type="hidden" name="laboratory" id="id_laboratory" value="{{laboratory}}">
+
     {% include 'laboratory/search_widget.html' %}
-    {% include 'laboratory/reservation_modal.html' %}
+<!--    {% include 'laboratory/reservation_modal.html' %}-->
+    {% include 'laboratory/shelfobject/action_modal.html' %}
+
     <h1 class="text-center">{% get_laboratory_name %}</h1>
 <div class="input-group nomargin">
     <div class="input-group-text">
