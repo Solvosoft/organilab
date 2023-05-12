@@ -79,7 +79,7 @@
 </div>
 
 
-                       <a href="#bingi" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
+                       <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
                     <span class="box" style="color: {{furniture.color}}" >{{furniture}}</span>
                     <ul class="nested">
                         <li>{{ furniture|display_furniture }}</li>
