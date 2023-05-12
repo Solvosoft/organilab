@@ -78,10 +78,28 @@ $(document).ready(function(){
             },
             {
                 action: tableObject.addObject,
-                text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-                titleAttr: gettext('Create Object'),
+                text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Equipment'),
                 className: 'btn-sm btn-success ml-4'
-            }
+            },
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Material'),
+                className: 'btn-sm btn-success ml-4'
+            },
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-flask" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Substance'),
+                className: 'btn-sm btn-success ml-4'
+            },
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
+                titleAttr: gettext('Transfer in'),
+                className: 'btn-sm btn-success ml-4'
+            },
         ],
      ajax: {
         url: document.url_shelfobject,
@@ -101,4 +119,22 @@ $('input[name="shelfselected"]').change(function(){
     datatableelement.ajax.reload();
 });
 
+});
+
+$(document).ready(function(){
+    var $input = $('input[name=tags-search]')
+        .tagify({
+                whitelist : [
+                    {"id":1, "value":"some string"}
+                ]
+            })
+            .on('add', function(e, tagName){
+                console.log('JQEURY EVENT: ', 'added', tagName)
+            })
+            .on("invalid", function(e, tagName) {
+                console.log('JQEURY EVENT: ',"invalid", e, ' ', tagName);
+            });
+
+    // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
+    var jqTagify = $input.data('tagify');
 });
