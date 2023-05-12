@@ -134,3 +134,22 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
+
+
+    @action(detail=False, methods=['post'])
+    def create_observation(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        pass
+
+    @action(detail=False, methods=['post'])
+    def list_observations(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        pass
+
+    @action(detail=False, methods=['put'])
+    def update_status(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        pass
+
+
+    # maybe we move observations to other class
