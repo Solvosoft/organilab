@@ -145,13 +145,22 @@ class SustanceCharacteristics(models.Model):
         verbose_name = _('Sustance characteristic')
         verbose_name_plural = _('Sustance characteristics')
 
+class ShelfObjectLimits(models.Model):
+    minimum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
+    maximum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
+    expiration_date = models.DateField(null=True, verbose_name=_('Expiration date'))
 
 class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
     object = models.ForeignKey('Object', verbose_name=_(
         "Equipment or reactive or sustance"), on_delete=models.CASCADE)
+    batch = models.CharField(max_length=250, default="0", verbose_name=_("Production batch"))
+    status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING, verbose_name=_('Status'),
+                                key_name="key", key_value='shelfobject_status')
     quantity = models.FloatField(_('Material quantity'), help_text= _('Use dot like 0.344 on decimal'))
-    limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'))
+    # FIXME: Delete this field, for limits
+    limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
+    limits = models.ForeignKey(ShelfObjectLimits, on_delete=models.SET_NULL, null=True, blank=True)
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
@@ -187,6 +196,10 @@ class ShelfObject(models.Model):
 
     def get_object_detail(self):
         return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
+
+class ShelfObjectObservation(BaseCreationObj):
+    action_taken = models.CharField(max_length=50, default=_("Object Change"), verbose_name=_("Action Taken"))
+    description = models.TextField(null=True)
 
 class LaboratoryRoom(BaseCreationObj):
     laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
