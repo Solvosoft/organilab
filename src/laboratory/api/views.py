@@ -292,37 +292,3 @@ class ShelfList(APIView):
 
 
 
-class ShelfObjectViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = serializers.ShelfObjectTableSerializer
-    queryset = ShelfObject.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['name', 'last_update', ]  # for the global search
-    filterset_class = serializers.ShelfObjectFilterSet
-    ordering_fields = ['last_update']
-    ordering = ('-last_update',)  # default order
-
-    def get_queryset(self):
-        if not self.data['shelf'] :
-            return self.queryset.none()
-        return self.queryset.filter(
-            in_where_laboratory=self.data['laboratory'],
-            shelf=self.data['shelf']
-
-        )
-
-    def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
-        validate_serializer = ShelfLabViewSerializer(data=request.GET)
-        validate_serializer.set_user(request.user)
-        validate_serializer.is_valid(raise_exception=True)
-        self.data = validate_serializer.data
-
-        queryset = self.filter_queryset(self.get_queryset())
-        data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': ShelfObject.objects.count(),
-                    'recordsFiltered': queryset.count(),
-                    'draw': self.request.GET.get('draw', 1)}
-        return Response(self.get_serializer(response).data)

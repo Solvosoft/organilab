@@ -9,8 +9,9 @@ from rest_framework.routers import DefaultRouter
 from academic.api.views import ReviewSubstanceViewSet
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
+from laboratory.api import shelfobject as ShelfObjectApi
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, ShelfObjectViewSet
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -202,7 +203,12 @@ router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
-router.register('api_shelfobject', ShelfObjectViewSet, basename='api-shelfobject')
+
+
+shelfobjectrouter = DefaultRouter()
+shelfobjectrouter.register('api_shelfobject_table', ShelfObjectApi.ShelfObjectTableViewSet, basename='api-shelfobjecttable')
+shelfobjectrouter.register('api_shelfobject', ShelfObjectApi.ShelfObjectViewSet, basename='api-shelfobject')
+
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
@@ -223,6 +229,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/shelfedit/', include(edit_objects)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
+    path('so/api/<int:org_pk>/<int:lab_pk>/', include(shelfobjectrouter.urls)),
     path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
     path('org/api/shels/list',  ShelfList.as_view(), name='get_shelfs_list'),

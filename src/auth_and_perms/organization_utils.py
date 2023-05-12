@@ -11,7 +11,8 @@ def user_is_allowed_on_organization(user, organization):
         raise PermissionDenied(_("User %(user)s not allowed on organization %(organization)r ")%{
             'user': user, 'organization': organization})
 
-def organization_can_change_laboratory(laboratory, organization):
+
+def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True
     if OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE).filter(
@@ -21,4 +22,7 @@ def organization_can_change_laboratory(laboratory, organization):
         organization=organization
     ).exists():
         return True
+
+    if raise_exec:
+        raise PermissionDenied(_("You can modify this laboratory"))
     return False

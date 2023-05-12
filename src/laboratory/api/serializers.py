@@ -281,8 +281,8 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
 
     def get_actions(self, obj):
         context={
-            'laboratory': self.context['view'].data['laboratory'],
-            'org_pk': self.context['view'].data['organization'],
+            'laboratory': self.context['view'].laboratory,
+            'org_pk': self.context['view'].organization,
             'shelfobject': obj
         }
         return render_to_string(
@@ -322,8 +322,12 @@ class BaseOrganizationLaboratory(serializers.Serializer):
         self.user=user
 
 
-class ShelfLabViewSerializer(BaseOrganizationLaboratory):
+class ShelfLabViewSerializer(serializers.Serializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.laboratory = kwargs.pop('laboratory')
+        super().__init__(*args, **kwargs)
 
     def validate(self, value):
         value = super().validate(value)
@@ -331,6 +335,6 @@ class ShelfLabViewSerializer(BaseOrganizationLaboratory):
             value['shelf']=None
 
         if value['shelf'] is not None:
-            if value['laboratory'] != value['shelf'].furniture.labroom.laboratory:
+            if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
