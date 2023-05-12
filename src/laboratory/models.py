@@ -6,15 +6,14 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.db.models import Sum, Q
 from django.db.models.expressions import F
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
-from django.db.models import Sum, Q
-from organilab.settings import DATE_INPUT_FORMATS
+
 from presentation.models import AbstractOrganizationRef
 from . import catalog
 
@@ -802,22 +801,3 @@ class RegisterUserQR(models.Model):
 
     def __str__(self):
         return f"{self.url}"
-
-
-DELIVER = _('Delivered')
-WAIT = _('On hold')
-GENERATED = _('Generated')
-STATUS_TEMPLATE=[(_('On hold'),WAIT),
-                  (_('Delivered'),DELIVER),
-                  (_('Generated'),GENERATED),
-                 ]
-class TaskReport(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
-    type_report = models.CharField(max_length=100, blank=False, null=False)
-    form_name = models.TextField(null=True, blank=True)
-    table_content = models.JSONField(null=True, blank=True)
-    status = models.CharField(max_length=30, default=WAIT,choices=STATUS_TEMPLATE)
-    file_type = models.CharField(max_length=30, blank=True, null=True)
-    file = models.FileField(upload_to='reports/', blank=True, null=True)
-    data = models.JSONField(null=True, blank=True)
-    language = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)

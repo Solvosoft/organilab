@@ -10,8 +10,6 @@
 {% endblock %}
 {% block pre_head %}
     {% define_urlname_action 'labindex' %}
-    {% define_urlname_action 'reports_furniture' %}
-    {% define_urlname_action 'reports_objects' %}
 {% endblock %}
 
 {% load i18n static %}
@@ -21,22 +19,17 @@
 
     <div class="row">
       {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
-        <div id="index_labview_id" class="col-md-4">
+        <div id="index_labview_id" class="col-md-6">
         <h3 class="text-center">
           <strong>{% trans 'Laboratory view' %}</strong>
         </h3>
         </div>
 		  {% endif %}
       {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
-        <div id="index_manage_id" class="col-md-4">
+        <div id="index_manage_id" class="col-md-6">
           <h3 class="text-center">
             <strong>{% trans 'Laboratory administration' %}</strong>
           </h3>
-        </div>
-      {% endif %}
-      {% if perms.laboratory.do_report or perms.laboratory.view_report %}
-        <div id="index_report_id" class="col-md-4">
-          <h3 class="text-center"><strong>{% trans 'Reports' %}</strong></h3>
         </div>
       {% endif %}
     </div>
@@ -45,7 +38,7 @@
 
     <div class="row">
       {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
-        <div class="col-md-4 text-center">
+        <div class="col-md-6 text-center">
           <div class="row">
             <img src="{% static 'images/laboratory.png' %}"
               alt="{% trans 'Laboratory view' %}"
@@ -90,7 +83,7 @@
         </div>
 		  {% endif %}
 	    {% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
-        <div class="col-md-4 text-center">
+        <div class="col-md-6 text-center">
           <div class="row">
             <img src="{% static 'images/management.png' %}"
               alt="{% trans 'Laboratory administration' %}"
@@ -132,34 +125,6 @@
                   <a href="{% url 'laboratory:list_provider' org_pk laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
                 </li>
             {% endif %}
-            </ul>
-          </div>
-        </div>
-      {% endif %}
-      {% if perms.laboratory.do_report or perms.laboratory.view_report %}
-        <div class="col-md-4 text-center">
-          <div class="row">
-            <img src="{% static 'images/report.png' %}"
-              alt="{% trans 'Reports' %}"
-             class="img-thumbnail mx-auto"  style="width:15rem;">
-          </div>
-          <br>
-          <div class="row">
-
-          <ul class="list-group">
-              {% if perms.laboratory.do_report %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Laboratory' %}</strong></a>
-                </li>
-              {% endif %}
-                              
-              <li class="list-group-item">
-                <a href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Furnitures' %}</strong></a>
-              </li>
-
-              <li class="list-group-item">
-                <a href="{% url 'laboratory:reports_objects' lab_pk=laboratory org_pk=org_pk %}"><strong>{% trans 'Objects' %}</strong></a>
-              </li>
             </ul>
           </div>
         </div>

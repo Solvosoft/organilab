@@ -2,7 +2,6 @@ REPORT_FORMS ={
     'reactive_precursor': {
         'task':'report.tasks.task_report',
         'form':'report.forms.ValidateReportForm',
-        'title':'List of reactive precursors',
         'html': 'report.views.objects.report_reactive_precursor_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_reactive_precursor_doc',
@@ -12,7 +11,6 @@ REPORT_FORMS ={
     'report_laboratory_room': {
         'task':'report.tasks.task_report',
         'form':'report.forms.ValidateLaboratoryRoomReportForm',
-        'title':'Objects list by laboratory',
         'html':'report.views.lab_room.lab_room_html',
         'pdf':'report.views.base.base_pdf',
         'xls':'report.views.lab_room.lab_room_doc',
@@ -22,7 +20,6 @@ REPORT_FORMS ={
     'report_objects': {
         'task':'report.tasks.task_report',
         'form':'report.forms.ReportObjectForm',
-        'title':'List of objects',
         'html': 'report.views.objects.report_objects_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_objects_doc',
@@ -32,7 +29,6 @@ REPORT_FORMS ={
     'report_limit_objects': {
         'task':'report.tasks.task_report',
         'form': 'report.forms.ValidateReportForm',
-        'title': 'Limited shelf objects',
         'html': 'report.views.objects.report_limit_object_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_limit_object_doc',
@@ -42,7 +38,6 @@ REPORT_FORMS ={
     'report_objectschanges': {
         'task':'report.tasks.task_report',
         'form': 'report.forms.ValidateObjectLogChangeReportForm',
-        'title': 'Changes on Objects',
         'html': 'report.views.objects.report_objectlogchange_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_objectlogchange_doc',
@@ -52,7 +47,6 @@ REPORT_FORMS ={
     'report_furniture': {
         'task':'report.tasks.task_report',
         'form':'report.forms.ValidateLaboratoryRoomReportForm',
-        'title':'Furniture report',
         'html':'report.views.furniture.furniture_html',
         'pdf':'report.views.base.base_pdf',
         'xls':'report.views.furniture.furniture_doc',
@@ -62,8 +56,7 @@ REPORT_FORMS ={
     'report_organization_reactive_list': {
         'task':'report.tasks.task_report',
         'form': 'report.forms.OrganizationReactiveForm',
-        'title': 'User exposition',
-        'html': 'report.views.objects.report_organization_reactive_list_html',
+        'html': 'report.views.objects.report_reactive_exposition_html',
         'pdf': 'report.views.base.base_pdf',
         'xls': 'report.views.objects.report_organization_reactive_list_doc',
         'xlsx': 'report.views.objects.report_organization_reactive_list_doc',

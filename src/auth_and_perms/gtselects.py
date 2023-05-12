@@ -45,8 +45,7 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 self.organization = form.cleaned_data['organization']
 
         if self.organization:
-            self.organization = get_object_or_404(OrganizationStructure, pk=self.organization,
-                                                  using=settings.READONLY_DATABASE)
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.organization)
         user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
     def get_queryset(self):
@@ -81,39 +80,39 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     contenttypeobj=None
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk, using=settings.READONLY_DATABASE)
+        self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'],
-                                                      using=settings.READONLY_DATABASE)
+                self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
                 if form.cleaned_data['typeofcontenttype'] == 'laboratory':
                     if form.cleaned_data['laboratory']:
-                        self.contenttypeobj = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'],
-                                                                using=settings.READONLY_DATABASE)
+                        self.contenttypeobj = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['laboratory'])
                         organization_can_change_laboratory(self.contenttypeobj, self.organization)
                 elif form.cleaned_data['typeofcontenttype'] == 'organization':
                     self.contenttypeobj = self.organization
                     user_is_allowed_on_organization(self.request.user, self.contenttypeobj)
-
-        user_is_allowed_on_organization(self.request.user, self.organization)
+        if self.organization:
+            user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        orgByuser = OrganizationStructure.os_manager.organization_tree(self.organization.pk)
-        users = list(OrganizationStructure.objects.filter(pk__in=orgByuser).values_list('users', flat=True))
-        queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
-        if self.contenttypeobj:
-            profiles = get_profile_by_organization(self.organization.pk)
-            profiles.filter(profilepermission__content_type__app_label= self.contenttypeobj._meta.app_label,
-                            profilepermission__content_type__model= self.contenttypeobj._meta.model_name,
-                            profilepermission__object_id=self.contenttypeobj.pk)
-            queryset = queryset.exclude(profile__in=profiles).distinct()
-
-        return queryset.order_by('first_name')
+        if self.organization:
+            orgByuser = OrganizationStructure.os_manager.organization_tree(self.organization.pk)
+            users = list(OrganizationStructure.objects.filter(pk__in=orgByuser).values_list('users', flat=True))
+            queryset = self.model.objects.filter(Q(userorganization__organization__in=orgByuser)|Q(pk__in=users))
+            if self.contenttypeobj:
+                profiles = get_profile_by_organization(self.organization.pk)
+                profiles=profiles.filter(profilepermission__content_type__app_label= self.contenttypeobj._meta.app_label,
+                                profilepermission__content_type__model= self.contenttypeobj._meta.model_name,
+                                profilepermission__object_id=self.contenttypeobj.pk)
+                queryset = queryset.exclude(profile__in=profiles)
+                return queryset.order_by('first_name')
+            return queryset.none()
+        return self.model.objects.none()
 
     def get_text_display(self, obj):
         if hasattr(obj, 'profile') and obj.profile:
@@ -132,7 +131,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     laboratory=None
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk, using=settings.READONLY_DATABASE)
+        self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -140,10 +139,8 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
                 if form.cleaned_data['laboratory']:
-                    self.laboratory = get_object_or_404(Laboratory, pk=form.cleaned_data['laboratory'],
-                                                        using=settings.READONLY_DATABASE)
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'],
-                                                      using=settings.READONLY_DATABASE)
+                    self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['laboratory'])
+                self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
 
         user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
@@ -206,14 +203,14 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         return labs.exclude(pk__in=exclude_labs).order_by(*self.order_by)
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
 
         if self.organization is None:
             raise Http404("Organization not found")
@@ -239,14 +236,14 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         return Laboratory.objects.using(settings.READONLY_DATABASE).filter(pk__in=labs)
 
     def retrieve(self, request, pk, **kwargs):
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
-                self.organization = get_object_or_404(OrganizationStructure, pk=form.cleaned_data['organization'])
+                self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
 
         if self.organization is None:
             raise Http404("Organization not found")

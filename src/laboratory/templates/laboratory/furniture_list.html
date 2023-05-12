@@ -17,10 +17,10 @@
           {{ furniture.name }}
 
         </a>
-
-        {% if perms.laboratory.do_report %} 
+        {%  has_perms "laboratory.do_report" as perm_do_report %}
+        {% if perm_do_report %}
         <a class="float-end"
-           href="{% url 'laboratory:reports_furniture' lab_pk=laboratory org_pk=org_pk %}?pk={{ furniture.pk }}">
+           href="">
           <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
           {% trans "PDF" %}
         </a>
