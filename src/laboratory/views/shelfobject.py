@@ -501,7 +501,7 @@ def get_shelfobject_template(request,lab,org,shelfobject):
                                 context={'shelfobject': shelfobject, 'laboratory': lab,
                                          'org_pk': org},
                                 request=request)
-@permission_required('laboratory.change_shelfobject')
+@permission_required('laboratory.change_shelfobject') #DELETE THIS VIEW
 def subtract_object(request, pk, elements_form):
     shelfobject = ShelfObject.objects.filter(pk=elements_form.cleaned_data['shelf_object']).first()
     old = shelfobject.quantity

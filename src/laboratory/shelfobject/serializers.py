@@ -5,3 +5,9 @@ class AddShelfObjectSerializer(serializers.Serializer):
     bill = serializers.CharField(required=False)
     provider = serializers.IntegerField(required=False)
     shelf_object = serializers.IntegerField()
+
+
+class SubstractShelfObjectSerializer(serializers.Serializer):
+    discount = serializers.FloatField()
+    description = serializers.CharField(required=False)
+    shelf_object = serializers.IntegerField()
