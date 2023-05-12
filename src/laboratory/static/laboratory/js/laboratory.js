@@ -138,3 +138,66 @@ $(document).ready(function(){
     // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
     var jqTagify = $input.data('tagify');
 });
+
+
+$('.actionshelfobjmodal').on('show.bs.modal', function (e) {
+    var shelfobject = $(this).find("form input[name='shelf_object']")[0];
+    $(shelfobject).val(e.relatedTarget.dataset.shelfobject);
+    $(this).find("button.actionshelfobjectsave").attr('data-modal', "#"+this.id);
+});
+
+
+function load_errors(error_list, obj){
+    ul_obj = "<ul class='errorlist shelf_form_errors'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>"
+    $(obj).before(ul_obj);
+    return ul_obj;
+}
+
+function form_field_errors(form_errors){
+    var item = "";
+    for (const [key, value] of Object.entries(form_errors)) {
+        item = "#id_"+key;
+        if($(item).length > 0){
+            load_errors(form_errors[key], item);
+        }
+    }
+}
+
+$(".actionshelfobjectsave").on('click', function(){
+    var modal = $(this).data('modal');
+    var form = $(modal + " form");
+
+    $.ajax({
+        url: $(form)[0].action,
+        type:'POST',
+        data: $(form).serialize(),
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function(data){
+            $('ul.shelf_form_errors').remove();
+            if(data){
+                form_field_errors(data);
+            }else{
+                datatableelement.ajax.reload();
+                $(modal).modal('hide');
+                    Swal.fire({
+                    icon: 'success',
+                    title: gettext('Successfully Action'),
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            }
+        },
+        error: function(xhr, resp, text) {
+            Swal.fire({
+                icon: 'error',
+                title: text,
+                text: gettext('Try again or contact administrator')
+            });
+        }
+    });
+});

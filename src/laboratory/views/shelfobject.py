@@ -405,7 +405,7 @@ class ShelfObjectDetail(AJAXMixin, DetailView):
     model = ShelfObject
 
 
-@permission_required('laboratory.change_shelfobject')
+@permission_required('laboratory.change_shelfobject') #DELETE THIS VIEW
 def add_object(request, org_pk, lab_pk, pk):
     """ The options represents several actions in numbers 1=Reservation, 2=Add, 3=Tranfer, 4=Subtract"""
     elements_form=ShelfObjectOptions(request.POST)

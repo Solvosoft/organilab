@@ -27,7 +27,7 @@ def log_object_add_change(user, laboratory, shelfobject, old, new, msg, provider
         precursor=shelfobject.object.is_precursor,
         measurement_unit=shelfobject.measurement_unit,
         subject=msg,
-        provider_id=provider,
+        provider=provider,
         bill=bill,
         note=''
     )

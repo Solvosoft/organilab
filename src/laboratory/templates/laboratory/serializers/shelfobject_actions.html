@@ -4,10 +4,10 @@
             <i class="fa fa-eye text-success" aria-hidden="true"></i>
 </a>
 
-<a class="ms-2" data-bs-toggle="modal" data-bs-target="#reservemodal" title="{% trans 'Reservation' %}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
-<a class="ms-2" data-bs-toggle="modal" data-bs-target="#addmodal" title="{% trans 'Add' %}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
-<a class="ms-2" data-bs-toggle="modal" data-bs-target="#transfermodal" title="{% trans 'Transfer' %}"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
-<a class="ms-2" data-bs-toggle="modal" data-bs-target="#substractmodal" title="{% trans 'Substract' %}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
+<a class="ms-2" data-bs-toggle="modal" data-bs-target="#reservemodal" title="{% trans 'Reservation' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+<a class="ms-2" data-bs-toggle="modal" data-bs-target="#addmodal" title="{% trans 'Add' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
+<a class="ms-2" data-bs-toggle="modal" data-bs-target="#transfermodal" title="{% trans 'Transfer' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
+<a class="ms-2" data-bs-toggle="modal" data-bs-target="#substractmodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
 <a class="ms-2" href="" title="{% trans 'History' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 
 {% if perms.laboratory.do_report %}

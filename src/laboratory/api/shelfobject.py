@@ -1,5 +1,4 @@
 from django.conf import settings
-from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
@@ -16,6 +15,10 @@ from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsS
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from rest_framework import status
+
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer
+from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data
+from django.utils.translation import gettext_lazy as _
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -93,6 +96,47 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def add(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self.serializer_class = AddShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data)
+        errors = {'amount': [_('The quantity is more than the shelf has')]}
+        status_shelf_obj = False
+        status_code = status.HTTP_200_OK
+        changed_data = ["amount"]
+
+        if serializer.is_valid():
+            bill, amount, shelfobject, provider = get_clean_shelfobject_data(serializer, changed_data, lab_pk)
+            shelf = shelfobject.shelf
+
+            if shelf.discard:
+                total = shelf.get_total_refuse()
+                new_total = total + amount
+                if shelf.quantity >= new_total or not shelf.quantity:
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                else:
+                    errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
+            else:
+                if shelf.measurement_unit == None:
+                    status_shelf_obj = True
+                if shelf.measurement_unit == shelfobject.measurement_unit:
+                    quantity = (amount + shelf.get_total_refuse()) <= shelf.quantity
+                    if quantity:
+                        status_shelf_obj = True
+                if shelf.measurement_unit == shelfobject.measurement_unit and shelf.quantity == 0:
+                    status_shelf_obj = True
+
+                if status_shelf_obj:
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+
+        else:
+            errors = serializer.errors
+
+        if status_code == 201:
+            return Response(status=status_code)
+        return Response(errors, status=status_code)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
