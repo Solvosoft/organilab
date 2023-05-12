@@ -16,7 +16,7 @@ window.onload = function () {
                         key: 'custom_select',
                         icon: 'terminal',
                         schema: {
-                            label: 'Custom Select',
+                            label: 'Select using APIs',
                             type: 'custom_select',
                             key: 'custom_select',
                             input: true
