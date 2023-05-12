@@ -18,8 +18,8 @@ from django_filters import FilterSet
 
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
-    initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS, required=False)
-    final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS, required=False)
+    initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
+    final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
 
     class Meta:
         model = ReservedProducts

@@ -12,9 +12,10 @@ from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
-from laboratory.api.serializers import ShelfLabViewSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
+from rest_framework import status
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -81,6 +82,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self.serializer_class = ReservedProductsSerializer
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            instance = serializer.save()
+            instance.laboratory = laboratory
+            instance.save()
+
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
