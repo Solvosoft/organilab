@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-27 15:47-0600\n"
+"POT-Creation-Date: 2023-05-12 13:59-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -142,7 +142,7 @@ msgstr "Observaciones del procedimiento"
 #: academic/templates/academic/substance/detail_substance.html:11
 #: academic/templates/academic/substance/list_substance.html:34
 #: academic/templates/academic/substance/warning_words.html:21
-#: derb/templates/formBuilder/edit_view.html:36
+#: derb/templates/formBuilder/edit_view.html:39
 #: derb/templates/formBuilder/form_list.html:48
 #: derb/templates/formBuilder/form_list.html:96 laboratory/forms.py:99
 #: laboratory/forms.py:174 laboratory/models.py:23 laboratory/models.py:44
@@ -470,9 +470,9 @@ msgstr "Crear procedimiento"
 #: academic/templates/academic/substance/sga_components.html:27
 #: academic/templates/academic/substance/step_three.html:45
 #: authentication/templates/auth/change_user.html:58
-#: derb/templates/formBuilder/edit_view.html:18
-#: derb/templates/formBuilder/edit_view.html:42
-#: laboratory/templates/laboratory/complete_inform.html:71
+#: derb/templates/formBuilder/edit_view.html:21
+#: derb/templates/formBuilder/edit_view.html:45
+#: laboratory/templates/laboratory/complete_inform.html:72
 #: laboratory/templates/laboratory/edit.html:15
 #: laboratory/templates/laboratory/furniture_form.html:36
 #: laboratory/templates/laboratory/furniture_form.html:74
@@ -670,9 +670,9 @@ msgstr "Mostrar sustancias aprobadas"
 #: laboratory/reports.py:55 laboratory/reports.py:66 laboratory/reports.py:106
 #: laboratory/sustance/views.py:139 laboratory/sustance/views.py:141
 #: laboratory/sustance/views.py:143
-#: laboratory/templates/laboratory/complete_inform.html:76
-#: laboratory/templates/laboratory/complete_inform.html:83
-#: laboratory/templates/laboratory/complete_inform.html:92
+#: laboratory/templates/laboratory/complete_inform.html:77
+#: laboratory/templates/laboratory/complete_inform.html:84
+#: laboratory/templates/laboratory/complete_inform.html:93
 #: laboratory/templates/laboratory/furniture_form.html:134
 #: laboratory/templates/laboratory/search.html:124
 #: laboratory/templatetags/humanformat.py:16 report/views/objects.py:115
@@ -2315,7 +2315,7 @@ msgid "The two password fields didn’t match."
 msgstr "Los campos de contraseña no coinciden."
 
 #: authentication/templates/auth/change_user.html:22
-#: derb/templates/formBuilder/edit_view.html:34
+#: derb/templates/formBuilder/edit_view.html:37
 #: laboratory/templates/informs/informscheduler_edit.html:21
 #: laboratory/templates/laboratory/laboratoryroom_form.html:33
 #: laboratory/templates/laboratory/laboratoryroom_form.html:84
@@ -2352,9 +2352,9 @@ msgid "Your password cannot be completely numeric."
 msgstr "Su contraseña no puede contener solo números."
 
 #: authentication/templates/auth/change_user.html:56
-#: derb/templates/formBuilder/edit_view.html:35
+#: derb/templates/formBuilder/edit_view.html:38
 #: derb/templates/formBuilder/form_list.html:95
-#: laboratory/templates/laboratory/complete_inform.html:70
+#: laboratory/templates/laboratory/complete_inform.html:71
 #: laboratory/templates/laboratory/components/report_modals.html:13
 #: laboratory/templates/laboratory/furniture_form.html:174
 #: laboratory/templates/laboratory/inform.html:65
@@ -2427,49 +2427,49 @@ msgstr "Contraseña reiniciada con éxito"
 msgid "User is trying to update data doesn't belong to him"
 msgstr "Usuario está intentando actualizar datos que no le pertenecen"
 
-#: derb/templates/formBuilder/edit_view.html:12
+#: derb/templates/formBuilder/edit_view.html:15
 msgid "Rename"
 msgstr "Renombrar"
 
-#: derb/templates/formBuilder/edit_view.html:26
+#: derb/templates/formBuilder/edit_view.html:29
 #: derb/templates/formBuilder/preview_form.html:19
 msgid "Return to Form List"
 msgstr "Regresar al listado"
 
-#: derb/templates/formBuilder/edit_view.html:33
+#: derb/templates/formBuilder/edit_view.html:36
 msgid "Update Form Name"
 msgstr "Actualizar nombre del formulario"
 
-#: derb/templates/formBuilder/edit_view.html:37
+#: derb/templates/formBuilder/edit_view.html:40
 msgid "The form could not be updated."
 msgstr "El formulario no se pudo actualizar."
 
-#: derb/templates/formBuilder/edit_view.html:38
+#: derb/templates/formBuilder/edit_view.html:41
 msgid "The form name has been updated."
 msgstr "El nombre del formulario ha sido actualizado."
 
-#: derb/templates/formBuilder/edit_view.html:39
+#: derb/templates/formBuilder/edit_view.html:42
 msgid "Updated!"
 msgstr "Actualizado!"
 
-#: derb/templates/formBuilder/edit_view.html:40
+#: derb/templates/formBuilder/edit_view.html:43
 msgid "Save or discard your changes to proceed"
 msgstr "Guarde o descarte sus cambios para continuar"
 
-#: derb/templates/formBuilder/edit_view.html:41
-#: laboratory/templates/laboratory/complete_inform.html:68
+#: derb/templates/formBuilder/edit_view.html:44
+#: laboratory/templates/laboratory/complete_inform.html:69
 msgid "Discarding cannot be undone."
 msgstr "El descarte no se puede deshacer."
 
-#: derb/templates/formBuilder/edit_view.html:43
+#: derb/templates/formBuilder/edit_view.html:46
 msgid "Discard"
 msgstr "Descartar"
 
-#: derb/templates/formBuilder/edit_view.html:44
+#: derb/templates/formBuilder/edit_view.html:47
 msgid "Saved!"
 msgstr "Guardado!"
 
-#: derb/templates/formBuilder/edit_view.html:45
+#: derb/templates/formBuilder/edit_view.html:48
 msgid "The form name has been saved!"
 msgstr "El nombre del formulario se guardo!"
 
@@ -3137,9 +3137,9 @@ msgstr "Información pendiente en el formulario"
 
 #: laboratory/sustance/views.py:139 laboratory/sustance/views.py:141
 #: laboratory/sustance/views.py:143
-#: laboratory/templates/laboratory/complete_inform.html:77
-#: laboratory/templates/laboratory/complete_inform.html:84
-#: laboratory/templates/laboratory/complete_inform.html:93
+#: laboratory/templates/laboratory/complete_inform.html:78
+#: laboratory/templates/laboratory/complete_inform.html:85
+#: laboratory/templates/laboratory/complete_inform.html:94
 #: laboratory/templatetags/humanformat.py:17
 #: reservations_management/templates/reservations_management/reservations_list.html:93
 #: sga/templates/donate_organilab.html:47
@@ -3377,44 +3377,44 @@ msgstr "Finalizar"
 msgid "Send to draft"
 msgstr "Enviar a borrador"
 
-#: laboratory/templates/laboratory/complete_inform.html:57
-#: laboratory/templates/laboratory/complete_inform.html:86
+#: laboratory/templates/laboratory/complete_inform.html:58
+#: laboratory/templates/laboratory/complete_inform.html:87
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
-#: laboratory/templates/laboratory/complete_inform.html:65
+#: laboratory/templates/laboratory/complete_inform.html:66
 msgid "Do you want to send the report for review?"
 msgstr "¿Deseas enviar el reporte a Revision?"
 
-#: laboratory/templates/laboratory/complete_inform.html:65
+#: laboratory/templates/laboratory/complete_inform.html:66
 msgid "Do you want to finish the report?"
 msgstr "¿Deseas finalizar el reporte?"
 
-#: laboratory/templates/laboratory/complete_inform.html:74
+#: laboratory/templates/laboratory/complete_inform.html:75
 msgid "Delete the observation"
 msgstr "Eliminar Observación"
 
-#: laboratory/templates/laboratory/complete_inform.html:75
+#: laboratory/templates/laboratory/complete_inform.html:76
 msgid "Do you want to remove the observation?"
 msgstr "¿Deseas eliminar la observación?"
 
-#: laboratory/templates/laboratory/complete_inform.html:79
+#: laboratory/templates/laboratory/complete_inform.html:80
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
 
-#: laboratory/templates/laboratory/complete_inform.html:82
+#: laboratory/templates/laboratory/complete_inform.html:83
 msgid "Add observation"
 msgstr "Agregar Observación"
 
-#: laboratory/templates/laboratory/complete_inform.html:90
+#: laboratory/templates/laboratory/complete_inform.html:91
 msgid "Update the observation"
 msgstr "Actualizar Observación"
 
-#: laboratory/templates/laboratory/complete_inform.html:91
+#: laboratory/templates/laboratory/complete_inform.html:92
 msgid "Do you want to update the observation?"
 msgstr "¿Deseas actualizar la observación?"
 
-#: laboratory/templates/laboratory/complete_inform.html:95
+#: laboratory/templates/laboratory/complete_inform.html:96
 msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 

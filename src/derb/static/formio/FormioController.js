@@ -7,11 +7,11 @@ window.onload = function () {
             data: false,
             premium: false,
             custom: {
-                title: 'Custom Fields',
+                title: 'API Fields',
                 weight: 10,
                 components: {
                     customSelect: {
-                        title: 'Custom Select',
+                        title: 'Select using APIs',
                         type: 'custom_select',
                         key: 'custom_select',
                         icon: 'terminal',
