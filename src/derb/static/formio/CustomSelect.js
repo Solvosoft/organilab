@@ -179,19 +179,23 @@ CustomSelect.editForm = function () {
             defaultValue: 'api_inform',
             weight: 1,
             onChange(context) {
+                // The url for the preview is created
                 let route = window.location.pathname.split('/');
                 let host = window.location.host;
-                let org_pk = route[2]
+                let org_pk = route[2] // Organization ID
                 let view = context.instance.data.data.api
                 view = view.replace('api_', '').replace('_by_user', '').replace('_by_org', 'Org')
                 view = view.replace('_structure', '').replace('_', '').replace('incident', 'incidentReport')
                 let schema = window.location.protocol + '/'
                 let url = `${schema}/${host}/derb/${org_pk}/api/${view}View/`
                 context.instance.data.data.url = url
-
             },
         },
         {
+            /*
+            Optional setting that enables when a user selects api_org_structure
+            Allows the user to give a Lab identifier for the preview, if none is given the search is done by organization
+            */
             key: 'params',
             label: gettext('Laboratory identifier'),
             input: true,
@@ -201,6 +205,7 @@ CustomSelect.editForm = function () {
               json: { '===': [{ var: 'data.data.api' }, 'api_org_structure'] },
             },
             onChange(context) {
+                //The parameter for users by laboratory is added or removed
                 let temp_params = context.instance.data.params
                 if (temp_params && temp_params > 0) {
                     context.instance.data.data.url += `?lab=${temp_params}`
