@@ -47,14 +47,6 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
 
-    def test_labroom_building_report(self):
-        data = {
-            "format": "pdf"
-        }
-        url = reverse("laboratory:report_building", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-
     def test_reports_laboratory(self):
         data = {
             "format": "pdf"

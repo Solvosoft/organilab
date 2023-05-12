@@ -6,10 +6,12 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
+from django.http import Http404
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.models import Profile, User
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
@@ -337,9 +339,35 @@ def get_laboratories_from_organization_profile(rootpk, user):
 
     return Laboratory.objects.none()
 
-def get_users_from_organization(rootpk):
-    org = OrganizationStructure.objects.filter(pk=rootpk).first()
+
+def get_laboratories_by_user_profile(user, org_pk):
+    queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk)
+    rel_lab = OrganizationStructureRelations.objects.filter(organization=org_pk, content_type__app_label='laboratory',
+    content_type__model='laboratory').values_list('object_id', flat=True)
+    filters = Q(organization__pk=org_pk, profile__user=user) | Q(pk__in=rel_lab)
+    return list(queryset.filter(filters).distinct().values_list('pk', flat=True))
+
+
+def check_user_access_kwargs_org_lab(org, lab, user):
+    user_access = False
+
     if org:
-        desendants = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(include_self=True, of=org).values_list('pk', flat=True))
-        return User.objects.filter(organizationstructure__in= desendants).distinct()
-    return User.objects.none()
+        organization = OrganizationStructure.objects.filter(pk=org)
+
+        if organization.exists():
+            organization = organization.first()
+
+            if organization.users.filter(pk=user.pk).exists():
+
+                if lab:
+                    laboratory = Laboratory.objects.filter(pk=lab)
+
+                    if laboratory.exists():
+                        can_change = organization_can_change_laboratory(laboratory.first(), organization)
+                        user_labs = get_laboratories_by_user_profile(user, org)
+
+                        if can_change and lab in user_labs:
+                            user_access = True
+                else:
+                    user_access = True #REPORT VIEWS WITH LAB = 0
+    return user_access

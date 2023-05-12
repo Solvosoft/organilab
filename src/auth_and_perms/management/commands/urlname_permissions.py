@@ -359,6 +359,16 @@ URLNAME_PERMISSIONS = {
     ],
     'reports_laboratory': [
         {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
@@ -1280,18 +1290,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_report'
         }
     ],
-    'reports_organization_building': [
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        },
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        }
-    ],
     'reports_furniture_detail': [
         {
             'name': 'View Furniture',
@@ -1778,30 +1776,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Object Features',
             'category': 'Object Features',
             'permission': 'laboratory.view_objectfeatures'
-        }
-    ],
-    'report_building': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Laboratory',
-            'category': 'Laboratory',
-            'permission': 'laboratory.view_laboratory'
-        }
-    ],
-    'reports_furniture': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
         }
     ],
     'reports_objects': [
@@ -2798,6 +2772,18 @@ URLNAME_PERMISSIONS = {
         'name': 'View Profile',
         'category': 'Profile',
         'permission': 'auth_and_perms.view_profile'
-    }
+        }
+    ],
+    'can_do_report': [
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
     ],
 }
