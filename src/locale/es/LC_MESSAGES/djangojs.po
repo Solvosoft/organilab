@@ -7,13 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2023-05-12 13:59-0600\n"
-"PO-Revision-Date: 2023-05-12 14:02-0600\n"
-=======
-"POT-Creation-Date: 2023-04-20 11:59-0600\n"
-"PO-Revision-Date: 2023-04-20 12:07-0600\n"
->>>>>>> base/development
+"POT-Creation-Date: 2023-05-12 15:16-0600\n"
+"PO-Revision-Date: 2023-05-12 15:19-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -21,11 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-<<<<<<< HEAD
 "X-Generator: Poedit 3.0.1\n"
-=======
-"X-Generator: Poedit 2.3\n"
->>>>>>> base/development
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
@@ -48,13 +39,11 @@ msgid "Your rol was set successfully"
 msgstr "Rol fue asignado correctamente"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:75
-<<<<<<< HEAD
 msgid "Now you can set this rol in laboratory user table"
 msgstr ""
-"Ahora usted puede asignar el rol en la tabla de usuarios del laboratorio"
+"Ahora se puede establecer este rol en la tabla de usuarios del "
+"laboratorio"
 
-=======
->>>>>>> base/development
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:150
 msgid "Laboratory needs to be selected"
 msgstr "Un laboratorio necesita ser seleccionado"
@@ -81,18 +70,17 @@ msgstr "Si, elimimarlo"
 msgid "Also disable user login on platform"
 msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
 
-<<<<<<< HEAD
 #: derb/static/formio/CustomSelect.js:168
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
 
 #: derb/static/formio/CustomSelect.js:171
 msgid "Inform"
-msgstr "Informe"
+msgstr "Informes"
 
 #: derb/static/formio/CustomSelect.js:172
 msgid "Incident Report"
-msgstr "Reporte de Incidentes"
+msgstr "Reporte de incidentes"
 
 #: derb/static/formio/CustomSelect.js:173
 msgid "Laboratory by User"
@@ -110,15 +98,14 @@ msgstr "Usuarios en un Laboratorio/Organizacion"
 msgid "Objects"
 msgstr "Objetos"
 
-#: derb/static/formio/CustomSelect.js:196
+#: derb/static/formio/CustomSelect.js:200
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
-=======
-#: laboratory/static/laboratory/js/reports.js:32
+
+#: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
 msgstr "Cargando reporte esto puede tardar pocos minutos..."
 
-#: laboratory/static/laboratory/js/reports.js:62
+#: laboratory/static/laboratory/js/reports.js:93
 msgid "Send"
 msgstr "Enviar"
->>>>>>> base/development
