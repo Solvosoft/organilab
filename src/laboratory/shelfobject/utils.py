@@ -18,7 +18,7 @@ def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, c
 
 def get_clean_shelfobject_data(serializer, changed_data, lab_pk):
     provider = None
-    bill = serializer.data['bill']
+    bill = serializer.data.get('bill', '')
     amount = serializer.data['amount']
     shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
 
@@ -31,3 +31,16 @@ def get_clean_shelfobject_data(serializer, changed_data, lab_pk):
         changed_data.append("provider")
 
     return bill, amount, shelfobject, provider
+
+
+def status_shelfobject(shelfobject, shelf, amount):
+    status_shelf_obj = False
+    if shelf.measurement_unit == None:
+        status_shelf_obj = True
+    if shelf.measurement_unit == shelfobject.measurement_unit:
+        quantity = (amount + shelf.get_total_refuse()) <= shelf.quantity
+        if quantity:
+            status_shelf_obj = True
+    if shelf.measurement_unit == shelfobject.measurement_unit and shelf.quantity == 0:
+        status_shelf_obj = True
+    return status_shelf_obj

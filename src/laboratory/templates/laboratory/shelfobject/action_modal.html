@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="reserveform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-reserve' lab_pk=laboratory org_pk=org_pk  %}">
+                <form id="reserveform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-reserve' lab_pk=laboratory org_pk=org_pk %}">
                 {% csrf_token %}
                 <input type="hidden" name="shelf_object">
                 {{modal_form_reservation.as_horizontal}}
@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-add' lab_pk=laboratory org_pk=org_pk  %}">
+                <form id="addform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-add' lab_pk=laboratory org_pk=org_pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="shelf_object">
                     {{add_object_form.as_horizontal}}
@@ -77,8 +77,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="substractform" method="POST" autocomplete="off">
+                <form id="substractform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-substract' lab_pk=laboratory org_pk=org_pk %}">
                     {% csrf_token %}
+                    <input type="hidden" name="shelf_object">
                     {{subtract_object_form.as_horizontal}}
                 </form>
             </div>

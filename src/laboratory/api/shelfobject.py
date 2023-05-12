@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.admin.models import CHANGE
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
@@ -12,13 +13,16 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
+from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from rest_framework import status
 
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
+
+from laboratory.utils import organilab_logentry
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -103,7 +107,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = AddShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
         errors = {'amount': [_('The quantity is more than the shelf has')]}
-        status_shelf_obj = False
         status_code = status.HTTP_200_OK
         changed_data = ["amount"]
 
@@ -119,18 +122,42 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 else:
                     errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
             else:
-                if shelf.measurement_unit == None:
-                    status_shelf_obj = True
-                if shelf.measurement_unit == shelfobject.measurement_unit:
-                    quantity = (amount + shelf.get_total_refuse()) <= shelf.quantity
-                    if quantity:
-                        status_shelf_obj = True
-                if shelf.measurement_unit == shelfobject.measurement_unit and shelf.quantity == 0:
-                    status_shelf_obj = True
+                status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
                 if status_shelf_obj:
                     status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+        else:
+            errors = serializer.errors
 
+        if status_code == 201:
+            return Response(status=status_code)
+        return Response(errors, status=status_code)
+
+    @action(detail=False, methods=['post'])
+    def substract(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self.serializer_class = SubstractShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data)
+        errors = {'discount': [_('The amount to be subtracted is more than the shelf has')]}
+        status_code = status.HTTP_200_OK
+        changed_data = ["discount"]
+
+        if serializer.is_valid():
+            shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
+            old = shelfobject.quantity
+            discount = serializer.data['discount']
+            description = serializer.data.get('description', '')
+
+            if description:
+                changed_data.append("description")
+
+            if old >= discount:
+                new = old - discount
+                shelfobject.quantity = new
+                shelfobject.save()
+                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
+                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
+                status_code = status.HTTP_201_CREATED
         else:
             errors = serializer.errors
 
