@@ -1378,7 +1378,7 @@ URLNAME_PERMISSIONS = {
             'category': 'Inform',
             'permission': 'laboratory.view_inform'
         },
-{
+        {
             'name': 'Fill Informs',
             'category': 'Inform',
             'permission': 'laboratory.view_inform'
