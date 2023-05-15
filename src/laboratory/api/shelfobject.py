@@ -216,7 +216,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
         """
-        Daniel
+        Daniel 123
         :param request:
         :param org_pk:
         :param lab_pk:
