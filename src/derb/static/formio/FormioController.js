@@ -1,11 +1,34 @@
+
 window.onload = function () {
     Formio.builder($('#formio')[0], saved, {
         noDefaultSubmitButton: true,
         builder: {
             advanced: false,
             data: false,
-            premium: false
-        }
+            premium: false,
+            custom: {
+                title: 'API Fields',
+                weight: 10,
+                components: {
+                    customSelect: {
+                        title: 'Select using APIs',
+                        type: 'custom_select',
+                        key: 'custom_select',
+                        icon: 'terminal',
+                        schema: {
+                            label: 'Select using APIs',
+                            type: 'custom_select',
+                            key: 'custom_select',
+                            input: true
+                        },
+
+
+                    }
+                }
+            }
+        },
+
+
     }).then(function (new_form) {
         form = new_form.form;
         new_form.on('change', function () {
