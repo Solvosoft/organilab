@@ -43,26 +43,27 @@ CustomTextInput.editForm = function () {
     {
       key: 'conditional',
       label: 'Conditional Logic',
-      components: [{
-        key: 'simple-conditional',
-        ignore: true,
-      },
-      {
-        key: 'customConditionalPanel',
-        ignore: true
-      },
-      {
-        key: 'conditional',
-        label: 'Derb Validation',
-        type: 'textarea',
-        placeholder: 'Enter the JSON Derb Validation Logic Here',
-        rows: 5
-      }
+      components: [
+          {
+            key: 'simple-conditional',
+            ignore: true,
+          },
+          {
+            key: 'customConditionalPanel',
+            ignore: true
+          },
+          {
+            key: 'conditional',
+            label: 'Derb Validation',
+            type: 'textarea',
+            placeholder: 'Enter the JSON Derb Validation Logic Here',
+            rows: 5
+          },
+
       ]
-    }
+    },
   ]);
   console.log(editForm);
   return editForm;
 }
-
 Formio.Components.addComponent('custom_textinput', CustomTextInput);
