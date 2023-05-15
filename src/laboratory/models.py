@@ -223,8 +223,8 @@ class Shelf(BaseCreationObj):
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
-    discard = models.BooleanField(default=False,verbose_name=_('Disposal'))
-    quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
+    discard = models.BooleanField(default=False, verbose_name=_('Disposal'))
+    quantity = models.FloatField(default=-1, verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))

@@ -76,18 +76,50 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Kendric
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
     def fill_increase_shelobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
     def fill_decrease_shelobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         self.serializer_class = ReservedProductsSerializer
         serializer = self.serializer_class(data=request.data)
@@ -103,6 +135,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def add(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Mover marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         self.serializer_class = AddShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
@@ -117,7 +157,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             if shelf.discard:
                 total = shelf.get_total_refuse()
                 new_total = total + amount
-                if shelf.quantity >= new_total or not shelf.quantity:
+                if shelf.quantity >= new_total or  shelf.quantity == -1:
                     status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
                 else:
                     errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
@@ -135,6 +175,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def substract(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Mover marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         self.serializer_class = SubstractShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
@@ -167,6 +215,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Daniel
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
@@ -182,27 +238,68 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def transfer_out(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marta
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
     def transfer_in(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marta
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['post'])
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marta
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['get'])
     def detail_pdf(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Kendric
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['delete'])
     def delete(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Daniel
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
 
     @action(detail=False, methods=['get'])
     def chart_graphic(self, request, org_pk, lab_pk, **kwargs):
         """
+        Luis Z
             def get(self, request):
         queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
         labels = []
@@ -220,19 +317,73 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
 
     @action(detail=False, methods=['post'])
-    def create_observation(self, request, org_pk, lab_pk, **kwargs):
+    def create_comments(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Daniel
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         pass
 
     @action(detail=False, methods=['post'])
-    def list_observations(self, request, org_pk, lab_pk, **kwargs):
+    def list_comments(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Daniel
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         pass
 
     @action(detail=False, methods=['put'])
     def update_status(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Kendric
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         pass
 
+    @action(detail=False, methods=['put'])
+    def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        pass
 
-    # maybe we move observations to other class
+    @action(detail=False, methods=['get'])
+    def shelf_availability_information(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        pass
+
+"""
+- Búsqueda e interfaz gráfica Marta 
+- Marce Agregar columnas a la tabla  (Tipo de ShelfObject, Sustance)
+- Kendric Edit shelf para poner el -1 como infinito
+
+"""
