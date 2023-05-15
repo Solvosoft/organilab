@@ -64,10 +64,12 @@ $(document).ready(function(){
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
      columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
+            {data: "object_type", name: "object_type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object_name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
             {data: "unit", name: "unit", title: gettext("Unit"), type: "string", visible: true},
-             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
+            {data: "container", name: "container", title: gettext("Container"), type: "string", visible: true},
+            {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
         ],
     buttons: [
             {
