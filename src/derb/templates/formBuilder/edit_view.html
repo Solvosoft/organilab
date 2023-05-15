@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load organilab_tags %}
-
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'get_informs' %}
+{% endblock %}
 {% block extra_css %}
  <link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}?v={% get_organilab_version %}">
 {% endblock %}
@@ -48,7 +51,7 @@ const translations_form = {
     <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
     <script type="text/javascript" src="{% static 'formio/CustomSection.js' %}?v={% get_organilab_version %}"></script>
     <script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}?v={% get_organilab_version %}"></script>
-
+    <script type="text/javascript" src="{% static 'formio/CustomSelect.js' %}?v={% get_organilab_version %}"></script>
 <script>
     window.urls = {
     editview: "{% url 'derb:edit_view' org_pk %}",
