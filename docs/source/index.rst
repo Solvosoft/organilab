@@ -15,6 +15,7 @@ Contents:
    database_configuration
    internationalization
    pdf_generation
+   api_inform
 
 
 Indices and tables
