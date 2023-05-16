@@ -9,6 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
@@ -66,13 +67,23 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class ShelfObjectViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    permissions_by_endpoint = {
+        "transfer_out": ["laboratory.add_tranferobject"], 
+        "transfer_in": ["laboratory.add_tranferobject"],
+        "transfer_available_list": ["laboratory.view_tranferobject"]
+    }
+    
 
-    # This is not an API.
-    def _check_permission_on_laboratory(self,request, org_pk, lab_pk):
-        self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
-        self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
-        user_is_allowed_on_organization(request.user, self.organization)
-        organization_can_change_laboratory(self.laboratory, self.organization, raise_exec= True)
+    # This is not an API endpoint 
+    def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):  # user can actually perform the requested action, then check object access permissions
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+            user_is_allowed_on_organization(request.user, self.organization)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec= True)
+        else:
+            raise PermissionDenied()
+
 
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -246,7 +257,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_out")
 
     @action(detail=False, methods=['post'])
     def transfer_in(self, request, org_pk, lab_pk, **kwargs):
@@ -258,7 +269,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in")
 
     @action(detail=False, methods=['post'])
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
@@ -270,7 +281,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_available_list")
 
     @action(detail=False, methods=['get'])
     def detail_pdf(self, request, org_pk, lab_pk, **kwargs):
