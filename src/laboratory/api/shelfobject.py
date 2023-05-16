@@ -20,7 +20,8 @@ from laboratory.models import OrganizationStructure, \
 from rest_framework import status
 
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
+from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
+    validate_reservation_dates
 from django.utils.translation import gettext_lazy as _
 
 from laboratory.utils import organilab_logentry
@@ -211,17 +212,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-            instance = serializer.save()
-            instance.laboratory = laboratory
-            instance.organization = organization
-            instance.user = request.user
-            instance.created_by = request.user
-            instance.save()
-
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_200_OK)
+            initial_date = serializer.validated_data['initial_date']
+            final_date = serializer.validated_data['final_date']
+            validate_dates, errors_dates = validate_reservation_dates(initial_date, final_date)
+            if validate_dates:
+                laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+                organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+                instance = serializer.save()
+                instance.laboratory = laboratory
+                instance.organization = organization
+                instance.user = request.user
+                instance.created_by = request.user
+                instance.save()
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                errors = errors_dates
+        else:
+            errors = serializer.errors
+        return Response(errors, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
