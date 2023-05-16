@@ -119,9 +119,7 @@
 {% block js %}
 {{block.super}}
 <script>
-document.urls = {
-    shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
-}
+document.shelfobject_create= '{% url "laboratory:api-shelfobject-get-create-shelfobject-form" lab_pk=laboratory org_pk=org_pk  %}';
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';
 document.api_modal = '{% url "laboratory:api_reservation_create"%}';

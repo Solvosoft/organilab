@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
@@ -15,7 +16,7 @@ from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
-    ShelfObject, Laboratory
+    ShelfObject, Laboratory, Shelf
 from rest_framework import status
 
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
@@ -23,6 +24,7 @@ from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobjec
 from django.utils.translation import gettext_lazy as _
 
 from laboratory.utils import organilab_logentry
+from laboratory.views.shelfobject import ShelfObjectForm
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -74,7 +76,22 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         user_is_allowed_on_organization(request.user, self.organization)
         organization_can_change_laboratory(self.laboratory, self.organization, raise_exec= True)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
+    def get_create_shelfobject_form(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Kendric
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        shelf = Shelf.objects.get(pk=request.GET['shelf'])
+        return Response({'data': render_to_string(template_name="laboratory/shelfobject_form.html", context={'laboratory':lab_pk,
+                                                                                                             'org_pk':org_pk,
+                                                                                                             'form':ShelfObjectForm(initial={"shelf":shelf})}, request=request)})
+    @action(detail=False, methods=['get'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         Kendric
