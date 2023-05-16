@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
@@ -11,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.api import serializers
+from laboratory.api import serializers, views
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
@@ -216,7 +217,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
         """
-        Daniel 123
+        Daniel
         :param request:
         :param org_pk:
         :param lab_pk:
@@ -224,6 +225,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        shelf_obj = kwargs.get('shelfObj')
+        s_object = ShelfObject.objects.get(pk=shelf_obj)
+        render_str = render_to_string('laboratory/shelfobject_detail.html', {'object': s_object})
+        return Response(render_str)
 
     @action(detail=False, methods=['post'])
     def tag(self, request, org_pk, lab_pk, **kwargs):
@@ -295,6 +300,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        try:
+            shelf_obj_id = request.query_params['shelfObj'][0]
+            shelf_obj = get_object_or_404(ShelfObject, pk=int(shelf_obj_id))
+            shelf_obj.delete()
+            return Response(status=200)
+        except:
+            return Response(status=403)
 
     @action(detail=False, methods=['get'])
     def chart_graphic(self, request, org_pk, lab_pk, **kwargs):
