@@ -814,3 +814,10 @@ class RegisterUserQR(models.Model):
     def __str__(self):
         return f"{self.url}"
 
+
+class ShelfObjectContainer(BaseCreationObj):
+    shelf_object = models.ForeignKey(ShelfObject, verbose_name=_("Shelf Object"), on_delete=models.CASCADE)
+    container = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Container")) #Object=Material
+
+    def __str__(self):
+        return f"{self.shelf_object} - {self.container}"
