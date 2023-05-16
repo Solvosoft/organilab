@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from laboratory.models import ShelfObject, Shelf, Catalog, Object
+
+
 class AddShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField()
     bill = serializers.CharField(required=False)
@@ -11,3 +14,14 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
     discount = serializers.FloatField()
     description = serializers.CharField(required=False)
     shelf_object = serializers.IntegerField()
+
+class CreateShelfObjectSerializer(serializers.ModelSerializer):
+    obj = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.all(),pk_field="object")
+    shelf= serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
+    quantity= serializers.FloatField(required=True)
+    limit_quantity: serializers.IntegerField(required=True)
+    measurement_unit: serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.all(), required=True)
+
+    class Meta:
+        model = ShelfObject
+        fields = ['object', 'shelf','quantity','measurement_unit','limit_quantity']
