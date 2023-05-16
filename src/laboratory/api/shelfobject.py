@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE
+from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
@@ -19,7 +20,7 @@ from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from rest_framework import status
 
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, TransferOutShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 
@@ -274,6 +275,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_out")
+        self.serializer_class = TransferOutShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data)
+        errors = {}
+
+        if serializer.is_valid():
+            shelf_object = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
+            amount_to_transfer = serializer.data["amount_to_transfer"]
+            if amount_to_transfer <= shelf_object.quantity:
+                # do the transfer
+                pass
+            else:
+                errors["amount_to_transfer"] = [_("The amount to transfer is more than the amount available.")]
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"detail": _("The transfer out was performed successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def transfer_in(self, request, org_pk, lab_pk, **kwargs):
