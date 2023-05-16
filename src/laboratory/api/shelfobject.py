@@ -286,12 +286,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 # do the transfer
                 pass
             else:
-                errors["amount_to_transfer"] = [_("The amount to transfer is more than the amount available.")]
+                errors["amount_to_transfer"] = [_("This value cannot be greater than the quantity available for the object.")]
         else:
             errors = serializer.errors
 
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+        
         return JsonResponse({"detail": _("The transfer out was performed successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
