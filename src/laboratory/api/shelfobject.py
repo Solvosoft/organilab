@@ -212,8 +212,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
             instance = serializer.save()
             instance.laboratory = laboratory
+            instance.organization = organization
+            instance.user = request.user
+            instance.created_by = request.user
             instance.save()
 
             return Response(status=status.HTTP_201_CREATED)
