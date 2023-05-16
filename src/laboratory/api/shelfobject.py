@@ -72,9 +72,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "transfer_in": ["laboratory.add_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "create_shelfobject": [],
-        "fill_increase_shelobject": [],
-        "fill_decrease_shelobject": [],
-        "reserve": [],
+        "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
+        "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
+        "reserve": ["reservations_management.add_reservedproducts"],
         "detail": [],
         "tag": [],
         "detail_pdf": [],
@@ -114,7 +114,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
 
     @action(detail=False, methods=['post'])
-    def fill_increase_shelobject(self, request, org_pk, lab_pk, **kwargs):
+    def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         Marcela
         :param request:
@@ -123,10 +123,40 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelobject")
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
+        self.serializer_class = AddShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data)
+        errors = {'amount': [_('The quantity is more than the shelf has')]}
+        status_code = status.HTTP_200_OK
+        changed_data = ["amount"]
+
+        if serializer.is_valid():
+            bill, amount, shelfobject, provider = get_clean_shelfobject_data(serializer, changed_data, lab_pk)
+            shelf = shelfobject.shelf
+
+            if shelf.discard:
+                total = shelf.get_total_refuse()
+                new_total = total + amount
+                if shelf.quantity >= new_total or shelf.quantity == -1:
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                    changed_data)
+                else:
+                    errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
+            else:
+                status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
+
+                if status_shelf_obj:
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                    changed_data)
+        else:
+            errors = serializer.errors
+
+        if status_code == 201:
+            return Response(status=status_code)
+        return Response(errors, status=status_code)
 
     @action(detail=False, methods=['post'])
-    def fill_decrease_shelobject(self, request, org_pk, lab_pk, **kwargs):
+    def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         Marcela
         :param request:
@@ -135,7 +165,36 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelobject")
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
+        self.serializer_class = SubstractShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data)
+        errors = {'discount': [_('The amount to be subtracted is more than the shelf has')]}
+        status_code = status.HTTP_200_OK
+        changed_data = ["discount"]
+
+        if serializer.is_valid():
+            shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
+            old = shelfobject.quantity
+            discount = serializer.data['discount']
+            description = serializer.data.get('description', '')
+
+            if description:
+                changed_data.append("description")
+
+            if old >= discount:
+                new = old - discount
+                shelfobject.quantity = new
+                shelfobject.save()
+                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract",
+                                  create=False)
+                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
+                status_code = status.HTTP_201_CREATED
+        else:
+            errors = serializer.errors
+
+        if status_code == 201:
+            return Response(status=status_code)
+        return Response(errors, status=status_code)
 
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
@@ -159,86 +218,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['post'])
-    def add(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Mover marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
-        self.serializer_class = AddShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
-        errors = {'amount': [_('The quantity is more than the shelf has')]}
-        status_code = status.HTTP_200_OK
-        changed_data = ["amount"]
-
-        if serializer.is_valid():
-            bill, amount, shelfobject, provider = get_clean_shelfobject_data(serializer, changed_data, lab_pk)
-            shelf = shelfobject.shelf
-
-            if shelf.discard:
-                total = shelf.get_total_refuse()
-                new_total = total + amount
-                if shelf.quantity >= new_total or  shelf.quantity == -1:
-                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
-                else:
-                    errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
-            else:
-                status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
-
-                if status_shelf_obj:
-                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
-        else:
-            errors = serializer.errors
-
-        if status_code == 201:
-            return Response(status=status_code)
-        return Response(errors, status=status_code)
-
-    @action(detail=False, methods=['post'])
-    def substract(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Mover marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
-        self.serializer_class = SubstractShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
-        errors = {'discount': [_('The amount to be subtracted is more than the shelf has')]}
-        status_code = status.HTTP_200_OK
-        changed_data = ["discount"]
-
-        if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
-            old = shelfobject.quantity
-            discount = serializer.data['discount']
-            description = serializer.data.get('description', '')
-
-            if description:
-                changed_data.append("description")
-
-            if old >= discount:
-                new = old - discount
-                shelfobject.quantity = new
-                shelfobject.save()
-                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
-                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
-                status_code = status.HTTP_201_CREATED
-        else:
-            errors = serializer.errors
-
-        if status_code == 201:
-            return Response(status=status_code)
-        return Response(errors, status=status_code)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
