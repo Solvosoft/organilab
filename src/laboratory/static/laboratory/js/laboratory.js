@@ -6,15 +6,26 @@ const tableObject={
 
     },
     addObjectResponse: function(dat){
-            $('#shelfobjectCreate').html(dat);
-            $("#object_create").modal('show');
+            $('#createshelfobjectform').html(dat);
+            $("#createshelfobjectmodal").modal('show');
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
         if (activeshelf == undefined){
             return 1;
         }
-        ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, tableObject.addObjectResponse);
+        $.ajax({
+            url: document.shelfobject_create+"?shelf="+activeshelf,
+            type: "GET",
+            dataType: "json",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            success: ({data}) => {
+                tableObject.addObjectResponse(data)
+             }
+        });
     },
     get_active_shelf: function(){
          let value= $('input[name="shelfselected"]:checked').val();
