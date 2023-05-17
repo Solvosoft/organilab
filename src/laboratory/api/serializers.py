@@ -364,6 +364,6 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
     def validate_shelfobj(self, value):
         attr = super().validate(value)
         if attr.in_where_laboratory_id != self.laboratory.pk:
-            raise serializers.ValidationError( _("Object does not belong to laboratory"))
+            raise serializers.ValidationError(_("Object does not belong to laboratory"))
         return attr
 
