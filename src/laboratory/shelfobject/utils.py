@@ -18,18 +18,6 @@ def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, c
     shelfobject.save()
     log_object_add_change(user, shelf_object, shelfobject, old, new, "Add", provider, bill, create=False)
     organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
-    return status.HTTP_201_CREATED
-
-def get_clean_shelfobject_data(validated_date, lab_pk):
-    bill = validated_date.get('bill', '')
-    amount = validated_date.get('amount', 0.0)
-    shelfobject = validated_date.get('shelf_object', 0)
-    provider = validated_date.get('provider', None)
-    shelfobject = get_object_or_404(ShelfObject, pk=shelfobject)
-    provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=provider)
-    if provider_obj.exists():
-        provider = provider_obj.first()
-    return bill, amount, shelfobject, provider
 
 
 def status_shelfobject(shelfobject, shelf, amount):
