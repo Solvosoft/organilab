@@ -263,22 +263,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_out")
         self.serializer_class = TransferOutShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
 
         if serializer.is_valid():
-            shelf_object = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
-            amount_to_transfer = serializer.data["amount_to_transfer"]
+            shelf_object = serializer.validated_data["shelf_object"]
+            amount_to_transfer = serializer.validated_data["amount_to_transfer"]
             if amount_to_transfer <= shelf_object.quantity:
                 source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-                target_laboratory = get_object_or_404(Laboratory, pk=serializer.data["laboratory"])
-                mark_as_discard = serializer.data['mark_as_discard']
+                target_laboratory = serializer.validated_data["laboratory"]
                 transfer_obj = TranferObject.objects.create(
                     object=shelf_object, 
                     laboratory_send=source_laboratory, 
                     laboratory_received=target_laboratory,
                     quantity=amount_to_transfer, 
-                    mark_as_discard=mark_as_discard,
+                    mark_as_discard=serializer.validated_data['mark_as_discard'],
                     creator=request.user
                 )
                 organilab_logentry(

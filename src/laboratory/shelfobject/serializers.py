@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 
 from laboratory.models import Laboratory, ShelfObject
 
@@ -20,3 +21,9 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
     amount_to_transfer = serializers.FloatField(min_value=0.1)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
+    
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        if attr.in_where_laboratory_id != self.context.get("source_laboratory_id"):
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
