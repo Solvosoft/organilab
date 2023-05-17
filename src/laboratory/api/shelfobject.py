@@ -2,13 +2,9 @@ from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION
 
 from django.template.loader import render_to_string
-
 from django.http import JsonResponse
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
@@ -18,7 +14,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
@@ -27,12 +22,11 @@ from laboratory.forms import ValidateShelfForm
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Shelf
 from rest_framework import status
-
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
     ValidateShelfSerializer, ReactiveShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
-
+from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
 from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
@@ -83,7 +77,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
-        "transfer_out": ["laboratory.add_tranferobject"], 
+        "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject"], 
         "transfer_in": ["laboratory.add_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
          "create_shelfobject": ["laboratory.add_shelfobject"],
@@ -100,8 +94,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "update_status": [],
         "move_shelfobject_to_shelf": [],
         "shelf_availability_information": [],
-
-
     }
     
 
@@ -300,24 +292,37 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def transfer_out(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marta
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Creates the request to transfer a shelf object into a different laboratory
+        :param request: http request
+        :param org_pk: pk of the organization being updated
+        :param lab_pk: pk of the laboratory from which the object will be transfer from
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or errors) 
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_out")
         self.serializer_class = TransferOutShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
 
         if serializer.is_valid():
-            shelf_object = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
-            amount_to_transfer = serializer.data["amount_to_transfer"]
+            shelf_object = serializer.validated_data["shelf_object"]
+            amount_to_transfer = serializer.validated_data["amount_to_transfer"]
             if amount_to_transfer <= shelf_object.quantity:
-                # do the transfer
-                pass
+                source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+                target_laboratory = serializer.validated_data["laboratory"]
+                transfer_obj = TranferObject.objects.create(
+                    object=shelf_object, 
+                    laboratory_send=source_laboratory, 
+                    laboratory_received=target_laboratory,
+                    quantity=amount_to_transfer, 
+                    mark_as_discard=serializer.validated_data['mark_as_discard'],
+                    creator=request.user
+                )
+                organilab_logentry(
+                    request.user, transfer_obj, ADDITION, 'transferobject', 
+                    changed_data=['object', 'laboratory_send', 'laboratory_received', 'quantity'], 
+                    relobj=[transfer_obj, source_laboratory, target_laboratory]
+                )
             else:
                 errors["amount_to_transfer"] = [_("This value cannot be greater than the quantity available for the object.")]
         else:
