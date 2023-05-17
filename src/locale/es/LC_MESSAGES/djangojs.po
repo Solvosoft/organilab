@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 15:16-0600\n"
-"PO-Revision-Date: 2023-05-12 15:19-0600\n"
+"POT-Creation-Date: 2023-05-17 15:18-0600\n"
+"PO-Revision-Date: 2023-05-17 14:04-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -21,6 +21,7 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
+#: laboratory/static/laboratory/js/laboratory.js:68
 msgid "Name"
 msgstr "Nombre"
 
@@ -31,6 +32,7 @@ msgstr "Roles"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:7
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
+#: laboratory/static/laboratory/js/laboratory.js:72
 msgid "Actions"
 msgstr "Acciones"
 
@@ -41,8 +43,7 @@ msgstr "Rol fue asignado correctamente"
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:75
 msgid "Now you can set this rol in laboratory user table"
 msgstr ""
-"Ahora se puede establecer este rol en la tabla de usuarios del "
-"laboratorio"
+"Ahora se puede establecer este rol en la tabla de usuarios del laboratorio"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:150
 msgid "Laboratory needs to be selected"
@@ -101,6 +102,82 @@ msgstr "Objetos"
 #: derb/static/formio/CustomSelect.js:200
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
+
+#: laboratory/static/js/shelfobjectedit.js:9
+msgid "Are you sure you want to delete"
+msgstr "¿Está seguro/a de que desea eliminar"
+
+#: laboratory/static/js/shelfobjectedit.js:14
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: laboratory/static/js/shelfobjectedit.js:16
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: laboratory/static/js/shelfobjectedit.js:29
+msgid "Success"
+msgstr "Éxito"
+
+#: laboratory/static/js/shelfobjectedit.js:38
+msgid "Error"
+msgstr "Error"
+
+#: laboratory/static/laboratory/js/laboratory.js:27
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+#: laboratory/static/laboratory/js/laboratory.js:28
+msgid "You need to select a shelf before do this action"
+msgstr "Necesita seleccionar un estante antes de realizar esta acción"
+
+#: laboratory/static/laboratory/js/laboratory.js:66
+msgid "Id"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:67
+msgid "Type"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:69
+msgid "Quantity"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:70
+msgid "Unit"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:71
+msgid "Container"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:78
+msgid "Clear Filters"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:84
+msgid "Create Equipment"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:90
+msgid "Create Material"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:96
+msgid "Create Substance"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:102
+msgid "Transfer In"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:200
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+"Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
+"contacte al administrador."
 
 #: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
