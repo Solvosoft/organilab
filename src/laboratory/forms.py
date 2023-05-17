@@ -17,7 +17,7 @@ from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR, \
-    ShelfObjectLimits
+    ShelfObjectLimits, ShelfObject
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -539,4 +539,325 @@ class ShelfObjectLimitsForm(GTForm, forms.ModelForm):
             'minimum_limit': genwidgets.TextInput,
             'maximum_limit': genwidgets.TextInput,
             'expiration_date': genwidgets.DateInput
+        }
+
+class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            attrs={
+                'data-dropdownparent': "#reactive_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+            }),
+            label=_("Reactive"),
+            help_text=_("Search by name, code or CAS number")
+        )
+
+    def clean_measurement_unit(self):
+        unit = self.cleaned_data['measurement_unit']
+        quantity = self.cleaned_data['quantity']
+        shelf = self.cleaned_data['shelf']
+        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
+        if shelf.measurement_unit==None:
+            return unit
+        if shelf.measurement_unit==unit:
+            if amount or shelf.quantity==0:
+                return unit
+            else:
+                self.add_error('quantity', _("The quantity is more than the shelf has"))
+
+        else:
+            self.add_error('measurement_unit',
+                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
+                            'measurement_unit': shelf.measurement_unit
+                        })
+
+        return unit
+
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+        exclude =['laboratory_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'course_name': genwidgets.Textarea,
+            'quantity': genwidgets.TextInput,
+            'limit_quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'batch': genwidgets.TextInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'marked_as_discard': genwidgets.CheckboxInput,
+        }
+
+class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#createshelfobjectform"
+            }),
+            label=_("Reactive"),
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['marked_as_discard'].initial=True
+        self.fields['limit_quantity'].initial=0
+
+    def clean(self):
+        cleaned_data = super().clean()
+        quantity = cleaned_data.get("quantity")
+        shelf = cleaned_data.get("shelf")
+        measurement_unit = cleaned_data.get("measurement_unit")
+
+        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
+            total = shelf.get_total_refuse()
+            new_total =total+quantity
+            if shelf.quantity>=new_total or not shelf.quantity:
+                return cleaned_data
+            else:
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
+                    'limit': "%s"%(shelf.quantity,)}))
+        else:
+            self.add_error('measurement_unit',
+                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
+                               'measurement_unit': shelf.measurement_unit
+                           })
+        return cleaned_data
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","limits","batch"]
+        exclude = ['creator',"laboratory_name"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'limit_quantity': genwidgets.TextInput,
+            'quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.HiddenInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'batch': genwidgets.TextInput
+
+        }
+class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            attrs={
+                'data-dropdownparent': "#createshelfobjectform",
+                'data-s2filter-shelf': '#id_shelf'
+            }),
+            label="Material",
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['course_name'].label = _("Description")
+
+    def clean_measurement_unit(self):
+        unit = self.cleaned_data['measurement_unit']
+        quantity = self.cleaned_data['quantity']
+        shelf = self.cleaned_data['shelf']
+        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
+        if shelf.measurement_unit==None:
+            return unit
+        if shelf.measurement_unit==unit:
+            if amount or shelf.quantity==0:
+                return unit
+            else:
+                self.add_error('quantity', _("The quantity is more than the shelf has"))
+
+        else:
+            self.add_error('measurement_unit',
+                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
+                            'measurement_unit': shelf.measurement_unit
+                        })
+
+        return unit
+
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'quantity': genwidgets.TextInput,
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'limit_quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.CheckboxInput
+        }
+
+class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#createshelfobjectform"
+            }),
+            label="Material",
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['marked_as_discard'].initial=True
+        self.fields['limit_quantity'].initial=0
+
+    def clean(self):
+        cleaned_data = super().clean()
+        quantity = cleaned_data.get("quantity")
+        shelf = cleaned_data.get("shelf")
+        measurement_unit = cleaned_data.get("measurement_unit")
+
+        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
+            total = shelf.get_total_refuse()
+            new_total =total+quantity
+            if shelf.quantity>=new_total or not shelf.quantity:
+                return cleaned_data
+            else:
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
+                    'limit': "%s"%(shelf.quantity,)}))
+        else:
+            self.add_error('measurement_unit',
+                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
+                               'measurement_unit': shelf.measurement_unit
+                           })
+        return cleaned_data
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+                  "course_name", "limits"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'quantity': genwidgets.TextInput,
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'limit_quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.CheckboxInput
+        }
+class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            attrs={
+                'data-dropdownparent': "#createshelfobjectform",
+                'data-s2filter-shelf': '#id_shelf'
+            }),
+            label=_("Equipment"),
+            help_text=_("Search by name, code or CAS number")
+        )
+
+    def clean_measurement_unit(self):
+        unit = self.cleaned_data['measurement_unit']
+        quantity = self.cleaned_data['quantity']
+        shelf = self.cleaned_data['shelf']
+        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
+        if shelf.measurement_unit==None:
+            return unit
+        if shelf.measurement_unit==unit:
+            if amount or shelf.quantity==0:
+                return unit
+            else:
+                self.add_error('quantity', _("The quantity is more than the shelf has"))
+
+        else:
+            self.add_error('measurement_unit',
+                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
+                            'measurement_unit': shelf.measurement_unit
+                        })
+
+        return unit
+
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'quantity': genwidgets.TextInput,
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'limit_quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.CheckboxInput
+        }
+
+class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#createshelfobjectform",
+                'data-s2filter-shelf': '#id_shelf'
+            }),
+            label=_("Equipment"),
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['marked_as_discard'].initial=True
+        self.fields['limit_quantity'].initial=0
+
+    def clean(self):
+        cleaned_data = super().clean()
+        quantity = cleaned_data.get("quantity")
+        shelf = cleaned_data.get("shelf")
+        measurement_unit = cleaned_data.get("measurement_unit")
+
+        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
+            total = shelf.get_total_refuse()
+            new_total =total+quantity
+            if shelf.quantity>=new_total or not shelf.quantity:
+                return cleaned_data
+            else:
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
+                    'limit': "%s"%(shelf.quantity,)}))
+        else:
+            self.add_error('measurement_unit',
+                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
+                               'measurement_unit': shelf.measurement_unit
+                           })
+        return cleaned_data
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+                  "course_name", "limits"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
+            'quantity': genwidgets.TextInput,
+            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
+            'limit_quantity': genwidgets.TextInput,
+            'measurement_unit': genwidgets.Select,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.CheckboxInput
         }
