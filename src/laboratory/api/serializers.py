@@ -15,6 +15,8 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters
 from djgentelella.fields.drfdatetime import DateRangeTextWidget, DateTimeRangeTextWidget
 from django_filters import FilterSet
+import logging
+logger = logging.getLogger('organilab')
 
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
@@ -349,18 +351,3 @@ class ShelfLabViewSerializer(serializers.Serializer):
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
-
-class ShelfObjectModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShelfObject
-        fields = ['id']
-
-class ShelfObjectDeleteSerializer(serializers.Serializer):
-    shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-
-    def validate_shelfobj(self, value):
-        attr = super().validate(value)
-        if attr.in_where_laboratory_id != self.context.get('laboratory').pk:
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
-        return attr
-

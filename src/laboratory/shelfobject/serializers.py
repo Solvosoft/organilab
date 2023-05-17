@@ -1,6 +1,8 @@
 from rest_framework import serializers
-
 from laboratory.models import Laboratory, ShelfObject
+from django.utils.translation import gettext_lazy as _
+import logging
+logger = logging.getLogger('organilab')
 
 class AddShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField()
@@ -20,3 +22,15 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
     amount_to_transfer = serializers.FloatField()
     mark_as_discard = serializers.BooleanField()
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
+
+
+class ShelfObjectDeleteSerializer(serializers.Serializer):
+    shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+
+    def validate_shelfobj(self, value):
+        attr = super().validate(value)
+        if attr.in_where_laboratory_id != self.context.get('laboratory').pk:
+            logger.debug(f'attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
+                         f'!= source_laboratory_id ({self.context.get("laboratory").pk})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr

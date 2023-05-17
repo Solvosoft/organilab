@@ -19,11 +19,12 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers, views
-from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer, ShelfObjectDeleteSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
+    ShelfObjectDeleteSerializer
 from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
@@ -79,7 +80,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
-        "detail": [],
+        "detail": ["laboratory.view_shelfobject"],
         "tag": [],
         "detail_pdf": [],
         "delete": ["laboratory.delete_shelfobject"],
