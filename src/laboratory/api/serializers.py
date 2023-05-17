@@ -349,8 +349,3 @@ class ShelfLabViewSerializer(serializers.Serializer):
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
-
-class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
-    class Meta:
-        model = ShelfObject
-        fields = '__all__'
