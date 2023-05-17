@@ -16,7 +16,8 @@ from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR, \
+    ShelfObjectLimits
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -517,9 +518,25 @@ class FurnitureLabRoomForm(forms.Form):
 
 class ValidateShelfForm(forms.Form):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+    objecttype = forms.ChoiceField(choices=(
+        ("0", _('Reactive')),
+        ("1", _('Material')),
+        ("2", _('Equipment'))
+    )
+, required=True)
 
 class ReservedProductsForm(forms.Form):
     obj = forms.IntegerField(required=True)
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
+
+class ShelfObjectLimitsForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = ShelfObjectLimits
+        fields = '__all__'
+        widgets = {
+            'minimum_limit': genwidgets.TextInput,
+            'maximum_limit': genwidgets.TextInput,
+            'expiration_date': genwidgets.DateInput
+        }

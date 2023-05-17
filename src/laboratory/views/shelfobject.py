@@ -26,13 +26,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from djgentelella.forms.forms import CustomForm
+from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm
+    ShelfObjectListForm, ValidateShelfForm, ShelfObjectLimitsForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -86,10 +86,11 @@ def list_shelfobject(request, *args, **kwargs):
     }
 
 
-class ShelfObjectForm(CustomForm, forms.ModelForm):
+class ShelfObjectForm(forms.ModelForm,GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
+        objecttype = kwargs.pop('objecttype', None)
 
         super(ShelfObjectForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
@@ -100,10 +101,10 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
             attrs={
-                'data-dropdownparent': "#object_create",
+                'data-dropdownparent': "#createshelfobjectform",
                 'data-s2filter-shelf': '#id_shelf'
             }),
-            label=_("Reactive/Material/Equipment"),
+            label=objecttype,
             help_text=_("Search by name, code or CAS number")
         )
 
@@ -132,18 +133,21 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','course_name','status','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select,
+            'limits': core.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
 
         }
 
 class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
+        objecttype = kwargs.pop('objecttype', None)
+
         super(ShelfObjectRefuseForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
         shelf = initial['shelf']
@@ -152,9 +156,9 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#object_create"
+                'data-dropdownparent': "#createshelfobjectform"
             }),
-            label=_("Reactive/Material/Equipment"),
+            label=objecttype,
             help_text=_("Search by name, code or CAS number")
         )
         self.fields['marked_as_discard'].initial=True
@@ -183,15 +187,17 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity']
-        exclude = ['creator',"laboratory_name"]
+        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity','limits']
+        exclude = ['creator',"laboratory_name", "status"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
             'quantity': core.TextInput,
             'measurement_unit': core.Select,
             'course_name': core.TextInput,
-            'marked_as_discard': core.HiddenInput
+            'marked_as_discard': core.HiddenInput,
+            'limits': core.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
+
         }
 
 
@@ -768,3 +774,31 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
+
+@login_required
+def add_shelfobjectlimit(request):
+
+    if request.method == 'POST':
+        form = ShelfObjectLimitsForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'ok': True, 'id': instance.pk, 'text': instance.minimum_limit})
+        return JsonResponse({'ok': False,
+                             'title': _("ERROR"),
+                             'message': _('Data is not valid')})
+
+    form = ShelfObjectLimitsForm()
+
+    data = {
+        'ok': True,
+        'title': _('New ShelfObject Limits'),
+        'message': """
+        <form method="post" action="%s">
+            %s
+        </form>
+        """%(
+            reverse('laboratory:add_shelfobjectlimit'),
+            str(form.as_horizontal())
+        )
+    }
+    return JsonResponse(data)
