@@ -68,7 +68,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
-        "transfer_out": ["laboratory.add_tranferobject"], 
+        "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject"], 
         "transfer_in": ["laboratory.add_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "create_shelfobject": [],
