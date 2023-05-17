@@ -218,8 +218,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             initial_date = serializer.validated_data['initial_date'].date()
             final_date = serializer.validated_data['final_date'].date()
-            validate_dates, errors_dates = validate_reservation_dates(initial_date, final_date)
-            if validate_dates:
+            errors = validate_reservation_dates(initial_date, final_date)
+            if not errors:
                 laboratory = get_object_or_404(Laboratory, pk=lab_pk)
                 organization = get_object_or_404(OrganizationStructure, pk=org_pk)
                 instance = serializer.save()
@@ -228,12 +228,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 instance.user = request.user
                 instance.created_by = request.user
                 instance.save()
-                return Response(status=status.HTTP_201_CREATED)
-            else:
-                errors = errors_dates
         else:
             errors = serializer.errors
-        return Response(errors, status=status.HTTP_200_OK)
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Reservation was performed successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
