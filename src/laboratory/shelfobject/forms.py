@@ -38,10 +38,10 @@ class AddShelfObjectForm(GTForm):
         providers = Provider.objects.filter(laboratory__id=int(lab))
         self.fields['provider'].queryset = providers
 
-class TransferShelfObjectForm(GTForm):
-    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),
-                                  help_text='Use dot like 0.344 on decimal', required=True)
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
+class TransferOutShelfObjectForm(GTForm):
+    amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
+                                  help_text=_('Use dot like 0.344 on decimal'), required=True)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.none(),
                                         label=_("Laboratory"), required=True)
     mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
@@ -49,7 +49,7 @@ class TransferShelfObjectForm(GTForm):
         users = kwargs.pop('users')
         lab = kwargs.pop('lab_send')
         org = kwargs.pop('org')
-        super(TransferShelfObjectForm, self).__init__(*args, **kwargs)
+        super(TransferOutShelfObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users.profile.pk).first()
         orgs = utils.get_pk_org_ancestors_decendants(users, org)
 

@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-add' lab_pk=laboratory org_pk=org_pk %}">
+                <form id="addform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-fill-increase-shelfobject' lab_pk=laboratory org_pk=org_pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="shelf_object">
                     {{add_object_form.as_horizontal}}
@@ -46,23 +46,24 @@
     </div>
 </div>
 
-<div aria-hidden="true" id="transfermodal" class="modal fade actionshelfobjmodal" aria-labelledby="transfermodal_form_title" role="dialog" tabindex="-1">
+<div aria-hidden="true" id="transferoutmodal" class="modal fade actionshelfobjmodal" aria-labelledby="transferoutmodal_form_title" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="transfermodal_form_title">{% trans 'Transfer' %}</h5>
+                <h5 class="modal-title" id="transferoutmodal_form_title">{% trans 'Transfer Out' %}</h5>
                 <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
                 </button>
             </div>
             <div class="modal-body">
-                <form id="transferform" method="POST" autocomplete="off">
+                <form id="transferoutform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-transfer-out' lab_pk=laboratory org_pk=org_pk %}">
                     {% csrf_token %}
-                    {{tranfer_object_form.as_horizontal}}
+                    <input type="hidden" name="shelf_object">
+                    {{tranfer_out_object_form.as_horizontal}}
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+                <button class="btn btn-primary actionshelfobjectsave" type="button">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>
@@ -72,12 +73,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="substractmodal_form_title">{% trans 'Transfer' %}</h5>
+                <h5 class="modal-title" id="substractmodal_form_title">{% trans 'Sustract' %}</h5>
                 <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
                 </button>
             </div>
             <div class="modal-body">
-                <form id="substractform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-substract' lab_pk=laboratory org_pk=org_pk %}">
+                <form id="substractform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-fill-decrease-shelfobject' lab_pk=laboratory org_pk=org_pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="shelf_object">
                     {{subtract_object_form.as_horizontal}}
