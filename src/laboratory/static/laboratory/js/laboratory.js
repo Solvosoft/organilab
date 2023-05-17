@@ -203,3 +203,14 @@ $(".actionshelfobjectsave").on('click', function(){
         }
     });
 });
+
+function clear_action_form(form){
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+}
+
+
+$('.actionshelfobjmodal').on('hidden.bs.modal', function () {
+    clear_action_form($(this).find('form'));
+})

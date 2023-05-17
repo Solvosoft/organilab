@@ -1,16 +1,18 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE
 from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
@@ -18,12 +20,10 @@ from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsS
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
-from rest_framework import status
-
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, TransferOutShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
-from django.utils.translation import gettext_lazy as _
-
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
+from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
+    validate_reservation_dates
 from laboratory.utils import organilab_logentry
 
 
@@ -73,9 +73,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "transfer_in": ["laboratory.add_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "create_shelfobject": [],
-        "fill_increase_shelobject": [],
-        "fill_decrease_shelobject": [],
-        "reserve": [],
+        "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
+        "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
+        "reserve": ["reservations_management.add_reservedproducts"],
         "detail": [],
         "tag": [],
         "detail_pdf": [],
@@ -115,7 +115,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
 
     @action(detail=False, methods=['post'])
-    def fill_increase_shelobject(self, request, org_pk, lab_pk, **kwargs):
+    def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         Marcela
         :param request:
@@ -124,54 +124,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelobject")
-
-    @action(detail=False, methods=['post'])
-    def fill_decrease_shelobject(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelobject")
-
-    @action(detail=False, methods=['post'])
-    def reserve(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
-        self.serializer_class = ReservedProductsSerializer
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-            instance = serializer.save()
-            instance.laboratory = laboratory
-            instance.save()
-
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['post'])
-    def add(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Mover marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
         self.serializer_class = AddShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
         errors = {'amount': [_('The quantity is more than the shelf has')]}
@@ -185,15 +138,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             if shelf.discard:
                 total = shelf.get_total_refuse()
                 new_total = total + amount
-                if shelf.quantity >= new_total or  shelf.quantity == -1:
-                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                if shelf.quantity >= new_total or shelf.quantity == -1:
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                    changed_data)
                 else:
                     errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
             else:
                 status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
                 if status_shelf_obj:
-                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                    status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                    changed_data)
         else:
             errors = serializer.errors
 
@@ -202,16 +157,16 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         return Response(errors, status=status_code)
 
     @action(detail=False, methods=['post'])
-    def substract(self, request, org_pk, lab_pk, **kwargs):
+    def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
-        Mover marcela
+        Marcela
         :param request:
         :param org_pk:
         :param lab_pk:
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
         self.serializer_class = SubstractShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
         errors = {'discount': [_('The amount to be subtracted is more than the shelf has')]}
@@ -231,7 +186,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 new = old - discount
                 shelfobject.quantity = new
                 shelfobject.save()
-                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
+                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract",
+                                  create=False)
                 organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
                 status_code = status.HTTP_201_CREATED
         else:
@@ -240,6 +196,40 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if status_code == 201:
             return Response(status=status_code)
         return Response(errors, status=status_code)
+
+    @action(detail=False, methods=['post'])
+    def reserve(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marcela
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
+        self.serializer_class = ReservedProductsSerializer
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            initial_date = serializer.validated_data['initial_date']
+            final_date = serializer.validated_data['final_date']
+            validate_dates, errors_dates = validate_reservation_dates(initial_date, final_date)
+            if validate_dates:
+                laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+                organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+                instance = serializer.save()
+                instance.laboratory = laboratory
+                instance.organization = organization
+                instance.user = request.user
+                instance.created_by = request.user
+                instance.save()
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                errors = errors_dates
+        else:
+            errors = serializer.errors
+        return Response(errors, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def detail(self, request, org_pk, lab_pk, **kwargs):
