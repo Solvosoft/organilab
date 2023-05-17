@@ -37,13 +37,17 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
                             Swal.fire({
                                 title: gettext('Error'),
                                 text: data['shelfobj'][0],
-                                icon: 'error',
-                                timer: 1500
+                                icon: 'error'
                             })
                         }
                     })
             }
     })
+}
+
+function shelfObjectDetail(obj){
+    let url = $(obj).data('url')
+    console.log(url)
 }
 
 function processResponseshelfobjectUpdate(dat) {

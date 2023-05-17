@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-17 14:03-0600\n"
+"POT-Creation-Date: 2023-05-17 15:18-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -372,7 +372,7 @@ msgstr "Formularion inválido"
 #: academic/templates/academic/detail.html:16
 #: academic/templates/academic/substance/detail_substance.html:2
 #: academic/templates/academic/substance/prudence_advice.html:30
-#: laboratory/api/serializers.py:243
+#: laboratory/api/serializers.py:245
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -386,7 +386,7 @@ msgstr "Desconocido"
 #: academic/templates/academic/substance/prudence_advice.html:32
 #: academic/templates/academic/substance/warning_words.html:32
 #: derb/templates/formBuilder/form_list.html:76
-#: laboratory/api/serializers.py:78
+#: laboratory/api/serializers.py:80
 #: laboratory/templates/laboratory/lab_card.html:17
 #: laboratory/templates/laboratory/objectfeatures_form.html:30
 #: laboratory/templates/laboratory/objectfeatures_form.html:52
@@ -626,7 +626,7 @@ msgstr "Lista de Objetos"
 #: academic/templates/academic/substance/list_substance.html:75
 #: derb/templates/formBuilder/form_list.html:77
 #: derb/templates/formBuilder/form_list.html:98
-#: laboratory/api/serializers.py:83
+#: laboratory/api/serializers.py:85
 #: laboratory/templates/laboratory/furniture_form.html:42
 #: laboratory/templates/laboratory/laboratoryroom_form.html:89
 #: laboratory/templates/laboratory/objectfeatures_form.html:57
@@ -2545,11 +2545,11 @@ msgstr "Eliminado!"
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
-#: laboratory/api/serializers.py:62
+#: laboratory/api/serializers.py:64
 msgid "File not found"
 msgstr "Archivo no encontrado"
 
-#: laboratory/api/serializers.py:68
+#: laboratory/api/serializers.py:70
 #: laboratory/templates/laboratory/components/report_modals.html:14
 #: laboratory/templates/laboratory/disposal_substance.html:91
 #: laboratory/templates/laboratory/h_code_report.html:40
@@ -2570,50 +2570,46 @@ msgstr "Archivo no encontrado"
 msgid "Download"
 msgstr "Descargar"
 
-#: laboratory/api/serializers.py:122 laboratory/api/serializers.py:124
-#: laboratory/api/serializers.py:155 laboratory/api/serializers.py:157
+#: laboratory/api/serializers.py:124 laboratory/api/serializers.py:126
+#: laboratory/api/serializers.py:157 laboratory/api/serializers.py:159
 msgid "No user found"
 msgstr "Usuario no encontrado"
 
-#: laboratory/api/serializers.py:133
+#: laboratory/api/serializers.py:135
 #: laboratory/templates/laboratory/register_user_qr/logentry_list.html:21
 #: laboratory/templates/laboratory/register_user_qr/login_register_user.html:43
 #: presentation/templates/index.html:44
 msgid "Register"
 msgstr "Registrarse"
 
-#: laboratory/api/serializers.py:367
-msgid "Object does not belong to laboratory"
-msgstr "El objeto seleccionado no pertenece al laboratorio"
-
-#: laboratory/api/shelfobject.py:133 laboratory/views/shelfobject.py:121
+#: laboratory/api/shelfobject.py:134 laboratory/views/shelfobject.py:121
 #: laboratory/views/shelfobject.py:480
 msgid "The quantity is more than the shelf has"
 msgstr "La cantidad es mayor a la que posee el estante"
 
-#: laboratory/api/shelfobject.py:148 laboratory/views/shelfobject.py:175
+#: laboratory/api/shelfobject.py:149 laboratory/views/shelfobject.py:175
 #: laboratory/views/shelfobject.py:449
 #, fuzzy, python-format
 #| msgid "The quantity is much larger than the shelf limit"
 msgid "The quantity is much larger than the shelf limit %(limit)s"
 msgstr "La cantidad es mucho mayor al limite del estante."
 
-#: laboratory/api/shelfobject.py:175 laboratory/views/shelfobject.py:538
+#: laboratory/api/shelfobject.py:176 laboratory/views/shelfobject.py:538
 msgid "The amount to be subtracted is more than the shelf has"
 msgstr "La cantidad a sustraer es más que el estante tiene"
 
-#: laboratory/api/shelfobject.py:282
+#: laboratory/api/shelfobject.py:283
 msgid ""
 "This value cannot be greater than the quantity available for the object."
 msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto"
 
-#: laboratory/api/shelfobject.py:289
+#: laboratory/api/shelfobject.py:290
 #, fuzzy
 #| msgid "The substance is removed successfully"
 msgid "The transfer out was performed successfully."
 msgstr "La sustancia fue eliminada con éxito"
 
-#: laboratory/api/shelfobject.py:342
+#: laboratory/api/shelfobject.py:343
 msgid "The item was deleted successfully"
 msgstr "El elemento fue eliminado exitosamente"
 
@@ -3158,6 +3154,12 @@ msgstr "Continuar"
 #: laboratory/reservation.py:46
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
+
+#: laboratory/shelfobject/serializers.py:35
+#, fuzzy
+#| msgid "Object does not belong to laboratory"
+msgid "Object does not exist in the laboratory"
+msgstr "El objeto seleccionado no pertenece al laboratorio"
 
 #: laboratory/shelfobject/utils.py:61
 #, fuzzy
