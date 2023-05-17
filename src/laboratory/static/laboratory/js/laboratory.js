@@ -19,7 +19,6 @@ const tableObject={
         datarequest ={'shelf':activeshelf,
                'objecttype':e.currentTarget.dataset.type
                }
-        console.table(datarequest)
         $.ajax({
             url: document.shelfobject_create,
             type: "GET",
