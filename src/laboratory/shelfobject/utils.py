@@ -56,9 +56,9 @@ def validate_reservation_dates(initial_date, final_date):
                 else:
                     errors_date.update({'initial_date': [_("Initial date can't be lower than current date")]})
             else:
-                errors_date.update({'initial_date': [_("Initial date can't be equal of current date")]})
+                errors_date.update({'initial_date': [_("Initial date can't be equal to current date")]})
         else:
             errors_date.update({'initial_date': [_("Initial date can't be greater than final date")]})
     else:
-        errors_date.update({'final_date': [_("Final date can't be equal of initial date")]})
+        errors_date.update({'final_date': [_("Final date can't be equal to initial date")]})
     return result, errors_date
