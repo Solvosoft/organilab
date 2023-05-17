@@ -136,25 +136,22 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             changed_data = list(validated_data.keys())
 
             if shelfobject:
-                if amount > 0.0:
-                    shelf = shelfobject.shelf
+                shelf = shelfobject.shelf
 
-                    if shelf.discard:
-                        total = shelf.get_total_refuse()
-                        new_total = total + amount
-                        if shelf.quantity >= new_total or shelf.quantity == -1:
-                            status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
-                                                            changed_data)
-                        else:
-                            errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
+                if shelf.discard:
+                    total = shelf.get_total_refuse()
+                    new_total = total + amount
+                    if shelf.quantity >= new_total or shelf.quantity == -1:
+                        status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                        changed_data)
                     else:
-                        status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
-
-                        if status_shelf_obj:
-                            status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
-                                                            changed_data)
+                        errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
                 else:
-                    errors.update({'amount': [_('Quantity should be more than 0.0')]})
+                    status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
+
+                    if status_shelf_obj:
+                        status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
+                                                        changed_data)
             else:
                 status_code = status.HTTP_400_BAD_REQUEST
         else:
@@ -177,37 +174,30 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
         self.serializer_class = SubstractShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
-        errors = {'discount': [_('The amount to be subtracted is more than the shelf has')]}
-        status_code = status.HTTP_200_OK
+        errors = {}
 
         if serializer.is_valid():
-            shelfobj_pk = serializer.validated_data.get('shelf_object', 0)
-            shelfobject = get_object_or_404(ShelfObject, pk=shelfobj_pk)
+            shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
             old = shelfobject.quantity
-            discount = serializer.validated_data.get('discount', 0.0)
-            description = serializer.data.get('description', '')
+            discount = serializer.data['discount']
+            description = serializer.validated_data.get('description', '')
             changed_data = list(serializer.validated_data.keys())
 
-            if shelfobject:
-                if discount > 0.0:
-                    if old >= discount:
-                        new = old - discount
-                        shelfobject.quantity = new
-                        shelfobject.save()
-                        log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract",
-                                          create=False)
-                        organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
-                        status_code = status.HTTP_201_CREATED
-                else:
-                    errors.update({'discount': [_('Quantity should be more than 0.0')]})
+            if old >= discount:
+                new = old - discount
+                shelfobject.quantity = new
+                shelfobject.save()
+                log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
+                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
             else:
-                status_code = status.HTTP_400_BAD_REQUEST
+                errors['discount'] = [_('The amount to be subtracted is more than the shelf has')]
         else:
             errors = serializer.errors
 
-        if status_code == 201:
-            return Response(status=status_code)
-        return Response(errors, status=status_code)
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Shelf object substract was performed successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
