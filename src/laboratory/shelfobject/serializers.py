@@ -31,6 +31,6 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
         attr = super().validate(value)
         if attr.in_where_laboratory_id != self.context.get('laboratory_id'):
             logger.debug(f'attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
-                         f'!= source_laboratory_id ({self.context.get("laboratory_id")})')
+                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
