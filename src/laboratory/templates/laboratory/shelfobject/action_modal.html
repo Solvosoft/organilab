@@ -91,7 +91,7 @@
     </div>
 </div>
 
-<div aria-hidden="true" id="createshelfobjectmodal" class="modal fade" aria-labelledby="create_form_title" role="dialog" tabindex="-1">
+<div id="createshelfobjectmodal" class="modal fade" aria-labelledby="create_form_title" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -99,7 +99,10 @@
                 <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
                 </button>
             </div>
-            <div class="modal-body" id="createshelfobjectform">
+            <div class="modal-body">
+                <form method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-create-shelfobject' lab_pk=laboratory org_pk=org_pk %}">
+                    {% csrf_token %}
+                    <div id="createshelfobjectform"></div>
 
             </div>
         </div>
