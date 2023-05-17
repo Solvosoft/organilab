@@ -559,6 +559,16 @@ class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
             label=_("Reactive"),
             help_text=_("Search by name, code or CAS number")
         )
+        self.fields['course_name'].label = _("Description")
+
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+                'data-s2filter-shelf': '#id_shelf'
+            }),
+            label=_("Measurement unit"))
+
 
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
@@ -591,7 +601,6 @@ class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
             'course_name': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
             'limit_quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'batch': genwidgets.TextInput,
             'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
@@ -599,6 +608,8 @@ class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
         }
 
 class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -606,11 +617,21 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#createshelfobjectform"
+                'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label=_("Reactive"),
             help_text=_("Search by name, code or CAS number")
         )
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+            }),
+            label=_("Measurement unit"))
+        self.fields['course_name'].label = _("Description")
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
 
@@ -637,13 +658,12 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","limits","batch"]
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","limits","batch","objecttype"]
         exclude = ['creator',"laboratory_name"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': genwidgets.TextInput,
             'quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
             'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelf_type_catalog')}),
@@ -652,6 +672,7 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
 
         }
 class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -661,13 +682,20 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
             attrs={
-                'data-dropdownparent': "#createshelfobjectform",
+                'data-dropdownparent': "#material_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+            }),
+            label="Material")
+
+        self.fields['course_name'].label = _("Description")
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#material_form",
                 'data-s2filter-shelf': '#id_shelf'
             }),
-            label="Material",
-            help_text=_("Search by name, code or CAS number")
-        )
-        self.fields['course_name'].label = _("Description")
+            label=_("Measurement unit"))
 
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
@@ -700,12 +728,13 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
 class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -713,13 +742,22 @@ class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#createshelfobjectform"
+                'data-dropdownparent': "#material_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
-            label="Material",
-            help_text=_("Search by name, code or CAS number")
-        )
+            label="Material")
+        self.fields['course_name'].label = _("Description")
+
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#material_refuse_form",
+                'data-s2filter-shelf': '#id_shelf'
+            }),
+            label=_("Measurement unit"))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -752,11 +790,11 @@ class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'course_name': genwidgets.Textarea,
-            'marked_as_discard': genwidgets.CheckboxInput
+            'marked_as_discard': forms.HiddenInput
         }
 class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -766,12 +804,20 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
             attrs={
-                'data-dropdownparent': "#createshelfobjectform",
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+            }),
+            label=_("Equipment"))
+        self.fields['course_name'].label = _("Description")
+
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#equipment_form",
                 'data-s2filter-shelf': '#id_shelf'
             }),
-            label=_("Equipment"),
-            help_text=_("Search by name, code or CAS number")
-        )
+            label=_("Measurement unit"))
 
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
@@ -804,12 +850,13 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
 class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -817,12 +864,20 @@ class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#createshelfobjectform",
+                'data-dropdownparent': "#equipment_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+            }),
+            label=_("Equipment"))
+
+
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#equipment_refuse_form",
                 'data-s2filter-shelf': '#id_shelf'
             }),
-            label=_("Equipment"),
-            help_text=_("Search by name, code or CAS number")
-        )
+            label=_("Measurement unit"))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
 
@@ -857,7 +912,9 @@ class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
-            'measurement_unit': genwidgets.Select,
             'course_name': genwidgets.Textarea,
-            'marked_as_discard': genwidgets.CheckboxInput
+            'marked_as_discard': forms.HiddenInput
         }
+
+class ValidateShelfUnitForm(forms.Form):
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
