@@ -5,10 +5,17 @@ function processResponseshelfobject(dat){
     datatableelement.ajax.reload();
 }
 
-function processResponseshelfobjectDelete(dat) {
-	$('#shelfobjectDelete').html(dat);
-	$("#object_delete").modal('show');
+function shelfObjectDelete(obj, shelf_object_id, text) {
+    let message = gettext("Delete object ")
+    let url = $(obj).data('url')
+    console.log(shelf_object_id, text, url)
+    $("#object_delete").modal('show');
+    fetch(url, {method: "delete", headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+    body: JSON.stringify({'shelfobj': shelf_object_id})}).then(response => console.log(response))
+
+
 }
+
 function processResponseshelfobjectUpdate(dat) {
 	$('#shelfobjectUpdate').html(dat);
 	// clean the form

@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.admin.models import CHANGE
+from django.contrib.admin.models import CHANGE, DELETION
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
@@ -12,8 +12,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory import utils
 from laboratory.api import serializers, views
-from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer, ShelfObjectDeleteSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
@@ -300,13 +301,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
-        try:
-            shelf_obj_id = request.query_params['shelfObj'][0]
-            shelf_obj = get_object_or_404(ShelfObject, pk=int(shelf_obj_id))
-            shelf_obj.delete()
-            return Response(status=200)
-        except:
-            return Response(status=403)
+        serializer = ShelfObjectDeleteSerializer(data=request.data, laboratory=self.laboratory)
+        serializer.is_valid(raise_exception=True)
+        utils.organilab_logentry(self.request.user, serializer.validated_data['shelfobj'], DELETION, relobj=self.laboratory)
+        serializer.validated_data['shelfobj'].delete()
+        return Response({'message': _('The item was deleted successfully')}, status=200)
+
 
     @action(detail=False, methods=['get'])
     def chart_graphic(self, request, org_pk, lab_pk, **kwargs):
