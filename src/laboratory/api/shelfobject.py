@@ -19,10 +19,10 @@ from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
-    ShelfObject, Laboratory
+    ShelfObject, Laboratory, Provider
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
 from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
+from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
 
@@ -127,39 +127,41 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
         self.serializer_class = AddShelfObjectSerializer
         serializer = self.serializer_class(data=request.data)
-        errors = {'amount': [_('The quantity is more than the shelf has')]}
-        status_code = status.HTTP_200_OK
+        errors = {}
+        provider = None
 
         if serializer.is_valid():
-            validated_data = serializer.validated_data
-            bill, amount, shelfobject, provider = get_clean_shelfobject_data(validated_data, lab_pk)
-            changed_data = list(validated_data.keys())
+            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
+            shelf = shelfobject.shelf
+            provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=serializer.data['provider'])
+            if provider_obj.exists():
+                provider = provider_obj.first()
+            changed_data = list(serializer.validated_data.keys())
+            bill = serializer.data.get('bill', '')
+            amount = serializer.data['amount']
 
-            if shelfobject:
-                shelf = shelfobject.shelf
-
-                if shelf.discard:
-                    total = shelf.get_total_refuse()
-                    new_total = total + amount
-                    if shelf.quantity >= new_total or shelf.quantity == -1:
-                        status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
-                                                        changed_data)
-                    else:
-                        errors.update({'amount': [_('The quantity is much larger than the shelf limit %(limit)s')]})
+            if shelf.discard:
+                total = shelf.get_total_refuse()
+                new_total = total + amount
+                if shelf.quantity >= new_total or shelf.quantity == -1:
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
                 else:
-                    status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
-
-                    if status_shelf_obj:
-                        status_code = save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill,
-                                                        changed_data)
+                    errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')]
             else:
-                status_code = status.HTTP_400_BAD_REQUEST
+                status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
+
+                if status_shelf_obj:
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                else:
+                    errors['amount'] = [_('The quantity is more than the shelf has')]
         else:
             errors = serializer.errors
 
-        if status_code == 201:
-            return Response(status=status_code)
-        return Response(errors, status=status_code)
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Shelf object substract was performed successfully.")},
+                            status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -177,7 +179,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
 
         if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
+            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
             old = shelfobject.quantity
             discount = serializer.data['discount']
             description = serializer.validated_data.get('description', '')
