@@ -31,6 +31,7 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
                                 icon: 'success',
                                 timer: 1500
                             })
+                            datatableelement.ajax.reload()
                         }else{
                             //Displays API error message
                             Swal.fire({
@@ -42,9 +43,6 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
                         }
                     })
             }
-            setTimeout(() => {
-              window.location.reload();
-            }, 1500);
     })
 }
 
