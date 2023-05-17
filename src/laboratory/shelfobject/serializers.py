@@ -15,6 +15,13 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
     description = serializers.CharField(required=False)
     shelf_object = serializers.IntegerField()
 
+class ValidateShelfSerializer(serializers.Serializer):
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all())
+    objecttype = serializers.ChoiceField(choices=(
+        ("0", 'Reactive'),
+        ("1", 'Material'),
+        ("2", 'Equipment')), required=True)
+
 class CreateShelfObjectSerializer(serializers.ModelSerializer):
     obj = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.all(),pk_field="object")
     shelf= serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
