@@ -150,12 +150,12 @@ $('.actionshelfobjmodal').on('show.bs.modal', function (e) {
 
 
 function load_errors(error_list, obj){
-    ul_obj = "<ul class='errorlist shelf_form_errors'>";
+    ul_obj = "<ul class='errorlist shelf_form_errors d-flex justify-content-center'>";
     error_list.forEach((item)=>{
         ul_obj += "<li>"+item+"</li>";
     });
-    ul_obj += "</ul>"
-    $(obj).before(ul_obj);
+    ul_obj += "</ul>";
+    $(obj).parents('.form-group').prepend(ul_obj);
     return ul_obj;
 }
 
@@ -208,9 +208,10 @@ function clear_action_form(form){
     $(form).trigger('reset');
     $(form).find("select option:selected").prop("selected", false);
     $(form).find("select").val(null).trigger('change');
+    $(form).find("ul.shelf_form_errors").remove();
 }
 
 
 $('.actionshelfobjmodal').on('hidden.bs.modal', function () {
     clear_action_form($(this).find('form'));
-})
+});
