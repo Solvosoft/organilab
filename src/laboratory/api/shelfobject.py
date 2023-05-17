@@ -335,7 +335,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete")
-        serializer = ShelfObjectDeleteSerializer(data=request.data, laboratory=self.laboratory)
+        serializer = ShelfObjectDeleteSerializer(data=request.data, context={"laboratory":self.laboratory})
         serializer.is_valid(raise_exception=True)
         utils.organilab_logentry(self.request.user, serializer.validated_data['shelfobj'], DELETION, relobj=self.laboratory)
         serializer.validated_data['shelfobj'].delete()
