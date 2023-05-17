@@ -8,27 +8,36 @@ const tableObject={
     },
     addObjectResponse: function(datarequest){
             /**Se va a mejorar**/
+            let id=""
             if(objecttype==0){
                 if(document.shelf_discard){
                     $("#reactive_refuse_form").modal('show');
+                    id='#id_rff-';
                 }else{
                     $("#reactive_form").modal('show');
+                    id='#id_rf-';
                 }
             }else if(objecttype==1){
                 if(document.shelf_discard){
                     $("#material_refuse_form").modal('show');
+                    id='#id_mff-';
                 }else{
                 $("#material_form").modal('show');
+                    id='#id_mf-';
                 }
 
             }else{
                 if(document.shelf_discard){
                     $("#equipment_refuse_form").modal('show');
+                    id='#id_erf-';
                 }else{
                     $("#equipment_form").modal('show');
+                    id='#id_ef-';
+
                 }
             }
-            update_selects(datarequest)
+            update_selects(id+"object",datarequest)
+            update_selects(id+"measurement_unit",{'shelf':datarequest['shelf']})
 
     },
     addObject: function( e, dt, node, config ){
@@ -243,9 +252,8 @@ $(".actionshelfobjectsave").on('click', function(){
     });
 });
 
-function update_selects(data){
-$(document).ready(function(){
-    var select = $("#id_object");
+function update_selects(id,data){
+    var select = $(id);
     var url = $(select).data('url');
 
     $.ajax({
@@ -262,7 +270,6 @@ $(document).ready(function(){
                             $(select).append(new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected))
                         }
                     },
-           });
            });
 }
 
