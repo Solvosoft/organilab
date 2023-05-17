@@ -1,18 +1,35 @@
 var objecttype= ""
+document.shelf_discard= undefined;
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
          datatableelement.ajax.reload();
 
     },
-    addObjectResponse: function(dat,datarequest){
-            $('#createshelfobjectform').html(dat);
-            $("#createshelfobjectmodal").modal('show');
+    addObjectResponse: function(datarequest){
+            /**Se va a mejorar**/
+            if(objecttype==0){
+                if(document.shelf_discard){
+                    $("#reactive_refuse_form").modal('show');
+                }else{
+                    $("#reactive_form").modal('show');
+                }
+            }else if(objecttype==1){
+                if(document.shelf_discard){
+                    $("#material_refuse_form").modal('show');
+                }else{
+                $("#material_form").modal('show');
+                }
 
+            }else{
+                if(document.shelf_discard){
+                    $("#equipment_refuse_form").modal('show');
+                }else{
+                    $("#equipment_form").modal('show');
+                }
+            }
             update_selects(datarequest)
-            /*setTimeout(function () {
-                gt_find_initialize($("#createshelfobjectform"));
-            }, 100);*/
+
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
@@ -23,24 +40,11 @@ const tableObject={
         datarequest ={'shelf':activeshelf,
                'objecttype': objecttype
                }
-        $.ajax({
-            url: document.shelfobject_create,
-            type: "GET",
-            data:datarequest,
-            dataType: "json",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-            success: ({data,title}) => {
-                tableObject.addObjectResponse(data,datarequest)
-                $("#createshelfobjectmodal_form_title").text(title)
-
-             }
-        });
+       tableObject.addObjectResponse(datarequest)
     },
     get_active_shelf: function(){
          let value= $('input[name="shelfselected"]:checked').val();
+         document.shelf_discard= $('input[name="shelfselected"]:checked').data('refuse');
          if(value == undefined){
 
             Swal.fire({
@@ -52,6 +56,8 @@ const tableObject={
                   showConfirmButton: false,
                   timer: 2500
                 })
+         }else{
+            $("#id_shelf").val(value)
          }
          return value;
     },
