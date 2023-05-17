@@ -59,7 +59,6 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
             if organization_can_change_laboratory(shelf.furniture.labroom.laboratory, self.org_pk):
                 self.shelf=shelf
                 self.shelfobjet_type=form.cleaned_data['objecttype']
-                print(243)
 
         return self.list(request, pk, **kwargs)
 

@@ -1,9 +1,10 @@
 from django.conf import settings
-from django.contrib.admin.models import CHANGE
+from django.contrib.admin.models import CHANGE, ADDITION
 
 from django.template.loader import render_to_string
 
 from django.http import JsonResponse
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,6 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.forms import ValidateShelfForm
@@ -27,7 +29,7 @@ from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Sh
 from rest_framework import status
 
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ValidateShelfSerializer
+    ValidateShelfSerializer, CreateShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 
@@ -157,6 +159,35 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
+
+        self.serializer_class = CreateShelfObjectSerializer
+        serializer = self.serializer_class(request.data)
+
+        if serializer.is_valid():
+
+            shelfobject = serializer.save(commit=False)
+            shelfobject.creator = request.user
+            shelfobject.in_where_laboratory_id = lab_pk
+            shelfobject.save()
+            schema = request.scheme + "://"
+            domain = schema + request.get_host()
+            url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
+            url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
+                  (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk, shelfobject.shelf.pk,
+                   shelfobject.pk)
+            shelfobject.shelf_object_url = url
+            img, file = utils.generate_QR_img_file(url, request.user, extension_file=".svg", file_name="qrcode")
+            shelfobject.shelf_object_qr = img
+            shelfobject.save()
+            file.close()
+
+            log_object_change(request.user, lab_pk, shelfobject, 0, shelfobject.quantity, '', 0, "Create",
+                              create=True)
+            utils.organilab_logentry(request.user, shelfobject, ADDITION, changed_data=serializer.changed_data,
+                                     relobj=lab_pk)
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response({'errors':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):

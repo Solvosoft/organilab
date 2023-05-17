@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory
@@ -25,11 +26,11 @@ class ValidateShelfSerializer(serializers.Serializer):
 
 
 class CreateShelfObjectSerializer(serializers.ModelSerializer):
-    obj = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.all(), pk_field="object")
-    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
+    object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity: serializers.IntegerField(required=True)
-    measurement_unit: serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.all(), required=True)
+    measurement_unit: serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
 
     class Meta:
         model = ShelfObject
