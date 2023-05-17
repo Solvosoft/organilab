@@ -11,10 +11,6 @@ from reservations_management.models import ReservedProducts
 
 
 class ReserveShelfObjectForm(ModelForm, GTForm):
-    def __init__(self, *args, **kwargs):
-        super(ReserveShelfObjectForm, self).__init__(*args, **kwargs)
-        self.fields['initial_date'].help_text = _('Entered date should be greater than current date and time')
-        self.fields['final_date'].help_text = _('Entered date should be greater than current date and time')
 
     class Meta:
         model = ReservedProducts

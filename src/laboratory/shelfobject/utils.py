@@ -53,12 +53,15 @@ def status_shelfobject(shelfobject, shelf, amount):
 def validate_reservation_dates(initial_date, final_date):
     result = False
     errors_date = {}
-    if initial_date.date != final_date.date:
+    if initial_date != final_date:
         if initial_date < final_date:
-            if parse(str(initial_date)) > now():
-                result = True
+            if initial_date != now().date():
+                if initial_date > now().date():
+                    result = True
+                else:
+                    errors_date.update({'initial_date': [_("Initial date can't be lower than current date")]})
             else:
-                errors_date.update({'initial_date': [_("Initial date can't be lower than current date")]})
+                errors_date.update({'initial_date': [_("Initial date can't be equal of current date")]})
         else:
             errors_date.update({'initial_date': [_("Initial date can't be greater than final date")]})
     else:

@@ -212,8 +212,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            initial_date = serializer.validated_data['initial_date']
-            final_date = serializer.validated_data['final_date']
+            initial_date = serializer.validated_data['initial_date'].date()
+            final_date = serializer.validated_data['final_date'].date()
             validate_dates, errors_dates = validate_reservation_dates(initial_date, final_date)
             if validate_dates:
                 laboratory = get_object_or_404(Laboratory, pk=lab_pk)
