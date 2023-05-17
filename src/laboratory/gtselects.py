@@ -33,17 +33,18 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     fields = ['code', 'name']
     org_pk = None
     shelf = None
+    shelfobjet_type=None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.shelf and self.shelf.limit_only_objects:
-            return self.shelf.available_objects_when_limit.all()
+        if self.shelf and self.shelf.limit_only_objects and self.shelfobjet_type:
+            return self.shelf.available_objects_when_limit.filter(type=self.shelfobjet_type)
 
         queryset = super().get_queryset()
-        if self.org_pk:
+        if self.org_pk and self.shelfobjet_type:
             organizations = get_pk_org_ancestors(self.org_pk.pk)
-            queryset = queryset.filter(organization__in=organizations)
+            queryset = queryset.filter(organization__in=organizations,type=self.shelfobjet_type)
         else:
             queryset = queryset.none()
         return queryset
@@ -57,6 +58,9 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
             shelf = form.cleaned_data['shelf']
             if organization_can_change_laboratory(shelf.furniture.labroom.laboratory, self.org_pk):
                 self.shelf=shelf
+                self.shelfobjet_type=form.cleaned_data['objecttype']
+                print(243)
+
         return self.list(request, pk, **kwargs)
 
 
