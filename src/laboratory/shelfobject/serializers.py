@@ -1,18 +1,19 @@
 from rest_framework import serializers
 
-from laboratory.models import Laboratory, ShelfObject
+from laboratory.models import Laboratory, ShelfObject, Provider
+
 
 class AddShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField()
+    amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False)
-    provider = serializers.IntegerField(required=False)
-    shelf_object = serializers.IntegerField()
+    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
 
 class SubstractShelfObjectSerializer(serializers.Serializer):
-    discount = serializers.FloatField()
+    discount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False)
-    shelf_object = serializers.IntegerField()
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
