@@ -20,20 +20,15 @@ def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, c
     organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
     return status.HTTP_201_CREATED
 
-def get_clean_shelfobject_data(serializer, changed_data, lab_pk):
-    provider = None
-    bill = serializer.data.get('bill', '')
-    amount = serializer.data['amount']
-    shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
-
-    if bill:
-        changed_data.append("bill")
-
-    provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=serializer.data['provider'])
+def get_clean_shelfobject_data(validated_date, lab_pk):
+    bill = validated_date.get('bill', '')
+    amount = validated_date.get('amount', 0.0)
+    shelfobject = validated_date.get('shelf_object', 0)
+    provider = validated_date.get('provider', None)
+    shelfobject = get_object_or_404(ShelfObject, pk=shelfobject)
+    provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=provider)
     if provider_obj.exists():
         provider = provider_obj.first()
-        changed_data.append("provider")
-
     return bill, amount, shelfobject, provider
 
 
