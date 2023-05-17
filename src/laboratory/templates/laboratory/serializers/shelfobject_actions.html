@@ -1,7 +1,9 @@
 {% load i18n %}
 
-<a id="shelfobject_view_{{shelfobject.pk}}" data-href="{% url 'laboratory:api-shelfobject-detail' lab_pk=laboratory.pk pk=shelfobject.pk org_pk=org_pk.pk %}"  data-ajax="true" data-success="displayShelfobjectFunction" title="{% trans 'Detail' %}">
-            <i class="fa fa-eye text-success" aria-hidden="true"></i>
+<a id="shelfobject_view_{{shelfobject.pk}}"
+   class="ms-2" data-bs-toggle="modal" data-bs-target="#detailmodal"
+   title="{% trans 'Detail' %}">
+    <i class="fa fa-eye text-success" aria-hidden="true"></i>
 </a>
 
 <a class="ms-2" data-bs-toggle="modal" data-bs-target="#reservemodal" title="{% trans 'Reservation' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
@@ -19,20 +21,21 @@
 
 {% if shelf.discard %}
     {% if perms.laboratory.can_manage_disposal %}
-        <a class="float-end" data-ajax="true"
-           data-success="processResponseshelfobjectDelete"
-           href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory.pk pk=shelfobject.pk org_pk=org_pk.pk %}?shelf={{ shelf.pk }}"
+        <a class="float-end"
+           onclick="shelfObjectDelete(this, {{ shelfobject.pk }}, '{{shelfobject.object.name}}')"
+           data-url="{% url 'laboratory:api-shelfobject-delete' lab_pk=laboratory.pk org_pk=org_pk.pk %}"
+           title="{% trans 'Delete' %}"
            style="margin-left: 10px; color:red">
            <i class="fa fa-close" aria-hidden="true"></i>
         </a>
     {% endif %}
 {% elif perms.laboratory.delete_shelfobject %}
-<a class="ms-2" data-ajax="true"
-   data-success="processResponseshelfobjectDelete"
-   href="{% url 'laboratory:shelfobject_delete' lab_pk=laboratory.pk pk=shelfobject.pk org_pk=org_pk.pk %}?shelf={{ shelf.pk }}"
-   title="{% trans 'Delete' %}">
-   <i class="fa fa-close text-danger" aria-hidden="true"></i>
-</a>
+    <a class="ms-2"
+       onclick="shelfObjectDelete(this, {{ shelfobject.pk }}, '{{shelfobject.object.name}}')"
+       data-url="{% url 'laboratory:api-shelfobject-delete' lab_pk=laboratory.pk org_pk=org_pk.pk %}"
+       title="{% trans 'Delete' %}">
+       <i class="fa fa-close text-danger" aria-hidden="true"></i>
+    </a>
 {% endif %}
 
 
