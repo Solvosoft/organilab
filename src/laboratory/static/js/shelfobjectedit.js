@@ -6,9 +6,11 @@ function processResponseshelfobject(dat){
 }
 //Refactored delete method for Shelf Object
 function shelfObjectDelete(obj, shelf_object_id, text) {
+    let message = gettext("Are you sure you want to delete")
+    message = `${message} ${text}?`
     let url = $(obj).data('url')
     Swal.fire({ //Confirmation for delete
-        title: 'Are you sure?',
+        title: message,
         confirmButtonText: gettext("Confirm"),
         showCloseButton: true,
         denyButtonText: gettext('Cancel'),
@@ -22,14 +24,27 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
                     body: JSON.stringify({'shelfobj': shelf_object_id})})
                     .then(response => response.json())
                     .then(data => {
-                        if (data['message']){
-                            Swal.fire(gettext('Success'), data['message'], 'success')
+                        if (data['detail']){
+                            Swal.fire({
+                                title: gettext('Success'),
+                                text: data['detail'],
+                                icon: 'success',
+                                timer: 1500
+                            })
                         }else{
                             //Displays API error message
-                            Swal.fire(gettext('Error'), data['shelfobj'][0], 'error')
+                            Swal.fire({
+                                title: gettext('Error'),
+                                text: data['shelfobj'][0],
+                                icon: 'error',
+                                timer: 1500
+                            })
                         }
                     })
             }
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
     })
 }
 

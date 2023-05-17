@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-17 12:41-0600\n"
+"POT-Creation-Date: 2023-05-17 14:03-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -38,7 +38,6 @@ msgstr "Uso general"
 #: laboratory/forms.py:170 laboratory/models.py:52 laboratory/models.py:77
 #: laboratory/models.py:230 laboratory/shelfobject/forms.py:62
 #: laboratory/templates/laboratory/search.html:79
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:26
 #: laboratory/templates/laboratory/shelfobject_detail.html:29
 #: laboratory/templates/pdf/shelf_object_pdf.html:82 sga/models.py:106
 #: sga/models.py:164
@@ -159,7 +158,6 @@ msgstr "Observaciones del procedimiento"
 #: laboratory/templates/laboratory/inform.html:28
 #: laboratory/templates/laboratory/protocol/protocol_list.html:28
 #: laboratory/templates/laboratory/provider_list.html:18
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:24
 #: laboratory/templates/laboratory/shelfobject_detail.html:27
 #: laboratory/templates/laboratory/sustance/list.html:31
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:21
@@ -271,7 +269,6 @@ msgstr "Indicación de peligro"
 #: academic/models.py:138
 #: academic/templates/academic/substance/detail_substance.html:150
 #: laboratory/models.py:135
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:74
 #: laboratory/templates/laboratory/shelfobject_detail.html:77 sga/models.py:208
 msgid "UE codes"
 msgstr "Códigos UE"
@@ -279,7 +276,6 @@ msgstr "Códigos UE"
 #: academic/models.py:140
 #: academic/templates/academic/substance/detail_substance.html:165
 #: laboratory/models.py:137
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:81
 #: laboratory/templates/laboratory/shelfobject_detail.html:84 sga/models.py:210
 msgid "NFPA codes"
 msgstr "Códigos NFPA"
@@ -287,7 +283,6 @@ msgstr "Códigos NFPA"
 #: academic/models.py:142
 #: academic/templates/academic/substance/detail_substance.html:180
 #: laboratory/models.py:139
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:88
 #: laboratory/templates/laboratory/shelfobject_detail.html:91 sga/models.py:212
 msgid "Storage class"
 msgstr "Clases de almacenamientos"
@@ -295,7 +290,6 @@ msgstr "Clases de almacenamientos"
 #: academic/models.py:143
 #: academic/templates/academic/substance/detail_substance.html:61
 #: laboratory/models.py:140
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:60
 #: laboratory/templates/laboratory/shelfobject_detail.html:63
 #: laboratory/templates/pdf/shelf_object_pdf.html:115 sga/models.py:213
 msgid "Is Seveso list III?"
@@ -766,7 +760,6 @@ msgstr "Agregar"
 #: academic/templates/academic/substance/danger_indication.html:19
 #: laboratory/forms.py:488 laboratory/models.py:72 laboratory/models.py:812
 #: laboratory/templates/laboratory/search.html:66
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:23
 #: laboratory/templates/laboratory/shelfobject_detail.html:26
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:20
 #: laboratory/templates/pdf/qr_pdf.html:24
@@ -814,7 +807,6 @@ msgid "Concentration"
 msgstr "Concentración"
 
 #: academic/templates/academic/substance/detail_substance.html:95
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:51
 #: laboratory/templates/laboratory/shelfobject_detail.html:54
 #: laboratory/templates/pdf/shelf_object_pdf.html:122
 #: report/views/objects.py:464 report/views/objects.py:480
@@ -2565,7 +2557,6 @@ msgstr "Archivo no encontrado"
 #: laboratory/templates/laboratory/protocol/protocol_list.html:30
 #: laboratory/templates/laboratory/register_user_qr/register_user_qr_list.html:77
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:17
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:64
 #: laboratory/templates/laboratory/shelfobject_detail.html:67
 #: msds/templates/index_msds.html:21 msds/templates/index_msds.html:29
 #: msds/templates/msds/msdsobject/cruds/detail.html:20
@@ -2789,7 +2780,6 @@ msgid "Equipment"
 msgstr "Equipo"
 
 #: laboratory/models.py:74
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:25
 #: laboratory/templates/laboratory/shelfobject_detail.html:28
 #: laboratory/templates/pdf/shelf_object_pdf.html:66
 msgid "Synonym"
@@ -2808,21 +2798,18 @@ msgid "Type"
 msgstr "Tipo"
 
 #: laboratory/models.py:81
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:36
 #: laboratory/templates/laboratory/shelfobject_detail.html:39
 #: laboratory/templates/pdf/shelf_object_pdf.html:70
 msgid "Model"
 msgstr "Modelo"
 
 #: laboratory/models.py:82
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:37
 #: laboratory/templates/laboratory/shelfobject_detail.html:40
 #: laboratory/templates/pdf/shelf_object_pdf.html:74
 msgid "Serie"
 msgstr "Serie"
 
 #: laboratory/models.py:84
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:38
 #: laboratory/templates/laboratory/shelfobject_detail.html:41
 #: laboratory/templates/pdf/shelf_object_pdf.html:78
 msgid "Plaque"
@@ -3600,7 +3587,6 @@ msgid "Room"
 msgstr "Sala"
 
 #: laboratory/templates/laboratory/h_code_report.html:75
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:67
 #: laboratory/templates/laboratory/shelfobject_detail.html:70
 #: laboratory/templates/pdf/hcode_pdf.html:13
 #: laboratory/templates/pdf/shelf_object_pdf.html:157
@@ -4107,67 +4093,6 @@ msgstr "Mover"
 msgid "Position:"
 msgstr "Posición:"
 
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:16
-#: laboratory/templates/laboratory/shelfobject_detail.html:19
-msgid "Download QR"
-msgstr "Descargar QR"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:28
-#: laboratory/templates/laboratory/shelfobject_detail.html:31
-#: laboratory/templates/pdf/shelf_object_pdf.html:146
-#: report/views/objects.py:286 report/views/objects.py:303
-msgid "Features"
-msgstr "Características"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:43
-#: laboratory/templates/laboratory/shelfobject_detail.html:46
-msgid "Cas Number"
-msgstr "Número CAS"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:44
-#: laboratory/templates/laboratory/shelfobject_detail.html:47
-msgid "Is Precursor"
-msgstr "¿Es precursor?"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:46
-#: laboratory/templates/laboratory/shelfobject_detail.html:49
-#: laboratory/templates/pdf/shelf_object_pdf.html:176
-#: risk_management/templates/risk_management/riskzone_detail.html:90
-msgid "Precursor Type"
-msgstr "Tipo de precursor"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:48
-#: laboratory/templates/laboratory/shelfobject_detail.html:51
-#: laboratory/templates/pdf/shelf_object_pdf.html:152
-msgid "IARC"
-msgstr "IARC"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:49
-#: laboratory/templates/laboratory/shelfobject_detail.html:52
-#: laboratory/templates/pdf/shelf_object_pdf.html:108
-msgid "IMDG"
-msgstr "IMDG"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:59
-#: laboratory/templates/laboratory/shelfobject_detail.html:62
-msgid "Bio Accumulable"
-msgstr "Bioacumulable"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:61
-#: laboratory/templates/laboratory/shelfobject_detail.html:64
-msgid "Molecular Formula"
-msgstr "Fórmula molecular"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:63
-#: laboratory/templates/laboratory/shelfobject_detail.html:66
-msgid "Security Sheet"
-msgstr "Hojas de seguridad"
-
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:96
-#: laboratory/templates/laboratory/shelfobject_detail.html:99
-msgid "Sustance Representation"
-msgstr "Representación de la sustancia"
-
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:7
 msgid "Add Object"
 msgstr "Agregar Objeto"
@@ -4184,6 +4109,56 @@ msgstr "¿Está seguro?"
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:10
 msgid "Are you sure that do you want delete this object"
 msgstr "¿Está seguro de que quiere borrar este objeto?"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:19
+msgid "Download QR"
+msgstr "Descargar QR"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:31
+#: laboratory/templates/pdf/shelf_object_pdf.html:146
+#: report/views/objects.py:286 report/views/objects.py:303
+msgid "Features"
+msgstr "Características"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:46
+msgid "Cas Number"
+msgstr "Número CAS"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:47
+msgid "Is Precursor"
+msgstr "¿Es precursor?"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:49
+#: laboratory/templates/pdf/shelf_object_pdf.html:176
+#: risk_management/templates/risk_management/riskzone_detail.html:90
+msgid "Precursor Type"
+msgstr "Tipo de precursor"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:51
+#: laboratory/templates/pdf/shelf_object_pdf.html:152
+msgid "IARC"
+msgstr "IARC"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:52
+#: laboratory/templates/pdf/shelf_object_pdf.html:108
+msgid "IMDG"
+msgstr "IMDG"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:62
+msgid "Bio Accumulable"
+msgstr "Bioacumulable"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:64
+msgid "Molecular Formula"
+msgstr "Fórmula molecular"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:66
+msgid "Security Sheet"
+msgstr "Hojas de seguridad"
+
+#: laboratory/templates/laboratory/shelfobject_detail.html:99
+msgid "Sustance Representation"
+msgstr "Representación de la sustancia"
 
 #: laboratory/templates/laboratory/transfer_object_modal.html:7
 msgid "Select the Shelf"

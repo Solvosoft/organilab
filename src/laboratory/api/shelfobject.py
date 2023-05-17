@@ -339,7 +339,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         utils.organilab_logentry(self.request.user, serializer.validated_data['shelfobj'], DELETION, relobj=self.laboratory)
         serializer.validated_data['shelfobj'].delete()
-        return Response({'message': _('The item was deleted successfully')}, status=200)
+        return JsonResponse({'detail': _('The item was deleted successfully')}, status=200)
 
     @action(detail=False, methods=['get'])
     def chart_graphic(self, request, org_pk, lab_pk, **kwargs):

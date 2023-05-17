@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-17 12:41-0600\n"
-"PO-Revision-Date: 2023-05-17 12:51-0600\n"
+"POT-Creation-Date: 2023-05-17 14:03-0600\n"
+"PO-Revision-Date: 2023-05-17 14:04-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -103,19 +103,23 @@ msgstr "Objetos"
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
 
-#: laboratory/static/js/shelfobjectedit.js:12
+#: laboratory/static/js/shelfobjectedit.js:9
+msgid "Are you sure you want to delete"
+msgstr "¿Está seguro/a de que desea eliminar"
+
+#: laboratory/static/js/shelfobjectedit.js:14
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: laboratory/static/js/shelfobjectedit.js:14
+#: laboratory/static/js/shelfobjectedit.js:16
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: laboratory/static/js/shelfobjectedit.js:26
-msgid "Success"
-msgstr "Exito"
-
 #: laboratory/static/js/shelfobjectedit.js:29
+msgid "Success"
+msgstr "Éxito"
+
+#: laboratory/static/js/shelfobjectedit.js:37
 msgid "Error"
 msgstr "Error"
 
@@ -172,7 +176,7 @@ msgid ""
 "There was a problem performing your request. Please try again later or "
 "contact the administrator."
 msgstr ""
-"Hubo un problema realizando su petición. Por favor intente mas tarde o "
+"Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
 "contacte al administrador."
 
 #: laboratory/static/laboratory/js/reports.js:55
