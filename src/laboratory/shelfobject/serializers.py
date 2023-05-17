@@ -1,11 +1,13 @@
+import logging
 from django.utils.timezone import now
 from rest_framework import serializers
 from organilab.settings import DATETIME_INPUT_FORMATS
 from laboratory.models import Laboratory, ShelfObject, Provider
 from reservations_management.models import ReservedProducts
 from django.utils.translation import gettext_lazy as _
+logger = logging.getLogger('organilab')
 
-class ReservedProductsSerializer(serializers.ModelSerializer):
+class ReservedShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
@@ -25,6 +27,15 @@ class ReservedProductsSerializer(serializers.ModelSerializer):
         elif not initial_date > current_date:
             raise serializers.ValidationError({'initial_date':_("Initial date can't be lower than current date")})
         return data
+
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.in_where_laboratory_id != source_laboratory_id:
+            logger.debug(
+                f'ReservedShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
 
     class Meta:
         model = ReservedProducts
@@ -46,6 +57,6 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-    amount_to_transfer = serializers.FloatField()
-    mark_as_discard = serializers.BooleanField()
+    amount_to_transfer = serializers.FloatField(min_value=0.1)
+    mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
