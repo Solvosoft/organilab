@@ -128,7 +128,7 @@ $(document).ready(function(){
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
-                titleAttr: gettext('Transfer in'),
+                titleAttr: gettext('Transfer In'),
                 className: 'btn-sm btn-success ml-4'
             },
         ],
@@ -188,11 +188,11 @@ function load_errors(error_list, obj){
     return ul_obj;
 }
 
-function form_field_errors(form_errors){
+function form_field_errors(target_form, form_errors){
     var item = "";
     for (const [key, value] of Object.entries(form_errors)) {
-        item = "#id_"+key;
-        if($(item).length > 0){
+        item = " #id_" +key;
+        if(target_form.find(item).length > 0){
             load_errors(form_errors[key], item);
         }
     }
@@ -208,31 +208,30 @@ $(".actionshelfobjectsave").on('click', function(){
         data: $(form).serialize(),
         headers: {'X-CSRFToken': getCookie('csrftoken')},
         success: function(data){
-            $('ul.shelf_form_errors').remove();
-            if(data){
-                form_field_errors(data);
-            }else{
-                datatableelement.ajax.reload();
-                $(modal).modal('hide');
-                    Swal.fire({
-                    icon: 'success',
-                    title: gettext('Successfully Action'),
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-            }
+            datatableelement.ajax.reload();
+            $(modal).modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: data.detail,
+                showConfirmButton: true,
+                timer: 1500
+            });     
         },
         error: function(xhr, resp, text) {
-            Swal.fire({
-                icon: 'error',
-                title: text,
-                text: gettext('Try again or contact administrator')
-            });
+            var errors = xhr.responseJSON.errors;
+            if(errors){  // form errors
+                form.find('ul.shelf_form_errors').remove();
+                form_field_errors(form, errors);  
+            }else{ // any other error
+                Swal.fire({
+                    icon: 'error',
+                    title: text,
+                    text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                });
+            }
         }
     });
 });
-
 
 function update_selects(data){
 $(document).ready(function(){
@@ -255,3 +254,15 @@ $(document).ready(function(){
            });
            });
 }
+
+function clear_action_form(form){
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+}
+
+
+$('.actionshelfobjmodal').on('hidden.bs.modal', function () {
+    clear_action_form($(this).find('form'));
+})
+
