@@ -1,4 +1,4 @@
-
+var objecttype= ""
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
@@ -9,15 +9,19 @@ const tableObject={
             $('#createshelfobjectform').html(dat);
             $("#createshelfobjectmodal").modal('show');
 
-            update_selects("object", datarequest)
+            update_selects(datarequest)
+            /*setTimeout(function () {
+                gt_find_initialize($("#createshelfobjectform"));
+            }, 100);*/
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
         if (activeshelf == undefined){
             return 1;
         }
+        objecttype=e.currentTarget.dataset.type;
         datarequest ={'shelf':activeshelf,
-               'objecttype':e.currentTarget.dataset.type
+               'objecttype': objecttype
                }
         $.ajax({
             url: document.shelfobject_create,
@@ -237,6 +241,7 @@ function update_selects(data){
 $(document).ready(function(){
     var select = $("#id_object");
     var url = $(select).data('url');
+
     $.ajax({
       type: "GET",
       url: url,
