@@ -15,17 +15,19 @@ from rest_framework.exceptions import PermissionDenied
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
+from laboratory.forms import ValidateShelfForm
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory, Shelf
 from rest_framework import status
 
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
+    ValidateShelfSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 
 from laboratory.utils import organilab_logentry
-from laboratory.views.shelfobject import ShelfObjectForm
+from laboratory.views.shelfobject import ShelfObjectForm, ShelfObjectRefuseForm
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -73,7 +75,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "transfer_out": ["laboratory.add_tranferobject"], 
         "transfer_in": ["laboratory.add_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
-        "create_shelfobject": [],
+        "create_shelfobject": ["laboratory.add_shelfobject"],
         "fill_increase_shelobject": [],
         "fill_decrease_shelobject": [],
         "reserve": [],
@@ -113,11 +115,28 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk)
-        shelf = Shelf.objects.get(pk=request.GET['shelf'])
-        return Response({'data': render_to_string(template_name="laboratory/shelfobject_form.html", context={'laboratory':lab_pk,
-                                                                                                             'org_pk':org_pk,
-                                                                                                             'form':ShelfObjectForm(initial={"shelf":shelf})}, request=request)})
+        self._check_permission_on_laboratory(request, org_pk, lab_pk,"create_shelfobject")
+        self.serializer_class=ValidateShelfSerializer
+        serializers = self.serializer_class(data=request.query_params)
+
+        if serializers.is_valid():
+
+            shelf = get_object_or_404(Shelf.objects.filter(furniture__labroom__laboratory__pk=lab_pk),pk=serializers.data['shelf'])
+            objecttype = serializers.data['objecttype']
+            titles = {'0': {'title':_("Reactive"),'form_title':'Create Reactive'},
+                      '1': {'title': "Material", 'form_title':_('Create Material')},
+                      '2': {'title':_("Equipment"), 'form_title':_('Create Equipment')}}
+            form =ShelfObjectForm(initial={"shelf":shelf},
+                                                    org_pk=org_pk,objecttype=titles[objecttype]['title']).as_horizontal()
+            if shelf.discard:
+                form=ShelfObjectRefuseForm(initial={"shelf":shelf},
+                                                    org_pk=org_pk,objecttype=titles[objecttype]['title']).as_horizontal()
+            return Response({'data':form,
+                             'title':titles[objecttype]['form_title']},status=status.HTTP_200_OK)
+        else:
+
+            return Response({'errors':serializers.errors},status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=False, methods=['get'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
