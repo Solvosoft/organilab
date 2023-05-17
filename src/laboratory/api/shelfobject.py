@@ -16,14 +16,14 @@ from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
-from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory, Provider
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
+    ReservedProductsSerializer
 from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject, \
-    validate_reservation_dates
+from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
 from laboratory.utils import organilab_logentry
 
 
@@ -214,20 +214,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
         self.serializer_class = ReservedProductsSerializer
         serializer = self.serializer_class(data=request.data)
+        errors = {}
 
         if serializer.is_valid():
-            initial_date = serializer.validated_data['initial_date'].date()
-            final_date = serializer.validated_data['final_date'].date()
-            errors = validate_reservation_dates(initial_date, final_date)
-            if not errors:
-                laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-                organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-                instance = serializer.save()
-                instance.laboratory = laboratory
-                instance.organization = organization
-                instance.user = request.user
-                instance.created_by = request.user
-                instance.save()
+            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+            instance = serializer.save()
+            instance.laboratory = laboratory
+            instance.organization = organization
+            instance.user = request.user
+            instance.created_by = request.user
+            instance.save()
         else:
             errors = serializer.errors
 

@@ -31,18 +31,3 @@ def status_shelfobject(shelfobject, shelf, amount):
     if shelf.measurement_unit == shelfobject.measurement_unit and shelf.quantity == 0:
         status_shelf_obj = True
     return status_shelf_obj
-
-
-def validate_reservation_dates(initial_date, final_date):
-    errors_date = {}
-
-    if not initial_date != final_date:
-        errors_date['final_date'] = [_("Final date can't be equal to initial date")]
-    elif not initial_date < final_date:
-        errors_date['initial_date'] = [_("Initial date can't be greater than final date")]
-    elif not initial_date != now().date():
-        errors_date['initial_date'] = [_("Initial date can't be equal to current date")]
-    elif not initial_date > now().date():
-        errors_date['initial_date'] = [_("Initial date can't be lower than current date")]
-
-    return errors_date
