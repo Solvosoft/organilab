@@ -4,16 +4,33 @@ function processResponseshelfobject(dat){
     $("#closemodal").html(dat["inner-fragments"]["#closemodal"]);
     datatableelement.ajax.reload();
 }
-
+//Refactored delete method for Shelf Object
 function shelfObjectDelete(obj, shelf_object_id, text) {
-    let message = gettext("Delete object ")
     let url = $(obj).data('url')
-    console.log(shelf_object_id, text, url)
-    $("#object_delete").modal('show');
-    fetch(url, {method: "delete", headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
-    body: JSON.stringify({'shelfobj': shelf_object_id})}).then(response => console.log(response))
-
-
+    Swal.fire({ //Confirmation for delete
+        title: 'Are you sure?',
+        confirmButtonText: gettext("Confirm"),
+        showCloseButton: true,
+        denyButtonText: gettext('Cancel'),
+        showDenyButton: true,
+        })
+        .then(function(result) {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: "delete",
+                    headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+                    body: JSON.stringify({'shelfobj': shelf_object_id})})
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data['message']){
+                            Swal.fire(gettext('Success'), data['message'], 'success')
+                        }else{
+                            //Displays API error message
+                            Swal.fire(gettext('Error'), data['shelfobj'][0], 'error')
+                        }
+                    })
+            }
+    })
 }
 
 function processResponseshelfobjectUpdate(dat) {

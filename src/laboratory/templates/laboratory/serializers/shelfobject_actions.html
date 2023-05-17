@@ -24,7 +24,7 @@
         <a class="float-end"
            onclick="shelfObjectDelete(this, {{ shelfobject.pk }}, '{{shelfobject.object.name}}')"
            data-url="{% url 'laboratory:api-shelfobject-delete' lab_pk=laboratory.pk org_pk=org_pk.pk %}"
-           title="{% trans 'Delete' %}">
+           title="{% trans 'Delete' %}"
            style="margin-left: 10px; color:red">
            <i class="fa fa-close" aria-hidden="true"></i>
         </a>
