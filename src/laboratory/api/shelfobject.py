@@ -29,7 +29,7 @@ from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Sh
 from rest_framework import status
 
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ValidateShelfSerializer, CreateShelfObjectSerializer
+    ValidateShelfSerializer, ReactiveShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 
@@ -115,39 +115,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             raise PermissionDenied()
 
-
-    @action(detail=False, methods=['get'])
-    def get_create_shelfobject_form(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk,"create_shelfobject")
-        self.serializer_class=ValidateShelfSerializer
-        serializers = self.serializer_class(data=request.query_params)
-
-        if serializers.is_valid():
-
-            shelf = get_object_or_404(Shelf.objects.filter(furniture__labroom__laboratory__pk=lab_pk),pk=serializers.data['shelf'])
-            objecttype = serializers.data['objecttype']
-            titles = {'0': {'title':_("Reactive"),'form_title':'Create Reactive'},
-                      '1': {'title': "Material", 'form_title':_('Create Material')},
-                      '2': {'title':_("Equipment"), 'form_title':_('Create Equipment')}}
-            form =ShelfObjectForm(initial={"shelf":shelf},
-                                                    org_pk=org_pk,objecttype=titles[objecttype]['title']).as_horizontal()
-            if shelf.discard:
-                form=ShelfObjectRefuseForm(initial={"shelf":shelf},
-                                                    org_pk=org_pk,objecttype=titles[objecttype]['title']).as_horizontal()
-            return Response({'data':form,
-                             'title':titles[objecttype]['form_title']},status=status.HTTP_200_OK)
-        else:
-
-            return Response({'errors':serializers.errors},status=status.HTTP_400_BAD_REQUEST)
-
     @action(detail=False, methods=['get'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
@@ -160,7 +127,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
 
-        self.serializer_class = CreateShelfObjectSerializer
+        self.serializer_class = ReactiveShelfObjectSerializer
         serializer = self.serializer_class(request.data)
 
         if serializer.is_valid():
@@ -188,6 +155,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_201_CREATED)
         else:
             return Response({'errors':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
     @action(detail=False, methods=['post'])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
