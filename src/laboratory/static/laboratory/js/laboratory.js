@@ -183,8 +183,8 @@ $(".actionshelfobjectsave").on('click', function(){
             $(modal).modal('hide');
             Swal.fire({
                 icon: 'success',
-                title: data.detail,
-                showConfirmButton: true,
+                title: gettext('Success'),
+                text: data.detail,
                 timer: 1500
             });     
         },
@@ -196,7 +196,7 @@ $(".actionshelfobjectsave").on('click', function(){
             }else{ // any other error
                 Swal.fire({
                     icon: 'error',
-                    title: text,
+                    title: gettext('Error'),
                     text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
                 });
             }
