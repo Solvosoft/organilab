@@ -17,6 +17,6 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-    amount_to_transfer = serializers.FloatField()
-    mark_as_discard = serializers.BooleanField()
+    amount_to_transfer = serializers.FloatField(min_value=0.1)
+    mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
