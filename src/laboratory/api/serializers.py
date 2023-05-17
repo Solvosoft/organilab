@@ -357,13 +357,10 @@ class ShelfObjectModelSerializer(serializers.ModelSerializer):
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
     shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-    def __init__(self, *args, **kwargs):
-        self.laboratory = kwargs.pop('laboratory')
-        super().__init__(*args, **kwargs)
 
     def validate_shelfobj(self, value):
         attr = super().validate(value)
-        if attr.in_where_laboratory_id != self.laboratory.pk:
-            raise serializers.ValidationError(_("Object does not belong to laboratory"))
+        if attr.in_where_laboratory_id != self.context.get('laboratory').pk:
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
 
