@@ -5,25 +5,34 @@ const tableObject={
          datatableelement.ajax.reload();
 
     },
-    addObjectResponse: function(dat){
+    addObjectResponse: function(dat,datarequest){
             $('#createshelfobjectform').html(dat);
             $("#createshelfobjectmodal").modal('show');
+
+            update_selects("object", datarequest)
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
         if (activeshelf == undefined){
             return 1;
         }
+        datarequest ={'shelf':activeshelf,
+               'objecttype':e.currentTarget.dataset.type
+               }
+        console.table(datarequest)
         $.ajax({
-            url: document.shelfobject_create+"?shelf="+activeshelf,
+            url: document.shelfobject_create,
             type: "GET",
+            data:datarequest,
             dataType: "json",
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
-            success: ({data}) => {
-                tableObject.addObjectResponse(data)
+            success: ({data,title}) => {
+                tableObject.addObjectResponse(data,datarequest)
+                $("#createshelfobjectmodal_form_title").text(title)
+
              }
         });
     },
@@ -93,19 +102,29 @@ $(document).ready(function(){
                 action: tableObject.addObject,
                 text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Equipment'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'2'
+                },
             },
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Material'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'1'
+                }
             },
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-flask" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Substance'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'0'
+                }
+
             },
             {
                 action: tableObject.addObject,
@@ -214,3 +233,26 @@ $(".actionshelfobjectsave").on('click', function(){
         }
     });
 });
+
+
+function update_selects(data){
+$(document).ready(function(){
+    var select = $("#id_object");
+    var url = $(select).data('url');
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      traditional: true,
+      dataType: 'json',
+      success: function(data){
+                         $(select).find('option').remove();
+                        for(let x=0; x<data.results.length; x++){
+                            $(select).append(new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected))
+                        }
+                    },
+           });
+           });
+}
