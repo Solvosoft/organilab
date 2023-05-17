@@ -64,10 +64,12 @@ $(document).ready(function(){
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
      columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
+            {data: "object_type", name: "object_type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object_name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
             {data: "unit", name: "unit", title: gettext("Unit"), type: "string", visible: true},
-             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
+            {data: "container", name: "container", title: gettext("Container"), type: "string", visible: true},
+            {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
         ],
     buttons: [
             {
@@ -97,7 +99,7 @@ $(document).ready(function(){
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
-                titleAttr: gettext('Transfer in'),
+                titleAttr: gettext('Transfer In'),
                 className: 'btn-sm btn-success ml-4'
             },
         ],
@@ -148,20 +150,20 @@ $('.actionshelfobjmodal').on('show.bs.modal', function (e) {
 
 
 function load_errors(error_list, obj){
-    ul_obj = "<ul class='errorlist shelf_form_errors'>";
+    ul_obj = "<ul class='errorlist shelf_form_errors d-flex justify-content-center'>";
     error_list.forEach((item)=>{
         ul_obj += "<li>"+item+"</li>";
     });
-    ul_obj += "</ul>"
-    $(obj).before(ul_obj);
+    ul_obj += "</ul>";
+    $(obj).parents('.form-group').prepend(ul_obj);
     return ul_obj;
 }
 
-function form_field_errors(form_errors){
+function form_field_errors(target_form, form_errors){
     var item = "";
     for (const [key, value] of Object.entries(form_errors)) {
-        item = "#id_"+key;
-        if($(item).length > 0){
+        item = " #id_" +key;
+        if(target_form.find(item).length > 0){
             load_errors(form_errors[key], item);
         }
     }
@@ -177,27 +179,39 @@ $(".actionshelfobjectsave").on('click', function(){
         data: $(form).serialize(),
         headers: {'X-CSRFToken': getCookie('csrftoken')},
         success: function(data){
-            $('ul.shelf_form_errors').remove();
-            if(data){
-                form_field_errors(data);
-            }else{
-                datatableelement.ajax.reload();
-                $(modal).modal('hide');
-                    Swal.fire({
-                    icon: 'success',
-                    title: gettext('Successfully Action'),
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-            }
+            datatableelement.ajax.reload();
+            $(modal).modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: data.detail,
+                showConfirmButton: true,
+                timer: 1500
+            });     
         },
         error: function(xhr, resp, text) {
-            Swal.fire({
-                icon: 'error',
-                title: text,
-                text: gettext('Try again or contact administrator')
-            });
+            var errors = xhr.responseJSON.errors;
+            if(errors){  // form errors
+                form.find('ul.shelf_form_errors').remove();
+                form_field_errors(form, errors);  
+            }else{ // any other error
+                Swal.fire({
+                    icon: 'error',
+                    title: text,
+                    text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                });
+            }
         }
     });
+});
+
+function clear_action_form(form){
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+    $(form).find("ul.shelf_form_errors").remove();
+}
+
+
+$('.actionshelfobjmodal').on('hidden.bs.modal', function () {
+    clear_action_form($(this).find('form'));
 });

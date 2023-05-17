@@ -12,7 +12,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">{{item.name}}<br>
-                          {{item.description}}
+                          {{item.description|safe}}
                         </div>
                         <div class="card-footer">
                     {% if item.discard %}
