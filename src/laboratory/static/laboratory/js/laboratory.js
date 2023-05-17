@@ -183,8 +183,8 @@ $(".actionshelfobjectsave").on('click', function(){
             $(modal).modal('hide');
             Swal.fire({
                 icon: 'success',
-                title: data.detail,
-                showConfirmButton: true,
+                title: gettext('Success'),
+                text: data.detail,
                 timer: 1500
             });     
         },
@@ -196,7 +196,7 @@ $(".actionshelfobjectsave").on('click', function(){
             }else{ // any other error
                 Swal.fire({
                     icon: 'error',
-                    title: text,
+                    title: gettext('Error'),
                     text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
                 });
             }
@@ -205,12 +205,18 @@ $(".actionshelfobjectsave").on('click', function(){
 });
 
 function clear_action_form(form){
+    // clear switchery before the form reset so the check status doesn't get changed before the validation
+    $(form).find("input[data-switchery=true]").each(function() {  
+        if($(this).prop("checked")){  // only reset it if it is checked
+            $(this).trigger("click").prop("checked", false);
+        }
+    });
+
     $(form).trigger('reset');
     $(form).find("select option:selected").prop("selected", false);
     $(form).find("select").val(null).trigger('change');
     $(form).find("ul.shelf_form_errors").remove();
 }
-
 
 $('.actionshelfobjmodal').on('hidden.bs.modal', function () {
     clear_action_form($(this).find('form'));
