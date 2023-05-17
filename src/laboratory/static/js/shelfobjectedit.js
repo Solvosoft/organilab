@@ -45,11 +45,6 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
     })
 }
 
-function shelfObjectDetail(obj){
-    let url = $(obj).data('url')
-    console.log(url)
-}
-
 function processResponseshelfobjectUpdate(dat) {
 	$('#shelfobjectUpdate').html(dat);
 	// clean the form
