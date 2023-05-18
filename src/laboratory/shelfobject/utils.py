@@ -1,23 +1,15 @@
 from django.contrib.admin.models import CHANGE
-from django.shortcuts import get_object_or_404
-from django.utils.timezone import now
-from rest_framework import status
-from dateutil.parser import parse
 from laboratory.logsustances import log_object_add_change
-from laboratory.models import ShelfObject, Provider
 from laboratory.utils import organilab_logentry
-from django.utils.translation import gettext_lazy as _
-
-from organilab.settings import DATETIME_INPUT_FORMATS
 
 
-def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, changed_data, lab_pk):
+def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, changed_data, laboratory):
     old = shelfobject.quantity
     new = old + amount
     shelfobject.quantity = new
     shelfobject.save()
     log_object_add_change(user, shelf_object, shelfobject, old, new, "Add", provider, bill, create=False)
-    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=lab_pk)
+    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[laboratory, shelfobject])
 
 
 def status_shelfobject(shelfobject, shelf, amount):

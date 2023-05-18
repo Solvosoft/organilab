@@ -135,19 +135,20 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             changed_data = list(serializer.validated_data.keys())
             bill = serializer.validated_data.get('bill', '')
             amount = serializer.validated_data['amount']
+            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
 
             if shelf.discard:
                 total = shelf.get_total_refuse()
                 new_total = total + amount
                 if shelf.quantity >= new_total or shelf.quantity == -1:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, lab_pk)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
                 else:
                     errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')]
             else:
                 status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
                 if status_shelf_obj:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, lab_pk)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
                 else:
                     errors['amount'] = [_('The quantity is more than the shelf has')]
         else:
@@ -179,13 +180,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             discount = serializer.validated_data['discount']
             description = serializer.validated_data.get('description', '')
             changed_data = list(serializer.validated_data.keys())
+            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
 
             if old >= discount:
                 new = old - discount
                 shelfobject.quantity = new
                 shelfobject.save()
                 log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
-                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=lab_pk)
+                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[laboratory, shelfobject])
             else:
                 errors['discount'] = [_('The amount to be subtracted is more than the shelf has')]
         else:
@@ -221,7 +223,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             instance.user = request.user
             instance.created_by = request.user
             instance.save()
-            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=lab_pk)
+            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[laboratory, instance])
         else:
             errors = serializer.errors
 
