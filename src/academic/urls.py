@@ -13,7 +13,8 @@ from academic.substance.views import create_edit_sustance, get_substances, get_l
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
-    delete_step, get_procedure, delete_procedure, generate_reservation
+    delete_step, get_procedure, get_my_procedures, delete_procedure, generate_reservation, create_my_procedures, \
+    remove_my_procedure, complete_my_procedure
 
 procedure_url =[
     re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper, name='add_steps_wrapper'),
@@ -22,6 +23,10 @@ procedure_url =[
     re_path('procedure_create/', ProcedureCreateView.as_view(), name='procedure_create'),
     re_path('procedure_update/(?P<pk>\d+)/', ProcedureUpdateView.as_view(), name='procedure_update'),
     re_path('get_procedure/', get_procedure, name='get_procedure'),
+    re_path('get_list/', get_my_procedures, name='get_my_procedures'),
+    re_path('add_procedures/<str:content_type>/<str:model>/', create_my_procedures, name='add_my_procedures'),
+    re_path('remove_procedure/<int:pk>/', remove_my_procedure, name='remove_my_procedure'),
+    re_path('complete_procedure/<int:pk>/', complete_my_procedure, name="complete_my_procedure"),
     re_path('delete_procedure/', delete_procedure, name='delete_procedure'),
     re_path('procedure_detail/(?P<pk>\d+)/', procedureStepDetail, name='procedure_detail'),
     re_path('procedure/(?P<pk>\d+)/step/', ProcedureStepCreateView.as_view(), name='procedure_step'),
