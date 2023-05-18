@@ -14,16 +14,6 @@ function convertToStringJson(form, prefix="", extras={}){
     return JSON.stringify(formjson);
 }
 
-
-function load_errors(error_list, obj){
-    ul_obj = "<ul class='errorlist shelf_form_errors d-flex justify-content-center'>";
-    error_list.forEach((item)=>{
-        ul_obj += "<li>"+item+"</li>";
-    });
-    ul_obj += "</ul>";
-    $(obj).parents('.form-group').prepend(ul_obj);
-    return ul_obj;
-}
 function load_errors(error_list, obj){
     ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
     error_list.forEach((item)=>{
