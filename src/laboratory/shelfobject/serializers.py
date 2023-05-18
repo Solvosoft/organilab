@@ -41,7 +41,6 @@ class ReservedShelfObjectSerializer(serializers.ModelSerializer):
         model = ReservedProducts
         fields = ['amount_required', 'shelf_object', 'initial_date', 'final_date']
 
-
 class AddShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False)
@@ -77,7 +76,7 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f'ReservedShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                f'SubstractShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
 
@@ -87,3 +86,23 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
     amount_to_transfer = serializers.FloatField(min_value=0.1)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
+    
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.in_where_laboratory_id != source_laboratory_id:
+            logger.debug(f'TransferOutShelfObjectSerializer --> attr.in_where_laboratory_id '
+                         f'({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})') 
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
+
+class ShelfObjectDeleteSerializer(serializers.Serializer):
+    shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+
+    def validate_shelfobj(self, value):
+        attr = super().validate(value)
+        if attr.in_where_laboratory_id != self.context.get('laboratory_id'):
+            logger.debug(f'ShelfObjectDeleteSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
+                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
