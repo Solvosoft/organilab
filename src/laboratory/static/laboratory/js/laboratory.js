@@ -97,7 +97,11 @@ function BaseFormModal(modalid,  data_extras={})  {
                     var errors = xhr.responseJSON.errors;
                     if(errors){  // form errors
                         form.find('ul.form_errors').remove();
-                        form_field_errors(form, errors, "");
+                        let prefix=instance.prefix;
+                        if(prefix.length !== 0){
+                            prefix = prefix+"-"
+                        }
+                        form_field_errors(form, errors, prefix);
                     }else{ // any other error
                         Swal.fire({
                             icon: 'error',
