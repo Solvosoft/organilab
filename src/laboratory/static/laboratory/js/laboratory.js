@@ -1,5 +1,23 @@
 var objecttype= ""
 document.shelf_discard= undefined;
+
+function convertFormToJSON(form, prefix="") {
+  const re = new RegExp("^"+prefix);
+  return form
+    .serializeArray()
+    .reduce(function (json, { name, value }) {
+      json[name.replace(re, "")] = value;
+      return json;
+    }, {});
+}
+
+function convertToStringJson(form, prefix="", extras={}){
+    var formjson =convertFormToJSON(form, prefix=prefix);
+    formjson=Object.assign({}, formjson, extras)
+    return JSON.stringify(formjson);
+}
+
+
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
@@ -218,14 +236,18 @@ function form_field_errors(target_form, form_errors){
 }
 
 $(".actionshelfobjectsave").on('click', function(){
-    var modal = $(this).data('modal');
-    var form = $(modal + " form");
-
+    var modal = $(this).closest(".modal");
+    var form = modal.find('form');
+    var parent_prefix=form.find(".create_shelfobject_prefix").val()+'-';
     $.ajax({
-        url: $(form)[0].action,
+        url: form[0].action,
         type:'POST',
-        data: $(form).serialize(),
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        data: convertToStringJson(form, prefix=parent_prefix, extras={
+            'shelf': $("#id_shelf").val(),
+            'objecttype':  "0"
+        }),
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function(data){
             datatableelement.ajax.reload();
             $(modal).modal('hide');
