@@ -114,7 +114,9 @@ function BaseFormModal(modalid,  data_extras={})  {
             return function(event){
                 clear_action_form(instance.instance);
                 instance.hidemodal();
-
+                if(instance.data_extras.hasOwnProperty('shelf_object')){
+                    delete instance.data_extras.shelf_object;
+                }
             }
         },
         "showmodal": function(btninstance){
