@@ -46,29 +46,6 @@
     </div>
 </div>
 
-<div aria-hidden="true" id="transferoutmodal" class="modal fade actionshelfobjmodal" aria-labelledby="transferoutmodal_form_title" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="transferoutmodal_form_title">{% trans 'Transfer Out' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="transferoutform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-transfer-out' lab_pk=laboratory org_pk=org_pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="shelf_object">
-                    {{tranfer_out_object_form.as_horizontal}}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary actionshelfobjectsave" type="button">{% trans 'Save changes' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div aria-hidden="true" id="substractmodal" class="modal fade actionshelfobjmodal" aria-labelledby="substractmodal_form_title" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -91,3 +68,9 @@
         </div>
     </div>
 </div>
+
+{% url "laboratory:api-shelfobject-transfer-out" lab_pk=laboratory org_pk=org_pk as transfer_out_url %}
+{% trans "Transfer Out" as transfer_out_title %}
+
+{% include 'modal_template.html' with form=tranfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
+
