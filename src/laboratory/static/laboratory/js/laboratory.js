@@ -249,6 +249,7 @@ $(".actionshelfobjectsave").on('click', function(){
         contentType: 'application/json',
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function(data){
+            clear_action_form(form);
             datatableelement.ajax.reload();
             $(modal).modal('hide');
             Swal.fire({
