@@ -60,7 +60,6 @@ function BaseFormModal(modalid,  data_extras={})  {
         "type": "POST",
         "data_extras": data_extras,
         "init": function(btninstance){
-            this.instance.modal('show');
             var myModalEl = this.instance[0];
             myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
@@ -119,6 +118,10 @@ function BaseFormModal(modalid,  data_extras={})  {
             }
         },
         "showmodal": function(btninstance){
+            var shelf_object = $(btninstance).data('shelfobject');
+            if (shelf_object != undefined){
+                this.data_extras['shelf_object'] = shelf_object;
+            }
             this.instance.modal('show');
         }
 
@@ -133,10 +136,9 @@ function show_me_modal(instance, event){
     }else{
         var formmodal=BaseFormModal("#"+modalid);
          formmodal.init(instance);
+         form_modals[modalid].showmodal(instance);
          form_modals[modalid]=formmodal;
     }
-
-
 }
 
 
@@ -283,52 +285,6 @@ $(document).ready(function(){
 });
 
 
-$('.actionshelfobjmodal').on('show.bs.modal', function (e) {
-    var shelfobject = $(this).find("form input[name='shelf_object']")[0];
-    $(shelfobject).val(e.relatedTarget.dataset.shelfobject);
-    $(this).find("button.actionshelfobjectsave").attr('data-modal', "#"+this.id);
-});
 
 
 
-
-$(".actionshelfobjectsave").on('click', function(){
-    var modal = $(this).data('modal');
-    var form = $(modal + " form");
-
-    $.ajax({
-        url: $(form)[0].action,
-        type:'POST',
-        data: $(form).serialize(),
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        success: function(data){
-            datatableelement.ajax.reload();
-            $(modal).modal('hide');
-            Swal.fire({
-                icon: 'success',
-                title: gettext('Success'),
-                text: data.detail,
-                timer: 1500
-            });     
-        },
-        error: function(xhr, resp, text) {
-            var errors = xhr.responseJSON.errors;
-            if(errors){  // form errors
-                form.find('ul.form_errors').remove();
-                form_field_errors(form, errors, "");
-            }else{ // any other error
-                Swal.fire({
-                    icon: 'error',
-                    title: gettext('Error'),
-                    text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
-                });
-            }
-        }
-    });
-});
-
-
-
-$('.actionshelfobjmodal').on('hidden.bs.modal', function () {
-    clear_action_form($(this).find('form'));
-});
