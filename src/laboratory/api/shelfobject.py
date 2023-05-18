@@ -91,7 +91,7 @@ class ShelfObjectCreateMethods:
         return file
 
     def create_reactive(self, serializer):
-        shelfobject = serializer.save(commit=False)
+        shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
         shelfobject.save()
@@ -102,23 +102,83 @@ class ShelfObjectCreateMethods:
                           shelfobject.quantity, '', 0, "Create",
                           create=True)
         utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=serializer.changed_data, relobj=self.context['laboratory'])
+                                 changed_data=None, relobj=self.context['laboratory'])
         return shelfobject
 
     def create_refuse_reactive(self, serializer):
-        pass
+        shelfobject = serializer.save()
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=None, relobj=self.context['laboratory'])
+        return shelfobject
 
     def create_material(self, serializer):
-        pass
+        shelfobject = serializer.save()
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=None, relobj=self.context['laboratory'])
+        return shelfobject
 
     def create_refuse_material(self, serializer):
-        pass
+        shelfobject = serializer.save()
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=None, relobj=self.context['laboratory'])
+        return shelfobject
 
     def create_equipment(self, serializer):
-        pass
+        shelfobject = serializer.save()
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=None, relobj=self.context['laboratory'])
+        return shelfobject
 
     def create_refuse_equipement(self, serializer):
-        pass
+        shelfobject = serializer.save()
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=None, relobj=self.context['laboratory'])
+        return shelfobject
 
 
 
