@@ -14,22 +14,31 @@ function convertToStringJson(form, prefix="", extras={}){
     return JSON.stringify(formjson);
 }
 
+
 function load_errors(error_list, obj){
-    ul_obj = "<ul class='errorlist form_errors'>";
+    ul_obj = "<ul class='errorlist shelf_form_errors d-flex justify-content-center'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>";
+    $(obj).parents('.form-group').prepend(ul_obj);
+    return ul_obj;
+}
+function load_errors(error_list, obj){
+    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
     error_list.forEach((item)=>{
         ul_obj += "<li>"+item+"</li>";
     });
     ul_obj += "</ul>"
-    $(obj).before(ul_obj);
+    $(obj).parents('.form-group').prepend(ul_obj);
     return ul_obj;
 }
 
-
-function form_field_errors(form_errors, prefix){
+function form_field_errors(target_form, form_errors, prefix){
     var item = "";
     for (const [key, value] of Object.entries(form_errors)) {
-        item = "#id_"+prefix+key;
-        if($(item).length > 0){
+        item = " #id_" +prefix+key;
+        if(target_form.find(item).length > 0){
             load_errors(form_errors[key], item);
         }
     }
@@ -46,7 +55,7 @@ function clear_action_form(form){
     $(form).trigger('reset');
     $(form).find("select option:selected").prop("selected", false);
     $(form).find("select").val(null).trigger('change');
-    $(form).find("ul.shelf_form_errors").remove();
+    $(form).find("ul.form_errors").remove();
 }
 
 function BaseFormModal(modalid,  data_extras={})  {
@@ -85,7 +94,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                     var errors = xhr.responseJSON.errors;
                     if(errors){  // form errors
                         form.find('ul.form_errors').remove();
-                        form_field_errors(form, errors);
+                        form_field_errors(form, errors, "");
                     }else{ // any other error
                         Swal.fire({
                             icon: 'error',
@@ -209,7 +218,7 @@ $(document).ready(function(){
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
-                titleAttr: gettext('Transfer in'),
+                titleAttr: gettext('Transfer In'),
                 className: 'btn-sm btn-success ml-4'
             },
         ],
@@ -271,27 +280,45 @@ $(".actionshelfobjectsave").on('click', function(){
         data: $(form).serialize(),
         headers: {'X-CSRFToken': getCookie('csrftoken')},
         success: function(data){
-            $('ul.shelf_form_errors').remove();
-            if(data){
-                form_field_errors(data);
-            }else{
-                datatableelement.ajax.reload();
-                $(modal).modal('hide');
-                    Swal.fire({
-                    icon: 'success',
-                    title: gettext('Successfully Action'),
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-            }
+            datatableelement.ajax.reload();
+            $(modal).modal('hide');
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: data.detail,
+                timer: 1500
+            });     
         },
         error: function(xhr, resp, text) {
-            Swal.fire({
-                icon: 'error',
-                title: text,
-                text: gettext('Try again or contact administrator')
-            });
+            var errors = xhr.responseJSON.errors;
+            if(errors){  // form errors
+                form.find('ul.shelf_form_errors').remove();
+                form_field_errors(form, errors, "");
+            }else{ // any other error
+                Swal.fire({
+                    icon: 'error',
+                    title: gettext('Error'),
+                    text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                });
+            }
         }
     });
+});
+
+function clear_action_form(form){
+    // clear switchery before the form reset so the check status doesn't get changed before the validation
+    $(form).find("input[data-switchery=true]").each(function() {  
+        if($(this).prop("checked")){  // only reset it if it is checked
+            $(this).trigger("click").prop("checked", false);
+        }
+    });
+
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+    $(form).find("ul.shelf_form_errors").remove();
+}
+
+$('.actionshelfobjmodal').on('hidden.bs.modal', function () {
+    clear_action_form($(this).find('form'));
 });
