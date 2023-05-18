@@ -20,14 +20,25 @@ class SubstractShelfObjectSerializer(serializers.Serializer):
 
 
 class ValidateShelfSerializer(serializers.Serializer):
-    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all())
-    objecttype = serializers.ChoiceField(choices=(
+    OBJTYPE_CHOICES=(
         ("0", 'Reactive'),
         ("1", 'Material'),
-        ("2", 'Equipment')), required=True)
+        ("2", 'Equipment'))
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all())
+    objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
 
+    def get_key_descriptor(self):
+        """
+        Atención debe llamar a is_valid() primero.
+        :return:
+        """
+        names = {key: value.lower() for key, value in self.OBJTYPE_CHOICES}
+        obj_type_name = names[self.validated_data['objecttype']]
+        if self.validated_data['shelf'].discard:
+            obj_type_name += "_refuse"
+        return obj_type_name
 
-class ReactiveShelfObjectSerializer(serializers.Serializer):
+class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
@@ -42,7 +53,7 @@ class ReactiveShelfObjectSerializer(serializers.Serializer):
         fields = ['object', 'shelf', 'quantity', 'measurement_unit', 'limit_quantity', 'limits', 'marked_as_discard','batch']
 
 
-class ReactiveRefuseShelfObjectSerializer(serializers.Serializer):
+class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
@@ -57,7 +68,8 @@ class ReactiveRefuseShelfObjectSerializer(serializers.Serializer):
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
 
-class MaterialShelfObjectSerializer(serializers.Serializer):
+
+class MaterialShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
@@ -72,7 +84,8 @@ class MaterialShelfObjectSerializer(serializers.Serializer):
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
 
-class MaterialRefuseShelfObjectSerializer(serializers.Serializer):
+
+class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
@@ -87,7 +100,8 @@ class MaterialRefuseShelfObjectSerializer(serializers.Serializer):
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
 
-class EquipmentShelfObjectSerializer(serializers.Serializer):
+
+class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
@@ -102,7 +116,8 @@ class EquipmentShelfObjectSerializer(serializers.Serializer):
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
 
-class EquipmentRefuseShelfObjectSerializer(serializers.Serializer):
+
+class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
