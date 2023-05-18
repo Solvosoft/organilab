@@ -183,7 +183,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         }
         return serializers_class[key_name]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         Kendric
@@ -196,7 +196,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
 
         self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
-        serializer = self.serializer_class['serializer'](request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
+        serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
 
         if serializer.is_valid():
             self.serializer_class['method'](serializer)

@@ -13,6 +13,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="shelf_object">
                     {{ form.as_horizontal }}
+                    <input type="hidden" name="prefix" class="create_shelfobject_prefix" value="{{form.prefix}}">
                 </form>
             </div>
             <div class="modal-footer">
