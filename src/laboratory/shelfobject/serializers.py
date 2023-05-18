@@ -7,7 +7,7 @@ from reservations_management.models import ReservedProducts
 from django.utils.translation import gettext_lazy as _
 logger = logging.getLogger('organilab')
 
-class ReservedShelfObjectSerializer(serializers.ModelSerializer):
+class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
@@ -41,7 +41,7 @@ class ReservedShelfObjectSerializer(serializers.ModelSerializer):
         model = ReservedProducts
         fields = ['amount_required', 'shelf_object', 'initial_date', 'final_date']
 
-class AddShelfObjectSerializer(serializers.Serializer):
+class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
     provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False, allow_null=True)
@@ -67,7 +67,7 @@ class AddShelfObjectSerializer(serializers.Serializer):
         return attr
 
 
-class SubstractShelfObjectSerializer(serializers.Serializer):
+class DecreaseShelfObjectSerializer(serializers.Serializer):
     discount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())

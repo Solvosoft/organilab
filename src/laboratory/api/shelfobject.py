@@ -19,8 +19,8 @@ from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, ReservedShelfObjectSerializer
+from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, ReserveShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
 from laboratory.utils import organilab_logentry
 
@@ -120,7 +120,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: increase shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
-        self.serializer_class = AddShelfObjectSerializer
+        self.serializer_class = IncreaseShelfObjectSerializer
         serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
         provider = None
@@ -170,7 +170,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: decrease shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
-        self.serializer_class = SubstractShelfObjectSerializer
+        self.serializer_class = DecreaseShelfObjectSerializer
         serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
 
@@ -208,7 +208,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: save a reserved product instance, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
-        self.serializer_class = ReservedShelfObjectSerializer
+        self.serializer_class = ReserveShelfObjectSerializer
         serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
         changed_data = ["laboratory", "organization", "user", "created_by"]
