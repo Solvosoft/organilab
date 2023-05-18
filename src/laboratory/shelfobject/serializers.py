@@ -48,11 +48,38 @@ class AddShelfObjectSerializer(serializers.Serializer):
     provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.in_where_laboratory_id != source_laboratory_id:
+            logger.debug(
+                f'AddShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
+
+    def validate_provider(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if not attr.laboratory != source_laboratory_id:
+            logger.debug(
+                f'AddShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Provider does not exist in the laboratory"))
+        return attr
+
 
 class SubstractShelfObjectSerializer(serializers.Serializer):
     discount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.in_where_laboratory_id != source_laboratory_id:
+            logger.debug(
+                f'ReservedShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
 
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
