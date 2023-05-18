@@ -1,7 +1,9 @@
 {% load i18n %}
 
 <a id="shelfobject_view_{{shelfobject.pk}}"
-   class="ms-2" data-bs-toggle="modal" data-bs-target="#detailmodal"
+   class="ms-2"
+   data-url="{% url 'laboratory:api-shelfobject-details' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}"
+   onclick="shelfObjectDetail(this)"
    title="{% trans 'Detail' %}">
     <i class="fa fa-eye text-success" aria-hidden="true"></i>
 </a>
@@ -38,7 +40,10 @@
     </a>
 {% endif %}
 
+<div class="modal fade" id="detail_modal_container" tabindex="-1" aria-labelledby="detail_modalLabel" aria-hidden="true">
 
+
+</div>
 <!--{% if shelf.discard %}-->
 <!--    {% if admin_add_disposal_perm %}-->
 <!--        <a class="float-end"-->
