@@ -314,7 +314,7 @@ $(".actionshelfobjectsave").on('click', function(){
         error: function(xhr, resp, text) {
             var errors = xhr.responseJSON.errors;
             if(errors){  // form errors
-                form.find('ul.shelf_form_errors').remove();
+                form.find('ul.form_errors').remove();
                 form_field_errors(form, errors, "");
             }else{ // any other error
                 Swal.fire({
@@ -327,19 +327,7 @@ $(".actionshelfobjectsave").on('click', function(){
     });
 });
 
-function clear_action_form(form){
-    // clear switchery before the form reset so the check status doesn't get changed before the validation
-    $(form).find("input[data-switchery=true]").each(function() {  
-        if($(this).prop("checked")){  // only reset it if it is checked
-            $(this).trigger("click").prop("checked", false);
-        }
-    });
 
-    $(form).trigger('reset');
-    $(form).find("select option:selected").prop("selected", false);
-    $(form).find("select").val(null).trigger('change');
-    $(form).find("ul.shelf_form_errors").remove();
-}
 
 $('.actionshelfobjmodal').on('hidden.bs.modal', function () {
     clear_action_form($(this).find('form'));
