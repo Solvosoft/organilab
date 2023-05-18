@@ -45,6 +45,17 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
     })
 }
 
+function shelfObjectDetail(obj,){
+    let url = $(obj).data('url')
+    fetch(url, {
+        headers: {'X-CSRFToken': getCookie('csrftoken')}})
+        .then(response => response.json())
+        .then(data => {
+            $('#detail_modal_container').html(data['detail'])
+            $('#detail_modal_container').modal('show')
+        })
+}
+
 function processResponseshelfobjectUpdate(dat) {
 	$('#shelfobjectUpdate').html(dat);
 	// clean the form

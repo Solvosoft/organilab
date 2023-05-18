@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers, views
-from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer, ShelfObjectDetailSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
@@ -236,7 +236,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         return Response(errors, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
-    def detail(self, request, org_pk, lab_pk, **kwargs):
+    def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Daniel
         :param request:
@@ -246,6 +246,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
+        queryset = get_object_or_404(ShelfObject, pk=pk)
+        serializer = ShelfObjectDetailSerializer(queryset)
+        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk})
+        return JsonResponse({'detail': render_str})
 
     @action(detail=False, methods=['post'])
     def tag(self, request, org_pk, lab_pk, **kwargs):
