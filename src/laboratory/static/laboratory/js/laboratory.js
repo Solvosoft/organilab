@@ -91,7 +91,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                         text: data.detail,
                         timer: 1500
                     });
-
+                    instance.success(instance, data);
                 },
                 error: function(xhr, resp, text) {
                     var errors = xhr.responseJSON.errors;
@@ -105,9 +105,14 @@ function BaseFormModal(modalid,  data_extras={})  {
                             text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
                         });
                     }
+                    instance.error(instance, xhr, resp, text);
                 }
             });
             }
+        },
+        "success": function(instance, data){
+        },
+        "error": function(instance, xhr, resp, text){
         },
         "hidemodal": function(){
             this.instance.modal('hide');
