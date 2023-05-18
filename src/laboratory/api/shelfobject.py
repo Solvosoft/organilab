@@ -22,8 +22,7 @@ from laboratory.forms import ValidateShelfForm
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Shelf
 from rest_framework import status
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ValidateShelfSerializer, ReactiveShelfObjectSerializer
+from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
@@ -73,6 +72,56 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return Response(self.get_serializer(response).data)
 
 
+class ShelfObjectCreateMethods:
+
+    def __init__(self, context={}):
+        self.context=context
+
+    def _build_qr(self, shelfobject):
+        schema = self.context['request'].scheme + "://"
+        domain = schema + self.context['request'].get_host()
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.context['organization'],
+                                                                "lab_pk": self.context['laboratory']})
+        url = url + "?labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
+              (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk, shelfobject.shelf.pk,
+               shelfobject.pk)
+        shelfobject.shelf_object_url = url
+        img, file = utils.generate_QR_img_file(url, self.context['request'].user, extension_file=".svg", file_name="qrcode")
+        shelfobject.shelf_object_qr = img
+        return file
+
+    def create_reactive(self, serializer):
+        shelfobject = serializer.save(commit=False)
+        shelfobject.creator = self.context['request'].user
+        shelfobject.in_where_laboratory_id = self.context['laboratory']
+        shelfobject.save()
+        qrfile = self._build_qr(shelfobject)
+        shelfobject.save()
+        qrfile.close()
+        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
+                          shelfobject.quantity, '', 0, "Create",
+                          create=True)
+        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
+                                 changed_data=serializer.changed_data, relobj=self.context['laboratory'])
+        return shelfobject
+
+    def create_refuse_reactive(self, serializer):
+        pass
+
+    def create_material(self, serializer):
+        pass
+
+    def create_refuse_material(self, serializer):
+        pass
+
+    def create_equipment(self, serializer):
+        pass
+
+    def create_refuse_equipement(self, serializer):
+        pass
+
+
+
 class ShelfObjectViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -107,6 +156,33 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             raise PermissionDenied()
 
+    def _get_create_shelfobject_serializer(self, request, org_pk, lab_pk):
+        name = ""
+        serializer=shelfobject_serializers.ValidateShelfSerializer(data=request.data,
+                                                                   context={"org_pk": org_pk, "lab_pk": lab_pk})
+        serializer.is_valid(raise_exception=True)
+        key_name=serializer.get_key_descriptor()
+        methods_class=ShelfObjectCreateMethods(context={
+            "organization": org_pk,
+            "laboratory": lab_pk,
+            "request": request
+        })
+        serializers_class={
+            "reactive": {'serializer': shelfobject_serializers.ReactiveShelfObjectSerializer,
+                 'method': methods_class.create_reactive},
+            "reactive_refuse": {'serializer': shelfobject_serializers.ReactiveRefuseShelfObjectSerializer,
+                 'method': methods_class.create_refuse_reactive},
+            "material": {'serializer': shelfobject_serializers.MaterialShelfObjectSerializer,
+                 'method': methods_class.create_material},
+            "material_refuse": {'serializer': shelfobject_serializers.MaterialRefuseShelfObjectSerializer,
+                 'method': methods_class.create_refuse_material},
+            "equipment": {'serializer': shelfobject_serializers.EquipmentShelfObjectSerializer,
+                 'method': methods_class.create_equipment},
+            "equipment_refuse": {'serializer': shelfobject_serializers.EquipmentRefuseShelfObjectSerializer,
+                 'method': methods_class.create_refuse_equipement},
+        }
+        return serializers_class[key_name]
+
     @action(detail=False, methods=['get'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
@@ -119,34 +195,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
 
-        self.serializer_class = ReactiveShelfObjectSerializer
-        serializer = self.serializer_class(request.data)
+        self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
+        serializer = self.serializer_class['serializer'](request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
 
         if serializer.is_valid():
-
-            shelfobject = serializer.save(commit=False)
-            shelfobject.creator = request.user
-            shelfobject.in_where_laboratory_id = lab_pk
-            shelfobject.save()
-            schema = request.scheme + "://"
-            domain = schema + request.get_host()
-            url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
-            url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
-                  (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk, shelfobject.shelf.pk,
-                   shelfobject.pk)
-            shelfobject.shelf_object_url = url
-            img, file = utils.generate_QR_img_file(url, request.user, extension_file=".svg", file_name="qrcode")
-            shelfobject.shelf_object_qr = img
-            shelfobject.save()
-            file.close()
-
-            log_object_change(request.user, lab_pk, shelfobject, 0, shelfobject.quantity, '', 0, "Create",
-                              create=True)
-            utils.organilab_logentry(request.user, shelfobject, ADDITION, changed_data=serializer.changed_data,
-                                     relobj=lab_pk)
+            self.serializer_class['method'](serializer)
             return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response({'errors':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'errors':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['post'])
