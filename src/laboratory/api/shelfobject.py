@@ -114,28 +114,27 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        :param request: http request
+        :param org_pk: organization related user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param kwargs: extra params
+        :return: increase shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
         self.serializer_class = AddShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
         provider = None
 
         if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
+            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.validated_data['shelf_object'])
             shelf = shelfobject.shelf
             provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=serializer.data['provider'])
             if provider_obj.exists():
                 provider = provider_obj.first()
             changed_data = list(serializer.validated_data.keys())
-            bill = serializer.data.get('bill', '')
-            amount = serializer.data['amount']
+            bill = serializer.validated_data.get('bill', '')
+            amount = serializer.validated_data['amount']
 
             if shelf.discard:
                 total = shelf.get_total_refuse()
@@ -163,22 +162,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        :param request: http request
+        :param org_pk: organization related user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param kwargs: extra params
+        :return: decrease shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
         self.serializer_class = SubstractShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
 
         if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.data['shelf_object'])
+            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.validated_data['shelf_object'])
             old = shelfobject.quantity
-            discount = serializer.data['discount']
+            discount = serializer.validated_data['discount']
             description = serializer.validated_data.get('description', '')
             changed_data = list(serializer.validated_data.keys())
 
@@ -201,12 +199,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        :param request: http request
+        :param org_pk: organization related to reserved product and user permissions
+        :param lab_pk: laboratory related to reserved product and user permissions
+        :param kwargs: extra params
+        :return: save a reserved product instance, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
         self.serializer_class = ReservedShelfObjectSerializer
