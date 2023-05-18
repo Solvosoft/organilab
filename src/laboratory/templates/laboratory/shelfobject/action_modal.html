@@ -11,7 +11,7 @@
 
 
 {% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
-{% trans 'Sustract' as decrease_so_tittle %}
+{% trans 'Substract' as decrease_so_tittle %}
 {% include 'modal_template.html' with form=subtract_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
 
 
