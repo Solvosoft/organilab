@@ -3,11 +3,21 @@ from django.utils.translation import gettext_lazy as _
 
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
+from presentation.utils import update_qr_instance
 
+
+@admin.action(description='Regenerate QR')
+def regenerate_qr_codes(admin, request, queryset):
+    for instance in queryset:
+        update_qr_instance(instance.shelf_object_url, instance, instance.in_where_laboratory.organization.pk)
+
+class ShelfObject_Admin(admin.ModelAdmin):
+    actions = [regenerate_qr_codes]
 
 class Object_Admin(admin.ModelAdmin):
     search_fields = ["name"]
     list_display = ('code', 'name', 'type', 'is_precursor')
+
 
 
 class OrganizationStrutureAdmin(admin.ModelAdmin):
@@ -38,17 +48,14 @@ admin.site.register(models.Furniture)
 admin.site.register(models.Shelf)
 admin.site.register(models.ObjectFeatures)
 admin.site.register(models.Object, Object_Admin)
-admin.site.register(models.ShelfObject)
+admin.site.register(models.ShelfObject, ShelfObject_Admin)
 admin.site.register(models.Catalog)
 admin.site.register(models.BlockedListNotification)
-
 admin.site.register(models.Provider)
 admin.site.register(models.ObjectLogChange)
 admin.site.register(models.TranferObject)
 admin.site.register(models.PrecursorReport)
 admin.site.register(models.RegisterUserQR)
-
-
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
 admin.site.register(models.InformScheduler, InformSchedulerAdmin)
