@@ -46,29 +46,6 @@
     </div>
 </div>
 
-<div aria-hidden="true" id="transferoutmodal" class="modal fade actionshelfobjmodal" aria-labelledby="transferoutmodal_form_title" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="transferoutmodal_form_title">{% trans 'Transfer Out' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="transferoutform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-transfer-out' lab_pk=laboratory org_pk=org_pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="shelf_object">
-                    {{tranfer_out_object_form.as_horizontal}}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary actionshelfobjectsave" type="button">{% trans 'Save changes' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div aria-hidden="true" id="substractmodal" class="modal fade actionshelfobjmodal" aria-labelledby="substractmodal_form_title" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -92,10 +69,18 @@
     </div>
 </div>
 
+{% url "laboratory:api-shelfobject-create-shelfobject" lab_pk=laboratory org_pk=org_pk as create_shelfobject_url %}
+{% trans "Create Reactive" as reactive_title %}
+{% trans "Create Equipment" as equipment_title %}
+{% trans "Create Material" as material_title %}
 
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='reactive_form' arial_title='arial_reactive' id_title='reactive_title' title='Create Reactive' form=reactive_form %}
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='reactive_refuse_form' arial_title='arial_reactive_refuse' id_title='reactive_refuse_title' title='Create Reactive' form=reactive_refuse_form %}
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='equipment_form' arial_title='arial_equiment' id_title='equiment_title' title='Create Equipment' form=equipment_form %}
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='equipment_refuse_form' arial_title='arial_equiment_refuse' id_title='equiment_refuse_title' title='Create Equipment'  form=equipment_refuse_form %}
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='material_form' arial_title='arial_material' id_title='material_title' title='Create Material' form=material_form %}
-{% include 'laboratory/shelfobject/shelfobject_create_modal.html' with id='material_refuse_form' arial_title='arial_material' id_title='material_title' title='Create Material' form=material_refuse_form %}
+{% include 'modal_template.html' with id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url%}
+{% include 'modal_template.html' with id='reactive_refuse_form' title=reactive_title form=reactive_refuse_form url=create_shelfobject_url %}
+{% include 'modal_template.html' with id='equipment_form' title=equipment_title form=equipment_form url=create_shelfobject_url %}
+{% include 'modal_template.html' with id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url %}
+{% include 'modal_template.html' with id='material_form' title=material_title form=material_form %}
+{% include 'modal_template.html' with id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url %}
+{% url "laboratory:api-shelfobject-transfer-out" lab_pk=laboratory org_pk=org_pk as transfer_out_url %}
+{% trans "Transfer Out" as transfer_out_title %}
+{% include 'modal_template.html' with form=tranfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
+

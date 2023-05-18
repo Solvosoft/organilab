@@ -4,11 +4,47 @@ function processResponseshelfobject(dat){
     $("#closemodal").html(dat["inner-fragments"]["#closemodal"]);
     datatableelement.ajax.reload();
 }
-
-function processResponseshelfobjectDelete(dat) {
-	$('#shelfobjectDelete').html(dat);
-	$("#object_delete").modal('show');
+//Refactored delete method for Shelf Object
+function shelfObjectDelete(obj, shelf_object_id, text) {
+    let message = gettext("Are you sure you want to delete")
+    message = `${message} ${text}?`
+    let url = $(obj).data('url')
+    Swal.fire({ //Confirmation for delete
+        title: message,
+        confirmButtonText: gettext("Confirm"),
+        showCloseButton: true,
+        denyButtonText: gettext('Cancel'),
+        showDenyButton: true,
+        })
+        .then(function(result) {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: "delete",
+                    headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+                    body: JSON.stringify({'shelfobj': shelf_object_id})})
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data['detail']){
+                            Swal.fire({
+                                title: gettext('Success'),
+                                text: data['detail'],
+                                icon: 'success',
+                                timer: 1500
+                            })
+                            datatableelement.ajax.reload()
+                        }else{
+                            //Displays API error message
+                            Swal.fire({
+                                title: gettext('Error'),
+                                text: data['shelfobj'][0],
+                                icon: 'error'
+                            })
+                        }
+                    })
+            }
+    })
 }
+
 function processResponseshelfobjectUpdate(dat) {
 	$('#shelfobjectUpdate').html(dat);
 	// clean the form

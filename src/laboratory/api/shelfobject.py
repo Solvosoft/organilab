@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.contrib.admin.models import CHANGE, ADDITION
-
 from django.template.loader import render_to_string
+from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.http import JsonResponse
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
-from laboratory.api import serializers
+from laboratory.api import serializers, views
 from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.forms import ValidateShelfForm
 from laboratory.logsustances import log_object_change
@@ -26,12 +25,11 @@ from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer
-from laboratory.shelfobject.serializers import TransferOutShelfObjectSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
-from laboratory.views.shelfobject import ShelfObjectForm, ShelfObjectRefuseForm
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -193,10 +191,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
-        "detail": [],
+        "detail": ["laboratory.view_shelfobject"],
         "tag": [],
         "detail_pdf": [],
-        "delete": [],
+        "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
         "create_comments": [],
         "list_comments": [],
@@ -496,6 +494,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete")
+        serializer = ShelfObjectDeleteSerializer(data=request.data, context={"laboratory_id":self.laboratory.pk})
+        serializer.is_valid(raise_exception=True)
+        utils.organilab_logentry(self.request.user, serializer.validated_data['shelfobj'], DELETION, relobj=self.laboratory)
+        serializer.validated_data['shelfobj'].delete()
+        return JsonResponse({'detail': _('The item was deleted successfully')}, status=200)
 
     @action(detail=False, methods=['get'])
     def chart_graphic(self, request, org_pk, lab_pk, **kwargs):
