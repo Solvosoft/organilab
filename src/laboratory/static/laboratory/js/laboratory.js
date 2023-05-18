@@ -58,6 +58,7 @@ function clear_action_form(form){
     $(form).find("ul.form_errors").remove();
 }
 
+var form_modals = {}
 function BaseFormModal(modalid,  data_extras={})  {
     var modal = $(modalid);
     var form = modal.find('form');
@@ -68,9 +69,10 @@ function BaseFormModal(modalid,  data_extras={})  {
         "prefix": form.find(".form_prefix").val(),
         "type": "POST",
         "data_extras": data_extras,
-        "init": function(){
-            var myModalEl = document.getElementById('myModal')
-            myModalEl.addEventListener('hidden.bs.modal', this.hidemodal(this))
+        "init": function(btninstance){
+            this.instance.modal('show');
+            var myModalEl = this.instance[0];
+            myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
         },
         "addBtnForm": function(instance){
@@ -82,13 +84,14 @@ function BaseFormModal(modalid,  data_extras={})  {
                 headers: {'X-CSRFToken': getCookie('csrftoken')},
                 success: function(data){
                     datatableelement.ajax.reload();
-                    $(modal).modal('hide');
+                    instance.hidemodal();
                     Swal.fire({
                         icon: 'success',
                         title: gettext('Success'),
                         text: data.detail,
                         timer: 1500
                     });
+
                 },
                 error: function(xhr, resp, text) {
                     var errors = xhr.responseJSON.errors;
@@ -105,17 +108,37 @@ function BaseFormModal(modalid,  data_extras={})  {
                 }
             });
             }
-
         },
-        "hidemodal": function(instance){
+        "hidemodal": function(){
+            this.instance.modal('hide');
+        },
+        "hidemodalevent": function(instance){
             return function(event){
                 clear_action_form(instance.instance);
+                instance.hidemodal();
+
             }
+        },
+        "showmodal": function(btninstance){
+            this.instance.modal('show');
         }
 
     }
 }
 
+function show_me_modal(instance, event){
+    var modalid = $(instance).data('modalid');
+
+    if(form_modals.hasOwnProperty(modalid) ){
+        form_modals[modalid].showmodal(instance);
+    }else{
+        var formmodal=BaseFormModal("#"+modalid);
+         formmodal.init(instance);
+         form_modals[modalid]=formmodal;
+    }
+
+
+}
 
 
 const tableObject={
