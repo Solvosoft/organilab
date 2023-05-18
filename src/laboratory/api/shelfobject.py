@@ -127,11 +127,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         provider = None
 
         if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.validated_data['shelf_object'])
+            shelfobject = serializer.validated_data['shelf_object']
             shelf = shelfobject.shelf
-            provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=serializer.data['provider'])
-            if provider_obj.exists():
-                provider = provider_obj.first()
+
+            if 'provider' in serializer.validated_data:
+                provider = serializer.validated_data['provider']
+
             changed_data = list(serializer.validated_data.keys())
             bill = serializer.validated_data.get('bill', '')
             amount = serializer.validated_data['amount']
@@ -140,14 +141,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 total = shelf.get_total_refuse()
                 new_total = total + amount
                 if shelf.quantity >= new_total or shelf.quantity == -1:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, lab_pk)
                 else:
                     errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')]
             else:
                 status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
                 if status_shelf_obj:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, lab_pk)
                 else:
                     errors['amount'] = [_('The quantity is more than the shelf has')]
         else:
@@ -174,7 +175,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
 
         if serializer.is_valid():
-            shelfobject = get_object_or_404(ShelfObject.objects.filter(in_where_laboratory=lab_pk), pk=serializer.validated_data['shelf_object'])
+            shelfobject = serializer.validated_data['shelf_object']
             old = shelfobject.quantity
             discount = serializer.validated_data['discount']
             description = serializer.validated_data.get('description', '')
@@ -185,7 +186,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 shelfobject.quantity = new
                 shelfobject.save()
                 log_object_change(request.user, shelfobject.pk, shelfobject, old, new, description, 2, "Substract", create=False)
-                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
+                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=lab_pk)
             else:
                 errors['discount'] = [_('The amount to be subtracted is more than the shelf has')]
         else:
@@ -209,8 +210,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = ReservedShelfObjectSerializer
         serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
+        changed_data = ["laboratory", "organization", "user", "created_by"]
 
         if serializer.is_valid():
+            changed_data = changed_data + list(serializer.validated_data.keys())
             laboratory = get_object_or_404(Laboratory, pk=lab_pk)
             organization = get_object_or_404(OrganizationStructure, pk=org_pk)
             instance = serializer.save()
@@ -219,6 +222,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             instance.user = request.user
             instance.created_by = request.user
             instance.save()
+            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=lab_pk)
         else:
             errors = serializer.errors
 

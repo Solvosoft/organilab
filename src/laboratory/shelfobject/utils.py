@@ -11,13 +11,13 @@ from django.utils.translation import gettext_lazy as _
 from organilab.settings import DATETIME_INPUT_FORMATS
 
 
-def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, changed_data):
+def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, changed_data, lab_pk):
     old = shelfobject.quantity
     new = old + amount
     shelfobject.quantity = new
     shelfobject.save()
     log_object_add_change(user, shelf_object, shelfobject, old, new, "Add", provider, bill, create=False)
-    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
+    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=lab_pk)
 
 
 def status_shelfobject(shelfobject, shelf, amount):
