@@ -28,6 +28,7 @@ from laboratory.shelfobject.serializers import AddShelfObjectSerializer, Substra
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
+from presentation.models import QRModel
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -245,7 +246,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         queryset = get_object_or_404(ShelfObject, pk=pk)
         serializer = ShelfObjectDetailSerializer(queryset)
-        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk})
+        qr = QRModel.objects.get(content_type__app_label=queryset._meta.app_label, object_id=queryset.id, organization=org_pk, content_type__model= queryset._meta.model_name)
+        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk, 'qr':qr.b64_image})
         return JsonResponse({'detail': render_str})
 
     @action(detail=False, methods=['post'])

@@ -200,6 +200,7 @@ class ShelfObject(models.Model):
 class ShelfObjectObservation(BaseCreationObj):
     action_taken = models.CharField(max_length=50, default=_("Object Change"), verbose_name=_("Action Taken"))
     description = models.TextField(null=True)
+    shelf_object = models.ForeignKey('ShelfObject', on_delete=models.CASCADE, blank=False, null=False)
 
 class LaboratoryRoom(BaseCreationObj):
     laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)

@@ -49,3 +49,11 @@ ul, #ullabroom {
     display: none;
 }
 
+.shelfobject_list_elem{
+    padding: 0;
+}
+
+.shelfobject_titles{
+    font-weight: bold;
+}
+
