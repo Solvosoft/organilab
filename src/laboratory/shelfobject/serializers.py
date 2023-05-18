@@ -42,7 +42,7 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
-    limit_quantity= serializers.CharField(required=True)
+    limit_quantity= serializers.FloatField(required=True)
     measurement_unit= serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
     limits = serializers.PrimaryKeyRelatedField(many=False, queryset=ShelfObjectLimits.objects.using(settings.READONLY_DATABASE), required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
