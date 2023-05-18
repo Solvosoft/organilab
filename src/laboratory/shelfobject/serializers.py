@@ -43,8 +43,8 @@ class ReservedShelfObjectSerializer(serializers.ModelSerializer):
 
 class AddShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
-    bill = serializers.CharField(required=False)
-    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False)
+    bill = serializers.CharField(required=False, allow_blank=True)
+    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False, allow_null=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
     def validate_shelf_object(self, value):
@@ -59,16 +59,17 @@ class AddShelfObjectSerializer(serializers.Serializer):
     def validate_provider(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
-        if not attr.laboratory != source_laboratory_id:
-            logger.debug(
-                f'AddShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Provider does not exist in the laboratory"))
+        if attr:
+            if not attr.laboratory != source_laboratory_id:
+                logger.debug(
+                    f'AddShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Provider does not exist in the laboratory"))
         return attr
 
 
 class SubstractShelfObjectSerializer(serializers.Serializer):
     discount = serializers.FloatField(min_value=0.1)
-    description = serializers.CharField(required=False)
+    description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
     def validate_shelf_object(self, value):

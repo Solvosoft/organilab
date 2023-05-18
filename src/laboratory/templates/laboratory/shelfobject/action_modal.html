@@ -4,33 +4,16 @@
 {% trans 'Reserve' as reserve_so_tittle %}
 {% include 'modal_template.html' with form=modal_form_reservation id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
 
+
 {% url "laboratory:api-shelfobject-fill-increase-shelfobject" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
-{% trans 'Add' as add_so_tittle %}
-{% include 'modal_template.html' with form=add_object_form id="increasesomodal" title=add_so_tittle form_id="increasesoform" url=increase_so_url %}
+{% trans 'Add' as increase_so_tittle %}
+{% include 'modal_template.html' with form=add_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
 
-<div aria-hidden="true" id="substractmodal" class="modal fade actionshelfobjmodal" aria-labelledby="substractmodal_form_title" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="substractmodal_form_title">{% trans 'Sustract' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="substractform" method="POST" autocomplete="off" action="{% url 'laboratory:api-shelfobject-fill-decrease-shelfobject' lab_pk=laboratory org_pk=org_pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="shelf_object">
-                    {{subtract_object_form.as_horizontal}}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary actionshelfobjectsave" type="button">{% trans 'Save changes' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
+{% trans 'Sustract' as decrease_so_tittle %}
+{% include 'modal_template.html' with form=subtract_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
+
 
 {% url "laboratory:api-shelfobject-transfer-out" lab_pk=laboratory org_pk=org_pk as transfer_out_url %}
 {% trans "Transfer Out" as transfer_out_title %}
