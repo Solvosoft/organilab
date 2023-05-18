@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: academic/api/serializers.py:62
 #: academic/templates/academic/substance/check_substances.html:67
@@ -4047,7 +4047,7 @@ msgstr "Transferir"
 #: laboratory/templates/laboratory/reservation_modal.html:149
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:12
 msgid "Substract"
-msgstr "Eliminar"
+msgstr "Substraer"
 
 #: laboratory/templates/laboratory/search.html:48
 #: laboratory/templates/laboratory/search.html:56
@@ -6340,9 +6340,8 @@ msgstr "Editar Compañía"
 #~ "            and pyEQL should be able to interpret it. Here are some "
 #~ "examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Sodium Chloride - NaCl"
 #~ msgstr "Cloruro de sodio - NaCl"
@@ -6391,9 +6390,8 @@ msgstr "Editar Compañía"
 #~ "                            and pyEQL should be able to interpret it. "
 #~ "Here are some examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Editor"
 #~ msgstr "Editor"
