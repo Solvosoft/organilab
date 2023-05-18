@@ -53,7 +53,7 @@ function BaseFormModal(modalid,  data_extras={})  {
     var modal = $(modalid);
     var form = modal.find('form');
     return {
-        "instance": $(modalid),
+        "instance": modal,
         "form": form,
         "url": form[0].action,
         "prefix": form.find(".form_prefix").val(),
@@ -67,40 +67,40 @@ function BaseFormModal(modalid,  data_extras={})  {
         "addBtnForm": function(instance){
             return function(event){
                 $.ajax({
-                url: instance.url,
-                type: instance.type,
-                data: convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras),
-                headers: {'X-CSRFToken': getCookie('csrftoken')},
-                success: function(data){
-                    datatableelement.ajax.reload();
-                    instance.hidemodal();
-                    Swal.fire({
-                        icon: 'success',
-                        title: gettext('Success'),
-                        text: data.detail,
-                        timer: 1500
-                    });
-                    instance.success(instance, data);
-                },
-                error: function(xhr, resp, text) {
-                    var errors = xhr.responseJSON.errors;
-                    if(errors){  // form errors
-                        form.find('ul.form_errors').remove();
-                        let prefix=instance.prefix;
-                        if(prefix.length !== 0){
-                            prefix = prefix+"-"
-                        }
-                        form_field_errors(form, errors, prefix);
-                    }else{ // any other error
+                    url: instance.url,
+                    type: instance.type,
+                    data: convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras),
+                    headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+                    success: function(data){
+                        datatableelement.ajax.reload();
+                        instance.hidemodal();
                         Swal.fire({
-                            icon: 'error',
-                            title: gettext('Error'),
-                            text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                            icon: 'success',
+                            title: gettext('Success'),
+                            text: data.detail,
+                            timer: 1500
                         });
+                        instance.success(instance, data);
+                    },
+                    error: function(xhr, resp, text) {
+                        var errors = xhr.responseJSON.errors;
+                        if(errors){  // form errors
+                            form.find('ul.form_errors').remove();
+                            let prefix=instance.prefix;
+                            if(prefix.length !== 0){
+                                prefix = prefix+"-"
+                            }
+                            form_field_errors(form, errors, prefix);
+                        }else{ // any other error
+                            Swal.fire({
+                                icon: 'error',
+                                title: gettext('Error'),
+                                text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                            });
+                        }
+                        instance.error(instance, xhr, resp, text);
                     }
-                    instance.error(instance, xhr, resp, text);
-                }
-            });
+                });
             }
         },
         "success": function(instance, data){
@@ -112,7 +112,7 @@ function BaseFormModal(modalid,  data_extras={})  {
         },
         "hidemodalevent": function(instance){
             return function(event){
-                clear_action_form(instance.instance);
+                clear_action_form(instance.form);
                 instance.hidemodal();
                 if(instance.data_extras.hasOwnProperty('shelf_object')){
                     delete instance.data_extras.shelf_object;
@@ -131,16 +131,15 @@ function BaseFormModal(modalid,  data_extras={})  {
 }
 
 function show_me_modal(instance, event){
-    var modalid = $(instance).data('modalid');
+    var modalid= $(instance).data('modalid');
 
-    if(form_modals.hasOwnProperty(modalid) ){
-        form_modals[modalid].showmodal(instance);
-    }else{
-        var formmodal=BaseFormModal("#"+modalid);
-         formmodal.init(instance);
-         form_modals[modalid].showmodal(instance);
-         form_modals[modalid]=formmodal;
+    if(!form_modals.hasOwnProperty(modalid) ){
+        var formmodal= BaseFormModal("#"+modalid);
+        formmodal.init(instance);
+        form_modals[modalid]=formmodal;
     }
+    form_modals[modalid].showmodal(instance);
+    return false;
 }
 
 
