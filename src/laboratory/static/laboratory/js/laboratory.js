@@ -1,5 +1,5 @@
 var objecttype= ""
-document.shelf_discard= undefined;
+document.shelf_discard = undefined;
 
 function convertFormToJSON(form, prefix="") {
   const re = new RegExp("^"+prefix);
@@ -55,11 +55,15 @@ var form_modals = {}
 function BaseFormModal(modalid,  data_extras={})  {
     var modal = $(modalid);
     var form = modal.find('form');
+    let prefix=form.find(".form_prefix").val();
+        if(prefix.length !== 0){
+            prefix = prefix+"-"
+        }
     return {
         "instance": modal,
         "form": form,
         "url": form[0].action,
-        "prefix": form.find(".form_prefix").val(),
+        "prefix": prefix,
         "type": "POST",
         "data_extras": data_extras,
         "init": function(btninstance){
@@ -68,6 +72,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
         },
         "addBtnForm": function(instance){
+
             return function(event){
                 $.ajax({
                     url: instance.url,
@@ -89,11 +94,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                         var errors = xhr.responseJSON.errors;
                         if(errors){  // form errors
                             form.find('ul.form_errors').remove();
-                            let prefix=instance.prefix;
-                            if(prefix.length !== 0){
-                                prefix = prefix+"-"
-                            }
-                            form_field_errors(form, errors, prefix);
+                            form_field_errors(form, errors, instance.prefix);
                         }else{ // any other error
                             Swal.fire({
                                 icon: 'error',
@@ -145,7 +146,13 @@ function show_me_modal(instance, event){
     return false;
 }
 
-
+function shelf_action_modals(modalid){
+    var label_a = document.createElement("a");
+    label_a.setAttribute("data-modalid", modalid)
+    show_me_modal(label_a,null)
+    form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
+    return false;
+}
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
@@ -155,36 +162,32 @@ const tableObject={
     addObjectResponse: function(datarequest){
             /**Se va a mejorar**/
             let id=""
+            let modalid=""
             if(objecttype==0){
+                modalid="reactive_modal";
+                  id='#id_rf-';
                 if(document.shelf_discard){
-                    $("#reactive_refuse_form").modal('show');
+                  modalid="reactive_refuse_modal";
                     id='#id_rff-';
-                }else{
-                    $("#reactive_form").modal('show');
-                    id='#id_rf-';
                 }
             }else if(objecttype==1){
-                if(document.shelf_discard){
-                    $("#material_refuse_form").modal('show');
-                    id='#id_mff-';
-                }else{
-                $("#material_form").modal('show');
+                    modalid="material_modal";
                     id='#id_mf-';
-                }
-
+                    if(document.shelf_discard){
+                        modalid="material_refuse_modal";
+                        id='#id_mff-';
+                   }
             }else{
-                if(document.shelf_discard){
-                    $("#equipment_refuse_form").modal('show');
-                    id='#id_erf-';
-                }else{
-                    $("#equipment_form").modal('show');
+                    modalid="equipment_modal";
                     id='#id_ef-';
-
+                if(document.shelf_discard){
+                    modalid="equipment_refuse_modal";
+                    id='#id_erf-';
                 }
             }
+            shelf_action_modals(modalid)
             update_selects(id+"object",datarequest)
             update_selects(id+"measurement_unit",{'shelf':datarequest['shelf']})
-
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
@@ -269,6 +272,7 @@ $(document).ready(function(){
                 className: 'btn-sm btn-success ml-4',
                 attr :{
                     'data-type':'2'
+
                 },
             },
             {
@@ -354,5 +358,5 @@ function update_selects(id,data){
                         }
                     },
            });
-}
 
+    }
