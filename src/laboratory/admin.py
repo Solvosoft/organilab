@@ -59,6 +59,7 @@ admin.site.register(models.RegisterUserQR)
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
 admin.site.register(models.InformScheduler, InformSchedulerAdmin)
+admin.site.register(models.ShelfObjectObservation)
 
 
 admin.site.site_header = _('Organilab Administration site')
