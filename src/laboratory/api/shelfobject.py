@@ -18,13 +18,13 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers, views
-from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer, ShelfObjectDetailSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ReservedProductsSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, ShelfObjectDetailSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
