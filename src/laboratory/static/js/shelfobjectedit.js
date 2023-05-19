@@ -4,13 +4,15 @@ function processResponseshelfobject(dat){
     $("#closemodal").html(dat["inner-fragments"]["#closemodal"]);
     datatableelement.ajax.reload();
 }
+
 //Refactored delete method for Shelf Object
 function shelfObjectDelete(obj, shelf_object_id, text) {
     let message = gettext("Are you sure you want to delete")
-    message = `${message} ${text}?`
+    message = `${message} "${text}"?`
     let url = $(obj).data('url')
     Swal.fire({ //Confirmation for delete
-        title: message,
+        title: gettext("Are you sure?"),
+        text: message,
         confirmButtonText: gettext("Confirm"),
         showCloseButton: true,
         denyButtonText: gettext('Cancel'),
@@ -22,27 +24,35 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
                     method: "delete",
                     headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
                     body: JSON.stringify({'shelfobj': shelf_object_id})})
-                    .then(response => response.json())
+                    .then(response => {
+                        let data = response.json();
+                        if(response.ok){ return data; }
+                        return Promise.reject(data);  // then it will go to the catch if it is an error code
+                    })
                     .then(data => {
-                        if (data['detail']){
-                            Swal.fire({
-                                title: gettext('Success'),
-                                text: data['detail'],
-                                icon: 'success',
-                                timer: 1500
-                            })
-                            datatableelement.ajax.reload()
-                        }else{
-                            //Displays API error message
+                        Swal.fire({
+                            title: gettext('Success'),
+                            text: data['detail'],
+                            icon: 'success',
+                            timer: 1500
+                        });
+                        datatableelement.ajax.reload();
+                    })
+                    .catch(data => {
+                        data.then(data => {
+                            let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                            if(data['shelfobj']){
+                                error_msg = data['shelfobj'][0];  // specific api errors
+                            }
                             Swal.fire({
                                 title: gettext('Error'),
-                                text: data['shelfobj'][0],
+                                text: error_msg,
                                 icon: 'error'
-                            })
-                        }
-                    })
+                            });
+                        });
+                    });
             }
-    })
+        });
 }
 
 function processResponseshelfobjectUpdate(dat) {
