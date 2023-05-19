@@ -68,7 +68,8 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSe
 
     def get_object_inst(self, obj):
         return obj.object
-=======
+
+
 class TransferObjectSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
     laboratory_send = serializers.SerializerMethodField()
@@ -93,4 +94,3 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
->>>>>>> base/laboratory_view
