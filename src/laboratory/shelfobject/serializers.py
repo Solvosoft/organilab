@@ -48,8 +48,6 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
 
-
-<<<<<<< HEAD
 class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
     object_detail = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
