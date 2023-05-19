@@ -23,7 +23,8 @@ from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, ShelfSerializer, \
+    ValidateShelfSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -87,7 +88,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "list_comments": [],
         "update_status": [],
         "move_shelfobject_to_shelf": [],
-        "shelf_availability_information": [],
+        "shelf_availability_information": ["laboratory.view_shelf"],
     }
     
 
@@ -423,6 +424,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "move_shelfobject_to_shelf")
         pass
 
+    def get_serializer_class(self):
+        return ValidateShelfSerializer
+
     @action(detail=False, methods=['get'])
     def shelf_availability_information(self, request, org_pk, lab_pk, **kwargs):
         """
@@ -434,11 +438,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
-        pass
+        self.serializer_class = ValidateShelfSerializer
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        errors, data = {}, {}
+
+        if serializer.is_valid():
+            shelf = serializer.validated_data['shelf']
+            data = ShelfSerializer(shelf).data
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(data, status=status.HTTP_200_OK)
+
 
 """
 - Búsqueda e interfaz gráfica Marta 
-- Marce Agregar columnas a la tabla  (Tipo de ShelfObject, Sustance)
 - Kendric Edit shelf para poner el -1 como infinito
 
 """
