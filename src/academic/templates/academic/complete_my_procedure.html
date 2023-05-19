@@ -18,7 +18,16 @@
         <div id="left-col" class="col-md-12">
             <form id="procedure_form">
                 {% csrf_token %}
-                <div id="formio"></div>
+                <div id="formio">
+                    {% for step in steps %}
+                    <div id="step-{{ step.pk }}" class="pb-2">
+                        <label id="step-label-{{ step.pk }}" class="col-form-label" for="step-input-{{ step.pk }}" ref="label">{{ step.title }}</label>
+                        <div ref="element">
+                            <input id="step-input-{{ step.pk }}" class="form-control">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
                 {% if my_procedure.status == 'Eraser' %}
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
@@ -57,11 +66,6 @@ document.getElementById("form_name").textContent = "{{my_procedure.name}}";
 var components = { components: schema["components"] };
 const saved="{% trans 'Saved successfully' %}";
 
-window.onload = function(schema) {
-    Formio.createForm(document.getElementById('formio'), components);
-    get_comments("{{my_procedure.pk}}");
-
-}
 let status = "{{my_procedure.status}}"
 let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
 var message ={
