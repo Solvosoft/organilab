@@ -102,3 +102,45 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
             self.shelf=shelf
 
         return self.list(request, pk, **kwargs)
+
+@register_lookups(prefix="recipientsearch", basename="recipientsearch")
+class RecipientModelLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Object
+    fields = ['code', 'name']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org_pk:
+            organizations = get_pk_org_ancestors(self.org_pk.pk)
+            queryset = queryset.filter(organization__in=organizations,type=1)
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def retrieve(self, request, pk, **kwargs):
+
+        self.org_pk=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+        user_is_allowed_on_organization(request.user, self.org_pk)
+
+        return self.list(request, pk, **kwargs)
+
+@register_lookups(prefix="shelfobject_status_search", basename="shelfobject_status_search")
+class ShelfObject_StatusModelLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(key='shelfobject_status')
+        return queryset
+
+    def retrieve(self, request, pk, **kwargs):
+
+        self.org_pk=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+        user_is_allowed_on_organization(request.user, self.org_pk)
+
+        return self.list(request, pk, **kwargs)
