@@ -1,5 +1,6 @@
 var objecttype= ""
 document.shelf_discard = undefined;
+document.prefix=""
 
 function convertFormToJSON(form, prefix="") {
   const re = new RegExp("^"+prefix);
@@ -186,8 +187,8 @@ const tableObject={
                     modalid="equipment_refuse_modal";
                     id='#id_erf-';
                 }
-                console.log(id)
             }
+            document.prefix=id;
             shelf_action_modals(modalid)
             update_selects(id+"object",datarequest)
             update_selects(id+"status",datarequest)
@@ -419,7 +420,7 @@ $(".add_status").click(function(){
       dataType: 'JSON',
       success: function(data){
       Swal.fire({
-        title: gettext('Saved the new shelfobject status'),
+        text: gettext('Saved the new shelfobject status'),
           icon: 'success',
       })
       },
@@ -433,3 +434,14 @@ $(".add_status").click(function(){
     }
 });
 });
+
+$(".check_limit").on('ifChanged', function(event){
+    prefix=document.prefix;
+    if($(this).is(":checked")){
+        $(prefix+'minimum_limit').parent().parent().hide()
+        $(prefix+'maximum_limit').parent().parent().hide()
+    }else{
+        $(prefix+'minimum_limit').parent().parent().show()
+        $(prefix+'maximum_limit').parent().parent().show()
+    }
+})
