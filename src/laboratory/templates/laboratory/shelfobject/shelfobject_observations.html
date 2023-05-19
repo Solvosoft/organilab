@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+<div class="offset-md-2 col-md-8">
+        <div class="page-header" align="center">
+          <h3 class="heading-1" ><span> {% trans 'Observations' %}  </span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+      <table id="observationTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th>{% trans 'Action Taken' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for e in context %}
+                <td>e.action_taken</td>
+                <td>e.description</td>
+                <td><button class="btn btn-primary"></button></td>
+            {% empty %}
+                <td>No observations yet</td>
+            {% endfor %}
+            </tbody>
+      </table>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+
+<script>
+
+$(document).ready(function() {
+        $('#observationTable').DataTable();
+});
+</script>
+
+
+
+{% endblock %}
