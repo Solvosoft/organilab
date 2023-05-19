@@ -60,6 +60,30 @@ class ValidateShelfSerializer(serializers.Serializer):
 
 class ShelfSerializer(serializers.ModelSerializer):
 
+    type = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
+    measurement_unit = serializers.SerializerMethodField()
+    quantity_storage_status = serializers.SerializerMethodField()
+    percentage_storage_status = serializers.SerializerMethodField()
+
+    def get_type(self, obj):
+        return str(obj.type) if obj.type else ""
+
+    def get_quantity(self, obj):
+        quantity = obj.quantity
+        if quantity == -1:
+            quantity = _("Unlimited storage")
+        return quantity
+
+    def get_measurement_unit(self, obj):
+        return obj.get_measurement_unit_display()
+
+    def get_quantity_storage_status(self, obj):
+        return f'{obj.get_total_refuse()} {_("of")} {obj.quantity}'
+
+    def get_percentage_storage_status(self, obj):
+        return f'{obj.get_refuse_porcentage()}% {_("of")} 100%'
+
     class Meta:
         model = Shelf
-        fields = ['name', 'quantity', 'discard', 'measurement_unit']
+        fields = ['name', 'type', 'quantity', 'discard', 'measurement_unit', 'quantity_storage_status', 'percentage_storage_status']
