@@ -3,7 +3,7 @@ import logging
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 
-from laboratory.models import Laboratory, ShelfObject, TranferObject
+from laboratory.models import Laboratory, ShelfObject, TranferObject, REQUESTED
 
 logger = logging.getLogger('organilab')
 
@@ -32,7 +32,7 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(f'TransferOutShelfObjectSerializer --> attr.in_where_laboratory_id '
                          f'({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})') 
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object does not exist in the laboratory."))
         return attr
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
@@ -43,9 +43,8 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
         if attr.in_where_laboratory_id != self.context.get('laboratory_id'):
             logger.debug(f'ShelfObjectDeleteSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object does not exist in the laboratory."))
         return attr
-
 
 class TransferObjectSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
@@ -71,3 +70,14 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class TransferObjectDenySerializer(serializers.Serializer):
+    transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
+
+    def validate_transfer_object(self, value):
+        attr = super().validate(value)
+        if attr.laboratory_received_id != self.context.get('laboratory_id'):
+            logger.debug(f'TransferObjectDeleteSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
+                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
+            raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
+        return attr
