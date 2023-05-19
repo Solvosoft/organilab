@@ -79,7 +79,7 @@ def create_my_procedures(request, *args, **kwargs):
         content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
         my_procedure.content_type = content
         my_procedure.object_id = int(laboratory)
-        my_procedure.schema = get_components_url(request, my_procedure.custom_procedure.schema, org, laboratory)
+        # my_procedure.schema = get_components_url(request, my_procedure.custom_procedure.schema, org, laboratory)
         my_procedure.organization = organization
         my_procedure.created_by = request.user
         my_procedure.save()
@@ -116,6 +116,7 @@ def update_my_procedure_data(item, data):
 @permission_required('academic.change_procedurestep')
 def complete_my_procedure(request, *args, **kwargs):
     my_procedure = MyProcedure.objects.get(pk=kwargs.get('pk'))
+    steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)  # Steps to be shown
     schema = my_procedure.schema
     laboratory = kwargs.get('lab_pk')
     org = kwargs.get('org_pk')
@@ -125,7 +126,8 @@ def complete_my_procedure(request, *args, **kwargs):
         'my_procedure': my_procedure,
         'laboratory': laboratory,
         'org_pk': org,
-        'form': CommentProcedureStepForm
+        'form': CommentProcedureStepForm,
+        'steps': steps
     }
 
     if request.method == 'POST':

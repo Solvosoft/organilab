@@ -15,7 +15,6 @@ class MyProcedureForm(forms.ModelForm, GTForm):
         super(MyProcedureForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            print(self.fields)
             self.fields['custom_procedure'].queryset = Procedure.objects.filter()
         else:
             self.fields['custom_procedure'].queryset = Procedure.objects.none()
