@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n gtsettings %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
 {% endblock %}
@@ -10,7 +11,7 @@
 <div class="row">
 <div class="offset-md-2 col-md-8">
         <div class="page-header" align="center">
-          <h3 class="heading-1" ><span> {% trans 'Observations' %}  </span></h3>
+          <h3 class="heading-1" ><span> {% trans 'Observations' %} </span></h3>
         </div>
 </div>
 </div>
@@ -20,33 +21,47 @@
       <table id="observationTable" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
-                    <th> </th>
                     <th>{% trans 'Action Taken' %}</th>
                     <th>{% trans 'Description' %}</th>
                     <th>{% trans 'Actions' %}</th>
                 </tr>
             </thead>
-            <tbody>
-            {% for e in context %}
-                <td>e.action_taken</td>
-                <td>e.description</td>
-                <td><button class="btn btn-primary"></button></td>
-            {% empty %}
-                <td>No observations yet</td>
-            {% endfor %}
-            </tbody>
+            <tbody></tbody>
       </table>
     </div>
 </div>
 {% endblock %}
 {% block js %}
-
+{{block.super}}
+<script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
 <script>
 
-$(document).ready(function() {
-        $('#observationTable').DataTable();
-});
+(function(){
+    $("#observationTable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: "{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}",
+            dataSrc: 'observations'
+        },
+        columns: [
+            {"data": "action_taken"},
+            {"data": "description"},
+            {
+                "data": null,
+                "render": function(data, type, row, meta) {
+                    var buttonHtml = '<a class="ms-2" href="" title="{% trans 'Edit' %}"><i class="fa fa-edit" aria-hidden="true"></i></a>';
+                    return buttonHtml;
+                }
+            }
+        ],
+        "language": {
+            "url": "{% get_datatables_translation %}"
+        }
+    });
+})(jQuery);
 </script>
+
 
 
 

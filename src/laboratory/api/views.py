@@ -1,8 +1,10 @@
+import requests
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.db.models import Value, DateField
-from django.shortcuts import get_object_or_404
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
@@ -12,6 +14,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from laboratory.api import serializers
@@ -20,8 +23,9 @@ from laboratory.api.serializers import ReservedProductsSerializer, ReservationSe
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer, ShelfLabViewSerializer
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
-    Laboratory, InformsPeriod, ShelfObject, Shelf
+    Laboratory, InformsPeriod, ShelfObject, Shelf, ShelfObjectObservation
 from laboratory.utils import get_logentries_org_management
+from laboratory.views.djgeneric import ListView
 from reservations_management.models import ReservedProducts
 
 
@@ -291,4 +295,6 @@ class ShelfList(APIView):
         return Response({'data':data})
 
 
-
+def ShelfObjectObservationView(request, org_pk, lab_pk, pk, **kwargs):
+    template = 'laboratory/shelfobject/shelfobject_observations.html'
+    return render(request, template, {'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})

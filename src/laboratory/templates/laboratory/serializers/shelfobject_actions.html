@@ -12,7 +12,7 @@
 <a class="ms-2" data-bs-toggle="modal" data-bs-target="#addmodal" title="{% trans 'Add' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="transfer_out_obj_id_modal" title="{% trans 'Transfer Out' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
 <a class="ms-2" data-bs-toggle="modal" data-bs-target="#substractmodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
-<a class="ms-2" href="" target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
+<a class="ms-2" href="{% url 'laboratory:get_shelfobject_log' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 <a class="ms-2" href="" title="{% trans 'Move' %}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
 
 {% if perms.laboratory.do_report %}

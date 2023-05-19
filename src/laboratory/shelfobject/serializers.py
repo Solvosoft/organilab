@@ -3,7 +3,7 @@ import logging
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from laboratory.api.serializers import BaseShelfObjectSerializer
-from laboratory.models import Laboratory, ShelfObject, TranferObject
+from laboratory.models import Laboratory, ShelfObject, TranferObject, ShelfObjectObservation
 
 logger = logging.getLogger('organilab')
 
@@ -94,3 +94,8 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class ShelfObjectObservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShelfObjectObservation
+        fields = ['action_taken', 'description']
