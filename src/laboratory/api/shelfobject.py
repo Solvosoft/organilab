@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.http import JsonResponse
@@ -26,7 +28,7 @@ from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Tr
 from laboratory.models import REQUESTED
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
     ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
-    ShelfObjectDetailSerializer
+    ShelfObjectDetailSerializer, ShelfObjectObservationSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -415,8 +417,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_comments")
         pass
 
-    @action(detail=False, methods=['post'])
-    def list_comments(self, request, org_pk, lab_pk, **kwargs):
+    @action(detail=True, methods=['get'])
+    def list_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Daniel
         :param request:
@@ -426,7 +428,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
-        pass
+        queryset = get_object_or_404(ShelfObject, pk=pk)
+        serializer = ShelfObjectObservationSerializer(queryset.shelfobjectobservation_set.all(), many=True)
+        data = json.loads(json.dumps(serializer.data))
+        lisst = [e for e in data]
+        return JsonResponse({'observations': lisst})
 
     @action(detail=False, methods=['put'])
     def update_status(self, request, org_pk, lab_pk, **kwargs):
