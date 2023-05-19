@@ -246,8 +246,15 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         queryset = get_object_or_404(ShelfObject, pk=pk)
         serializer = ShelfObjectDetailSerializer(queryset)
-        qr = QRModel.objects.get(content_type__app_label=queryset._meta.app_label, object_id=queryset.id, organization=org_pk, content_type__model= queryset._meta.model_name)
-        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk, 'qr':qr.b64_image})
+        qr = QRModel.objects.get(content_type__app_label=queryset._meta.app_label,
+                                 object_id=queryset.id,
+                                 organization=org_pk,
+                                 content_type__model= queryset._meta.model_name)
+        context = {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk}
+        if qr:
+            image = qr.b64_image
+            context['qr'] = image
+        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', context)
         return JsonResponse({'detail': render_str})
 
     @action(detail=False, methods=['post'])
