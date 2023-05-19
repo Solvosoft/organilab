@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-19 11:02-0600\n"
-"PO-Revision-Date: 2023-05-19 11:05-0600\n"
+"POT-Creation-Date: 2023-05-19 11:25-0600\n"
+"PO-Revision-Date: 2023-05-19 11:26-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -107,26 +107,30 @@ msgstr "Identificador del laboratorio"
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
-#: laboratory/static/js/shelfobjectedit.js:14
+#: laboratory/static/js/shelfobjectedit.js:13
+msgid "Are you sure?"
+msgstr "¿Esta seguro?"
+
+#: laboratory/static/js/shelfobjectedit.js:15
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: laboratory/static/js/shelfobjectedit.js:16
+#: laboratory/static/js/shelfobjectedit.js:17
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: laboratory/static/js/shelfobjectedit.js:29
+#: laboratory/static/js/shelfobjectedit.js:30
 #: laboratory/static/laboratory/js/laboratory.js:79
 msgid "Success"
 msgstr "Éxito"
 
-#: laboratory/static/js/shelfobjectedit.js:38
-#: laboratory/static/js/shelfobjectedit.js:57
+#: laboratory/static/js/shelfobjectedit.js:39
+#: laboratory/static/js/shelfobjectedit.js:58
 #: laboratory/static/laboratory/js/laboratory.js:97
 msgid "Error"
 msgstr "Error"
 
-#: laboratory/static/js/shelfobjectedit.js:58
+#: laboratory/static/js/shelfobjectedit.js:59
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
