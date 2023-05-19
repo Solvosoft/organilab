@@ -285,10 +285,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 self.serializer_class['method'](serializer,limit_serializer)
                 return Response(status=status.HTTP_201_CREATED)
             else:
+                print(limit_serializer.errors)
                 errors.update(limit_serializer.errors)
         else:
+            print(serializer.errors)
             errors.update(serializer.errors)
-        return Response({"errors":errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['post'])
