@@ -161,7 +161,8 @@ const tableObject={
         ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, tableObject.addObjectResponse);
     },
     showTransfers: function(data){
-        transferListDataTable.ajax.reload();
+        // make sure to get the latest data on the table before opening the modal
+        $('#transfer-list-datatable').DataTable().ajax.reload();
         $("#transfer-list-modal").modal('show');
     },
     get_active_shelf: function(){
@@ -187,6 +188,58 @@ const tableObject={
     }
 
 };
+
+// transfer delete (option inside transfer in table)
+function transferInObjectDeny(btn) {
+    let transferListDataTable = $('#transfer-list-datatable').DataTable()
+    let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
+    let message = gettext("Are you sure you want to deny the transfer of")
+    message = `${message} "${transfer_data.object}"?`
+    Swal.fire({ //Confirmation for delete
+        title: gettext("Are you sure?"),
+        text: message,
+        confirmButtonText: gettext("Confirm"),
+        showCloseButton: true,
+        denyButtonText: gettext('Cancel'),
+        showDenyButton: true,
+        })
+        .then(function(result) {
+            if (result.isConfirmed) {
+                fetch(document.urls.transfer_in_deny, {
+                    method: "delete",
+                    headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+                    body: JSON.stringify({'transfer_object': transfer_data.id})})
+                    .then(response => {
+                        if(response.ok){ return response.json(); }
+                        return Promise.reject(response);  // then it will go to the catch if it is an error code
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            title: gettext('Success'),
+                            text: data['detail'],
+                            icon: 'success',
+                            timer: 1500
+                        });
+                        transferListDataTable.ajax.reload();
+                    })
+                    .catch(response => {
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                        response.json().then(data => {  // there was something in the response from the API regarding validation
+                            if(data['transfer_object']){
+                                error_msg = data['transfer_object'][0];  // specific api validation errors
+                            }
+                        })
+                        .finally(() => {
+                            Swal.fire({
+                                title: gettext('Error'),
+                                text: error_msg,
+                                icon: 'error'
+                            });
+                        });
+                    });
+            }
+    })
+}
 
 $(document).ready(function(){
     const searchLaboratory={
@@ -264,8 +317,7 @@ $(document).ready(function(){
     }, addfilter=false);
 
     function objShowBool(data, type, row, meta){ return data ? '<i class="fa fa-check-circle" title="' + data + '">': '<i class="fa fa-times-circle" title="' +  data + '">'; };
-
-    transferListDataTable = createDataTable('#transfer-list-datatable', document.urls.transfer_list, {
+    createDataTable('#transfer-list-datatable', document.urls.transfer_list, {
         columns: [
             {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
             {data: "object", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
@@ -274,8 +326,8 @@ $(document).ready(function(){
             {data: "mark_as_discard", name: "mark_as_discard", title: gettext("Mark as Discard"), type: "boolean", render: objShowBool, visible: true },
             {data: "update_time", name: "update_time", title: gettext("Date"), type: "date", render: DataTable.render.datetime(), visible: true},
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
-             defaultContent: `<a href='#' class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
-                              <a href='#' class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-trash"></i></a>`
+             defaultContent: `<a href="#" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
+                              <a onclick="transferInObjectDeny(this);" class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-times-circle"></i></a>`
             }
         ],
         paging: true,

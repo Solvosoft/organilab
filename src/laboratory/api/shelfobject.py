@@ -24,7 +24,8 @@ from laboratory.models import OrganizationStructure, \
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
+    TransferObjectDenySerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -72,10 +73,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
-        "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject"], 
-        "transfer_in": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", 
-                        "laboratory.change_transferobject", "laboratory.view_transferobject"],
+        "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject", "laboratory.change_shelfobject"], 
+        "transfer_in": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", "laboratory.view_shelfobject",
+                        "laboratory.change_tranferobject", "laboratory.view_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
+        "transfer_in_deny": ["laboratory.view_tranferobject", "laboratory.delete_tranferobject"],
         "create_shelfobject": [],
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
@@ -317,7 +319,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         Returns the transfers that have the provided laboratory saved as laboratory_received, this for the ones that have not been approved yet.
         :param org_pk: pk of the organization being queried
-        :param lab_pk: pk of the laboratory being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
         :return: JsonResponse with the transfer request information and the number of records
         """
@@ -336,7 +338,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         response_data = {'data': data, 'recordsTotal': self.queryset.count(),
                          'recordsFiltered': self.queryset.count(),
                          'draw': self.request.query_params.get('draw', 1)}
-        return Response(self.get_serializer(response_data).data)
+        return JsonResponse(self.get_serializer(response_data).data)
+    
+    @action(detail=False, methods=["delete"])
+    def transfer_in_deny(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Denies a transfer in, which means it will be deleted from database and the change added to the log
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or error info) 
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_deny")
+        serializer = TransferObjectDenySerializer(data=request.data, context={"laboratory_id": lab_pk})
+        serializer.is_valid(raise_exception=True)
+        utils.organilab_logentry(self.request.user, serializer.validated_data['transfer_object'], DELETION, relobj=self.laboratory)
+        serializer.validated_data['transfer_object'].delete()
+        return JsonResponse({'detail': _('The transfer in was denied successfully.')}, status=status.HTTP_200_OK)
+        
         
     @action(detail=False, methods=['get'])
     def detail_pdf(self, request, org_pk, lab_pk, **kwargs):
