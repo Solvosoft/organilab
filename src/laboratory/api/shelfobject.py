@@ -22,8 +22,9 @@ from laboratory.logsustances import log_object_change
 from laboratory.models import OrganizationStructure, \
     ShelfObject, Laboratory
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
+from laboratory.models import REQUESTED
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
-    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer
+    ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -72,7 +73,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
         "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject"], 
-        "transfer_in": ["laboratory.add_tranferobject"],
+        "transfer_in": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", 
+                        "laboratory.change_transferobject", "laboratory.view_transferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "create_shelfobject": [],
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
@@ -310,18 +312,32 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in")
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marta
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Returns the transfers that have the provided laboratory saved as laboratory_received, this for the ones that have not been approved yet.
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory being queried
+        :param kwargs: other extra params
+        :return: JsonResponse with the transfer request information and the number of records
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_available_list")
-
+        
+        self.serializer_class = TransferObjectDataTableSerializer
+        self.pagination_class = LimitOffsetPagination
+        self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+        self.search_fields = ['object__object__name', 'quantity', 'laboratory_send__name', 'update_time', 'mark_as_discard']  # for the global search
+        self.ordering_fields = ['object__object__name', 'quantity', 'laboratory_send__name', 'update_time', 'mark_as_discard']
+        self.ordering = ('-update_time',)  # default order
+        
+        self.queryset = TranferObject.objects.filter(laboratory_received=lab_pk, status=REQUESTED)
+        queryset = self.filter_queryset(self.queryset)
+        data = self.paginate_queryset(queryset)
+        response_data = {'data': data, 'recordsTotal': self.queryset.count(),
+                         'recordsFiltered': self.queryset.count(),
+                         'draw': self.request.query_params.get('draw', 1)}
+        return Response(self.get_serializer(response_data).data)
+        
     @action(detail=False, methods=['get'])
     def detail_pdf(self, request, org_pk, lab_pk, **kwargs):
         """
