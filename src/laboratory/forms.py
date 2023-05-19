@@ -666,7 +666,7 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
             'quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#reactive_refuse_form"}),
             'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'batch': genwidgets.TextInput
 
@@ -724,7 +724,7 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#material_form"}),
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
@@ -786,7 +786,7 @@ class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
                   "course_name", "limits"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#material_refuse_form"}),
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
@@ -846,7 +846,7 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
+            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#equipment_form"}),
             'quantity': genwidgets.TextInput,
             'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
