@@ -543,6 +543,11 @@ class ShelfObjectLimitsForm(GTForm, forms.ModelForm):
 
 class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
+    container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True, label=_("Container"))
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -569,7 +574,21 @@ class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
             }),
             label=_("Measurement unit"))
 
-
+        self.fields['container'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                      }),
+            label=_("Recipient"),
+            help_text=_("Search by name")
+        )
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
         quantity = self.cleaned_data['quantity']
@@ -595,20 +614,22 @@ class ShelfObjectReactiveForm(forms.ModelForm,GTForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'course_name': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
             'limit_quantity': genwidgets.TextInput,
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'batch': genwidgets.TextInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
             'marked_as_discard': genwidgets.CheckboxInput,
         }
 
 class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
+    container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -631,6 +652,21 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
                 'data-s2filter-shelf': '#id_shelf',
             }),
             label=_("Measurement unit"))
+        self.fields['container'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                      }),
+            label=_("Recipient"),
+            help_text=_("Search by name")
+        )
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
         self.fields['course_name'].label = _("Description")
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
@@ -658,21 +694,22 @@ class ShelfObjectRefuseReactiveForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","limits","batch","objecttype"]
-        exclude = ['creator',"laboratory_name"]
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","batch","objecttype","container"]
+        exclude = ['creator',"laboratory_name",'limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': genwidgets.TextInput,
             'quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#reactive_refuse_form"}),
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'batch': genwidgets.TextInput
 
         }
 class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -696,7 +733,12 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
                 'data-s2filter-shelf': '#id_shelf'
             }),
             label=_("Measurement unit"))
-
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
         quantity = self.cleaned_data['quantity']
@@ -721,12 +763,10 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#material_form"}),
             'quantity': genwidgets.TextInput,
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
@@ -734,6 +774,9 @@ class ShelfObjectMaterialForm(forms.ModelForm,GTForm):
 
 class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -758,6 +801,12 @@ class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
                 'data-s2filter-shelf': '#id_shelf'
             }),
             label=_("Measurement unit"))
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -783,18 +832,19 @@ class ShelfObjectRefuseMaterialForm(GTForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
-                  "course_name", "limits"]
+                  "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#material_refuse_form"}),
             'quantity': genwidgets.TextInput,
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
 class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -818,7 +868,12 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
                 'data-s2filter-shelf': '#id_shelf'
             }),
             label=_("Measurement unit"))
-
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
         quantity = self.cleaned_data['quantity']
@@ -843,12 +898,10 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name","limits"]
+        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status'),'data-dropdownparent': "#equipment_form"}),
             'quantity': genwidgets.TextInput,
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
@@ -856,6 +909,9 @@ class ShelfObjectEquimentForm(forms.ModelForm,GTForm):
 
 class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+    minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
+    maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -878,6 +934,12 @@ class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
                 'data-s2filter-shelf': '#id_shelf'
             }),
             label=_("Measurement unit"))
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+                'data-dropdownparent': "#reactive_form",
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
 
@@ -905,12 +967,10 @@ class ShelfObjectRefuseEquimentForm(GTForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
-                  "course_name", "limits"]
+                  "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'status': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobject_status')}),
             'quantity': genwidgets.TextInput,
-            'limits': genwidgets.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
             'limit_quantity': genwidgets.TextInput,
             'course_name': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
