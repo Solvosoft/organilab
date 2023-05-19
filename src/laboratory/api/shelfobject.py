@@ -430,12 +430,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['get'])
     def shelf_availability_information(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        :param request: http request
+        :param org_pk: organization related to user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param kwargs: extra params
+        :return: JsonResponse with shelf availability information
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
