@@ -2,10 +2,11 @@ import logging
 from django.utils.timezone import now
 from rest_framework import serializers
 from organilab.settings import DATETIME_INPUT_FORMATS
-from laboratory.models import Laboratory, ShelfObject, Provider
 from reservations_management.models import ReservedProducts
 from django.utils.translation import gettext_lazy as _
+from laboratory.models import Laboratory, ShelfObject, TranferObject, Provider
 logger = logging.getLogger('organilab')
+
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
@@ -107,3 +108,29 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
+
+
+class TransferObjectSerializer(serializers.ModelSerializer):
+    object = serializers.SerializerMethodField()
+    laboratory_send = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
+    
+    def get_object(self, obj):
+        return obj.object.object.name
+    
+    def get_laboratory_send(self, obj):
+        return obj.laboratory_send.name
+    
+    def get_quantity(self, obj):
+        return f"{obj.quantity} {obj.object.get_measurement_unit_display()}"
+    
+    class Meta:
+        model = TranferObject
+        fields = ("id", "object", "quantity", "laboratory_send", "update_time", "mark_as_discard")
+    
+    
+class TransferObjectDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=TransferObjectSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
