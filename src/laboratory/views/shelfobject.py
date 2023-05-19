@@ -11,6 +11,7 @@ from base64 import b64decode
 import cairosvg
 import base64
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
@@ -30,12 +31,14 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
     ShelfObjectListForm, ValidateShelfForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
+from presentation.models import QRModel
 from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
@@ -760,9 +763,17 @@ def edit_limit_object(request, *args, **kwargs):
 @login_required
 @permission_required('laboratory.view_shelfobject')
 def download_shelfobject_qr(request, org_pk, lab_pk, pk):
+    org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, org)
+    lab = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+    organization_can_change_laboratory(lab, org)
     shelfobject = get_object_or_404(ShelfObject, pk=pk)
     try:
-        file = shelfobject.shelf_object_qr
+        qr = QRModel.objects.get(content_type__app_label=shelfobject._meta.app_label,
+                                 object_id=shelfobject.id,
+                                 organization=org_pk,
+                                 content_type__model=shelfobject._meta.model_name)
+        file = qr.qr_image
         response = HttpResponse(file, content_type='image/svg')
     except IOError:
         return HttpResponseNotFound()

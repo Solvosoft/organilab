@@ -10,12 +10,12 @@
     </div>
     <div class="modal-body">
 
-        {% if object.shelf_object_qr %}
+        {% if qr %}
             <div class="form-group row">
-                <img src="data:image/png;base64, {{qr}}" alt="" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
+                <img src="data:image/svg+xml;base64,{{qr}}" alt="" style="width: 40%; display: block; margin-left: auto; margin-right: auto;">
             </div>
             <div class="form-group row justify-content-center">
-                <div class="col-5 text-center">
+                <div class="col-5 text-center" style="margin-bottom: 5">
                     <a href="{% url 'laboratory:download_shelfobject_qr' lab_pk=lab_pk org_pk=org_pk pk=object.id %}" class="btn btn-success"><i class="fa fa-download" ></i> {%  trans 'Download QR' %}</a>
                 </div>
             </div>
