@@ -160,33 +160,37 @@ const tableObject={
 
     },
     addObjectResponse: function(datarequest){
-            /**Se va a mejorar**/
             let id=""
             let modalid=""
+            discard= document.shelf_discard.toLowerCase()==='true';
             if(objecttype==0){
                 modalid="reactive_modal";
                   id='#id_rf-';
-                if(document.shelf_discard){
+                if(discard){
                   modalid="reactive_refuse_modal";
                     id='#id_rff-';
                 }
+                update_selects(id+"recipient",{})
+
             }else if(objecttype==1){
                     modalid="material_modal";
                     id='#id_mf-';
-                    if(document.shelf_discard){
+                    if(discard){
                         modalid="material_refuse_modal";
                         id='#id_mff-';
                    }
             }else{
                     modalid="equipment_modal";
                     id='#id_ef-';
-                if(document.shelf_discard){
+                if(discard){
                     modalid="equipment_refuse_modal";
                     id='#id_erf-';
                 }
+                console.log(id)
             }
             shelf_action_modals(modalid)
             update_selects(id+"object",datarequest)
+            update_selects(id+"status",datarequest)
             update_selects(id+"measurement_unit",{'shelf':datarequest['shelf']})
     },
     addObject: function( e, dt, node, config ){
@@ -360,3 +364,36 @@ function update_selects(id,data){
            });
 
     }
+$(".add_status").click(function(){
+    url = document.url_status;
+    Swal.fire({
+        title: gettext('Create a new status'),
+        input: 'text',
+        inputAttributes: {required: 'true'},
+        showCancelButton: true,
+        CancelButtonText: gettext("Cancel"),
+        confirmButtonText: gettext("Send"),
+    }).then((result) => {
+      if(result.value){
+      $.ajax({
+      type: "POST",
+      url: url,
+      data: JSON.stringify({"description":result.value}),
+      headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+      dataType: 'JSON',
+      success: function(data){
+      Swal.fire({
+        title: gettext('Saved the new shelfobject status'),
+          icon: 'success',
+      })
+      },
+      error: function(xhr, resp, text) {
+       Swal.fire({
+        title: text,
+          icon: 'error',
+    })
+      }
+    })
+    }
+});
+});
