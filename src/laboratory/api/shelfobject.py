@@ -454,7 +454,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.query_params, context={"source_laboratory_id": lab_pk})
         errors, data = {}, {}
 
         if serializer.is_valid():

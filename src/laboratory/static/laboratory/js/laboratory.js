@@ -103,6 +103,24 @@ function BaseFormModal(modalid,  data_extras={})  {
                 });
             }
         },
+        "showShelfInfo": function(div, id_shelf){
+            $.ajax({
+                url: document.urls.shelf_availability_information,
+                type: 'GET',
+                data: {'shelf': id_shelf},
+                headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+                success: function(data){
+                    div.append(data.shelf_info);
+                },
+                error: function(xhr, resp, text){
+                    Swal.fire({
+                        icon: 'error',
+                        title: gettext('Error'),
+                        text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                    });
+                }
+            });
+        },
         "success": function(instance, data){
         },
         "error": function(instance, xhr, resp, text){

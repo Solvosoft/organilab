@@ -1,4 +1,6 @@
 import logging
+
+from django.template.loader import render_to_string
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import Laboratory, ShelfObject, TranferObject, Shelf
@@ -64,6 +66,7 @@ class ShelfSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.SerializerMethodField()
     quantity_storage_status = serializers.SerializerMethodField()
     percentage_storage_status = serializers.SerializerMethodField()
+    shelf_info = serializers.SerializerMethodField()
 
     def get_type(self, obj):
         return str(obj.type) if obj.type else ""
@@ -83,10 +86,25 @@ class ShelfSerializer(serializers.ModelSerializer):
     def get_percentage_storage_status(self, obj):
         return f'{obj.get_refuse_porcentage()}% {_("of")} 100%'
 
+    def get_shelf_info(self, obj):
+        shelf = {
+            'name': obj.name,
+            'type': self.get_type(obj),
+            'quantity': self.get_quantity(obj),
+            'discard': obj.discard,
+            'measurement_unit': self.get_measurement_unit(obj),
+            'quantity_storage_status': self.get_quantity_storage_status(obj),
+            'percentage_storage_status': self.get_percentage_storage_status(obj)
+        }
+        return render_to_string(
+            'laboratory/shelfobject/shelf_availability_information.html',
+            context={'shelf': shelf}
+        )
+
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'quantity', 'discard', 'measurement_unit', 'quantity_storage_status', 'percentage_storage_status']
-
+        fields = ['name', 'type', 'quantity', 'discard', 'measurement_unit', 'quantity_storage_status', 'shelf_info',
+                  'percentage_storage_status']
 
 class TransferObjectSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
