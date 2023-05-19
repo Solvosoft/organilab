@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-17 15:18-0600\n"
-"PO-Revision-Date: 2023-05-17 14:04-0600\n"
+"POT-Creation-Date: 2023-05-19 11:02-0600\n"
+"PO-Revision-Date: 2023-05-19 11:05-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
-#: laboratory/static/laboratory/js/laboratory.js:68
+#: laboratory/static/laboratory/js/laboratory.js:212
 msgid "Name"
 msgstr "Nombre"
 
@@ -32,7 +32,7 @@ msgstr "Roles"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:7
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
-#: laboratory/static/laboratory/js/laboratory.js:72
+#: laboratory/static/laboratory/js/laboratory.js:216
 msgid "Actions"
 msgstr "Acciones"
 
@@ -116,68 +116,75 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: laboratory/static/js/shelfobjectedit.js:29
+#: laboratory/static/laboratory/js/laboratory.js:79
 msgid "Success"
 msgstr "Éxito"
 
 #: laboratory/static/js/shelfobjectedit.js:38
+#: laboratory/static/js/shelfobjectedit.js:57
+#: laboratory/static/laboratory/js/laboratory.js:97
 msgid "Error"
 msgstr "Error"
 
-#: laboratory/static/laboratory/js/laboratory.js:27
-msgid "No shelf selected"
-msgstr "No se ha seleccionado un estante"
+#: laboratory/static/js/shelfobjectedit.js:58
+msgid "An error has occurred"
+msgstr "Ha ocurrido un error"
 
-#: laboratory/static/laboratory/js/laboratory.js:28
-msgid "You need to select a shelf before do this action"
-msgstr "Necesita seleccionar un estante antes de realizar esta acción"
-
-#: laboratory/static/laboratory/js/laboratory.js:66
-msgid "Id"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:67
-msgid "Type"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:69
-msgid "Quantity"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:70
-msgid "Unit"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:71
-msgid "Container"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:78
-msgid "Clear Filters"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:84
-msgid "Create Equipment"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:90
-msgid "Create Material"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:96
-msgid "Create Substance"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:102
-msgid "Transfer In"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:200
+#: laboratory/static/laboratory/js/laboratory.js:98
 msgid ""
 "There was a problem performing your request. Please try again later or "
 "contact the administrator."
 msgstr ""
 "Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
 "contacte al administrador."
+
+#: laboratory/static/laboratory/js/laboratory.js:171
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+#: laboratory/static/laboratory/js/laboratory.js:172
+msgid "You need to select a shelf before do this action"
+msgstr "Necesita seleccionar un estante antes de realizar esta acción"
+
+#: laboratory/static/laboratory/js/laboratory.js:210
+msgid "Id"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:211
+msgid "Type"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:213
+msgid "Quantity"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:214
+msgid "Unit"
+msgstr "Unidad"
+
+#: laboratory/static/laboratory/js/laboratory.js:215
+msgid "Container"
+msgstr "Contenedor"
+
+#: laboratory/static/laboratory/js/laboratory.js:222
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+#: laboratory/static/laboratory/js/laboratory.js:228
+msgid "Create Equipment"
+msgstr "Crear Equipo"
+
+#: laboratory/static/laboratory/js/laboratory.js:234
+msgid "Create Material"
+msgstr "Crear Material"
+
+#: laboratory/static/laboratory/js/laboratory.js:240
+msgid "Create Substance"
+msgstr "Crear Sustancia"
+
+#: laboratory/static/laboratory/js/laboratory.js:246
+msgid "Transfer In"
+msgstr ""
 
 #: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
