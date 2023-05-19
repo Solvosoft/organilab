@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
-    MyProcedureForm
+    MyProcedureForm, CommentProcedureStepForm
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.forms import InformForm
@@ -76,10 +76,10 @@ def create_my_procedures(request, *args, **kwargs):
     organization_can_change_laboratory(lab, organization)
     if form.is_valid():
         my_procedure = form.save(commit=False)
-        content = ContentType.objects.get(app_label='laboratory', model='laboratory')
+        content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
         my_procedure.content_type = content
         my_procedure.object_id = int(laboratory)
-        # my_procedure.schema = get_components_url(request, my_procedure.custom_procedure.schema, org, laboratory)
+        my_procedure.schema = get_components_url(request, my_procedure.custom_procedure.schema, org, laboratory)
         my_procedure.organization = organization
         my_procedure.created_by = request.user
         my_procedure.save()
@@ -90,7 +90,27 @@ def create_my_procedures(request, *args, **kwargs):
 
 
 def update_my_procedure_data(item, data):
-    pass
+    if 'key' in item and 'defaultValue' in item:
+        if item['key'] in data:
+            if item['type'] not in ["selectboxes", "select", "custom_select"]:
+                item['defaultValue'] = data[item['key']][0]
+            elif item['type'] in ["select", "custom_select"]:
+                # Save data from a select, allows multiple selection
+                item['defaultValue'] = data[item['key']]
+            else:
+                aux_list = {}
+                for key in data[item['key']]:
+                    aux_list[key] = True
+                    item['defaultValue'] = aux_list
+
+    if 'components' in item:
+        for child in item['components']:
+            update_my_procedure_data(child,data)
+
+    if 'rows' in item and isinstance(item['rows'], (list,tuple)):
+        for row in item['rows']:
+            for child in row:
+                update_my_procedure_data(child,data)
 
 
 @permission_required('academic.change_procedurestep')
@@ -104,7 +124,8 @@ def complete_my_procedure(request, *args, **kwargs):
         "schema": form,
         'my_procedure': my_procedure,
         'laboratory': laboratory,
-        'org_pk': org
+        'org_pk': org,
+        'form': CommentProcedureStepForm
     }
 
     if request.method == 'POST':

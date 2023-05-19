@@ -1,10 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Complete</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'complete_my_procedure' %}
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+{% endblock %}
 
-</body>
+{% block content %}
+<div class="container-fluid">
+    <h1 id="form_name" class="text-center"> </h1>
+    <button id="observation" class="btn btn-success float-end" type="button" ><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div id="left-col" class="col-md-12">
+            <form id="procedure_form">
+                {% csrf_token %}
+                <div id="formio"></div>
+                {% if my_procedure.status == 'Eraser' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+                {% endif %}
+                {% if my_procedure.status == 'In Review' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
+                    <button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
+                {% endif %}
+                {% if my_procedure.status == 'Finalized' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+                {% endif %}
+            </form>
+        </div>
+        <div id="right-col" class="d-none" style="margin-top:-15px;">
+            {% include 'laboratory/comments.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'formio/CustomSelect.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript">
+const urls ={
+    edit:"{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
+    list: "{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}",
+    add_comment:"{% url 'laboratory:api-inform-list' %}",
+    get_comment:"{% url 'laboratory:api-inform-list' %}",
+    delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
+};
+const my_procedure="{{my_procedure.pk}}"
+
+var schema = {{ schema | safe }};
+document.getElementById("form_name").textContent = "{{my_procedure.name}}";
+
+var components = { components: schema["components"] };
+const saved="{% trans 'Saved successfully' %}";
+
+window.onload = function(schema) {
+    Formio.createForm(document.getElementById('formio'), components);
+    get_comments("{{my_procedure.pk}}");
+
+}
+let status = "{{my_procedure.status}}"
+let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
+var message ={
+    title:title,
+    text: "{% trans 'Discarding cannot be undone.' %}",
+    icon: "warning",
+    deny: "{% trans 'Cancel' %}",
+    confirm: "{% trans 'Save' %}",
+    }
+const remove_translation ={
+    title:"{% trans 'Delete the observation' %}",
+    text: "{% trans 'Do you want to remove the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully deleted' %}"
+}
+const add_translation ={
+    title:"{% trans 'Add observation' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Saved successfully' %}"
+}
+
+const update_translation ={
+    title:"{% trans 'Update the observation' %}",
+    text: "{% trans 'Do you want to update the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully updated' %}"
+}
+
+$('#observation').click(()=>{
+    let right= document.querySelector('#right-col')
+    if(right.classList.contains("col-sm-6")){
+        document.querySelector('#left-col').classList="col-sm-12"
+        document.querySelector('#right-col').classList="d-none"
+    }else{
+        document.querySelector('#left-col').classList="col-sm-6"
+        document.querySelector('#right-col').classList="col-sm-6"
+    }
+})
+
+</script>
+<script src="{% static 'js/formio.js'%}?v={% get_organilab_version %}"></script>
+
+{% endblock %}
+
 </html>

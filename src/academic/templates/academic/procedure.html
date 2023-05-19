@@ -36,9 +36,15 @@
             {% for procedure in my_procedures %}
               <tr>
                 <td>{{procedure.name}}</td>
-                <td>{{procedure.custom_procedure.name}}</td>
+                <td>{{procedure.custom_procedure.title}}</td>
                 <td>{% trans procedure.status %}</td>
+                <td><a class="btn btn-success" href="{% url 'academic:complete_my_procedure' lab_pk=laboratory org_pk=org_pk pk=procedure.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                <a class="btn btn-danger" href="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=procedure.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
               </tr>
+
+            <script>
+              console.log({{ procedure }})
+            </script>
             {% endfor %}
 
             </tbody>
@@ -57,7 +63,7 @@
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'academic:add_my_procedures' lab_pk=laboratory org_pk=org_pk %}" method="POST">
+        <form action="{% url 'academic:add_my_procedures' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk %}" method="POST">
             {% csrf_token %}
             {{form.as_horizontal}}
       <div class="modal-footer">

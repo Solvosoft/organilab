@@ -67,6 +67,17 @@ class ProcedureStep(models.Model, HTMLPresentation):
         verbose_name_plural = _('Procedure steps')
 
 
+class CommentProcedureStep(models.Model):
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
+    creator_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True, verbose_name=_("Comment"))
+    procedure_step = models.ForeignKey(ProcedureStep, blank=True, null=True, on_delete=models.CASCADE,
+                                       verbose_name=_('Step'))
+
+    def __str__(self):
+        return f'{self.creator} - {self.creator_at}'
+
+
 class ProcedureRequiredObject(models.Model):
     step = models.ForeignKey(ProcedureStep, on_delete=models.CASCADE)
     object = models.ForeignKey(Object, verbose_name=_('Object'), on_delete=models.CASCADE)

@@ -1,7 +1,7 @@
 from django import forms
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
-from .models import ProcedureStep, Procedure, MyProcedure
+from .models import ProcedureStep, Procedure, MyProcedure, CommentProcedureStep
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from laboratory.models import Object,Catalog,Shelf
@@ -26,6 +26,16 @@ class MyProcedureForm(forms.ModelForm, GTForm):
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
                    'custom_procedure': genwidgets.Select(),
                    }
+
+
+class CommentProcedureStepForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = CommentProcedureStep
+        fields = ['creator', 'comment']
+        widgets = {'creator': genwidgets.HiddenInput,
+                   'comment': genwidgets.Textarea,
+                   }
+
 
 class ProcedureForm(forms.ModelForm, GTForm):
     class Meta:
