@@ -3,7 +3,7 @@ import logging
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 
-from laboratory.models import Laboratory, ShelfObject
+from laboratory.models import Laboratory, ShelfObject, Shelf
 
 logger = logging.getLogger('organilab')
 
@@ -45,3 +45,21 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
+
+class ValidateShelfSerializer(serializers.Serializer):
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.all())
+
+    def validate_shelf(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.furniture.labroom.laboratory_id != source_laboratory_id:
+            logger.debug(f'ValidateShelfSerializer --> attr.in_where_laboratory_id '
+                         f'({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+        return attr
+
+class ShelfSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Shelf
+        fields = ['name', 'quantity', 'discard', 'measurement_unit']
