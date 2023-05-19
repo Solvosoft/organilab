@@ -3,9 +3,11 @@ import logging
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 
+from laboratory.api.serializers import BaseShelfObjectSerializer
 from laboratory.models import Laboratory, ShelfObject
 
 logger = logging.getLogger('organilab')
+
 
 class AddShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField()
@@ -35,6 +37,7 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
 
+
 class ShelfObjectDeleteSerializer(serializers.Serializer):
     shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
 
@@ -45,3 +48,25 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
+
+
+class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
+    object_detail = serializers.SerializerMethodField()
+    object_name = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
+    object_inst = serializers.SerializerMethodField()
+    object_features = serializers.SerializerMethodField(required=False, allow_null=True)
+
+    class Meta:
+        model = ShelfObject
+        fields = '__all__'
+
+    def get_object_detail(self, obj):
+        return obj.get_object_detail()
+
+    def get_object_features(self, obj):
+        if obj.object.features.exists():
+            return obj.object.features.all()
+
+    def get_object_inst(self, obj):
+        return obj.object
