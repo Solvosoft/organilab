@@ -204,6 +204,10 @@ const tableObject={
                }
        tableObject.addObjectResponse(datarequest)
     },
+    showTransfers: function(data){
+        transferListDataTable.ajax.reload();
+        $("#transfer-list-modal").modal('show');
+    },
     get_active_shelf: function(){
          let value= $('input[name="shelfselected"]:checked').val();
          document.shelf_discard= $('input[name="shelfselected"]:checked').data('refuse');
@@ -249,11 +253,10 @@ $(document).ready(function(){
         }
     };
 
-
     searchLaboratory.init();
 
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
-     columns: [
+        columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
             {data: "object_type", name: "object_type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object_name", title: gettext("Name"), type: "string", visible: true},
@@ -262,7 +265,7 @@ $(document).ready(function(){
             {data: "container", name: "container", title: gettext("Container"), type: "string", visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
         ],
-    buttons: [
+        buttons: [
             {
                 action: tableObject.clearFilters,
                 text: '<i class="fa fa-eraser" aria-hidden="true"></i>',
@@ -299,30 +302,63 @@ $(document).ready(function(){
 
             },
             {
-                action: tableObject.addObject,
+                action: tableObject.showTransfers,
                 text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
                 titleAttr: gettext('Transfer In'),
                 className: 'btn-sm btn-success ml-4'
             },
         ],
-     ajax: {
-        url: document.url_shelfobject,
-        type: 'GET',
-        data: function(dataTableParams, settings) {
-            var data= formatDataTableParams(dataTableParams, settings);
-            data['organization'] = $('#id_organization').val();
-            data['laboratory'] = $('#id_laboratory').val();
-            data['shelf'] = tableObject.get_active_shelf;
-            return data;
+        ajax: {
+            url: document.url_shelfobject,
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                var data= formatDataTableParams(dataTableParams, settings);
+                data['organization'] = $('#id_organization').val();
+                data['laboratory'] = $('#id_laboratory').val();
+                data['shelf'] = tableObject.get_active_shelf;
+                return data;
+            }
         }
-    }
     }, addfilter=false);
+
+    function objShowBool(data, type, row, meta){ return data ? '<i class="fa fa-check-circle" title="' + data + '">': '<i class="fa fa-times-circle" title="' +  data + '">'; };
+
+    transferListDataTable = createDataTable('#transfer-list-datatable', document.urls.transfer_list, {
+        columns: [
+            {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+            {data: "object", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
+            {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
+            {data: "laboratory_send", name: "laboratory_send__name", title: gettext("Laboratory Send"), type: "string", visible: true },
+            {data: "mark_as_discard", name: "mark_as_discard", title: gettext("Mark as Discard"), type: "boolean", render: objShowBool, visible: true },
+            {data: "update_time", name: "update_time", title: gettext("Date"), type: "date", render: DataTable.render.datetime(), visible: true},
+            {data: null, title: gettext('Actions'), sortable: false, filterable: false,
+             defaultContent: `<a href='#' class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
+                              <a href='#' class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-trash"></i></a>`
+            }
+        ],
+        paging: true,
+        buttons: [],
+        deferLoading: true,
+        dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
+        "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
+        "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        ajax: {
+           url: document.urls.transfer_list,
+           type: 'GET',
+           data: function(dataTableParams, settings) {
+               var data= formatDataTableParams(dataTableParams, settings);
+               data['organization'] = $('#id_organization').val();
+               data['laboratory'] = $('#id_laboratory').val();
+               return data;
+           }
+       }
+    }, 
+    addfilter=false);
+
     //shelfselected
-
-$('input[name="shelfselected"]').change(function(){
-    datatableelement.ajax.reload();
-});
-
+    $('input[name="shelfselected"]').change(function(){
+        datatableelement.ajax.reload();
+    });
 });
 
 $(document).ready(function(){
@@ -333,10 +369,10 @@ $(document).ready(function(){
                 ]
             })
             .on('add', function(e, tagName){
-                console.log('JQEURY EVENT: ', 'added', tagName)
+                console.log('JQUERY EVENT: ', 'added', tagName)
             })
             .on("invalid", function(e, tagName) {
-                console.log('JQEURY EVENT: ',"invalid", e, ' ', tagName);
+                console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
             });
 
     // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
