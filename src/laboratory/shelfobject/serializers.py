@@ -2,7 +2,7 @@ from django.conf import settings
 import logging
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits
+from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer
 
 logger = logging.getLogger('organilab')
 
@@ -38,19 +38,29 @@ class ValidateShelfSerializer(serializers.Serializer):
             obj_type_name += "_refuse"
         return obj_type_name
 
+
+class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
+    minimum_limit = serializers.FloatField(required=True)
+    maximum_limit = serializers.FloatField(required=True)
+    expiration_date = serializers.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+
+    class Meta:
+        model = ShelfObjectLimits
+        fields = '__all__'
+
+
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
-    object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
+    object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),required=True)
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity= serializers.FloatField(required=True)
     measurement_unit= serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
-    limits = serializers.PrimaryKeyRelatedField(many=False, queryset=ShelfObjectLimits.objects.using(settings.READONLY_DATABASE), required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     batch = serializers.CharField(required=True)
 
     class Meta:
         model = ShelfObject
-        fields = ['object', 'shelf', 'quantity', 'measurement_unit', 'limit_quantity', 'limits', 'marked_as_discard','batch']
+        fields = ['object', 'shelf', 'quantity', 'measurement_unit', 'limit_quantity', 'marked_as_discard','batch']
 
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
@@ -158,3 +168,15 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
+
+class ShelfObjectContainerSerializer(serializers.ModelSerializer):
+    container = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.filter(type=1).using(settings.READONLY_DATABASE), required=True)
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+
+    class Meta:
+        model = ShelfObjectContainer
+        fields ='__all__'
+
+class ShelfObjectStatusSerializer(serializers.Serializer):
+    description = serializers.CharField(allow_blank=False,required=True)
+
