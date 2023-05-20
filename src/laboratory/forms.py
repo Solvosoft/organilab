@@ -592,7 +592,6 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
                 'data-dropdownparent': "#reactive_form",
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
-        self.fields['limit_quantity'].initial=0
 
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
@@ -618,13 +617,13 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = "__all__"
-        exclude =['laboratory_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
+        fields = ["object","shelf","status","quantity", "measurement_unit", "course_name", "marked_as_discard", "batch", "objecttype", "container"]
+        exclude =['laboratory_name','creator', 'limit_quantity', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'course_name': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
-            'limit_quantity': forms.HiddenInput,
+
             'batch': genwidgets.TextInput,
             'marked_as_discard': genwidgets.CheckboxInput,
         }
@@ -670,7 +669,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
         self.fields['course_name'].label = _("Description")
         self.fields['marked_as_discard'].initial=True
-        self.fields['limit_quantity'].initial=0
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -695,8 +694,8 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","course_name","marked_as_discard","batch","objecttype","container"]
-        exclude = ['creator',"laboratory_name",'limits']
+        fields = ["object","shelf","status","quantity", "measurement_unit","course_name","marked_as_discard","batch","objecttype","container"]
+        exclude = ['creator',"laboratory_name", "limit_quantity", 'limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,

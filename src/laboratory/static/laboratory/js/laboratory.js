@@ -438,10 +438,12 @@ $(".add_status").click(function(){
 $(".check_limit").on('ifChanged', function(event){
     prefix=document.prefix;
     if($(this).is(":checked")){
-        $(prefix+'minimum_limit').parent().parent().hide()
-        $(prefix+'maximum_limit').parent().parent().hide()
+        $(prefix+'minimum_limit').parent().parent().hide();
+        $(prefix+'maximum_limit').parent().parent().hide();
+        $(prefix+'expiration_date').parent().parent().parent().hide();
     }else{
-        $(prefix+'minimum_limit').parent().parent().show()
-        $(prefix+'maximum_limit').parent().parent().show()
+        $(prefix+'minimum_limit').parent().parent().show();
+        $(prefix+'maximum_limit').parent().parent().show();
+        $(prefix+'expiration_date').parent().parent().parent().show();
     }
 })
