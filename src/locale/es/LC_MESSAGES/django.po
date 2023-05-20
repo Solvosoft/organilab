@@ -2623,6 +2623,14 @@ msgstr "La sustancia fue eliminada con éxito"
 msgid "The item was deleted successfully"
 msgstr "El elemento fue eliminado exitosamente"
 
+#: laboratory/api/shelfobject.py:670
+msgid "Status Change"
+msgstr "Estado Cambiado"
+
+#: laboratory/api/shelfobject.py:678
+msgid "The object status was updated successfully"
+msgstr "El estado del objecto fue actualizado correctamente"
+
 #: laboratory/forms.py:27 laboratory/views/shelfobject.py:110
 #: laboratory/views/shelfobject.py:161
 msgid "Search by name, code or CAS number"
