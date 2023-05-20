@@ -38,9 +38,8 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = ShelfObject.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['name', 'last_update', ]  # for the global search
-    filterset_class = serializers.ShelfObjectFilterSet
-    ordering_fields = ['last_update']
+    search_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'shelfobjectcontainer__container__name']  # for the global search
+    ordering_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'shelfobjectcontainer__container__name']
     ordering = ('-last_update',)  # default order
 
     def get_queryset(self):

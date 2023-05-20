@@ -216,11 +216,6 @@ class InformFilterSet(FilterSet):
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
 
-class ShelfObjectFilterSet(FilterSet):
-    class Meta:
-        model = ShelfObject
-        fields = {'object__name': ['icontains'] }
-
 
 class BaseShelfObjectSerializer:
 

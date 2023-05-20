@@ -126,7 +126,6 @@ function BaseFormModal(modalid,  data_extras={})  {
             }
             this.instance.modal('show');
         }
-
     }
 }
 
@@ -147,11 +146,10 @@ const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
          datatableelement.ajax.reload();
-
     },
     addObjectResponse: function(dat){
-            $('#shelfobjectCreate').html(dat);
-            $("#object_create").modal('show');
+        $('#shelfobjectCreate').html(dat);
+        $("#object_create").modal('show');
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
@@ -161,23 +159,20 @@ const tableObject={
         ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, tableObject.addObjectResponse);
     },
     showTransfers: function(data){
-        // make sure to get the latest data on the table before opening the modal
-        $('#transfer-list-datatable').DataTable().ajax.reload();
-        $("#transfer-list-modal").modal('show');
+        if (tableObject.get_active_shelf() != undefined){
+            // make sure to get the latest data on the table before opening the modal
+            $('#transfer-list-datatable').DataTable().ajax.reload();
+            $("#transfer-list-modal").modal('show');
+        }
     },
-    get_active_shelf: function(){
+    get_active_shelf: function(show_alert=true){
          let value= $('input[name="shelfselected"]:checked').val();
-         if(value == undefined){
-
+         if(value == undefined && show_alert){
             Swal.fire({
-                  position: 'top',
-                  icon: 'info',
-                  height: 100,
-                  title: gettext('No shelf selected'),
-                  text: gettext('You need to select a shelf before do this action'),
-                  showConfirmButton: false,
-                  timer: 2500
-                })
+                icon: 'info',
+                title: gettext('No shelf selected'),
+                text: gettext('You need to select a shelf before performing this action.'),
+            });
          }
          return value;
     },
@@ -196,6 +191,7 @@ function transferInObjectDeny(btn) {
     let message = gettext("Are you sure you want to deny the transfer of")
     message = `${message} "${transfer_data.object}"?`
     Swal.fire({ //Confirmation for delete
+        icon: "warning",
         title: gettext("Are you sure?"),
         text: message,
         confirmButtonText: gettext("Confirm"),
@@ -264,20 +260,14 @@ $(document).ready(function(){
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
-            {data: "object_type", name: "object_type", title: gettext("Type"), type: "string", visible: true},
-            {data: "object_name", name: "object_name", title: gettext("Name"), type: "string", visible: true},
+            {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
+            {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
-            {data: "unit", name: "unit", title: gettext("Unit"), type: "string", visible: true},
-            {data: "container", name: "container", title: gettext("Container"), type: "string", visible: true},
-            {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
+            {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
+            {data: "container", name: "shelfobjectcontainer__container__name", title: gettext("Container"), type: "string", visible: true},
+            {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [
-            {
-                action: tableObject.clearFilters,
-                text: '<i class="fa fa-eraser" aria-hidden="true"></i>',
-                titleAttr: gettext('Clear Filters'),
-                className: 'btn-sm mr-4'
-            },
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
@@ -303,6 +293,9 @@ $(document).ready(function(){
                 className: 'btn-sm btn-success ml-4'
             },
         ],
+        dom: "<'d-flex justify-content-between'<'m-2'l>" +
+        "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
+        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
         ajax: {
             url: document.url_shelfobject,
             type: 'GET',
@@ -310,7 +303,7 @@ $(document).ready(function(){
                 var data= formatDataTableParams(dataTableParams, settings);
                 data['organization'] = $('#id_organization').val();
                 data['laboratory'] = $('#id_laboratory').val();
-                data['shelf'] = tableObject.get_active_shelf;
+                data['shelf'] = tableObject.get_active_shelf(show_alert=false);
                 return data;
             }
         }
