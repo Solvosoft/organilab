@@ -295,6 +295,7 @@ class ShelfList(APIView):
         return Response({'data':data})
 
 
-def ShelfObjectObservationView(request, org_pk, lab_pk, pk, **kwargs):
+@permission_required('laboratory.view_shelfobject')
+def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
     template = 'laboratory/shelfobject/shelfobject_observations.html'
     return render(request, template, {'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})

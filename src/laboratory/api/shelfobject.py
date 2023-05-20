@@ -91,7 +91,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
         "create_comments": [],
-        "list_comments": [],
+        "list_comments": ["laboratory.view_shelfobject"],
         "update_status": [],
         "move_shelfobject_to_shelf": [],
         "shelf_availability_information": [],
