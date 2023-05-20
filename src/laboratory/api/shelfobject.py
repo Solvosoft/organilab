@@ -432,9 +432,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = ShelfObjectObservationDataTableSerializer
         self.pagination_class = LimitOffsetPagination
         self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-        self.search_fields = ['action_taken', 'description']
-        self.ordering_fields = ['action_taken']
-        self.ordering = ('action_taken',)
+        self.search_fields = ['action_taken', 'description', 'creator', 'creation_date']
+        self.ordering_fields = ['creation_date']
+        self.ordering = ('creation_date',)
         self.queryset = shelf_object.shelfobjectobservation_set.all()
         queryset = self.filter_queryset(self.queryset)
         data = self.paginate_queryset(queryset)
