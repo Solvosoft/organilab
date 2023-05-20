@@ -22,17 +22,7 @@
             <a class="btn btn-outline-success"><i class="fa fa-plus" title="{% trans 'Add new Observation' %}"></i> {% trans 'Add' %}</a>
         </div>
         <br>
-      <table id="observationTable" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>{% trans 'Creator' %}</th>
-                    <th>{% trans 'Action Taken' %}</th>
-                    <th>{% trans 'Description' %}</th>
-                    <th>{% trans 'Creation Date' %}</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-      </table>
+      <table id="observationTable" class="table table-striped table-bordered" style="width:100%"></table>
     </div>
 </div>
 {% endblock %}
@@ -42,12 +32,17 @@
 <script>
     datatableelement=createDataTable('#observationTable', '{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}', {
           responsive: true,
+          paging:true,
           columns: [
-            {"data": "creator_name"},
-            {"data": "action_taken"},
-            {"data": "description"},
-            {"data": "creation_date"},
+            {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+            {data: "creator_name", name: "creator_name", title: gettext("Creator"), type: "string", visible: true},
+            {data: "action_taken", name: "action_taken", title: gettext("Action Taken"), type: "string", visible: true},
+            {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
+            {data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "string", visible: true},
           ],
+          dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
+            "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
+            "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
           ajax: {
             url: "{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}",
             type: 'GET',
@@ -56,6 +51,7 @@
 			      }
 			}
 	      }, addfilter=false);
+
 
 </script>
 
