@@ -39,49 +39,61 @@ class ValidateShelfSerializer(serializers.Serializer):
         return obj_type_name
 
 
+class DateFieldWithEmptyString(serializers.DateField):
+    def to_internal_value(self, value):
+        if not value:
+            return None
+        return super(DateFieldWithEmptyString, self).to_internal_value(value)
+
+
 class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
     minimum_limit = serializers.FloatField(min_value=0.0,required=True, initial=0.0)
     maximum_limit = serializers.FloatField(min_value= 0.0, required=True, initial=0.0)
-    expiration_date = serializers.DateField(input_formats=settings.DATE_INPUT_FORMATS)
+    expiration_date = DateFieldWithEmptyString(input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True)
 
     class Meta:
         model = ShelfObjectLimits
         fields = '__all__'
 
+
     def validate(self,data):
         attr = super().validate(data)
         if attr['minimum_limit'] > attr['maximum_limit']:
-            raise serializers.ValidationError(_("Minimun limit can't be greater than maximun limit"))
+            raise serializers.ValidationError(_("Minimum limit can't be greater than maximum limit"))
         return data
 
+class ContainerShelfObjectSerializer(serializers.Serializer):
+    container = serializers.PrimaryKeyRelatedField(many=False,
+                                                   queryset=Object.objects.filter(type=1).using(settings.READONLY_DATABASE),
+                                                   required=True)
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),required=True)
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
-    limit_quantity= serializers.FloatField(required=True)
     measurement_unit= serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     batch = serializers.CharField(required=True)
 
     class Meta:
         model = ShelfObject
-        fields = ['object', 'shelf', 'quantity', 'measurement_unit', 'limit_quantity', 'marked_as_discard','batch']
-
+        fields = ['object', 'shelf', "status",  'quantity', 'measurement_unit', 'limit_quantity', "course_name",
+                  'marked_as_discard','batch']
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
     quantity = serializers.FloatField(required=True)
-    limit_quantity= serializers.FloatField(required=True)
     measurement_unit= serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
+    batch = serializers.CharField(required=True)
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
+        fields = ["object","shelf","status","quantity",
+                  "measurement_unit","marked_as_discard","course_name", 'batch']
 
 
 class MaterialShelfObjectSerializer(serializers.ModelSerializer):

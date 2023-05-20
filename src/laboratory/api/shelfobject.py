@@ -26,8 +26,10 @@ from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobjec
 from django.utils.translation import gettext_lazy as _
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
-from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, ShelfObjectContainerSerializer,\
-    ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer,ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
+from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
+    ShelfObjectContainerSerializer, \
+    ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -89,16 +91,14 @@ class ShelfObjectCreateMethods:
         shelfobject.shelf_object_qr = img
         return file
 
-    def create_shelfobject_container(self,data):
+    def create_shelfobject_container(self, data):
         serializer= ShelfObjectContainerSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        container = serializer.save()
-        container.creator=self.context['request'].user
-        container.save()
-        utils.organilab_logentry(self.context['request'].user, container, ADDITION,
-                                     changed_data=['object','shelfobject'], relobj=self.context['laboratory'])
+        if serializer.is_valid():
+            container = serializer.save(creator=self.context['request'].user)
+            utils.organilab_logentry(self.context['request'].user, container, ADDITION,
+                                         changed_data=['object','shelfobject'], relobj=self.context['laboratory'])
 
-    def create_reactive(self, serializer,limits_serializer):
+    def create_reactive(self, serializer, limits_serializer):
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -113,16 +113,17 @@ class ShelfObjectCreateMethods:
                           create=True)
         utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
                                  changed_data=None, relobj=self.context['laboratory'])
-        self.create_shelfobject_container(data={'shelf_object':shelfobject.pk,'container':self.context['request'].data['container']})
+        self.create_shelfobject_container(data={'shelf_object':shelfobject.pk,
+                                                'container': self.context['request'].data['container']})
 
         return shelfobject
 
-    def create_refuse_reactive(self, serializer,limits_serializer):
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.save()
-        shelfobject.limits= limits_serializer.save()
+    def create_refuse_reactive(self, serializer, limits_serializer):
+        shelfobject = serializer.save(
+            creator=self.context['request'].user,
+            in_where_laboratory_id=self.context['laboratory']
+        )
+        shelfobject.limits = limits_serializer.save()
         qrfile = self._build_qr(shelfobject)
         shelfobject.save()
         qrfile.close()
@@ -131,11 +132,12 @@ class ShelfObjectCreateMethods:
                           create=True)
         utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
                                  changed_data=None, relobj=self.context['laboratory'])
-        self.create_shelfobject_container(data={'shelf_object':shelfobject.pk,'container':serializer.data['container']})
+        self.create_shelfobject_container(data={'shelf_object': shelfobject.pk,
+                                                'container': self.context['request'].data['container']})
 
         return shelfobject
 
-    def create_material(self, serializer,limits_serializer):
+    def create_material(self, serializer, limits_serializer):
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -262,7 +264,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "equipment_refuse": {'serializer': shelfobject_serializers.EquipmentRefuseShelfObjectSerializer,
                  'method': methods_class.create_refuse_equipement},
         }
-        return serializers_class[key_name]
+        return serializers_class[key_name], key_name
 
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -275,14 +277,20 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
+        self.serializer_class, keyname = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
 
-        self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
+        if keyname in ['reactive', 'reactive_refuse']:
+            serializercontainer=ContainerShelfObjectSerializer(data=request.data)
+            if not serializercontainer.is_valid():
+                return JsonResponse({"errors": serializercontainer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
         limit_serializer=ShelfObjectLimitsSerializer(data=request.data)
+
         errors={}
         if serializer.is_valid():
-            if limit_serializer.is_valid():
-                self.serializer_class['method'](serializer,limit_serializer)
+            if limit_serializer.is_valid(raise_exception=True):
+                self.serializer_class['method'](serializer, limit_serializer)
                 return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
                 errors.update(limit_serializer.errors)
