@@ -179,8 +179,8 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
             if shelf.quantity>=new_total or not shelf.quantity:
                 return cleaned_data
             else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
-                    'limit': "%s"%(shelf.quantity,)}))
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s")%{
+                    'limit': "%s"%(shelf.quantity,)})
         else:
             self.add_error('measurement_unit',
                            _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
