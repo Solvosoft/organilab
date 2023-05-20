@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 
 from rest_framework import serializers
@@ -96,9 +97,23 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 class ShelfObjectObservationSerializer(serializers.ModelSerializer):
+    creator_name = serializers.SerializerMethodField()
+    creation_date = serializers.SerializerMethodField()
     class Meta:
         model = ShelfObjectObservation
-        fields = ['action_taken', 'description']
+        fields = ['action_taken', 'description', 'creator_name', 'creation_date']
+
+    def get_creator_name(self, obj):
+        name = obj.creator.get_full_name()
+        if name:
+            return name
+        else:
+            return obj.creator.username
+
+    def get_creation_date(self, obj):
+        date = datetime.fromisoformat(str(obj.creation_date))
+        return date.strftime('%d-%m-%Y')
+
 
 class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ShelfObjectObservationSerializer(), required=True)
