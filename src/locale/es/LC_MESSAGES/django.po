@@ -4043,7 +4043,7 @@ msgstr "Transferir"
 #: laboratory/templates/laboratory/reservation_modal.html:149
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:12
 msgid "Substract"
-msgstr "Eliminar"
+msgstr "Substraer"
 
 #: laboratory/templates/laboratory/search.html:48
 #: laboratory/templates/laboratory/search.html:56
