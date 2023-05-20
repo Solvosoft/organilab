@@ -32,7 +32,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm, ShelfObjectLimitsForm
+    ShelfObjectListForm, ValidateShelfForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
@@ -774,31 +774,3 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
-
-@login_required
-def add_shelfobjectlimit(request):
-
-    if request.method == 'POST':
-        form = ShelfObjectLimitsForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            return JsonResponse({'ok': True, 'id': instance.pk, 'text': instance.minimum_limit})
-        return JsonResponse({'ok': False,
-                             'title': _("ERROR"),
-                             'message': _('Data is not valid')})
-
-    form = ShelfObjectLimitsForm()
-
-    data = {
-        'ok': True,
-        'title': _('New ShelfObject Limits'),
-        'message': """
-        <form method="post" action="%s">
-            %s
-        </form>
-        """%(
-            reverse('laboratory:add_shelfobjectlimit'),
-            str(form.as_horizontal())
-        )
-    }
-    return JsonResponse(data)
