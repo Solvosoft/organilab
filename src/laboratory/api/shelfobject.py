@@ -21,12 +21,12 @@ from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog
+from laboratory.models import Catalog, ShelfObjectObservation
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
-    ReserveShelfObjectSerializer
+    ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer
 from laboratory.shelfobject.serializers import ShelfObjectDetailSerializer
 from laboratory.shelfobject.serializers import ShelfSerializer, \
     ValidateShelfSerializer
@@ -219,7 +219,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "create_comments": [],
         "list_comments": [],
         "create_status": ["laboratory.add_catalog"],
-        "update_status": [],
+        "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": [],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
@@ -660,7 +660,25 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
-        pass
+        self.serializer_class=UpdateShelfObjectStatusSerializer
+        serializer= self.serializer_class(data=request.data, context={'laboratory_id': lab_pk})
+        if serializer.is_valid():
+            shelfobject = serializer.validated_data['shelfobject']
+            shelfobject.status = serializer.validated_data['status']
+            shelfobject.save()
+
+            ShelfObjectObservation.objects.create(action_taken=_("Status Change"),
+                                                  description=serializer.validated_data['description'],
+                                                  shelf_object=shelfobject,
+                                                  creator=request.user)
+            organilab_logentry(
+                request.user, shelfobject, CHANGE,
+                changed_data=['status'],
+                relobj=shelfobject
+            )
+            return JsonResponse({"detail": _("The object status was updated successfully")},
+                                status=status.HTTP_200_OK)
+        return JsonResponse({'errors': serializer.errors}, status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['put'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
@@ -720,8 +738,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class=ShelfObjectStatusSerializer
         serializer =self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-          Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
-          return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
+            Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
+            return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 """
