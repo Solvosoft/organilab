@@ -329,10 +329,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             if shelf.discard:
                 total = shelf.get_total_refuse()
                 new_total = total + amount
-                if shelf.quantity >= new_total or shelf.quantity == -1:
+                if shelf.quantity >= new_total or shelf.quantity == settings.DEFAULT_SHELF_ULIMIT:
                     save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
                 else:
-                    errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')]
+                    errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')%{'limit': shelf.quantity}]
             else:
                 status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
