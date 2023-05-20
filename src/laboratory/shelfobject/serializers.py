@@ -101,7 +101,7 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
     creation_date = serializers.SerializerMethodField()
     class Meta:
         model = ShelfObjectObservation
-        fields = ['action_taken', 'description', 'creator_name', 'creation_date']
+        fields = ['id', 'action_taken', 'description', 'creator_name', 'creation_date']
 
     def get_creator_name(self, obj):
         name = obj.creator.get_full_name()
