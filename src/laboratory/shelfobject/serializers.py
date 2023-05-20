@@ -432,12 +432,16 @@ class TransferObjectDenySerializer(serializers.Serializer):
             raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
         return attr
 
+
 class UpdateShelfObjectStatusSerializer(serializers.Serializer):
-    shelfobject = serializers.PrimaryKeyRelatedField(many=False, queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), required=True)
-    status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.filter(key='shelfobject_status'), required=True)
+    shelf_object = serializers.PrimaryKeyRelatedField(many=False,
+                                                      queryset=ShelfObject.objects.using(settings.READONLY_DATABASE),
+                                                      required=True)
+    status = serializers.PrimaryKeyRelatedField(many=False, queryset=Catalog.objects.filter(key='shelfobject_status'),
+                                                required=True)
     description = serializers.CharField(required=True)
 
-    def validate_shelfobject(self,value):
+    def validate_shelf_object(self, value):
         attr = super().validate(value)
         if attr.in_where_laboratory_id != self.context.get('laboratory_id'):
             logger.debug(f'UpdateShelfObjectStatusSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '

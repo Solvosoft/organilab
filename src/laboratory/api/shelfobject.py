@@ -662,14 +662,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
         self.serializer_class=UpdateShelfObjectStatusSerializer
-        serializer= self.serializer_class(data=request.data, context={'laboratory_id':lab_pk})
-        if serializer.is_valid(raise_exception=True):
-            shelfobject= serializer.validated_data['shelfobject']
-            shelfobject.status= serializer.validated_data['status']
+        serializer= self.serializer_class(data=request.data, context={'laboratory_id': lab_pk})
+        if serializer.is_valid():
+            shelfobject = serializer.validated_data['shelfobject']
+            shelfobject.status = serializer.validated_data['status']
             shelfobject.save()
 
             ShelfObjectObservation.objects.create(action_taken=_("Status Change"),
-                                                  description= serializer.validated_data['description'],
+                                                  description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
             organilab_logentry(
@@ -677,8 +677,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 changed_data=['status'],
                 relobj=shelfobject
             )
-            return JsonResponse({"detail":_("The object status was updated successfully")},status=status.HTTP_200_OK)
-        return JsonResponse({'errors':serializer.errors}, status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"detail": _("The object status was updated successfully")},
+                                status=status.HTTP_200_OK)
+        return JsonResponse({'errors': serializer.errors}, status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['put'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
@@ -738,8 +739,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class=ShelfObjectStatusSerializer
         serializer =self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-          Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
-          return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
+            Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
+            return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 """
