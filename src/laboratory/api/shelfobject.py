@@ -28,7 +28,7 @@ from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Tr
 from laboratory.models import REQUESTED
 from laboratory.shelfobject.serializers import AddShelfObjectSerializer, SubstractShelfObjectSerializer, \
     ShelfObjectDeleteSerializer, TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
-    ShelfObjectDetailSerializer, ShelfObjectObservationSerializer
+    ShelfObjectDetailSerializer, ShelfObjectObservationSerializer, ShelfObjectObservationDataTableSerializer
 from laboratory.shelfobject.utils import save_shelf_object, get_clean_shelfobject_data, status_shelfobject, \
     validate_reservation_dates
 from laboratory.utils import organilab_logentry
@@ -428,11 +428,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
-        queryset = get_object_or_404(ShelfObject, pk=pk)
-        serializer = ShelfObjectObservationSerializer(queryset.shelfobjectobservation_set.all(), many=True)
-        data = json.loads(json.dumps(serializer.data))
-        lisst = [e for e in data]
-        return JsonResponse({'observations': lisst})
+        shelf_object = get_object_or_404(ShelfObject, pk=pk)
+        self.serializer_class = ShelfObjectObservationDataTableSerializer
+        self.pagination_class = LimitOffsetPagination
+        self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+        self.search_fields = ['action_taken', 'description']
+        self.ordering_fields = ['action_taken']
+        self.ordering = ('action_taken',)
+        self.queryset = shelf_object.shelfobjectobservation_set.all()
+        queryset = self.filter_queryset(self.queryset)
+        data = self.paginate_queryset(queryset)
+        response_data = {'data': data, 'recordsTotal': self.queryset.count(),
+                         'recordsFiltered': self.queryset.count(),
+                         'draw': self.request.query_params.get('draw', 1)}
+
+        return Response(self.get_serializer(response_data).data)
 
     @action(detail=False, methods=['put'])
     def update_status(self, request, org_pk, lab_pk, **kwargs):
