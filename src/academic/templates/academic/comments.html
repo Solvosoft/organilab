@@ -1,0 +1,16 @@
+{% load static i18n gtsettings %}
+<div id="panelobservaciones" class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <p class="float-start" style="color:red"><strong>{% trans 'List of comments' %}</strong></p>
+                <button class="btn btn-success float-end" onclick="save_comment()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="card-body">
+                <div class="row" id="listado" style="overflow-y: scroll; max-height:600px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

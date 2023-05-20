@@ -4,6 +4,16 @@
 {% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'complete_my_procedure' %}
+    <style>
+        .step-title {
+            font-weight: 900;
+            font-size: 150%;
+        }
+
+        .step-description {
+            font-size: 130%;
+        }
+    </style>
 {% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
@@ -12,22 +22,39 @@
 {% block content %}
 <div class="container-fluid">
     <h1 id="form_name" class="text-center"> </h1>
-    <button id="observation" class="btn btn-success float-end" type="button" ><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
     <div class="clearfix"></div>
     <div class="row">
         <div id="left-col" class="col-md-12">
             <form id="procedure_form">
                 {% csrf_token %}
-                <div id="formio">
+                <div id="steps-table">
                     {% for step in steps %}
                     <div id="step-{{ step.pk }}" class="pb-2">
-                        <label id="step-label-{{ step.pk }}" class="col-form-label" for="step-input-{{ step.pk }}" ref="label">{{ step.title }}</label>
-                        <div ref="element">
-                            <input id="step-input-{{ step.pk }}" class="form-control">
+                        <label id="step-label-{{ step.pk }}" class="step-title" for="step-input-{{ step.pk }}">{{ step.title }}</label>
+                            <div class="row">
+                                <div class="col">
+                                    <div id="step-input-{{ step.pk }}" class="step-description">{{ step.description }}</div>
+                                    <div id="step-comment-{{ step.pk }}"></div>
+                                </div>
+                                <div class="col">
+                                    <button id="observation-{{ step.pk }}" class="btn btn-success float-end" type="button" onclick="showComments({{ step.pk }})"><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
+                                </div>
+                                <div id="right-col-{{ step.pk }}" class="d-none">
+                                    {% include 'academic/comments.html' %}
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     {% endfor %}
                 </div>
+                {% for comment in comments %}
+                <script>
+                    var wrapper = document.getElementById("step-comment-" + {{ comment.procedure_step.pk }});
+
+                    var myHTML = '<div id="comment-{{comment.pk}}">{{ comment.comment }}</div>';
+
+                    wrapper.innerHTML += myHTML;
+                </script>
+                {% endfor %}
                 {% if my_procedure.status == 'Eraser' %}
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
@@ -39,9 +66,6 @@
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
             </form>
-        </div>
-        <div id="right-col" class="d-none" style="margin-top:-15px;">
-            {% include 'laboratory/comments.html' %}
         </div>
     </div>
 </div>
@@ -100,16 +124,22 @@ const update_translation ={
     successfull:"{% trans 'Successfully updated' %}"
 }
 
-$('#observation').click(()=>{
-    let right= document.querySelector('#right-col')
-    if(right.classList.contains("col-sm-6")){
-        document.querySelector('#left-col').classList="col-sm-12"
-        document.querySelector('#right-col').classList="d-none"
-    }else{
-        document.querySelector('#left-col').classList="col-sm-6"
-        document.querySelector('#right-col').classList="col-sm-6"
-    }
+var myModal = document.getElementById('myModal')
+var myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', function () {
+  myInput.focus()
 })
+
+function showComments(pk) {
+    console.log('#right-col-' + pk)
+    let comments = document.querySelector('#right-col-' + pk)
+    if(comments.classList.contains("col")){
+        document.querySelector('#right-col-' + pk).classList="d-none"
+    }else{
+        document.querySelector('#right-col-' + pk).classList="col"
+    }
+}
 
 </script>
 <script src="{% static 'js/formio.js'%}?v={% get_organilab_version %}"></script>
