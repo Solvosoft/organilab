@@ -525,21 +525,13 @@ class ValidateShelfForm(forms.Form):
     )
 , required=True)
 
+
 class ReservedProductsForm(forms.Form):
     obj = forms.IntegerField(required=True)
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
 
-class ShelfObjectLimitsForm(GTForm, forms.ModelForm):
-    class Meta:
-        model = ShelfObjectLimits
-        fields = '__all__'
-        widgets = {
-            'minimum_limit': genwidgets.TextInput,
-            'maximum_limit': genwidgets.TextInput,
-            'expiration_date': genwidgets.DateInput
-        }
 
 class ShelfObjectExtraFields(GTForm,forms.Form):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
@@ -547,6 +539,7 @@ class ShelfObjectExtraFields(GTForm,forms.Form):
     minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimun limit"))
     maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximun limit"))
     expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
+
 
 class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
     container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True, label=_("Container"))

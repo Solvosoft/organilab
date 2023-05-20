@@ -174,8 +174,7 @@ lab_protocols_urls = [
 catalogs_urls = [
     path('furniture/furniture_type', furniture.add_catalog,kwargs={'key': "furniture_type"}, name='add_furniture_type_catalog'),
     path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
-    path('shelf/shelfobject_status', furniture.add_catalog, kwargs={'key': 'shelfobject_status'}, name='add_shelfobject_status'),
-    path('shelfobjects/limits', shelfobject.add_shelfobjectlimit, name="add_shelfobjectlimit")
+    path('shelf/shelfobject_status', furniture.add_catalog, kwargs={'key': 'shelfobject_status'}, name='add_shelfobject_status')
 ]
 
 informs_period_urls=[
