@@ -91,8 +91,9 @@ class ShelfObjectCreateMethods:
               (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk, shelfobject.shelf.pk,
                shelfobject.pk)
 
-        update_qr_instance(url, shelfobject, self.context['organization'])
+        qr=update_qr_instance(url, shelfobject, self.context['organization'])
         shelfobject.shelf_object_url = url
+        return qr
 
     def create_shelfobject_container(self, data):
         serializer= ShelfObjectContainerSerializer(data=data)
@@ -420,6 +421,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse({"detail": _("Reservation was performed successfully.")}, status=status.HTTP_200_OK)
 
+    def _get_or_create_qr(self, shelfobject, qrbuilder):
+
+        """
+            "organization": org_pk,
+            "laboratory": lab_pk,
+            "request": request
+        :param shelfobject:
+        :param qrbuilder:
+        :return:
+        """
+        qr = QRModel.objects.filter(content_type__app_label=shelfobject._meta.app_label,
+                                 object_id=shelfobject.id,
+                                 organization=qrbuilder.context['organization'],
+                                 content_type__model= shelfobject._meta.model_name).first()
+        if not qr:
+            qr = qrbuilder._build_qr(shelfobject)
+        return qr
+
     @action(detail=True, methods=['get'])
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
@@ -431,13 +450,15 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
-        queryset = get_object_or_404(ShelfObject, pk=pk)
-        serializer = ShelfObjectDetailSerializer(queryset)
-        qr = QRModel.objects.get(content_type__app_label=queryset._meta.app_label,
-                                 object_id=queryset.id,
-                                 organization=org_pk,
-                                 content_type__model= queryset._meta.model_name)
-        context = {'object': serializer.data, 'org_pk': org_pk, 'lab_pk': lab_pk}
+        shelfobject = get_object_or_404(ShelfObject, pk=pk)
+        serializer = ShelfObjectDetailSerializer(shelfobject)
+        qrbuilder = ShelfObjectCreateMethods(context={
+                        "organization": org_pk, "laboratory": lab_pk,  "request": request
+        })
+        qr=self._get_or_create_qr(shelfobject, qrbuilder)
+        context = {'object': serializer.data,
+                   'qr': qr,
+                   'org_pk': org_pk, 'lab_pk': lab_pk}
         if qr:
             image = qr.b64_image
             context['qr'] = image
