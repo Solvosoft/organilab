@@ -1,3 +1,7 @@
+var objecttype= ""
+document.shelf_discard = undefined;
+document.prefix=""
+
 function convertFormToJSON(form, prefix="") {
   const re = new RegExp("^"+prefix);
   return form
@@ -52,11 +56,15 @@ var form_modals = {}
 function BaseFormModal(modalid,  data_extras={})  {
     var modal = $(modalid);
     var form = modal.find('form');
+    let prefix=form.find(".form_prefix").val();
+        if(prefix.length !== 0){
+            prefix = prefix+"-"
+        }
     return {
         "instance": modal,
         "form": form,
         "url": form[0].action,
-        "prefix": form.find(".form_prefix").val(),
+        "prefix": prefix,
         "type": "POST",
         "data_extras": data_extras,
         "init": function(btninstance){
@@ -65,6 +73,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
         },
         "addBtnForm": function(instance){
+
             return function(event){
                 $.ajax({
                     url: instance.url,
@@ -86,11 +95,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                         var errors = xhr.responseJSON.errors;
                         if(errors){  // form errors
                             form.find('ul.form_errors').remove();
-                            let prefix=instance.prefix;
-                            if(prefix.length !== 0){
-                                prefix = prefix+"-"
-                            }
-                            form_field_errors(form, errors, prefix);
+                            form_field_errors(form, errors, instance.prefix);
                         }else{ // any other error
                             Swal.fire({
                                 icon: 'error',
@@ -142,23 +147,63 @@ function show_me_modal(instance, event){
     return false;
 }
 
-
+function shelf_action_modals(modalid){
+    var label_a = document.createElement("a");
+    label_a.setAttribute("data-modalid", modalid)
+    show_me_modal(label_a,null)
+    form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
+    return false;
+}
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
          datatableelement.ajax.reload();
 
     },
-    addObjectResponse: function(dat){
-            $('#shelfobjectCreate').html(dat);
-            $("#object_create").modal('show');
+    addObjectResponse: function(datarequest){
+            let id=""
+            let modalid=""
+            discard= document.shelf_discard.toLowerCase()==='true';
+            if(objecttype==0){
+                modalid="reactive_modal";
+                  id='#id_rf-';
+                if(discard){
+                  modalid="reactive_refuse_modal";
+                    id='#id_rff-';
+                }
+                update_selects(id+"recipient",{})
+
+            }else if(objecttype==1){
+                    modalid="material_modal";
+                    id='#id_mf-';
+                    if(discard){
+                        modalid="material_refuse_modal";
+                        id='#id_mff-';
+                   }
+            }else{
+                    modalid="equipment_modal";
+                    id='#id_ef-';
+                if(discard){
+                    modalid="equipment_refuse_modal";
+                    id='#id_erf-';
+                }
+            }
+            document.prefix=id;
+            shelf_action_modals(modalid)
+            update_selects(id+"object",datarequest)
+            update_selects(id+"status",datarequest)
+            update_selects(id+"measurement_unit",{'shelf':datarequest['shelf']})
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
         if (activeshelf == undefined){
             return 1;
         }
-        ajaxGet(document.urls['shelfobject_create'], {'shelf': activeshelf }, tableObject.addObjectResponse);
+        objecttype=e.currentTarget.dataset.type;
+        datarequest ={'shelf':activeshelf,
+               'objecttype': objecttype
+               }
+       tableObject.addObjectResponse(datarequest)
     },
     showTransfers: function(data){
         // make sure to get the latest data on the table before opening the modal
@@ -167,6 +212,7 @@ const tableObject={
     },
     get_active_shelf: function(){
          let value= $('input[name="shelfselected"]:checked').val();
+         document.shelf_discard= $('input[name="shelfselected"]:checked').data('refuse');
          if(value == undefined){
 
             Swal.fire({
@@ -178,6 +224,8 @@ const tableObject={
                   showConfirmButton: false,
                   timer: 2500
                 })
+         }else{
+            $("#id_shelf").val(value)
          }
          return value;
     },
@@ -282,19 +330,30 @@ $(document).ready(function(){
                 action: tableObject.addObject,
                 text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Equipment'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'2'
+
+                },
             },
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Material'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'1'
+                }
             },
             {
                 action: tableObject.addObject,
                 text: '<i class="fa fa-flask" aria-hidden="true"></i>',
                 titleAttr: gettext('Create Substance'),
-                className: 'btn-sm btn-success ml-4'
+                className: 'btn-sm btn-success ml-4',
+                attr :{
+                    'data-type':'0'
+                }
+
             },
             {
                 action: tableObject.showTransfers,
@@ -373,7 +432,70 @@ $(document).ready(function(){
     var jqTagify = $input.data('tagify');
 });
 
+function update_selects(id,data){
+    var select = $(id);
+    var url = $(select).data('url');
 
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      traditional: true,
+      dataType: 'json',
+      success: function(data){
+                         $(select).find('option').remove();
+                        for(let x=0; x<data.results.length; x++){
+                            $(select).append(new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected))
+                        }
+                    },
+           });
 
+    }
+$(".add_status").click(function(){
+    url = document.url_status;
+    Swal.fire({
+        title: gettext('Create a new status'),
+        input: 'text',
+        inputAttributes: {required: 'true'},
+        showCancelButton: true,
+        CancelButtonText: gettext("Cancel"),
+        confirmButtonText: gettext("Send"),
+    }).then((result) => {
+      if(result.value){
+      $.ajax({
+      type: "POST",
+      url: url,
+      data: JSON.stringify({"description":result.value}),
+      headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+      dataType: 'JSON',
+      success: function(data){
+      Swal.fire({
+        text: gettext('Saved the new shelfobject status'),
+          icon: 'success',
+      })
+      },
+      error: function(xhr, resp, text) {
+       Swal.fire({
+        title: text,
+          icon: 'error',
+    })
+      }
+    })
+    }
+});
+});
 
-
+$(".check_limit").on('ifChanged', function(event){
+    prefix=document.prefix;
+    if($(this).is(":checked")){
+        $(prefix+'minimum_limit').parent().parent().hide();
+        $(prefix+'maximum_limit').parent().parent().hide();
+        $(prefix+'expiration_date').parent().parent().parent().hide();
+    }else{
+        $(prefix+'minimum_limit').parent().parent().show();
+        $(prefix+'maximum_limit').parent().parent().show();
+        $(prefix+'expiration_date').parent().parent().parent().show();
+    }
+})
