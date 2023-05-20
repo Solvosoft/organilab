@@ -31,6 +31,7 @@
 {% block content %}
 <input type="hidden" name="organization" id="id_organization" value="{{org_pk}}">
 <input type="hidden" name="laboratory" id="id_laboratory" value="{{laboratory}}">
+<input type="hidden" name="shelf" id="id_shelf" value="">
 
     {% include 'laboratory/search_widget.html' %}
 {#   {% include 'laboratory/reservation_modal.html' %} #}
@@ -121,13 +122,15 @@
 <script>
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
-    transfer_list: '{% url "laboratory:api-shelfobject-transfer-available-list" org_pk laboratory %}'
+    transfer_list: '{% url "laboratory:api-shelfobject-transfer-available-list" org_pk=org_pk lab_pk=laboratory %}',
+    transfer_in_deny: '{% url "laboratory:api-shelfobject-transfer-in-deny" org_pk=org_pk lab_pk=laboratory%}'
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';
 document.api_modal = '{% url "laboratory:api_reservation_create"%}';
 document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 document.url_shelfobject = '{% url "laboratory:api-shelfobjecttable-list" org_pk laboratory %}';
+document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}';
 const view_search = false;
 
 </script>
