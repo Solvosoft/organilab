@@ -17,13 +17,16 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
-      <table id="observationTable" class="table table-striped table-bordered" style="width:100%">
+        <div class="col-md-12">
+            <div class="add-container float-end">
+            <a class="btn btn-outline-success"><i class="fa fa-plus" title="{% trans 'Add new Observation' %}"></i> {% trans 'Add' %}</a>
+        </div>
+        <br>
+      <table id="observationTable" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>{% trans 'Action Taken' %}</th>
                     <th>{% trans 'Description' %}</th>
-                    <th>{% trans 'Actions' %}</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -35,34 +38,22 @@
 {{block.super}}
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
 <script>
-
-(function(){
-    $("#observationTable").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            url: "{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}",
-            dataSrc: 'observations'
-        },
-        columns: [
+    datatableelement=createDataTable('#observationTable', '{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}', {
+          responsive: true,
+          columns: [
             {"data": "action_taken"},
             {"data": "description"},
-            {
-                "data": null,
-                "render": function(data, type, row, meta) {
-                    var buttonHtml = '<a class="ms-2" href="" title="{% trans 'Edit' %}"><i class="fa fa-edit" aria-hidden="true"></i></a>';
-                    return buttonHtml;
-                }
-            }
-        ],
-        "language": {
-            "url": "{% get_datatables_translation %}"
-        }
-    });
-})(jQuery);
+          ],
+          ajax: {
+            url: "{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}",
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                    return formatDataTableParams(dataTableParams, settings);
+			      }
+			}
+	      }, addfilter=false);
+
 </script>
-
-
 
 
 {% endblock %}

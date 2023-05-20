@@ -99,3 +99,9 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectObservation
         fields = ['action_taken', 'description']
+
+class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectObservationSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
