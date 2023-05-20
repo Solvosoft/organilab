@@ -33,24 +33,22 @@
 <input type="hidden" name="laboratory" id="id_laboratory" value="{{laboratory}}">
 <input type="hidden" name="shelf" id="id_shelf" value="">
 
-    {% include 'laboratory/search_widget.html' %}
 {#   {% include 'laboratory/reservation_modal.html' %} #}
     {% include 'laboratory/shelfobject/action_modal.html' %}
 
     <h1 class="text-center">{% get_laboratory_name %}</h1>
-<div class="input-group nomargin">
+<div class="input-group m-0">
     <div class="input-group-text">
-    <a class="h-100" data-bs-toggle="collapse" href="#collapselabroom" role="button" aria-expanded="false" aria-controls="collapselabroom">
-        <i class="fa fa-bars"></i>
-    </a>
+        <a class="w-100" data-bs-toggle="collapse" href="#collapselabroom" role="button" aria-expanded="false" aria-controls="collapselabroom">
+            <i class="fa fa-compress"></i>
+        </a>
     </div>
-
     <input name="tags-search" type="text" class="form-control" >
 </div>
-<div class="container laboratoryfilter" >
+<div class="w-100 overflow-auto border border-top-0 border-1 rounded-bottom pt-2" style="max-height: 350px !important;">
 
 <div id="collapselabroom" class="collapse show" >
-        <ul class="ullabroom">
+        <ul class="ullabroom fs-6">
 
     {% for LaboratoryRoom in object_list %}
             <li> <a href="#bingi" target="_blank"> <i class="fa fa-qrcode" aria-hidden="true"></i></a> <span class="box">{{LaboratoryRoom}} </span>
@@ -58,29 +56,26 @@
 
                 {% for furniture in LaboratoryRoom.furniture_set.all %}
                 <li>
-
                     <a href="#m{{furniture.pk}}" data-bs-toggle="modal" data-bs-target="#m{{furniture.pk}}" style="color: {{furniture.color}}"> <i class="fa fa-qrcode" aria-hidden="true"></i> </a>
-<div class="modal fade" id="m{{furniture.pk}}" tabindex="-1" aria-labelledby="m{{furniture.pk}}Label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="m{{furniture.pk}}Label">{% trans "Use this QR to fast access to" %}
-         <span  style="color: {{furniture.color}}" >{{furniture}}</span>
-        </h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-       {% get_qr_svg_img furniture organization=org_pk %}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-                       <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
+                    <div class="modal fade" id="m{{furniture.pk}}" tabindex="-1" aria-labelledby="m{{furniture.pk}}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="m{{furniture.pk}}Label">{% trans "Use this QR to fast access to" %}
+                                <span style="color: {{furniture.color}}" >{{furniture}}</span>
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        {% get_qr_svg_img furniture organization=org_pk %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
                     <span class="box" style="color: {{furniture.color}}" >{{furniture}}</span>
                     <ul class="nested">
                         <li>{{ furniture|display_furniture }}</li>

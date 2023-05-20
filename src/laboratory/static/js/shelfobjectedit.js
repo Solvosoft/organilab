@@ -11,6 +11,7 @@ function shelfObjectDelete(obj, shelf_object_id, text) {
     message = `${message} "${text}"?`
     let url = $(obj).data('url')
     Swal.fire({ //Confirmation for delete
+        icon: "warning",
         title: gettext("Are you sure?"),
         text: message,
         confirmButtonText: gettext("Confirm"),
