@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-19 11:02-0600\n"
+"POT-Creation-Date: 2023-05-20 12:34-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -336,6 +336,7 @@ msgstr "Observaciones"
 #: academic/templates/academic/step_modal.html:32
 #: academic/templates/academic/substance/detail.html:34
 #: laboratory/templates/laboratory/complete_inform.html:15
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:14
 msgid "Observations"
 msgstr "Observaciones"
 
@@ -575,6 +576,8 @@ msgstr "Reservación"
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:42
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:54
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:65
+#: laboratory/templates/laboratory/shelfobject/action_modal.html:77
+#: laboratory/templates/laboratory/shelfobject/action_modal.html:84
 #: laboratory/templates/laboratory/shelfobject_confirm_delete.html:24
 #: laboratory/templates/laboratory/shelfobject_form.html:19
 #: presentation/templates/gentelella/blocks/permissions_management.html:32
@@ -757,6 +760,7 @@ msgstr "Continuar"
 #: laboratory/templates/laboratory/reservation_modal.html:147
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:12
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:30
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:22
 #: laboratory/templates/laboratory/sustance/list.html:24
 #: risk_management/templates/risk_management/riskzone_detail.html:33
 #: sga/templates/list_company.html:20 sga/templates/list_pictograms.html:18
@@ -2550,7 +2554,7 @@ msgstr "El formulario fue eliminado."
 msgid "Deleted!"
 msgstr "Eliminado!"
 
-#: laboratory/admin.py:64
+#: laboratory/admin.py:65
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
@@ -2592,34 +2596,34 @@ msgstr "Usuario no encontrado"
 msgid "Register"
 msgstr "Registrarse"
 
-#: laboratory/api/shelfobject.py:132 laboratory/views/shelfobject.py:124
+#: laboratory/api/shelfobject.py:137 laboratory/views/shelfobject.py:124
 #: laboratory/views/shelfobject.py:483
 msgid "The quantity is more than the shelf has"
 msgstr "La cantidad es mayor a la que posee el estante"
 
-#: laboratory/api/shelfobject.py:147 laboratory/views/shelfobject.py:178
+#: laboratory/api/shelfobject.py:152 laboratory/views/shelfobject.py:178
 #: laboratory/views/shelfobject.py:452
 #, fuzzy, python-format
 #| msgid "The quantity is much larger than the shelf limit"
 msgid "The quantity is much larger than the shelf limit %(limit)s"
 msgstr "La cantidad es mucho mayor al limite del estante."
 
-#: laboratory/api/shelfobject.py:174 laboratory/views/shelfobject.py:541
+#: laboratory/api/shelfobject.py:179 laboratory/views/shelfobject.py:541
 msgid "The amount to be subtracted is more than the shelf has"
 msgstr "La cantidad a sustraer es más que el estante tiene"
 
-#: laboratory/api/shelfobject.py:306
+#: laboratory/api/shelfobject.py:311
 msgid ""
 "This value cannot be greater than the quantity available for the object."
 msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto"
 
-#: laboratory/api/shelfobject.py:313
+#: laboratory/api/shelfobject.py:318
 #, fuzzy
 #| msgid "The substance is removed successfully"
 msgid "The transfer out was performed successfully."
 msgstr "La sustancia fue eliminada con éxito"
 
-#: laboratory/api/shelfobject.py:366
+#: laboratory/api/shelfobject.py:385
 msgid "The item was deleted successfully"
 msgstr "El elemento fue eliminado exitosamente"
 
@@ -2849,10 +2853,8 @@ msgid "Use dot like 0.344 on decimal"
 msgstr "Use coma ej. 0.34 en decimales"
 
 #: laboratory/models.py:151
-#, fuzzy
-#| msgid "Creation date"
 msgid "Expiration date"
-msgstr "Fecha de creación"
+msgstr "Fecha de expiración"
 
 #: laboratory/models.py:156
 msgid "Equipment or reactive or sustance"
@@ -3169,8 +3171,8 @@ msgstr "Continuar"
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
-#: laboratory/shelfobject/serializers.py:35
-#: laboratory/shelfobject/serializers.py:46
+#: laboratory/shelfobject/serializers.py:37
+#: laboratory/shelfobject/serializers.py:49
 #, fuzzy
 #| msgid "Object does not belong to laboratory"
 msgid "Object does not exist in the laboratory"
@@ -4091,7 +4093,7 @@ msgid "Enter whole numbers or with decimals"
 msgstr "Ingresar numeros enteros o con decimales"
 
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:13
-#: laboratory/templates/laboratory/shelfobject/action_modal.html:73
+#: laboratory/templates/laboratory/shelfobject/action_modal.html:91
 #, fuzzy
 #| msgid "Transfer"
 msgid "Transfer Out"
@@ -4110,6 +4112,12 @@ msgstr "Mover"
 #: laboratory/templates/laboratory/shelf_details.html:23
 msgid "Position:"
 msgstr "Posición:"
+
+#: laboratory/templates/laboratory/shelfobject/action_modal.html:76
+#, fuzzy
+#| msgid "Transfer"
+msgid "Transfer In"
+msgstr "Transferir"
 
 #: laboratory/templates/laboratory/shelfobject/detail_modal.html:19
 #: laboratory/templates/laboratory/shelfobject_detail.html:19
@@ -4175,6 +4183,12 @@ msgstr "Representación de la sustancia"
 #: laboratory/templates/laboratory/shelfobject/detail_modal.html:181
 msgid "Exit"
 msgstr "Salir"
+
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:22
+#, fuzzy
+#| msgid "Add observation"
+msgid "Add new Observation"
+msgstr "Agregar Observación"
 
 #: laboratory/templates/laboratory/shelfobjectUpdate_modal.html:7
 msgid "Add Object"
