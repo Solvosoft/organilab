@@ -283,13 +283,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             if limit_serializer.is_valid():
                 self.serializer_class['method'](serializer,limit_serializer)
-                return Response(status=status.HTTP_201_CREATED)
+                return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
-                print(limit_serializer.errors)
                 errors.update(limit_serializer.errors)
         else:
-            print(serializer.errors)
             errors.update(serializer.errors)
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
