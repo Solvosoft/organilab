@@ -21,7 +21,7 @@ from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog
+from laboratory.models import Catalog, ShelfObjectObservation
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.shelfobject import serializers as shelfobject_serializers
@@ -667,7 +667,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelfobject= serializer.validated_data['shelfobject']
             shelfobject.status= serializer.validated_data['status']
             shelfobject.save()
-            return JsonResponse({"detail":_("The object status was updated successfully")},status=status.HTTP_202_ACCEPTED)
+
+            ShelfObjectObservation.objects.create(action_taken=_("Status Change"),
+                                                  description= serializer.validated_data['description'],
+                                                  shelf_object=shelfobject,
+                                                  creator=request.user)
+            organilab_logentry(
+                request.user, shelfobject, CHANGE,
+                changed_data=['status'],
+                relobj=shelfobject
+            )
+            return JsonResponse({"detail":_("The object status was updated successfully")},status=status.HTTP_200_OK)
         return JsonResponse({'errors':serializer.errors}, status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['put'])
