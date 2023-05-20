@@ -148,7 +148,7 @@ class SustanceCharacteristics(models.Model):
 class ShelfObjectLimits(models.Model):
     minimum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
     maximum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
-    expiration_date = models.DateField(null=True, verbose_name=_('Expiration date'))
+    expiration_date = models.DateField(null=True, blank=True, verbose_name=_('Expiration date'))
 
 class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)

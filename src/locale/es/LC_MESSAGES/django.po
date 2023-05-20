@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: academic/api/serializers.py:62
 #: academic/templates/academic/substance/check_substances.html:67
@@ -3179,16 +3179,12 @@ msgid "Object does not exist in the laboratory"
 msgstr "El objeto seleccionado no pertenece al laboratorio"
 
 #: laboratory/shelfobject/utils.py:61
-#, fuzzy
-#| msgid "Entered date should be greater than current date and time"
 msgid "Initial date can't be lower than current date"
-msgstr "Fecha ingresada es mayor a la fecha actual"
+msgstr "Fecha inicial no puede ser menor a la fecha actual"
 
 #: laboratory/shelfobject/utils.py:63
-#, fuzzy
-#| msgid "Entered date should be greater than current date and time"
 msgid "Initial date can't be greater than final date"
-msgstr "Fecha ingresada es mayor a la fecha actual"
+msgstr "Fecha inicial no puede ser mayor a la fecha final"
 
 #: laboratory/shelfobject/utils.py:65
 msgid "Final date can't be equal of initial date"
@@ -4065,7 +4061,7 @@ msgstr "Transferir"
 #: laboratory/templates/laboratory/reservation_modal.html:149
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:14
 msgid "Substract"
-msgstr "Eliminar"
+msgstr "Substraer"
 
 #: laboratory/templates/laboratory/search.html:48
 #: laboratory/templates/laboratory/search.html:56
@@ -6385,9 +6381,8 @@ msgstr "Editar Compañía"
 #~ "            and pyEQL should be able to interpret it. Here are some "
 #~ "examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Sodium Chloride - NaCl"
 #~ msgstr "Cloruro de sodio - NaCl"
@@ -6436,9 +6431,8 @@ msgstr "Editar Compañía"
 #~ "                            and pyEQL should be able to interpret it. "
 #~ "Here are some examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Editor"
 #~ msgstr "Editor"
