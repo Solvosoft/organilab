@@ -232,10 +232,13 @@ def add_catalog(request, key):
                              'message': _('Data is not valid')})
 
     form = CatalogForm(initial={'key': key})
+    url=reverse('laboratory:add_furniture_type_catalog')
     title = _('New furniture type')
     if key == 'container_type':
         title = _("New Container type")
-
+    if key == 'shelfobject_status':
+        title= _("New Shelfobject status")
+        url =reverse('laboratory:add_shelfobject_status')
     data = {
         'ok': True,
         'title': title,
@@ -244,7 +247,7 @@ def add_catalog(request, key):
             %s
         </form>
         """%(
-            reverse('laboratory:add_furniture_type_catalog'),
+            url,
             str(form.as_horizontal())
         )
     }
