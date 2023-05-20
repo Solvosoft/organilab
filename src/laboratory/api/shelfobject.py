@@ -26,7 +26,7 @@ from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, Tr
 from laboratory.models import REQUESTED
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
-    ReserveShelfObjectSerializer
+    ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer
 from laboratory.shelfobject.serializers import ShelfObjectDetailSerializer
 from laboratory.shelfobject.serializers import ShelfSerializer, \
     ValidateShelfSerializer
@@ -220,7 +220,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "create_comments": [],
         "list_comments": [],
         "create_status": ["laboratory.add_catalog"],
-        "update_status": [],
+        "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": [],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
@@ -661,7 +661,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
-        pass
+        self.serializer_class=UpdateShelfObjectStatusSerializer
+        serializer= self.serializer_class(data=request.data, context={'laboratory_id':lab_pk})
+        if serializer.is_valid(raise_exception=True):
+            shelfobject= serializer.validated_data['shelfobject']
+            shelfobject.status= serializer.validated_data['status']
+            shelfobject.save()
+            return JsonResponse({"detail":_("The object status was updated successfully")},status=status.HTTP_202_ACCEPTED)
+        return JsonResponse({'errors':serializer.errors}, status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['put'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
