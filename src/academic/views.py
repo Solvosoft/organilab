@@ -14,17 +14,16 @@ from django.views.generic import FormView
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
     MyProcedureForm, CommentProcedureStepForm
-from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure
+from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure, \
+    CommentProcedureStep
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.forms import InformForm
-from laboratory.models import Object, Catalog, Furniture, ShelfObject, Inform, Laboratory, OrganizationStructure
+from laboratory.models import Object, Catalog, Furniture, ShelfObject, Laboratory, OrganizationStructure
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import (
     ListView as DJListView,
     CreateView as DJCreateView,
     UpdateView as DJUpdateView
 )
-from laboratory.views.informs import get_components_url
 from organilab import settings
 from reservations_management.models import ReservedProducts
 from . import convertions
@@ -79,7 +78,6 @@ def create_my_procedures(request, *args, **kwargs):
         content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
         my_procedure.content_type = content
         my_procedure.object_id = int(laboratory)
-        # my_procedure.schema = get_components_url(request, my_procedure.custom_procedure.schema, org, laboratory)
         my_procedure.organization = organization
         my_procedure.created_by = request.user
         my_procedure.save()
@@ -116,7 +114,8 @@ def update_my_procedure_data(item, data):
 @permission_required('academic.change_procedurestep')
 def complete_my_procedure(request, *args, **kwargs):
     my_procedure = MyProcedure.objects.get(pk=kwargs.get('pk'))
-    steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)  # Steps to be shown
+    steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)
+    comments = CommentProcedureStep.objects.filter(procedure_step__procedure=my_procedure.custom_procedure)
     schema = my_procedure.schema
     laboratory = kwargs.get('lab_pk')
     org = kwargs.get('org_pk')
@@ -127,7 +126,8 @@ def complete_my_procedure(request, *args, **kwargs):
         'laboratory': laboratory,
         'org_pk': org,
         'form': CommentProcedureStepForm,
-        'steps': steps
+        'steps': steps,
+        'comments': comments
     }
 
     if request.method == 'POST':
