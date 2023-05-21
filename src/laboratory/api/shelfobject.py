@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -21,11 +21,12 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
-from laboratory.api.serializers import ShelfLabViewSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, ObservationShelfObservationSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import Catalog
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
+from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
     ReserveShelfObjectSerializer, ShelfObjectObservationDataTableSerializer
@@ -85,15 +86,8 @@ class ShelfObjectCreateMethods:
         self.context=context
 
     def _build_qr(self, shelfobject):
-        schema = self.context['request'].scheme + "://"
-        domain = schema + self.context['request'].get_host()
-        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.context['organization'],
-                                                                "lab_pk": self.context['laboratory']})
-        url = url + "?labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % \
-              (shelfobject.shelf.furniture.labroom.pk, shelfobject.shelf.furniture.pk, shelfobject.shelf.pk,
-               shelfobject.pk)
-
-        qr=update_qr_instance(url, shelfobject, self.context['organization'])
+        qr, url=get_or_create_qr_shelf_object(self.context['request'], shelfobject, self.context['organization'],
+                                         self.context['laboratory'])
         shelfobject.shelf_object_url = url
         return qr
 
@@ -237,6 +231,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec= True)
         else:
             raise PermissionDenied()
+
+    def _get_shelfobject_with_check(self, pk, laboratory):
+        obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
+        if obj.in_where_laboratory.pk != laboratory:
+            raise Http404
+        return obj
 
     def _get_create_shelfobject_serializer(self, request, org_pk, lab_pk):
         name = ""
@@ -423,24 +423,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse({"detail": _("Reservation was performed successfully.")}, status=status.HTTP_200_OK)
 
-    def _get_or_create_qr(self, shelfobject, qrbuilder):
-
-        """
-            "organization": org_pk,
-            "laboratory": lab_pk,
-            "request": request
-        :param shelfobject:
-        :param qrbuilder:
-        :return:
-        """
-        qr = QRModel.objects.filter(content_type__app_label=shelfobject._meta.app_label,
-                                 object_id=shelfobject.id,
-                                 organization=qrbuilder.context['organization'],
-                                 content_type__model= shelfobject._meta.model_name).first()
-        if not qr:
-            qr = qrbuilder._build_qr(shelfobject)
-        return qr
-
     @action(detail=True, methods=['get'])
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
@@ -452,12 +434,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
-        shelfobject = get_object_or_404(ShelfObject, pk=pk)
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
         serializer = ShelfObjectDetailSerializer(shelfobject)
-        qrbuilder = ShelfObjectCreateMethods(context={
-                        "organization": org_pk, "laboratory": lab_pk,  "request": request
-        })
-        qr=self._get_or_create_qr(shelfobject, qrbuilder)
+        qr, url=get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
         context = {'object': serializer.data,
                    'qr': qr,
                    'org_pk': org_pk, 'lab_pk': lab_pk}
@@ -626,8 +605,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "chart_graphic")
 
 
-    @action(detail=False, methods=['post'])
-    def create_comments(self, request, org_pk, lab_pk, **kwargs):
+    @action(detail=True, methods=['post'])
+    def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Daniel
         :param request:
@@ -637,7 +616,18 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_comments")
-        pass
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
+        serializer_sho = ObservationShelfObservationSerializer(data=request.data)
+        errors = {}
+        if serializer_sho.is_valid():
+            serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+        else:
+            errors = serializer_sho.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Observation was created successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
     def list_comments(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -650,13 +640,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
-        shelf_object = get_object_or_404(ShelfObject, pk=pk)
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
         self.serializer_class = ShelfObjectObservationDataTableSerializer
         self.pagination_class = LimitOffsetPagination
         self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-        self.search_fields = ['action_taken', 'description', 'creator', 'creation_date']
-        self.ordering_fields = ['creation_date']
-        self.ordering = ('creation_date',)
+        self.search_fields = ['action_taken', 'description', 'creator__first_name',  'creator__last_name', 'creation_date']
+        self.ordering = ('-creation_date',)
         self.queryset = shelf_object.shelfobjectobservation_set.all()
         queryset = self.filter_queryset(self.queryset)
         data = self.paginate_queryset(queryset)
@@ -732,7 +721,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
             Se necesita agregar el permiso laboratory.add_catalog
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_status")
 
         self.serializer_class=ShelfObjectStatusSerializer
         serializer =self.serializer_class(data=request.data)

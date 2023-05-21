@@ -425,7 +425,7 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
 
 class ShelfObjectObservationSerializer(serializers.ModelSerializer):
     creator_name = serializers.SerializerMethodField()
-    creation_date = serializers.SerializerMethodField()
+
     class Meta:
         model = ShelfObjectObservation
         fields = ['id', 'action_taken', 'description', 'creator_name', 'creation_date']
@@ -437,9 +437,7 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
         else:
             return obj.creator.username
 
-    def get_creation_date(self, obj):
-        date = datetime.fromisoformat(str(obj.creation_date))
-        return date.strftime('%d-%m-%Y')
+
 
 
 class ShelfObjectObservationDataTableSerializer(serializers.Serializer):

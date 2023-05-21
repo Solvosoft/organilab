@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
@@ -17,13 +18,16 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
 from laboratory.api.forms import CommentInformForm, ShelfObjectLabviewForm
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer, ShelfLabViewSerializer
+from laboratory.forms import ShelfObjectStatusForm, ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
     Laboratory, InformsPeriod, ShelfObject, Shelf, ShelfObjectObservation
+from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.utils import get_logentries_org_management
 from laboratory.views.djgeneric import ListView
 from reservations_management.models import ReservedProducts
@@ -298,4 +302,18 @@ class ShelfList(APIView):
 @permission_required('laboratory.view_shelfobject')
 def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
     template = 'laboratory/shelfobject/shelfobject_observations.html'
-    return render(request, template, {'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization, raise_exec=True)
+    shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
+    qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
+    status_form = ShelfObjectStatusForm(org_pk=org_pk)
+    observation_form = ObservationShelfObjectForm()
+    return render(request, template, {'org_pk': org_pk,
+                                      'laboratory': lab_pk,
+                                      'object': shelfobject,
+                                      'observation_form': observation_form,
+                                      'status_form': status_form,
+                                      'qr': qr,
+                                      'pk': pk})

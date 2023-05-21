@@ -45,3 +45,4 @@ def update_qr_instance(url, object, organization):
 def get_qr_by_instance(object, organization):
     ct=ContentType.objects.get_for_model(object)
     return QRModel.objects.filter(content_type=ct, organization=organization, object_id=object.pk).last()
+
