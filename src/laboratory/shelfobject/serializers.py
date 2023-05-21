@@ -103,7 +103,7 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         return attr
 
 
-class ValidateShelfSerializer(serializers.Serializer):
+class ValidateShelfSerializerCreate(serializers.Serializer):
     OBJTYPE_CHOICES = (
         ("0", 'Reactive'),
         ("1", 'Material'),
@@ -308,7 +308,7 @@ class ValidateShelfSerializer(serializers.Serializer):
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.furniture.labroom.laboratory_id != source_laboratory_id:
             logger.debug(f'ValidateShelfSerializer --> attr.in_where_laboratory_id '
-                         f'({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                         f'({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory"))
         return attr
 

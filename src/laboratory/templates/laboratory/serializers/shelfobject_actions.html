@@ -16,7 +16,7 @@
 <a class="ms-2" href="" title="{% trans 'Move' %}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
 
 {% if perms.laboratory.do_report %}
-<a class="ms-2" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" title="{% trans 'Download' %}">
+<a class="ms-2" target="_blank" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" title="{% trans 'Download' %}">
    <i class="fa fa-download" aria-hidden="true"></i>
 </a>
 {% endif %}

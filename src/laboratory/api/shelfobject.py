@@ -240,7 +240,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     def _get_create_shelfobject_serializer(self, request, org_pk, lab_pk):
         name = ""
-        serializer=shelfobject_serializers.ValidateShelfSerializer(data=request.data,
+        serializer=shelfobject_serializers.ValidateShelfSerializerCreate(data=request.data,
                                                                    context={"org_pk": org_pk, "lab_pk": lab_pk})
         serializer.is_valid(raise_exception=True)
         key_name=serializer.get_key_descriptor()
