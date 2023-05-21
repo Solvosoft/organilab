@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 
 from django.conf import settings
@@ -9,11 +10,12 @@ from rest_framework import serializers
 from laboratory.models import Provider
 from laboratory.models import REQUESTED
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer, \
-    TranferObject
+    TranferObject, ShelfObjectObservation
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
 
 logger = logging.getLogger('organilab')
+
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
@@ -420,6 +422,29 @@ class TransferObjectDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
+class ShelfObjectObservationSerializer(serializers.ModelSerializer):
+    creator_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShelfObjectObservation
+        fields = ['id', 'action_taken', 'description', 'creator_name', 'creation_date']
+
+    def get_creator_name(self, obj):
+        name = obj.creator.get_full_name()
+        if name:
+            return name
+        else:
+            return obj.creator.username
+
+
+
+
+class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectObservationSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
 
 class TransferObjectDenySerializer(serializers.Serializer):
     transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
