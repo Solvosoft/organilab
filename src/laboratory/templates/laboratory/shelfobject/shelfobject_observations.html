@@ -8,6 +8,41 @@
 
 
 {% block content %}
+<input type="hidden" name="shelf" id="id_shelf" value="{{object.shelf.pk}}">
+<div class="row">
+    <div class=" mb-3 col-md-12">
+      <div class="row g-0" >
+        <div class="col-md-4 d-flex align-content-center bd-highlight flex-wrap">
+            <img src="data:image/svg+xml;base64,{{qr.b64_image}}" class="img-fluid rounded-start m-auto" alt="{% trans 'QR object' %}" >
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+              {% if object.marked_as_discard %}
+              <div class="d-flex justify-content-end ">  <i class="fa fa-trash fa-lg text-danger" aria-hidden="true" title="{% trans 'Is discard' %}"></i></div>
+              {% endif %}
+            <h5 class="card-title text-success">{{ object.object.code }} -- {{ object.object.name }}
+                <div class="d-flex justify-content-evenly"></div>
+            </h5>
+            <p class="d-flex justify-content-start" style="text-align: justify">{{ object.object.description }}</p>
+            <div class="card-text">
+                <hr>
+                <div class="d-flex justify-content-between bd-highlight mb-3">
+    <div class="p-2 bd-highlight"><span class="fw-bold">{% trans "Quantity"%}:</span><br>
+        {{object.quantity}} {{object.measurement_unit|default_if_none:"" }}</div>
+    <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Status' %}:</span>
+        <a class="btn btn-sm btn-secondary ms-2" onclick="return show_me_modal(this, event);" data-modalid="status_modal"><i class="fa fa-edit" title="{% trans 'Update Status' %}"></i></a> <br>{{object.status}}
+        </div>
+
+    <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Type' %}:</span><br>{{object.object.get_type_display}} </div>
+  </div>
+
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
 <div class="row">
 <div class="offset-md-2 col-md-8">
         <div class="page-header" align="center">
@@ -19,41 +54,35 @@
 <div class="row">
         <div class="col-md-12">
             <div class="add-container float-end">
-            <a class="btn btn-outline-success"><i class="fa fa-plus" title="{% trans 'Add new Observation' %}"></i> {% trans 'Add' %}</a>
+            <a class="btn btn-success" onclick="return show_me_modal(this, event);" data-modalid="observation_modal"><i class="fa fa-plus" title="{% trans 'Add new Observation' %}"></i> {% trans 'Add' %}</a>
         </div>
         <br>
       <table id="observationTable" class="table table-striped table-bordered" style="width:100%"></table>
     </div>
 </div>
+
+{% url 'laboratory:api-shelfobject-create-comments' lab_pk=laboratory org_pk=org_pk pk=object.pk as create_comments_url %}
+{% trans "Object Observation" as obj_title %}
+{% include 'modal_template.html' with id='observation_modal' form_id='observation_form' title=obj_title form=observation_form url=create_comments_url%}
+
+{% url 'laboratory:api-shelfobject-update-status' lab_pk=laboratory org_pk=org_pk  as update_status_url %}
+{% trans "Update Status" as obj_title %}
+{% include 'modal_template.html' with id='status_modal' form_id='status_form' title=obj_title form=status_form url=update_status_url %}
+
+
 {% endblock %}
 {% block js %}
 {{block.super}}
-<script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
+
 <script>
-    datatableelement=createDataTable('#observationTable', '{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}', {
-          responsive: true,
-          paging:true,
-          columns: [
-            {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-            {data: "creator_name", name: "creator_name", title: gettext("Creator"), type: "string", visible: true},
-            {data: "action_taken", name: "action_taken", title: gettext("Action Taken"), type: "string", visible: true},
-            {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
-            {data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "string", visible: true},
-          ],
-          dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
-            "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
-            "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
-          ajax: {
-            url: "{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=lab_pk pk=pk %}",
-            type: 'GET',
-            data: function(dataTableParams, settings) {
-                    return formatDataTableParams(dataTableParams, settings);
-			      }
-			}
-	      }, addfilter=false);
 
+document.urls={
+    observation_table: '{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=laboratory pk=pk %}',
+    shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
 
+};
 </script>
-
+<script type="text/javascript" src="{% static 'laboratory/js/base_modal_management.js'%}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/shelfobject_management.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
