@@ -6,7 +6,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory
+from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory, \
+    ShelfObjectObservation
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -344,3 +345,10 @@ class ShelfLabViewSerializer(serializers.Serializer):
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
+
+
+class ObservationShelfObservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShelfObjectObservation
+        fields = ['action_taken', 'description']
+

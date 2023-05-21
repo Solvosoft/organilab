@@ -17,7 +17,7 @@ from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR, \
-    ShelfObjectLimits, ShelfObject
+    ShelfObjectLimits, ShelfObject, ShelfObjectObservation
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -957,5 +957,33 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'marked_as_discard': forms.HiddenInput
         }
 
-class ValidateShelfUnitForm(forms.Form):
+class ValidateShelfUnitForm(GTForm):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+
+
+class ShelfObjectStatusForm(GTForm, forms.ModelForm):
+    description = forms.CharField(widget=genwidgets.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        org_pk=kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
+
+
+    class Meta:
+        model = ShelfObject
+        fields = ['status']
+
+
+
+class ObservationShelfObjectForm(GTForm, forms.ModelForm):
+    class Meta:
+        model=ShelfObjectObservation
+        exclude=['shelf_object', 'creator']
+        widgets={
+            'action_taken': genwidgets.TextInput,
+            'description': genwidgets.Textarea
+        }
