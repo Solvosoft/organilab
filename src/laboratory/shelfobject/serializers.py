@@ -55,13 +55,6 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         fields = ['amount_required', 'shelf_object', 'initial_date', 'final_date']
 
 
-class AddShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField()
-    bill = serializers.CharField(required=False)
-    provider = serializers.IntegerField(required=False)
-    shelf_object = serializers.IntegerField()
-
-
 class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
