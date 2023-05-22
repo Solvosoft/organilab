@@ -120,9 +120,9 @@
 const urls ={
     edit:"{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
     list: "{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}",
-    add_comment:"{% url 'laboratory:api-inform-list' %}",
-    get_comment:"{% url 'laboratory:api-inform-list' %}",
-    delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
+    add_comment:"{% url 'laboratory:api-my-procedure-list' %}",
+    get_comment:"{% url 'laboratory:api-my-procedure-list' %}",
+    delete_update_comment :"{% url 'laboratory:api-my-procedure-detail' 0 %}",
 };
 const my_procedure="{{my_procedure.pk}}"
 

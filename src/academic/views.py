@@ -90,7 +90,6 @@ def create_my_procedures(request, *args, **kwargs):
 @permission_required('academic.add_procedureobservations')
 def create_my_procedure_step_comment(request, *args, **kwargs):
     org = kwargs.get('org_pk')
-    print(request.data)
     new_comment_text = request.GET.get("comment", None)
     procedure_step_pk = request.GET.get("step_pk", None)
     laboratory = kwargs.get('lab_pk')
