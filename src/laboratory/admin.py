@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.core import serializers
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 
 from laboratory import models
@@ -32,8 +34,24 @@ class InformSchedulerAdmin(admin.ModelAdmin):
     actions = [create_informs]
     inlines = [PeriodScheduledAdmin]
 
+@admin.action(description='Export Laboratory')
+def export_laboratory(admin, request, queryset):
+    response = HttpResponse(
+        content_type='Application/json',
+        headers={'Content-Disposition': 'attachment; filename="laboratory.json"'})
+    labrooms=models.LaboratoryRoom.objects.filter(laboratory__in=queryset)
+    furnutures=models.Furniture.objects.filter(labroom__in=labrooms)
+    shelfs=models.Shelf.objects.filter(furniture__in=furnutures)
+    shelfsobject=models.ShelfObject.objects.filter(shelf__in=shelfs)
+    objs = [*labrooms, *furnutures, *shelfs, *shelfsobject]
+    serializers.serialize('json', objs, stream=response)
+    return response
 
-admin.site.register(models.Laboratory)
+
+class LaboratoryAdmin(admin.ModelAdmin):
+    actions = [export_laboratory]
+
+admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
