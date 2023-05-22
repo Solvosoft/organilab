@@ -655,25 +655,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return Response(self.get_serializer(response_data).data)
 
-    @action(detail=False, methods=['put'])
-    def update_status(self, request, org_pk, lab_pk, **kwargs):
+    @action(detail=True, methods=['put'])
+    def update_status(self, request, org_pk, lab_pk,pk, **kwargs):
         """
-        Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Change the status of a shelfobject
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :param pk: Of the shelfobject that change the status
+        :return: JsonReponse with the ingformation about status or shelfobject (success or error)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
         self.serializer_class=UpdateShelfObjectStatusSerializer
-        serializer= self.serializer_class(data=request.data, context={'laboratory_id': lab_pk})
+        data ={'shelf_object':pk}
+        data.update(request.data)
+        serializer= self.serializer_class(data=data, context={'laboratory_id': lab_pk})
+        errors={}
+
         if serializer.is_valid():
-            shelfobject = serializer.validated_data['shelfobject']
+            shelfobject = serializer.validated_data['shelf_object']
+            pre_status = shelfobject.status.description
             shelfobject.status = serializer.validated_data['status']
             shelfobject.save()
 
-            ShelfObjectObservation.objects.create(action_taken=_("Status Change"),
+
+            ShelfObjectObservation.objects.create(action_taken=f'{_("Status Change of")} {pre_status} {_("to")} {shelfobject.status.description}',
                                                   description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
@@ -682,9 +688,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 changed_data=['status'],
                 relobj=shelfobject
             )
-            return JsonResponse({"detail": _("The object status was updated successfully")},
+            return JsonResponse({"detail": _("The object status was updated successfully"),
+                                 'shelfobject_status':shelfobject.status.description},
                                 status=status.HTTP_200_OK)
-        return JsonResponse({'errors': serializer.errors}, status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['put'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
@@ -730,14 +738,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
         Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        """
-            Se necesita agregar el permiso laboratory.add_catalog
+        Create a shelfobject status
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonReponse with the ingformation about shelfobject status (success or error)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_status")
 
