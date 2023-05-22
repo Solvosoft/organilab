@@ -92,7 +92,6 @@ function save_comment(procedure_step){
                     add_translation['successfull'],
                     "success"
                     )
-                    document.querySelector('#listado').innerHTML=success.data;
             },
         });
     }
@@ -146,7 +145,6 @@ function update_comment(comment){
                     update_translation['successfull'],
                     'success'
                     )
-                 document.querySelector('#listado').innerHTML=success.data;
             },
         });
 }
@@ -171,7 +169,6 @@ function delete_comment(comment){
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
-                document.querySelector('#listado').innerHTML=success.data;
                 Swal.fire(
                    remove_translation['successfull'],
                     )
@@ -191,7 +188,6 @@ function get_comments(pk){
             "X-CSRFToken": getCookie("csrftoken"),
        },
        success: (success) => {
-        document.querySelector('#listado').innerHTML=success.data;
         },
         });
  }
