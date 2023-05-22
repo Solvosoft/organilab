@@ -3,10 +3,12 @@ from djgentelella.forms.forms import GTForm
 from django import forms
 from djgentelella.widgets import core as genwidgets
 from django.utils.translation import gettext_lazy as _
+from djgentelella.widgets.selects import AutocompleteSelect
+
 from laboratory import utils
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, Provider
+from laboratory.models import Laboratory, Provider, Shelf, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
 
 
@@ -56,3 +58,36 @@ class SubstractShelfObjectForm(GTForm):
                                   label=_('Amount'), required=True)
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
+
+
+class MoveShelfObjectForm(GTForm):
+    organization = forms.IntegerField(widget=forms.HiddenInput)
+    laboratory = forms.IntegerField(widget=forms.HiddenInput)
+    exclude_shelf = forms.IntegerField(widget=forms.HiddenInput)
+    lab_room = forms.ModelChoiceField(queryset=LaboratoryRoom.objects.all(), label=_("Laboratory Room"),
+                                      widget=AutocompleteSelect("lab_room", attrs={
+                                          'data-related': 'true',
+                                          'data-pos': 0,
+                                          'data-groupname': 'moveshelfform',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-laboratory': '#id_laboratory'
+                                      })
+                                      )
+    furniture = forms.ModelChoiceField(queryset=Furniture.objects.all(), label=_("Furniture"),
+                                       widget=AutocompleteSelect("furniture", attrs={
+                                           'data-related': 'true',
+                                           'data-pos': 1,
+                                           'data-groupname': 'moveshelfform'
+                                       })
+                                       )
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), label=_("Shelf"),
+                                   widget=AutocompleteSelect("shelf", attrs={
+                                       'data-related': 'true',
+                                       'data-pos': 2,
+                                       'data-groupname': 'moveshelfform',
+                                       'data-s2filter-exclude_shelf': '#id_shelf'
+                                   })
+                                   )
+
+class ExcludeShelfForm(GTForm):
+    exclude_shelf = forms.IntegerField()
