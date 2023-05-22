@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
-from laboratory.api.serializers import ShelfLabViewSerializer, ObservationShelfObservationSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import Catalog, ShelfObjectObservation
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
@@ -213,7 +213,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "detail_pdf": [],
         "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
-        "create_comments": [],
+        "create_comments": ["laboratory.change_shelfobject"],
         "list_comments": ["laboratory.view_shelfobject"],
         "create_status": ["laboratory.add_catalog"],
         "update_status": ["laboratory.change_shelfobject"],
@@ -426,12 +426,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Returns a Rendered Detail Modal from the specified Shelf Object
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the data must be extracted from
+        :param kwargs: other extra params
+        :return: JsonResponse with a modal containing the details from the shelf object
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
@@ -571,12 +572,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['delete'])
     def delete(self, request, org_pk, lab_pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Deletes a specific shelf object from a shelf
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param kwargs: other extra params
+        :return: JsonResponse with the status of the DELETE request
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete")
         serializer = ShelfObjectDeleteSerializer(data=request.data, context={"laboratory_id":self.laboratory.pk})
@@ -608,16 +609,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Creates a new observation for a specific shelf object
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the data must be extracted from
+        :param kwargs: other extra params
+        :return: JsonResponse with the status of the creating
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_comments")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
-        serializer_sho = ObservationShelfObservationSerializer(data=request.data)
+        serializer_sho = CreateObservationShelfObjectSerializer(data=request.data)
         errors = {}
         if serializer_sho.is_valid():
             serializer_sho.save(shelf_object=shelf_object, creator=request.user)
@@ -632,12 +634,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def list_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Returns all the observations related to a specific shelf object
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the data must be extracted from
+        :param kwargs: other extra params
+        :return: Response with the observations related to the shelf object and the number of records
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)

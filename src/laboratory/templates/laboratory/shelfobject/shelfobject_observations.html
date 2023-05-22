@@ -5,7 +5,7 @@
 {% block pre_head %}
     {% define_true  "use_datatables" %}
 {% endblock %}
-
+{% block title %}{% trans 'Logs' %} {{object.object.name}}{% endblock %}
 
 {% block content %}
 <input type="hidden" name="shelf" id="id_shelf" value="{{object.shelf.pk}}">
