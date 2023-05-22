@@ -29,7 +29,8 @@ from laboratory.models import REQUESTED
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
-    ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer
+    ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
+    MoveShelfObjectSerializer
 
 from laboratory.shelfobject.serializers import ShelfObjectDetailSerializer
 from laboratory.shelfobject.serializers import ShelfSerializer, \
@@ -686,18 +687,35 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                 status=status.HTTP_200_OK)
         return JsonResponse({'errors': serializer.errors}, status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['put'])
+    @action(detail=False, methods=['post'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marcela
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        :param request: http request
+        :param org_pk: organization related to user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param kwargs: extra params
+        :return: move shelfobject to shelf, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "move_shelfobject_to_shelf")
-        pass
+        self.serializer_class = MoveShelfObjectSerializer
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
+        errors = {}
+
+        if serializer.is_valid():
+            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            shelf_object = serializer.validated_data['shelf_object']
+            shelf_object.shelf = serializer.validated_data['shelf']
+            shelf_object.save()
+            organilab_logentry(request.user, shelf_object, CHANGE, 'shelf object', changed_data=['shelf'],
+                               relobj=[laboratory, shelf_object])
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Object was moved successfully.")}, status=status.HTTP_200_OK)
+
 
 
     @action(detail=False, methods=['get'])
