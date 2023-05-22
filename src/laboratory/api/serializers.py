@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework import serializers
@@ -13,7 +15,7 @@ from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
 from django.utils.translation import gettext_lazy as _
 
-from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters
+from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters, BooleanFilter, CharFilter
 from djgentelella.fields.drfdatetime import DateRangeTextWidget, DateTimeRangeTextWidget
 from django_filters import FilterSet
 
@@ -97,20 +99,18 @@ class ProtocolDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
-def find_username(request):
-    return None
-
 
 class LogEntryFilterSet(FilterSet):
     action_time = DateFromToRangeFilter(widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
-    #user = filters.ModelChoiceFilter(queryset=find_username)
+    user = CharFilter(field_name='user', method='filter_user')
+
+    def filter_user(self, queryset, name, value):
+        return queryset.filter(Q(user__first_name__icontains=value)|Q(user__last_name__icontains=value)|Q(user__username__icontains=value))
+
     class Meta:
         model = LogEntry
-        fields = {
-            'object_repr': ['icontains'],
-            'change_message': ['icontains'],
-            'action_flag': ['exact'],
-        }
+        fields =[ 'object_repr', 'change_message', 'action_flag', 'user']
+
 
 
 class LogEntryUserSerializer(serializers.ModelSerializer):
