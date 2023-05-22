@@ -72,19 +72,31 @@ function Delete_Inform(id) {
 }
 
 
-function save_comment(step_pk, lab_pk, org_pk){
+function save_comment(procedure_step){
+    Swal.fire({
+    title: add_translation['title'],
+    input: 'textarea'
+    }).then(function(result) {
+    if (result.value) {
     $.ajax({
-            type: "GET",
-            url: '{% url academic:create_my_procedure_comment lab_pk=' + lab_pk + 'org_pk=' + org_pk + '%}',
-            data: {'comment':result.value,'step_pk':step_pk},
+            url: urls['add_comment'],
+            type: "POST",
+            data: {'comment':result.value,'procedure_step':procedure_step},
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
             success: (success) => {
                 Swal.fire(
                     '',
                     add_translation['successfull'],
                     "success"
                     )
+                    document.querySelector('#listado').innerHTML=success.data;
             },
         });
+    }
+    })
 }
 
 
