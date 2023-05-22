@@ -2631,6 +2631,14 @@ msgstr "El elemento fue eliminado exitosamente"
 msgid "Status Change"
 msgstr "Estado Cambiado"
 
+#: laboratory/api/shelfobject.py:670
+msgid "Status Change of"
+msgstr "Estado Cambiado de"
+
+#: laboratory/api/shelfobject.py:670
+msgid "to"
+msgstr "a"
+
 #: laboratory/api/shelfobject.py:678
 msgid "The object status was updated successfully"
 msgstr "El estado del objecto fue actualizado correctamente"
