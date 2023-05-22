@@ -584,7 +584,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#reactive_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
 
     def clean_measurement_unit(self):
         unit = self.cleaned_data['measurement_unit']
@@ -659,7 +659,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
         self.fields['course_name'].label = _("Description")
         self.fields['marked_as_discard'].initial=True
 
@@ -727,7 +727,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#material_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
         self.fields['limit_quantity'].initial=0
 
     def clean_measurement_unit(self):
@@ -793,7 +793,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#material_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
         self.fields['limit_quantity'].initial=0
 
     def clean(self):
@@ -857,7 +857,7 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#equipment_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
         self.fields['limit_quantity'].initial=0
 
     def clean_measurement_unit(self):
@@ -920,7 +920,7 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")))
+            help_text='<a class="add_status float-end fw-bold"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
 
