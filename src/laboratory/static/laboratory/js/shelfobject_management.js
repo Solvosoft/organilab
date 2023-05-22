@@ -21,3 +21,36 @@ data: function(dataTableParams, settings) {
       }
 }
 }, addfilter=false);
+
+$(".add_status").click(function(){
+    Swal.fire({
+        title: gettext('New status'),
+        input: 'text',
+        inputAttributes: {required: 'true'},
+        showCancelButton: true,
+        CancelButtonText: gettext("Cancel"),
+        confirmButtonText: gettext("Send"),
+    }).then((result) => {
+      if(result.value){
+      $.ajax({
+      type: "POST",
+      url: document.urls.update_status,
+      data: JSON.stringify({"description":result.value}),
+      headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+      dataType: 'JSON',
+      success: function(data){
+      Swal.fire({
+        text: gettext('Saved the new shelfobject status'),
+          icon: 'success',
+      })
+      },
+      error: function(xhr, resp, text) {
+       Swal.fire({
+        title: text,
+          icon: 'error',
+    })
+      }
+    })
+    }
+});
+});
