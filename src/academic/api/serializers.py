@@ -6,6 +6,13 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from rest_framework import serializers
 from sga.models import ReviewSubstance, SecurityLeaf
+from academic.models import CommentProcedureStep
+
+
+class ProcedureStepCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentProcedureStep
+        fields = '__all__'
 
 
 class ReviewSubstanceFilterSet(FilterSet):

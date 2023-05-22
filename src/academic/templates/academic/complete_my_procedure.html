@@ -40,7 +40,21 @@
                                     <button id="observation-{{ step.pk }}" class="btn btn-success float-end" type="button" onclick="showComments({{ step.pk }})"><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
                                 </div>
                                 <div id="right-col-{{ step.pk }}" class="d-none">
-                                    {% include 'academic/comments.html' %}
+                                    <div id="comment-panel-{{ step.pk }}" class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <p class="float-start" style="color:red"><strong>{% trans 'List of comments' %}</strong></p>
+                                                    <button class="btn btn-success float-end" onclick="save_comment({{step.pk}}, {{ laboratory }}, {{ org_pk }})"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row" id="comments-list-{{ step.pk }}" style="overflow-y: scroll; max-height:600px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -48,9 +62,37 @@
                 </div>
                 {% for comment in comments %}
                 <script>
-                    var wrapper = document.getElementById("step-comment-" + {{ comment.procedure_step.pk }});
+                    var wrapper = document.getElementById("comments-list-" + {{ comment.procedure_step.pk }});
 
-                    var myHTML = '<div id="comment-{{comment.pk}}">{{ comment.comment }}</div>';
+                    var myHTML = `
+                        <div class="row" style="border-radius:10px;">
+                            <div class="col-sm-10 bg-light p-2">
+                                <div class="float-start" style="font-weight: bold;">
+                                    {{ comment.creator }}
+                                </div>
+
+                                <div class="float-end">
+                                    <div class="text-end" style="top:0;">
+                                        <i  class="fa fa-edit beditbtn" onclick="edit_comment({{comment.pk}})"></i>
+                                        <i  class="fa fa-trash deletebtn" onclick="delete_comment({{comment.pk}})"></i>
+                                    </div>
+
+                                    <div>
+                                        <p>{{comment.create_at}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div class="container" style="width:100%; font-size: 13px;">
+                                    {{comment.comment}}
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+
+                        <br>
+                    `;
 
                     wrapper.innerHTML += myHTML;
                 </script>
@@ -124,15 +166,7 @@ const update_translation ={
     successfull:"{% trans 'Successfully updated' %}"
 }
 
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
-
-myModal.addEventListener('shown.bs.modal', function () {
-  myInput.focus()
-})
-
 function showComments(pk) {
-    console.log('#right-col-' + pk)
     let comments = document.querySelector('#right-col-' + pk)
     if(comments.classList.contains("col")){
         document.querySelector('#right-col-' + pk).classList="d-none"
@@ -142,7 +176,7 @@ function showComments(pk) {
 }
 
 </script>
-<script src="{% static 'js/formio.js'%}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/procedure_formio.js'%}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
 
