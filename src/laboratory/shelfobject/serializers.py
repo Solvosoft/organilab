@@ -47,7 +47,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
                 f'ReservedShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
     class Meta:
@@ -66,18 +66,18 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f'AddShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+                f'IncreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
     def validate_provider(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr:
-            if not attr.laboratory != source_laboratory_id:
+            if attr.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f'AddShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
-                raise serializers.ValidationError(_("Provider does not exist in the laboratory"))
+                    f'IncreaseShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Provider doesn't exists in this laboratory"))
         return attr
 
 
@@ -91,8 +91,8 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f'SubstractShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+                f'DecreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
 
@@ -300,9 +300,9 @@ class ValidateShelfSerializer(serializers.Serializer):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.furniture.labroom.laboratory_id != source_laboratory_id:
-            logger.debug(f'ValidateShelfSerializer --> attr.in_where_laboratory_id '
+            logger.debug(f'ValidateShelfSerializer --> attr.furniture.labroom.laboratory_id '
                          f'({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
 
