@@ -174,7 +174,6 @@ function show_update_status_modal(instance, event){
     }
     form_modals[modalid].showmodal(instance);
     form_modals[modalid].type='PUT';
-    console.log(21123)
     form_modals[modalid].success=function(instance,data){
         $("#shelfobject_status").text(data['shelfobject_status'])
 
