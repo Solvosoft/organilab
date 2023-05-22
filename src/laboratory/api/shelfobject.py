@@ -670,7 +670,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         data ={'shelf_object':pk}
         data.update(request.data)
         serializer= self.serializer_class(data=data, context={'laboratory_id': lab_pk})
-        errors={}
 
         if serializer.is_valid():
             shelfobject = serializer.validated_data['shelf_object']

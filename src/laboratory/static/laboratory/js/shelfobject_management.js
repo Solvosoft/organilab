@@ -46,8 +46,9 @@ $(".add_status").click(function(){
       },
       error: function(xhr, resp, text) {
        Swal.fire({
-        title: text,
           icon: 'error',
+          title: gettext('Error'),
+          text: text
     })
       }
     })
