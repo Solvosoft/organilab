@@ -2,11 +2,11 @@ function add_status(url){
     Swal.fire({
         title: gettext('New status'),
         input: 'text',
-        inputAttributes: {required: 'true'},
         showCancelButton: true,
         CancelButtonText: gettext("Cancel"),
         confirmButtonText: gettext("Send"),
     }).then((result) => {
+        if(result.isConfirmed){
        fetch(url, {
         method:"post",
         headers:{'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
@@ -35,6 +35,7 @@ function add_status(url){
                             });
                     })
                     });
+                    }
 });
 
 }
