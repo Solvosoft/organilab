@@ -3175,6 +3175,10 @@ msgstr "Estante del objeto"
 msgid "Container"
 msgstr "Continuar"
 
+#: laboratory/models.py:235
+msgid "Infinite amount"
+msgstr "Cantidad infinita"
+
 #: laboratory/reservation.py:46
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
