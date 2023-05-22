@@ -68,6 +68,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             var myModalEl = this.instance[0];
             myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
+            this.instance.find('.update_status').on('click', this.updateStatusForm(this));
         },
         "addBtnForm": function(instance){
 
@@ -122,6 +123,41 @@ function BaseFormModal(modalid,  data_extras={})  {
                     });
                 }
             });
+        },
+        "updateStatusForm": function(instance){
+            return function(event){
+                $.ajax({
+                        url: instance.url,
+                        type: 'PUT',
+                        data: convertToStringJson(instance.form),
+                        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+                        success: function(data){
+                            datatableelement.ajax.reload();
+                            instance.hidemodal();
+                            Swal.fire({
+                                icon: 'success',
+                                title: gettext('Success'),
+                                text: data.detail,
+                                timer: 1500
+                            });
+                            $("#shelfobject_status").text(data['shelfobject_status']);
+                            instance.success(instance, data);
+                        },
+                        error: function(xhr, resp, text){
+                            var errors = xhr.responseJSON.errors;
+                            if(errors){  // form errors
+                                form.find('ul.form_errors').remove();
+                                form_field_errors(form, errors, instance.prefix);
+                            }else{ // any other error
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: gettext('Error'),
+                                    text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                                });
+                        }
+                    }
+                });
+                }
         },
         "success": function(instance, data){
         },
