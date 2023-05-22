@@ -176,3 +176,10 @@ img {
 .furnituredescriptor {
     display: inline;
 }
+.profile_info {
+
+    overflow: hidden;
+}
+.left_col {
+    max-width: 200px;
+}
