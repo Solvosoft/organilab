@@ -613,7 +613,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
-        :param pk: pk of the shelf object that the data must be extracted from
+        :param pk: pk of the shelf object that the comment will be added to
         :param kwargs: other extra params
         :return: JsonResponse with the status of the creating
         """
