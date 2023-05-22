@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-22 10:18-0600\n"
-"PO-Revision-Date: 2023-05-22 10:22-0600\n"
+"PO-Revision-Date: 2023-05-22 10:35-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -239,7 +239,7 @@ msgstr "Enviar"
 
 #: laboratory/static/laboratory/js/laboratory.js:324
 msgid "Saved the new shelfobject status"
-msgstr "Nuevos objetos de estante guardados"
+msgstr "Estado de nuevos objetos de estante guardados"
 
 #: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
