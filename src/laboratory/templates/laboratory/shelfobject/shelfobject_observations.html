@@ -30,7 +30,7 @@
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans "Quantity"%}:</span><br>
         {{object.quantity}} {{object.measurement_unit|default_if_none:"" }}</div>
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Status' %}:</span>
-        <a class="btn btn-sm btn-secondary ms-2" onclick="return show_me_modal(this, event);" data-modalid="status_modal"><i class="fa fa-edit" title="{% trans 'Update Status' %}"></i></a> <br><p id="shelfobject_status">{{object.status}}</p>
+        <a class="btn btn-sm btn-secondary ms-2" onclick="return show_update_status_modal(this, event);" data-modalid="status_modal"><i class="fa fa-edit" title="{% trans 'Update Status' %}"></i></a> <br><p id="shelfobject_status">{{object.status}}</p>
         </div>
 
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Type' %}:</span><br>{{object.object.get_type_display}} </div>
@@ -67,7 +67,7 @@
 
 {% url 'laboratory:api-shelfobject-update-status' lab_pk=laboratory org_pk=org_pk pk=object.pk as update_status_url %}
 {% trans "Update Status" as obj_title %}
-{% include 'modal_template.html' with id='status_modal' form_id='status_form' title=obj_title form=status_form url=update_status_url btn_action='update_status' %}
+{% include 'modal_template.html' with id='status_modal' form_id='status_form' title=obj_title form=status_form url=update_status_url %}
 
 
 {% endblock %}
