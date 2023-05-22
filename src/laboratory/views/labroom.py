@@ -15,12 +15,14 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
+from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm, ShelfObjectRefuseEquimentForm, \
+    ShelfObjectEquimentForm, ShelfObjectReactiveForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
+    ShelfObjectRefuseMaterialForm
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from ..shelfobject.forms import SubstractShelfObjectForm, TransferShelfObjectForm, AddShelfObjectForm, \
+from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm, \
     ReserveShelfObjectForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
@@ -37,9 +39,15 @@ class LaboratoryRoomsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['modal_form_reservation'] = ReserveShelfObjectForm()
-        context['tranfer_object_form'] = TransferShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
+        context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
         context['add_object_form'] = AddShelfObjectForm(lab=self.lab)
         context['subtract_object_form'] = SubstractShelfObjectForm()
+        context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='ef')
+        context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='erf')
+        context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype":0},org_pk=self.org, prefix="rf")
+        context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(initial={"objecttype":0},org_pk=self.org, prefix="rff")
+        context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype":1},org_pk=self.org, prefix="mf")
+        context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(initial={"objecttype":1},org_pk=self.org, prefix="mff")
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context

@@ -6,7 +6,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory
+from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory, \
+    ShelfObjectObservation
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -216,13 +217,11 @@ class InformFilterSet(FilterSet):
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
 
-class ShelfObjectFilterSet(FilterSet):
-    class Meta:
-        model = ShelfObject
-        fields = {'object__name': ['icontains'] }
-
 
 class BaseShelfObjectSerializer:
+
+    def get_object_type(self, obj):
+        return obj.object.get_type_display()
 
     def get_object_name(self, obj):
         return obj.object.name
@@ -238,6 +237,12 @@ class BaseShelfObjectSerializer:
             return str(obj.creator)
         else:
             return _('Unknown')
+
+    def get_container(self, obj):
+        obj_container = obj.shelfobjectcontainer_set.first()
+        if obj_container:
+            return obj_container.container.name
+        return ''
 
 
 class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerializer):
@@ -273,10 +278,12 @@ class ShelfPkList(serializers.Serializer):
 
 
 class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
+    object_type = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
     last_update = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
+    container = serializers.SerializerMethodField()
     actions = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
@@ -294,7 +301,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
         pass
     class Meta:
         model = ShelfObject
-        fields = ['pk','object_name', 'unit','quantity','last_update','creator', 'actions']
+        fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','creator', 'container', 'actions']
 
 
 class ShelfObjectTableSerializer(serializers.Serializer):
@@ -338,3 +345,10 @@ class ShelfLabViewSerializer(serializers.Serializer):
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
+
+
+class ObservationShelfObservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShelfObjectObservation
+        fields = ['action_taken', 'description']
+

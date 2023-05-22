@@ -148,7 +148,7 @@ class SustanceCharacteristics(models.Model):
 class ShelfObjectLimits(models.Model):
     minimum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
     maximum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
-    expiration_date = models.DateField(null=True, verbose_name=_('Expiration date'))
+    expiration_date = models.DateField(null=True, blank=True, verbose_name=_('Expiration date'))
 
 class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
@@ -200,6 +200,7 @@ class ShelfObject(models.Model):
 class ShelfObjectObservation(BaseCreationObj):
     action_taken = models.CharField(max_length=50, default=_("Object Change"), verbose_name=_("Action Taken"))
     description = models.TextField(null=True)
+    shelf_object = models.ForeignKey('ShelfObject', on_delete=models.CASCADE, blank=False, null=False)
 
 class LaboratoryRoom(BaseCreationObj):
     laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
@@ -223,8 +224,8 @@ class Shelf(BaseCreationObj):
     type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
-    discard = models.BooleanField(default=False,verbose_name=_('Disposal'))
-    quantity = models.FloatField(default=0,verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
+    discard = models.BooleanField(default=False, verbose_name=_('Disposal'))
+    quantity = models.FloatField(default=-1, verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
@@ -814,3 +815,10 @@ class RegisterUserQR(models.Model):
     def __str__(self):
         return f"{self.url}"
 
+
+class ShelfObjectContainer(BaseCreationObj):
+    shelf_object = models.ForeignKey(ShelfObject, verbose_name=_("Shelf Object"), on_delete=models.CASCADE)
+    container = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Container")) #Object=Material
+
+    def __str__(self):
+        return f"{self.shelf_object} - {self.container}"

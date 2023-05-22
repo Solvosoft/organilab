@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 15:16-0600\n"
-"PO-Revision-Date: 2023-05-12 15:19-0600\n"
+"POT-Creation-Date: 2023-05-20 12:34-0600\n"
+"PO-Revision-Date: 2023-05-19 11:26-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -21,6 +21,7 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
+#: laboratory/static/laboratory/js/laboratory.js:215
 msgid "Name"
 msgstr "Nombre"
 
@@ -31,6 +32,8 @@ msgstr "Roles"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:7
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
+#: laboratory/static/laboratory/js/laboratory.js:219
+#: laboratory/static/laboratory/js/laboratory.js:276
 msgid "Actions"
 msgstr "Acciones"
 
@@ -41,8 +44,7 @@ msgstr "Rol fue asignado correctamente"
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:75
 msgid "Now you can set this rol in laboratory user table"
 msgstr ""
-"Ahora se puede establecer este rol en la tabla de usuarios del "
-"laboratorio"
+"Ahora se puede establecer este rol en la tabla de usuarios del laboratorio"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:150
 msgid "Laboratory needs to be selected"
@@ -101,6 +103,115 @@ msgstr "Objetos"
 #: derb/static/formio/CustomSelect.js:200
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
+
+#: laboratory/static/js/shelfobjectedit.js:9
+msgid "Are you sure you want to delete"
+msgstr "¿Está seguro/a de que desea eliminar"
+
+#: laboratory/static/js/shelfobjectedit.js:13
+msgid "Are you sure?"
+msgstr "¿Esta seguro?"
+
+#: laboratory/static/js/shelfobjectedit.js:15
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: laboratory/static/js/shelfobjectedit.js:17
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: laboratory/static/js/shelfobjectedit.js:30
+#: laboratory/static/laboratory/js/laboratory.js:79
+msgid "Success"
+msgstr "Éxito"
+
+#: laboratory/static/js/shelfobjectedit.js:39
+#: laboratory/static/js/shelfobjectedit.js:58
+#: laboratory/static/laboratory/js/laboratory.js:97
+msgid "Error"
+msgstr "Error"
+
+#: laboratory/static/js/shelfobjectedit.js:59
+msgid "An error has occurred"
+msgstr "Ha ocurrido un error"
+
+#: laboratory/static/laboratory/js/laboratory.js:98
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+"Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
+"contacte al administrador."
+
+#: laboratory/static/laboratory/js/laboratory.js:175
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+#: laboratory/static/laboratory/js/laboratory.js:176
+msgid "You need to select a shelf before do this action"
+msgstr "Necesita seleccionar un estante antes de realizar esta acción"
+
+#: laboratory/static/laboratory/js/laboratory.js:213
+#: laboratory/static/laboratory/js/laboratory.js:270
+msgid "Id"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:214
+msgid "Type"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:216
+#: laboratory/static/laboratory/js/laboratory.js:272
+msgid "Quantity"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:217
+msgid "Unit"
+msgstr "Unidad"
+
+#: laboratory/static/laboratory/js/laboratory.js:218
+msgid "Container"
+msgstr "Contenedor"
+
+#: laboratory/static/laboratory/js/laboratory.js:225
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+#: laboratory/static/laboratory/js/laboratory.js:231
+msgid "Create Equipment"
+msgstr "Crear Equipo"
+
+#: laboratory/static/laboratory/js/laboratory.js:237
+msgid "Create Material"
+msgstr "Crear Material"
+
+#: laboratory/static/laboratory/js/laboratory.js:243
+msgid "Create Substance"
+msgstr "Crear Sustancia"
+
+#: laboratory/static/laboratory/js/laboratory.js:249
+msgid "Transfer In"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:271
+#, fuzzy
+#| msgid "Objects"
+msgid "Object"
+msgstr "Objetos"
+
+#: laboratory/static/laboratory/js/laboratory.js:273
+#, fuzzy
+#| msgid "Laboratory by User"
+msgid "Laboratory Send"
+msgstr "Laboratorio por usuario"
+
+#: laboratory/static/laboratory/js/laboratory.js:274
+msgid "Mark as Discard"
+msgstr ""
+
+#: laboratory/static/laboratory/js/laboratory.js:275
+msgid "Date"
+msgstr ""
 
 #: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
