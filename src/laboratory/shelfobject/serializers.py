@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
-from laboratory.models import Provider
+from laboratory.models import Provider, Furniture, LaboratoryRoom
 from laboratory.models import REQUESTED
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer, \
     TranferObject, ShelfObjectObservation
@@ -473,3 +473,59 @@ class UpdateShelfObjectStatusSerializer(serializers.Serializer):
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory."))
         return attr
+
+
+class MoveShelfObjectSerializer(serializers.Serializer):
+    lab_room = serializers.PrimaryKeyRelatedField(queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE))
+    furniture = serializers.PrimaryKeyRelatedField(queryset=Furniture.objects.using(settings.READONLY_DATABASE))
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+
+    def validate_lab_room(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr:
+            if attr.laboratory_id != source_laboratory_id:
+                logger.debug(
+                    f'MoveShelfObjectSerializer --> attr.laboratory ({attr.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Laboratory room doesn't exists in this laboratory"))
+        return attr
+
+    def validate_furniture(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr:
+            if attr.labroom.laboratory_id != source_laboratory_id:
+                logger.debug(
+                    f'MoveShelfObjectSerializer --> attr.labroom.laboratory ({attr.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Furniture doesn't exists in this laboratory"))
+        return attr
+
+    def validate_shelf(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr:
+            if attr.furniture.labroom.laboratory_id != source_laboratory_id:
+                logger.debug(
+                    f'MoveShelfObjectSerializer --> attr.furniture.labroom.laboratory ({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Shelf doesn't exists in this laboratory"))
+        return attr
+
+    def validate_shelf_object(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.in_where_laboratory_id != source_laboratory_id:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
+        return attr
+
+    def validate(self, data):
+        shelf_object = data['shelf_object']
+        shelf = data['shelf']
+
+        if shelf.pk == shelf_object.shelf.pk:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
+            raise serializers.ValidationError(_("Object can't be moved to same shelf"))
+        return data
