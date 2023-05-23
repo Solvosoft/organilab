@@ -84,7 +84,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 class DecreaseShelfObjectSerializer(serializers.Serializer):
     discount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False, allow_blank=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
