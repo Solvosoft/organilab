@@ -1,8 +1,8 @@
 {% load i18n %}
 
 <div class="container p-3">
-
-    <button class="btn bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseshelfinfo"
+    <button class="btn bg-primary text-white" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseshelfinfo"
             aria-expanded="false" aria-controls="collapseshelfinfo">
         {% trans "Shelf Information" %}
     </button>
@@ -44,12 +44,13 @@
                     <div class="col-sm-5"><label><strong>{% trans "Purpose" %}:</strong></label></div>
                     <div class="col-sm-7">
                         <div class="btn-group red">
-                            <span><i class="fa fa-trash red" aria-hidden="true"></i> <strong>{% trans "Disposal" %}</strong></span>
+                            <span><i class="fa fa-trash red"
+                                     aria-hidden="true"></i> <strong>{% trans "Disposal" %}</strong></span>
                         </div>
+                    </div>
                 </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-
 </div>

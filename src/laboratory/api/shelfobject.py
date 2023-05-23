@@ -217,7 +217,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "list_comments": ["laboratory.view_shelfobject"],
         "create_status": ["laboratory.add_catalog"],
         "update_status": ["laboratory.change_shelfobject"],
-        "move_shelfobject_to_shelf": [],
+        "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
     
