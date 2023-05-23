@@ -171,6 +171,26 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
         fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit', 'limit_quantity', "course_name",
                   'marked_as_discard', 'batch']
 
+    def validate(self, data):
+        attr = super().validate(data)
+        errors ={}
+        quantity = attr['quantity']
+        total = attr['shelf'].get_total_refuse()+quantity
+        shelf_quantity = attr['shelf'].quantity
+        discard = attr['marked_as_discard']
+        unit = attr['measurement_unit']
+        shelf_unit = attr['shelf'].measurement_unit
+        if discard:
+            if unit != shelf_unit:
+                errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+            if total > shelf_quantity and shelf_quantity != -1:
+                errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
+        elif total > shelf_quantity and shelf_quantity != -1:
+            errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
+
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attr
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -191,6 +211,22 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
         fields = ["object", "shelf", "status", "quantity",
                   "measurement_unit", "marked_as_discard", "course_name", 'batch']
 
+    def validate(self, data):
+        attr = super().validate(data)
+        errors ={}
+        quantity = attr['quantity']
+        total = attr['shelf'].get_total_refuse()+quantity
+        shelf_quantity = attr['shelf'].quantity
+        unit = attr['measurement_unit']
+        shelf_unit = attr['shelf'].measurement_unit
+
+        if unit != shelf_unit and shelf_unit:
+            errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+        if total > shelf_quantity and shelf_quantity != -1:
+            errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attr
 
 class MaterialShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -222,12 +258,11 @@ class MaterialShelfObjectSerializer(serializers.ModelSerializer):
         shelf_unit = attr['shelf'].measurement_unit
         if discard:
             if unit != shelf_unit:
-                errors.update({'measurement_unit': _("The measurement unit can't difference than shelf measurement unit")})
-            if total>shelf_quantity and shelf_quantity!=-1:
-                errors.update({'quantity':_("Shelfobject quantity can't greater than shelf quantity")})
+                errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+            if total > shelf_quantity and shelf_quantity != -1:
+                errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
         elif total > shelf_quantity and shelf_quantity != -1:
-            errors.update({'quantity': _("Shelfobject quantity can't greater than shelf quantity")})
-
+            errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
         if errors:
             raise serializers.ValidationError(errors)
         return attr
@@ -251,6 +286,22 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
                   "course_name"]
 
+    def validate(self, data):
+        attr = super().validate(data)
+        errors ={}
+        quantity = attr['quantity']
+        total = attr['shelf'].get_total_refuse()+quantity
+        shelf_quantity = attr['shelf'].quantity
+        unit = attr['measurement_unit']
+        shelf_unit = attr['shelf'].measurement_unit
+
+        if unit != shelf_unit and shelf_unit:
+            errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+        if total > shelf_quantity and shelf_quantity != -1:
+            errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attr
 
 class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -270,7 +321,26 @@ class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
                   "course_name"]
+    def validate(self, data):
+        attr = super().validate(data)
+        errors ={}
+        quantity = attr['quantity']
+        total = attr['shelf'].get_total_refuse()+quantity
+        shelf_quantity = attr['shelf'].quantity
+        discard = attr['marked_as_discard']
+        unit = attr['measurement_unit']
+        shelf_unit = attr['shelf'].measurement_unit
+        if discard:
+            if unit != shelf_unit:
+                errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+            if total > shelf_quantity and shelf_quantity != -1:
+                errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
+        elif total > shelf_quantity and shelf_quantity != -1:
+            errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
 
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attr
 
 class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -290,6 +360,22 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
                   "course_name"]
+    def validate(self, data):
+        attr = super().validate(data)
+        errors ={}
+        quantity = attr['quantity']
+        total = attr['shelf'].get_total_refuse()+quantity
+        shelf_quantity = attr['shelf'].quantity
+        unit = attr['measurement_unit']
+        shelf_unit = attr['shelf'].measurement_unit
+
+        if unit != shelf_unit and shelf_unit:
+            errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
+        if total>shelf_quantity and shelf_quantity!=-1:
+            errors.update({'quantity':_("Quantity can't greater than shelf quantity limit")})
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attr
 
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
