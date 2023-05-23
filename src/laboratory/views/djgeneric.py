@@ -6,6 +6,7 @@ Created on 26/12/2016
 '''
 import django_excel
 from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.utils import timezone
 from django.views.generic import DetailView as djDetailView
@@ -15,6 +16,9 @@ from django.views.generic.edit import UpdateView as djUpdateView
 from django.views.generic.list import ListView as djListView
 from weasyprint import HTML
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import OrganizationStructure, Laboratory
+
 
 class CreateView(djCreateView):
     def get(self, request, *args, **kwargs):
@@ -22,8 +26,12 @@ class CreateView(djCreateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
 
 
         return djCreateView.get(self, request, *args, **kwargs)
@@ -33,8 +41,12 @@ class CreateView(djCreateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         return djCreateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -51,8 +63,12 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         return djUpdateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -60,9 +76,12 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
-
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         return djUpdateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -78,8 +97,12 @@ class DeleteView(djDeleteView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         return djDeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -87,8 +110,12 @@ class DeleteView(djDeleteView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory, pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         return djDeleteView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
