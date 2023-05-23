@@ -154,7 +154,7 @@ function insert_substance_data(data, inst, object_titles){
 
 /*
 Method that inserts all the substance characteristics that are arrays
-I: array_list (Array), title(String)
+I: array_list (Array), title(String), inst(Instance of HTML to append to)
 O: None
 */
 function load_array_data(array_list, title, inst){
