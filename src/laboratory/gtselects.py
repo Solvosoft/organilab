@@ -1,19 +1,23 @@
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from djgentelella.views.select2autocomplete import BaseSelect2View
+from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from djgentelella.groute import register_lookups
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.forms import ValidateShelfForm, ValidateShelfUnitForm
-from laboratory.models import Object, OrganizationStructure, Catalog, Shelf
+from laboratory.models import Object, OrganizationStructure, Catalog, Shelf, Provider
 from auth_and_perms.models import Rol
 from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from laboratory.shelfobject.forms import ValidateLaboratoryForm
 from laboratory.utils import get_pk_org_ancestors
+
+class GPaginatorMoreElements(GPaginator):
+    page_size = 100
 
 
 @register_lookups(prefix="rol", basename="rolsearch")
@@ -144,3 +148,28 @@ class ShelfObject_StatusModelLookup(generics.RetrieveAPIView, BaseSelect2View):
         user_is_allowed_on_organization(request.user, self.org_pk)
 
         return self.list(request, pk, **kwargs)
+
+
+@register_lookups(prefix="provider", basename="provider")
+class ProviderLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Provider
+    fields = ['name']
+    ordering = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    laboratory = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        result = queryset.none()
+        if self.laboratory:
+            result = queryset.filter(laboratory=self.laboratory)
+        return result
+
+    def list(self, request, *args, **kwargs):
+        if self.laboratory is None:
+            form = ValidateLaboratoryForm(request.GET)
+            if form.is_valid():
+                self.laboratory = form.cleaned_data['laboratory']
+        return super().list(request, *args, **kwargs)
