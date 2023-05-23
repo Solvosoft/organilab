@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-22 21:59-0600\n"
+"POT-Creation-Date: 2023-05-23 10:26-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -335,7 +335,7 @@ msgstr "Observaciones"
 #: academic/templates/academic/step_modal.html:32
 #: academic/templates/academic/substance/detail.html:34
 #: laboratory/templates/laboratory/complete_inform.html:15
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:49
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:50
 msgid "Observations"
 msgstr "Observaciones"
 
@@ -750,7 +750,7 @@ msgstr "Continuar"
 #: laboratory/templates/laboratory/reservation_modal.html:147
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:12
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:9
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:57
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:58
 #: laboratory/templates/laboratory/sustance/list.html:24
 #: risk_management/templates/risk_management/riskzone_detail.html:33
 #: sga/templates/list_company.html:20 sga/templates/list_pictograms.html:18
@@ -2510,7 +2510,7 @@ msgstr "Mis Formularios"
 #: derb/templates/formBuilder/form_list.html:52 laboratory/models.py:158
 #: laboratory/templates/informs/informscheduler_detail.html:42
 #: laboratory/templates/laboratory/my_reservations_list.html:29
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:32
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:33
 #: laboratory/templates/laboratory/transfer_objects.html:30
 #: reservations_management/models.py:52 reservations_management/models.py:69
 #: reservations_management/templates/reservations_management/manage_reservation.html:88
@@ -2899,7 +2899,7 @@ msgstr "Nombres separados por comas"
 #: laboratory/models.py:75 laboratory/models.py:224 laboratory/models.py:293
 #: laboratory/templates/laboratory/search.html:67
 #: laboratory/templates/laboratory/shelfobject/shelf_availability_information.html:16
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:36
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:37
 #: report/views/furniture.py:38 report/views/furniture.py:53
 #: report/views/objects.py:169 report/views/objects.py:186
 #: report/views/objects.py:286 report/views/objects.py:303
@@ -3023,7 +3023,7 @@ msgstr "Estante del contenedor"
 #: laboratory/templates/laboratory/h_code_report.html:76
 #: laboratory/templates/laboratory/shelfObject.html:3
 #: laboratory/templates/laboratory/shelfobject/shelf_availability_information.html:22
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:30
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:31
 #: laboratory/templates/pdf/hcode_pdf.html:14
 #: laboratory/templates/pdf/laboratoryroom_pdf.html:22
 #: laboratory/templates/pdf/shelf_object_pdf.html:50
@@ -4268,7 +4268,7 @@ msgstr "Equipo"
 msgid "Create Material"
 msgstr "Materiales"
 
-#: laboratory/templates/laboratory/shelfobject/detail_modal.html:12
+#: laboratory/templates/laboratory/shelfobject/detail_modal.html:11
 msgid "Exit"
 msgstr "Salir"
 
@@ -4288,36 +4288,36 @@ msgstr "Cantidad total"
 msgid "Percentage storage status"
 msgstr "Estado del porcentaje de almacenamiento"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:8
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:9
 msgid "Logs"
 msgstr "Bitácora"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:16
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:17
 #, fuzzy
 #| msgid "objects"
 msgid "QR object"
 msgstr "Objetos"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:21
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:22
 #, fuzzy
 #| msgid "Discard"
 msgid "Is discard"
 msgstr "Descartar"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:33
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:69
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:34
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:70
 #, fuzzy
 #| msgid "Update"
 msgid "Update Status"
 msgstr "Actualizar"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:57
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:58
 #, fuzzy
 #| msgid "Add observation"
 msgid "Add new Observation"
 msgstr "Agregar Observación"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:65
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:66
 #, fuzzy
 #| msgid "Observation"
 msgid "Object Observation"
