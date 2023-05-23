@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-22 10:18-0600\n"
-"PO-Revision-Date: 2023-05-22 10:35-0600\n"
+"POT-Creation-Date: 2023-05-22 21:59-0600\n"
+"PO-Revision-Date: 2023-05-22 22:05-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -21,6 +21,7 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
+#: laboratory/static/laboratory/js/detail_modal_creation.js:152
 #: laboratory/static/laboratory/js/laboratory.js:168
 msgid "Name"
 msgstr "Nombre"
@@ -153,6 +154,113 @@ msgstr "Error"
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:36
+msgid "Security Sheet"
+msgstr "Hoja de Seguridad"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:37
+msgid "Download"
+msgstr "Descargar"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:41
+msgid "Sustance Representation"
+msgstr "Representación de la sustancia"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:54
+msgid "Cas Number"
+msgstr "Número CAS"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:55
+msgid "Is Precursor"
+msgstr "Es precursor"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:59
+msgid "Precursor Type"
+msgstr "Tipo de Precursor"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:61
+msgid "IARC"
+msgstr "IARC"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:62
+msgid "IMDG"
+msgstr "IMDG"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:63
+msgid "Bio Accumulable"
+msgstr "Bio acumulable"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:64
+msgid "Is Seveso list III?"
+msgstr "Es Lista de Seveso III?"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:65
+msgid "Molecular Formula"
+msgstr "Formula Molecular"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:78
+msgid "White Organs"
+msgstr "Órganos Blancos"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:79
+msgid "H Codes"
+msgstr "Códigos H"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:80
+msgid "UE Codes"
+msgstr "Códigos UE"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:81
+msgid "NFPA Codes"
+msgstr "Códigos NFPA"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:98
+msgid "Yes"
+msgstr "Sí"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:99
+msgid "No"
+msgstr "No"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:118
+msgid "Features"
+msgstr "Características"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:131
+#: laboratory/static/laboratory/js/detail_modal_creation.js:137
+msgid "Download QR"
+msgstr "Descargar QR"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:151
+msgid "Code"
+msgstr "Código"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:153
+msgid "Synonym"
+msgstr "Sinónimo"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:154
+#: laboratory/static/laboratory/js/shelfobject_management.js:9
+msgid "Description"
+msgstr "Descripción"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:155
+#: laboratory/static/laboratory/js/laboratory.js:170
+msgid "Unit"
+msgstr "Unidad"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:156
+msgid "Model"
+msgstr "Modelo"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:157
+msgid "Serie"
+msgstr "Serie"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:158
+msgid "Plaque"
+msgstr "Placa"
+
 #: laboratory/static/laboratory/js/laboratory.js:75
 msgid "No shelf selected"
 msgstr "No se ha seleccionado un estante"
@@ -177,16 +285,12 @@ msgstr ""
 
 #: laboratory/static/laboratory/js/laboratory.js:167
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: laboratory/static/laboratory/js/laboratory.js:169
 #: laboratory/static/laboratory/js/laboratory.js:232
 msgid "Quantity"
-msgstr ""
-
-#: laboratory/static/laboratory/js/laboratory.js:170
-msgid "Unit"
-msgstr "Unidad"
+msgstr "Cantidad"
 
 #: laboratory/static/laboratory/js/laboratory.js:171
 msgid "Container"
@@ -260,10 +364,6 @@ msgstr "Creador"
 #| msgid "Actions"
 msgid "Action Taken"
 msgstr "Acciones"
-
-#: laboratory/static/laboratory/js/shelfobject_management.js:9
-msgid "Description"
-msgstr "Descripción"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
