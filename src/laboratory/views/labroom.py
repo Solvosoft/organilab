@@ -40,7 +40,7 @@ class LaboratoryRoomsList(ListView):
         context = super().get_context_data(**kwargs)
         context['modal_form_reservation'] = ReserveShelfObjectForm()
         context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
-        context['add_object_form'] = AddShelfObjectForm(lab=self.lab)
+        context['add_object_form'] = AddShelfObjectForm()
         context['subtract_object_form'] = SubstractShelfObjectForm()
         context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='ef')
         context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='erf')
