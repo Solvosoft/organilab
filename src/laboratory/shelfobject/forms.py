@@ -3,6 +3,8 @@ from djgentelella.forms.forms import GTForm
 from django import forms
 from djgentelella.widgets import core as genwidgets
 from django.utils.translation import gettext_lazy as _
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
+
 from laboratory import utils
 
 from auth_and_perms.models import Profile
@@ -22,17 +24,13 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
         }
 
 class AddShelfObjectForm(GTForm):
-    amount = forms.FloatField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
-                              label=_('Amount'), required=True)
+    amount = forms.FloatField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal', label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
-    provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
-                                      label=_("Provider"), required=False)
-
-    def __init__(self, *args, **kwargs):
-        lab = kwargs.pop('lab')
-        super(AddShelfObjectForm, self).__init__(*args, **kwargs)
-        providers = Provider.objects.filter(laboratory__id=int(lab))
-        self.fields['provider'].queryset = providers
+    provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
+                                      widget=AutocompleteSelectMultiple("provider", attrs={
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                      })
+                                      )
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
@@ -56,3 +54,7 @@ class SubstractShelfObjectForm(GTForm):
                                   label=_('Amount'), required=True)
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
+
+
+class ValidateLaboratoryForm(GTForm):
+    laboratory = forms.IntegerField()
