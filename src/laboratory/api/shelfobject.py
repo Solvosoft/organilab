@@ -37,7 +37,7 @@ from laboratory.shelfobject.serializers import ShelfSerializer, \
 from laboratory.shelfobject.serializers import TransferObjectDenySerializer, ShelfObjectContainerSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
+from laboratory.shelfobject.utils import save_shelf_object
 from laboratory.utils import organilab_logentry
 from presentation.models import QRModel
 from presentation.utils import update_qr_instance
