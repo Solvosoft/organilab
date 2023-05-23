@@ -213,7 +213,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "detail_pdf": [],
         "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
-        "create_comments": ["laboratory.change_shelfobjectobservation"],
+        "create_comments": ["laboratory.add_shelfobjectobservation"],
         "list_comments": ["laboratory.view_shelfobjectobservation"],
         "create_status": ["laboratory.add_catalog"],
         "update_status": ["laboratory.change_shelfobject"],
