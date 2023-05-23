@@ -15,15 +15,14 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm, ShelfObjectRefuseEquimentForm, \
-    ShelfObjectEquimentForm, ShelfObjectReactiveForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
-    ShelfObjectRefuseMaterialForm
+from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm, \
-    ReserveShelfObjectForm
+    ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, ShelfObjectRefuseMaterialForm, \
+    ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
