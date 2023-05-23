@@ -113,28 +113,6 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),
         label=_("Status"))
 
-    def clean_measurement_unit(self):
-        unit = self.cleaned_data['measurement_unit']
-        quantity = self.cleaned_data['quantity']
-        shelf = self.cleaned_data['shelf']
-        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
-        if shelf.measurement_unit==None:
-            return unit
-        if shelf.measurement_unit==unit:
-            if amount or shelf.quantity==0:
-                return unit
-            else:
-                self.add_error('quantity', _("The quantity is more than the shelf has"))
-
-        else:
-            self.add_error('measurement_unit',
-                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
-                            'measurement_unit': shelf.measurement_unit
-                        })
-
-        return unit
-
-
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit","container", "course_name", "marked_as_discard", "batch", "objecttype"]
@@ -192,27 +170,6 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         self.fields['marked_as_discard'].initial=True
 
 
-    def clean(self):
-        cleaned_data = super().clean()
-        quantity = cleaned_data.get("quantity")
-        shelf = cleaned_data.get("shelf")
-        measurement_unit = cleaned_data.get("measurement_unit")
-
-        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
-            total = shelf.get_total_refuse()
-            new_total =total+quantity
-            if shelf.quantity>=new_total or not shelf.quantity:
-                return cleaned_data
-            else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
-                    'limit': "%s"%(shelf.quantity,)}))
-        else:
-            self.add_error('measurement_unit',
-                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
-                               'measurement_unit': shelf.measurement_unit
-                           })
-        return cleaned_data
-
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit","container","course_name","marked_as_discard","batch","objecttype"]
@@ -258,28 +215,6 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
 
-    def clean_measurement_unit(self):
-        unit = self.cleaned_data['measurement_unit']
-        quantity = self.cleaned_data['quantity']
-        shelf = self.cleaned_data['shelf']
-        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
-        if shelf.measurement_unit==None:
-            return unit
-        if shelf.measurement_unit==unit:
-            if amount or shelf.quantity==0:
-                return unit
-            else:
-                self.add_error('quantity', _("The quantity is more than the shelf has"))
-
-        else:
-            self.add_error('measurement_unit',
-                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
-                            'measurement_unit': shelf.measurement_unit
-                        })
-
-        return unit
-
-
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
@@ -323,28 +258,6 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
-
-    def clean(self):
-        cleaned_data = super().clean()
-        quantity = cleaned_data.get("quantity")
-        shelf = cleaned_data.get("shelf")
-        measurement_unit = cleaned_data.get("measurement_unit")
-
-        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
-            total = shelf.get_total_refuse()
-            new_total =total+quantity
-            if shelf.quantity>=new_total or not shelf.quantity:
-                return cleaned_data
-            else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
-                    'limit': "%s"%(shelf.quantity,)}))
-        else:
-            self.add_error('measurement_unit',
-                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
-                               'measurement_unit': shelf.measurement_unit
-                           })
-        return cleaned_data
-
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
@@ -389,28 +302,6 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
 
-    def clean_measurement_unit(self):
-        unit = self.cleaned_data['measurement_unit']
-        quantity = self.cleaned_data['quantity']
-        shelf = self.cleaned_data['shelf']
-        amount = quantity <= shelf.quantity and (quantity+shelf.get_total_refuse()) <= shelf.quantity
-        if shelf.measurement_unit==None:
-            return unit
-        if shelf.measurement_unit==unit:
-            if amount or shelf.quantity==0:
-                return unit
-            else:
-                self.add_error('quantity', _("The quantity is more than the shelf has"))
-
-        else:
-            self.add_error('measurement_unit',
-                           _("Need add the same measurement unit that the shelf has  %(measurement_unit)s")%{
-                            'measurement_unit': shelf.measurement_unit
-                        })
-
-        return unit
-
-
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
@@ -452,27 +343,6 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
-
-    def clean(self):
-        cleaned_data = super().clean()
-        quantity = cleaned_data.get("quantity")
-        shelf = cleaned_data.get("shelf")
-        measurement_unit = cleaned_data.get("measurement_unit")
-
-        if shelf.measurement_unit == measurement_unit or not shelf.measurement_unit:
-            total = shelf.get_total_refuse()
-            new_total =total+quantity
-            if shelf.quantity>=new_total or not shelf.quantity:
-                return cleaned_data
-            else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
-                    'limit': "%s"%(shelf.quantity,)}))
-        else:
-            self.add_error('measurement_unit',
-                           _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
-                               'measurement_unit': shelf.measurement_unit
-                           })
-        return cleaned_data
 
     class Meta:
         model = ShelfObject
