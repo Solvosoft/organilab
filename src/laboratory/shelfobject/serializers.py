@@ -80,6 +80,31 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
                 raise serializers.ValidationError(_("Provider doesn't exists in this laboratory"))
         return attr
 
+    def validate(self, data):
+        shelf_object = data['shelf_object']
+        shelf = shelf_object.shelf
+        shelf_quantity = shelf.quantity
+        amount = data['amount']
+        quantity_total_used = shelf.get_total_refuse()
+
+        if shelf.discard:
+            new_total = quantity_total_used + amount
+
+            if shelf_quantity < new_total or shelf_quantity != settings.DEFAULT_SHELF_ULIMIT:
+                raise serializers.ValidationError({'amount': _('The quantity is much larger than the shelf limit %(limit)s')%{'limit': shelf_quantity}})
+        else:
+            check_measurement_unit = shelf.measurement_unit != shelf_object.measurement_unit
+
+            if shelf.measurement_unit or shelf_quantity != settings.DEFAULT_SHELF_ULIMIT or check_measurement_unit:
+                amount_error = serializers.ValidationError({'amount': _('The quantity is more than the shelf has')})
+
+                if check_measurement_unit:
+                    if (amount + quantity_total_used) > shelf_quantity:
+                        raise amount_error
+                else:
+                    raise amount_error
+        return data
+
 
 class DecreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
