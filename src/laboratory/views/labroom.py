@@ -97,6 +97,7 @@ class LabroomCreate(CreateView):
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     form_class = RoomCreateForm
+
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         context['furniture_form'] = FurnitureCreateForm
@@ -107,6 +108,12 @@ class LabroomUpdate(UpdateView):
 
     def get_form_kwargs(self):
         return super().get_form_kwargs()
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        if context['object'].laboratory != self.laboratory:
+            raise Http404()
+        return context
 
     def form_valid(self,form):
         self.object = form.save(commit=False)
@@ -127,7 +134,18 @@ class LaboratoryRoomDelete(DeleteView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.kwargs.get('lab_pk')))
 
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        if context['object'].laboratory != self.laboratory:
+            raise Http404()
+        return context
+
     def form_valid(self, form):
+        if self.object.laboratory != self.laboratory:
+            raise Http404()
         success_url = self.get_success_url()
         organilab_logentry(self.request.user, self.object, DELETION,
                            relobj=self.lab)
