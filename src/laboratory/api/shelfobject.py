@@ -437,15 +437,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
         serializer = ShelfObjectDetailSerializer(shelfobject)
-        qr, url=get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
-        context = {'object': serializer.data,
-                   'qr': qr,
-                   'org_pk': org_pk, 'lab_pk': lab_pk}
+        qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
+        context = {'object': serializer.data}
         if qr:
             image = qr.b64_image
             context['qr'] = image
-        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', context)
-        return JsonResponse({'detail': render_str})
+            context['url'] = reverse('laboratory:download_shelfobject_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': serializer.data['id']})
+        return JsonResponse(context)
 
     @action(detail=False, methods=['post'])
     def tag(self, request, org_pk, lab_pk, **kwargs):
