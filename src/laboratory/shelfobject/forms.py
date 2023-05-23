@@ -23,7 +23,7 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
             'amount_required': genwidgets.TextInput
         }
 
-class AddShelfObjectForm(GTForm):
+class IncreaseShelfObjectForm(GTForm):
     amount = forms.FloatField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal', label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
@@ -49,9 +49,8 @@ class TransferOutShelfObjectForm(GTForm):
 
         self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
 
-class SubstractShelfObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
-                                  label=_('Amount'), required=True)
+class DecreaseShelfObjectForm(GTForm):
+    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal', label=_('Amount'))
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
 
