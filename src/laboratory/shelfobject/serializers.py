@@ -294,7 +294,7 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
 
 
 class ValidateShelfSerializer(serializers.Serializer):
-    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.all())
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf(self, value):
         attr = super().validate(value)
