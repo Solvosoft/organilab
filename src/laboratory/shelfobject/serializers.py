@@ -19,7 +19,7 @@ logger = logging.getLogger('organilab')
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
     final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
 
