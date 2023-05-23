@@ -82,7 +82,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
 
 class DecreaseShelfObjectSerializer(serializers.Serializer):
-    discount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
@@ -94,6 +94,14 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
                 f'DecreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
             raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
+
+    def validate(self, data):
+        amount = data['amount']
+        shelf_object = data['shelf_object']
+
+        if shelf_object.quantity < amount:
+            raise serializers.ValidationError({'amount': _("Substract amount can't be greater than available shelf amount")})
+        return data
 
 
 class ValidateShelfSerializerCreate(serializers.Serializer):

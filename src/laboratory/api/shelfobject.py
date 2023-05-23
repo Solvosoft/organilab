@@ -365,20 +365,16 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
 
         if serializer.is_valid():
+            changed_data = list(serializer.validated_data.keys())
+            amount = serializer.validated_data['amount']
+            description = serializer.validated_data.get('description', '')
             shelfobject = serializer.validated_data['shelf_object']
             old = shelfobject.quantity
-            discount = serializer.validated_data['discount']
-            description = serializer.validated_data.get('description', '')
-            changed_data = list(serializer.validated_data.keys())
-
-            if old >= discount:
-                new = old - discount
-                shelfobject.quantity = new
-                shelfobject.save()
-                log_object_change(request.user, lab_pk, shelfobject, old, new, description, 2, "Substract", create=False)
-                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[self.laboratory, shelfobject])
-            else:
-                errors['discount'] = [_('The amount to be subtracted is more than the shelf has')]
+            new = old - amount
+            shelfobject.quantity = new
+            shelfobject.save()
+            log_object_change(request.user, lab_pk, shelfobject, old, new, description, 2, "Substract", create=False)
+            organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[self.laboratory, shelfobject])
         else:
             errors = serializer.errors
 
