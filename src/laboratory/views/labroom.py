@@ -6,12 +6,14 @@ Created on 26/12/2016
 '''
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
+from django.utils.timezone import now
+from django.utils.translation import gettext as _
 
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
@@ -86,6 +88,7 @@ class LabroomCreate(CreateView):
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     form_class = RoomCreateForm
+
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         context['furniture_form'] = FurnitureCreateForm
@@ -93,6 +96,12 @@ class LabroomUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        if context['object'].laboratory != self.laboratory:
+            raise Http404()
+        return context
 
     def form_valid(self,form):
         room = form.save()
@@ -109,7 +118,15 @@ class LaboratoryRoomDelete(DeleteView):
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.kwargs.get('lab_pk')))
 
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        if not context['object'].laboratory_set.filter(pk=self.lab).exists():
+            raise Http404()
+        return context
+
     def form_valid(self, form):
+        if self.object.laboratory != self.laboratory:
+            raise Http404()
         success_url = self.get_success_url()
         organilab_logentry(self.request.user, self.object, DELETION,
                            relobj=self.lab)

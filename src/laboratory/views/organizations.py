@@ -20,6 +20,7 @@ from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
 from auth_and_perms.models import Profile
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 
 from laboratory.models import Laboratory, OrganizationStructure, OrganizationUserManagement, UserOrganization
 from .djgeneric import ListView
@@ -120,6 +121,17 @@ class OrganizationDeleteView(DeleteView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().get(request, *args, **kwargs)
+
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().post(request, *args, **kwargs)
+
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(self.request.user, self.object, DELETION, 'organization structure')
@@ -153,6 +165,16 @@ class OrganizationUpdateView(UpdateView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
     form_class = AddOrganizationForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         response = super().form_valid(form)
