@@ -333,7 +333,6 @@ class SubstanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
     object_detail = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
