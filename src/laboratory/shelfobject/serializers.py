@@ -58,8 +58,8 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
-    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False, allow_null=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE), required=False, allow_null=True)
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)

@@ -312,7 +312,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
         self.serializer_class = IncreaseShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
         provider = None
 
@@ -326,20 +326,19 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             changed_data = list(serializer.validated_data.keys())
             bill = serializer.validated_data.get('bill', '')
             amount = serializer.validated_data['amount']
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
 
             if shelf.discard:
                 total = shelf.get_total_refuse()
                 new_total = total + amount
                 if shelf.quantity >= new_total or shelf.quantity == settings.DEFAULT_SHELF_ULIMIT:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, self.laboratory)
                 else:
                     errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')%{'limit': shelf.quantity}]
             else:
                 status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
 
                 if status_shelf_obj:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
+                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, self.laboratory)
                 else:
                     errors['amount'] = [_('The quantity is more than the shelf has')]
         else:
