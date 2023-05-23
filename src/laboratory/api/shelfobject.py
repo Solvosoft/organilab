@@ -398,21 +398,19 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
         self.serializer_class = ReserveShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
         changed_data = ["laboratory", "organization", "user", "created_by"]
 
         if serializer.is_valid():
             changed_data = changed_data + list(serializer.validated_data.keys())
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
             instance = serializer.save()
-            instance.laboratory = laboratory
-            instance.organization = organization
+            instance.laboratory = self.laboratory
+            instance.organization = self.organization
             instance.user = request.user
             instance.created_by = request.user
             instance.save()
-            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[laboratory, instance])
+            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[self.laboratory, instance])
         else:
             errors = serializer.errors
 
