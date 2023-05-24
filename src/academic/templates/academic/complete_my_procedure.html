@@ -2,21 +2,10 @@
 {% load static i18n %}
 {% load urlname_tags %}
 {% load organilab_tags %}
+{% load gtsettings timejs %}
 {% block pre_head %}
     {% define_urlname_action 'complete_my_procedure' %}
-    <style>
-        .step-title {
-            font-weight: 900;
-            font-size: 150%;
-        }
-
-        .step-description {
-            font-size: 130%;
-        }
-    </style>
-{% endblock %}
-{% block extra_css %}
-    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+    {% define_true  "use_datatables" %}
 {% endblock %}
 
 {% block content %}
@@ -24,7 +13,7 @@
     <h1 id="form_name" class="text-center"> </h1>
     <div class="clearfix"></div>
     <div class="row">
-        <div id="left-col" class="col-md-12">
+        <div id="left-col" class="col-md-8">
             <form id="procedure_form">
                 {% csrf_token %}
                 <div id="steps-table">
@@ -37,7 +26,7 @@
                                     <div id="step-comment-{{ step.pk }}"></div>
                                 </div>
                                 <div class="col">
-                                    <button id="observation-{{ step.pk }}" class="btn btn-success float-end" type="button" onclick="showComments({{ step.pk }})"><i class="fa fa-eye" aria-hidden="true"></i> {% trans 'Observations' %}</button>
+                                    <input type="radio" class="stepradio" name="step" value="{{ step.pk }}">
                                 </div>
                                 <div id="right-col-{{ step.pk }}" class="d-none">
                                     <div id="comment-panel-{{ step.pk }}" class="row">
@@ -60,43 +49,6 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% for comment in comments %}
-                <script>
-                    var wrapper = document.getElementById("comments-list-" + {{ comment.procedure_step.pk }});
-
-                    var myHTML = `
-                        <div class="row" style="border-radius:10px;">
-                            <div class="col-sm-10 bg-light p-2">
-                                <div class="float-start" style="font-weight: bold;">
-                                    {{ comment.creator }}
-                                </div>
-
-                                <div class="float-end">
-                                    <div class="text-end" style="top:0;">
-                                        <i  class="fa fa-edit beditbtn" onclick="edit_comment({{comment.pk}})"></i>
-                                        <i  class="fa fa-trash deletebtn" onclick="delete_comment({{comment.pk}})"></i>
-                                    </div>
-
-                                    <div>
-                                        <p>{{comment.create_at}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="clearfix"></div>
-                                <div class="container" style="width:100%; font-size: 13px;">
-                                    {{comment.comment}}
-                                </div>
-                            </div>
-
-                            <br>
-                        </div>
-
-                        <br>
-                    `;
-
-                    wrapper.innerHTML += myHTML;
-                </script>
-                {% endfor %}
                 {% if my_procedure.status == 'Eraser' %}
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
@@ -109,13 +61,88 @@
                 {% endif %}
             </form>
         </div>
+        <div class="col-md-4">
+            <table id="datatableelement" class="table "> </table>
+        </div>
     </div>
 </div>
+{% include 'modal_template.html' with form=form id="commentmodal" title="Add observation" form_id="commentform" url=api_my_procedure_list %}
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
-<script type="text/javascript" src="{% static 'formio/CustomSelect.js' %}?v={% get_organilab_version %}"></script>
+<script>
+    document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
+                 "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
+                 "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
+                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+    datatableelement=createDataTable('#datatableelement', '{% url "laboratory:api-procedure-comments-list" %}', {
+     columns: [
+            {data: "creator", name: "creator", title: "{% trans 'Creator' %}", type: "string", visible: true},
+            {data: "creator_at", name: "creator_at", title: "{% trans 'Creation date' %}", type: "date", visible: true, "dateformat":  "{% get_datetime_format %}"},
+            {data: "comment", name: "comment", title: "{% trans 'Comment' %}", type: "string", visible: true}
+        ],
+        ajax: {
+            url: '{% url "laboratory:api-procedure-comments-list" %}',
+            type: 'GET',
+            data: function(dataTableParams, settings) {
+                var data= formatDataTableParams(dataTableParams, settings);
+                data['procedure_step'] = $('.stepradio:checked').val();
+                return data;
+            }
+        },
+        buttons: [
+            {
+                text: 'Add',
+                action: function() {
+                    var step_pk = $('.stepradio:checked').val();
+                    if (step_pk === undefined) {
+                        Swal.fire({
+                            title: no_step_selected['title'],
+                            text: no_step_selected['text'],
+                        });
+                    } else {
+                        var formmodal = BaseFormModal('#commentmodal');
+                        formmodal.addBtnForm = function(instance) {
+                            return function(event) {
+                                var dataAsString = convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras);
+                                var dataAsJson = JSON.parse(dataAsString);
+
+                                $.ajax({
+                                    url: "{% url 'laboratory:api-my-procedure-list' %}",
+                                    type: "POST",
+                                    data: {'comment': dataAsJson.comment, 'procedure_step': step_pk},
+                                    headers: {
+                                        "X-Requested-With": "XMLHttpRequest",
+                                        "X-CSRFToken": getCookie("csrftoken"),
+                                    },
+                                    success: (success) => {
+                                        formmodal.hidemodal();
+                                        Swal.fire(
+                                            '',
+                                            add_translation['successfull'],
+                                            "success"
+                                        ).then(function(result) {
+                                            location.reload();
+                                        })
+                                    },
+                                });
+
+                            }
+                        }
+                        formmodal.init(this);
+                        formmodal.showmodal();
+                    }
+                }
+            }
+        ]
+    }, addfilter=true);
+
+    $('.stepradio').on('change', function(e) {
+        datatableelement.ajax.reload();
+    });
+</script>
+
 <script type="text/javascript">
 const urls ={
     edit:"{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
@@ -124,7 +151,11 @@ const urls ={
     get_comment:"{% url 'laboratory:api-my-procedure-list' %}",
     delete_update_comment :"{% url 'laboratory:api-my-procedure-detail' 0 %}",
 };
-const my_procedure="{{my_procedure.pk}}"
+
+const no_step_selected = {
+    title: "{% trans 'No step selected' %}",
+    text: "{% trans 'You must select a step to add comments.' %}"
+}
 
 var schema = {{ schema | safe }};
 document.getElementById("form_name").textContent = "{{my_procedure.name}}";
@@ -177,6 +208,7 @@ function showComments(pk) {
 
 </script>
 <script src="{% static 'js/procedure_formio.js'%}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
 

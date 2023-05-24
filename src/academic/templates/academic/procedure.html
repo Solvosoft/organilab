@@ -23,7 +23,7 @@
           <div class="clearfix"></div>
         </div>
         <div class="card-body">
-          <table id="inform" class="table table-striped table-bordered text-center" style="width:100%">
+          <table id="my_procedures" class="table table-striped table-bordered text-center" style="width:100%">
             <thead>
             <tr>
               <th>{% trans 'Name' %}</th>
@@ -79,7 +79,7 @@
 {% block js %}
   <script>
     $(document).ready(function() {
-      $('#inform').DataTable();
+      $('#my_procedures').DataTable();
       });
   </script>
 {% endblock %}
