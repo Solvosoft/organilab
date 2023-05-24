@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
-from laboratory.api.serializers import ShelfLabViewSerializer, ObservationShelfObservationSerializer
+from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import Catalog, ShelfObjectObservation
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
@@ -214,8 +214,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "detail_pdf": [],
         "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
-        "create_comments": [],
-        "list_comments": ["laboratory.view_shelfobject"],
+        "create_comments": ["laboratory.add_shelfobjectobservation"],
+        "list_comments": ["laboratory.view_shelfobjectobservation"],
         "create_status": ["laboratory.add_catalog"],
         "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": [],
@@ -427,25 +427,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Returns all the data from the specified Shelf Object including the Relations Fields
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the data must be extracted from
+        :param kwargs: other extra params
+        :return: JsonResponse with a modal containing the details from the shelf object
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
         serializer = ShelfObjectDetailSerializer(shelfobject)
-        qr, url=get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
-        context = {'object': serializer.data,
-                   'qr': qr,
-                   'org_pk': org_pk, 'lab_pk': lab_pk}
+        qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
+        context = {'object': serializer.data}
         if qr:
             image = qr.b64_image
             context['qr'] = image
-        render_str = render_to_string('laboratory/shelfobject/detail_modal.html', context)
-        return JsonResponse({'detail': render_str})
+            context['url'] = reverse('laboratory:download_shelfobject_qr', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': serializer.data['id']})
+        return JsonResponse(context)
 
     @action(detail=False, methods=['post'])
     def tag(self, request, org_pk, lab_pk, **kwargs):
@@ -572,12 +571,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['delete'])
     def delete(self, request, org_pk, lab_pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Deletes a specific shelf object from a shelf
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param kwargs: other extra params
+        :return: JsonResponse with the status of the DELETE request
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete")
         serializer = ShelfObjectDeleteSerializer(data=request.data, context={"laboratory_id":self.laboratory.pk})
@@ -609,16 +608,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Creates a new observation for a specific shelf object
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the comment will be added to
+        :param kwargs: other extra params
+        :return: JsonResponse with the status of the creating
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_comments")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
-        serializer_sho = ObservationShelfObservationSerializer(data=request.data)
+        serializer_sho = CreateObservationShelfObjectSerializer(data=request.data)
         errors = {}
         if serializer_sho.is_valid():
             serializer_sho.save(shelf_object=shelf_object, creator=request.user)
@@ -633,12 +633,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def list_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Daniel
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Returns all the observations related to a specific shelf object
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
+        :param pk: pk of the shelf object that the data must be extracted from
+        :param kwargs: other extra params
+        :return: Response with the observations related to the shelf object and the number of records
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
@@ -656,36 +657,45 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return Response(self.get_serializer(response_data).data)
 
-    @action(detail=False, methods=['put'])
-    def update_status(self, request, org_pk, lab_pk, **kwargs):
+    @action(detail=True, methods=['put'])
+    def update_status(self, request, org_pk, lab_pk,pk, **kwargs):
         """
-        Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Change the status of a shelfobject
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :param pk: Of the shelfobject that change the status
+        :return: JsonReponse with the ingformation about status or shelfobject (success or error)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
         self.serializer_class=UpdateShelfObjectStatusSerializer
-        serializer= self.serializer_class(data=request.data, context={'laboratory_id': lab_pk})
+        data ={'shelf_object':pk}
+        data.update(request.data)
+        serializer= self.serializer_class(data=data, context={'laboratory_id': lab_pk})
+
         if serializer.is_valid():
-            shelfobject = serializer.validated_data['shelfobject']
+            shelfobject = serializer.validated_data['shelf_object']
+            pre_status = shelfobject.status.description if shelfobject.status else _("No status")
             shelfobject.status = serializer.validated_data['status']
             shelfobject.save()
-
-            ShelfObjectObservation.objects.create(action_taken=_("Status Change"),
+            ShelfObjectObservation.objects.create(action_taken=
+                                                  _("Status Change of %(pre_status)s of %(description)s")%{
+                                                      'pre_status': pre_status,
+                                                      'description': shelfobject.status.description
+                                                  },
                                                   description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
             organilab_logentry(
                 request.user, shelfobject, CHANGE,
                 changed_data=['status'],
-                relobj=shelfobject
+                relobj=self.laboratory
             )
-            return JsonResponse({"detail": _("The object status was updated successfully")},
+            return JsonResponse({"detail": _("The object status was updated successfully"),
+                                 'shelfobject_status':shelfobject.status.description},
                                 status=status.HTTP_200_OK)
-        return JsonResponse({'errors': serializer.errors}, status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
@@ -747,14 +757,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
         Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        """
-            Se necesita agregar el permiso laboratory.add_catalog
+        Create a shelfobject status
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonReponse with the ingformation about shelfobject status (success or error)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_status")
 
