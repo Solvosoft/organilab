@@ -16,7 +16,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
@@ -617,13 +616,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer_sho = CreateObservationShelfObjectSerializer(data=request.data)
         errors = {}
         if serializer_sho.is_valid():
-            data = serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+            observation_instance = serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+            utils.organilab_logentry(request.user, observation_instance, ADDITION, 'shelfobjectobservation', relobj=self.laboratory)
         else:
             errors = serializer_sho.errors
 
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-        utils.organilab_logentry(request.user, data, ADDITION, 'shelfobjectobservation',relobj=self.laboratory)
+
         return JsonResponse({"detail": _("Observation was created successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
