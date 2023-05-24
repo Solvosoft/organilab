@@ -4,8 +4,9 @@
 {% load organilab_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'shelfobject_edit' %}
 {% endblock %}
-
+{% block title %}{% trans 'Logs' %} {{object.object.name}}{% endblock %}
 
 {% block content %}
 <input type="hidden" name="shelf" id="id_shelf" value="{{object.shelf.pk}}">
