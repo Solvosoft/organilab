@@ -702,12 +702,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
 
         if serializer.is_valid():
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
             shelf_object = serializer.validated_data['shelf_object']
             shelf_object.shelf = serializer.validated_data['shelf']
             shelf_object.save()
             organilab_logentry(request.user, shelf_object, CHANGE, 'shelf object', changed_data=['shelf'],
-                               relobj=[laboratory, shelf_object])
+                               relobj=[self.laboratory, shelf_object])
         else:
             errors = serializer.errors
 
