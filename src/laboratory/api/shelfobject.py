@@ -305,9 +305,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
+        This action allows the shelf object increase by following data:
+        requierd quantity and optional provider and bill validate through serializer,
+        also user needs to have required access permission
+        to do this action related to this specific organization and laboratory.
         :param request: http request
         :param org_pk: organization related user permissions
-        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param lab_pk: laboratory related to shelf object and user permissions
         :param kwargs: extra params
         :return: increase shelf object quantity, return success o error message
         """
@@ -355,9 +359,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
+        This action allows the shelf object decrease by following data:
+        requierd quantity and optional description validate through serializer,
+        also user needs to have required access permission
+        to do this action related to this specific organization and laboratory.
         :param request: http request
         :param org_pk: organization related user permissions
-        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param lab_pk: laboratory related to shelf object and user permissions
         :param kwargs: extra params
         :return: decrease shelf object quantity, return success o error message
         """
@@ -393,6 +401,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         """
+        This action allows the reserved product creation by following data:
+        requierd quantity, initial and final date validate through serializer,
+        also user needs to have required access permission
+        to do this action related to this specific organization and laboratory.
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
         :param lab_pk: laboratory related to reserved product and user permissions
@@ -690,11 +702,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def move_shelfobject_to_shelf(self, request, org_pk, lab_pk, **kwargs):
         """
+        This action allows the shelf object movements to others shelves inside a same laboratory,
+        also user needs to have required access permission to do this action and visualize only shelves
+        related to this specific organization and laboratory.
         :param request: http request
-        :param org_pk: organization related to user permissions
-        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param org_pk: organization related to shelf object and user permissions
+        :param lab_pk: laboratory related to shelf object and user permissions
         :param kwargs: extra params
-        :return: move shelfobject to shelf, return success o error message
+        :return: move shelf object to other shelf, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "move_shelfobject_to_shelf")
         self.serializer_class = MoveShelfObjectSerializer
@@ -720,11 +735,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['get'])
     def shelf_availability_information(self, request, org_pk, lab_pk, **kwargs):
         """
+        This action allows a shelf data request, also user needs to have required access permission
+        to visualize shelf information related to this specific organization and laboratory.
+        Moreover, it should be stressed that 'shelf info' field return a render_to_string template
+        with all neccessary shelf information by structured html code.
         :param request: http request
-        :param org_pk: organization related to user permissions
-        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param org_pk: organization related to shelf object and user permissions
+        :param lab_pk: laboratory related to shelf object and user permissions
         :param kwargs: extra params
-        :return: JsonResponse with shelf availability information
+        :return: JsonResponse with shelf availability information which contains following fields:
+        name, type, quantity, discard, measurement_unit, quantity_storage_status,
+        percentage_storage_status and shelf_info.
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
