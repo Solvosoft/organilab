@@ -180,12 +180,13 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
         discard = attr['marked_as_discard']
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
         if discard:
             if unit != shelf_unit and shelf_unit:
                 errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-            if total > shelf_quantity and shelf_quantity != -1:
+            if total > shelf_quantity and not shelf_infinity:
                 errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
-        elif total > shelf_quantity and shelf_quantity != -1:
+        elif total > shelf_quantity and not shelf_infinity:
             errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
 
         if errors:
@@ -219,10 +220,11 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
         shelf_quantity = attr['shelf'].quantity
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
 
         if unit != shelf_unit and shelf_unit:
             errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-        if total > shelf_quantity and shelf_quantity != -1:
+        if total > shelf_quantity and not shelf_infinity:
             errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
         if errors:
             raise serializers.ValidationError(errors)
@@ -256,12 +258,14 @@ class MaterialShelfObjectSerializer(serializers.ModelSerializer):
         discard = attr['marked_as_discard']
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
+
         if discard:
             if unit != shelf_unit and shelf_unit:
                 errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-            if total > shelf_quantity and shelf_quantity != -1:
+            if total > shelf_quantity and shelf_infinity:
                 errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
-        elif total > shelf_quantity and shelf_quantity != -1:
+        elif total > shelf_quantity and not shelf_infinity:
             errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
         if errors:
             raise serializers.ValidationError(errors)
@@ -294,10 +298,11 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
         shelf_quantity = attr['shelf'].quantity
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
 
         if unit != shelf_unit and shelf_unit:
             errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-        if total > shelf_quantity and shelf_quantity != -1:
+        if total > shelf_quantity and not shelf_infinity:
             errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
         if errors:
             raise serializers.ValidationError(errors)
@@ -330,12 +335,14 @@ class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
         discard = attr['marked_as_discard']
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
+
         if discard:
             if unit != shelf_unit and shelf_unit:
                 errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-            if total > shelf_quantity and shelf_quantity != -1:
+            if total > shelf_quantity and not shelf_infinity:
                 errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
-        elif total > shelf_quantity and shelf_quantity != -1:
+        elif total > shelf_quantity and not shelf_infinity:
             errors.update({'quantity': _("Quantity can't greater than shelf quantity limit")})
 
         if errors:
@@ -368,10 +375,11 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
         shelf_quantity = attr['shelf'].quantity
         unit = attr['measurement_unit']
         shelf_unit = attr['shelf'].measurement_unit
+        shelf_infinity = attr['shelf'].infinity_quantity
 
         if unit != shelf_unit and shelf_unit:
             errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
-        if total>shelf_quantity and shelf_quantity!=-1:
+        if total>shelf_quantity and not shelf_infinity:
             errors.update({'quantity':_("Quantity can't greater than shelf quantity limit")})
         if errors:
             raise serializers.ValidationError(errors)
