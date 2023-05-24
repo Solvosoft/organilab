@@ -21,3 +21,7 @@ data: function(dataTableParams, settings) {
       }
 }
 }, addfilter=false);
+
+$(".add_status").click(function(){
+    add_status(document.urls.change_status)
+});

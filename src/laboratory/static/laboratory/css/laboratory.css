@@ -58,3 +58,9 @@ ul, #ullabroom {
     margin: 0;
 }
 
+.qr_img{
+    width: 40%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
