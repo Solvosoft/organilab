@@ -3,7 +3,6 @@ import json
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.http import JsonResponse, Http404
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -39,8 +38,6 @@ from laboratory.shelfobject.serializers import TransferObjectDenySerializer, She
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
 from laboratory.utils import organilab_logentry
-from presentation.models import QRModel
-from presentation.utils import update_qr_instance
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -620,13 +617,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer_sho = CreateObservationShelfObjectSerializer(data=request.data)
         errors = {}
         if serializer_sho.is_valid():
-            serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+            data = serializer_sho.save(shelf_object=shelf_object, creator=request.user)
         else:
             errors = serializer_sho.errors
 
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-
+        utils.organilab_logentry(request.user, data, ADDITION, 'shelfobjectobservation',relobj=self.laboratory)
         return JsonResponse({"detail": _("Observation was created successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'])
