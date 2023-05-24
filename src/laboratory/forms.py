@@ -548,7 +548,6 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}),
             help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
 
-
     class Meta:
         model = ShelfObject
         fields = ['status']
@@ -556,6 +555,7 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
+
     class Meta:
         model=ShelfObjectObservation
         exclude=['shelf_object', 'creator']

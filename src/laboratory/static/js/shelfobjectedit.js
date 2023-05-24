@@ -63,8 +63,8 @@ function shelfObjectDetail(obj,){
         headers: {'X-CSRFToken': getCookie('csrftoken')}})
         .then(response => response.json())
         .then(data => {
-        $('#detail_modal_container').html(data['detail'])
-        $('#detail_modal_container').modal('show')
+            configure_modal(data)
+            $('#detail_modal_container').modal('show')
         }).catch(error => Swal.fire({
                                 title: gettext('Error'),
                                 text: gettext('An error has occurred'),

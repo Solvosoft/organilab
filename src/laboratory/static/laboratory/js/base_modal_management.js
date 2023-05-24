@@ -68,6 +68,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             var myModalEl = this.instance[0];
             myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
+
         },
         "addBtnForm": function(instance){
 
@@ -159,5 +160,25 @@ function show_me_modal(instance, event){
         form_modals[modalid]=formmodal;
     }
     form_modals[modalid].showmodal(instance);
+
     return false;
 }
+
+function show_update_status_modal(instance, event){
+    var modalid= $(instance).data('modalid');
+
+    if(!form_modals.hasOwnProperty(modalid) ){
+        var formmodal= BaseFormModal("#"+modalid);
+        formmodal.init(instance);
+        form_modals[modalid]=formmodal;
+    }
+    form_modals[modalid].showmodal(instance);
+    form_modals[modalid].type='PUT';
+    form_modals[modalid].success=function(instance,data){
+        $("#shelfobject_status").text(data['shelfobject_status'])
+
+    }
+
+    return false;
+}
+
